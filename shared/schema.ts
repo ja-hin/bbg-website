@@ -22,22 +22,25 @@ export const customers = pgTable("customers", {
   name: text("name").notNull(),
   contact: text("contact").notNull(),
   email: text("email").notNull(),
+  address: text("address").notNull(),
   pincode: text("pincode").notNull(),
-  serialNumber: text("serial_number").notNull(),
-  modelName: text("model_name").notNull(),
-  invoiceValue: decimal("invoice_value", { precision: 10, scale: 2 }).notNull(),
   deviceType: text("device_type").notNull(), // 'laptop' or 'mobile'
+  brand: text("brand").notNull(),
+  modelName: text("model_name").notNull(),
+  purchaseDate: text("purchase_date").notNull(),
+  invoiceValue: decimal("invoice_value", { precision: 10, scale: 2 }).notNull(),
+  invoiceNumber: text("invoice_number").notNull(),
   invoiceFile: text("invoice_file").notNull(),
-  paymentScreenshot: text("payment_screenshot").notNull(),
+  paymentIntentId: text("payment_intent_id"), // Stripe payment intent ID
   sellerCode: text("seller_code"),
-  bbgVoucherCode: text("bbg_voucher_code").notNull().unique(),
+  voucherCode: text("voucher_code").notNull().unique(),
   isVerified: boolean("is_verified").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const claims = pgTable("claims", {
   id: serial("id").primaryKey(),
-  bbgVoucherCode: text("bbg_voucher_code").notNull(),
+  voucherCode: text("voucher_code").notNull(),
   contact: text("contact").notNull(),
   email: text("email").notNull(),
   claimPercentage: integer("claim_percentage").notNull(),
@@ -64,7 +67,7 @@ export const insertDistributorSchema = createInsertSchema(distributors).omit({
 
 export const insertCustomerSchema = createInsertSchema(customers).omit({
   id: true,
-  bbgVoucherCode: true,
+  voucherCode: true,
   isVerified: true,
   createdAt: true,
 });

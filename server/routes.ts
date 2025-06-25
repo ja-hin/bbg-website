@@ -137,23 +137,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Customer registration with file uploads
-  app.post("/api/customers/register", upload.fields([
-    { name: 'invoiceFile', maxCount: 1 },
-    { name: 'paymentScreenshot', maxCount: 1 }
-  ]), async (req, res) => {
+  // Customer registration with file uploads and payment processing
+  app.post("/api/customers/register", upload.single('invoiceFile'), async (req, res) => {
     try {
-      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      const file = req.file;
       
-      if (!files.invoiceFile || !files.paymentScreenshot) {
-        return res.status(400).json({ message: "Both invoice file and payment screenshot are required" });
+      if (!file) {
+        return res.status(400).json({ message: "Invoice file is required" });
       }
 
       const customerData = {
         ...req.body,
         invoiceValue: req.body.invoiceValue.toString(),
-        invoiceFile: files.invoiceFile[0].filename,
-        paymentScreenshot: files.paymentScreenshot[0].filename
+        invoiceFile: file.filename,
+        paymentIntentId: req.body.paymentIntentId || null
       };
 
       // Validate seller code if provided
@@ -169,12 +166,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.status(201).json({
         message: "Registration successful! You will receive confirmation shortly.",
-        bbgVoucherCode: customer.bbgVoucherCode,
+        voucherCode: customer.voucherCode,
         customer: {
           id: customer.id,
           name: customer.name,
           email: customer.email,
-          bbgVoucherCode: customer.bbgVoucherCode,
+          voucherCode: customer.voucherCode,
           deviceType: customer.deviceType
         }
       });

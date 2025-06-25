@@ -34,7 +34,6 @@ import {
   Calendar,
   DollarSign,
   FileText,
-  Camera,
   CreditCard,
   Lock
 } from "lucide-react";
@@ -165,7 +164,6 @@ function RegistrationContent() {
   const [otp, setOtp] = useState("");
   const [isOtpVerified, setIsOtpVerified] = useState(false);
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
-  const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [formData, setFormData] = useState<CustomerFormData | null>(null);
   const [_, setLocation] = useLocation();
@@ -253,7 +251,7 @@ function RegistrationContent() {
       queryClient.invalidateQueries({ queryKey: ['/api/customers'] });
       toast({
         title: "Registration Successful!",
-        description: `Your BBG voucher code is: ${data.customer.voucherCode}`,
+        description: `Your BBG voucher code is: ${data.voucherCode}`,
       });
       setLocation("/thank-you");
     },
@@ -323,9 +321,6 @@ function RegistrationContent() {
     
     // Add files
     submitData.append('invoiceFile', invoiceFile!);
-    if (paymentScreenshot) {
-      submitData.append('paymentScreenshot', paymentScreenshot);
-    }
     
     // Add payment info
     submitData.append('paymentIntentId', paymentIntentId);
@@ -716,29 +711,7 @@ function RegistrationContent() {
                       )}
                     />
 
-                    <FormField
-                      control={form.control}
-                      name="paymentScreenshot"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <Camera className="h-4 w-4 mr-2" />
-                            Payment Screenshot (Optional)
-                          </FormLabel>
-                          <FormControl>
-                            <FileUpload
-                              accept="image/*"
-                              onFileChange={(file) => {
-                                setPaymentScreenshot(file);
-                                field.onChange(file?.name || "");
-                              }}
-                              placeholder="Upload payment screenshot (optional)"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+
                   </CardContent>
                 </Card>
               </div>

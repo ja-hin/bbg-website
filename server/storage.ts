@@ -73,11 +73,11 @@ export class MemStorage implements IStorage {
   // Customer operations
   async createCustomer(insertCustomer: InsertCustomer): Promise<Customer> {
     const id = this.customerIdCounter++;
-    const bbgVoucherCode = this.generateVoucherCode();
+    const voucherCode = this.generateVoucherCode();
     const customer: Customer = {
       ...insertCustomer,
       id,
-      bbgVoucherCode,
+      voucherCode,
       isVerified: false,
       createdAt: new Date(),
     };
@@ -86,7 +86,7 @@ export class MemStorage implements IStorage {
   }
 
   async getCustomerByVoucherCode(voucherCode: string): Promise<Customer | undefined> {
-    return Array.from(this.customers.values()).find(c => c.bbgVoucherCode === voucherCode);
+    return Array.from(this.customers.values()).find(c => c.voucherCode === voucherCode);
   }
 
   async getCustomersBySellerCode(sellerCode: string): Promise<Customer[]> {
@@ -106,7 +106,7 @@ export class MemStorage implements IStorage {
     const id = this.claimIdCounter++;
     
     // Get customer to calculate claim amount
-    const customer = await this.getCustomerByVoucherCode(insertClaim.bbgVoucherCode);
+    const customer = await this.getCustomerByVoucherCode(insertClaim.voucherCode);
     if (!customer) {
       throw new Error("Invalid voucher code");
     }
@@ -127,7 +127,7 @@ export class MemStorage implements IStorage {
   }
 
   async getClaimByVoucherCode(voucherCode: string): Promise<Claim | undefined> {
-    return Array.from(this.claims.values()).find(c => c.bbgVoucherCode === voucherCode);
+    return Array.from(this.claims.values()).find(c => c.voucherCode === voucherCode);
   }
 
   async updateClaimStatus(id: number, status: string): Promise<void> {

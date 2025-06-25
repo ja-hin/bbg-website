@@ -130,10 +130,15 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 
 ```
 Changelog:
+- June 25, 2025: Completed payment gateway integration removing payment screenshots
+  - Removed payment screenshot upload option entirely from registration
+  - Direct payment processing during registration using Stripe payment gateway
+  - Updated database schema to store payment intent IDs instead of screenshots
+  - Streamlined registration flow: Device Info → Personal Info → Verification → Payment
+  - Payment amounts: ₹125 for laptops, ₹99 for mobiles with secure card processing
 - June 25, 2025: Integrated payment gateway with customer registration
   - Added Stripe payment processing for seamless buy + register flow
   - Created 4-step registration process: Device Info → Personal Info → Verification → Payment
-  - Payment amounts: ₹125 for laptops, ₹99 for mobiles
   - Graceful fallback when Stripe keys not configured (demo mode)
   - Updated "Register Now" to "Buy and Register" across the platform
 - June 25, 2025: Updated BBG pricing slabs to match official brochure

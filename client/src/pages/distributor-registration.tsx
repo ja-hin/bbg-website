@@ -98,7 +98,7 @@ export default function DistributorRegistration() {
                 <p className="text-2xl font-bold text-red-600">{sellerCode}</p>
               </div>
               <p className="text-sm text-gray-600">
-                Save this seller code. You'll earn ₹25 commission for every successful BBG registration using your code.
+                Save this seller code. You'll earn commission for every successful BBG registration using your code.
               </p>
             </CardContent>
           </Card>
@@ -117,7 +117,7 @@ export default function DistributorRegistration() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Become a BBG Distributor</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Join our network and earn commission on every BuyBack Guarantee sale. Earn ₹25 per successful registration!
+            Join our network and earn attractive commissions on every BuyBack Guarantee sale!
           </p>
         </div>
 
@@ -129,7 +129,7 @@ export default function DistributorRegistration() {
                 <DollarSign className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Earn Commission</h3>
-              <p className="text-gray-600">₹25 per successful BBG registration</p>
+              <p className="text-gray-600">Attractive commission per successful BBG registration</p>
             </CardContent>
           </Card>
 

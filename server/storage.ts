@@ -180,11 +180,14 @@ export class MemStorage implements IStorage {
     const now = new Date();
     const monthsDiff = (now.getFullYear() - purchaseDate.getFullYear()) * 12 + (now.getMonth() - purchaseDate.getMonth());
     
-    if (monthsDiff <= 6) return 80;
-    if (monthsDiff <= 12) return 70;
-    if (monthsDiff <= 18) return 60;
-    if (monthsDiff <= 24) return 50;
-    return 40;
+    if (monthsDiff >= 6 && monthsDiff <= 12) return 70;
+    if (monthsDiff >= 13 && monthsDiff <= 18) return 60;
+    if (monthsDiff >= 19 && monthsDiff <= 24) return 50;
+    if (monthsDiff >= 25 && monthsDiff <= 30) return 40;
+    if (monthsDiff >= 31 && monthsDiff <= 36) return 30;
+    if (monthsDiff >= 37 && monthsDiff <= 48) return 25;
+    if (monthsDiff >= 49 && monthsDiff <= 60) return 20;
+    return 0; // Outside coverage period
   }
 }
 

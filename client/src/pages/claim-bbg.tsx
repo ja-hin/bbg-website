@@ -313,29 +313,39 @@ export default function ClaimBBG() {
                 </thead>
                 <tbody>
                   <tr className="border-b">
-                    <td className="py-3 px-4">0-6 months</td>
-                    <td className="py-3 px-4 text-green-600 font-semibold">80% of invoice value</td>
-                    <td className="py-3 px-4">Good working condition</td>
-                  </tr>
-                  <tr className="border-b">
                     <td className="py-3 px-4">6-12 months</td>
                     <td className="py-3 px-4 text-green-600 font-semibold">70% of invoice value</td>
-                    <td className="py-3 px-4">Good working condition</td>
+                    <td className="py-3 px-4">Functional and fair condition</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="py-3 px-4">12-18 months</td>
-                    <td className="py-3 px-4 text-yellow-600 font-semibold">60% of invoice value</td>
-                    <td className="py-3 px-4">Good working condition</td>
+                    <td className="py-3 px-4">13-18 months</td>
+                    <td className="py-3 px-4 text-green-600 font-semibold">60% of invoice value</td>
+                    <td className="py-3 px-4">Functional and fair condition</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="py-3 px-4">18-24 months</td>
+                    <td className="py-3 px-4">19-24 months</td>
                     <td className="py-3 px-4 text-yellow-600 font-semibold">50% of invoice value</td>
-                    <td className="py-3 px-4">Good working condition</td>
+                    <td className="py-3 px-4">Functional and fair condition</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-3 px-4">25-30 months</td>
+                    <td className="py-3 px-4 text-yellow-600 font-semibold">40% of invoice value</td>
+                    <td className="py-3 px-4">Functional and fair condition</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-3 px-4">31-36 months</td>
+                    <td className="py-3 px-4 text-orange-600 font-semibold">30% of invoice value</td>
+                    <td className="py-3 px-4">Functional and fair condition</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-3 px-4">37-48 months</td>
+                    <td className="py-3 px-4 text-red-600 font-semibold">25% of invoice value</td>
+                    <td className="py-3 px-4">Functional and fair condition</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4">24+ months</td>
-                    <td className="py-3 px-4 text-red-600 font-semibold">40% of invoice value</td>
-                    <td className="py-3 px-4">Good working condition</td>
+                    <td className="py-3 px-4">49-60 months</td>
+                    <td className="py-3 px-4 text-red-600 font-semibold">20% of invoice value</td>
+                    <td className="py-3 px-4">Functional and fair condition</td>
                   </tr>
                 </tbody>
               </table>
@@ -345,12 +355,14 @@ export default function ClaimBBG() {
               <div className="flex items-start">
                 <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
                 <div>
-                  <h4 className="font-semibold text-blue-900 mb-2">Important Notes:</h4>
+                  <h4 className="font-semibold text-blue-900 mb-2">Claim Checklist:</h4>
                   <ul className="text-sm text-blue-800 space-y-1">
-                    <li>• Device must be in good working condition</li>
-                    <li>• Original invoice and accessories required</li>
-                    <li>• Physical verification will be conducted</li>
-                    <li>• Final claim value subject to device condition assessment</li>
+                    <li>• Invoice + original box required</li>
+                    <li>• Device must be functional and in fair condition</li>
+                    <li>• Original parts (if repaired, conditions apply)</li>
+                    <li>• Free pickup service available</li>
+                    <li>• Payment processed within 7 days</li>
+                    <li>• Terms and Conditions Apply</li>
                   </ul>
                 </div>
               </div>

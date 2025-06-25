@@ -165,12 +165,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Calculate claim percentage based on device age
       const monthsDiff = Math.floor((Date.now() - customer.createdAt!.getTime()) / (1000 * 60 * 60 * 24 * 30));
-      let claimPercentage = 40;
+      let claimPercentage = 0;
       
-      if (monthsDiff <= 6) claimPercentage = 80;
-      else if (monthsDiff <= 12) claimPercentage = 70;
-      else if (monthsDiff <= 18) claimPercentage = 60;
-      else if (monthsDiff <= 24) claimPercentage = 50;
+      if (monthsDiff >= 6 && monthsDiff <= 12) claimPercentage = 70;
+      else if (monthsDiff >= 13 && monthsDiff <= 18) claimPercentage = 60;
+      else if (monthsDiff >= 19 && monthsDiff <= 24) claimPercentage = 50;
+      else if (monthsDiff >= 25 && monthsDiff <= 30) claimPercentage = 40;
+      else if (monthsDiff >= 31 && monthsDiff <= 36) claimPercentage = 30;
+      else if (monthsDiff >= 37 && monthsDiff <= 48) claimPercentage = 25;
+      else if (monthsDiff >= 49 && monthsDiff <= 60) claimPercentage = 20;
 
       const claimAmount = (parseFloat(customer.invoiceValue) * claimPercentage) / 100;
 

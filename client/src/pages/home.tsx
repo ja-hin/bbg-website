@@ -75,15 +75,15 @@ export default function Home() {
                 <ul className="text-left space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Up to 80% buyback value
+                    Up to 70% buyback value
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    24-month coverage period
+                    60-month coverage period
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Hassle-free claim process
+                    Free pickup service
                   </li>
                 </ul>
               </CardContent>
@@ -100,15 +100,15 @@ export default function Home() {
                 <ul className="text-left space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Up to 80% buyback value
+                    Up to 70% buyback value
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    24-month coverage period
+                    60-month coverage period
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Quick claim processing
+                    Fast payment in 7 days
                   </li>
                 </ul>
               </CardContent>
@@ -173,8 +173,8 @@ export default function Home() {
           <Award className="h-16 w-16 mx-auto mb-6" />
           <h2 className="text-4xl font-bold mb-4">Become a BBG Distributor</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Join our distributor network and earn ₹25 commission on every successful BBG registration. 
-            Easy setup, quick payouts, and dedicated support.
+            Join our distributor network and start earning commissions on every successful BBG registration. 
+            Easy setup, dedicated support, and regular payouts.
           </p>
           <Link href="/distributor-registration">
             <Button size="lg" variant="secondary" className="bg-white text-red-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">

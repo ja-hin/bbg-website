@@ -55,9 +55,12 @@ export function getDeviceAge(purchaseDate: Date): number {
 }
 
 export function calculateClaimPercentage(deviceAge: number): number {
-  if (deviceAge <= 6) return 80;
-  if (deviceAge <= 12) return 70;
-  if (deviceAge <= 18) return 60;
-  if (deviceAge <= 24) return 50;
-  return 40;
+  if (deviceAge >= 6 && deviceAge <= 12) return 70;
+  if (deviceAge >= 13 && deviceAge <= 18) return 60;
+  if (deviceAge >= 19 && deviceAge <= 24) return 50;
+  if (deviceAge >= 25 && deviceAge <= 30) return 40;
+  if (deviceAge >= 31 && deviceAge <= 36) return 30;
+  if (deviceAge >= 37 && deviceAge <= 48) return 25;
+  if (deviceAge >= 49 && deviceAge <= 60) return 20;
+  return 0;
 }

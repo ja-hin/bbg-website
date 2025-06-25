@@ -130,7 +130,13 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 
 ```
 Changelog:
-- June 24, 2025. Initial setup
+- June 25, 2025: Updated BBG pricing slabs to match official brochure
+  - Maximum claim value reduced to 70% (from 80%)
+  - Coverage period extended to 60 months (from 24 months)
+  - Added comprehensive 7-tier claim structure (6-60 months)
+  - Updated footer with complete company information
+  - Removed specific commission amounts from customer-facing pages
+- June 24, 2025: Initial setup
 ```
 
 ## User Preferences

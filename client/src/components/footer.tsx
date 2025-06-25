@@ -59,19 +59,25 @@ export default function Footer() {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <h4 className="font-semibold mb-2">Contact Information</h4>
+              <h4 className="font-semibold mb-2">Xtracover Technologies Private Limited</h4>
               <p className="text-gray-400 text-sm mb-1">
-                📍 123 Business District, Tech City, India - 110001
+                A-1, 3rd Floor, FIEE Complex Okhla Industrial Area Phase-2
               </p>
               <p className="text-gray-400 text-sm mb-1">
-                📞 +91 98765 43210
+                New Delhi South Delhi DL 110020
+              </p>
+              <p className="text-gray-400 text-sm mb-1">
+                CIN : U74999DL2017PTC313555
+              </p>
+              <p className="text-gray-400 text-sm mb-1">
+                📞 8860396039
               </p>
               <p className="text-gray-400 text-sm">
-                ✉️ support@xtracover.com
+                ✉️ contactus@xtracover.com
               </p>
             </div>
             <div className="text-right">
-              <p className="text-gray-400 text-sm">© 2024 Xtracover. All rights reserved.</p>
+              <p className="text-gray-400 text-sm">© 2025 Xtracover Technologies Private Limited. All rights reserved.</p>
             </div>
           </div>
         </div>

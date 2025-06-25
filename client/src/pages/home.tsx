@@ -52,7 +52,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <Link href="/customer-registration">
               <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 text-lg font-semibold">
-                Register Now <ArrowRight className="ml-2 h-5 w-5" />
+                Buy and Register <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
             <Link href="/claim-bbg">

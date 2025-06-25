@@ -1,136 +1,266 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { z } from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
+import { z } from "zod";
+import { insertCustomerSchema } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { validatePhoneNumber, validateEmail, validatePincode } from "@/lib/utils";
+
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import FileUpload from "@/components/file-upload";
-import { Loader2, Laptop, Smartphone, MessageSquare, CheckCircle } from "lucide-react";
+import { 
+  ShoppingCart, 
+  CheckCircle, 
+  Upload, 
+  Smartphone, 
+  User,
+  MapPin,
+  Phone,
+  Mail,
+  Calendar,
+  DollarSign,
+  FileText,
+  Camera,
+  CreditCard,
+  Lock
+} from "lucide-react";
 
-const customerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  contact: z.string().regex(/^\d{10}$/, "Contact must be exactly 10 digits"),
-  email: z.string().email("Invalid email address"),
-  pincode: z.string().regex(/^\d{6}$/, "Pincode must be exactly 6 digits"),
-  serialNumber: z.string().min(5, "Serial number/IMEI required"),
-  modelName: z.string().min(2, "Model name required"),
-  invoiceValue: z.number().min(1000, "Invoice value must be at least ₹1000"),
-  deviceType: z.enum(["laptop", "mobile"], { required_error: "Please select device type" }),
-  invoiceFile: z.instanceof(File).optional(),
-  paymentScreenshot: z.instanceof(File).optional(),
-  sellerCode: z.string().optional(),
+// Initialize Stripe - will be null if key not configured
+const stripePromise = import.meta.env.VITE_STRIPE_PUBLIC_KEY 
+  ? loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY) 
+  : null;
+
+// Extended customer schema with validation
+const customerSchema = insertCustomerSchema.extend({
   otpCode: z.string().min(6, "OTP must be 6 digits"),
   agreeToTerms: z.boolean().refine(val => val === true, "You must agree to the terms")
 });
 
 type CustomerFormData = z.infer<typeof customerSchema>;
 
-export default function CustomerRegistration() {
-  const [, setLocation] = useLocation();
+// Payment form component
+function PaymentForm({ 
+  amount, 
+  deviceType, 
+  onPaymentSuccess, 
+  customerData 
+}: { 
+  amount: number;
+  deviceType: string;
+  onPaymentSuccess: (paymentIntentId: string) => void;
+  customerData: CustomerFormData;
+}) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpVerified, setOtpVerified] = useState(false);
-  const [registrationComplete, setRegistrationComplete] = useState(false);
-  const [voucherCode, setVoucherCode] = useState<string>("");
+
+  const handlePayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      // Create payment intent
+      const response = await apiRequest("POST", "/api/create-payment-intent", { deviceType });
+      const { clientSecret } = await response.json();
+
+      // Confirm payment
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement)!,
+          billing_details: {
+            name: customerData.name,
+            email: customerData.email,
+            phone: customerData.contact,
+          },
+        },
+      });
+
+      if (error) {
+        toast({
+          title: "Payment Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else if (paymentIntent.status === 'succeeded') {
+        onPaymentSuccess(paymentIntent.id);
+      }
+    } catch (error) {
+      toast({
+        title: "Payment Error",
+        description: "Something went wrong during payment processing",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handlePayment} className="space-y-6">
+      <div className="bg-gray-50 rounded-lg p-4">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-lg font-semibold">BBG for {deviceType}</span>
+          <span className="text-2xl font-bold text-green-600">₹{amount}</span>
+        </div>
+        <div className="text-sm text-gray-600">
+          Secure your device with BuyBack Guarantee
+        </div>
+      </div>
+      
+      <div className="border rounded-lg p-4">
+        <Label className="text-sm font-medium mb-2 flex items-center">
+          <CreditCard className="h-4 w-4 mr-2" />
+          Card Details
+        </Label>
+        <CardElement 
+          options={{
+            style: {
+              base: {
+                fontSize: '16px',
+                color: '#424770',
+                '::placeholder': {
+                  color: '#aab7c4',
+                },
+              },
+            },
+          }}
+        />
+      </div>
+
+      <Button 
+        type="submit" 
+        className="w-full bg-green-600 hover:bg-green-700" 
+        disabled={!stripe || isProcessing}
+      >
+        <Lock className="h-4 w-4 mr-2" />
+        {isProcessing ? 'Processing...' : `Pay ₹${amount} & Register`}
+      </Button>
+    </form>
+  );
+}
+
+function RegistrationContent() {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [showOtpForm, setShowOtpForm] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
+  const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [formData, setFormData] = useState<CustomerFormData | null>(null);
+  const [_, setLocation] = useLocation();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const form = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema),
     defaultValues: {
       name: "",
-      contact: "",
       email: "",
+      contact: "",
+      address: "",
       pincode: "",
-      serialNumber: "",
+      deviceType: "",
+      brand: "",
       modelName: "",
-      invoiceValue: 0,
-      deviceType: undefined,
+      purchaseDate: "",
+      invoiceValue: "",
+      invoiceNumber: "",
       sellerCode: "",
       otpCode: "",
       agreeToTerms: false
     }
   });
 
+  // Send OTP mutation
   const sendOtpMutation = useMutation({
     mutationFn: async (contact: string) => {
       const response = await apiRequest("POST", "/api/otp/send", { contact });
       return response.json();
     },
     onSuccess: () => {
-      setOtpSent(true);
+      setShowOtpForm(true);
       toast({
         title: "OTP Sent",
-        description: "Please check your phone for the OTP code",
+        description: "Please check your phone for the verification code",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "Failed to send OTP",
-        description: error.message,
+        title: "Error",
+        description: error.message || "Failed to send OTP",
         variant: "destructive",
       });
     }
   });
 
+  // Verify OTP mutation
   const verifyOtpMutation = useMutation({
-    mutationFn: async (data: { contact: string; otp: string }) => {
-      const response = await apiRequest("POST", "/api/otp/verify", data);
+    mutationFn: async ({ contact, otp }: { contact: string; otp: string }) => {
+      const response = await apiRequest("POST", "/api/otp/verify", { contact, otp });
       return response.json();
     },
     onSuccess: (data) => {
       if (data.verified) {
-        setOtpVerified(true);
+        setIsOtpVerified(true);
+        setShowOtpForm(false);
         toast({
-          title: "OTP Verified",
-          description: "Phone number verified successfully",
+          title: "Verified",
+          description: "Contact number verified successfully",
         });
       }
     },
     onError: (error: any) => {
       toast({
-        title: "OTP Verification Failed",
-        description: error.message,
+        title: "Verification Failed",
+        description: error.message || "Invalid OTP",
         variant: "destructive",
       });
     }
   });
 
-  const registerMutation = useMutation({
+  // Registration mutation
+  const mutation = useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await fetch("/api/customers/register", {
-        method: "POST",
-        body: formData,
-        credentials: "include"
-      });
-      
+      const response = await apiRequest("POST", "/api/customers/register", formData);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Registration failed");
       }
-      
       return response.json();
     },
     onSuccess: (data) => {
-      setVoucherCode(data.bbgVoucherCode);
-      setRegistrationComplete(true);
+      queryClient.invalidateQueries({ queryKey: ['/api/customers'] });
       toast({
         title: "Registration Successful!",
-        description: "Your BBG voucher code has been generated",
+        description: `Your BBG voucher code is: ${data.customer.voucherCode}`,
       });
+      setLocation("/thank-you");
     },
     onError: (error: any) => {
       toast({
         title: "Registration Failed",
-        description: error.message,
+        description: error.message || "Something went wrong",
         variant: "destructive",
       });
     }
@@ -138,281 +268,199 @@ export default function CustomerRegistration() {
 
   const handleSendOtp = () => {
     const contact = form.getValues("contact");
-    if (contact.length === 10) {
-      sendOtpMutation.mutate(contact);
-    } else {
+    if (!validatePhoneNumber(contact)) {
       toast({
         title: "Invalid Contact",
-        description: "Please enter a valid 10-digit contact number",
+        description: "Please enter a valid 10-digit phone number",
         variant: "destructive",
       });
+      return;
     }
+    sendOtpMutation.mutate(contact);
   };
 
   const handleVerifyOtp = () => {
     const contact = form.getValues("contact");
-    const otp = form.getValues("otpCode");
-    if (contact && otp.length === 6) {
-      verifyOtpMutation.mutate({ contact, otp });
-    }
+    verifyOtpMutation.mutate({ contact, otp });
   };
 
   const onSubmit = (data: CustomerFormData) => {
-    if (!otpVerified) {
+    if (!isOtpVerified) {
       toast({
-        title: "OTP Not Verified",
-        description: "Please verify your phone number first",
+        title: "Verification Required",
+        description: "Please verify your contact number with OTP first",
         variant: "destructive",
       });
       return;
     }
 
-    const formData = new FormData();
-    
-    // Add all text fields
-    Object.entries(data).forEach(([key, value]) => {
-      if (key !== 'invoiceFile' && key !== 'paymentScreenshot' && key !== 'agreeToTerms' && value !== undefined) {
-        formData.append(key, value.toString());
-      }
-    });
-
-    // Add files
-    if (data.invoiceFile) {
-      formData.append('invoiceFile', data.invoiceFile);
-    }
-    if (data.paymentScreenshot) {
-      formData.append('paymentScreenshot', data.paymentScreenshot);
+    if (!invoiceFile) {
+      toast({
+        title: "Invoice Required",
+        description: "Please upload the device invoice",
+        variant: "destructive",
+      });
+      return;
     }
 
-    registerMutation.mutate(formData);
+    // Store form data and show payment form
+    setFormData(data);
+    setShowPaymentForm(true);
   };
 
-  if (registrationComplete) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="max-w-2xl mx-auto px-4 py-20">
-          <Card className="text-center">
-            <CardContent className="pt-12 pb-8">
-              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="h-10 w-10 text-green-600" />
-              </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">Registration Successful!</h1>
-              <p className="text-gray-600 mb-6">
-                Your BBG registration has been submitted successfully. Our team will verify your details and activate your guarantee.
-              </p>
-              <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                <p className="text-sm text-gray-600 mb-2">Your BBG Voucher Code:</p>
-                <p className="text-2xl font-bold text-red-600">{voucherCode}</p>
-              </div>
-              <div className="space-y-4 text-left">
-                <h3 className="font-semibold text-gray-900">What's Next?</h3>
-                <ul className="text-sm text-gray-600 space-y-2">
-                  <li>• You will receive confirmation via email and SMS</li>
-                  <li>• Our team will verify your payment and documents</li>
-                  <li>• BBG will be activated within 24-48 hours</li>
-                  <li>• Save your voucher code for future claims</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
+  const handlePaymentSuccess = (paymentIntentId: string) => {
+    if (!formData) return;
+
+    // Create form data with payment info
+    const submitData = new FormData();
+    
+    // Add all form fields
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        submitData.append(key, value.toString());
+      }
+    });
+    
+    // Add files
+    submitData.append('invoiceFile', invoiceFile!);
+    if (paymentScreenshot) {
+      submitData.append('paymentScreenshot', paymentScreenshot);
+    }
+    
+    // Add payment info
+    submitData.append('paymentIntentId', paymentIntentId);
+    
+    mutation.mutate(submitData);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Header Section */}
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">Buy and Register for BuyBack Guarantee</h1>
+        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          Secure your device investment with our comprehensive BuyBack Guarantee program
+        </p>
+      </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Register for BuyBack Guarantee</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Protect your investment with our comprehensive BuyBack Guarantee program
-          </p>
+      {/* Progress Steps */}
+      <div className="flex justify-center mb-12">
+        <div className="flex items-center space-x-4">
+          <div className={`flex items-center ${currentStep >= 1 ? 'text-red-600' : 'text-gray-400'}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 1 ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>
+              1
+            </div>
+            <span className="ml-2 text-sm font-medium">Device Details</span>
+          </div>
+          <div className="w-8 h-0.5 bg-gray-200"></div>
+          <div className={`flex items-center ${currentStep >= 2 ? 'text-red-600' : 'text-gray-400'}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 2 ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>
+              2
+            </div>
+            <span className="ml-2 text-sm font-medium">Personal Info</span>
+          </div>
+          <div className="w-8 h-0.5 bg-gray-200"></div>
+          <div className={`flex items-center ${currentStep >= 3 ? 'text-red-600' : 'text-gray-400'}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 3 ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>
+              3
+            </div>
+            <span className="ml-2 text-sm font-medium">Verification</span>
+          </div>
+          <div className="w-8 h-0.5 bg-gray-200"></div>
+          <div className={`flex items-center ${showPaymentForm ? 'text-green-600' : 'text-gray-400'}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${showPaymentForm ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
+              4
+            </div>
+            <span className="ml-2 text-sm font-medium">Payment</span>
+          </div>
         </div>
+      </div>
 
-        {/* Pricing Cards */}
-        <div className="grid md:grid-cols-2 gap-6 mb-12">
-          <Card className="p-6 border-2 border-red-200 hover:border-red-400 transition-colors">
-            <CardContent className="text-center p-0">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Laptop className="h-8 w-8 text-red-600" />
-              </div>
-              <h3 className="text-2xl font-bold mb-2">Laptop BBG</h3>
-              <div className="text-4xl font-bold text-red-600 mb-2">₹125</div>
-              <p className="text-gray-600">Complete protection for your laptop</p>
-            </CardContent>
-          </Card>
-
-          <Card className="p-6 border-2 border-blue-200 hover:border-blue-400 transition-colors">
-            <CardContent className="text-center p-0">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Smartphone className="h-8 w-8 text-blue-600" />
-              </div>
-              <h3 className="text-2xl font-bold mb-2">Mobile BBG</h3>
-              <div className="text-4xl font-bold text-blue-600 mb-2">₹99</div>
-              <p className="text-gray-600">Complete protection for your mobile</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Registration Form */}
-        <Card>
+      {showPaymentForm && formData ? (
+        <Card className="max-w-md mx-auto">
           <CardHeader>
-            <CardTitle className="text-2xl">Customer Registration Form</CardTitle>
+            <CardTitle className="flex items-center text-lg">
+              <CreditCard className="h-5 w-5 mr-2" />
+              Complete Payment
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Basic Information */}
-                <div className="grid md:grid-cols-2 gap-6">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Customer Name *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter your full name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="contact"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Contact Number *</FormLabel>
-                        <div className="flex gap-2">
-                          <FormControl>
-                            <Input placeholder="10-digit mobile number" {...field} />
-                          </FormControl>
-                          <Button
-                            type="button"
-                            onClick={handleSendOtp}
-                            disabled={sendOtpMutation.isPending || otpVerified}
-                            className="bg-blue-600 hover:bg-blue-700"
-                          >
-                            {sendOtpMutation.isPending ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : otpVerified ? (
-                              <CheckCircle className="h-4 w-4" />
-                            ) : (
-                              <>
-                                <MessageSquare className="h-4 w-4 mr-1" />
-                                OTP
-                              </>
-                            )}
-                          </Button>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+            {stripePromise ? (
+              <PaymentForm
+                amount={formData.deviceType === 'laptop' ? 125 : 99}
+                deviceType={formData.deviceType}
+                onPaymentSuccess={handlePaymentSuccess}
+                customerData={formData}
+              />
+            ) : (
+              <div className="space-y-4">
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-lg font-semibold">BBG for {formData.deviceType}</span>
+                    <span className="text-2xl font-bold text-green-600">
+                      ₹{formData.deviceType === 'laptop' ? 125 : 99}
+                    </span>
+                  </div>
+                  <p className="text-sm text-yellow-800 mb-4">
+                    Payment gateway is being configured. For now, you can complete registration and pay through other methods.
+                  </p>
                 </div>
-
-                {/* OTP Verification */}
-                {otpSent && !otpVerified && (
-                  <FormField
-                    control={form.control}
-                    name="otpCode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Enter OTP *</FormLabel>
-                        <div className="flex gap-2">
-                          <FormControl>
-                            <Input placeholder="6-digit OTP" maxLength={6} {...field} />
-                          </FormControl>
-                          <Button
-                            type="button"
-                            onClick={handleVerifyOtp}
-                            disabled={verifyOtpMutation.isPending}
-                          >
-                            {verifyOtpMutation.isPending ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              "Verify"
-                            )}
-                          </Button>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email Address *</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="your.email@example.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="pincode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Pincode *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="6-digit pincode" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
+                <Button 
+                  onClick={() => handlePaymentSuccess("demo_payment_intent")}
+                  className="w-full bg-green-600 hover:bg-green-700"
+                >
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Complete Registration (Demo Mode)
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      ) : (
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Left Column */}
+              <div className="space-y-6">
                 {/* Device Information */}
-                <div className="border-t pt-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Device Information</h3>
-                  
-                  <FormField
-                    control={form.control}
-                    name="deviceType"
-                    render={({ field }) => (
-                      <FormItem className="mb-4">
-                        <FormLabel>Device Type *</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select device type" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="laptop">Laptop</SelectItem>
-                            <SelectItem value="mobile">Mobile</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center text-lg">
+                      <Smartphone className="h-5 w-5 mr-2" />
+                      Device Information
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                     <FormField
                       control={form.control}
-                      name="serialNumber"
+                      name="deviceType"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Serial No. / IMEI *</FormLabel>
+                          <FormLabel>Device Type</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select device type" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="laptop">Laptop (₹125)</SelectItem>
+                              <SelectItem value="mobile">Mobile (₹99)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="brand"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Brand</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter serial number or IMEI" {...field} />
+                            <Input placeholder="Enter device brand" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -424,52 +472,243 @@ export default function CustomerRegistration() {
                       name="modelName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Model Name *</FormLabel>
+                          <FormLabel>Model Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter device model" {...field} />
+                            <Input placeholder="Enter model name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
 
-                  <FormField
-                    control={form.control}
-                    name="invoiceValue"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Invoice Value (₹) *</FormLabel>
-                        <FormControl>
-                          <Input 
-                            type="number" 
-                            placeholder="Enter invoice amount"
-                            {...field}
-                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                    <FormField
+                      control={form.control}
+                      name="purchaseDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <Calendar className="h-4 w-4 mr-2" />
+                            Purchase Date
+                          </FormLabel>
+                          <FormControl>
+                            <Input type="date" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="invoiceValue"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <DollarSign className="h-4 w-4 mr-2" />
+                            Invoice Value (₹)
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              placeholder="Enter invoice amount" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="invoiceNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <FileText className="h-4 w-4 mr-2" />
+                            Invoice Number
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter invoice number" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Right Column */}
+              <div className="space-y-6">
+                {/* Personal Information */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center text-lg">
+                      <User className="h-5 w-5 mr-2" />
+                      Personal Information
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter your full name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <Mail className="h-4 w-4 mr-2" />
+                            Email Address
+                          </FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="Enter your email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="space-y-2">
+                      <FormField
+                        control={form.control}
+                        name="contact"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center">
+                              <Phone className="h-4 w-4 mr-2" />
+                              Contact Number
+                            </FormLabel>
+                            <div className="flex space-x-2">
+                              <FormControl>
+                                <Input 
+                                  placeholder="Enter 10-digit number" 
+                                  maxLength={10}
+                                  {...field} 
+                                />
+                              </FormControl>
+                              <Button 
+                                type="button" 
+                                variant="outline"
+                                onClick={handleSendOtp}
+                                disabled={sendOtpMutation.isPending || isOtpVerified}
+                              >
+                                {isOtpVerified ? <CheckCircle className="h-4 w-4" /> : "Send OTP"}
+                              </Button>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {showOtpForm && (
+                        <div className="flex space-x-2">
+                          <Input
+                            placeholder="Enter 6-digit OTP"
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value)}
+                            maxLength={6}
                           />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                          <Button 
+                            type="button" 
+                            onClick={handleVerifyOtp}
+                            disabled={verifyOtpMutation.isPending}
+                          >
+                            Verify
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <MapPin className="h-4 w-4 mr-2" />
+                            Address
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Enter your complete address" 
+                              className="min-h-[80px]"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="pincode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Pincode</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter 6-digit pincode" maxLength={6} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="sellerCode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Seller Code (Optional)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter seller code if you have one" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </Card>
 
                 {/* File Uploads */}
-                <div className="border-t pt-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Upload Documents</h3>
-                  
-                  <div className="grid md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center text-lg">
+                      <Upload className="h-5 w-5 mr-2" />
+                      Document Uploads
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                     <FormField
                       control={form.control}
                       name="invoiceFile"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Upload Device Invoice *</FormLabel>
+                          <FormLabel className="flex items-center">
+                            <FileText className="h-4 w-4 mr-2" />
+                            Invoice File *
+                          </FormLabel>
                           <FormControl>
                             <FileUpload
-                              accept=".pdf,.jpg,.jpeg,.png"
-                              onFileChange={(file) => field.onChange(file)}
-                              placeholder="Click to upload or drag and drop"
+                              accept="image/*,.pdf"
+                              onFileChange={(file) => {
+                                setInvoiceFile(file);
+                                field.onChange(file?.name || "");
+                              }}
+                              placeholder="Upload device invoice (Required)"
                             />
                           </FormControl>
                           <FormMessage />
@@ -482,78 +721,60 @@ export default function CustomerRegistration() {
                       name="paymentScreenshot"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Upload Payment Screenshot *</FormLabel>
+                          <FormLabel className="flex items-center">
+                            <Camera className="h-4 w-4 mr-2" />
+                            Payment Screenshot (Optional)
+                          </FormLabel>
                           <FormControl>
                             <FileUpload
-                              accept=".jpg,.jpeg,.png"
-                              onFileChange={(file) => field.onChange(file)}
-                              placeholder="Click to upload or drag and drop"
+                              accept="image/*"
+                              onFileChange={(file) => {
+                                setPaymentScreenshot(file);
+                                field.onChange(file?.name || "");
+                              }}
+                              placeholder="Upload payment screenshot (optional)"
                             />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
 
-                {/* Seller Code */}
-                <FormField
-                  control={form.control}
-                  name="sellerCode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Seller Code (Optional)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter distributor seller code if applicable" {...field} />
-                      </FormControl>
-                      <p className="text-xs text-gray-500">Enter the seller code provided by your distributor</p>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            {/* Submit Button */}
+            <div className="flex justify-center">
+              <Button 
+                type="submit" 
+                size="lg" 
+                className="bg-red-600 hover:bg-red-700 px-12"
+                disabled={mutation.isPending}
+              >
+                <ShoppingCart className="h-5 w-5 mr-2" />
+                {mutation.isPending ? 'Processing...' : 'Proceed to Payment'}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      )}
+    </div>
+  );
+}
 
-                {/* Terms and Conditions */}
-                <FormField
-                  control={form.control}
-                  name="agreeToTerms"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          I agree to the terms and conditions
-                        </FormLabel>
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-
-                <Button 
-                  type="submit" 
-                  className="w-full bg-red-600 hover:bg-red-700"
-                  disabled={registerMutation.isPending || !otpVerified}
-                >
-                  {registerMutation.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Submitting Registration...
-                    </>
-                  ) : (
-                    "Submit Registration"
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-      </div>
+export default function CustomerRegistration() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <Header />
+      
+      {stripePromise ? (
+        <Elements stripe={stripePromise}>
+          <RegistrationContent />
+        </Elements>
+      ) : (
+        <RegistrationContent />
+      )}
 
       <Footer />
     </div>

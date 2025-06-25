@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import Stripe from "stripe";
 import { storage } from "./storage";
 import { 
   insertDistributorSchema, 
@@ -31,6 +32,11 @@ const upload = multer({
     }
   }
 });
+
+// Initialize Stripe
+const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2024-06-20",
+}) : null;
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -100,6 +106,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error: any) {
       res.status(500).json({ message: "OTP verification failed" });
+    }
+  });
+
+  // Create payment intent for BBG purchase
+  app.post("/api/create-payment-intent", async (req, res) => {
+    try {
+      if (!stripe) {
+        return res.status(500).json({ message: "Payment processing not configured" });
+      }
+
+      const { deviceType } = req.body;
+      const amount = deviceType === 'laptop' ? 125 : 99; // ₹125 for laptop, ₹99 for mobile
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount * 100, // Convert to paise
+        currency: "inr",
+        metadata: {
+          deviceType: deviceType
+        }
+      });
+
+      res.json({ 
+        clientSecret: paymentIntent.client_secret,
+        amount: amount
+      });
+    } catch (error: any) {
+      console.error('Payment intent creation error:', error);
+      res.status(500).json({ message: "Error creating payment intent: " + error.message });
     }
   });
 

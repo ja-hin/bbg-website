@@ -67,7 +67,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Send OTP
+  // Send OTP (for both customer and distributor registration)
+  app.post("/api/send-otp", async (req, res) => {
+    try {
+      const { contact } = req.body;
+      if (!contact || contact.length !== 10) {
+        return res.status(400).json({ message: "Valid 10-digit contact number required" });
+      }
+
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+      await storage.createOtp({
+        contact,
+        otp,
+        expiresAt
+      });
+
+      // In production, send actual SMS here
+      console.log(`OTP for ${contact}: ${otp}`);
+      
+      res.json({ message: "OTP sent successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to send OTP" });
+    }
+  });
+
+  // Send OTP (legacy endpoint)
   app.post("/api/otp/send", async (req, res) => {
     try {
       const { contact } = req.body;
@@ -93,7 +119,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Verify OTP
+  // Verify OTP (for both customer and distributor registration)
+  app.post("/api/verify-otp", async (req, res) => {
+    try {
+      const { contact, otp } = req.body;
+      const isValid = await storage.verifyOtp(contact, otp);
+      
+      if (isValid) {
+        res.json({ message: "OTP verified successfully", verified: true });
+      } else {
+        res.status(400).json({ message: "Invalid or expired OTP", verified: false });
+      }
+    } catch (error: any) {
+      res.status(500).json({ message: "OTP verification failed" });
+    }
+  });
+
+  // Verify OTP (legacy endpoint)
   app.post("/api/otp/verify", async (req, res) => {
     try {
       const { contact, otp } = req.body;
@@ -137,19 +179,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Customer registration with file uploads and payment processing
+  // Customer registration with payment processing (file upload optional)
   app.post("/api/customers/register", upload.single('invoiceFile'), async (req, res) => {
     try {
       const file = req.file;
-      
-      if (!file) {
-        return res.status(400).json({ message: "Invoice file is required" });
-      }
 
       const customerData = {
         ...req.body,
-        invoiceValue: req.body.invoiceValue.toString(),
-        invoiceFile: file.filename,
+        invoiceValue: req.body.invoiceValue?.toString() || "0",
+        // Handle legacy fields for compatibility
+        address: req.body.address || "",
+        purchaseDate: req.body.purchaseDate || new Date().toISOString().split('T')[0],
+        invoiceNumber: req.body.invoiceNumber || "N/A",
+        invoiceFile: file?.filename || "N/A",
         paymentIntentId: req.body.paymentIntentId || null
       };
 
@@ -183,9 +225,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get claim value
   app.post("/api/claims/check", async (req, res) => {
     try {
-      const { bbgVoucherCode } = req.body;
+      const { voucherCode } = req.body;
       
-      const customer = await storage.getCustomerByVoucherCode(bbgVoucherCode);
+      const customer = await storage.getCustomerByVoucherCode(voucherCode);
       if (!customer) {
         return res.status(404).json({ message: "Invalid BBG voucher code" });
       }
@@ -230,7 +272,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertClaimSchema.parse(req.body);
       
       // Check if claim already exists
-      const existingClaim = await storage.getClaimByVoucherCode(validatedData.bbgVoucherCode);
+      const existingClaim = await storage.getClaimByVoucherCode(validatedData.voucherCode);
       if (existingClaim) {
         return res.status(400).json({ message: "Claim already submitted for this voucher code" });
       }

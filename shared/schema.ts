@@ -5,13 +5,17 @@ import { z } from "zod";
 export const distributors = pgTable("distributors", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  businessName: text("business_name"), // optional
   contact: text("contact").notNull(),
   email: text("email").notNull(),
-  address: text("address").notNull(),
-  upiId: text("upi_id").notNull(),
-  bankAccount: text("bank_account").notNull(),
-  ifscCode: text("ifsc_code").notNull(),
-  accountHolderName: text("account_holder_name").notNull(),
+  pincode: text("pincode").notNull(),
+  location: text("location").notNull(), // city/location
+  preferredMode: text("preferred_mode").notNull(), // 'in-store', 'online', 'both'
+  gstin: text("gstin"), // optional
+  // Bank details (optional for commission payouts)
+  bankAccount: text("bank_account"),
+  ifscCode: text("ifsc_code"),
+  accountHolderName: text("account_holder_name"),
   sellerCode: text("seller_code").notNull().unique(),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
@@ -19,19 +23,24 @@ export const distributors = pgTable("distributors", {
 
 export const customers = pgTable("customers", {
   id: serial("id").primaryKey(),
+  // Customer Details
   name: text("name").notNull(),
   contact: text("contact").notNull(),
   email: text("email").notNull(),
-  address: text("address").notNull(),
   pincode: text("pincode").notNull(),
+  // Device Details
   deviceType: text("device_type").notNull(), // 'laptop' or 'mobile'
+  serialNumber: text("serial_number").notNull(), // Serial No. / IMEI
   brand: text("brand").notNull(),
   modelName: text("model_name").notNull(),
-  purchaseDate: text("purchase_date").notNull(),
   invoiceValue: decimal("invoice_value", { precision: 10, scale: 2 }).notNull(),
-  invoiceNumber: text("invoice_number").notNull(),
-  invoiceFile: text("invoice_file").notNull(),
+  // Legacy fields (kept for compatibility)
+  address: text("address"),
+  purchaseDate: text("purchase_date"),
+  invoiceNumber: text("invoice_number"),
+  invoiceFile: text("invoice_file"),
   paymentIntentId: text("payment_intent_id"), // Stripe payment intent ID
+  // Seller Details
   sellerCode: text("seller_code"),
   voucherCode: text("voucher_code").notNull().unique(),
   isVerified: boolean("is_verified").default(false),

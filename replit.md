@@ -130,6 +130,13 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 
 ```
 Changelog:
+- July 01, 2025: Updated forms based on user journey requirements
+  - Enhanced Distributor Registration with new fields: Name, Business Name (optional), Mobile with OTP verification, Email, Pincode, Location/City, Preferred Mode (In-store/Online/Both), GSTIN (optional), Bank Details (optional)
+  - Updated Customer Registration with simplified flow: Customer Details (Name, Contact with OTP, Email, Pincode), Device Details (Type with auto-pricing, Serial/IMEI, Brand, Model, Invoice Value), Seller Details (optional Seller Code)
+  - Removed file upload requirements from customer registration for streamlined process
+  - Added comprehensive OTP verification system for both distributor and customer registration
+  - Updated database schema to support new fields including serialNumber, businessName, location, preferredMode, gstin
+  - Maintained backward compatibility with existing customer data structure
 - June 25, 2025: Completed payment gateway integration removing payment screenshots
   - Removed payment screenshot upload option entirely from registration
   - Direct payment processing during registration using Stripe payment gateway

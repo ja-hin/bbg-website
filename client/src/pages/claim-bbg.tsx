@@ -37,6 +37,9 @@ export default function ClaimBBG() {
   const { toast } = useToast();
   const [claimDetails, setClaimDetails] = useState<ClaimDetails | null>(null);
   const [claimSubmitted, setClaimSubmitted] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otp, setOtp] = useState("");
 
   const form = useForm<ClaimFormData>({
     resolver: zodResolver(claimSchema),
@@ -89,10 +92,66 @@ export default function ClaimBBG() {
     }
   });
 
+  const sendOtpMutation = useMutation({
+    mutationFn: async (contact: string) => {
+      const response = await apiRequest("POST", "/api/otp/send", { contact });
+      return response.json();
+    },
+    onSuccess: () => {
+      setOtpSent(true);
+      toast({
+        title: "OTP Sent",
+        description: "A 6-digit OTP has been sent to your mobile number.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to Send OTP",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
+  const verifyOtpMutation = useMutation({
+    mutationFn: async (data: { contact: string, otp: string }) => {
+      const response = await apiRequest("POST", "/api/otp/verify", data);
+      return response.json();
+    },
+    onSuccess: () => {
+      setOtpVerified(true);
+      toast({
+        title: "OTP Verified",
+        description: "Your mobile number has been successfully verified.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "OTP Verification Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
   const handleCheckClaim = () => {
     const voucherCode = form.getValues("bbgVoucherCode");
     if (voucherCode) {
       checkClaimMutation.mutate({ bbgVoucherCode: voucherCode });
+    }
+  };
+
+  const handleSendOtp = () => {
+    const contact = form.getValues("contact");
+    if (contact) {
+      sendOtpMutation.mutate(contact);
+    }
+  };
+
+  const handleVerifyOtp = () => {
+    const contact = form.getValues("contact");
+    if (contact && otp) {
+      verifyOtpMutation.mutate({ contact, otp });
     }
   };
 
@@ -220,13 +279,48 @@ export default function ClaimBBG() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Contact Number *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="10-digit mobile number" {...field} />
-                        </FormControl>
+                        <div className="flex gap-2">
+                          <FormControl>
+                            <Input placeholder="10-digit mobile number" {...field} />
+                          </FormControl>
+                          <Button
+                            type="button"
+                            onClick={handleSendOtp}
+                            disabled={sendOtpMutation.isPending || otpSent}
+                            variant="outline"
+                          >
+                            {sendOtpMutation.isPending ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              otpSent ? "Resend" : "Send OTP"
+                            )}
+                          </Button>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
+                  {otpSent && !otpVerified && (
+                    <div className="flex gap-2 items-end">
+                      <div className="flex-1">
+                        <FormLabel className="text-sm font-medium">Enter OTP</FormLabel>
+                        <Input
+                          placeholder="Enter 6-digit OTP"
+                          maxLength={6}
+                          value={otp}
+                          onChange={(e) => setOtp(e.target.value)}
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={handleVerifyOtp}
+                        disabled={verifyOtpMutation.isPending}
+                      >
+                        {verifyOtpMutation.isPending ? "Verifying..." : "Verify"}
+                      </Button>
+                    </div>
+                  )}
 
                   <FormField
                     control={form.control}
@@ -275,9 +369,9 @@ export default function ClaimBBG() {
                   </div>
                 )}
 
-                {claimDetails && (
-                  <Button 
-                    type="submit" 
+                {claimDetails && otpVerified && (
+                  <Button
+                    type="submit"
                     className="w-full bg-red-600 hover:bg-red-700"
                     disabled={submitClaimMutation.isPending}
                   >
@@ -350,7 +444,7 @@ export default function ClaimBBG() {
                 </tbody>
               </table>
             </div>
-            
+
             <div className="mt-6 p-4 bg-blue-50 rounded-lg">
               <div className="flex items-start">
                 <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />

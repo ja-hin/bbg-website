@@ -275,7 +275,7 @@ export default function DistributorRegistration() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Phone className="h-4 w-4 mr-2" />
-                            Mobile Number * (OTP Verified)
+                            Mobile Number *
                           </FormLabel>
                           <FormControl>
                             <div className="flex gap-2">

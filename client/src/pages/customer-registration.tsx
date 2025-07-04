@@ -457,7 +457,7 @@ function RegistrationContent() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Smartphone className="h-4 w-4 mr-2" />
-                            Device Type * (Auto-selects price: ₹99 Mobile, ₹125 Laptop)
+                            Device Type *
                           </FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
@@ -532,7 +532,7 @@ function RegistrationContent() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <DollarSign className="h-4 w-4 mr-2" />
-                            Invoice Value (including GST) *
+                            Device Invoice Value (including GST) *
                           </FormLabel>
                           <FormControl>
                             <Input placeholder="Enter invoice amount in ₹" {...field} />
@@ -581,7 +581,7 @@ function RegistrationContent() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Phone className="h-4 w-4 mr-2" />
-                            Contact Number * (OTP Verified)
+                            Contact Number *
                           </FormLabel>
                           <FormControl>
                             <Input 

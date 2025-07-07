@@ -183,10 +183,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/customers/register", upload.single('invoiceFile'), async (req, res) => {
     try {
       const file = req.file;
+      console.log("Customer registration request body:", req.body);
 
       const customerData = {
         ...req.body,
-        invoiceValue: req.body.invoiceValue?.toString() || "0",
+        invoiceValue: parseFloat(req.body.invoiceValue) || 0,
         // Handle legacy fields for compatibility
         address: req.body.address || "",
         purchaseDate: req.body.purchaseDate || new Date().toISOString().split('T')[0],
@@ -218,6 +219,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
     } catch (error: any) {
+      console.error('Customer registration error:', error);
+      console.error('Error details:', error.issues || error.details);
       res.status(400).json({ message: error.message || "Registration failed" });
     }
   });

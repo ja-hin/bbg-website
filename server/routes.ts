@@ -192,7 +192,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         purchaseDate: req.body.purchaseDate || new Date().toISOString().split('T')[0],
         invoiceNumber: req.body.invoiceNumber || "N/A",
         invoiceFile: "N/A", // No file upload in new flow
-        paymentIntentId: req.body.paymentIntentId || null
+        paymentIntentId: req.body.paymentIntentId || null,
+        isVerified: true // Auto-verify since OTP was completed during registration
       };
 
       // Validate seller code if provided

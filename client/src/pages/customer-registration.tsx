@@ -55,8 +55,7 @@ const customerSchema = z.object({
   invoiceValue: z.string().min(1, "Invoice value is required"),
   // Seller Details
   sellerCode: z.string().optional(),
-  // OTP verification
-  otpCode: z.string().min(6, "OTP must be 6 digits"),
+  // Terms agreement
   agreeToTerms: z.boolean().refine(val => val === true, "You must agree to the terms")
 });
 
@@ -316,6 +315,9 @@ function RegistrationContent() {
   };
 
   const onSubmit = (data: CustomerFormData) => {
+    console.log("Form submission attempt:", data);
+    console.log("Form errors:", form.formState.errors);
+    
     if (!otpVerified) {
       toast({
         title: "Verification Required",

@@ -245,8 +245,8 @@ function RegistrationContent() {
 
   // Registration mutation
   const mutation = useMutation({
-    mutationFn: async (formData: FormData) => {
-      const response = await apiRequest("POST", "/api/customers/register", formData);
+    mutationFn: async (data: CustomerFormData & { paymentIntentId: string }) => {
+      const response = await apiRequest("POST", "/api/customers/register", data);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Registration failed");
@@ -341,19 +341,16 @@ function RegistrationContent() {
   const handlePaymentSuccess = (paymentIntentId: string) => {
     if (!formData) return;
 
-    // Create form data with payment info
-    const submitData = new FormData();
+    // Create JSON data with payment info
+    const submitData = {
+      ...formData,
+      paymentIntentId,
+      // Remove fields not needed for backend
+      agreeToTerms: undefined,
+      otpCode: undefined
+    };
     
-    // Add all form fields
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && key !== 'agreeToTerms' && key !== 'otpCode') {
-        submitData.append(key, value.toString());
-      }
-    });
-    
-    // Add payment info
-    submitData.append('paymentIntentId', paymentIntentId);
-    
+    console.log("Submitting customer data:", submitData);
     mutation.mutate(submitData);
   };
 

@@ -179,20 +179,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Customer registration with payment processing (file upload optional)
-  app.post("/api/customers/register", upload.single('invoiceFile'), async (req, res) => {
+  // Customer registration with payment processing (JSON data)
+  app.post("/api/customers/register", async (req, res) => {
     try {
-      const file = req.file;
       console.log("Customer registration request body:", req.body);
 
       const customerData = {
         ...req.body,
-        invoiceValue: parseFloat(req.body.invoiceValue) || 0,
+        invoiceValue: req.body.invoiceValue?.toString() || "0",
         // Handle legacy fields for compatibility
         address: req.body.address || "",
         purchaseDate: req.body.purchaseDate || new Date().toISOString().split('T')[0],
         invoiceNumber: req.body.invoiceNumber || "N/A",
-        invoiceFile: file?.filename || "N/A",
+        invoiceFile: "N/A", // No file upload in new flow
         paymentIntentId: req.body.paymentIntentId || null
       };
 

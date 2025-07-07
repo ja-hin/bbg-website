@@ -14,7 +14,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
 const claimSchema = z.object({
-  bbgVoucherCode: z.string().min(5, "Valid BBG voucher code required"),
+  voucherCode: z.string().min(5, "Valid BBG voucher code required"),
   contact: z.string().regex(/^\d{10}$/, "Contact must be exactly 10 digits"),
   email: z.string().email("Invalid email address")
 });
@@ -44,7 +44,7 @@ export default function ClaimBBG() {
   const form = useForm<ClaimFormData>({
     resolver: zodResolver(claimSchema),
     defaultValues: {
-      bbgVoucherCode: "",
+      voucherCode: "",
       contact: "",
       email: ""
     }
@@ -135,9 +135,9 @@ export default function ClaimBBG() {
   });
 
   const handleCheckClaim = () => {
-    const voucherCode = form.getValues("bbgVoucherCode");
+    const voucherCode = form.getValues("voucherCode");
     if (voucherCode) {
-      checkClaimMutation.mutate({ bbgVoucherCode: voucherCode });
+      checkClaimMutation.mutate({ voucherCode });
     }
   };
 
@@ -246,7 +246,7 @@ export default function ClaimBBG() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
                   control={form.control}
-                  name="bbgVoucherCode"
+                  name="voucherCode"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>BBG Voucher Code *</FormLabel>

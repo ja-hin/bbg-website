@@ -86,7 +86,12 @@ export class MemStorage implements IStorage {
   }
 
   async getCustomerByVoucherCode(voucherCode: string): Promise<Customer | undefined> {
-    return Array.from(this.customers.values()).find(c => c.voucherCode === voucherCode);
+    const allCustomers = Array.from(this.customers.values());
+    console.log("All stored customer voucher codes:", allCustomers.map(c => c.voucherCode));
+    console.log("Looking for voucher code:", voucherCode);
+    const customer = allCustomers.find(c => c.voucherCode === voucherCode);
+    console.log("Found customer:", customer ? `ID: ${customer.id}, Name: ${customer.name}` : "Not found");
+    return customer;
   }
 
   async getCustomersBySellerCode(sellerCode: string): Promise<Customer[]> {

@@ -205,6 +205,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const validatedData = insertCustomerSchema.parse(customerData);
       const customer = await storage.createCustomer(validatedData);
+      console.log("Customer created with voucher code:", customer.voucherCode);
 
       res.status(201).json({
         message: "Registration successful! You will receive confirmation shortly.",
@@ -228,8 +229,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/claims/check", async (req, res) => {
     try {
       const { voucherCode } = req.body;
+      console.log("Claim check for voucher code:", voucherCode);
       
       const customer = await storage.getCustomerByVoucherCode(voucherCode);
+      console.log("Customer found:", customer ? "Yes" : "No");
       if (!customer) {
         return res.status(404).json({ message: "Invalid BBG voucher code" });
       }

@@ -745,9 +745,19 @@ function RegistrationContent() {
                         Back to Customer Details
                       </Button>
                       <Button 
-                        type="submit" 
+                        type="button" 
                         className="flex-1 bg-green-600 hover:bg-green-700"
                         disabled={!otpVerified || mutation.isPending}
+                        onClick={() => {
+                          console.log("Proceed to Payment button clicked");
+                          console.log("OTP Verified:", otpVerified);
+                          console.log("Form state:", form.formState);
+                          console.log("Form values:", form.getValues());
+                          console.log("Form errors:", form.formState.errors);
+                          
+                          // Trigger form submission manually
+                          form.handleSubmit(onSubmit)();
+                        }}
                       >
                         Proceed to Payment
                       </Button>

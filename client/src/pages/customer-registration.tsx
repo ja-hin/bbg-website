@@ -315,10 +315,14 @@ function RegistrationContent() {
   };
 
   const onSubmit = (data: CustomerFormData) => {
+    console.log("=== FORM SUBMIT CALLED ===");
     console.log("Form submission attempt:", data);
     console.log("Form errors:", form.formState.errors);
+    console.log("OTP Verified:", otpVerified);
+    console.log("Current showPaymentForm:", showPaymentForm);
     
     if (!otpVerified) {
+      console.log("OTP not verified, showing toast");
       toast({
         title: "Verification Required",
         description: "Please verify your contact number with OTP first",
@@ -327,9 +331,11 @@ function RegistrationContent() {
       return;
     }
 
+    console.log("Setting form data and showing payment form");
     // Store form data and show payment form
     setFormData(data);
     setShowPaymentForm(true);
+    console.log("Form data set, payment form should show");
   };
 
   const handlePaymentSuccess = (paymentIntentId: string) => {

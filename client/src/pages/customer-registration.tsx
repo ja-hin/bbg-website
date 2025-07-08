@@ -166,6 +166,200 @@ function PaymentForm({
   );
 }
 
+// PayU Payment Component
+function PayUPaymentForm({ 
+  amount, 
+  deviceType, 
+  onPaymentSuccess, 
+  customerData 
+}: { 
+  amount: number;
+  deviceType: string;
+  onPaymentSuccess: (paymentIntentId: string) => void;
+  customerData: CustomerFormData;
+}) {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
+
+  const handlePayUPayment = async () => {
+    setIsProcessing(true);
+    
+    try {
+      // Create PayU payment
+      const response = await apiRequest("POST", "/api/create-payu-payment", { 
+        deviceType, 
+        customerData 
+      });
+      const { payuParams, payuUrl } = await response.json();
+
+      // Create form and submit to PayU
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = payuUrl;
+      form.style.display = 'none';
+
+      // Add all PayU parameters as hidden inputs
+      Object.keys(payuParams).forEach(key => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = payuParams[key];
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+      
+    } catch (error) {
+      setIsProcessing(false);
+      toast({
+        title: "Payment Error",
+        description: "Something went wrong during payment processing",
+        variant: "destructive",
+      });
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-gray-50 rounded-lg p-4">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-lg font-semibold">BBG for {deviceType}</span>
+          <span className="text-2xl font-bold text-green-600">₹{amount}</span>
+        </div>
+        <div className="text-sm text-gray-600">
+          Secure your device with BuyBack Guarantee via PayU
+        </div>
+      </div>
+      
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-center space-x-3">
+          <CreditCard className="h-5 w-5 text-blue-600" />
+          <div>
+            <p className="font-medium text-blue-900">Secure Payment with PayU</p>
+            <p className="text-sm text-blue-700">Pay with Credit Card, Debit Card, Net Banking, UPI & Wallets</p>
+          </div>
+        </div>
+      </div>
+
+      <Button 
+        onClick={handlePayUPayment}
+        className="w-full bg-blue-600 hover:bg-blue-700"
+        disabled={isProcessing}
+      >
+        {isProcessing ? "Redirecting to PayU..." : `Pay ₹${amount} with PayU`}
+      </Button>
+    </div>
+  );
+}
+
+// Payment Method Selector Component
+function PaymentMethodSelector({ 
+  amount, 
+  deviceType, 
+  onPaymentSuccess, 
+  customerData 
+}: { 
+  amount: number;
+  deviceType: string;
+  onPaymentSuccess: (paymentIntentId: string) => void;
+  customerData: CustomerFormData;
+}) {
+  const [selectedMethod, setSelectedMethod] = useState<'stripe' | 'payu' | null>(null);
+
+  if (selectedMethod === 'stripe') {
+    return (
+      <div className="space-y-4">
+        <Button 
+          variant="outline" 
+          onClick={() => setSelectedMethod(null)}
+          className="mb-4"
+        >
+          ← Choose Different Payment Method
+        </Button>
+        <PaymentForm
+          amount={amount}
+          deviceType={deviceType}
+          onPaymentSuccess={onPaymentSuccess}
+          customerData={customerData}
+        />
+      </div>
+    );
+  }
+
+  if (selectedMethod === 'payu') {
+    return (
+      <div className="space-y-4">
+        <Button 
+          variant="outline" 
+          onClick={() => setSelectedMethod(null)}
+          className="mb-4"
+        >
+          ← Choose Different Payment Method
+        </Button>
+        <PayUPaymentForm
+          amount={amount}
+          deviceType={deviceType}
+          onPaymentSuccess={onPaymentSuccess}
+          customerData={customerData}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="bg-gray-50 rounded-lg p-4 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-lg font-semibold">BBG for {deviceType}</span>
+          <span className="text-2xl font-bold text-green-600">₹{amount}</span>
+        </div>
+        <div className="text-sm text-gray-600">
+          Choose your preferred payment method
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Stripe Payment Option */}
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-green-200" 
+              onClick={() => setSelectedMethod('stripe')}>
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-3 mb-3">
+              <CreditCard className="h-6 w-6 text-green-600" />
+              <h3 className="font-semibold text-lg">Card Payment</h3>
+            </div>
+            <p className="text-sm text-gray-600 mb-3">
+              Pay securely with Credit/Debit Card via Stripe
+            </p>
+            <div className="flex items-center text-xs text-green-600">
+              <CheckCircle className="h-4 w-4 mr-1" />
+              Instant Processing
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* PayU Payment Option */}
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-blue-200" 
+              onClick={() => setSelectedMethod('payu')}>
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-3 mb-3">
+              <CreditCard className="h-6 w-6 text-blue-600" />
+              <h3 className="font-semibold text-lg">PayU Gateway</h3>
+            </div>
+            <p className="text-sm text-gray-600 mb-3">
+              Card, Net Banking, UPI, Wallets & more
+            </p>
+            <div className="flex items-center text-xs text-blue-600">
+              <CheckCircle className="h-4 w-4 mr-1" />
+              Multiple Payment Options
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
 function RegistrationContent() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -405,36 +599,14 @@ function RegistrationContent() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {stripePromise ? (
-              <Elements stripe={stripePromise}>
-                <PaymentForm
-                  amount={formData.deviceType === 'laptop' ? 125 : 99}
-                  deviceType={formData.deviceType}
-                  onPaymentSuccess={handlePaymentSuccess}
-                  customerData={formData}
-                />
-              </Elements>
-            ) : (
-              <div className="space-y-4">
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-lg font-semibold">BBG for {formData.deviceType}</span>
-                    <span className="text-2xl font-bold text-green-600">
-                      ₹{formData.deviceType === 'laptop' ? 125 : 99}
-                    </span>
-                  </div>
-                  <p className="text-sm text-yellow-800 mb-4">
-                    Payment gateway is being configured. For demo purposes, you can complete registration.
-                  </p>
-                </div>
-                <Button 
-                  onClick={() => handlePaymentSuccess('demo_payment_' + Date.now())}
-                  className="w-full bg-green-600 hover:bg-green-700"
-                >
-                  Complete Registration (Demo Mode)
-                </Button>
-              </div>
-            )}
+            <Elements stripe={stripePromise}>
+              <PaymentMethodSelector
+                amount={formData.deviceType === 'laptop' ? 125 : 99}
+                deviceType={formData.deviceType}
+                onPaymentSuccess={handlePaymentSuccess}
+                customerData={formData}
+              />
+            </Elements>
           </CardContent>
         </Card>
       ) : (

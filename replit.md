@@ -130,6 +130,14 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 
 ```
 Changelog:
+- July 08, 2025: Added PayU payment gateway integration
+  - Integrated PayU payment gateway as alternative to Stripe for non-seamless payments
+  - Created PaymentMethodSelector component with dual payment options (Stripe + PayU)
+  - Added PayU payment creation, success/failure handlers with hash verification
+  - Support for multiple payment methods: Credit/Debit Cards, Net Banking, UPI, Wallets
+  - PayU configuration with test/production environment support
+  - Secure hash generation and verification for payment security
+  - Customer registration flow now supports both Stripe and PayU payment methods
 - July 08, 2025: Migrated to Microsoft SQL Server database
   - Replaced PostgreSQL/Neon Database with Microsoft SQL Server (103.205.66.184:2499)
   - Created SqlServerStorage class using raw SQL queries for full compatibility

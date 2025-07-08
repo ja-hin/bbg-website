@@ -17,6 +17,7 @@ export default function ThankYou() {
   const type = params?.get('type');
   const sellerCode = params?.get('sellerCode');
   const voucherCode = params?.get('voucherCode');
+  const paymentMethod = params?.get('paymentMethod');
 
   const getContent = () => {
     switch (type) {
@@ -40,7 +41,7 @@ export default function ThankYou() {
           icon: <Smartphone className="h-16 w-16 text-green-600" />,
           title: "Registration Successful!",
           subtitle: "Your BBG is Being Processed",
-          message: "Thank you for choosing Xtracover BBG. Your device is now protected with our comprehensive buyback guarantee.",
+          message: `Thank you for choosing Xtracover BBG. Your device is now protected with our comprehensive buyback guarantee.${paymentMethod ? ` Payment processed via ${paymentMethod === 'payu' ? 'PayU' : 'Stripe'}.` : ''}`,
           code: voucherCode,
           codeLabel: "Your BBG Voucher Code:",
           details: [

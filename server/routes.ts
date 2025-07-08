@@ -4,6 +4,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import Stripe from "stripe";
+import crypto from "crypto";
 import { storage } from "./sql-storage";
 import { db } from "./db";
 import sql from 'mssql';
@@ -39,6 +40,19 @@ const upload = multer({
 const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2024-06-20",
 }) : null;
+
+// PayU Configuration
+const PAYU_CONFIG = {
+  merchantKey: process.env.PAYU_MERCHANT_KEY || "test_merchant_key",
+  salt: process.env.PAYU_SALT || "test_salt",
+  baseUrl: process.env.PAYU_BASE_URL || "https://test.payu.in", // Use https://secure.payu.in for production
+};
+
+// Helper function to generate PayU hash
+function generatePayUHash(params: any, salt: string): string {
+  const hashString = `${params.key}|${params.txnid}|${params.amount}|${params.productinfo}|${params.firstname}|${params.email}|||||||||||${salt}`;
+  return crypto.createHash('sha512').update(hashString).digest('hex');
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -178,6 +192,96 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Payment intent creation error:', error);
       res.status(500).json({ message: "Error creating payment intent: " + error.message });
+    }
+  });
+
+  // Create PayU payment
+  app.post("/api/create-payu-payment", async (req, res) => {
+    try {
+      const { deviceType, customerData } = req.body;
+      const amount = deviceType === 'laptop' ? 125 : 99;
+      
+      // Generate unique transaction ID
+      const txnid = `BBG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      const payuParams = {
+        key: PAYU_CONFIG.merchantKey,
+        txnid,
+        amount: amount.toString(),
+        productinfo: `BBG for ${deviceType}`,
+        firstname: customerData.name,
+        email: customerData.email,
+        phone: customerData.contact,
+        surl: `${req.protocol}://${req.get('host')}/api/payu/success`,
+        furl: `${req.protocol}://${req.get('host')}/api/payu/failure`,
+        udf1: deviceType,
+        udf2: customerData.contact,
+        udf3: customerData.pincode,
+        udf4: customerData.sellerCode || '',
+        udf5: JSON.stringify(customerData)
+      };
+
+      // Generate hash
+      const hash = generatePayUHash(payuParams, PAYU_CONFIG.salt);
+      payuParams.hash = hash;
+
+      res.json({
+        payuParams,
+        payuUrl: `${PAYU_CONFIG.baseUrl}/_payment`,
+        txnid
+      });
+    } catch (error: any) {
+      console.error('PayU payment creation error:', error);
+      res.status(500).json({ message: "Error creating PayU payment: " + error.message });
+    }
+  });
+
+  // PayU Success Handler
+  app.post("/api/payu/success", async (req, res) => {
+    try {
+      const { txnid, amount, status, hash, ...otherParams } = req.body;
+      
+      // Verify hash for security
+      const verifyHashString = `${PAYU_CONFIG.salt}|${status}|||||||||||${otherParams.email}|${otherParams.firstname}|${otherParams.productinfo}|${amount}|${txnid}|${PAYU_CONFIG.merchantKey}`;
+      const expectedHash = crypto.createHash('sha512').update(verifyHashString).digest('hex');
+      
+      if (hash !== expectedHash) {
+        return res.status(400).json({ message: "Invalid hash verification" });
+      }
+
+      if (status === 'success') {
+        // Extract customer data from UDF5
+        const customerData = JSON.parse(otherParams.udf5);
+        
+        // Create customer registration with PayU transaction ID
+        const submitData = {
+          ...customerData,
+          paymentIntentId: `payu_${txnid}`,
+          isVerified: true
+        };
+
+        const customer = await storage.createCustomer(submitData);
+        
+        // Redirect to success page with voucher code
+        res.redirect(`/thank-you?voucherCode=${customer.voucherCode}&paymentMethod=payu`);
+      } else {
+        res.redirect('/customer-registration?error=payment_failed');
+      }
+    } catch (error: any) {
+      console.error('PayU success handler error:', error);
+      res.redirect('/customer-registration?error=processing_error');
+    }
+  });
+
+  // PayU Failure Handler
+  app.post("/api/payu/failure", async (req, res) => {
+    try {
+      const { txnid, status, error: payuError } = req.body;
+      console.log(`PayU payment failed for transaction ${txnid}: ${payuError}`);
+      res.redirect('/customer-registration?error=payment_failed&txnid=' + txnid);
+    } catch (error: any) {
+      console.error('PayU failure handler error:', error);
+      res.redirect('/customer-registration?error=processing_error');
     }
   });
 

@@ -130,6 +130,18 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 
 ```
 Changelog:
+- July 08, 2025: Migrated to Microsoft SQL Server database
+  - Replaced PostgreSQL/Neon Database with Microsoft SQL Server (103.205.66.184:2499)
+  - Created SqlServerStorage class using raw SQL queries for full compatibility
+  - Implemented automatic table creation with proper SQL Server schema
+  - Updated database connection layer to use mssql package instead of Drizzle ORM
+  - All CRUD operations now use parameterized SQL queries for security
+  - Database tables: distributors, customers, claims, otp_verifications with proper indexes
+- July 08, 2025: Enhanced responsive design and architecture cleanup
+  - Centralized Header and Footer components in App.tsx for consistent layout
+  - Improved mobile responsiveness across all pages with optimized breakpoints
+  - Updated button styles, card layouts, and typography for better mobile experience
+  - Fixed navigation and component architecture for cleaner codebase
 - July 08, 2025: Integrated PostgreSQL database to replace in-memory storage
   - Created database connection layer using Drizzle ORM with Neon Database
   - Implemented DatabaseStorage class with full CRUD operations for all entities

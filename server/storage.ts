@@ -1,8 +1,4 @@
 import { 
-  distributors, 
-  customers, 
-  claims, 
-  otpVerifications,
   type Distributor, 
   type Customer, 
   type Claim, 
@@ -13,7 +9,7 @@ import {
   type InsertOtp 
 } from "@shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import sql from 'mssql';
 
 export interface IStorage {
   // Distributor operations

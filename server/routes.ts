@@ -4,7 +4,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import Stripe from "stripe";
-import { storage } from "./storage";
+import { storage } from "./sql-storage";
 import { 
   insertDistributorSchema, 
   insertCustomerSchema, 

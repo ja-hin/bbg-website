@@ -74,9 +74,9 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 ## External Dependencies
 
 ### Database
-- **Neon Database**: Serverless PostgreSQL for production
-- **Drizzle ORM**: Type-safe database queries and migrations
-- Environment variable `DATABASE_URL` required
+- **Microsoft SQL Server**: Production database at 103.205.66.184:2499
+- **Raw SQL Queries**: Direct SQL Server operations via mssql package
+- **SqlServerStorage**: Custom storage layer with parameterized queries
 
 ### UI Components
 - **shadcn/ui**: Complete component library based on Radix UI
@@ -96,7 +96,7 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 - **Command**: `npm run dev`
 - **Port**: 5000 (configured in .replit)
 - **Hot Reload**: Enabled through Vite middleware
-- **Database**: Requires PostgreSQL connection
+- **Database**: Microsoft SQL Server connection
 
 ### Production Build
 - **Build Command**: `npm run build`
@@ -106,7 +106,7 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 
 ### Environment Configuration
 - **NODE_ENV**: Controls development vs production behavior
-- **DATABASE_URL**: PostgreSQL connection string (required)
+- **SQL Server**: Direct connection configured in server/db.ts
 - **Replit Integration**: Cartographer plugin for development analytics
 
 ### File Structure

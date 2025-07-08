@@ -1,3 +1,5 @@
+// Note: We're using SQL Server but keeping these type definitions for compatibility
+// The actual database operations are handled by SqlServerStorage with raw SQL
 import { pgTable, text, serial, integer, boolean, timestamp, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";

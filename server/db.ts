@@ -1,6 +1,4 @@
 import sql from 'mssql';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import * as schema from "@shared/schema";
 
 // SQL Server configuration
 const config: sql.config = {

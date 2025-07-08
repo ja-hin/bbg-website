@@ -428,6 +428,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test SQL Server database connection
+  app.get("/api/test-db", async (req, res) => {
+    try {
+      await db.connectDB();
+      const query = `SELECT COUNT(*) as table_count FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'`;
+      const result = await db.query(query);
+      
+      res.json({
+        status: "connected",
+        message: "SQL Server database connection successful",
+        server: "103.205.66.184:2499",
+        database: "prexoDB",
+        tablesCount: result.recordset[0].table_count
+      });
+    } catch (error: any) {
+      console.error('Database test error:', error);
+      res.status(500).json({
+        status: "error",
+        message: "Database connection failed",
+        error: error.message
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

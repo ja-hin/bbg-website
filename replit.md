@@ -130,6 +130,13 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 
 ```
 Changelog:
+- July 08, 2025: Removed Stripe payment gateway, using PayU only with test credentials
+  - Removed all Stripe-related code, components, and dependencies (@stripe/stripe-js, @stripe/react-stripe-js, stripe)
+  - Simplified payment flow to use only PayU gateway with hardcoded test credentials
+  - Updated PaymentMethodSelector to directly show PayU payment form without method selection
+  - Removed Elements wrapper and Stripe imports from customer registration
+  - Updated .env.example and PAYU_INTEGRATION.md to reflect PayU-only configuration
+  - PayU test credentials: merchantKey="test_merchant_key", salt="test_salt", baseUrl="https://test.payu.in"
 - July 08, 2025: Added PayU payment gateway integration
   - Integrated PayU payment gateway as alternative to Stripe for non-seamless payments
   - Created PaymentMethodSelector component with dual payment options (Stripe + PayU)

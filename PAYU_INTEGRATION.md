@@ -1,9 +1,9 @@
 # PayU Payment Gateway Integration
 
 ## Overview
-The BBG application now supports dual payment gateways:
-- **Stripe**: Seamless card payment processing
+The BBG application uses PayU as the primary and only payment gateway:
 - **PayU**: Non-seamless payment with multiple payment options
+- **Stripe**: Removed from the application
 
 ## PayU Features
 - **Payment Methods**: Credit Cards, Debit Cards, Net Banking, UPI, Digital Wallets
@@ -22,11 +22,13 @@ PAYU_BASE_URL=https://test.payu.in  # For testing
 # PAYU_BASE_URL=https://secure.payu.in  # For production
 ```
 
-### Default Test Configuration
-If environment variables are not set, the system uses test credentials:
+### Current Test Configuration
+The system is hardcoded with test credentials for development:
 - Merchant Key: `test_merchant_key`
 - Salt: `test_salt`
 - Base URL: `https://test.payu.in`
+
+**For Production**: Update the hardcoded values in `server/routes.ts` PAYU_CONFIG object.
 
 ## Payment Flow
 

@@ -9,8 +9,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { validatePhoneNumber, validateEmail, validatePincode } from "@/lib/utils";
 
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+// Stripe imports removed - using PayU only
 
 
 import { Button } from "@/components/ui/button";
@@ -33,9 +32,7 @@ import {
 } from "lucide-react";
 
 // Initialize Stripe - will be null if key not configured
-const stripePromise = import.meta.env.VITE_STRIPE_PUBLIC_KEY 
-  ? loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY) 
-  : null;
+// Stripe initialization removed - using PayU only
 
 // Extended customer schema with validation
 const customerSchema = z.object({
@@ -60,111 +57,7 @@ const customerSchema = z.object({
 
 type CustomerFormData = z.infer<typeof customerSchema>;
 
-// Payment form component
-function PaymentForm({ 
-  amount, 
-  deviceType, 
-  onPaymentSuccess, 
-  customerData 
-}: { 
-  amount: number;
-  deviceType: string;
-  onPaymentSuccess: (paymentIntentId: string) => void;
-  customerData: CustomerFormData;
-}) {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [isProcessing, setIsProcessing] = useState(false);
-  const { toast } = useToast();
-
-  const handlePayment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!stripe || !elements) {
-      return;
-    }
-
-    setIsProcessing(true);
-
-    try {
-      // Create payment intent
-      const response = await apiRequest("POST", "/api/create-payment-intent", { deviceType });
-      const { clientSecret } = await response.json();
-
-      // Confirm payment
-      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardElement)!,
-          billing_details: {
-            name: customerData.name,
-            email: customerData.email,
-            phone: customerData.contact,
-          },
-        },
-      });
-
-      if (error) {
-        toast({
-          title: "Payment Failed",
-          description: error.message,
-          variant: "destructive",
-        });
-      } else if (paymentIntent.status === 'succeeded') {
-        onPaymentSuccess(paymentIntent.id);
-      }
-    } catch (error) {
-      toast({
-        title: "Payment Error",
-        description: "Something went wrong during payment processing",
-        variant: "destructive",
-      });
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  return (
-    <form onSubmit={handlePayment} className="space-y-6">
-      <div className="bg-gray-50 rounded-lg p-4">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-lg font-semibold">BBG for {deviceType}</span>
-          <span className="text-2xl font-bold text-green-600">₹{amount}</span>
-        </div>
-        <div className="text-sm text-gray-600">
-          Secure your device with BuyBack Guarantee
-        </div>
-      </div>
-      
-      <div className="border rounded-lg p-4">
-        <label className="text-sm font-medium mb-2 flex items-center">
-          <CreditCard className="h-4 w-4 mr-2" />
-          Card Details
-        </label>
-        <CardElement 
-          options={{
-            style: {
-              base: {
-                fontSize: '16px',
-                color: '#424770',
-                '::placeholder': {
-                  color: '#aab7c4',
-                },
-              },
-            },
-          }}
-        />
-      </div>
-
-      <Button 
-        type="submit" 
-        className="w-full bg-green-600 hover:bg-green-700"
-        disabled={!stripe || isProcessing}
-      >
-        {isProcessing ? "Processing..." : `Pay ₹${amount}`}
-      </Button>
-    </form>
-  );
-}
+// Stripe PaymentForm component removed - using PayU only
 
 // PayU Payment Component
 function PayUPaymentForm({ 
@@ -253,7 +146,7 @@ function PayUPaymentForm({
   );
 }
 
-// Payment Method Selector Component
+// Payment Method Selector Component - PayU Only
 function PaymentMethodSelector({ 
   amount, 
   deviceType, 
@@ -265,98 +158,14 @@ function PaymentMethodSelector({
   onPaymentSuccess: (paymentIntentId: string) => void;
   customerData: CustomerFormData;
 }) {
-  const [selectedMethod, setSelectedMethod] = useState<'stripe' | 'payu' | null>(null);
-
-  if (selectedMethod === 'stripe') {
-    return (
-      <div className="space-y-4">
-        <Button 
-          variant="outline" 
-          onClick={() => setSelectedMethod(null)}
-          className="mb-4"
-        >
-          ← Choose Different Payment Method
-        </Button>
-        <PaymentForm
-          amount={amount}
-          deviceType={deviceType}
-          onPaymentSuccess={onPaymentSuccess}
-          customerData={customerData}
-        />
-      </div>
-    );
-  }
-
-  if (selectedMethod === 'payu') {
-    return (
-      <div className="space-y-4">
-        <Button 
-          variant="outline" 
-          onClick={() => setSelectedMethod(null)}
-          className="mb-4"
-        >
-          ← Choose Different Payment Method
-        </Button>
-        <PayUPaymentForm
-          amount={amount}
-          deviceType={deviceType}
-          onPaymentSuccess={onPaymentSuccess}
-          customerData={customerData}
-        />
-      </div>
-    );
-  }
-
+  // Direct PayU payment - no method selection needed
   return (
-    <div className="space-y-4">
-      <div className="bg-gray-50 rounded-lg p-4 mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-lg font-semibold">BBG for {deviceType}</span>
-          <span className="text-2xl font-bold text-green-600">₹{amount}</span>
-        </div>
-        <div className="text-sm text-gray-600">
-          Choose your preferred payment method
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Stripe Payment Option */}
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-green-200" 
-              onClick={() => setSelectedMethod('stripe')}>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-3 mb-3">
-              <CreditCard className="h-6 w-6 text-green-600" />
-              <h3 className="font-semibold text-lg">Card Payment</h3>
-            </div>
-            <p className="text-sm text-gray-600 mb-3">
-              Pay securely with Credit/Debit Card via Stripe
-            </p>
-            <div className="flex items-center text-xs text-green-600">
-              <CheckCircle className="h-4 w-4 mr-1" />
-              Instant Processing
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* PayU Payment Option */}
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-blue-200" 
-              onClick={() => setSelectedMethod('payu')}>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-3 mb-3">
-              <CreditCard className="h-6 w-6 text-blue-600" />
-              <h3 className="font-semibold text-lg">PayU Gateway</h3>
-            </div>
-            <p className="text-sm text-gray-600 mb-3">
-              Card, Net Banking, UPI, Wallets & more
-            </p>
-            <div className="flex items-center text-xs text-blue-600">
-              <CheckCircle className="h-4 w-4 mr-1" />
-              Multiple Payment Options
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+    <PayUPaymentForm
+      amount={amount}
+      deviceType={deviceType}
+      onPaymentSuccess={onPaymentSuccess}
+      customerData={customerData}
+    />
   );
 }
 
@@ -599,14 +408,12 @@ function RegistrationContent() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Elements stripe={stripePromise}>
-              <PaymentMethodSelector
-                amount={formData.deviceType === 'laptop' ? 125 : 99}
-                deviceType={formData.deviceType}
-                onPaymentSuccess={handlePaymentSuccess}
-                customerData={formData}
-              />
-            </Elements>
+            <PaymentMethodSelector
+              amount={formData.deviceType === 'laptop' ? 125 : 99}
+              deviceType={formData.deviceType}
+              onPaymentSuccess={handlePaymentSuccess}
+              customerData={formData}
+            />
           </CardContent>
         </Card>
       ) : (
@@ -949,10 +756,8 @@ function RegistrationContent() {
 
 export default function CustomerRegistration() {
   return (
-    <Elements stripe={stripePromise}>
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-        <RegistrationContent />
-      </div>
-    </Elements>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <RegistrationContent />
+    </div>
   );
 }

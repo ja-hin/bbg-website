@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import Stripe from "stripe";
+// Stripe import removed - using PayU only
 import crypto from "crypto";
 import { storage } from "./sql-storage";
 import { db } from "./db";
@@ -36,16 +36,13 @@ const upload = multer({
   }
 });
 
-// Initialize Stripe
-const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2024-06-20",
-}) : null;
+// Stripe removed - using PayU only
 
-// PayU Configuration
+// PayU Configuration - Test Environment
 const PAYU_CONFIG = {
-  merchantKey: process.env.PAYU_MERCHANT_KEY || "test_merchant_key",
-  salt: process.env.PAYU_SALT || "test_salt",
-  baseUrl: process.env.PAYU_BASE_URL || "https://test.payu.in", // Use https://secure.payu.in for production
+  merchantKey: "test_merchant_key",
+  salt: "test_salt", 
+  baseUrl: "https://test.payu.in"
 };
 
 // Helper function to generate PayU hash
@@ -167,33 +164,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create payment intent for BBG purchase
-  app.post("/api/create-payment-intent", async (req, res) => {
-    try {
-      if (!stripe) {
-        return res.status(500).json({ message: "Payment processing not configured" });
-      }
-
-      const { deviceType } = req.body;
-      const amount = deviceType === 'laptop' ? 125 : 99; // ₹125 for laptop, ₹99 for mobile
-
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount * 100, // Convert to paise
-        currency: "inr",
-        metadata: {
-          deviceType: deviceType
-        }
-      });
-
-      res.json({ 
-        clientSecret: paymentIntent.client_secret,
-        amount: amount
-      });
-    } catch (error: any) {
-      console.error('Payment intent creation error:', error);
-      res.status(500).json({ message: "Error creating payment intent: " + error.message });
-    }
-  });
+  // Stripe payment intent removed - using PayU only
 
   // Create PayU payment
   app.post("/api/create-payu-payment", async (req, res) => {

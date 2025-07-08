@@ -3,8 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -162,7 +161,6 @@ export default function ClaimBBG() {
   if (claimSubmitted) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
         <div className="max-w-2xl mx-auto px-4 py-20">
           <Card className="text-center">
             <CardContent className="pt-12 pb-8">
@@ -185,15 +183,12 @@ export default function ClaimBBG() {
             </CardContent>
           </Card>
         </div>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header Section */}
         <div className="text-center mb-12">
@@ -464,8 +459,6 @@ export default function ClaimBBG() {
           </CardContent>
         </Card>
       </div>
-
-      <Footer />
     </div>
   );
 }

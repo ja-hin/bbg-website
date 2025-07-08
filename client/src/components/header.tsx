@@ -1,12 +1,72 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Shield, ShieldCheck } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Menu, X, Home, Shield, UserPlus, FileText } from "lucide-react";
+import { useState } from "react";
 
 export default function Header() {
+  const [location] = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const navigationItems = [
+    { href: "/", label: "Home", icon: Home },
+    { href: "/customer-registration", label: "Register BBG", icon: Shield },
+    { href: "/claim-bbg", label: "Claim BBG", icon: FileText },
+  ];
+
+  const isActiveLink = (href: string) => {
+    if (href === "/" && location === "/") return true;
+    if (href !== "/" && location.startsWith(href)) return true;
+    return false;
+  };
+
+  const NavLinks = ({ mobile = false, onItemClick = () => {} }) => (
+    <>
+      {navigationItems.map((item) => {
+        const Icon = item.icon;
+        const isActive = isActiveLink(item.href);
+        
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onItemClick}
+            className={`
+              ${mobile 
+                ? 'flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors' 
+                : 'flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors'
+              }
+              ${isActive 
+                ? 'text-red-600 bg-red-50' 
+                : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
+              }
+            `}
+          >
+            <Icon className={`${mobile ? 'w-5 h-5' : 'w-4 h-4'}`} />
+            <span>{item.label}</span>
+          </Link>
+        );
+      })}
+      <Link href="/distributor-registration" onClick={onItemClick}>
+        <Button 
+          className={`
+            ${mobile ? 'w-full justify-start space-x-3' : ''}
+            bg-red-600 hover:bg-red-700 text-white
+          `}
+          size={mobile ? "default" : "sm"}
+        >
+          <UserPlus className={`${mobile ? 'w-5 h-5' : 'w-4 h-4'}`} />
+          <span>Become Distributor</span>
+        </Button>
+      </Link>
+    </>
+  );
+
   return (
-    <header className="bg-white shadow-sm border-b">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+          {/* Logo */}
           <Link href="/" className="flex items-center group">
             <div className="flex items-center space-x-3">
               {/* Enhanced Logo Icon */}
@@ -56,38 +116,53 @@ export default function Header() {
               
               {/* Brand Name */}
               <div className="flex flex-col">
-                <div className="text-2xl font-bold text-red-600 group-hover:text-red-700 transition-colors leading-tight tracking-tight">
+                <div className="text-xl sm:text-2xl font-bold text-red-600 group-hover:text-red-700 transition-colors leading-tight tracking-tight">
                   XTRACOVER
                 </div>
-                <span className="text-xs text-gray-600 uppercase tracking-wide font-medium -mt-1 opacity-80">
+                <span className="text-xs text-gray-600 uppercase tracking-wide font-medium -mt-1 opacity-80 hidden sm:block">
                   BuyBack Guarantee
                 </span>
               </div>
             </div>
           </Link>
           
-          <nav className="hidden md:flex space-x-8">
-            <Link href="/" className="text-gray-700 hover:text-red-600 transition-colors">
-              Home
-            </Link>
-            <Link href="/customer-registration" className="text-gray-700 hover:text-red-600 transition-colors">
-              Register BBG
-            </Link>
-            <Link href="/claim-bbg" className="text-gray-700 hover:text-red-600 transition-colors">
-              Claim BBG
-            </Link>
-            <Link href="/distributor-registration">
-              <Button className="bg-red-600 hover:bg-red-700 text-white">
-                Become Distributor
-              </Button>
-            </Link>
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center space-x-1">
+            <NavLinks />
           </nav>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <Button variant="outline" size="sm">
-              Menu
-            </Button>
+          {/* Mobile Navigation */}
+          <div className="lg:hidden">
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="h-10 w-10 p-0"
+                >
+                  {isOpen ? (
+                    <X className="h-5 w-5" />
+                  ) : (
+                    <Menu className="h-5 w-5" />
+                  )}
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-80">
+                <div className="flex flex-col space-y-4 mt-8">
+                  <div className="px-4">
+                    <h2 className="text-lg font-semibold text-gray-900">Navigation</h2>
+                    <p className="text-sm text-gray-500 mt-1">Access all sections of Xtracover</p>
+                  </div>
+                  <nav className="flex flex-col space-y-2">
+                    <NavLinks 
+                      mobile={true} 
+                      onItemClick={() => setIsOpen(false)} 
+                    />
+                  </nav>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>

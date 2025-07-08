@@ -5,8 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { z } from "zod";
 import { insertDistributorSchema } from "@shared/schema";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -171,8 +170,6 @@ export default function DistributorRegistration() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <Header />
-      
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header Section */}
         <div className="text-center mb-12">
@@ -511,8 +508,6 @@ export default function DistributorRegistration() {
           </CardContent>
         </Card>
       </div>
-
-      <Footer />
     </div>
   );
 }

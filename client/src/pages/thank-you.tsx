@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Users, Smartphone, Home } from "lucide-react";
@@ -68,8 +67,6 @@ export default function ThankYou() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-      
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <Card className="text-center">
           <CardContent className="pt-12 pb-8">
@@ -162,8 +159,6 @@ export default function ThankYou() {
           </CardContent>
         </Card>
       </div>
-
-      <Footer />
     </div>
   );
 }

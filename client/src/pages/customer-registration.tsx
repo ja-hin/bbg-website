@@ -12,8 +12,7 @@ import { validatePhoneNumber, validateEmail, validatePincode } from "@/lib/utils
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -780,9 +779,7 @@ export default function CustomerRegistration() {
   return (
     <Elements stripe={stripePromise}>
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-        <Header />
         <RegistrationContent />
-        <Footer />
       </div>
     </Elements>
   );

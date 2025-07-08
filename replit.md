@@ -130,6 +130,12 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 
 ```
 Changelog:
+- July 08, 2025: Integrated PostgreSQL database to replace in-memory storage
+  - Created database connection layer using Drizzle ORM with Neon Database
+  - Implemented DatabaseStorage class with full CRUD operations for all entities
+  - Updated storage layer to use real PostgreSQL instead of in-memory maps
+  - Maintained backward compatibility with existing IStorage interface
+  - All data now persisted in database tables: distributors, customers, claims, otp_verifications
 - July 01, 2025: Updated forms based on user journey requirements
   - Enhanced Distributor Registration with new fields: Name, Business Name (optional), Mobile with OTP verification, Email, Pincode, Location/City, Preferred Mode (In-store/Online/Both), GSTIN (optional), Bank Details (optional)
   - Updated Customer Registration with simplified flow: Customer Details (Name, Contact with OTP, Email, Pincode), Device Details (Type with auto-pricing, Serial/IMEI, Brand, Model, Invoice Value), Seller Details (optional Seller Code)

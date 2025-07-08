@@ -12,6 +12,8 @@ import {
   type InsertClaim, 
   type InsertOtp 
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // Distributor operations
@@ -36,164 +38,181 @@ export interface IStorage {
   verifyOtp(contact: string, otp: string): Promise<boolean>;
 }
 
-export class MemStorage implements IStorage {
-  private distributors: Map<number, Distributor> = new Map();
-  private customers: Map<number, Customer> = new Map();
-  private claims: Map<number, Claim> = new Map();
-  private otpVerifications: Map<number, OtpVerification> = new Map();
-  
-  private distributorIdCounter = 1;
-  private customerIdCounter = 1;
-  private claimIdCounter = 1;
-  private otpIdCounter = 1;
-
+export class DatabaseStorage implements IStorage {
   // Distributor operations
   async createDistributor(insertDistributor: InsertDistributor): Promise<Distributor> {
-    const id = this.distributorIdCounter++;
-    const sellerCode = this.generateSellerCode();
-    const distributor: Distributor = {
+    const distributorData = {
       ...insertDistributor,
-      id,
-      sellerCode,
+      businessName: insertDistributor.businessName ?? null,
+      gstin: insertDistributor.gstin ?? null,
+      bankAccount: insertDistributor.bankAccount ?? null,
+      ifscCode: insertDistributor.ifscCode ?? null,
+      sellerCode: this.generateSellerCode(),
       isActive: true,
-      createdAt: new Date(),
+      createdAt: new Date()
     };
-    this.distributors.set(id, distributor);
+
+    const [distributor] = await db
+      .insert(distributors)
+      .values(distributorData)
+      .returning();
+    
     return distributor;
   }
 
   async getDistributorBySellerCode(sellerCode: string): Promise<Distributor | undefined> {
-    return Array.from(this.distributors.values()).find(d => d.sellerCode === sellerCode);
+    const [distributor] = await db
+      .select()
+      .from(distributors)
+      .where(eq(distributors.sellerCode, sellerCode));
+    
+    return distributor || undefined;
   }
 
   async getDistributorByEmail(email: string): Promise<Distributor | undefined> {
-    return Array.from(this.distributors.values()).find(d => d.email === email);
+    const [distributor] = await db
+      .select()
+      .from(distributors)
+      .where(eq(distributors.email, email));
+    
+    return distributor || undefined;
   }
 
   // Customer operations
   async createCustomer(insertCustomer: InsertCustomer): Promise<Customer> {
-    const id = this.customerIdCounter++;
-    const voucherCode = this.generateVoucherCode();
-    const customer: Customer = {
+    const customerData = {
       ...insertCustomer,
-      id,
-      voucherCode,
+      sellerCode: insertCustomer.sellerCode ?? null,
+      paymentIntentId: insertCustomer.paymentIntentId ?? null,
+      voucherCode: this.generateVoucherCode(),
       isVerified: false,
-      createdAt: new Date(),
+      createdAt: new Date()
     };
-    this.customers.set(id, customer);
+
+    const [customer] = await db
+      .insert(customers)
+      .values(customerData)
+      .returning();
+    
     return customer;
   }
 
   async getCustomerByVoucherCode(voucherCode: string): Promise<Customer | undefined> {
-    const allCustomers = Array.from(this.customers.values());
-    console.log("All stored customer voucher codes:", allCustomers.map(c => c.voucherCode));
-    console.log("Looking for voucher code:", voucherCode);
-    const customer = allCustomers.find(c => c.voucherCode === voucherCode);
-    console.log("Found customer:", customer ? `ID: ${customer.id}, Name: ${customer.name}` : "Not found");
-    return customer;
+    const [customer] = await db
+      .select()
+      .from(customers)
+      .where(eq(customers.voucherCode, voucherCode));
+    
+    return customer || undefined;
   }
 
   async getCustomersBySellerCode(sellerCode: string): Promise<Customer[]> {
-    return Array.from(this.customers.values()).filter(c => c.sellerCode === sellerCode);
+    const customerList = await db
+      .select()
+      .from(customers)
+      .where(eq(customers.sellerCode, sellerCode));
+    
+    return customerList;
   }
 
   async updateCustomerVerification(id: number, isVerified: boolean): Promise<void> {
-    const customer = this.customers.get(id);
-    if (customer) {
-      customer.isVerified = isVerified;
-      this.customers.set(id, customer);
-    }
+    await db
+      .update(customers)
+      .set({ isVerified })
+      .where(eq(customers.id, id));
   }
 
   // Claim operations
   async createClaim(insertClaim: InsertClaim): Promise<Claim> {
-    const id = this.claimIdCounter++;
-    
-    // Get customer to calculate claim amount
-    const customer = await this.getCustomerByVoucherCode(insertClaim.voucherCode);
-    if (!customer) {
-      throw new Error("Invalid voucher code");
-    }
-
-    const claimPercentage = this.calculateClaimPercentage(customer.createdAt!);
-    const claimAmount = (parseFloat(customer.invoiceValue) * claimPercentage) / 100;
-
-    const claim: Claim = {
+    // Note: insertClaim only contains contact, email, voucherCode
+    // claimPercentage and claimAmount should be calculated in the route handler
+    const claimData = {
       ...insertClaim,
-      id,
-      claimPercentage,
-      claimAmount: claimAmount.toString(),
-      status: 'pending',
-      createdAt: new Date(),
+      claimPercentage: 0, // Will be updated by route handler
+      claimAmount: "0", // Will be updated by route handler  
+      status: "pending"
     };
-    this.claims.set(id, claim);
+
+    const [claim] = await db
+      .insert(claims)
+      .values(claimData)
+      .returning();
+    
     return claim;
   }
 
   async getClaimByVoucherCode(voucherCode: string): Promise<Claim | undefined> {
-    return Array.from(this.claims.values()).find(c => c.voucherCode === voucherCode);
+    const [claim] = await db
+      .select()
+      .from(claims)
+      .where(eq(claims.voucherCode, voucherCode));
+    
+    return claim || undefined;
   }
 
   async updateClaimStatus(id: number, status: string): Promise<void> {
-    const claim = this.claims.get(id);
-    if (claim) {
-      claim.status = status;
-      this.claims.set(id, claim);
-    }
+    await db
+      .update(claims)
+      .set({ status })
+      .where(eq(claims.id, id));
   }
 
   // OTP operations
   async createOtp(insertOtp: InsertOtp): Promise<OtpVerification> {
-    const id = this.otpIdCounter++;
-    const otp: OtpVerification = {
+    const otpData = {
       ...insertOtp,
-      id,
       isVerified: false,
       createdAt: new Date(),
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000) // 10 minutes from now
     };
-    this.otpVerifications.set(id, otp);
+
+    const [otp] = await db
+      .insert(otpVerifications)
+      .values(otpData)
+      .returning();
+    
     return otp;
   }
 
   async getOtpByContact(contact: string): Promise<OtpVerification | undefined> {
-    return Array.from(this.otpVerifications.values())
-      .filter(o => o.contact === contact && !o.isVerified && o.expiresAt > new Date())
-      .sort((a, b) => b.createdAt!.getTime() - a.createdAt!.getTime())[0];
+    const [otp] = await db
+      .select()
+      .from(otpVerifications)
+      .where(eq(otpVerifications.contact, contact));
+    
+    return otp || undefined;
   }
 
   async verifyOtp(contact: string, otp: string): Promise<boolean> {
-    const otpRecord = await this.getOtpByContact(contact);
-    if (otpRecord && otpRecord.otp === otp) {
-      otpRecord.isVerified = true;
-      this.otpVerifications.set(otpRecord.id, otpRecord);
-      return true;
+    const [otpRecord] = await db
+      .select()
+      .from(otpVerifications)
+      .where(eq(otpVerifications.contact, contact));
+
+    if (!otpRecord || otpRecord.otp !== otp) {
+      return false;
     }
-    return false;
+
+    if (otpRecord.expiresAt && new Date() > otpRecord.expiresAt) {
+      return false;
+    }
+
+    await db
+      .update(otpVerifications)
+      .set({ isVerified: true })
+      .where(eq(otpVerifications.contact, contact));
+
+    return true;
   }
 
   // Helper methods
   private generateSellerCode(): string {
-    return 'XTC' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 5).toUpperCase();
+    return `XTR${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
   }
 
   private generateVoucherCode(): string {
-    return 'BBG' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 8).toUpperCase();
-  }
-
-  private calculateClaimPercentage(purchaseDate: Date): number {
-    const now = new Date();
-    const monthsDiff = (now.getFullYear() - purchaseDate.getFullYear()) * 12 + (now.getMonth() - purchaseDate.getMonth());
-    
-    if (monthsDiff >= 6 && monthsDiff <= 12) return 70;
-    if (monthsDiff >= 13 && monthsDiff <= 18) return 60;
-    if (monthsDiff >= 19 && monthsDiff <= 24) return 50;
-    if (monthsDiff >= 25 && monthsDiff <= 30) return 40;
-    if (monthsDiff >= 31 && monthsDiff <= 36) return 30;
-    if (monthsDiff >= 37 && monthsDiff <= 48) return 25;
-    if (monthsDiff >= 49 && monthsDiff <= 60) return 20;
-    return 0; // Outside coverage period
+    return `BBG${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

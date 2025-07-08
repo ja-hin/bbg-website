@@ -5,6 +5,8 @@ import path from "path";
 import fs from "fs";
 import Stripe from "stripe";
 import { storage } from "./sql-storage";
+import { db } from "./db";
+import sql from 'mssql';
 import { 
   insertDistributorSchema, 
   insertCustomerSchema, 
@@ -275,15 +277,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Submit claim
   app.post("/api/claims/submit", async (req, res) => {
     try {
-      const validatedData = insertClaimSchema.parse(req.body);
+      const { voucherCode, contact, email } = req.body;
       
+      // First get the customer details
+      const customer = await storage.getCustomerByVoucherCode(voucherCode);
+      if (!customer) {
+        return res.status(404).json({ message: "Invalid BBG voucher code" });
+      }
+
       // Check if claim already exists
-      const existingClaim = await storage.getClaimByVoucherCode(validatedData.voucherCode);
+      const existingClaim = await storage.getClaimByVoucherCode(voucherCode);
       if (existingClaim) {
         return res.status(400).json({ message: "Claim already submitted for this voucher code" });
       }
 
-      const claim = await storage.createClaim(validatedData);
+      // Calculate claim percentage based on device age
+      const monthsDiff = Math.floor((Date.now() - customer.createdAt!.getTime()) / (1000 * 60 * 60 * 24 * 30));
+      let claimPercentage = 0;
+      
+      if (monthsDiff >= 6 && monthsDiff <= 12) claimPercentage = 70;
+      else if (monthsDiff >= 13 && monthsDiff <= 18) claimPercentage = 60;
+      else if (monthsDiff >= 19 && monthsDiff <= 24) claimPercentage = 50;
+      else if (monthsDiff >= 25 && monthsDiff <= 30) claimPercentage = 40;
+      else if (monthsDiff >= 31 && monthsDiff <= 36) claimPercentage = 30;
+      else if (monthsDiff >= 37 && monthsDiff <= 48) claimPercentage = 25;
+      else if (monthsDiff >= 49 && monthsDiff <= 60) claimPercentage = 20;
+
+      if (claimPercentage === 0) {
+        return res.status(400).json({ message: "Device is not eligible for claim. BBG coverage is valid for 6-60 months." });
+      }
+
+      const claimAmount = (customer.invoiceValue * claimPercentage) / 100;
+
+      // Create the claim data with all required fields
+      const claimData = {
+        customerId: customer.id,
+        voucherCode: voucherCode,
+        contact: contact,
+        email: email,
+        deviceAgeMonths: monthsDiff,
+        claimPercentage: claimPercentage,
+        claimAmount: claimAmount
+      };
+
+      const claim = await storage.createClaim(claimData);
       
       res.status(201).json({
         message: "Claim submitted successfully! You will be contacted for device verification.",
@@ -291,10 +328,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: claim.id,
           claimAmount: claim.claimAmount,
           claimPercentage: claim.claimPercentage,
+          deviceAgeMonths: claim.deviceAgeMonths,
           status: claim.status
         }
       });
     } catch (error: any) {
+      console.error('Claim submission error:', error);
       res.status(400).json({ message: error.message || "Claim submission failed" });
     }
   });
@@ -307,6 +346,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Customer verified successfully" });
     } catch (error: any) {
       res.status(500).json({ message: "Verification failed" });
+    }
+  });
+
+  // Test endpoint to create customer with older date (for testing claims)
+  app.post("/api/test/create-old-customer", async (req, res) => {
+    try {
+      // Create a customer with 8 months old purchase date for testing
+      const testDate = new Date();
+      testDate.setMonth(testDate.getMonth() - 8);
+      
+      const customerData = {
+        name: "Test Customer 8M",
+        contact: "9876543210",
+        email: "test8m@example.com",
+        pincode: "400001",
+        deviceType: "mobile",
+        serialNumber: "IMEI987654321098765",
+        brand: "iPhone",
+        modelName: "iPhone 13",
+        invoiceValue: 55000,
+        sellerCode: "XTSWN50S0"
+      };
+
+      const customer = await storage.createCustomer(customerData);
+      
+      // Manually update the created_at date in SQL Server
+      await db.connectDB();
+      const updateQuery = `UPDATE customers SET created_at = @oldDate WHERE id = @customerId`;
+      const request = db.pool.request();
+      request.input('customerId', sql.Int, customer.id);
+      request.input('oldDate', sql.DateTime2, testDate);
+      await request.query(updateQuery);
+      
+      // Verify the customer
+      await storage.updateCustomerVerification(customer.id, true);
+      
+      res.json({
+        message: "Test customer created with 8-month old purchase date",
+        customer: {
+          id: customer.id,
+          voucherCode: customer.voucherCode,
+          name: customer.name,
+          deviceType: customer.deviceType,
+          createdDate: testDate
+        }
+      });
+    } catch (error: any) {
+      console.error('Test customer creation error:', error);
+      res.status(500).json({ message: error.message });
     }
   });
 

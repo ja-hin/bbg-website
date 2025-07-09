@@ -47,7 +47,8 @@ const PAYU_CONFIG = {
 
 // Helper function to generate PayU hash
 function generatePayUHash(params: any, salt: string): string {
-  const hashString = `${params.key}|${params.txnid}|${params.amount}|${params.productinfo}|${params.firstname}|${params.email}|||||||||||${salt}`;
+  // PayU hash format: key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5|udf6|udf7|udf8|udf9|udf10|salt
+  const hashString = `${params.key}|${params.txnid}|${params.amount}|${params.productinfo}|${params.firstname}|${params.email}|${params.udf1 || ''}|${params.udf2 || ''}|${params.udf3 || ''}|${params.udf4 || ''}|${params.udf5 || ''}||||||||||${salt}`;
   return crypto.createHash('sha512').update(hashString).digest('hex');
 }
 
@@ -213,8 +214,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { txnid, amount, status, hash, ...otherParams } = req.body;
       
-      // Verify hash for security
-      const verifyHashString = `${PAYU_CONFIG.salt}|${status}|||||||||||${otherParams.email}|${otherParams.firstname}|${otherParams.productinfo}|${amount}|${txnid}|${PAYU_CONFIG.merchantKey}`;
+      // Verify hash for security (reverse hash format for success)
+      const verifyHashString = `${PAYU_CONFIG.salt}|${status}||||||||||${otherParams.udf5 || ''}|${otherParams.udf4 || ''}|${otherParams.udf3 || ''}|${otherParams.udf2 || ''}|${otherParams.udf1 || ''}|${otherParams.email}|${otherParams.firstname}|${otherParams.productinfo}|${amount}|${txnid}|${PAYU_CONFIG.merchantKey}`;
       const expectedHash = crypto.createHash('sha512').update(verifyHashString).digest('hex');
       
       if (hash !== expectedHash) {

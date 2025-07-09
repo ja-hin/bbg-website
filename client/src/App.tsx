@@ -18,6 +18,11 @@ function Router() {
   return (
     <Switch>
       {/* Admin routes without header/footer */}
+      <Route path="/admin" component={() => {
+        // Redirect /admin to /admin/login
+        window.location.href = "/admin/login";
+        return null;
+      }} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
       

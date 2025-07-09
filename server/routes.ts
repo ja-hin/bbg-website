@@ -38,11 +38,11 @@ const upload = multer({
 
 // Stripe removed - using PayU only
 
-// PayU Configuration - Test Environment
+// PayU Configuration - Using your credentials
 const PAYU_CONFIG = {
-  merchantKey: "test_merchant_key",
-  salt: "test_salt", 
-  baseUrl: "https://test.payu.in"
+  merchantKey: process.env.PAYU_MERCHANT_KEY || "test_merchant_key",
+  salt: process.env.PAYU_SALT || "test_salt",
+  baseUrl: "https://test.payu.in" // Change to https://secure.payu.in for production
 };
 
 // Helper function to generate PayU hash

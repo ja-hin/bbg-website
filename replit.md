@@ -136,7 +136,8 @@ Changelog:
   - Updated PaymentMethodSelector to directly show PayU payment form without method selection
   - Removed Elements wrapper and Stripe imports from customer registration
   - Updated .env.example and PAYU_INTEGRATION.md to reflect PayU-only configuration
-  - PayU test credentials: merchantKey="test_merchant_key", salt="test_salt", baseUrl="https://test.payu.in"
+  - PayU credentials now loaded from environment variables (PAYU_MERCHANT_KEY, PAYU_SALT)
+  - Using test environment baseUrl="https://test.payu.in" (change to secure.payu.in for production)
 - July 08, 2025: Added PayU payment gateway integration
   - Integrated PayU payment gateway as alternative to Stripe for non-seamless payments
   - Created PaymentMethodSelector component with dual payment options (Stripe + PayU)

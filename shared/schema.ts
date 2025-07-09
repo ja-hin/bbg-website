@@ -69,6 +69,17 @@ export const otpVerifications = pgTable("otp_verifications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const adminUsers = pgTable("admin_users", {
+  id: serial("id").primaryKey(),
+  username: text("username").notNull().unique(),
+  email: text("email").notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
+  role: text("role").notNull().default('admin'), // 'admin', 'super_admin'
+  isActive: boolean("is_active").default(true),
+  lastLoginAt: timestamp("last_login_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertDistributorSchema = createInsertSchema(distributors).omit({
   id: true,
   sellerCode: true,
@@ -97,12 +108,21 @@ export const insertOtpSchema = createInsertSchema(otpVerifications).omit({
   createdAt: true,
 });
 
+export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({
+  id: true,
+  isActive: true,
+  lastLoginAt: true,
+  createdAt: true,
+});
+
 export type Distributor = typeof distributors.$inferSelect;
 export type Customer = typeof customers.$inferSelect;
 export type Claim = typeof claims.$inferSelect;
 export type OtpVerification = typeof otpVerifications.$inferSelect;
+export type AdminUser = typeof adminUsers.$inferSelect;
 
 export type InsertDistributor = z.infer<typeof insertDistributorSchema>;
 export type InsertCustomer = z.infer<typeof insertCustomerSchema>;
 export type InsertClaim = z.infer<typeof insertClaimSchema>;
 export type InsertOtp = z.infer<typeof insertOtpSchema>;
+export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;

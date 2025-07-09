@@ -3,10 +3,12 @@ import {
   type Customer, 
   type Claim, 
   type OtpVerification,
+  type AdminUser,
   type InsertDistributor, 
   type InsertCustomer, 
   type InsertClaim, 
-  type InsertOtp 
+  type InsertOtp,
+  type InsertAdminUser
 } from "@shared/schema";
 import { db } from "./db";
 import sql from 'mssql';
@@ -16,22 +18,31 @@ export interface IStorage {
   createDistributor(distributor: InsertDistributor): Promise<Distributor>;
   getDistributorBySellerCode(sellerCode: string): Promise<Distributor | undefined>;
   getDistributorByEmail(email: string): Promise<Distributor | undefined>;
+  getAllDistributors(): Promise<Distributor[]>;
   
   // Customer operations
   createCustomer(customer: InsertCustomer): Promise<Customer>;
   getCustomerByVoucherCode(voucherCode: string): Promise<Customer | undefined>;
   getCustomersBySellerCode(sellerCode: string): Promise<Customer[]>;
+  getAllCustomers(): Promise<Customer[]>;
   updateCustomerVerification(id: number, isVerified: boolean): Promise<void>;
   
   // Claim operations
   createClaim(claim: InsertClaim): Promise<Claim>;
   getClaimByVoucherCode(voucherCode: string): Promise<Claim | undefined>;
+  getAllClaims(): Promise<Claim[]>;
   updateClaimStatus(id: number, status: string): Promise<void>;
   
   // OTP operations
   createOtp(otp: InsertOtp): Promise<OtpVerification>;
   getOtpByContact(contact: string): Promise<OtpVerification | undefined>;
   verifyOtp(contact: string, otp: string): Promise<boolean>;
+  
+  // Admin operations
+  createAdminUser(admin: InsertAdminUser): Promise<AdminUser>;
+  getAdminByUsername(username: string): Promise<AdminUser | undefined>;
+  updateAdminLastLogin(id: number): Promise<void>;
+  verifyAdminPassword(username: string, password: string): Promise<AdminUser | null>;
 }
 
 export class DatabaseStorage implements IStorage {

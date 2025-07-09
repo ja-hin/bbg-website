@@ -126,10 +126,51 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 └── uploads/              # File upload storage
 ```
 
+## Admin Panel
+
+### Authentication
+- **URL**: `/admin/login`
+- **Default Credentials**: 
+  - Username: `admin`
+  - Password: `admin123`
+- **Session-based authentication** using express-session middleware
+- **Secure password hashing** with bcryptjs (12 salt rounds)
+
+### Admin Dashboard Features
+- **URL**: `/admin/dashboard`
+- **Dashboard Statistics**: Total distributors, customers, claims, revenue tracking
+- **Distributor Management**: View all registered distributors with verification status
+- **Customer Management**: View customer registrations and device details
+- **Claims Management**: Review and approve/reject BBG claim requests
+- **Real-time Data**: All data synced with SQL Server database
+
+### Security Features
+- Session-based authentication with 24-hour expiry
+- Password hashing with bcrypt
+- Admin-only route protection middleware
+- Automatic redirect to login for unauthenticated access
+- Secure logout functionality
+
+### Database Schema
+- **admin_users table**: Stores admin credentials and roles
+- **Auto-creation**: Default admin user created via `/api/admin/create-default` endpoint
+- **Role-based access**: Support for different admin roles (admin, moderator, etc.)
+
 ## Changelog
 
 ```
 Changelog:
+- July 09, 2025: Implemented comprehensive secure admin panel
+  - Created admin authentication system with login/logout functionality
+  - Added admin_users table to SQL Server database with bcrypt password hashing
+  - Implemented session-based authentication using express-session middleware
+  - Built admin dashboard with complete CRUD operations for distributors, customers, claims
+  - Added claim status management (approve/reject) functionality
+  - Created responsive admin UI with separate layout (no header/footer)
+  - Implemented real-time dashboard statistics and data tables
+  - Added automatic admin user creation endpoint for initial setup
+  - Secured all admin routes with authentication middleware
+  - Default admin credentials: username 'admin', password 'admin123'
 - July 08, 2025: Moved all credentials to environment variables
   - Updated SQL Server configuration to use environment variables (SQL_SERVER_HOST, SQL_SERVER_PORT, SQL_SERVER_DATABASE, SQL_SERVER_USER, SQL_SERVER_PASSWORD)
   - Updated PayU configuration to use PAYU_BASE_URL from environment variables

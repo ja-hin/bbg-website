@@ -3,35 +3,47 @@ import {
   type Customer, 
   type Claim, 
   type OtpVerification,
+  type AdminUser,
   type InsertDistributor, 
   type InsertCustomer, 
   type InsertClaim, 
-  type InsertOtp 
+  type InsertOtp,
+  type InsertAdminUser
 } from "@shared/schema";
 import { db } from "./db";
 import sql from 'mssql';
+import bcrypt from 'bcryptjs';
 
 export interface IStorage {
   // Distributor operations
   createDistributor(distributor: InsertDistributor): Promise<Distributor>;
   getDistributorBySellerCode(sellerCode: string): Promise<Distributor | undefined>;
   getDistributorByEmail(email: string): Promise<Distributor | undefined>;
+  getAllDistributors(): Promise<Distributor[]>;
   
   // Customer operations
   createCustomer(customer: InsertCustomer): Promise<Customer>;
   getCustomerByVoucherCode(voucherCode: string): Promise<Customer | undefined>;
   getCustomersBySellerCode(sellerCode: string): Promise<Customer[]>;
+  getAllCustomers(): Promise<Customer[]>;
   updateCustomerVerification(id: number, isVerified: boolean): Promise<void>;
   
   // Claim operations
   createClaim(claim: InsertClaim): Promise<Claim>;
   getClaimByVoucherCode(voucherCode: string): Promise<Claim | undefined>;
+  getAllClaims(): Promise<Claim[]>;
   updateClaimStatus(id: number, status: string): Promise<void>;
   
   // OTP operations
   createOtp(otp: InsertOtp): Promise<OtpVerification>;
   getOtpByContact(contact: string): Promise<OtpVerification | undefined>;
   verifyOtp(contact: string, otp: string): Promise<boolean>;
+  
+  // Admin operations
+  createAdminUser(admin: InsertAdminUser): Promise<AdminUser>;
+  getAdminByUsername(username: string): Promise<AdminUser | undefined>;
+  updateAdminLastLogin(id: number): Promise<void>;
+  verifyAdminPassword(username: string, password: string): Promise<AdminUser | null>;
 }
 
 export class SqlServerStorage implements IStorage {
@@ -123,6 +135,21 @@ export class SqlServerStorage implements IStorage {
           otp NVARCHAR(6) NOT NULL,
           expires_at DATETIME2 NOT NULL,
           is_verified BIT DEFAULT 0,
+          created_at DATETIME2 DEFAULT GETDATE()
+        );
+      END
+
+      -- Create admin_users table
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'admin_users')
+      BEGIN
+        CREATE TABLE admin_users (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          username NVARCHAR(100) NOT NULL UNIQUE,
+          email NVARCHAR(255) NOT NULL UNIQUE,
+          password_hash NVARCHAR(255) NOT NULL,
+          role NVARCHAR(50) DEFAULT 'admin',
+          is_active BIT DEFAULT 1,
+          last_login_at DATETIME2,
           created_at DATETIME2 DEFAULT GETDATE()
         );
       END
@@ -374,6 +401,90 @@ export class SqlServerStorage implements IStorage {
     return isValid;
   }
 
+  // New admin operations
+  async getAllDistributors(): Promise<Distributor[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM distributors ORDER BY created_at DESC`;
+    
+    const request = db.pool.request();
+    const result = await request.query(query);
+    return result.recordset.map(row => this.mapDistributorFromDb(row));
+  }
+
+  async getAllCustomers(): Promise<Customer[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM customers ORDER BY created_at DESC`;
+    
+    const request = db.pool.request();
+    const result = await request.query(query);
+    return result.recordset.map(row => this.mapCustomerFromDb(row));
+  }
+
+  async getAllClaims(): Promise<Claim[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM claims ORDER BY created_at DESC`;
+    
+    const request = db.pool.request();
+    const result = await request.query(query);
+    return result.recordset.map(row => this.mapClaimFromDb(row));
+  }
+
+  async createAdminUser(insertAdmin: InsertAdminUser): Promise<AdminUser> {
+    await db.connectDB();
+    
+    // Hash password
+    const saltRounds = 12;
+    const passwordHash = await bcrypt.hash(insertAdmin.passwordHash, saltRounds);
+    
+    const query = `
+      INSERT INTO admin_users (username, email, password_hash, role) 
+      OUTPUT INSERTED.*
+      VALUES (@username, @email, @passwordHash, @role)
+    `;
+
+    const request = db.pool.request();
+    request.input('username', sql.NVarChar, insertAdmin.username);
+    request.input('email', sql.NVarChar, insertAdmin.email);
+    request.input('passwordHash', sql.NVarChar, passwordHash);
+    request.input('role', sql.NVarChar, insertAdmin.role || 'admin');
+
+    const result = await request.query(query);
+    return this.mapAdminFromDb(result.recordset[0]);
+  }
+
+  async getAdminByUsername(username: string): Promise<AdminUser | undefined> {
+    await db.connectDB();
+    const query = `SELECT * FROM admin_users WHERE username = @username AND is_active = 1`;
+    
+    const request = db.pool.request();
+    request.input('username', sql.NVarChar, username);
+    
+    const result = await request.query(query);
+    return result.recordset.length > 0 ? this.mapAdminFromDb(result.recordset[0]) : undefined;
+  }
+
+  async updateAdminLastLogin(id: number): Promise<void> {
+    await db.connectDB();
+    const query = `UPDATE admin_users SET last_login_at = GETDATE() WHERE id = @id`;
+    
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    await request.query(query);
+  }
+
+  async verifyAdminPassword(username: string, password: string): Promise<AdminUser | null> {
+    const admin = await this.getAdminByUsername(username);
+    if (!admin) return null;
+    
+    const isValid = await bcrypt.compare(password, admin.passwordHash);
+    if (!isValid) return null;
+    
+    // Update last login
+    await this.updateAdminLastLogin(admin.id);
+    
+    return admin;
+  }
+
   // Helper methods to map database rows to TypeScript objects
   private mapDistributorFromDb(row: any): Distributor {
     return {
@@ -448,6 +559,19 @@ export class SqlServerStorage implements IStorage {
 
   private generateVoucherCode(): string {
     return 'BBG' + Math.random().toString(36).substring(2, 12).toUpperCase();
+  }
+
+  private mapAdminFromDb(row: any): AdminUser {
+    return {
+      id: row.id,
+      username: row.username,
+      email: row.email,
+      passwordHash: row.password_hash,
+      role: row.role,
+      isActive: Boolean(row.is_active),
+      lastLoginAt: row.last_login_at,
+      createdAt: row.created_at
+    };
   }
 }
 

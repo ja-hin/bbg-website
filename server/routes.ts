@@ -519,6 +519,152 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin Authentication Routes
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+
+      const admin = await storage.verifyAdminPassword(username, password);
+      if (!admin) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Create session or token (simplified - using session)
+      req.session = req.session || {};
+      req.session.adminId = admin.id;
+      req.session.adminUsername = admin.username;
+      req.session.adminRole = admin.role;
+
+      res.json({
+        message: "Login successful",
+        admin: {
+          id: admin.id,
+          username: admin.username,
+          email: admin.email,
+          role: admin.role,
+          lastLoginAt: admin.lastLoginAt
+        }
+      });
+    } catch (error: any) {
+      console.error('Admin login error:', error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  app.post("/api/admin/logout", (req, res) => {
+    req.session = null;
+    res.json({ message: "Logout successful" });
+  });
+
+  // Admin middleware to check authentication
+  const isAdminAuthenticated = (req: any, res: any, next: any) => {
+    if (!req.session?.adminId) {
+      return res.status(401).json({ message: "Admin authentication required" });
+    }
+    next();
+  };
+
+  // Get current admin info
+  app.get("/api/admin/me", isAdminAuthenticated, async (req: any, res) => {
+    try {
+      const admin = await storage.getAdminByUsername(req.session.adminUsername);
+      if (!admin) {
+        return res.status(404).json({ message: "Admin not found" });
+      }
+
+      res.json({
+        id: admin.id,
+        username: admin.username,
+        email: admin.email,
+        role: admin.role,
+        lastLoginAt: admin.lastLoginAt,
+        createdAt: admin.createdAt
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get admin info" });
+    }
+  });
+
+  // Admin Dashboard Data
+  app.get("/api/admin/dashboard", isAdminAuthenticated, async (req, res) => {
+    try {
+      const [distributors, customers, claims] = await Promise.all([
+        storage.getAllDistributors(),
+        storage.getAllCustomers(),
+        storage.getAllClaims()
+      ]);
+
+      const totalRevenue = customers.length * 99; // Assuming average of ₹99 per registration
+      const pendingClaims = claims.filter(c => c.status === 'pending').length;
+
+      res.json({
+        stats: {
+          totalDistributors: distributors.length,
+          totalCustomers: customers.length,
+          totalClaims: claims.length,
+          pendingClaims,
+          totalRevenue,
+          recentCustomers: customers.slice(0, 10),
+          recentClaims: claims.slice(0, 10)
+        }
+      });
+    } catch (error: any) {
+      console.error('Admin dashboard error:', error);
+      res.status(500).json({ message: "Failed to load dashboard data" });
+    }
+  });
+
+  // Admin - Get all distributors
+  app.get("/api/admin/distributors", isAdminAuthenticated, async (req, res) => {
+    try {
+      const distributors = await storage.getAllDistributors();
+      res.json(distributors);
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get distributors" });
+    }
+  });
+
+  // Admin - Get all customers
+  app.get("/api/admin/customers", isAdminAuthenticated, async (req, res) => {
+    try {
+      const customers = await storage.getAllCustomers();
+      res.json(customers);
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get customers" });
+    }
+  });
+
+  // Admin - Get all claims
+  app.get("/api/admin/claims", isAdminAuthenticated, async (req, res) => {
+    try {
+      const claims = await storage.getAllClaims();
+      res.json(claims);
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get claims" });
+    }
+  });
+
+  // Admin - Update claim status
+  app.patch("/api/admin/claims/:id/status", isAdminAuthenticated, async (req, res) => {
+    try {
+      const claimId = parseInt(req.params.id);
+      const { status } = req.body;
+      
+      if (!['pending', 'approved', 'rejected'].includes(status)) {
+        return res.status(400).json({ message: "Invalid status" });
+      }
+
+      await storage.updateClaimStatus(claimId, status);
+      res.json({ message: "Claim status updated successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to update claim status" });
+    }
+  });
+
   // Test SQL Server database connection
   app.get("/api/test-db", async (req, res) => {
     try {
@@ -540,6 +686,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Database connection failed",
         error: error.message
       });
+    }
+  });
+
+  // Create default admin user if none exists
+  app.post("/api/admin/create-default", async (req, res) => {
+    try {
+      // Check if any admin user exists
+      const existingAdmin = await storage.getAdminByUsername('admin');
+      if (existingAdmin) {
+        return res.status(400).json({ message: "Default admin user already exists" });
+      }
+
+      // Create default admin user
+      const defaultAdmin = await storage.createAdminUser({
+        username: 'admin',
+        email: 'admin@xtracover.com',
+        passwordHash: 'admin123', // This will be hashed by the storage layer
+        role: 'admin'
+      });
+
+      res.json({
+        message: "Default admin user created successfully",
+        admin: {
+          id: defaultAdmin.id,
+          username: defaultAdmin.username,
+          email: defaultAdmin.email,
+          role: defaultAdmin.role
+        }
+      });
+    } catch (error: any) {
+      console.error('Default admin creation error:', error);
+      res.status(500).json({ message: "Failed to create default admin user" });
     }
   });
 

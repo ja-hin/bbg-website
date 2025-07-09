@@ -47,9 +47,14 @@ const PAYU_CONFIG = {
 
 // Helper function to generate PayU hash
 function generatePayUHash(params: any, salt: string): string {
-  // PayU hash format: key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5|udf6|udf7|udf8|udf9|udf10|salt
-  const hashString = `${params.key}|${params.txnid}|${params.amount}|${params.productinfo}|${params.firstname}|${params.email}|${params.udf1 || ''}|${params.udf2 || ''}|${params.udf3 || ''}|${params.udf4 || ''}|${params.udf5 || ''}||||||||||${salt}`;
-  return crypto.createHash('sha512').update(hashString).digest('hex');
+  // PayU official hash format: key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5|udf6|udf7|udf8|udf9|udf10|SALT
+  // Note: UDF6-UDF10 are empty but still need pipe separators
+  const hashString = `${params.key}|${params.txnid}|${params.amount}|${params.productinfo}|${params.firstname}|${params.email}|${params.udf1 || ''}|${params.udf2 || ''}|${params.udf3 || ''}|${params.udf4 || ''}|${params.udf5 || ''}|||||||||${salt}`;
+  
+  console.log('PayU Hash String:', hashString);
+  const hash = crypto.createHash('sha512').update(hashString).digest('hex');
+  console.log('Generated Hash:', hash);
+  return hash;
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -215,7 +220,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { txnid, amount, status, hash, ...otherParams } = req.body;
       
       // Verify hash for security (reverse hash format for success)
-      const verifyHashString = `${PAYU_CONFIG.salt}|${status}||||||||||${otherParams.udf5 || ''}|${otherParams.udf4 || ''}|${otherParams.udf3 || ''}|${otherParams.udf2 || ''}|${otherParams.udf1 || ''}|${otherParams.email}|${otherParams.firstname}|${otherParams.productinfo}|${amount}|${txnid}|${PAYU_CONFIG.merchantKey}`;
+      const verifyHashString = `${PAYU_CONFIG.salt}|${status}||||||${otherParams.udf5 || ''}|${otherParams.udf4 || ''}|${otherParams.udf3 || ''}|${otherParams.udf2 || ''}|${otherParams.udf1 || ''}|${otherParams.email}|${otherParams.firstname}|${otherParams.productinfo}|${amount}|${txnid}|${PAYU_CONFIG.merchantKey}`;
+      console.log('PayU Success Verify Hash String:', verifyHashString);
       const expectedHash = crypto.createHash('sha512').update(verifyHashString).digest('hex');
       
       if (hash !== expectedHash) {

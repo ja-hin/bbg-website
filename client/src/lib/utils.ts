@@ -7,6 +7,12 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatCurrency(amount: number | string): string {
   const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+  
+  // Handle NaN, undefined, null, or invalid numbers
+  if (isNaN(num) || num === null || num === undefined) {
+    return '₹0';
+  }
+  
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',

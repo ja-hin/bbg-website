@@ -598,16 +598,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         storage.getAllClaims()
       ]);
 
-      const totalRevenue = customers.length * 99; // Assuming average of ₹99 per registration
+      // Calculate more accurate revenue based on device types
+      const totalRevenue = customers.reduce((total, customer) => {
+        const deviceTypeRevenue = customer.deviceType === 'laptop' ? 125 : 99;
+        return total + deviceTypeRevenue;
+      }, 0);
+
       const pendingClaims = claims.filter(c => c.status === 'pending').length;
+
+      console.log('Dashboard stats:', {
+        distributors: distributors.length,
+        customers: customers.length,
+        claims: claims.length,
+        pendingClaims,
+        totalRevenue
+      });
 
       res.json({
         stats: {
-          totalDistributors: distributors.length,
-          totalCustomers: customers.length,
-          totalClaims: claims.length,
-          pendingClaims,
-          totalRevenue,
+          totalDistributors: distributors.length || 0,
+          totalCustomers: customers.length || 0,
+          totalClaims: claims.length || 0,
+          pendingClaims: pendingClaims || 0,
+          totalRevenue: totalRevenue || 0,
           recentCustomers: customers.slice(0, 10),
           recentClaims: claims.slice(0, 10)
         }

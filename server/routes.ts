@@ -689,6 +689,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Debug admin user endpoint
+  app.get("/api/admin/debug-user", async (req, res) => {
+    try {
+      const admin = await storage.getAdminByUsername('admin');
+      res.json({
+        exists: !!admin,
+        admin: admin ? {
+          id: admin.id,
+          username: admin.username,
+          email: admin.email,
+          role: admin.role,
+          hasPassword: !!admin.passwordHash,
+          passwordLength: admin.passwordHash?.length || 0
+        } : null
+      });
+    } catch (error: any) {
+      console.error('Debug admin user error:', error);
+      res.status(500).json({ message: "Failed to debug admin user", error: error.message });
+    }
+  });
+
   // Create default admin user if none exists
   app.post("/api/admin/create-default", async (req, res) => {
     try {

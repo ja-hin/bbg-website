@@ -130,6 +130,12 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 
 ```
 Changelog:
+- July 08, 2025: Moved all credentials to environment variables
+  - Updated SQL Server configuration to use environment variables (SQL_SERVER_HOST, SQL_SERVER_PORT, SQL_SERVER_DATABASE, SQL_SERVER_USER, SQL_SERVER_PASSWORD)
+  - Updated PayU configuration to use PAYU_BASE_URL from environment variables
+  - Removed hardcoded database and PayU credentials from source code
+  - Updated .env.example to reflect all required environment variables
+  - Maintained fallback values for development compatibility
 - July 08, 2025: Removed Stripe payment gateway, using PayU only with test credentials
   - Removed all Stripe-related code, components, and dependencies (@stripe/stripe-js, @stripe/react-stripe-js, stripe)
   - Simplified payment flow to use only PayU gateway with hardcoded test credentials

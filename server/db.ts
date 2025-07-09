@@ -1,12 +1,12 @@
 import sql from 'mssql';
 
-// SQL Server configuration
+// SQL Server configuration - using environment variables
 const config: sql.config = {
-  server: '103.205.66.184',
-  port: 2499,
-  database: 'prexoDB',
-  user: 'qo8yhe',
-  password: 'tFbs89!0Ryyx1^90',
+  server: process.env.SQL_SERVER_HOST || '103.205.66.184',
+  port: parseInt(process.env.SQL_SERVER_PORT || '2499'),
+  database: process.env.SQL_SERVER_DATABASE || 'prexoDB',
+  user: process.env.SQL_SERVER_USER || 'qo8yhe',
+  password: process.env.SQL_SERVER_PASSWORD || 'tFbs89!0Ryyx1^90',
   options: {
     encrypt: false, // Set to true if using Azure
     trustServerCertificate: true, // Set to true for self-signed certificates

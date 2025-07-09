@@ -23,12 +23,12 @@ PAYU_BASE_URL=https://test.payu.in  # For testing
 ```
 
 ### Current Configuration
-The system uses environment variables for PayU credentials:
+The system uses environment variables for all PayU credentials:
 - Merchant Key: From `PAYU_MERCHANT_KEY` environment variable
 - Salt: From `PAYU_SALT` environment variable  
-- Base URL: `https://test.payu.in` (hardcoded for test environment)
+- Base URL: From `PAYU_BASE_URL` environment variable
 
-**For Production**: Change the baseUrl in `server/routes.ts` to `https://secure.payu.in`
+**Environment Setup**: Set `PAYU_BASE_URL=https://test.payu.in` for testing or `PAYU_BASE_URL=https://secure.payu.in` for production
 
 ## Payment Flow
 

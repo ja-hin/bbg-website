@@ -38,11 +38,11 @@ const upload = multer({
 
 // Stripe removed - using PayU only
 
-// PayU Configuration - Using your credentials
+// PayU Configuration - Using environment variables
 const PAYU_CONFIG = {
   merchantKey: process.env.PAYU_MERCHANT_KEY || "test_merchant_key",
   salt: process.env.PAYU_SALT || "test_salt",
-  baseUrl: "https://test.payu.in" // Change to https://secure.payu.in for production
+  baseUrl: process.env.PAYU_BASE_URL || "https://test.payu.in"
 };
 
 // Helper function to generate PayU hash
@@ -169,7 +169,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create PayU payment
   app.post("/api/create-payu-payment", async (req, res) => {
     try {
-      const { deviceType, customerData } = req.body;
+      const { customerData } = req.body;
+      const deviceType = customerData.deviceType;
       const amount = deviceType === 'laptop' ? 125 : 99;
       
       // Generate unique transaction ID

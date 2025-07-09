@@ -69,15 +69,28 @@ export const otpVerifications = pgTable("otp_verifications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// User Roles Master
+export const userRoles = pgTable("user_roles", {
+  id: serial("id").primaryKey(),
+  roleName: text("role_name").notNull().unique(), // 'super_admin', 'admin', 'moderator', 'viewer'
+  description: text("description").notNull(),
+  permissions: text("permissions").notNull(), // JSON string of permissions
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const adminUsers = pgTable("admin_users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
-  role: text("role").notNull().default('admin'), // 'admin', 'super_admin'
+  roleId: integer("role_id").notNull(), // Foreign key to user_roles
+  role: text("role").notNull().default('admin'), // kept for compatibility
   isActive: boolean("is_active").default(true),
   lastLoginAt: timestamp("last_login_at"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const insertDistributorSchema = createInsertSchema(distributors).omit({
@@ -108,19 +121,29 @@ export const insertOtpSchema = createInsertSchema(otpVerifications).omit({
   createdAt: true,
 });
 
+export const insertUserRoleSchema = createInsertSchema(userRoles).omit({
+  id: true,
+  isActive: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({
   id: true,
   isActive: true,
   lastLoginAt: true,
   createdAt: true,
+  updatedAt: true,
 });
 
+export type UserRole = typeof userRoles.$inferSelect;
 export type Distributor = typeof distributors.$inferSelect;
 export type Customer = typeof customers.$inferSelect;
 export type Claim = typeof claims.$inferSelect;
 export type OtpVerification = typeof otpVerifications.$inferSelect;
 export type AdminUser = typeof adminUsers.$inferSelect;
 
+export type InsertUserRole = z.infer<typeof insertUserRoleSchema>;
 export type InsertDistributor = z.infer<typeof insertDistributorSchema>;
 export type InsertCustomer = z.infer<typeof insertCustomerSchema>;
 export type InsertClaim = z.infer<typeof insertClaimSchema>;

@@ -1,9 +1,11 @@
 import { 
+  type UserRole,
   type Distributor, 
   type Customer, 
   type Claim, 
   type OtpVerification,
   type AdminUser,
+  type InsertUserRole,
   type InsertDistributor, 
   type InsertCustomer, 
   type InsertClaim, 
@@ -15,18 +17,29 @@ import sql from 'mssql';
 import bcrypt from 'bcryptjs';
 
 export interface IStorage {
-  // Distributor operations
+  // User Role operations (Master)
+  createUserRole(role: InsertUserRole): Promise<UserRole>;
+  getAllUserRoles(): Promise<UserRole[]>;
+  getUserRoleById(id: number): Promise<UserRole | undefined>;
+  updateUserRole(id: number, updates: Partial<InsertUserRole>): Promise<void>;
+  deleteUserRole(id: number): Promise<void>;
+  
+  // Distributor operations (Master)
   createDistributor(distributor: InsertDistributor): Promise<Distributor>;
   getDistributorBySellerCode(sellerCode: string): Promise<Distributor | undefined>;
   getDistributorByEmail(email: string): Promise<Distributor | undefined>;
   getAllDistributors(): Promise<Distributor[]>;
+  updateDistributor(id: number, updates: Partial<InsertDistributor>): Promise<void>;
+  deleteDistributor(id: number): Promise<void>;
   
-  // Customer operations
+  // Customer operations (Master)
   createCustomer(customer: InsertCustomer): Promise<Customer>;
   getCustomerByVoucherCode(voucherCode: string): Promise<Customer | undefined>;
   getCustomersBySellerCode(sellerCode: string): Promise<Customer[]>;
   getAllCustomers(): Promise<Customer[]>;
   updateCustomerVerification(id: number, isVerified: boolean): Promise<void>;
+  updateCustomer(id: number, updates: Partial<InsertCustomer>): Promise<void>;
+  deleteCustomer(id: number): Promise<void>;
   
   // Claim operations
   createClaim(claim: InsertClaim): Promise<Claim>;
@@ -39,9 +52,12 @@ export interface IStorage {
   getOtpByContact(contact: string): Promise<OtpVerification | undefined>;
   verifyOtp(contact: string, otp: string): Promise<boolean>;
   
-  // Admin operations
+  // Admin operations (Master)
   createAdminUser(admin: InsertAdminUser): Promise<AdminUser>;
   getAdminByUsername(username: string): Promise<AdminUser | undefined>;
+  getAllAdminUsers(): Promise<AdminUser[]>;
+  updateAdminUser(id: number, updates: Partial<InsertAdminUser>): Promise<void>;
+  deleteAdminUser(id: number): Promise<void>;
   updateAdminLastLogin(id: number): Promise<void>;
   verifyAdminPassword(username: string, password: string): Promise<AdminUser | null>;
 }
@@ -64,7 +80,28 @@ export class SqlServerStorage implements IStorage {
 
   private async createTablesIfNotExist() {
     const createTablesScript = `
-      -- Create distributors table
+      -- Create user_roles table (Master)
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'user_roles')
+      BEGIN
+        CREATE TABLE user_roles (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          role_name NVARCHAR(50) NOT NULL UNIQUE,
+          description NVARCHAR(500) NOT NULL,
+          permissions NVARCHAR(MAX) NOT NULL,
+          is_active BIT DEFAULT 1,
+          created_at DATETIME2 DEFAULT GETDATE(),
+          updated_at DATETIME2 DEFAULT GETDATE()
+        );
+        
+        -- Insert default roles
+        INSERT INTO user_roles (role_name, description, permissions) VALUES
+        ('super_admin', 'Full system access with all permissions', '["all"]'),
+        ('admin', 'Administrative access with most permissions', '["user_management", "distributor_management", "customer_management", "claims_management", "reports"]'),
+        ('moderator', 'Limited admin access for content moderation', '["customer_management", "claims_review", "reports_view"]'),
+        ('viewer', 'Read-only access to reports and data', '["reports_view", "data_view"]');
+      END
+
+      -- Create distributors table (Master)
       IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'distributors')
       BEGIN
         CREATE TABLE distributors (
@@ -79,15 +116,17 @@ export class SqlServerStorage implements IStorage {
           gstin NVARCHAR(15),
           bank_account NVARCHAR(50),
           ifsc_code NVARCHAR(11),
+          account_holder_name NVARCHAR(255),
           seller_code NVARCHAR(10) NOT NULL UNIQUE,
           commission_earned DECIMAL(10,2) DEFAULT 0,
           total_customers INT DEFAULT 0,
+          is_active BIT DEFAULT 1,
           is_verified BIT DEFAULT 0,
           created_at DATETIME2 DEFAULT GETDATE()
         );
       END
 
-      -- Create customers table
+      -- Create customers table (Master)
       IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'customers')
       BEGIN
         CREATE TABLE customers (
@@ -567,11 +606,217 @@ export class SqlServerStorage implements IStorage {
       username: row.username,
       email: row.email,
       passwordHash: row.password_hash,
+      roleId: row.role_id || 1, // Default to admin role
       role: row.role,
       isActive: Boolean(row.is_active),
       lastLoginAt: row.last_login_at,
-      createdAt: row.created_at
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
     };
+  }
+
+  private mapUserRoleFromDb(row: any): UserRole {
+    return {
+      id: row.id,
+      roleName: row.role_name,
+      description: row.description,
+      permissions: row.permissions,
+      isActive: Boolean(row.is_active),
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  // User Role operations (Master)
+  async createUserRole(insertRole: InsertUserRole): Promise<UserRole> {
+    await db.connectDB();
+    const query = `
+      INSERT INTO user_roles (role_name, description, permissions)
+      OUTPUT INSERTED.*
+      VALUES (@roleName, @description, @permissions)
+    `;
+
+    const request = db.pool.request();
+    request.input('roleName', sql.NVarChar, insertRole.roleName);
+    request.input('description', sql.NVarChar, insertRole.description);
+    request.input('permissions', sql.NVarChar, insertRole.permissions);
+
+    const result = await request.query(query);
+    return this.mapUserRoleFromDb(result.recordset[0]);
+  }
+
+  async getAllUserRoles(): Promise<UserRole[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM user_roles ORDER BY created_at DESC`;
+    const request = db.pool.request();
+    const result = await request.query(query);
+    return result.recordset.map(row => this.mapUserRoleFromDb(row));
+  }
+
+  async getUserRoleById(id: number): Promise<UserRole | undefined> {
+    await db.connectDB();
+    const query = `SELECT * FROM user_roles WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    const result = await request.query(query);
+    return result.recordset.length > 0 ? this.mapUserRoleFromDb(result.recordset[0]) : undefined;
+  }
+
+  async updateUserRole(id: number, updates: Partial<InsertUserRole>): Promise<void> {
+    await db.connectDB();
+    const setParts = [];
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+
+    if (updates.roleName !== undefined) {
+      setParts.push('role_name = @roleName');
+      request.input('roleName', sql.NVarChar, updates.roleName);
+    }
+    if (updates.description !== undefined) {
+      setParts.push('description = @description');
+      request.input('description', sql.NVarChar, updates.description);
+    }
+    if (updates.permissions !== undefined) {
+      setParts.push('permissions = @permissions');
+      request.input('permissions', sql.NVarChar, updates.permissions);
+    }
+
+    setParts.push('updated_at = GETDATE()');
+
+    const query = `UPDATE user_roles SET ${setParts.join(', ')} WHERE id = @id`;
+    await request.query(query);
+  }
+
+  async deleteUserRole(id: number): Promise<void> {
+    await db.connectDB();
+    const query = `DELETE FROM user_roles WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    await request.query(query);
+  }
+
+  // Additional Master CRUD operations
+  async updateDistributor(id: number, updates: Partial<InsertDistributor>): Promise<void> {
+    await db.connectDB();
+    const setParts = [];
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+
+    if (updates.name !== undefined) {
+      setParts.push('name = @name');
+      request.input('name', sql.NVarChar, updates.name);
+    }
+    if (updates.businessName !== undefined) {
+      setParts.push('business_name = @businessName');
+      request.input('businessName', sql.NVarChar, updates.businessName);
+    }
+    if (updates.contact !== undefined) {
+      setParts.push('contact = @contact');
+      request.input('contact', sql.NVarChar, updates.contact);
+    }
+    if (updates.email !== undefined) {
+      setParts.push('email = @email');
+      request.input('email', sql.NVarChar, updates.email);
+    }
+    if (updates.pincode !== undefined) {
+      setParts.push('pincode = @pincode');
+      request.input('pincode', sql.NVarChar, updates.pincode);
+    }
+    if (updates.location !== undefined) {
+      setParts.push('location = @location');
+      request.input('location', sql.NVarChar, updates.location);
+    }
+
+    if (setParts.length > 0) {
+      const query = `UPDATE distributors SET ${setParts.join(', ')} WHERE id = @id`;
+      await request.query(query);
+    }
+  }
+
+  async deleteDistributor(id: number): Promise<void> {
+    await db.connectDB();
+    const query = `DELETE FROM distributors WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    await request.query(query);
+  }
+
+  async updateCustomer(id: number, updates: Partial<InsertCustomer>): Promise<void> {
+    await db.connectDB();
+    const setParts = [];
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+
+    if (updates.name !== undefined) {
+      setParts.push('name = @name');
+      request.input('name', sql.NVarChar, updates.name);
+    }
+    if (updates.contact !== undefined) {
+      setParts.push('contact = @contact');
+      request.input('contact', sql.NVarChar, updates.contact);
+    }
+    if (updates.email !== undefined) {
+      setParts.push('email = @email');
+      request.input('email', sql.NVarChar, updates.email);
+    }
+
+    if (setParts.length > 0) {
+      const query = `UPDATE customers SET ${setParts.join(', ')} WHERE id = @id`;
+      await request.query(query);
+    }
+  }
+
+  async deleteCustomer(id: number): Promise<void> {
+    await db.connectDB();
+    const query = `DELETE FROM customers WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    await request.query(query);
+  }
+
+  async getAllAdminUsers(): Promise<AdminUser[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM admin_users ORDER BY created_at DESC`;
+    const request = db.pool.request();
+    const result = await request.query(query);
+    return result.recordset.map(row => this.mapAdminFromDb(row));
+  }
+
+  async updateAdminUser(id: number, updates: Partial<InsertAdminUser>): Promise<void> {
+    await db.connectDB();
+    const setParts = [];
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+
+    if (updates.username !== undefined) {
+      setParts.push('username = @username');
+      request.input('username', sql.NVarChar, updates.username);
+    }
+    if (updates.email !== undefined) {
+      setParts.push('email = @email');
+      request.input('email', sql.NVarChar, updates.email);
+    }
+    if (updates.passwordHash !== undefined) {
+      setParts.push('password_hash = @passwordHash');
+      request.input('passwordHash', sql.NVarChar, updates.passwordHash);
+    }
+    if (updates.role !== undefined) {
+      setParts.push('role = @role');
+      request.input('role', sql.NVarChar, updates.role);
+    }
+
+    if (setParts.length > 0) {
+      const query = `UPDATE admin_users SET ${setParts.join(', ')} WHERE id = @id`;
+      await request.query(query);
+    }
+  }
+
+  async deleteAdminUser(id: number): Promise<void> {
+    await db.connectDB();
+    const query = `DELETE FROM admin_users WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    await request.query(query);
   }
 }
 

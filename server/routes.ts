@@ -737,6 +737,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         username: 'admin',
         email: 'admin@xtracover.com',
         passwordHash: 'admin123', // This will be hashed by the storage layer
+        roleId: 1, // Default admin role
         role: 'admin'
       });
 
@@ -752,6 +753,208 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Default admin creation error:', error);
       res.status(500).json({ message: "Failed to create default admin user" });
+    }
+  });
+
+  // ===== MASTER MANAGEMENT ROUTES =====
+
+  // User Roles Master Management
+  app.get("/api/admin/user-roles", isAdminAuthenticated, async (req, res) => {
+    try {
+      const roles = await storage.getAllUserRoles();
+      res.json(roles);
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get user roles" });
+    }
+  });
+
+  app.post("/api/admin/user-roles", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { roleName, description, permissions } = req.body;
+      
+      if (!roleName || !description || !permissions) {
+        return res.status(400).json({ message: "Role name, description and permissions are required" });
+      }
+
+      const role = await storage.createUserRole({
+        roleName,
+        description,
+        permissions: JSON.stringify(permissions)
+      });
+
+      res.status(201).json({
+        message: "User role created successfully",
+        role
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to create user role" });
+    }
+  });
+
+  app.put("/api/admin/user-roles/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const roleId = parseInt(req.params.id);
+      const updates = req.body;
+
+      if (updates.permissions && typeof updates.permissions === 'object') {
+        updates.permissions = JSON.stringify(updates.permissions);
+      }
+
+      await storage.updateUserRole(roleId, updates);
+      res.json({ message: "User role updated successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to update user role" });
+    }
+  });
+
+  app.delete("/api/admin/user-roles/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const roleId = parseInt(req.params.id);
+      await storage.deleteUserRole(roleId);
+      res.json({ message: "User role deleted successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to delete user role" });
+    }
+  });
+
+  // Admin Users Master Management
+  app.get("/api/admin/admins", isAdminAuthenticated, async (req, res) => {
+    try {
+      const admins = await storage.getAllAdminUsers();
+      // Remove password hash from response
+      const sanitizedAdmins = admins.map(admin => ({
+        ...admin,
+        passwordHash: undefined
+      }));
+      res.json(sanitizedAdmins);
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get admin users" });
+    }
+  });
+
+  app.post("/api/admin/admins", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { username, email, password, roleId, role } = req.body;
+      
+      if (!username || !email || !password) {
+        return res.status(400).json({ message: "Username, email and password are required" });
+      }
+
+      const admin = await storage.createAdminUser({
+        username,
+        email,
+        passwordHash: password, // Will be hashed by storage
+        roleId: roleId || 1,
+        role: role || 'admin'
+      });
+
+      res.status(201).json({
+        message: "Admin user created successfully",
+        admin: {
+          ...admin,
+          passwordHash: undefined
+        }
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to create admin user" });
+    }
+  });
+
+  app.put("/api/admin/admins/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const adminId = parseInt(req.params.id);
+      const updates = req.body;
+
+      // Hash password if provided
+      if (updates.password) {
+        updates.passwordHash = updates.password;
+        delete updates.password;
+      }
+
+      await storage.updateAdminUser(adminId, updates);
+      res.json({ message: "Admin user updated successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to update admin user" });
+    }
+  });
+
+  app.delete("/api/admin/admins/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const adminId = parseInt(req.params.id);
+      await storage.deleteAdminUser(adminId);
+      res.json({ message: "Admin user deleted successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to delete admin user" });
+    }
+  });
+
+  // Distributors Master Management (Enhanced with CRUD)
+  app.post("/api/admin/distributors", isAdminAuthenticated, async (req, res) => {
+    try {
+      const distributorData = req.body;
+      const distributor = await storage.createDistributor(distributorData);
+      res.status(201).json({
+        message: "Distributor created successfully",
+        distributor
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to create distributor" });
+    }
+  });
+
+  app.put("/api/admin/distributors/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const distributorId = parseInt(req.params.id);
+      const updates = req.body;
+      await storage.updateDistributor(distributorId, updates);
+      res.json({ message: "Distributor updated successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to update distributor" });
+    }
+  });
+
+  app.delete("/api/admin/distributors/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const distributorId = parseInt(req.params.id);
+      await storage.deleteDistributor(distributorId);
+      res.json({ message: "Distributor deleted successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to delete distributor" });
+    }
+  });
+
+  // Customers Master Management (Enhanced with CRUD)
+  app.post("/api/admin/customers", isAdminAuthenticated, async (req, res) => {
+    try {
+      const customerData = req.body;
+      const customer = await storage.createCustomer(customerData);
+      res.status(201).json({
+        message: "Customer created successfully",
+        customer
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to create customer" });
+    }
+  });
+
+  app.put("/api/admin/customers/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const customerId = parseInt(req.params.id);
+      const updates = req.body;
+      await storage.updateCustomer(customerId, updates);
+      res.json({ message: "Customer updated successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to update customer" });
+    }
+  });
+
+  app.delete("/api/admin/customers/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const customerId = parseInt(req.params.id);
+      await storage.deleteCustomer(customerId);
+      res.json({ message: "Customer deleted successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to delete customer" });
     }
   });
 

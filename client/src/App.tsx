@@ -13,6 +13,7 @@ import ClaimBBG from "@/pages/claim-bbg";
 import ThankYou from "@/pages/thank-you";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
+import AdminMasters from "@/pages/admin-masters";
 
 function Router() {
   return (
@@ -25,6 +26,7 @@ function Router() {
       }} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
+      <Route path="/admin/masters" component={AdminMasters} />
       
       {/* Regular routes with header/footer */}
       <Route>

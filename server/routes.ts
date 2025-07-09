@@ -38,22 +38,31 @@ const upload = multer({
 
 // Stripe removed - using PayU only
 
-// PayU Configuration - Using environment variables
+// PayU Configuration - Using environment variables with test fallback for debugging
 const PAYU_CONFIG = {
-  merchantKey: process.env.PAYU_MERCHANT_KEY || "test_merchant_key",
-  salt: process.env.PAYU_SALT || "test_salt",
+  merchantKey: process.env.PAYU_MERCHANT_KEY || "JBZaLc",  // PayU test merchant key
+  salt: process.env.PAYU_SALT || "GQs7yium",  // PayU test salt
   baseUrl: process.env.PAYU_BASE_URL || "https://test.payu.in"
 };
 
+console.log('PayU Config:', {
+  merchantKey: PAYU_CONFIG.merchantKey,
+  salt: PAYU_CONFIG.salt.substring(0, 5) + '...',
+  baseUrl: PAYU_CONFIG.baseUrl
+});
+
 // Helper function to generate PayU hash
 function generatePayUHash(params: any, salt: string): string {
-  // PayU official hash format: key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5|udf6|udf7|udf8|udf9|udf10|SALT
-  // Note: UDF6-UDF10 are empty but still need pipe separators
-  const hashString = `${params.key}|${params.txnid}|${params.amount}|${params.productinfo}|${params.firstname}|${params.email}|${params.udf1 || ''}|${params.udf2 || ''}|${params.udf3 || ''}|${params.udf4 || ''}|${params.udf5 || ''}|||||||||${salt}`;
+  // PayU hash format: key|txnid|amount|productinfo|firstname|email|||||||||||salt
+  // Note: This is the BASIC format without UDF fields - let's try this first
+  const hashString = `${params.key}|${params.txnid}|${params.amount}|${params.productinfo}|${params.firstname}|${params.email}|||||||||||${salt}`;
   
-  console.log('PayU Hash String:', hashString);
+  console.log('PayU Basic Hash String:', hashString);
+  console.log('Parameters:', JSON.stringify(params, null, 2));
+  
   const hash = crypto.createHash('sha512').update(hashString).digest('hex');
-  console.log('Generated Hash:', hash);
+  console.log('Generated Basic Hash:', hash);
+  
   return hash;
 }
 
@@ -182,22 +191,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate unique transaction ID
       const txnid = `BBG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
+      // Create basic PayU parameters without UDF fields first
       const payuParams = {
         key: PAYU_CONFIG.merchantKey,
         txnid,
         amount: amount.toString(),
-        productinfo: `BBG for ${deviceType}`,
+        productinfo: `BBG Registration`,
         firstname: customerData.name,
         email: customerData.email,
         phone: customerData.contact,
         surl: `${req.protocol}://${req.get('host')}/api/payu/success`,
-        furl: `${req.protocol}://${req.get('host')}/api/payu/failure`,
-        udf1: deviceType,
-        udf2: customerData.contact,
-        udf3: customerData.pincode,
-        udf4: customerData.sellerCode || '',
-        udf5: JSON.stringify(customerData)
+        furl: `${req.protocol}://${req.get('host')}/api/payu/failure`
       };
+      
+      // Store customer data separately for success handler
+      // We'll use session or database to store this instead of UDF fields
 
       // Generate hash
       const hash = generatePayUHash(payuParams, PAYU_CONFIG.salt);

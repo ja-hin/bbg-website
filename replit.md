@@ -22,10 +22,12 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 - **Database Provider**: Neon Database (serverless PostgreSQL)
 
 ### Database Design
+- **Microsoft SQL Server**: Production database at 103.205.66.184:2499 (database: prexoDB)
 - **distributors**: Stores distributor information, payment details, and seller codes
 - **customers**: Stores customer registrations, device details, and BBG voucher codes
 - **claims**: Tracks BBG claim requests and their status
-- **otpVerifications**: Handles OTP-based verification system
+- **otp_verifications**: Handles OTP-based verification system
+- **admin_users**: Secure admin authentication with bcrypt password hashing
 
 ## Key Components
 

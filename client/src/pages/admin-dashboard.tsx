@@ -32,13 +32,15 @@ interface AdminUser {
 }
 
 interface DashboardStats {
-  totalDistributors: number;
-  totalCustomers: number;
-  totalClaims: number;
-  pendingClaims: number;
-  totalRevenue: number;
-  recentCustomers: any[];
-  recentClaims: any[];
+  stats: {
+    totalDistributors: number;
+    totalCustomers: number;
+    totalClaims: number;
+    pendingClaims: number;
+    totalRevenue: number;
+    recentCustomers: any[];
+    recentClaims: any[];
+  };
 }
 
 interface Distributor {
@@ -102,8 +104,13 @@ export default function AdminDashboard() {
   // Dashboard data
   const { data: dashboardStats, isLoading: statsLoading } = useQuery<DashboardStats>({
     queryKey: ["/api/admin/dashboard"],
-    enabled: !!adminUser
+    enabled: !!adminUser,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    staleTime: 0 // Always consider data stale to force fresh fetch
   });
+
+
 
   const { data: distributors, isLoading: distributorsLoading } = useQuery<Distributor[]>({
     queryKey: ["/api/admin/distributors"],
@@ -214,7 +221,20 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Dashboard Stats */}
-        {!statsLoading && dashboardStats && (
+        {statsLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+            {[...Array(5)].map((_, i) => (
+              <Card key={i}>
+                <CardContent className="p-6">
+                  <div className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
+                    <div className="h-8 bg-gray-200 rounded w-16"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : dashboardStats ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
             <Card>
               <CardContent className="p-6">
@@ -222,7 +242,7 @@ export default function AdminDashboard() {
                   <Users className="h-8 w-8 text-blue-600" />
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600">Distributors</p>
-                    <p className="text-2xl font-bold text-gray-900">{dashboardStats.totalDistributors}</p>
+                    <p className="text-2xl font-bold text-gray-900">{dashboardStats.stats.totalDistributors || 0}</p>
                   </div>
                 </div>
               </CardContent>
@@ -234,7 +254,7 @@ export default function AdminDashboard() {
                   <Smartphone className="h-8 w-8 text-green-600" />
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600">Customers</p>
-                    <p className="text-2xl font-bold text-gray-900">{dashboardStats.totalCustomers}</p>
+                    <p className="text-2xl font-bold text-gray-900">{dashboardStats.stats.totalCustomers || 0}</p>
                   </div>
                 </div>
               </CardContent>
@@ -246,7 +266,7 @@ export default function AdminDashboard() {
                   <FileText className="h-8 w-8 text-purple-600" />
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600">Total Claims</p>
-                    <p className="text-2xl font-bold text-gray-900">{dashboardStats.totalClaims}</p>
+                    <p className="text-2xl font-bold text-gray-900">{dashboardStats.stats.totalClaims || 0}</p>
                   </div>
                 </div>
               </CardContent>
@@ -258,7 +278,7 @@ export default function AdminDashboard() {
                   <AlertCircle className="h-8 w-8 text-orange-600" />
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600">Pending Claims</p>
-                    <p className="text-2xl font-bold text-gray-900">{dashboardStats.pendingClaims}</p>
+                    <p className="text-2xl font-bold text-gray-900">{dashboardStats.stats.pendingClaims || 0}</p>
                   </div>
                 </div>
               </CardContent>
@@ -270,11 +290,15 @@ export default function AdminDashboard() {
                   <IndianRupee className="h-8 w-8 text-emerald-600" />
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600">Revenue</p>
-                    <p className="text-2xl font-bold text-gray-900">{formatCurrency(dashboardStats.totalRevenue)}</p>
+                    <p className="text-2xl font-bold text-gray-900">{formatCurrency(dashboardStats.stats.totalRevenue || 0)}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
+          </div>
+        ) : (
+          <div className="mb-8 p-6 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-700">Failed to load dashboard statistics. Please refresh the page.</p>
           </div>
         )}
 

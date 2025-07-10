@@ -55,7 +55,7 @@ export class KaleyraSMSService {
       const formattedPhone = this.formatPhoneNumber(phoneNumber);
       
       // Default OTP message template
-      const message = customMessage || `Your BBG verification code is ${otpCode}. Please do not share this with anyone. Valid for 10 minutes.`;
+      const message = customMessage || `Your OTP is ${otpCode}. Do not share your OTP with anyone. Team Xtracover. - XtraCover`;
       
       // Use the working Kaleyra API format
       const url = this.baseURL;

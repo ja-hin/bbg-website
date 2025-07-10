@@ -2,7 +2,7 @@ import axios from 'axios';
 
 interface KaleyraSMSConfig {
   apiKey: string;
-  sid: string;
+  sid?: string; // Not used in v4 API
   region?: 'global' | 'india';
   senderId?: string;
 }
@@ -14,15 +14,10 @@ interface OTPResponse {
 }
 
 interface KaleyraSMSResponse {
-  id: string;
-  account_sid: string;
-  to: string;
-  from: string;
-  type: string;
-  body: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
+  id?: string;
+  status?: string;
+  message?: string;
+  [key: string]: any;
 }
 
 export class KaleyraSMSService {
@@ -33,11 +28,9 @@ export class KaleyraSMSService {
 
   constructor(config: KaleyraSMSConfig) {
     this.apiKey = config.apiKey;
-    this.sid = config.sid;
-    this.senderId = config.senderId || 'KLRHXA';
-    this.baseURL = config.region === 'india' 
-      ? 'https://api.in.kaleyra.io/v1/' 
-      : 'https://api.kaleyra.io/v1/';
+    this.sid = config.sid || ''; // Not used in v4 API
+    this.senderId = config.senderId || 'XTRCVR';
+    this.baseURL = 'https://api-alerts.kaleyra.com/v4/';
   }
 
   /**
@@ -48,12 +41,12 @@ export class KaleyraSMSService {
    * @returns Promise<OTPResponse>
    */
   async sendOTP(phoneNumber: string, otpCode: string, customMessage?: string): Promise<OTPResponse> {
-    // Check if service is properly configured
-    if (!this.apiKey || !this.sid) {
-      console.warn('Kaleyra SMS service not configured - API key or SID missing');
+    // Check if service is properly configured (only API key needed for v4)
+    if (!this.apiKey) {
+      console.warn('Kaleyra SMS service not configured - API key missing');
       return {
         success: false,
-        error: 'SMS service not configured. Please add KALEYRA_API_KEY and KALEYRA_SID to environment variables.'
+        error: 'SMS service not configured. Please add KALEYRA_API_KEY to environment variables.'
       };
     }
 
@@ -61,17 +54,20 @@ export class KaleyraSMSService {
       // Ensure phone number has country code
       const formattedPhone = this.formatPhoneNumber(phoneNumber);
       
-      const url = `${this.baseURL}${this.sid}/messages`;
-      
       // Default OTP message template
       const message = customMessage || `Your BBG verification code is ${otpCode}. Please do not share this with anyone. Valid for 10 minutes.`;
       
-      const data = new URLSearchParams({
+      // Use the working Kaleyra API format
+      const url = this.baseURL;
+      const params = new URLSearchParams({
+        api_key: this.apiKey,
+        method: 'sms',
+        message: message,
         to: formattedPhone,
-        type: 'OTP',
-        sender: this.senderId,
-        body: message
+        sender: this.senderId
       });
+
+      const fullUrl = `${url}?${params.toString()}`;
 
       console.log('Sending OTP via Kaleyra:', {
         to: formattedPhone,
@@ -80,23 +76,19 @@ export class KaleyraSMSService {
         hasApiKey: !!this.apiKey
       });
 
-      const response = await axios.post<KaleyraSMSResponse>(url, data, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'api-key': this.apiKey
-        },
+      const response = await axios.get(fullUrl, {
         timeout: 30000 // 30 second timeout
       });
 
       console.log('Kaleyra OTP sent successfully:', {
-        messageId: response.data.id,
-        to: response.data.to,
-        status: response.data.status
+        status: response.status,
+        data: response.data,
+        to: formattedPhone
       });
 
       return {
         success: true,
-        messageId: response.data.id
+        messageId: response.data?.id || 'sent'
       };
 
     } catch (error: any) {
@@ -166,22 +158,17 @@ export class KaleyraSMSService {
 // Initialize Kaleyra service with environment variables
 function createKaleyraSMSService(): KaleyraSMSService {
   const apiKey = process.env.KALEYRA_API_KEY;
-  const sid = process.env.KALEYRA_SID;
   
-  if (!apiKey || !sid) {
-    console.warn('⚠️  Kaleyra SMS service not configured. Missing KALEYRA_API_KEY or KALEYRA_SID environment variables.');
-    console.log('📝 To enable SMS functionality, add these to your environment:');
+  if (!apiKey) {
+    console.warn('⚠️  Kaleyra SMS service not configured. Missing KALEYRA_API_KEY environment variable.');
+    console.log('📝 To enable SMS functionality, add this to your environment:');
     console.log('   KALEYRA_API_KEY=your_api_key');
-    console.log('   KALEYRA_SID=your_sid');
-    console.log('   KALEYRA_REGION=india (optional, defaults to india)');
-    console.log('   KALEYRA_SENDER_ID=BBGAPP (optional, defaults to BBGAPP)');
+    console.log('   KALEYRA_SENDER_ID=XTRCVR (optional, defaults to XTRCVR)');
   }
 
   return new KaleyraSMSService({
     apiKey: apiKey || '',
-    sid: sid || '',
-    region: (process.env.KALEYRA_REGION as 'global' | 'india') || 'india',
-    senderId: process.env.KALEYRA_SENDER_ID || 'BBGAPP'
+    senderId: process.env.KALEYRA_SENDER_ID || 'XTRCVR'
   });
 }
 

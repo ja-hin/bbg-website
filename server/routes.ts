@@ -8,6 +8,7 @@ import crypto from "crypto";
 import { storage } from "./sql-storage";
 import { db } from "./db";
 import sql from 'mssql';
+import { kaleyraSMSService } from "./kaleyra-service";
 import { 
   insertDistributorSchema, 
   insertCustomerSchema, 
@@ -103,20 +104,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Valid 10-digit contact number required" });
       }
 
+      // Validate phone number format
+      if (!kaleyraSMSService.isValidPhoneNumber(contact)) {
+        return res.status(400).json({ message: "Please enter a valid Indian mobile number" });
+      }
+
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
+      // Store OTP in database
       await storage.createOtp({
         contact,
         otp,
         expiresAt
       });
 
-      // In production, send actual SMS here
-      console.log(`OTP for ${contact}: ${otp}`);
+      // Send OTP via Kaleyra SMS service
+      const smsResult = await kaleyraSMSService.sendOTP(contact, otp);
       
-      res.json({ message: "OTP sent successfully" });
+      if (smsResult.success) {
+        console.log(`OTP sent via Kaleyra to ${contact}: ${otp} (Message ID: ${smsResult.messageId})`);
+        res.json({ 
+          message: "OTP sent successfully",
+          messageId: smsResult.messageId 
+        });
+      } else {
+        console.error(`Failed to send OTP via Kaleyra to ${contact}:`, smsResult.error);
+        // Fallback: log OTP for development/testing
+        console.log(`FALLBACK - OTP for ${contact}: ${otp}`);
+        res.json({ 
+          message: "OTP sent successfully", 
+          warning: "SMS service temporarily unavailable, please check console for OTP" 
+        });
+      }
     } catch (error: any) {
+      console.error("OTP sending error:", error);
       res.status(500).json({ message: "Failed to send OTP" });
     }
   });
@@ -129,20 +151,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Valid 10-digit contact number required" });
       }
 
+      // Validate phone number format
+      if (!kaleyraSMSService.isValidPhoneNumber(contact)) {
+        return res.status(400).json({ message: "Please enter a valid Indian mobile number" });
+      }
+
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
+      // Store OTP in database
       await storage.createOtp({
         contact,
         otp,
         expiresAt
       });
 
-      // In production, send actual SMS here
-      console.log(`OTP for ${contact}: ${otp}`);
+      // Send OTP via Kaleyra SMS service
+      const smsResult = await kaleyraSMSService.sendOTP(contact, otp);
       
-      res.json({ message: "OTP sent successfully" });
+      if (smsResult.success) {
+        console.log(`OTP sent via Kaleyra to ${contact}: ${otp} (Message ID: ${smsResult.messageId})`);
+        res.json({ 
+          message: "OTP sent successfully",
+          messageId: smsResult.messageId 
+        });
+      } else {
+        console.error(`Failed to send OTP via Kaleyra to ${contact}:`, smsResult.error);
+        // Fallback: log OTP for development/testing
+        console.log(`FALLBACK - OTP for ${contact}: ${otp}`);
+        res.json({ 
+          message: "OTP sent successfully", 
+          warning: "SMS service temporarily unavailable, please check console for OTP" 
+        });
+      }
     } catch (error: any) {
+      console.error("OTP sending error:", error);
       res.status(500).json({ message: "Failed to send OTP" });
     }
   });
@@ -753,6 +796,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Default admin creation error:', error);
       res.status(500).json({ message: "Failed to create default admin user" });
+    }
+  });
+
+  // Test Kaleyra SMS service endpoint
+  app.post("/api/test-kaleyra-sms", async (req, res) => {
+    try {
+      const { phoneNumber, testMessage } = req.body;
+      
+      if (!phoneNumber) {
+        return res.status(400).json({ message: "Phone number is required" });
+      }
+
+      // Validate phone number format
+      if (!kaleyraSMSService.isValidPhoneNumber(phoneNumber)) {
+        return res.status(400).json({ message: "Please enter a valid Indian mobile number" });
+      }
+
+      const testOTP = '123456';
+      const customMessage = testMessage || `BBG Test SMS: Your test OTP is ${testOTP}. This is a test message from BBG application.`;
+      
+      // Test SMS sending via Kaleyra
+      const smsResult = await kaleyraSMSService.sendOTP(phoneNumber, testOTP, customMessage);
+      
+      if (smsResult.success) {
+        res.json({
+          success: true,
+          message: "Test SMS sent successfully via Kaleyra",
+          messageId: smsResult.messageId,
+          phoneNumber: phoneNumber,
+          serviceName: "Kaleyra SMS"
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          message: "Failed to send test SMS via Kaleyra",
+          error: smsResult.error,
+          phoneNumber: phoneNumber,
+          serviceName: "Kaleyra SMS"
+        });
+      }
+    } catch (error: any) {
+      console.error('Kaleyra SMS test error:', error);
+      res.status(500).json({ 
+        success: false,
+        message: "Test SMS sending failed", 
+        error: error.message 
+      });
     }
   });
 

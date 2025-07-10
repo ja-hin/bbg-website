@@ -158,10 +158,47 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 - **Auto-creation**: Default admin user created via `/api/admin/create-default` endpoint
 - **Role-based access**: Support for different admin roles (admin, moderator, etc.)
 
+## OTP Integration
+
+### Kaleyra SMS Service
+- **Provider**: Kaleyra.io SMS API for professional OTP delivery
+- **Coverage**: High delivery rates (98%+ within 5 seconds) for Indian mobile numbers
+- **Configuration**: Environment variables for API key, SID, region, and sender ID
+- **Features**: 
+  - Automatic phone number formatting and validation
+  - Fallback mechanism when service unavailable
+  - Test endpoint for SMS functionality verification
+  - Custom message templates for different use cases
+
+### Environment Variables Required
+```bash
+KALEYRA_API_KEY=your_kaleyra_api_key
+KALEYRA_SID=your_kaleyra_sid
+KALEYRA_REGION=india
+KALEYRA_SENDER_ID=BBGAPP
+```
+
+### API Endpoints
+- `POST /api/send-otp` - Send OTP with Kaleyra integration
+- `POST /api/otp/send` - Legacy OTP endpoint with Kaleyra
+- `POST /api/test-kaleyra-sms` - Test SMS functionality
+- `POST /api/verify-otp` - Verify OTP codes
+
 ## Changelog
 
 ```
 Changelog:
+- July 10, 2025: Integrated Kaleyra SMS service for professional OTP delivery
+  - Created KaleyraSMSService class with comprehensive phone number handling
+  - Added automatic Indian mobile number formatting (+91 prefix)
+  - Implemented fallback mechanism when Kaleyra service unavailable
+  - Updated both /api/send-otp and /api/otp/send endpoints to use Kaleyra
+  - Added /api/test-kaleyra-sms endpoint for testing SMS functionality
+  - Enhanced phone number validation for Indian mobile numbers (6-9 starting digits)
+  - Environment variable configuration for API key, SID, region, and sender ID
+  - Professional OTP message templates with 10-minute validity
+  - Added axios dependency for HTTP requests to Kaleyra API
+  - Comprehensive error handling and logging for SMS operations
 - July 09, 2025: Implemented comprehensive secure admin panel
   - Created admin authentication system with login/logout functionality
   - Added admin_users table to SQL Server database with bcrypt password hashing

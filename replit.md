@@ -193,6 +193,18 @@ KALEYRA_SENDER_ID=XTRCVR  # Configured sender ID
 
 ```
 Changelog:
+- July 11, 2025: ✅ COMPLETED - Enhanced customer registration with comprehensive improvements
+  - Combined multi-step form into single-page layout with clear sections
+  - Added IMEI/Serial number guides (dial *#06# for mobile, system info for laptops)
+  - Implemented device tax invoice upload with PDF/image support
+  - Changed currency icon from dollar to Indian Rupee (₹) symbol
+  - Created brand dropdown with 25+ popular device brands (replaceable via admin panel)
+  - Added depreciation slabs display during checkout and after payment
+  - Implemented invoice download functionality for customers after payment
+  - Enhanced thank you page with depreciation slabs and invoice download
+  - Added "View/Hide Depreciation Slabs" toggle button in registration form
+  - Updated file upload validation for invoice documents
+  - Improved user experience with comprehensive device registration guides
 - July 10, 2025: ✅ COMPLETED - Kaleyra SMS service integration with live delivery
   - Created KaleyraSMSService class with comprehensive phone number handling
   - Added automatic Indian mobile number formatting (+91 prefix)

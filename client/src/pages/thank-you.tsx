@@ -3,7 +3,40 @@ import { Link, useLocation } from "wouter";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Users, Smartphone, Home } from "lucide-react";
+import { CheckCircle, Users, Smartphone, Home, Download, Info } from "lucide-react";
+
+// Depreciation Slabs Component
+function DepreciationSlabs() {
+  const slabs = [
+    { period: "6-12 months", percentage: "70%" },
+    { period: "13-18 months", percentage: "60%" },
+    { period: "19-24 months", percentage: "50%" },
+    { period: "25-30 months", percentage: "40%" },
+    { period: "31-36 months", percentage: "30%" },
+    { period: "37-48 months", percentage: "20%" },
+    { period: "49-60 months", percentage: "10%" }
+  ];
+
+  return (
+    <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6 mb-8">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+        <Info className="h-5 w-5 mr-2 text-blue-600" />
+        Your BuyBack Guarantee - Depreciation Slabs
+      </h3>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {slabs.map((slab, index) => (
+          <div key={index} className="bg-white rounded-lg p-3 text-center border border-gray-200">
+            <div className="text-sm font-medium text-gray-600">{slab.period}</div>
+            <div className="text-lg font-bold text-green-600">{slab.percentage}</div>
+          </div>
+        ))}
+      </div>
+      <p className="text-xs text-gray-600 mt-3">
+        * Percentage of original invoice value you'll receive when claiming BBG
+      </p>
+    </div>
+  );
+}
 
 export default function ThankYou() {
   const [location] = useLocation();
@@ -18,6 +51,40 @@ export default function ThankYou() {
   const sellerCode = params?.get('sellerCode');
   const voucherCode = params?.get('voucherCode');
   const paymentMethod = params?.get('paymentMethod');
+
+  const handleDownloadInvoice = () => {
+    // Generate and download BBG purchase invoice
+    const invoiceData = {
+      voucherCode,
+      date: new Date().toLocaleDateString(),
+      amount: '₹99', // This should come from actual payment data
+      service: 'BuyBack Guarantee Registration'
+    };
+    
+    // Create a simple invoice content
+    const invoiceContent = `
+XTRACOVER BBG INVOICE
+=====================
+Date: ${invoiceData.date}
+BBG Voucher Code: ${invoiceData.voucherCode}
+Service: ${invoiceData.service}
+Amount Paid: ${invoiceData.amount}
+
+Thank you for choosing Xtracover BBG!
+Contact: support@xtracover.com
+    `;
+
+    // Create and download the invoice
+    const blob = new Blob([invoiceContent], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `BBG_Invoice_${voucherCode}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
 
   const getContent = () => {
     switch (type) {
@@ -98,6 +165,9 @@ export default function ThankYou() {
               </div>
             )}
 
+            {/* Show Depreciation Slabs for Customer Registrations */}
+            {type === 'customer' && <DepreciationSlabs />}
+
             {/* Details List */}
             {content.details.length > 0 && (
               <div className="text-left mb-8">
@@ -125,6 +195,17 @@ export default function ThankYou() {
                   Back to Home
                 </Button>
               </Link>
+              
+              {type === 'customer' && voucherCode && (
+                <Button 
+                  onClick={handleDownloadInvoice}
+                  variant="outline" 
+                  className="border-green-600 text-green-600 hover:bg-green-50 px-6"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Download Invoice
+                </Button>
+              )}
               
               {type === 'distributor' && (
                 <Link href="/customer-registration">

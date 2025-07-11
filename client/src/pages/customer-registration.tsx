@@ -8,6 +8,7 @@ import { insertCustomerSchema } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { validatePhoneNumber, validateEmail, validatePincode } from "@/lib/utils";
+import FileUpload from "@/components/file-upload";
 
 // Stripe imports removed - using PayU only
 
@@ -28,7 +29,9 @@ import {
   CreditCard,
   Hash,
   Building,
-  DollarSign
+  IndianRupee,
+  Upload,
+  Info
 } from "lucide-react";
 
 // Initialize Stripe - will be null if key not configured
@@ -49,6 +52,8 @@ const customerSchema = z.object({
   brand: z.string().min(2, "Brand is required"),
   modelName: z.string().min(2, "Model name is required"),
   invoiceValue: z.string().min(1, "Invoice value is required"),
+  // File upload
+  invoiceFile: z.instanceof(File).optional(),
   // Seller Details
   sellerCode: z.string().optional(),
   // Terms agreement
@@ -58,6 +63,39 @@ const customerSchema = z.object({
 type CustomerFormData = z.infer<typeof customerSchema>;
 
 // Stripe PaymentForm component removed - using PayU only
+
+// Depreciation Slabs Component
+function DepreciationSlabs() {
+  const slabs = [
+    { period: "6-12 months", percentage: "70%" },
+    { period: "13-18 months", percentage: "60%" },
+    { period: "19-24 months", percentage: "50%" },
+    { period: "25-30 months", percentage: "40%" },
+    { period: "31-36 months", percentage: "30%" },
+    { period: "37-48 months", percentage: "20%" },
+    { period: "49-60 months", percentage: "10%" }
+  ];
+
+  return (
+    <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6 mb-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+        <Info className="h-5 w-5 mr-2 text-blue-600" />
+        BuyBack Guarantee - Depreciation Slabs
+      </h3>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {slabs.map((slab, index) => (
+          <div key={index} className="bg-white rounded-lg p-3 text-center border border-gray-200">
+            <div className="text-sm font-medium text-gray-600">{slab.period}</div>
+            <div className="text-lg font-bold text-green-600">{slab.percentage}</div>
+          </div>
+        ))}
+      </div>
+      <p className="text-xs text-gray-600 mt-3">
+        * Percentage of original invoice value you'll receive when claiming BBG
+      </p>
+    </div>
+  );
+}
 
 // PayU Payment Component
 function PayUPaymentForm({ 
@@ -115,6 +153,9 @@ function PayUPaymentForm({
 
   return (
     <div className="space-y-6">
+      {/* Show Depreciation Slabs during checkout */}
+      <DepreciationSlabs />
+      
       <div className="bg-gray-50 rounded-lg p-4">
         <div className="flex items-center justify-between mb-4">
           <span className="text-lg font-semibold">BBG for {deviceType}</span>
@@ -179,6 +220,16 @@ function RegistrationContent() {
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [otp, setOtp] = useState("");
+  const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
+  const [showDepreciationSlabs, setShowDepreciationSlabs] = useState(false);
+
+  // Device brands - this will come from admin panel later
+  const deviceBrands = [
+    "Apple", "Samsung", "OnePlus", "Xiaomi", "Realme", "Oppo", "Vivo", 
+    "Google", "Nokia", "Motorola", "Sony", "Huawei", "Honor", "Nothing",
+    "HP", "Dell", "Lenovo", "Asus", "Acer", "MSI", "Apple MacBook", 
+    "Microsoft Surface", "Alienware", "Razer", "Gigabyte", "Other"
+  ];
 
   const form = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema),
@@ -192,6 +243,7 @@ function RegistrationContent() {
       brand: "",
       modelName: "",
       invoiceValue: "",
+      invoiceFile: undefined,
       sellerCode: "",
       otpCode: "",
       agreeToTerms: false
@@ -422,6 +474,16 @@ function RegistrationContent() {
                           <FormControl>
                             <Input placeholder="Enter device serial number or IMEI" {...field} />
                           </FormControl>
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
+                            <div className="flex items-start space-x-2">
+                              <Info className="h-4 w-4 text-blue-600 mt-0.5" />
+                              <div className="text-sm text-blue-800">
+                                <p className="font-medium mb-1">Important: Double Check while entering IMEI/Serial No.</p>
+                                <p className="mb-1">📱 <strong>For Mobile:</strong> Dial *#06# to get IMEI</p>
+                                <p>💻 <strong>For Laptop:</strong> Check sticker on bottom/back or System Info → Hardware</p>
+                              </div>
+                            </div>
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -438,9 +500,20 @@ function RegistrationContent() {
                             <Building className="h-4 w-4 mr-2" />
                             Brand *
                           </FormLabel>
-                          <FormControl>
-                            <Input placeholder="e.g., Apple, Samsung, HP" {...field} />
-                          </FormControl>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select device brand" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {deviceBrands.map((brand) => (
+                                <SelectItem key={brand} value={brand}>
+                                  {brand}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -461,22 +534,49 @@ function RegistrationContent() {
                     />
                   </div>
 
-                  <FormField
-                    control={form.control}
-                    name="invoiceValue"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center">
-                          <DollarSign className="h-4 w-4 mr-2" />
-                          Device Invoice Value (including GST) *
-                        </FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter invoice amount in ₹" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="invoiceValue"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <IndianRupee className="h-4 w-4 mr-2" />
+                            Device Invoice Value (including GST) *
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter invoice amount in ₹" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="invoiceFile"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <Upload className="h-4 w-4 mr-2" />
+                            Upload Device Tax Invoice *
+                          </FormLabel>
+                          <FormControl>
+                            <FileUpload
+                              accept="image/*,.pdf"
+                              onFileChange={(file) => {
+                                setInvoiceFile(file);
+                                field.onChange(file);
+                              }}
+                              placeholder="Upload invoice (PDF/Image)"
+                              className="w-full"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
                 {/* Customer Details Section */}
@@ -646,8 +746,26 @@ function RegistrationContent() {
                   />
                 </div>
 
-                {/* Submit Button */}
-                <div className="pt-6">
+                {/* Show Depreciation Slabs */}
+                {showDepreciationSlabs && (
+                  <div className="pt-4">
+                    <DepreciationSlabs />
+                  </div>
+                )}
+
+                {/* Depreciation Info and Submit Button */}
+                <div className="pt-6 space-y-4">
+                  <div className="text-center">
+                    <Button 
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowDepreciationSlabs(!showDepreciationSlabs)}
+                      className="mb-4"
+                    >
+                      {showDepreciationSlabs ? "Hide" : "View"} Depreciation Slabs
+                    </Button>
+                  </div>
+                  
                   <Button 
                     type="submit" 
                     className="w-full bg-green-600 hover:bg-green-700 py-3 text-lg font-semibold"

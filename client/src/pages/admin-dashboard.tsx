@@ -9,13 +9,18 @@ import {
   AlertCircle, 
   IndianRupee,
   LogOut,
-  Database
+  Database,
+  ShoppingCart,
+  Calendar,
+  User,
+  Phone,
+  CreditCard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface AdminUser {
   id: number;
@@ -36,6 +41,20 @@ interface DashboardStats {
     recentCustomers: any[];
     recentClaims: any[];
   };
+}
+
+interface Customer {
+  id: number;
+  name: string;
+  contact: string;
+  email: string;
+  deviceType: string;
+  modelName: string;
+  invoiceValue: string;
+  voucherCode: string;
+  isVerified: boolean;
+  createdAt: string;
+  sellerCode?: string;
 }
 
 export default function AdminDashboard() {
@@ -68,6 +87,15 @@ export default function AdminDashboard() {
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     staleTime: 0 // Always consider data stale to force fresh fetch
+  });
+
+  // Fetch recent orders (customers)
+  const { data: recentOrders, isLoading: ordersLoading } = useQuery<Customer[]>({
+    queryKey: ["/api/admin/customers"],
+    enabled: !!adminUser,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    staleTime: 0
   });
 
   // Logout mutation
@@ -219,6 +247,89 @@ export default function AdminDashboard() {
             <p className="text-red-700">Failed to load dashboard statistics. Please refresh the page.</p>
           </div>
         )}
+
+        {/* Recent Orders Section */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center text-lg font-semibold">
+              <ShoppingCart className="h-5 w-5 mr-2 text-blue-600" />
+              Recent Orders
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {ordersLoading ? (
+              <div className="space-y-4">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg animate-pulse">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                      <div className="space-y-1">
+                        <div className="w-32 h-4 bg-gray-200 rounded"></div>
+                        <div className="w-24 h-3 bg-gray-200 rounded"></div>
+                      </div>
+                    </div>
+                    <div className="text-right space-y-1">
+                      <div className="w-20 h-4 bg-gray-200 rounded"></div>
+                      <div className="w-16 h-3 bg-gray-200 rounded"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : recentOrders && recentOrders.length > 0 ? (
+              <div className="space-y-4">
+                {recentOrders.slice(0, 10).map((order) => (
+                  <div key={order.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <User className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <p className="font-medium text-gray-900">{order.name}</p>
+                          <span className={`px-2 py-1 text-xs rounded-full ${
+                            order.isVerified 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {order.isVerified ? 'Verified' : 'Pending'}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-4 text-sm text-gray-500">
+                          <span className="flex items-center">
+                            <Phone className="h-3 w-3 mr-1" />
+                            {order.contact}
+                          </span>
+                          <span className="flex items-center">
+                            <Smartphone className="h-3 w-3 mr-1" />
+                            {order.deviceType} - {order.modelName}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center space-x-2">
+                        <IndianRupee className="h-4 w-4 text-gray-400" />
+                        <span className="font-semibold text-gray-900">{formatCurrency(order.invoiceValue)}</span>
+                      </div>
+                      <div className="flex items-center space-x-1 text-sm text-gray-500">
+                        <Calendar className="h-3 w-3" />
+                        <span>{formatDate(order.createdAt)}</span>
+                      </div>
+                      <div className="text-xs text-gray-400 mt-1">
+                        #{order.voucherCode}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <ShoppingCart className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <p>No orders found</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

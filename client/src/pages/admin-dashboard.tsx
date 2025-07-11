@@ -73,9 +73,7 @@ export default function AdminDashboard() {
   // Logout mutation
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest("/api/admin/logout", {
-        method: "POST"
-      });
+      return apiRequest("POST", "/api/admin/logout");
     },
     onSuccess: () => {
       queryClient.clear();

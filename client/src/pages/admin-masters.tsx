@@ -172,7 +172,7 @@ export default function AdminMasters() {
 
   // Mutations
   const createRoleMutation = useMutation({
-    mutationFn: (data: any) => apiRequest("/api/admin/user-roles", "POST", data),
+    mutationFn: (data: any) => apiRequest("POST", "/api/admin/user-roles", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/user-roles"] });
       toast({ title: "Success", description: "User role created successfully" });
@@ -183,7 +183,7 @@ export default function AdminMasters() {
 
   const updateRoleMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: any }) =>
-      apiRequest(`/api/admin/user-roles/${id}`, "PUT", data),
+      apiRequest("PUT", `/api/admin/user-roles/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/user-roles"] });
       toast({ title: "Success", description: "User role updated successfully" });
@@ -193,7 +193,7 @@ export default function AdminMasters() {
   });
 
   const deleteRoleMutation = useMutation({
-    mutationFn: (id: number) => apiRequest(`/api/admin/user-roles/${id}`, "DELETE"),
+    mutationFn: (id: number) => apiRequest("DELETE", `/api/admin/user-roles/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/user-roles"] });
       toast({ title: "Success", description: "User role deleted successfully" });
@@ -201,7 +201,7 @@ export default function AdminMasters() {
   });
 
   const createAdminMutation = useMutation({
-    mutationFn: (data: any) => apiRequest("/api/admin/admins", "POST", data),
+    mutationFn: (data: any) => apiRequest("POST", "/api/admin/admins", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/admins"] });
       toast({ title: "Success", description: "Admin user created successfully" });
@@ -212,7 +212,7 @@ export default function AdminMasters() {
 
   const updateAdminMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: any }) =>
-      apiRequest(`/api/admin/admins/${id}`, "PUT", data),
+      apiRequest("PUT", `/api/admin/admins/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/admins"] });
       toast({ title: "Success", description: "Admin user updated successfully" });
@@ -222,7 +222,7 @@ export default function AdminMasters() {
   });
 
   const deleteAdminMutation = useMutation({
-    mutationFn: (id: number) => apiRequest(`/api/admin/admins/${id}`, "DELETE"),
+    mutationFn: (id: number) => apiRequest("DELETE", `/api/admin/admins/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/admins"] });
       toast({ title: "Success", description: "Admin user deleted successfully" });
@@ -230,7 +230,7 @@ export default function AdminMasters() {
   });
 
   const createDistributorMutation = useMutation({
-    mutationFn: (data: any) => apiRequest("/api/admin/distributors", "POST", data),
+    mutationFn: (data: any) => apiRequest("POST", "/api/admin/distributors", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/distributors"] });
       toast({ title: "Success", description: "Distributor created successfully" });
@@ -241,7 +241,7 @@ export default function AdminMasters() {
 
   const updateDistributorMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: any }) =>
-      apiRequest(`/api/admin/distributors/${id}`, "PUT", data),
+      apiRequest("PUT", `/api/admin/distributors/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/distributors"] });
       toast({ title: "Success", description: "Distributor updated successfully" });
@@ -251,7 +251,7 @@ export default function AdminMasters() {
   });
 
   const deleteDistributorMutation = useMutation({
-    mutationFn: (id: number) => apiRequest(`/api/admin/distributors/${id}`, "DELETE"),
+    mutationFn: (id: number) => apiRequest("DELETE", `/api/admin/distributors/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/distributors"] });
       toast({ title: "Success", description: "Distributor deleted successfully" });
@@ -259,7 +259,7 @@ export default function AdminMasters() {
   });
 
   const createCustomerMutation = useMutation({
-    mutationFn: (data: any) => apiRequest("/api/admin/customers", "POST", data),
+    mutationFn: (data: any) => apiRequest("POST", "/api/admin/customers", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/customers"] });
       toast({ title: "Success", description: "Customer created successfully" });
@@ -270,7 +270,7 @@ export default function AdminMasters() {
 
   const updateCustomerMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: any }) =>
-      apiRequest(`/api/admin/customers/${id}`, "PUT", data),
+      apiRequest("PUT", `/api/admin/customers/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/customers"] });
       toast({ title: "Success", description: "Customer updated successfully" });
@@ -280,7 +280,7 @@ export default function AdminMasters() {
   });
 
   const deleteCustomerMutation = useMutation({
-    mutationFn: (id: number) => apiRequest(`/api/admin/customers/${id}`, "DELETE"),
+    mutationFn: (id: number) => apiRequest("DELETE", `/api/admin/customers/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/customers"] });
       toast({ title: "Success", description: "Customer deleted successfully" });
@@ -371,7 +371,7 @@ export default function AdminMasters() {
   // Logout mutation
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest("/api/admin/logout", "POST");
+      return apiRequest("POST", "/api/admin/logout");
     },
     onSuccess: () => {
       queryClient.clear();

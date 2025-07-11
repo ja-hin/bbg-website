@@ -224,6 +224,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Stripe payment intent removed - using PayU only
 
+  // Rate limiting for PayU payments (simple in-memory tracker)
+  const payuRateLimit = new Map();
+
   // Create PayU payment
   app.post("/api/create-payu-payment", async (req, res) => {
     try {
@@ -231,8 +234,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const deviceType = customerData.deviceType;
       const amount = deviceType === 'laptop' ? 125 : 99;
       
+      // Check rate limiting for this IP
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      const now = Date.now();
+      const lastRequest = payuRateLimit.get(clientIP) || 0;
+      
+      // Enforce 60-second delay between requests per IP
+      if (now - lastRequest < 60000) {
+        const waitTime = Math.ceil((60000 - (now - lastRequest)) / 1000);
+        return res.status(429).json({ 
+          message: `Too many payment requests. Please wait ${waitTime} seconds before trying again.`,
+          waitTime,
+          retryAfter: waitTime
+        });
+      }
+      
+      // Update last request time
+      payuRateLimit.set(clientIP, now);
+      
       // Generate unique transaction ID
       const txnid = `BBG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Store customer data in temporary storage for success handler
+      // Using a simple in-memory map with transaction ID as key
+      const tempStorage = app.locals.tempCustomerData || new Map();
+      tempStorage.set(txnid, customerData);
+      app.locals.tempCustomerData = tempStorage;
       
       // Create basic PayU parameters without UDF fields first
       const payuParams = {
@@ -246,9 +273,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         surl: `${req.protocol}://${req.get('host')}/api/payu/success`,
         furl: `${req.protocol}://${req.get('host')}/api/payu/failure`
       };
-      
-      // Store customer data separately for success handler
-      // We'll use session or database to store this instead of UDF fields
 
       // Generate hash
       const hash = generatePayUHash(payuParams, PAYU_CONFIG.salt);
@@ -280,8 +304,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       if (status === 'success') {
-        // Extract customer data from UDF5
-        const customerData = JSON.parse(otherParams.udf5);
+        // Get customer data from temporary storage
+        const tempStorage = app.locals.tempCustomerData || new Map();
+        const customerData = tempStorage.get(txnid);
+        
+        if (!customerData) {
+          console.error('Customer data not found for transaction:', txnid);
+          return res.redirect('/customer-registration?error=data_not_found');
+        }
         
         // Create customer registration with PayU transaction ID
         const submitData = {
@@ -291,6 +321,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
 
         const customer = await storage.createCustomer(submitData);
+        
+        // Clean up temporary storage
+        tempStorage.delete(txnid);
         
         // Redirect to success page with voucher code
         res.redirect(`/thank-you?voucherCode=${customer.voucherCode}&paymentMethod=payu`);

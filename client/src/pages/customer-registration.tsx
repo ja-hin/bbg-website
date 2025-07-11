@@ -112,6 +112,7 @@ function PayUPaymentForm({
   const [isProcessing, setIsProcessing] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [canRetry, setCanRetry] = useState(true);
+  const [countdown, setCountdown] = useState(0);
   const { toast } = useToast();
 
   const handlePayUPayment = async () => {
@@ -152,8 +153,36 @@ function PayUPaymentForm({
     } catch (error: any) {
       setIsProcessing(false);
       
-      // Handle specific PayU rate limiting error
-      if (error.message?.includes("Too many Requests") || error.message?.includes("rate limit")) {
+      // Handle specific rate limiting from our server
+      if (error.message?.includes("Too many payment requests") || error.message?.includes("wait")) {
+        // Extract wait time from error message
+        const waitMatch = error.message.match(/wait (\d+) seconds/);
+        const waitTime = waitMatch ? parseInt(waitMatch[1]) : 60;
+        
+        setRetryCount(prev => prev + 1);
+        setCanRetry(false);
+        
+        toast({
+          title: "Payment Rate Limited",
+          description: `Please wait ${waitTime} seconds before trying again. This prevents PayU service overload.`,
+          variant: "destructive",
+        });
+        
+        // Start countdown timer
+        setCountdown(waitTime);
+        const countdownInterval = setInterval(() => {
+          setCountdown(prev => {
+            if (prev <= 1) {
+              clearInterval(countdownInterval);
+              setCanRetry(true);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+        
+      } else if (error.message?.includes("Too many Requests") || error.message?.includes("rate limit")) {
+        // Handle PayU's own rate limiting
         setRetryCount(prev => prev + 1);
         if (retryCount < 2) {
           toast({
@@ -162,7 +191,6 @@ function PayUPaymentForm({
             variant: "destructive",
           });
           
-          // Auto-retry after 60 seconds for first 2 attempts
           setTimeout(() => {
             setCanRetry(true);
           }, 60000);
@@ -212,15 +240,17 @@ function PayUPaymentForm({
       <Button 
         onClick={handlePayUPayment}
         className="w-full bg-blue-600 hover:bg-blue-700"
-        disabled={isProcessing || (!canRetry && retryCount >= 2)}
+        disabled={isProcessing || (!canRetry && retryCount >= 2) || countdown > 0}
       >
         {isProcessing 
           ? "Redirecting to PayU..." 
-          : (!canRetry && retryCount >= 2)
-            ? "Payment Service Unavailable"
-            : retryCount > 0 
-              ? `Retry Payment ₹${amount} (${retryCount}/3)`
-              : `Pay ₹${amount} with PayU`
+          : countdown > 0
+            ? `Please wait ${countdown}s before retry...`
+            : (!canRetry && retryCount >= 2)
+              ? "Payment Service Unavailable"
+              : retryCount > 0 
+                ? `Retry Payment ₹${amount} (${retryCount}/3)`
+                : `Pay ₹${amount} with PayU`
         }
       </Button>
       

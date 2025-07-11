@@ -193,6 +193,15 @@ KALEYRA_SENDER_ID=XTRCVR  # Configured sender ID
 
 ```
 Changelog:
+- July 11, 2025: ✅ COMPLETED - Enhanced PayU payment gateway with comprehensive rate limiting solution
+  - Implemented server-side rate limiting to prevent PayU API overload (60-second delays per IP)
+  - Added client-side countdown timer showing exact wait time before retry
+  - Created comprehensive error handling for both server and PayU rate limiting
+  - Temporary customer data storage system for PayU transaction handling
+  - Enhanced payment button with real-time countdown and retry attempt tracking
+  - Professional error messages explaining rate limiting and providing clear guidance
+  - Automatic retry mechanism with attempt counting and status feedback
+  - Improved user experience during payment gateway busy periods
 - July 11, 2025: ✅ COMPLETED - Enhanced customer registration with comprehensive improvements
   - Combined multi-step form into single-page layout with clear sections
   - Added IMEI/Serial number guides (dial *#06# for mobile, system info for laptops)

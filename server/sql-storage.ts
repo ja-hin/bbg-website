@@ -5,12 +5,14 @@ import {
   type Claim, 
   type OtpVerification,
   type AdminUser,
+  type PendingPayment,
   type InsertUserRole,
   type InsertDistributor, 
   type InsertCustomer, 
   type InsertClaim, 
   type InsertOtp,
-  type InsertAdminUser
+  type InsertAdminUser,
+  type InsertPendingPayment
 } from "@shared/schema";
 import { db } from "./db";
 import sql from 'mssql';
@@ -60,6 +62,13 @@ export interface IStorage {
   deleteAdminUser(id: number): Promise<void>;
   updateAdminLastLogin(id: number): Promise<void>;
   verifyAdminPassword(username: string, password: string): Promise<AdminUser | null>;
+
+  // Pending Payment operations
+  createPendingPayment(payment: InsertPendingPayment): Promise<PendingPayment>;
+  getAllPendingPayments(): Promise<PendingPayment[]>;
+  getPendingPaymentById(id: number): Promise<PendingPayment | undefined>;
+  updatePendingPaymentStatus(id: number, status: string): Promise<void>;
+  deletePendingPayment(id: number): Promise<void>;
 }
 
 export class SqlServerStorage implements IStorage {
@@ -189,6 +198,29 @@ export class SqlServerStorage implements IStorage {
           role NVARCHAR(50) DEFAULT 'admin',
           is_active BIT DEFAULT 1,
           last_login_at DATETIME2,
+          created_at DATETIME2 DEFAULT GETDATE()
+        );
+      END
+
+      -- Create pending_payments table
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'pending_payments')
+      BEGIN
+        CREATE TABLE pending_payments (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          name NVARCHAR(255) NOT NULL,
+          contact NVARCHAR(10) NOT NULL,
+          email NVARCHAR(255) NOT NULL,
+          pincode NVARCHAR(6) NOT NULL,
+          device_type NVARCHAR(50) NOT NULL,
+          serial_number NVARCHAR(255) NOT NULL,
+          brand NVARCHAR(255) NOT NULL,
+          model_name NVARCHAR(255) NOT NULL,
+          invoice_value DECIMAL(10,2) NOT NULL,
+          payment_amount DECIMAL(10,2) NOT NULL,
+          transaction_id NVARCHAR(255),
+          seller_code NVARCHAR(10),
+          status NVARCHAR(50) DEFAULT 'pending',
+          expires_at DATETIME2 NOT NULL,
           created_at DATETIME2 DEFAULT GETDATE()
         );
       END
@@ -817,6 +849,101 @@ export class SqlServerStorage implements IStorage {
     const request = db.pool.request();
     request.input('id', sql.Int, id);
     await request.query(query);
+  }
+
+  // Pending Payment operations
+  async createPendingPayment(insertPayment: InsertPendingPayment): Promise<PendingPayment> {
+    await db.connectDB();
+    const query = `
+      INSERT INTO pending_payments (
+        name, contact, email, pincode, device_type, serial_number, 
+        brand, model_name, invoice_value, payment_amount, transaction_id, 
+        seller_code, status, expires_at
+      ) 
+      OUTPUT INSERTED.*
+      VALUES (
+        @name, @contact, @email, @pincode, @deviceType, @serialNumber, 
+        @brand, @modelName, @invoiceValue, @paymentAmount, @transactionId, 
+        @sellerCode, @status, @expiresAt
+      )
+    `;
+
+    const request = db.pool.request();
+    request.input('name', sql.NVarChar, insertPayment.name);
+    request.input('contact', sql.NVarChar, insertPayment.contact);
+    request.input('email', sql.NVarChar, insertPayment.email);
+    request.input('pincode', sql.NVarChar, insertPayment.pincode);
+    request.input('deviceType', sql.NVarChar, insertPayment.deviceType);
+    request.input('serialNumber', sql.NVarChar, insertPayment.serialNumber);
+    request.input('brand', sql.NVarChar, insertPayment.brand);
+    request.input('modelName', sql.NVarChar, insertPayment.modelName);
+    request.input('invoiceValue', sql.Decimal(10,2), insertPayment.invoiceValue);
+    request.input('paymentAmount', sql.Decimal(10,2), insertPayment.paymentAmount);
+    request.input('transactionId', sql.NVarChar, insertPayment.transactionId || null);
+    request.input('sellerCode', sql.NVarChar, insertPayment.sellerCode || null);
+    request.input('status', sql.NVarChar, insertPayment.status || 'pending');
+    request.input('expiresAt', sql.DateTime2, insertPayment.expiresAt);
+
+    const result = await request.query(query);
+    return this.mapPendingPaymentFromDb(result.recordset[0]);
+  }
+
+  async getAllPendingPayments(): Promise<PendingPayment[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM pending_payments WHERE status = 'pending' ORDER BY created_at DESC`;
+    const result = await db.pool.request().query(query);
+    return result.recordset.map(row => this.mapPendingPaymentFromDb(row));
+  }
+
+  async getPendingPaymentById(id: number): Promise<PendingPayment | undefined> {
+    await db.connectDB();
+    const query = `SELECT * FROM pending_payments WHERE id = @id`;
+    
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    
+    const result = await request.query(query);
+    return result.recordset.length > 0 ? this.mapPendingPaymentFromDb(result.recordset[0]) : undefined;
+  }
+
+  async updatePendingPaymentStatus(id: number, status: string): Promise<void> {
+    await db.connectDB();
+    const query = `UPDATE pending_payments SET status = @status WHERE id = @id`;
+    
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    request.input('status', sql.NVarChar, status);
+    
+    await request.query(query);
+  }
+
+  async deletePendingPayment(id: number): Promise<void> {
+    await db.connectDB();
+    const query = `DELETE FROM pending_payments WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    await request.query(query);
+  }
+
+  private mapPendingPaymentFromDb(row: any): PendingPayment {
+    return {
+      id: row.id,
+      name: row.name,
+      contact: row.contact,
+      email: row.email,
+      pincode: row.pincode,
+      deviceType: row.device_type,
+      serialNumber: row.serial_number,
+      brand: row.brand,
+      modelName: row.model_name,
+      invoiceValue: row.invoice_value,
+      paymentAmount: row.payment_amount,
+      transactionId: row.transaction_id,
+      sellerCode: row.seller_code,
+      status: row.status,
+      expiresAt: row.expires_at,
+      createdAt: row.created_at
+    };
   }
 }
 

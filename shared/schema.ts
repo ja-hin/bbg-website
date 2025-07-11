@@ -80,6 +80,29 @@ export const userRoles = pgTable("user_roles", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Pending Payments tracking
+export const pendingPayments = pgTable("pending_payments", {
+  id: serial("id").primaryKey(),
+  // Customer Details
+  name: text("name").notNull(),
+  contact: text("contact").notNull(),
+  email: text("email").notNull(),
+  pincode: text("pincode").notNull(),
+  // Device Details
+  deviceType: text("device_type").notNull(), // 'laptop' or 'mobile'
+  serialNumber: text("serial_number").notNull(),
+  brand: text("brand").notNull(),
+  modelName: text("model_name").notNull(),
+  invoiceValue: decimal("invoice_value", { precision: 10, scale: 2 }).notNull(),
+  // Payment Details
+  paymentAmount: decimal("payment_amount", { precision: 10, scale: 2 }).notNull(),
+  transactionId: text("transaction_id"), // PayU transaction ID
+  sellerCode: text("seller_code"),
+  status: text("status").notNull().default('pending'), // 'pending', 'abandoned', 'completed'
+  expiresAt: timestamp("expires_at").notNull(), // Payment link expiry
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const adminUsers = pgTable("admin_users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
@@ -136,12 +159,18 @@ export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({
   updatedAt: true,
 });
 
+export const insertPendingPaymentSchema = createInsertSchema(pendingPayments).omit({
+  id: true,
+  createdAt: true
+});
+
 export type UserRole = typeof userRoles.$inferSelect;
 export type Distributor = typeof distributors.$inferSelect;
 export type Customer = typeof customers.$inferSelect;
 export type Claim = typeof claims.$inferSelect;
 export type OtpVerification = typeof otpVerifications.$inferSelect;
 export type AdminUser = typeof adminUsers.$inferSelect;
+export type PendingPayment = typeof pendingPayments.$inferSelect;
 
 export type InsertUserRole = z.infer<typeof insertUserRoleSchema>;
 export type InsertDistributor = z.infer<typeof insertDistributorSchema>;
@@ -149,3 +178,4 @@ export type InsertCustomer = z.infer<typeof insertCustomerSchema>;
 export type InsertClaim = z.infer<typeof insertClaimSchema>;
 export type InsertOtp = z.infer<typeof insertOtpSchema>;
 export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
+export type InsertPendingPayment = z.infer<typeof insertPendingPaymentSchema>;

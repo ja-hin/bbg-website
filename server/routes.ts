@@ -704,6 +704,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin - Get all pending payments
+  app.get("/api/admin/pending-payments", isAdminAuthenticated, async (req, res) => {
+    try {
+      const pendingPayments = await storage.getAllPendingPayments();
+      res.json(pendingPayments);
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get pending payments" });
+    }
+  });
+
+  // Admin - Update pending payment status
+  app.put("/api/admin/pending-payments/:id/status", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      await storage.updatePendingPaymentStatus(parseInt(id), status);
+      res.json({ message: "Payment status updated successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to update payment status" });
+    }
+  });
+
   // Admin - Update claim status
   app.patch("/api/admin/claims/:id/status", isAdminAuthenticated, async (req, res) => {
     try {

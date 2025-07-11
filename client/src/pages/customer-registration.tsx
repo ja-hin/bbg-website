@@ -110,6 +110,8 @@ function PayUPaymentForm({
   customerData: CustomerFormData;
 }) {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [canRetry, setCanRetry] = useState(true);
   const { toast } = useToast();
 
   const handlePayUPayment = async () => {
@@ -121,6 +123,12 @@ function PayUPaymentForm({
         deviceType, 
         customerData 
       });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Payment creation failed");
+      }
+      
       const { payuParams, payuUrl } = await response.json();
 
       // Create form and submit to PayU
@@ -141,13 +149,38 @@ function PayUPaymentForm({
       document.body.appendChild(form);
       form.submit();
       
-    } catch (error) {
+    } catch (error: any) {
       setIsProcessing(false);
-      toast({
-        title: "Payment Error",
-        description: "Something went wrong during payment processing",
-        variant: "destructive",
-      });
+      
+      // Handle specific PayU rate limiting error
+      if (error.message?.includes("Too many Requests") || error.message?.includes("rate limit")) {
+        setRetryCount(prev => prev + 1);
+        if (retryCount < 2) {
+          toast({
+            title: "Payment Gateway Busy",
+            description: `PayU is experiencing high traffic. Please wait 60 seconds and try again. (Attempt ${retryCount + 1}/3)`,
+            variant: "destructive",
+          });
+          
+          // Auto-retry after 60 seconds for first 2 attempts
+          setTimeout(() => {
+            setCanRetry(true);
+          }, 60000);
+        } else {
+          setCanRetry(false);
+          toast({
+            title: "Payment Service Temporarily Unavailable",
+            description: "PayU is experiencing high traffic. Please try again after a few minutes or contact support.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({
+          title: "Payment Error",
+          description: error.message || "Something went wrong during payment processing. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -179,10 +212,37 @@ function PayUPaymentForm({
       <Button 
         onClick={handlePayUPayment}
         className="w-full bg-blue-600 hover:bg-blue-700"
-        disabled={isProcessing}
+        disabled={isProcessing || (!canRetry && retryCount >= 2)}
       >
-        {isProcessing ? "Redirecting to PayU..." : `Pay ₹${amount} with PayU`}
+        {isProcessing 
+          ? "Redirecting to PayU..." 
+          : (!canRetry && retryCount >= 2)
+            ? "Payment Service Unavailable"
+            : retryCount > 0 
+              ? `Retry Payment ₹${amount} (${retryCount}/3)`
+              : `Pay ₹${amount} with PayU`
+        }
       </Button>
+      
+      {retryCount > 0 && retryCount < 3 && (
+        <div className="text-center mt-2">
+          <p className="text-sm text-amber-600">
+            PayU test environment has request limits. Please wait 60 seconds between attempts.
+          </p>
+        </div>
+      )}
+      
+      {retryCount >= 3 && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-4">
+          <p className="text-sm text-red-800 mb-2">
+            <strong>Payment service temporarily unavailable</strong>
+          </p>
+          <p className="text-xs text-red-600">
+            This is a known issue with PayU test environment rate limiting. 
+            Please try again after a few minutes or contact support at care@payu.in
+          </p>
+        </div>
+      )}
     </div>
   );
 }

@@ -174,7 +174,6 @@ function RegistrationContent() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  const [currentStep, setCurrentStep] = useState(1);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [formData, setFormData] = useState<CustomerFormData | null>(null);
   const [otpSent, setOtpSent] = useState(false);
@@ -290,30 +289,10 @@ function RegistrationContent() {
     verifyOtpMutation.mutate({ contact, otp });
   };
 
-  const handleStepSubmit = (step: number) => {
-    if (step === 1) {
-      // Validate device details
-      const deviceFields = ['deviceType', 'serialNumber', 'brand', 'modelName', 'invoiceValue'];
-      const hasErrors = deviceFields.some(field => {
-        const error = form.formState.errors[field as keyof CustomerFormData];
-        return error !== undefined;
-      });
-      
-      if (!hasErrors) {
-        setCurrentStep(2);
-      }
-    } else if (step === 2) {
-      // Validate customer details
-      const customerFields = ['name', 'contact', 'email', 'pincode'];
-      const hasErrors = customerFields.some(field => {
-        const error = form.formState.errors[field as keyof CustomerFormData];
-        return error !== undefined;
-      });
-      
-      if (!hasErrors) {
-        setCurrentStep(3);
-      }
-    }
+  const handleDeviceTypeChange = (deviceType: string) => {
+    // Auto-calculate price based on device type
+    const price = deviceType === 'laptop' ? 125 : 99;
+    console.log(`Device type changed to ${deviceType}, price: ₹${price}`);
   };
 
   const onSubmit = (data: CustomerFormData) => {
@@ -366,39 +345,6 @@ function RegistrationContent() {
         </p>
       </div>
 
-      {/* Progress Steps */}
-      <div className="flex justify-center mb-12">
-        <div className="flex items-center space-x-4">
-          <div className={`flex items-center ${currentStep >= 1 ? 'text-red-600' : 'text-gray-400'}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 1 ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>
-              1
-            </div>
-            <span className="ml-2 text-sm font-medium">Device Details</span>
-          </div>
-          <div className="w-8 h-0.5 bg-gray-200"></div>
-          <div className={`flex items-center ${currentStep >= 2 ? 'text-red-600' : 'text-gray-400'}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 2 ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>
-              2
-            </div>
-            <span className="ml-2 text-sm font-medium">Customer Details</span>
-          </div>
-          <div className="w-8 h-0.5 bg-gray-200"></div>
-          <div className={`flex items-center ${currentStep >= 3 ? 'text-red-600' : 'text-gray-400'}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 3 ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>
-              3
-            </div>
-            <span className="ml-2 text-sm font-medium">Verification</span>
-          </div>
-          <div className="w-8 h-0.5 bg-gray-200"></div>
-          <div className={`flex items-center ${showPaymentForm ? 'text-green-600' : 'text-gray-400'}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${showPaymentForm ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>
-              4
-            </div>
-            <span className="ml-2 text-sm font-medium">Payment</span>
-          </div>
-        </div>
-      </div>
-
       {showPaymentForm && formData ? (
         <Card className="max-w-md mx-auto">
           <CardHeader>
@@ -426,13 +372,16 @@ function RegistrationContent() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 
-                {/* Step 1: Device Details */}
-                {currentStep === 1 && (
-                  <div className="space-y-6">
-                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Device Details</h3>
-                    
+                {/* Device Details Section */}
+                <div className="space-y-6">
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center">
+                    <Smartphone className="h-5 w-5 mr-2" />
+                    Device Details
+                  </h3>
+                  
+                  <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="deviceType"
@@ -442,7 +391,10 @@ function RegistrationContent() {
                             <Smartphone className="h-4 w-4 mr-2" />
                             Device Type *
                           </FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select onValueChange={(value) => {
+                            field.onChange(value);
+                            handleDeviceTypeChange(value);
+                          }} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select device type" />
@@ -474,89 +426,84 @@ function RegistrationContent() {
                         </FormItem>
                       )}
                     />
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="brand"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="flex items-center">
-                              <Building className="h-4 w-4 mr-2" />
-                              Brand *
-                            </FormLabel>
-                            <FormControl>
-                              <Input placeholder="e.g., Apple, Samsung, HP" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="modelName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Model Name *</FormLabel>
-                            <FormControl>
-                              <Input placeholder="e.g., iPhone 14, MacBook Pro" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <FormField
-                      control={form.control}
-                      name="invoiceValue"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <DollarSign className="h-4 w-4 mr-2" />
-                            Device Invoice Value (including GST) *
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter invoice amount in ₹" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <Button 
-                      type="button" 
-                      onClick={() => handleStepSubmit(1)}
-                      className="w-full bg-red-600 hover:bg-red-700"
-                    >
-                      Continue to Customer Details
-                    </Button>
                   </div>
-                )}
 
-                {/* Step 2: Customer Details */}
-                {currentStep === 2 && (
-                  <div className="space-y-6">
-                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Customer Details</h3>
-                    
+                  <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
-                      name="name"
+                      name="brand"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="flex items-center">
-                            <User className="h-4 w-4 mr-2" />
-                            Customer Name *
+                            <Building className="h-4 w-4 mr-2" />
+                            Brand *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter your full name" {...field} />
+                            <Input placeholder="e.g., Apple, Samsung, HP" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
 
+                    <FormField
+                      control={form.control}
+                      name="modelName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Model Name *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., iPhone 14, MacBook Pro" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="invoiceValue"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center">
+                          <DollarSign className="h-4 w-4 mr-2" />
+                          Device Invoice Value (including GST) *
+                        </FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter invoice amount in ₹" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Customer Details Section */}
+                <div className="space-y-6">
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center">
+                    <User className="h-5 w-5 mr-2" />
+                    Customer Details
+                  </h3>
+                  
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center">
+                          <User className="h-4 w-4 mr-2" />
+                          Customer Name *
+                        </FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter your full name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="contact"
@@ -578,173 +525,142 @@ function RegistrationContent() {
                       )}
                     />
 
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="flex items-center">
-                              <Mail className="h-4 w-4 mr-2" />
-                              Email ID *
-                            </FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter your email address" type="email" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="pincode"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="flex items-center">
-                              <MapPin className="h-4 w-4 mr-2" />
-                              Pincode *
-                            </FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter 6-digit pincode" maxLength={6} {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>  
-                        )}
-                      />
-                    </div>
-
-                    <div className="flex gap-4">
-                      <Button 
-                        type="button" 
-                        variant="outline"
-                        onClick={() => setCurrentStep(1)}
-                        className="flex-1"
-                      >
-                        Back to Device Details
-                      </Button>
-                      <Button 
-                        type="button" 
-                        onClick={() => handleStepSubmit(2)}
-                        className="flex-1 bg-red-600 hover:bg-red-700"
-                      >
-                        Continue to Verification
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 3: Verification & Seller Details */}
-                {currentStep === 3 && (
-                  <div className="space-y-6">
-                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Verification & Seller Details</h3>
-                    
-                    {/* OTP Verification */}
-                    <div className="space-y-4">
-                      <div className="flex gap-2">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          onClick={handleSendOtp}
-                          disabled={otpSent || otpVerified || sendOtpMutation.isPending}
-                          className="flex-shrink-0"
-                        >
-                          {sendOtpMutation.isPending ? "Sending..." : otpVerified ? "Verified" : "Send OTP"}
-                        </Button>
-                        <div className="flex-1">
-                          <Input 
-                            placeholder="Enter 6-digit OTP" 
-                            maxLength={6}
-                            value={otp}
-                            onChange={(e) => setOtp(e.target.value)}
-                            disabled={!otpSent || otpVerified}
-                          />
-                        </div>
-                        <Button 
-                          type="button" 
-                          onClick={handleVerifyOtp}
-                          disabled={!otpSent || otpVerified || verifyOtpMutation.isPending}
-                          className="flex-shrink-0"
-                        >
-                          {verifyOtpMutation.isPending ? "Verifying..." : "Verify"}
-                        </Button>
-                      </div>
-                      {otpVerified && (
-                        <div className="flex items-center text-green-600 text-sm">
-                          <CheckCircle className="h-4 w-4 mr-2" />
-                          Phone number verified successfully
-                        </div>
-                      )}
-                    </div>
-
                     <FormField
                       control={form.control}
-                      name="sellerCode"
+                      name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Seller Code (Optional)</FormLabel>
+                          <FormLabel className="flex items-center">
+                            <Mail className="h-4 w-4 mr-2" />
+                            Email ID *
+                          </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter distributor seller code if you have one" {...field} />
+                            <Input placeholder="Enter your email address" type="email" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
+                  </div>
 
-                    <FormField
-                      control={form.control}
-                      name="agreeToTerms"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                          <FormControl>
-                            <input
-                              type="checkbox"
-                              checked={field.value}
-                              onChange={field.onChange}
-                              className="mt-1"
-                            />
-                          </FormControl>
-                          <div className="space-y-1 leading-none">
-                            <FormLabel>
-                              I agree to the terms and conditions *
-                            </FormLabel>
-                            <p className="text-xs text-gray-600">
-                              By registering, you agree to our BBG terms and conditions.
-                            </p>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
+                  <FormField
+                    control={form.control}
+                    name="pincode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center">
+                          <MapPin className="h-4 w-4 mr-2" />
+                          Pincode *
+                        </FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter 6-digit pincode" maxLength={6} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-                    <div className="flex gap-4">
+                {/* Verification & Seller Details Section */}
+                <div className="space-y-6">
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center">
+                    <CheckCircle className="h-5 w-5 mr-2" />
+                    Verification & Seller Details
+                  </h3>
+                  
+                  {/* OTP Verification */}
+                  <div className="space-y-4">
+                    <div className="flex gap-2">
                       <Button 
                         type="button" 
-                        variant="outline"
-                        onClick={() => setCurrentStep(2)}
-                        className="flex-1"
+                        variant="outline" 
+                        onClick={handleSendOtp}
+                        disabled={otpSent || otpVerified || sendOtpMutation.isPending}
+                        className="flex-shrink-0"
                       >
-                        Back to Customer Details
+                        {sendOtpMutation.isPending ? "Sending..." : otpVerified ? "Verified" : "Send OTP"}
                       </Button>
+                      <div className="flex-1">
+                        <Input 
+                          placeholder="Enter 6-digit OTP" 
+                          maxLength={6}
+                          value={otp}
+                          onChange={(e) => setOtp(e.target.value)}
+                          disabled={!otpSent || otpVerified}
+                        />
+                      </div>
                       <Button 
                         type="button" 
-                        className="flex-1 bg-green-600 hover:bg-green-700"
-                        disabled={!otpVerified || mutation.isPending}
-                        onClick={() => {
-                          console.log("Proceed to Payment button clicked");
-                          console.log("OTP Verified:", otpVerified);
-                          console.log("Form state:", form.formState);
-                          console.log("Form values:", form.getValues());
-                          console.log("Form errors:", form.formState.errors);
-                          
-                          // Trigger form submission manually
-                          form.handleSubmit(onSubmit)();
-                        }}
+                        onClick={handleVerifyOtp}
+                        disabled={!otpSent || otpVerified || verifyOtpMutation.isPending}
+                        className="flex-shrink-0"
                       >
-                        Proceed to Payment
+                        {verifyOtpMutation.isPending ? "Verifying..." : "Verify"}
                       </Button>
                     </div>
+                    {otpVerified && (
+                      <div className="flex items-center text-green-600 text-sm">
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        Phone number verified successfully
+                      </div>
+                    )}
                   </div>
-                )}
+
+                  <FormField
+                    control={form.control}
+                    name="sellerCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Seller Code (Optional)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter distributor seller code if you have one" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="agreeToTerms"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                        <FormControl>
+                          <input
+                            type="checkbox"
+                            checked={field.value}
+                            onChange={field.onChange}
+                            className="mt-1"
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>
+                            I agree to the terms and conditions *
+                          </FormLabel>
+                          <p className="text-xs text-gray-600">
+                            By registering, you agree to our BBG terms and conditions.
+                          </p>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <div className="pt-6">
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-green-600 hover:bg-green-700 py-3 text-lg font-semibold"
+                    disabled={!otpVerified || mutation.isPending}
+                  >
+                    {mutation.isPending ? "Processing..." : "Buy & Register for BBG"}
+                  </Button>
+                  {!otpVerified && (
+                    <p className="text-sm text-gray-500 text-center mt-2">
+                      Please verify your phone number with OTP first
+                    </p>
+                  )}
+                </div>
               </form>
             </Form>
           </CardContent>

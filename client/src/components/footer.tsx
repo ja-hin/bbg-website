@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Company Info */}
           <div className="md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
@@ -86,26 +86,53 @@ export default function Footer() {
             </div>
           </div>
           
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">About Us</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Terms & Conditions</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Return Policy</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Video Gallery</Link></li>
-            </ul>
-          </div>
-          
           {/* Services */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Services</h3>
             <ul className="space-y-2">
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Buy Refurbished</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">sellNcash</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Blog</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Sell Phone</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Sell Apple iPhones</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Buy Phones</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Buy Refurbished iPhones</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Register Warranty</Link></li>
+            </ul>
+          </div>
+          
+          {/* Links */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Links</h3>
+            <ul className="space-y-2">
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Budget Picks Under 5000</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Best Value Under 8000</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Power Deals Under 15K</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Premium Phones Above 15K</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Terms & Conditions</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Offers & Deals</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Careers</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Blogs</Link></li>
+            </ul>
+          </div>
+          
+          {/* Help & Support */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Help & Support</h3>
+            <ul className="space-y-2">
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">About Us</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">FAQ</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link></li>
+            </ul>
+          </div>
+          
+          {/* Policy */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Policy</h3>
+            <ul className="space-y-2">
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Warranty Policy</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Cookie Policy</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Return & Refund Policy</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">GDPR Privacy</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Shipping Policy</Link></li>
             </ul>
           </div>
         </div>

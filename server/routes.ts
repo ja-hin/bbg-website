@@ -444,7 +444,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Submit claim
   app.post("/api/claims/submit", async (req, res) => {
     try {
-      const { voucherCode, contact, email } = req.body;
+      const { voucherCode, contact, email, serialNumber, pickupDate, pickupTimeSlot } = req.body;
       
       // First get the customer details
       const customer = await storage.getCustomerByVoucherCode(voucherCode);
@@ -482,6 +482,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         voucherCode: voucherCode,
         contact: contact,
         email: email,
+        serialNumber: serialNumber,
+        pickupDate: pickupDate,
+        pickupTimeSlot: pickupTimeSlot,
         deviceAgeMonths: monthsDiff,
         claimPercentage: claimPercentage,
         claimAmount: claimAmount

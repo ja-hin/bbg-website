@@ -166,12 +166,34 @@ export class SqlServerStorage implements IStorage {
           voucher_code NVARCHAR(15) NOT NULL,
           contact NVARCHAR(10) NOT NULL,
           email NVARCHAR(255) NOT NULL,
+          serial_number NVARCHAR(255) NOT NULL,
+          pickup_date NVARCHAR(20) NOT NULL,
+          pickup_time_slot NVARCHAR(50) NOT NULL,
           device_age_months INT NOT NULL,
           claim_percentage DECIMAL(5,2) NOT NULL,
           claim_amount DECIMAL(10,2) NOT NULL,
           status NVARCHAR(50) DEFAULT 'pending',
           created_at DATETIME2 DEFAULT GETDATE()
         );
+      END
+
+      -- Add new columns to existing claims table if they don't exist
+      IF EXISTS (SELECT * FROM sys.tables WHERE name = 'claims')
+      BEGIN
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('claims') AND name = 'serial_number')
+        BEGIN
+          ALTER TABLE claims ADD serial_number NVARCHAR(255) DEFAULT '';
+        END
+        
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('claims') AND name = 'pickup_date')
+        BEGIN
+          ALTER TABLE claims ADD pickup_date NVARCHAR(20) DEFAULT '';
+        END
+        
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('claims') AND name = 'pickup_time_slot')
+        BEGIN
+          ALTER TABLE claims ADD pickup_time_slot NVARCHAR(50) DEFAULT '';
+        END
       END
 
       -- Create otp_verifications table
@@ -374,13 +396,13 @@ export class SqlServerStorage implements IStorage {
     
     const query = `
       INSERT INTO claims (
-        customer_id, voucher_code, contact, email, device_age_months, 
-        claim_percentage, claim_amount
+        customer_id, voucher_code, contact, email, serial_number, pickup_date, 
+        pickup_time_slot, device_age_months, claim_percentage, claim_amount
       ) 
       OUTPUT INSERTED.*
       VALUES (
-        @customerId, @voucherCode, @contact, @email, @deviceAgeMonths, 
-        @claimPercentage, @claimAmount
+        @customerId, @voucherCode, @contact, @email, @serialNumber, @pickupDate, 
+        @pickupTimeSlot, @deviceAgeMonths, @claimPercentage, @claimAmount
       )
     `;
 
@@ -389,6 +411,9 @@ export class SqlServerStorage implements IStorage {
     request.input('voucherCode', sql.NVarChar, insertClaim.voucherCode);
     request.input('contact', sql.NVarChar, insertClaim.contact);
     request.input('email', sql.NVarChar, insertClaim.email);
+    request.input('serialNumber', sql.NVarChar, insertClaim.serialNumber);
+    request.input('pickupDate', sql.NVarChar, insertClaim.pickupDate);
+    request.input('pickupTimeSlot', sql.NVarChar, insertClaim.pickupTimeSlot);
     request.input('deviceAgeMonths', sql.Int, insertClaim.deviceAgeMonths);
     request.input('claimPercentage', sql.Decimal(5, 2), insertClaim.claimPercentage);
     request.input('claimAmount', sql.Decimal(10, 2), insertClaim.claimAmount);

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
@@ -15,7 +16,10 @@ import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
 const claimSchema = z.object({
   voucherCode: z.string().min(5, "Valid BBG voucher code required"),
   contact: z.string().regex(/^\d{10}$/, "Contact must be exactly 10 digits"),
-  email: z.string().email("Invalid email address")
+  email: z.string().email("Invalid email address"),
+  serialNumber: z.string().min(10, "Serial Number/IMEI must be at least 10 characters"),
+  pickupDate: z.string().min(1, "Pickup date is required"),
+  pickupTimeSlot: z.string().min(1, "Pickup time slot is required")
 });
 
 type ClaimFormData = z.infer<typeof claimSchema>;
@@ -45,7 +49,10 @@ export default function ClaimBBG() {
     defaultValues: {
       voucherCode: "",
       contact: "",
-      email: ""
+      email: "",
+      serialNumber: "",
+      pickupDate: "",
+      pickupTimeSlot: ""
     }
   });
 
@@ -331,6 +338,86 @@ export default function ClaimBBG() {
                     )}
                   />
                 </div>
+
+                {/* Device Serial Number */}
+                <FormField
+                  control={form.control}
+                  name="serialNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Serial Number / IMEI *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter device serial number or IMEI" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Pickup Schedule Section */}
+                {claimDetails && (
+                  <div className="border-t pt-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Schedule Device Pickup</h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="pickupDate"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Pickup Date *</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="date" 
+                                min={new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="pickupTimeSlot"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Pickup Time Slot *</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select time slot" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="09:00-12:00">9:00 AM - 12:00 PM</SelectItem>
+                                <SelectItem value="12:00-15:00">12:00 PM - 3:00 PM</SelectItem>
+                                <SelectItem value="15:00-18:00">3:00 PM - 6:00 PM</SelectItem>
+                                <SelectItem value="18:00-21:00">6:00 PM - 9:00 PM</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-start">
+                        <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
+                        <div>
+                          <h4 className="font-semibold text-blue-900 mb-2">Pickup Instructions:</h4>
+                          <ul className="text-sm text-blue-800 space-y-1">
+                            <li>• Keep your device, original box, and invoice ready</li>
+                            <li>• Ensure device is functional and in fair condition</li>
+                            <li>• Our pickup executive will verify device condition</li>
+                            <li>• Payment will be processed within 7 days after verification</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Claim Details Display */}
                 {claimDetails && (

@@ -256,7 +256,6 @@ export default function ClaimBBG() {
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Voucher Code Field - Always Visible */}
                 <FormField
                   control={form.control}
                   name="voucherCode"
@@ -285,7 +284,7 @@ export default function ClaimBBG() {
                   )}
                 />
 
-                {/* Error Message if claim check failed */}
+                {/* Show error message if claim check failed */}
                 {checkClaimMutation.isError && (
                   <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                     <div className="flex items-start">
@@ -302,210 +301,208 @@ export default function ClaimBBG() {
 
                 {/* Only show remaining fields after successful claim check */}
                 {claimDetails && (
-                  <>
-                    {/* Contact and Email Fields */}
+                  <div className="grid md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="contact"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Contact Number *</FormLabel>
+                        <div className="flex gap-2">
+                          <FormControl>
+                            <Input placeholder="10-digit mobile number" {...field} />
+                          </FormControl>
+                          <Button
+                            type="button"
+                            onClick={handleSendOtp}
+                            disabled={sendOtpMutation.isPending || otpSent}
+                            variant="outline"
+                          >
+                            {sendOtpMutation.isPending ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              otpSent ? "Resend" : "Send OTP"
+                            )}
+                          </Button>
+                        </div>
+                        <FormMessage />
+                        {claimDetails && (
+                          <p className="text-sm text-gray-500 mt-1">
+                            Pre-filled from registration, but you can edit if needed
+                          </p>
+                        )}
+                      </FormItem>
+                    )}
+                  />
+
+                  {otpSent && !otpVerified && (
+                    <div className="flex gap-2 items-end">
+                      <div className="flex-1">
+                        <FormLabel className="text-sm font-medium">Enter OTP</FormLabel>
+                        <Input
+                          placeholder="Enter 6-digit OTP"
+                          maxLength={6}
+                          value={otp}
+                          onChange={(e) => setOtp(e.target.value)}
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={handleVerifyOtp}
+                        disabled={verifyOtpMutation.isPending}
+                      >
+                        {verifyOtpMutation.isPending ? "Verifying..." : "Verify"}
+                      </Button>
+                    </div>
+                  )}
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email Address *</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="your.email@example.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  </div>
+
+                  {/* Device Serial Number - Read Only */}
+                  <FormField
+                    control={form.control}
+                    name="serialNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Serial Number / IMEI *</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Serial number will be auto-filled from registration" 
+                            readOnly
+                            className="bg-gray-50 cursor-not-allowed"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                        <p className="text-sm text-gray-500 mt-1">
+                          This is the serial number/IMEI from your device registration
+                        </p>
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Pickup Schedule Section */}
+                  <div className="border-t pt-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Schedule Device Pickup</h3>
                     <div className="grid md:grid-cols-2 gap-6">
                       <FormField
                         control={form.control}
-                        name="contact"
+                        name="pickupDate"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Contact Number *</FormLabel>
-                            <div className="flex gap-2">
-                              <FormControl>
-                                <Input placeholder="10-digit mobile number" {...field} />
-                              </FormControl>
-                              <Button
-                                type="button"
-                                onClick={handleSendOtp}
-                                disabled={sendOtpMutation.isPending || otpSent}
-                                variant="outline"
-                              >
-                                {sendOtpMutation.isPending ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                  otpSent ? "Resend" : "Send OTP"
-                                )}
-                              </Button>
-                            </div>
-                            <FormMessage />
-                            <p className="text-sm text-gray-500 mt-1">
-                              Pre-filled from registration, but you can edit if needed
-                            </p>
-                          </FormItem>
-                        )}
-                      />
-
-                      {otpSent && !otpVerified && (
-                        <div className="flex gap-2 items-end">
-                          <div className="flex-1">
-                            <FormLabel className="text-sm font-medium">Enter OTP</FormLabel>
-                            <Input
-                              placeholder="Enter 6-digit OTP"
-                              maxLength={6}
-                              value={otp}
-                              onChange={(e) => setOtp(e.target.value)}
-                            />
-                          </div>
-                          <Button
-                            type="button"
-                            onClick={handleVerifyOtp}
-                            disabled={verifyOtpMutation.isPending}
-                          >
-                            {verifyOtpMutation.isPending ? "Verifying..." : "Verify"}
-                          </Button>
-                        </div>
-                      )}
-
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email Address *</FormLabel>
+                            <FormLabel>Pickup Date *</FormLabel>
                             <FormControl>
-                              <Input type="email" placeholder="your.email@example.com" {...field} />
+                              <Input 
+                                type="date" 
+                                min={new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+                                {...field} 
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                    </div>
 
-                    {/* Device Serial Number - Read Only */}
-                    <FormField
-                      control={form.control}
-                      name="serialNumber"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Serial Number / IMEI *</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="Serial number will be auto-filled from registration" 
-                              readOnly
-                              className="bg-gray-50 cursor-not-allowed"
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                          <p className="text-sm text-gray-500 mt-1">
-                            This is the serial number/IMEI from your device registration
-                          </p>
-                        </FormItem>
-                      )}
-                    />
-
-                    {/* Pickup Schedule Section */}
-                    <div className="border-t pt-6">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Schedule Device Pickup</h3>
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <FormField
-                          control={form.control}
-                          name="pickupDate"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Pickup Date *</FormLabel>
+                      <FormField
+                        control={form.control}
+                        name="pickupTimeSlot"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Pickup Time Slot *</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
-                                <Input 
-                                  type="date" 
-                                  min={new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
-                                  {...field} 
-                                />
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select time slot" />
+                                </SelectTrigger>
                               </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="pickupTimeSlot"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Pickup Time Slot *</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select time slot" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="09:00-12:00">9:00 AM - 12:00 PM</SelectItem>
-                                  <SelectItem value="12:00-15:00">12:00 PM - 3:00 PM</SelectItem>
-                                  <SelectItem value="15:00-18:00">3:00 PM - 6:00 PM</SelectItem>
-                                  <SelectItem value="18:00-21:00">6:00 PM - 9:00 PM</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <div className="flex items-start">
-                          <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
-                          <div>
-                            <h4 className="font-semibold text-blue-900 mb-2">Pickup Instructions:</h4>
-                            <ul className="text-sm text-blue-800 space-y-1">
-                              <li>• Keep your device, original box, and invoice ready</li>
-                              <li>• Ensure device is functional and in fair condition</li>
-                              <li>• Our pickup executive will verify device condition</li>
-                              <li>• Payment will be processed within 7 days after verification</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Claim Details Display */}
-                    <div className="border-t pt-6">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Claim Details</h3>
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                        <div className="grid md:grid-cols-2 gap-4 mb-4">
-                          <div>
-                            <p className="text-sm text-gray-600">Customer Name</p>
-                            <p className="font-semibold">{claimDetails.customer.name}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-600">Device</p>
-                            <p className="font-semibold">{claimDetails.customer.deviceType} - {claimDetails.customer.modelName}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-600">Invoice Value</p>
-                            <p className="font-semibold">₹{claimDetails.customer.invoiceValue}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-600">Device Age</p>
-                            <p className="font-semibold">{claimDetails.deviceAge} months</p>
-                          </div>
-                        </div>
-                        <div className="text-center p-4 bg-white rounded-lg">
-                          <p className="text-sm text-gray-600 mb-1">Your Claim Amount</p>
-                          <p className="text-3xl font-bold text-green-600">₹{claimDetails.claimAmount}</p>
-                          <p className="text-sm text-gray-600">({claimDetails.claimPercentage}% of invoice value)</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Submit Button - Only show when OTP is verified */}
-                    {otpVerified && (
-                      <Button
-                        type="submit"
-                        className="w-full bg-red-600 hover:bg-red-700"
-                        disabled={submitClaimMutation.isPending}
-                      >
-                        {submitClaimMutation.isPending ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Submitting Claim...
-                          </>
-                        ) : (
-                          "Submit Claim"
+                              <SelectContent>
+                                <SelectItem value="09:00-12:00">9:00 AM - 12:00 PM</SelectItem>
+                                <SelectItem value="12:00-15:00">12:00 PM - 3:00 PM</SelectItem>
+                                <SelectItem value="15:00-18:00">3:00 PM - 6:00 PM</SelectItem>
+                                <SelectItem value="18:00-21:00">6:00 PM - 9:00 PM</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
                         )}
-                      </Button>
-                    )}
-                  </>
+                      />
+                    </div>
+
+                    <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-start">
+                        <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
+                        <div>
+                          <h4 className="font-semibold text-blue-900 mb-2">Pickup Instructions:</h4>
+                          <ul className="text-sm text-blue-800 space-y-1">
+                            <li>• Keep your device, original box, and invoice ready</li>
+                            <li>• Ensure device is functional and in fair condition</li>
+                            <li>• Our pickup executive will verify device condition</li>
+                            <li>• Payment will be processed within 7 days after verification</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Claim Details Display */}
+                  <div className="border-t pt-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Claim Details</h3>
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+                      <div className="grid md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <p className="text-sm text-gray-600">Customer Name</p>
+                          <p className="font-semibold">{claimDetails.customer.name}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Device</p>
+                          <p className="font-semibold">{claimDetails.customer.deviceType} - {claimDetails.customer.modelName}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Invoice Value</p>
+                          <p className="font-semibold">₹{claimDetails.customer.invoiceValue}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Device Age</p>
+                          <p className="font-semibold">{claimDetails.deviceAge} months</p>
+                        </div>
+                      </div>
+                      <div className="text-center p-4 bg-white rounded-lg">
+                        <p className="text-sm text-gray-600 mb-1">Your Claim Amount</p>
+                        <p className="text-3xl font-bold text-green-600">₹{claimDetails.claimAmount}</p>
+                        <p className="text-sm text-gray-600">({claimDetails.claimPercentage}% of invoice value)</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {claimDetails && otpVerified && (
+                    <Button
+                      type="submit"
+                      className="w-full bg-red-600 hover:bg-red-700"
+                      disabled={submitClaimMutation.isPending}
+                    >
+                      {submitClaimMutation.isPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Submitting Claim...
+                        </>
+                      ) : (
+                        "Submit Claim"
+                      )}
+                    </Button>
+                  )}
                 )}
               </form>
             </Form>
@@ -555,22 +552,33 @@ export default function ClaimBBG() {
                   </tr>
                   <tr className="border-b">
                     <td className="py-3 px-4">37-48 months</td>
-                    <td className="py-3 px-4 text-orange-600 font-semibold">20% of invoice value</td>
+                    <td className="py-3 px-4 text-red-600 font-semibold">25% of invoice value</td>
                     <td className="py-3 px-4">Functional and fair condition</td>
                   </tr>
                   <tr>
                     <td className="py-3 px-4">49-60 months</td>
-                    <td className="py-3 px-4 text-red-600 font-semibold">10% of invoice value</td>
+                    <td className="py-3 px-4 text-red-600 font-semibold">20% of invoice value</td>
                     <td className="py-3 px-4">Functional and fair condition</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-600">
-                <strong>Note:</strong> All claim percentages are calculated based on the original invoice value. 
-                Final claim amount is subject to device verification and condition assessment.
-              </p>
+
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+              <div className="flex items-start">
+                <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-blue-900 mb-2">Claim Checklist:</h4>
+                  <ul className="text-sm text-blue-800 space-y-1">
+                    <li>• Invoice + original box required</li>
+                    <li>• Device must be functional and in fair condition</li>
+                    <li>• Original parts (if repaired, conditions apply)</li>
+                    <li>• Free pickup service available</li>
+                    <li>• Payment processed within 7 days</li>
+                    <li>• Terms and Conditions Apply</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

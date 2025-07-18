@@ -447,7 +447,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Calculate claim percentage based on device age
-      const monthsDiff = Math.floor((Date.now() - customer.createdAt!.getTime()) / (1000 * 60 * 60 * 24 * 30));
+      const currentDate = new Date();
+      const createdDate = new Date(customer.createdAt!);
+      
+      // More accurate month calculation
+      let monthsDiff = (currentDate.getFullYear() - createdDate.getFullYear()) * 12;
+      monthsDiff += currentDate.getMonth() - createdDate.getMonth();
+      
+      // Adjust if current day is before the creation day in the month
+      if (currentDate.getDate() < createdDate.getDate()) {
+        monthsDiff--;
+      }
+      
+      console.log("Date calculation:", {
+        currentDate: currentDate.toISOString(),
+        createdDate: createdDate.toISOString(),
+        monthsDiff
+      });
+      
       let claimPercentage = 0;
       
       if (monthsDiff >= 6 && monthsDiff <= 12) claimPercentage = 70;
@@ -457,6 +474,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       else if (monthsDiff >= 31 && monthsDiff <= 36) claimPercentage = 30;
       else if (monthsDiff >= 37 && monthsDiff <= 48) claimPercentage = 25;
       else if (monthsDiff >= 49 && monthsDiff <= 60) claimPercentage = 20;
+
+      // Check if device is eligible for claim
+      if (claimPercentage === 0) {
+        if (monthsDiff < 6) {
+          return res.status(400).json({ 
+            message: `Device is not yet eligible for BBG claim. Your device is only ${monthsDiff} months old. BBG claims are valid from 6 months after purchase.`,
+            eligible: false,
+            deviceAge: monthsDiff,
+            minimumAge: 6
+          });
+        } else if (monthsDiff > 60) {
+          return res.status(400).json({ 
+            message: `Device BBG coverage has expired. Your device is ${monthsDiff} months old. BBG coverage is valid for up to 60 months only.`,
+            eligible: false,
+            deviceAge: monthsDiff,
+            maximumAge: 60
+          });
+        }
+      }
 
       const claimAmount = (parseFloat(customer.invoiceValue) * claimPercentage) / 100;
 
@@ -471,7 +507,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
         claimPercentage,
         claimAmount: claimAmount.toFixed(2),
-        deviceAge: monthsDiff
+        deviceAge: monthsDiff,
+        eligible: true
       });
     } catch (error: any) {
       res.status(500).json({ message: "Failed to check claim value" });

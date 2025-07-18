@@ -85,17 +85,31 @@ export default function ClaimBBG() {
       // Clear any previous claim details
       setClaimDetails(null);
       
-      // Check if this is an eligibility error
-      if (error.eligible === false) {
-        setEligibilityError(error);
-      } else {
-        setEligibilityError(null);
-        toast({
-          title: "Failed to Check Claim",
-          description: error.message,
-          variant: "destructive",
-        });
+      try {
+        // Parse the JSON from the error message (format: "400: {json}")
+        const errorMessage = error.message || "";
+        const jsonStart = errorMessage.indexOf("{");
+        if (jsonStart !== -1) {
+          const jsonPart = errorMessage.substring(jsonStart);
+          const errorData = JSON.parse(jsonPart);
+          
+          // Check if this is an eligibility error
+          if (errorData.eligible === false) {
+            setEligibilityError(errorData);
+            return;
+          }
+        }
+      } catch (parseError) {
+        // If JSON parsing fails, fall through to default error handling
       }
+      
+      // Default error handling for other types of errors
+      setEligibilityError(null);
+      toast({
+        title: "Failed to Check Claim",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   });
 

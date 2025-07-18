@@ -316,12 +316,12 @@ export class SqlServerStorage implements IStorage {
     const query = `
       INSERT INTO customers (
         name, contact, email, pincode, device_type, serial_number, 
-        brand, model_name, invoice_value, seller_code, voucher_code, payment_intent_id
+        brand, model_name, invoice_value, seller_code, voucher_code, payment_intent_id, is_verified
       ) 
       OUTPUT INSERTED.*
       VALUES (
         @name, @contact, @email, @pincode, @deviceType, @serialNumber, 
-        @brand, @modelName, @invoiceValue, @sellerCode, @voucherCode, @paymentIntentId
+        @brand, @modelName, @invoiceValue, @sellerCode, @voucherCode, @paymentIntentId, @isVerified
       )
     `;
 
@@ -338,6 +338,7 @@ export class SqlServerStorage implements IStorage {
     request.input('sellerCode', sql.NVarChar, insertCustomer.sellerCode || null);
     request.input('voucherCode', sql.NVarChar, voucherCode);
     request.input('paymentIntentId', sql.NVarChar, insertCustomer.paymentIntentId || null);
+    request.input('isVerified', sql.Bit, insertCustomer.isVerified || false);
 
     const result = await request.query(query);
 

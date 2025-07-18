@@ -193,6 +193,12 @@ KALEYRA_SENDER_ID=XTRCVR  # Configured sender ID
 
 ```
 Changelog:
+- July 18, 2025: ✅ COMPLETED - Fixed customer auto-verification during BBG registration
+  - Updated SQL storage createCustomer method to properly save isVerified field to database
+  - Added missing is_verified column and parameter in customer INSERT statement
+  - Fixed issue where customers were not automatically verified after successful payment/registration
+  - Verified that claim checking now works correctly for registered customers
+  - Both PayU payment and direct registration flows now properly set verification status
 - July 18, 2025: ✅ COMPLETED - Enhanced security by removing sensitive data from URLs
   - Removed voucher codes and payment method info from thank-you page URLs
   - Implemented session-based data storage for thank you page information

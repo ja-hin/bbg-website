@@ -105,7 +105,7 @@ export default function Footer() {
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Budget Picks Under 5000</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Best Value Under 8000</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Power Deals Under 15K</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Premium Phones Above 15K</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Premium Phones 15K+</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Terms & Conditions</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Offers & Deals</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Careers</Link></li>

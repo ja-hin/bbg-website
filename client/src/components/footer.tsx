@@ -91,9 +91,9 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Services</h3>
             <ul className="space-y-2">
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Sell Phone</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Sell Apple iPhones</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Sell iPhones</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Buy Phones</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Buy Refurbished iPhones</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Buy Refurbished</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Register Warranty</Link></li>
             </ul>
           </div>
@@ -102,10 +102,10 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Links</h3>
             <ul className="space-y-2">
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Budget Picks Under 5000</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Best Value Under 8000</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Power Deals Under 15K</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Premium Phones 15K+</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Budget Under 5K</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Value Under 8K</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Deals Under 15K</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Premium 15K+</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Terms & Conditions</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Offers & Deals</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Careers</Link></li>
@@ -130,7 +130,7 @@ export default function Footer() {
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Warranty Policy</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Cookie Policy</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Return & Refund Policy</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Return & Refund</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">GDPR Privacy</Link></li>
               <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Shipping Policy</Link></li>
             </ul>

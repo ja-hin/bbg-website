@@ -165,6 +165,136 @@ export default function Home() {
         </div>
       </section>
 
+      {/* BBG Depreciation Slabs Section */}
+      <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
+              BBG Claim Value Slabs
+            </h2>
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4 sm:px-0">
+              Transparent pricing based on your device age. Know exactly what you'll get when you claim your BBG.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-4xl mx-auto">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-red-600 text-white">
+                  <tr>
+                    <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Device Age</th>
+                    <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Claim Percentage</th>
+                    <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Condition Required</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">6-12 months</td>
+                    <td className="py-4 px-4 sm:px-6">
+                      <span className="text-lg sm:text-xl font-bold text-green-600">70%</span>
+                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                    </td>
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">13-18 months</td>
+                    <td className="py-4 px-4 sm:px-6">
+                      <span className="text-lg sm:text-xl font-bold text-green-600">60%</span>
+                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                    </td>
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">19-24 months</td>
+                    <td className="py-4 px-4 sm:px-6">
+                      <span className="text-lg sm:text-xl font-bold text-yellow-600">50%</span>
+                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                    </td>
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">25-30 months</td>
+                    <td className="py-4 px-4 sm:px-6">
+                      <span className="text-lg sm:text-xl font-bold text-yellow-600">40%</span>
+                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                    </td>
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">31-36 months</td>
+                    <td className="py-4 px-4 sm:px-6">
+                      <span className="text-lg sm:text-xl font-bold text-orange-600">30%</span>
+                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                    </td>
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">37-48 months</td>
+                    <td className="py-4 px-4 sm:px-6">
+                      <span className="text-lg sm:text-xl font-bold text-orange-600">20%</span>
+                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                    </td>
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">49-60 months</td>
+                    <td className="py-4 px-4 sm:px-6">
+                      <span className="text-lg sm:text-xl font-bold text-red-600">10%</span>
+                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                    </td>
+                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div className="bg-gray-50 px-4 sm:px-6 py-4 border-t">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <p className="text-xs sm:text-sm text-gray-600">
+                  <strong>Note:</strong> All percentages are calculated based on original invoice value. Final claim amount subject to device verification.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Link href="/customer-registration">
+                    <Button size="sm" className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white">
+                      Register Now
+                    </Button>
+                  </Link>
+                  <Link href="/claim-bbg">
+                    <Button size="sm" variant="outline" className="w-full sm:w-auto border-red-600 text-red-600 hover:bg-red-50">
+                      Claim BBG
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Additional Info Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12">
+            <Card className="p-4 sm:p-6 text-center">
+              <CardContent className="p-0">
+                <div className="text-2xl sm:text-3xl font-bold text-red-600 mb-2">6-60</div>
+                <p className="text-sm sm:text-base text-gray-600">Months coverage period</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="p-4 sm:p-6 text-center">
+              <CardContent className="p-0">
+                <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-2">70%</div>
+                <p className="text-sm sm:text-base text-gray-600">Maximum claim value</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="p-4 sm:p-6 text-center">
+              <CardContent className="p-0">
+                <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-2">100%</div>
+                <p className="text-sm sm:text-base text-gray-600">Transparent pricing</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Distributor CTA Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-r from-red-600 to-blue-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

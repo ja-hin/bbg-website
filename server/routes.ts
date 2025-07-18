@@ -41,20 +41,31 @@ const upload = multer({
 
 // PayU Configuration - Using environment variables with test fallback for debugging
 const PAYU_CONFIG = {
-  merchantId: process.env.PAYU_MERCHANT_ID || "7568550",  // PayU test merchant ID (MID)
-  merchantKey: process.env.PAYU_MERCHANT_KEY || "JBZaLc",  // PayU test merchant key
-  salt: process.env.PAYU_SALT || "GQs7yium",  // PayU test salt
-  clientId: process.env.PAYU_CLIENT_ID || "your_client_id",  // PayU client ID
-  clientSecret: process.env.PAYU_CLIENT_SECRET || "your_client_secret",  // PayU client secret
-  baseUrl: process.env.PAYU_BASE_URL || "https://test.payu.in"
+  merchantId: process.env.PAYU_MERCHANT_ID,  // PayU merchant ID (MID) - from secrets
+  merchantKey: process.env.PAYU_MERCHANT_KEY,  // PayU merchant key - from secrets
+  salt: process.env.PAYU_SALT,  // PayU salt - from secrets
+  clientId: process.env.PAYU_CLIENT_ID,  // PayU client ID - from secrets
+  clientSecret: process.env.PAYU_CLIENT_SECRET,  // PayU client secret - from secrets
+  baseUrl: process.env.PAYU_BASE_URL || "https://test.payu.in"  // Default to test environment
 };
 
+// Validate PayU configuration - all secrets must be present
+const requiredPayUSecrets = ['merchantId', 'merchantKey', 'salt', 'clientId', 'clientSecret'];
+const missingSecrets = requiredPayUSecrets.filter(key => !PAYU_CONFIG[key as keyof typeof PAYU_CONFIG]);
+
+if (missingSecrets.length > 0) {
+  console.error('Missing PayU secrets:', missingSecrets);
+  console.error('PayU payment gateway will not work without all required secrets');
+} else {
+  console.log('PayU Config: All secrets loaded successfully');
+}
+
 console.log('PayU Config:', {
-  merchantId: PAYU_CONFIG.merchantId,
-  merchantKey: PAYU_CONFIG.merchantKey,
-  salt: PAYU_CONFIG.salt.substring(0, 5) + '...',
-  clientId: PAYU_CONFIG.clientId,
-  clientSecret: PAYU_CONFIG.clientSecret ? PAYU_CONFIG.clientSecret.substring(0, 8) + '...' : 'not_set',
+  merchantId: PAYU_CONFIG.merchantId ? 'loaded' : 'missing',
+  merchantKey: PAYU_CONFIG.merchantKey ? 'loaded' : 'missing',
+  salt: PAYU_CONFIG.salt ? 'loaded' : 'missing',
+  clientId: PAYU_CONFIG.clientId ? 'loaded' : 'missing',
+  clientSecret: PAYU_CONFIG.clientSecret ? 'loaded' : 'missing',
   baseUrl: PAYU_CONFIG.baseUrl
 });
 
@@ -236,6 +247,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create PayU payment
   app.post("/api/create-payu-payment", async (req, res) => {
     try {
+      // Validate PayU configuration before processing payment
+      if (!PAYU_CONFIG.merchantId || !PAYU_CONFIG.merchantKey || !PAYU_CONFIG.salt || !PAYU_CONFIG.clientId || !PAYU_CONFIG.clientSecret) {
+        return res.status(500).json({ 
+          message: "PayU payment gateway is not properly configured. Please contact support.",
+          error: "Missing PayU credentials"
+        });
+      }
+
       const { customerData } = req.body;
       const deviceType = customerData.deviceType;
       const amount = deviceType === 'laptop' ? 125 : 99;

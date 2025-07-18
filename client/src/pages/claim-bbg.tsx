@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -30,6 +30,8 @@ interface ClaimDetails {
     deviceType: string;
     modelName: string;
     invoiceValue: string;
+    contact: string;
+    serialNumber: string;
   };
   claimPercentage: number;
   claimAmount: string;
@@ -139,6 +141,14 @@ export default function ClaimBBG() {
       });
     }
   });
+
+  // Auto-populate form fields when claim details are loaded
+  useEffect(() => {
+    if (claimDetails) {
+      form.setValue("contact", claimDetails.customer.contact);
+      form.setValue("serialNumber", claimDetails.customer.serialNumber);
+    }
+  }, [claimDetails, form]);
 
   const handleCheckClaim = () => {
     const voucherCode = form.getValues("voucherCode");
@@ -299,6 +309,11 @@ export default function ClaimBBG() {
                           </Button>
                         </div>
                         <FormMessage />
+                        {claimDetails && (
+                          <p className="text-sm text-gray-500 mt-1">
+                            Pre-filled from registration, but you can edit if needed
+                          </p>
+                        )}
                       </FormItem>
                     )}
                   />
@@ -339,7 +354,7 @@ export default function ClaimBBG() {
                   />
                 </div>
 
-                {/* Device Serial Number */}
+                {/* Device Serial Number - Read Only */}
                 <FormField
                   control={form.control}
                   name="serialNumber"
@@ -347,9 +362,19 @@ export default function ClaimBBG() {
                     <FormItem>
                       <FormLabel>Serial Number / IMEI *</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter device serial number or IMEI" {...field} />
+                        <Input 
+                          placeholder="Serial number will be auto-filled from registration" 
+                          readOnly
+                          className="bg-gray-50 cursor-not-allowed"
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
+                      {claimDetails && (
+                        <p className="text-sm text-gray-500 mt-1">
+                          This is the serial number/IMEI from your device registration
+                        </p>
+                      )}
                     </FormItem>
                   )}
                 />

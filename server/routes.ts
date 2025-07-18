@@ -403,6 +403,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const customer = await storage.getCustomerByVoucherCode(voucherCode);
       console.log("Customer found:", customer ? "Yes" : "No");
+      console.log("Customer data:", customer);
       if (!customer) {
         return res.status(404).json({ message: "Invalid BBG voucher code" });
       }
@@ -430,7 +431,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           name: customer.name,
           deviceType: customer.deviceType,
           modelName: customer.modelName,
-          invoiceValue: customer.invoiceValue
+          invoiceValue: customer.invoiceValue,
+          contact: customer.contact,
+          serialNumber: customer.serialNumber
         },
         claimPercentage,
         claimAmount: claimAmount.toFixed(2),

@@ -66,7 +66,8 @@ export default function Home() {
                   <Laptop className="h-8 w-8 sm:h-10 sm:w-10 text-red-600" />
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Laptop BBG</h3>
-                <div className="text-3xl sm:text-4xl font-bold text-red-600 mb-3 sm:mb-4">₹125</div>
+                <div className="text-3xl sm:text-4xl font-bold text-red-600 mb-2">₹125</div>
+                <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">(inclusive of GST)</p>
                 <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Complete protection for your laptop investment</p>
                 <ul className="text-left space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
@@ -91,7 +92,8 @@ export default function Home() {
                   <Smartphone className="h-8 w-8 sm:h-10 sm:w-10 text-blue-600" />
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Mobile BBG</h3>
-                <div className="text-3xl sm:text-4xl font-bold text-blue-600 mb-3 sm:mb-4">₹99</div>
+                <div className="text-3xl sm:text-4xl font-bold text-blue-600 mb-2">₹99</div>
+                <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">(inclusive of GST)</p>
                 <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Complete protection for your mobile device</p>
                 <ul className="text-left space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">

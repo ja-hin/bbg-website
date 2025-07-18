@@ -50,7 +50,7 @@ export default function ClaimBBG() {
   });
 
   const checkClaimMutation = useMutation({
-    mutationFn: async (data: { bbgVoucherCode: string }) => {
+    mutationFn: async (data: { voucherCode: string }) => {
       const response = await apiRequest("POST", "/api/claims/check", data);
       return response.json();
     },

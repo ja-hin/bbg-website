@@ -51,9 +51,11 @@ export const customers = pgTable("customers", {
 
 export const claims = pgTable("claims", {
   id: serial("id").primaryKey(),
+  customerId: integer("customer_id").notNull(),
   voucherCode: text("voucher_code").notNull(),
   contact: text("contact").notNull(),
   email: text("email").notNull(),
+  deviceAgeMonths: integer("device_age_months").notNull(),
   claimPercentage: integer("claim_percentage").notNull(),
   claimAmount: decimal("claim_amount", { precision: 10, scale: 2 }).notNull(),
   status: text("status").notNull().default('pending'), // 'pending', 'approved', 'rejected'
@@ -132,8 +134,6 @@ export const insertCustomerSchema = createInsertSchema(customers).omit({
 
 export const insertClaimSchema = createInsertSchema(claims).omit({
   id: true,
-  claimPercentage: true,
-  claimAmount: true,
   status: true,
   createdAt: true,
 });

@@ -329,46 +329,13 @@ export default function ClaimBBG() {
 
                 {/* Eligibility Error Message */}
                 {eligibilityError && (
-                  <div className="p-6 bg-orange-50 border border-orange-200 rounded-lg">
+                  <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
                     <div className="flex items-start">
-                      <AlertCircle className="h-6 w-6 text-orange-600 mt-0.5 mr-4 flex-shrink-0" />
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-orange-900 mb-3">Device Not Eligible for Claim</h4>
-                        <p className="text-orange-800 mb-4">
+                      <AlertCircle className="h-5 w-5 text-orange-600 mt-0.5 mr-3 flex-shrink-0" />
+                      <div>
+                        <p className="text-orange-800">
                           {eligibilityError.message}
                         </p>
-                        
-                        <div className="bg-white p-4 rounded-lg border border-orange-200">
-                          <h5 className="font-medium text-orange-900 mb-2">Device Information:</h5>
-                          <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                              <span className="text-orange-700">Current Age:</span>
-                              <span className="ml-2 font-semibold">{eligibilityError.deviceAge} months</span>
-                            </div>
-                            {eligibilityError.minimumAge && (
-                              <div>
-                                <span className="text-orange-700">Minimum Age:</span>
-                                <span className="ml-2 font-semibold">{eligibilityError.minimumAge} months</span>
-                              </div>
-                            )}
-                            {eligibilityError.maximumAge && (
-                              <div>
-                                <span className="text-orange-700">Maximum Age:</span>
-                                <span className="ml-2 font-semibold">{eligibilityError.maximumAge} months</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {eligibilityError.minimumAge && eligibilityError.deviceAge < eligibilityError.minimumAge && (
-                          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                            <p className="text-sm text-blue-800">
-                              <strong>Good news!</strong> You can claim your BBG in{" "}
-                              <strong>{eligibilityError.minimumAge - eligibilityError.deviceAge} months</strong>.
-                              Please check back after your device reaches {eligibilityError.minimumAge} months of age.
-                            </p>
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>

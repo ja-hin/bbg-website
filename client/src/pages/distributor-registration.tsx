@@ -115,8 +115,15 @@ export default function DistributorRegistration() {
         title: "Registration Successful!",
         description: `Your seller code is: ${data.sellerCode}`,
       });
+      // Store success data in session storage for thank you page
+      sessionStorage.setItem('thankYouData', JSON.stringify({
+        type: 'distributor',
+        sellerCode: data.sellerCode,
+        distributorName: data.distributor.name,
+        email: data.distributor.email
+      }));
       setTimeout(() => {
-        setLocation("/thank-you?type=distributor&sellerCode=" + data.sellerCode);
+        setLocation("/thank-you");
       }, 3000);
     },
     onError: (error: any) => {

@@ -193,6 +193,15 @@ KALEYRA_SENDER_ID=XTRCVR  # Configured sender ID
 
 ```
 Changelog:
+- July 18, 2025: ✅ COMPLETED - Enhanced security by removing sensitive data from URLs
+  - Removed voucher codes and payment method info from thank-you page URLs
+  - Implemented session-based data storage for thank you page information
+  - Added API endpoint `/api/thank-you-data` to securely transfer success data
+  - Updated customer registration to use sessionStorage for client-side data transfer
+  - Updated distributor registration to use sessionStorage for client-side data transfer
+  - Enhanced PayU success handler to store data in server session before redirect
+  - Improved security by preventing sensitive information exposure in browser URLs
+  - Clean URLs maintained while preserving full functionality and user experience
 - July 11, 2025: ✅ COMPLETED - Enhanced PayU payment gateway with comprehensive rate limiting solution
   - Implemented server-side rate limiting to prevent PayU API overload (60-second delays per IP)
   - Added client-side countdown timer showing exact wait time before retry

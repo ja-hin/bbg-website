@@ -350,8 +350,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Clean up temporary storage
         tempStorage.delete(txnid);
         
-        // Redirect to success page with voucher code
-        res.redirect(`/thank-you?voucherCode=${customer.voucherCode}&paymentMethod=payu`);
+        // Store success data in session for thank you page
+        req.session.thankYouData = {
+          type: 'customer',
+          voucherCode: customer.voucherCode,
+          paymentMethod: 'payu',
+          customerName: customer.name,
+          deviceType: customer.deviceType
+        };
+        
+        // Redirect to success page without query parameters
+        res.redirect('/thank-you');
       } else {
         res.redirect('/customer-registration?error=payment_failed');
       }
@@ -593,6 +602,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Test customer creation error:', error);
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get thank you page data from session
+  app.get("/api/thank-you-data", async (req, res) => {
+    try {
+      const thankYouData = req.session.thankYouData;
+      if (thankYouData) {
+        // Clear the session data after reading it
+        delete req.session.thankYouData;
+        res.json(thankYouData);
+      } else {
+        res.status(404).json({ message: "No thank you data found" });
+      }
+    } catch (error: any) {
+      console.error('Thank you data fetch error:', error);
+      res.status(500).json({ message: "Error retrieving thank you data" });
     }
   });
 

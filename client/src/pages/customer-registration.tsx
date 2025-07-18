@@ -402,7 +402,15 @@ function RegistrationContent() {
         title: "Registration Successful!",
         description: `Your BBG voucher code is: ${data.voucherCode}`,
       });
-      setLocation("/thank-you?type=customer&voucherCode=" + data.voucherCode);
+      // Store success data in session storage for thank you page
+      sessionStorage.setItem('thankYouData', JSON.stringify({
+        type: 'customer',
+        voucherCode: data.voucherCode,
+        paymentMethod: 'direct',
+        customerName: data.name,
+        deviceType: data.deviceType
+      }));
+      setLocation("/thank-you");
     },
     onError: (error: any) => {
       toast({

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -41,16 +42,54 @@ function DepreciationSlabs() {
 export default function ThankYou() {
   const [location] = useLocation();
   const [params, setParams] = useState<URLSearchParams>();
+  const [sessionData, setSessionData] = useState<any>(null);
+
+  // Try to get data from session first
+  const { data: thankYouData } = useQuery({
+    queryKey: ['/api/thank-you-data'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/thank-you-data');
+        if (response.ok) {
+          return response.json();
+        }
+        return null;
+      } catch (error) {
+        return null;
+      }
+    },
+    retry: false
+  });
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.split('?')[1] || '');
     setParams(searchParams);
   }, [location]);
 
-  const type = params?.get('type');
-  const sellerCode = params?.get('sellerCode');
-  const voucherCode = params?.get('voucherCode');
-  const paymentMethod = params?.get('paymentMethod');
+  useEffect(() => {
+    if (thankYouData) {
+      setSessionData(thankYouData);
+    } else {
+      // Check session storage as fallback
+      const storedData = sessionStorage.getItem('thankYouData');
+      if (storedData) {
+        try {
+          const parsedData = JSON.parse(storedData);
+          setSessionData(parsedData);
+          // Clear session storage after reading
+          sessionStorage.removeItem('thankYouData');
+        } catch (error) {
+          console.error('Error parsing session storage data:', error);
+        }
+      }
+    }
+  }, [thankYouData]);
+
+  // Use session data if available, otherwise fall back to URL parameters
+  const type = sessionData?.type || params?.get('type');
+  const sellerCode = sessionData?.sellerCode || params?.get('sellerCode');
+  const voucherCode = sessionData?.voucherCode || params?.get('voucherCode');
+  const paymentMethod = sessionData?.paymentMethod || params?.get('paymentMethod');
 
   const handleDownloadInvoice = () => {
     // Generate and download BBG purchase invoice

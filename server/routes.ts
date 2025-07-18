@@ -41,14 +41,20 @@ const upload = multer({
 
 // PayU Configuration - Using environment variables with test fallback for debugging
 const PAYU_CONFIG = {
+  merchantId: process.env.PAYU_MERCHANT_ID || "7568550",  // PayU test merchant ID (MID)
   merchantKey: process.env.PAYU_MERCHANT_KEY || "JBZaLc",  // PayU test merchant key
   salt: process.env.PAYU_SALT || "GQs7yium",  // PayU test salt
+  clientId: process.env.PAYU_CLIENT_ID || "your_client_id",  // PayU client ID
+  clientSecret: process.env.PAYU_CLIENT_SECRET || "your_client_secret",  // PayU client secret
   baseUrl: process.env.PAYU_BASE_URL || "https://test.payu.in"
 };
 
 console.log('PayU Config:', {
+  merchantId: PAYU_CONFIG.merchantId,
   merchantKey: PAYU_CONFIG.merchantKey,
   salt: PAYU_CONFIG.salt.substring(0, 5) + '...',
+  clientId: PAYU_CONFIG.clientId,
+  clientSecret: PAYU_CONFIG.clientSecret ? PAYU_CONFIG.clientSecret.substring(0, 8) + '...' : 'not_set',
   baseUrl: PAYU_CONFIG.baseUrl
 });
 

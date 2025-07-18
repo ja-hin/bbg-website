@@ -15,17 +15,23 @@ The BBG application uses PayU as the primary and only payment gateway:
 
 ### Environment Variables
 ```env
-# PayU Configuration
-PAYU_MERCHANT_KEY=your_merchant_key
-PAYU_SALT=your_salt_key
-PAYU_BASE_URL=https://test.payu.in  # For testing
-# PAYU_BASE_URL=https://secure.payu.in  # For production
+# PayU Configuration - Complete Setup Required
+PAYU_MERCHANT_ID=your_merchant_id          # PayU Merchant ID (MID)
+PAYU_MERCHANT_KEY=your_merchant_key        # PayU Merchant Key
+PAYU_SALT=your_salt_key                    # PayU Salt Key
+PAYU_CLIENT_ID=your_client_id              # PayU Client ID
+PAYU_CLIENT_SECRET=your_client_secret      # PayU Client Secret
+PAYU_BASE_URL=https://test.payu.in         # For testing
+# PAYU_BASE_URL=https://secure.payu.in     # For production
 ```
 
 ### Current Configuration
 The system uses environment variables for all PayU credentials:
+- Merchant ID (MID): From `PAYU_MERCHANT_ID` environment variable
 - Merchant Key: From `PAYU_MERCHANT_KEY` environment variable
-- Salt: From `PAYU_SALT` environment variable  
+- Salt: From `PAYU_SALT` environment variable
+- Client ID: From `PAYU_CLIENT_ID` environment variable
+- Client Secret: From `PAYU_CLIENT_SECRET` environment variable
 - Base URL: From `PAYU_BASE_URL` environment variable
 
 **Environment Setup**: Set `PAYU_BASE_URL=https://test.payu.in` for testing or `PAYU_BASE_URL=https://secure.payu.in` for production

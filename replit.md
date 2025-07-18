@@ -253,6 +253,7 @@ Changelog:
   - Using test environment baseUrl="https://test.payu.in" (change to secure.payu.in for production)
 - July 08, 2025: Added PayU payment gateway integration
   - Integrated PayU payment gateway as alternative to Stripe for non-seamless payments
+  - Complete PayU configuration with MID, Key, Salt, Client ID, and Client Secret
   - Created PaymentMethodSelector component with dual payment options (Stripe + PayU)
   - Added PayU payment creation, success/failure handlers with hash verification
   - Support for multiple payment methods: Credit/Debit Cards, Net Banking, UPI, Wallets

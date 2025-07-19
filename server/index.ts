@@ -14,8 +14,8 @@ const MemoryStoreSession = MemoryStore(session);
 // Session middleware for admin authentication
 app.use(session({
   secret: process.env.SESSION_SECRET || 'bbg-admin-secret-key-change-in-production',
-  resave: true,
-  saveUninitialized: true,
+  resave: false,
+  saveUninitialized: false,
   store: new MemoryStoreSession({
     checkPeriod: 86400000 // prune expired entries every 24h
   }),

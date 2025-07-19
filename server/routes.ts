@@ -733,20 +733,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/admin/logout", (req: any, res) => {
-    console.log('Logout request received, session before destroy:', req.session?.adminId);
+    console.log('Logout request received, session before logout:', req.session?.adminId);
     
-    // Properly destroy the session
-    req.session.destroy((err: any) => {
-      if (err) {
-        console.error('Session destroy error:', err);
-        return res.status(500).json({ message: "Logout failed" });
-      }
+    // Clear all session data manually
+    if (req.session) {
+      delete req.session.adminId;
+      delete req.session.adminUsername;
+      delete req.session.adminRole;
       
-      // Clear the session cookie
-      res.clearCookie('connect.sid');
-      console.log('Session destroyed successfully');
+      // Destroy the session completely
+      req.session.destroy((err: any) => {
+        if (err) {
+          console.error('Session destroy error:', err);
+          // Even if destroy fails, clear the cookie
+          res.clearCookie('connect.sid', { path: '/' });
+          console.log('Session cleared manually after destroy error');
+          return res.json({ message: "Logout successful" });
+        }
+        
+        // Clear the session cookie
+        res.clearCookie('connect.sid', { path: '/' });
+        console.log('Session destroyed successfully');
+        res.json({ message: "Logout successful" });
+      });
+    } else {
+      console.log('No session found to destroy');
+      res.clearCookie('connect.sid', { path: '/' });
       res.json({ message: "Logout successful" });
-    });
+    }
   });
 
   // Admin middleware to check authentication

@@ -101,6 +101,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     { name: 'cancelledChequeFile', maxCount: 1 }
   ]), async (req, res) => {
     try {
+      console.log("Distributor registration request received");
+      console.log("Request body keys:", Object.keys(req.body));
+      console.log("Request files:", req.files ? Object.keys(req.files) : "No files");
+      
       // Process form data
       const formData = { ...req.body };
       
@@ -112,12 +116,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (formData.gstInvoiceAgreement) formData.gstInvoiceAgreement = formData.gstInvoiceAgreement === 'true';
       if (formData.termsAgreement) formData.termsAgreement = formData.termsAgreement === 'true';
       
-      // Handle file uploads
-      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-      if (files.panCopyFile) formData.panCopyFile = files.panCopyFile[0].filename;
-      if (files.gstCertificateFile) formData.gstCertificateFile = files.gstCertificateFile[0].filename;
-      if (files.msmeCertificateFile) formData.msmeCertificateFile = files.msmeCertificateFile[0].filename;
-      if (files.cancelledChequeFile) formData.cancelledChequeFile = files.cancelledChequeFile[0].filename;
+      // Handle file uploads safely
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] } || {};
+      console.log("Files object:", files);
+      
+      if (files && files.panCopyFile && files.panCopyFile[0]) {
+        formData.panCopyFile = files.panCopyFile[0].filename;
+        console.log("PAN copy file uploaded:", files.panCopyFile[0].filename);
+      }
+      if (files && files.gstCertificateFile && files.gstCertificateFile[0]) {
+        formData.gstCertificateFile = files.gstCertificateFile[0].filename;
+        console.log("GST certificate file uploaded:", files.gstCertificateFile[0].filename);
+      }
+      if (files && files.msmeCertificateFile && files.msmeCertificateFile[0]) {
+        formData.msmeCertificateFile = files.msmeCertificateFile[0].filename;
+        console.log("MSME certificate file uploaded:", files.msmeCertificateFile[0].filename);
+      }
+      if (files && files.cancelledChequeFile && files.cancelledChequeFile[0]) {
+        formData.cancelledChequeFile = files.cancelledChequeFile[0].filename;
+        console.log("Cancelled cheque file uploaded:", files.cancelledChequeFile[0].filename);
+      }
       
       // Remove bankAccountConfirm as it's not stored in database
       const { bankAccountConfirm, ...distributorData } = formData;

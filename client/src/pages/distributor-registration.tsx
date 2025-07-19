@@ -41,7 +41,7 @@ const distributorSchema = z.object({
   bankAccountConfirm: z.string().min(8, "Please confirm bank account number"),
   ifscCode: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code format"),
   upiId: z.string().optional(),
-  cancelledChequeFile: z.instanceof(File, { message: "Cancelled cheque file is required" }),
+  cancelledChequeFile: z.instanceof(File).optional(),
   // Declarations
   infoDeclaration: z.boolean().refine(val => val === true, "You must declare the information is correct"),
   tdsUnderstanding: z.boolean().refine(val => val === true, "You must understand TDS compliance"),
@@ -161,16 +161,32 @@ export default function DistributorRegistration() {
           formData.append(key, value);
         } else if (typeof value === 'boolean') {
           formData.append(key, value.toString());
-        } else if (value !== undefined && value !== null) {
+        } else if (value !== undefined && value !== null && value !== '') {
           formData.append(key, value.toString());
         }
       });
       
-      const response = await apiRequest("/api/distributors/register", {
+      // Log the form data for debugging
+      console.log("Submitting distributor registration with data:", Object.keys(data));
+      console.log("Files to upload:", {
+        panCopyFile: data.panCopyFile ? data.panCopyFile.name : "none",
+        gstCertificateFile: data.gstCertificateFile ? data.gstCertificateFile.name : "none", 
+        msmeCertificateFile: data.msmeCertificateFile ? data.msmeCertificateFile.name : "none",
+        cancelledChequeFile: data.cancelledChequeFile ? data.cancelledChequeFile.name : "none"
+      });
+      
+      // Make direct fetch call to ensure proper FormData handling
+      const response = await fetch("/api/distributors/register", {
         method: "POST",
         body: formData
       });
-      return response;
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Registration failed");
+      }
+      
+      return response.json();
     },
     onSuccess: (data) => {
       setSellerCode(data.sellerCode);

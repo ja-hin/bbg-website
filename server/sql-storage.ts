@@ -573,6 +573,118 @@ export class SqlServerStorage implements IStorage {
     }));
   }
 
+  // Admin management methods
+  async getAllDistributorsForAdmin(): Promise<any[]> {
+    await db.connectDB();
+    const query = `
+      SELECT 
+        d.*,
+        d.total_customers,
+        d.commission_earned,
+        ISNULL(pending.pending_amount, 0) as pending_payouts,
+        ISNULL(completed.completed_amount, 0) as completed_payouts
+      FROM distributors d
+      LEFT JOIN (
+        SELECT distributor_id, SUM(amount) as pending_amount
+        FROM commission_payouts 
+        WHERE status IN ('pending', 'processing') 
+        GROUP BY distributor_id
+      ) pending ON d.id = pending.distributor_id
+      LEFT JOIN (
+        SELECT distributor_id, SUM(amount) as completed_amount
+        FROM commission_payouts 
+        WHERE status = 'paid'
+        GROUP BY distributor_id
+      ) completed ON d.id = completed.distributor_id
+      ORDER BY d.created_at DESC
+    `;
+
+    const result = await db.pool.request().query(query);
+    return result.recordset.map(row => ({
+      id: row.id,
+      name: row.name,
+      businessName: row.business_name,
+      contact: row.contact,
+      email: row.email,
+      pincode: row.pincode,
+      location: row.location,
+      preferredMode: row.preferred_mode,
+      gstin: row.gstin,
+      bankAccount: row.bank_account,
+      ifscCode: row.ifsc_code,
+      accountHolderName: row.account_holder_name,
+      sellerCode: row.seller_code,
+      totalCustomers: row.total_customers || 0,
+      commissionEarned: parseFloat(row.commission_earned) || 0,
+      pendingPayouts: parseFloat(row.pending_payouts) || 0,
+      completedPayouts: parseFloat(row.completed_payouts) || 0,
+      createdAt: row.created_at
+    }));
+  }
+
+  async getAllPayoutsForAdmin(): Promise<any[]> {
+    await db.connectDB();
+    const query = `
+      SELECT 
+        cp.*,
+        d.name as distributor_name,
+        d.contact as distributor_contact,
+        d.email as distributor_email,
+        d.seller_code as distributor_seller_code,
+        c.name as customer_name,
+        c.contact as customer_contact,
+        c.device_type,
+        c.brand,
+        c.model_name
+      FROM commission_payouts cp
+      INNER JOIN distributors d ON cp.distributor_id = d.id
+      INNER JOIN customers c ON cp.customer_id = c.id
+      ORDER BY cp.created_at DESC
+    `;
+
+    const result = await db.pool.request().query(query);
+    return result.recordset.map(row => ({
+      id: row.id,
+      amount: parseFloat(row.amount),
+      status: row.status,
+      paymentReference: row.payment_reference,
+      paidAt: row.paid_at,
+      createdAt: row.created_at,
+      distributor: {
+        id: row.distributor_id,
+        name: row.distributor_name,
+        contact: row.distributor_contact,
+        email: row.distributor_email,
+        sellerCode: row.distributor_seller_code
+      },
+      customer: {
+        name: row.customer_name,
+        contact: row.customer_contact,
+        deviceType: row.device_type,
+        brand: row.brand,
+        modelName: row.model_name
+      }
+    }));
+  }
+
+  async updatePayoutStatus(payoutId: number, status: string, paymentReference?: string): Promise<void> {
+    await db.connectDB();
+    const query = `
+      UPDATE commission_payouts 
+      SET status = @status, 
+          payment_reference = @paymentReference,
+          paid_at = CASE WHEN @status = 'paid' THEN GETDATE() ELSE paid_at END
+      WHERE id = @payoutId
+    `;
+
+    const request = db.pool.request();
+    request.input('payoutId', sql.Int, payoutId);
+    request.input('status', sql.VarChar, status);
+    request.input('paymentReference', sql.VarChar, paymentReference || null);
+
+    await request.query(query);
+  }
+
   // Customer operations
   async createCustomer(insertCustomer: InsertCustomer): Promise<Customer> {
     await db.connectDB();

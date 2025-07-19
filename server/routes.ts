@@ -1420,6 +1420,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all distributors for admin
+  app.get("/api/admin/distributors", isAdminAuthenticated, async (req, res) => {
+    try {
+      const distributors = await storage.getAllDistributorsForAdmin();
+      res.json(distributors);
+    } catch (error: any) {
+      console.error("Failed to fetch distributors:", error);
+      res.status(500).json({ message: "Failed to fetch distributors" });
+    }
+  });
+
+  // Get all payouts for admin
+  app.get("/api/admin/payouts", isAdminAuthenticated, async (req, res) => {
+    try {
+      const payouts = await storage.getAllPayoutsForAdmin();
+      res.json(payouts);
+    } catch (error: any) {
+      console.error("Failed to fetch payouts:", error);
+      res.status(500).json({ message: "Failed to fetch payouts" });
+    }
+  });
+
+  // Update payout status
+  app.patch("/api/admin/payouts/:id/status", isAdminAuthenticated, async (req, res) => {
+    try {
+      const payoutId = parseInt(req.params.id);
+      const { status, paymentReference } = req.body;
+      
+      if (!['pending', 'processing', 'paid', 'failed'].includes(status)) {
+        return res.status(400).json({ message: "Invalid status" });
+      }
+
+      await storage.updatePayoutStatus(payoutId, status, paymentReference);
+      res.json({ message: "Payout status updated successfully" });
+    } catch (error: any) {
+      console.error("Failed to update payout status:", error);
+      res.status(500).json({ message: "Failed to update payout status" });
+    }
+  });
+
   // Distributors Master Management (Enhanced with CRUD)
   app.post("/api/admin/distributors", isAdminAuthenticated, async (req, res) => {
     try {

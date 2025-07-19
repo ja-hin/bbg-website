@@ -1,5 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { useRequireAuth } from "@/hooks/useAuth";
 import { 
   Shield, 
@@ -14,10 +13,7 @@ import {
   Phone,
   CreditCard
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import { AdminHeader } from "@/components/admin-header";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -112,20 +108,7 @@ export default function AdminDashboard() {
     staleTime: 0
   });
 
-  // Logout mutation
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      return apiRequest("POST", "/api/admin/logout");
-    },
-    onSuccess: () => {
-      queryClient.clear();
-      toast({
-        title: "Logged Out",
-        description: "You have been successfully logged out"
-      });
-      setLocation("/admin/login");
-    }
-  });
+
 
   if (adminLoading || !isAuthenticated) {
     return (

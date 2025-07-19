@@ -18,6 +18,11 @@ export function AdminHeader() {
       return apiRequest("POST", "/api/admin/logout");
     },
     onSuccess: () => {
+      // Signal logout to other tabs via localStorage
+      localStorage.setItem('admin_logout', Date.now().toString());
+      localStorage.removeItem('admin_logout'); // Clean up immediately
+      
+      // Clear all queries and redirect
       queryClient.clear();
       toast({
         title: "Logged Out",

@@ -64,8 +64,11 @@ export default function DistributorRegistration() {
 
   const sendOtpMutation = useMutation({
     mutationFn: async (contact: string) => {
-      const response = await apiRequest("POST", "/api/send-otp", { contact });
-      return response.json();
+      const response = await apiRequest("/api/send-otp", {
+        method: "POST",
+        body: { contact }
+      });
+      return response;
     },
     onSuccess: () => {
       setOtpSent(true);
@@ -85,8 +88,11 @@ export default function DistributorRegistration() {
 
   const verifyOtpMutation = useMutation({
     mutationFn: async ({ contact, otp }: { contact: string; otp: string }) => {
-      const response = await apiRequest("POST", "/api/verify-otp", { contact, otp });
-      return response.json();
+      const response = await apiRequest("/api/verify-otp", {
+        method: "POST",
+        body: { contact, otp }
+      });
+      return response;
     },
     onSuccess: () => {
       setOtpVerified(true);
@@ -106,8 +112,11 @@ export default function DistributorRegistration() {
 
   const registerMutation = useMutation({
     mutationFn: async (data: Omit<DistributorFormData, 'agreeToTerms'>) => {
-      const response = await apiRequest("POST", "/api/distributors/register", data);
-      return response.json();
+      const response = await apiRequest("/api/distributors/register", {
+        method: "POST",
+        body: data
+      });
+      return response;
     },
     onSuccess: (data) => {
       setSellerCode(data.sellerCode);

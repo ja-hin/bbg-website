@@ -709,6 +709,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       req.session.adminUsername = admin.username;
       req.session.adminRole = admin.role;
 
+      // Save session explicitly
+      req.session.save((err: any) => {
+        if (err) {
+          console.error('Session save error:', err);
+        }
+      });
+
       res.json({
         message: "Login successful",
         admin: {

@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
+import MemoryStore from "memorystore";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
@@ -7,11 +8,17 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Create memory store for sessions
+const MemoryStoreSession = MemoryStore(session);
+
 // Session middleware for admin authentication
 app.use(session({
   secret: process.env.SESSION_SECRET || 'bbg-admin-secret-key-change-in-production',
-  resave: false,
-  saveUninitialized: false,
+  resave: true,
+  saveUninitialized: true,
+  store: new MemoryStoreSession({
+    checkPeriod: 86400000 // prune expired entries every 24h
+  }),
   cookie: {
     secure: false, // Set to true in production with HTTPS
     httpOnly: true,

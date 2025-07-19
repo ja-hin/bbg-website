@@ -15,9 +15,13 @@ export function AdminHeader() {
   // Logout mutation
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest("POST", "/api/admin/logout");
+      console.log('Logout mutation started');
+      const response = await apiRequest("POST", "/api/admin/logout");
+      console.log('Logout response received:', response.status);
+      return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('Logout successful:', data);
       // Signal logout to other tabs via localStorage
       localStorage.setItem('admin_logout', Date.now().toString());
       localStorage.removeItem('admin_logout'); // Clean up immediately
@@ -28,6 +32,17 @@ export function AdminHeader() {
         title: "Logged Out",
         description: "You have been successfully logged out"
       });
+      setLocation("/admin/login");
+    },
+    onError: (error: any) => {
+      console.error('Logout error:', error);
+      toast({
+        title: "Logout Error",
+        description: error.message || "Failed to logout properly",
+        variant: "destructive"
+      });
+      // Still redirect to login even if logout fails
+      queryClient.clear();
       setLocation("/admin/login");
     }
   });
@@ -67,11 +82,14 @@ export function AdminHeader() {
           </div>
           <Button 
             variant="outline" 
-            onClick={() => logoutMutation.mutate()}
+            onClick={() => {
+              console.log('Logout button clicked');
+              logoutMutation.mutate();
+            }}
             disabled={logoutMutation.isPending}
           >
             <LogOut className="h-4 w-4 mr-2" />
-            Logout
+            {logoutMutation.isPending ? "Logging out..." : "Logout"}
           </Button>
         </div>
       </div>

@@ -27,16 +27,12 @@ function AdminBrandsPage() {
 
   // Fetch brands with their models
   const { data: brands = [], isLoading } = useQuery({
-    queryKey: ['/api/brands-with-models'],
-    queryFn: () => apiRequest('/api/brands-with-models')
+    queryKey: ['/api/brands-with-models']
   });
 
   // Create brand mutation
   const createBrandMutation = useMutation({
-    mutationFn: (brand: InsertBrand) => apiRequest('/api/brands', {
-      method: 'POST',
-      body: JSON.stringify(brand)
-    }),
+    mutationFn: (brand: InsertBrand) => apiRequest('POST', '/api/brands', brand),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
       setNewBrand({ name: '', device_type: '' });
@@ -50,10 +46,7 @@ function AdminBrandsPage() {
   // Update brand mutation
   const updateBrandMutation = useMutation({
     mutationFn: ({ id, updates }: { id: number; updates: Partial<InsertBrand> }) => 
-      apiRequest(`/api/brands/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(updates)
-      }),
+      apiRequest('PUT', `/api/brands/${id}`, updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
       setEditingBrand(null);
@@ -66,9 +59,7 @@ function AdminBrandsPage() {
 
   // Delete brand mutation
   const deleteBrandMutation = useMutation({
-    mutationFn: (id: number) => apiRequest(`/api/brands/${id}`, {
-      method: 'DELETE'
-    }),
+    mutationFn: (id: number) => apiRequest('DELETE', `/api/brands/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
       toast({ title: 'Brand deleted successfully' });
@@ -80,10 +71,7 @@ function AdminBrandsPage() {
 
   // Create model mutation
   const createModelMutation = useMutation({
-    mutationFn: (model: InsertDeviceModel) => apiRequest('/api/models', {
-      method: 'POST',
-      body: JSON.stringify(model)
-    }),
+    mutationFn: (model: InsertDeviceModel) => apiRequest('POST', '/api/models', model),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
       setNewModel({ name: '', brand_id: 0 });
@@ -97,10 +85,7 @@ function AdminBrandsPage() {
   // Update model mutation
   const updateModelMutation = useMutation({
     mutationFn: ({ id, updates }: { id: number; updates: Partial<InsertDeviceModel> }) => 
-      apiRequest(`/api/models/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(updates)
-      }),
+      apiRequest('PUT', `/api/models/${id}`, updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
       setEditingModel(null);
@@ -113,9 +98,7 @@ function AdminBrandsPage() {
 
   // Delete model mutation
   const deleteModelMutation = useMutation({
-    mutationFn: (id: number) => apiRequest(`/api/models/${id}`, {
-      method: 'DELETE'
-    }),
+    mutationFn: (id: number) => apiRequest('DELETE', `/api/models/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
       toast({ title: 'Model deleted successfully' });

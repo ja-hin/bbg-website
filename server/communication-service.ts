@@ -4,10 +4,8 @@ import { templateService } from './template-service';
 
 // Email Service using SMTP
 export class EmailService {
-  private transporter: nodemailer.Transporter;
-
-  constructor() {
-    this.transporter = nodemailer.createTransport({
+  private createTransporter() {
+    return nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
       port: parseInt(process.env.SMTP_PORT || '587'),
       secure: false, // true for 465, false for other ports
@@ -25,6 +23,9 @@ export class EmailService {
         return { success: false, message: 'SMTP not configured' };
       }
 
+      // Create transporter dynamically to pick up environment variable changes
+      const transporter = this.createTransporter();
+
       const mailOptions = {
         from: `"Xtracover BBG" <${process.env.SMTP_USER}>`,
         to,
@@ -33,7 +34,7 @@ export class EmailService {
         html,
       };
 
-      const result = await this.transporter.sendMail(mailOptions);
+      const result = await transporter.sendMail(mailOptions);
       console.log('Email sent successfully:', result.messageId);
       return { success: true, messageId: result.messageId };
     } catch (error: any) {

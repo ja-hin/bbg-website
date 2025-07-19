@@ -232,35 +232,23 @@ function AdminBrandsPage() {
   };
 
   const handleBulkUpload = async () => {
-    // Prioritize file upload over manual CSV input
-    if (selectedFile) {
-      setIsProcessingFile(true);
-      try {
-        const parsedData = await processExcelFile(selectedFile);
-        if (parsedData.length === 0) {
-          toast({ title: 'No valid data found in file', variant: 'destructive' });
-          return;
-        }
-        bulkUploadMutation.mutate(parsedData);
-      } catch (error: any) {
-        toast({ title: 'File processing failed', description: error.message, variant: 'destructive' });
-      } finally {
-        setIsProcessingFile(false);
+    if (!selectedFile) {
+      toast({ title: 'Please select a file to upload', variant: 'destructive' });
+      return;
+    }
+
+    setIsProcessingFile(true);
+    try {
+      const parsedData = await processExcelFile(selectedFile);
+      if (parsedData.length === 0) {
+        toast({ title: 'No valid data found in file', variant: 'destructive' });
+        return;
       }
-    } else if (csvData.trim()) {
-      // Fallback to manual CSV input
-      try {
-        const parsedData = parseCsvData(csvData);
-        if (parsedData.length === 0) {
-          toast({ title: 'No valid data found in CSV', variant: 'destructive' });
-          return;
-        }
-        bulkUploadMutation.mutate(parsedData);
-      } catch (error) {
-        toast({ title: 'Invalid CSV format', variant: 'destructive' });
-      }
-    } else {
-      toast({ title: 'Please select a file or enter CSV data', variant: 'destructive' });
+      bulkUploadMutation.mutate(parsedData);
+    } catch (error: any) {
+      toast({ title: 'File processing failed', description: error.message, variant: 'destructive' });
+    } finally {
+      setIsProcessingFile(false);
     }
   };
 
@@ -448,8 +436,7 @@ function AdminBrandsPage() {
 
                   {/* File Upload Section */}
                   <div className="space-y-4">
-                    <h4 className="font-medium">Upload Excel/CSV File</h4>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
                       <input
                         ref={fileInputRef}
                         type="file"
@@ -458,15 +445,14 @@ function AdminBrandsPage() {
                         className="hidden"
                       />
                       {selectedFile ? (
-                        <div className="space-y-2">
-                          <FileText className="w-8 h-8 text-green-600 mx-auto" />
-                          <p className="text-sm font-medium text-green-600">{selectedFile.name}</p>
-                          <p className="text-xs text-gray-500">
+                        <div className="space-y-3">
+                          <FileText className="w-12 h-12 text-green-600 mx-auto" />
+                          <p className="text-lg font-medium text-green-600">{selectedFile.name}</p>
+                          <p className="text-sm text-gray-500">
                             {(selectedFile.size / 1024).toFixed(1)} KB
                           </p>
                           <Button 
                             variant="outline" 
-                            size="sm" 
                             onClick={() => {
                               setSelectedFile(null);
                               if (fileInputRef.current) fileInputRef.current.value = '';
@@ -476,14 +462,14 @@ function AdminBrandsPage() {
                           </Button>
                         </div>
                       ) : (
-                        <div className="space-y-2">
-                          <Upload className="w-8 h-8 text-gray-400 mx-auto" />
-                          <p className="text-sm text-gray-600">
-                            Click to select Excel (.xlsx, .xls) or CSV file
+                        <div className="space-y-3">
+                          <Upload className="w-12 h-12 text-gray-400 mx-auto" />
+                          <p className="text-lg text-gray-600">
+                            Upload Excel or CSV file
                           </p>
                           <Button 
-                            variant="outline" 
                             onClick={() => fileInputRef.current?.click()}
+                            className="px-8 py-2"
                           >
                             Choose File
                           </Button>
@@ -491,41 +477,6 @@ function AdminBrandsPage() {
                       )}
                     </div>
                   </div>
-
-                  {/* Format Instructions */}
-                  <div className="space-y-2">
-                    <h4 className="font-medium">File Format Requirements</h4>
-                    <div className="text-sm text-gray-600 space-y-1">
-                      <p>• <strong>Columns:</strong> Device, Brand, Model (in this order)</p>
-                      <p>• <strong>Device:</strong> Either "mobile" or "laptop"</p>
-                      <p>• <strong>Brand:</strong> Brand name (e.g., Apple, Samsung)</p>
-                      <p>• <strong>Model:</strong> Model name (e.g., iPhone 15 Pro, Galaxy S24)</p>
-                      <p>• <strong>Supported formats:</strong> .xlsx, .xls, .csv</p>
-                    </div>
-                    <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded mt-2">
-                      <strong>Example:</strong><br/>
-                      Row 1: Device | Brand | Model<br/>
-                      Row 2: mobile | Apple | iPhone 15 Pro<br/>
-                      Row 3: laptop | Dell | XPS 13
-                    </div>
-                  </div>
-
-                  {/* Manual CSV Input (Optional) */}
-                  {!selectedFile && (
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Or paste CSV data manually</label>
-                      <Textarea
-                        placeholder="Device,Brand,Model&#10;mobile,Apple,iPhone 15 Pro&#10;laptop,Dell,XPS 13"
-                        value={csvData}
-                        onChange={(e) => setCsvData(e.target.value)}
-                        rows={6}
-                        className="font-mono text-sm"
-                      />
-                      <p className="text-xs text-gray-500">
-                        Note: File upload takes priority over manual input
-                      </p>
-                    </div>
-                  )}
 
                   {/* Upload Results */}
                   {uploadResults && (
@@ -557,12 +508,13 @@ function AdminBrandsPage() {
                   <div className="flex gap-3 pt-4">
                     <Button 
                       onClick={handleBulkUpload}
-                      disabled={bulkUploadMutation.isPending || isProcessingFile || (!selectedFile && !csvData.trim())}
+                      disabled={bulkUploadMutation.isPending || isProcessingFile || !selectedFile}
                       className="flex-1"
+                      size="lg"
                     >
                       {isProcessingFile ? 'Processing File...' : 
                        bulkUploadMutation.isPending ? 'Uploading...' : 
-                       'Upload Data'}
+                       'Process File'}
                     </Button>
                     <Button 
                       variant="outline" 

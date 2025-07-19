@@ -193,6 +193,16 @@ KALEYRA_SENDER_ID=XTRCVR  # Configured sender ID
 
 ```
 Changelog:
+- July 19, 2025: ✅ COMPLETED - Eliminated authentication modals and fixed admin logout functionality
+  - RESOLVED: Fixed persistent logout functionality using session.regenerate() instead of session.destroy()
+  - Updated session configuration with proper resave and saveUninitialized settings for optimal performance
+  - Enhanced logout endpoint with comprehensive session clearing and manual session data removal
+  - Added no-cache headers to /api/admin/me endpoint to prevent stale authentication responses
+  - Disabled aggressive frontend authentication checking that was causing modal spam
+  - Removed excessive refetching on window focus, reconnect, and automatic intervals
+  - Implemented silent logout transitions without showing authentication error modals
+  - Admin logout now works seamlessly with immediate session invalidation and clean redirects
+  - All authentication checking modals eliminated while maintaining secure session management
 - July 19, 2025: ✅ COMPLETED - Fixed admin session persistence and enhanced session management
   - Resolved admin authentication session persistence issue in development mode
   - Upgraded session configuration to use MemoryStore for reliable session storage

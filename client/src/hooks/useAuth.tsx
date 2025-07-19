@@ -19,9 +19,10 @@ export function useAuth() {
     queryKey: ["/api/admin/me"],
     retry: 1,
     retryDelay: 1000,
-    staleTime: 30000, // 30 seconds
-    refetchInterval: 60000, // Refetch every minute to check session status
-    refetchOnWindowFocus: true, // Refetch when window gains focus
+    staleTime: 60000, // 1 minute - increased to reduce checks
+    refetchInterval: false, // Disable automatic refetching
+    refetchOnWindowFocus: false, // Disable refetch on window focus
+    refetchOnReconnect: false, // Disable refetch on reconnect
   });
 
   // Listen for logout and login events from other tabs
@@ -51,28 +52,7 @@ export function useAuth() {
     };
   }, [queryClient, setLocation]);
 
-  // Check authentication status more frequently when window is focused
-  useEffect(() => {
-    const handleFocus = () => {
-      // Force a fresh check when tab becomes active
-      refetch();
-    };
-
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        // Force a fresh check when tab becomes visible
-        refetch();
-      }
-    };
-
-    window.addEventListener('focus', handleFocus);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      window.removeEventListener('focus', handleFocus);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [refetch]);
+  // Removed excessive authentication checking to prevent modal spam
 
   const isAuthenticated = !isLoading && !!adminUser && !error;
   const authenticationFailed = !isLoading && !adminUser && error;
@@ -89,12 +69,14 @@ export function useAuth() {
 
 export function useRequireAuth() {
   const { isLoading, isAuthenticated, authenticationFailed, redirectToLogin } = useAuth();
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     if (authenticationFailed) {
-      redirectToLogin();
+      // Silent redirect without showing error modals
+      setLocation("/admin/login");
     }
-  }, [authenticationFailed, redirectToLogin]);
+  }, [authenticationFailed, setLocation]);
 
   return {
     isLoading,

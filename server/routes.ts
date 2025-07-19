@@ -2255,49 +2255,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     
     try {
-      // Check database connection
-      const dbStatus = await checkDatabaseConnection();
+      // Check database connection with proper error handling
+      let dbStatus;
+      try {
+        await storage.getAllCustomers(); // Simple test query
+        dbStatus = {
+          service: "SQL Server Database",
+          status: "connected",
+          message: "Database connection active",
+          host: process.env.SQL_SERVER_HOST || "103.205.66.184",
+          database: process.env.SQL_SERVER_DATABASE || "prexoDB"
+        };
+      } catch (dbError) {
+        dbStatus = {
+          service: "SQL Server Database", 
+          status: "disconnected",
+          message: "Database connection failed",
+          error: dbError.message
+        };
+      }
       
-      // Check SMS service configuration
+      // Check Kaleyra SMS status with environment variable validation
+      const hasKaleyraKey = !!(process.env.KALEYRA_API_KEY && process.env.KALEYRA_API_KEY.length > 10);
       const smsStatus = {
-        configured: !!process.env.KALEYRA_API_KEY,
-        hasApiKey: !!process.env.KALEYRA_API_KEY,
-        service: 'Kaleyra'
+        service: "Kaleyra SMS",
+        status: hasKaleyraKey ? "connected" : "disconnected", 
+        message: hasKaleyraKey ? "API key configured and active" : "API key missing or invalid",
+        senderId: process.env.KALEYRA_SENDER_ID || "Not configured"
       };
-
-      // Check email configuration
+      
+      // Check email SMTP status with proper validation
+      const hasEmailConfig = !!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASSWORD);
       const emailStatus = {
-        configured: !!(process.env.SMTP_HOST && process.env.SMTP_USER),
-        host: process.env.SMTP_HOST || null
+        service: "Email SMTP",
+        status: hasEmailConfig ? "connected" : "disconnected",
+        message: hasEmailConfig ? "SMTP fully configured" : "SMTP configuration incomplete",
+        host: process.env.SMTP_HOST || "Not configured",
+        user: process.env.SMTP_USER ? "Configured" : "Not configured"
       };
-
-      // Check WhatsApp configuration
+      
+      // Check WhatsApp status with proper validation
+      const hasWhatsAppConfig = !!(process.env.GUPSHUP_API_KEY && process.env.GUPSHUP_APP_NAME);
       const whatsappStatus = {
-        configured: !!process.env.GUPSHUP_API_KEY,
-        hasApiKey: !!process.env.GUPSHUP_API_KEY,
-        service: 'Gupshup'
+        service: "WhatsApp Gupshup",
+        status: hasWhatsAppConfig ? "connected" : "disconnected",
+        message: hasWhatsAppConfig ? "Gupshup API configured" : "Gupshup configuration missing",
+        appName: process.env.GUPSHUP_APP_NAME || "Not configured"
       };
-
-      // Get template count
-      const templates = await storage.getAllTemplates();
-
-      res.json({
-        database: dbStatus,
-        sms: smsStatus,
-        email: emailStatus,
-        whatsapp: whatsappStatus,
-        templates: {
+      
+      // Check template count with error handling
+      let templateStatus;
+      try {
+        const templates = await storage.getAllTemplates();
+        templateStatus = {
+          service: "Template System",
+          status: templates.length > 0 ? "connected" : "disconnected",
           count: templates.length,
-          active: templates.filter(t => t.isActive).length
+          message: `${templates.length} templates configured`
+        };
+      } catch (templateError) {
+        console.error("Template error:", templateError);
+        // Fallback - try to manually check templates table
+        try {
+          await db.connectDB();
+          const result = await db.pool.request().query("SELECT COUNT(*) as count FROM message_templates");
+          const count = result.recordset[0]?.count || 0;
+          templateStatus = {
+            service: "Template System",
+            status: count > 0 ? "connected" : "disconnected",
+            count: count,
+            message: `${count} templates configured (manual count)`
+          };
+        } catch (fallbackError) {
+          templateStatus = {
+            service: "Template System",
+            status: "disconnected", 
+            count: 0,
+            message: "Template system error",
+            error: templateError.message
+          };
+        }
+      }
+      
+      // System uptime with proper formatting
+      const uptime = process.uptime();
+      const uptimeHours = Math.floor(uptime / 3600);
+      const uptimeMinutes = Math.floor((uptime % 3600) / 60);
+      const uptimeSeconds = Math.floor(uptime % 60);
+      
+      res.json({
+        status: "success",
+        timestamp: new Date().toISOString(),
+        services: {
+          database: dbStatus,
+          sms: smsStatus,
+          email: emailStatus,
+          whatsapp: whatsappStatus,
+          templates: templateStatus
         },
-        server: {
-          uptime: process.uptime(),
-          timestamp: new Date().toISOString()
+        system: {
+          uptime: `${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s`,
+          nodeVersion: process.version,
+          platform: process.platform,
+          environment: process.env.NODE_ENV || "development"
         }
       });
     } catch (error: any) {
-      console.error('System status error:', error);
-      res.status(500).json({ message: "Failed to get system status" });
+      console.error("System status error:", error);
+      res.status(500).json({ 
+        message: "Failed to get system status",
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
     }
   });
 

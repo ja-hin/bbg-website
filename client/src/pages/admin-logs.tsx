@@ -223,13 +223,13 @@ export default function AdminLogs() {
               </CardHeader>
               <CardContent>
                 <div className="flex items-center space-x-2">
-                  <div className={`w-3 h-3 rounded-full ${systemStatus?.database?.status === 'connected' ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  <div className={`w-3 h-3 rounded-full ${systemStatus?.services?.database?.status === 'connected' ? 'bg-green-500' : 'bg-red-500'}`}></div>
                   <span className="text-sm">
-                    {systemStatus?.database?.status === 'connected' ? 'Connected' : 'Disconnected'}
+                    {systemStatus?.services?.database?.status === 'connected' ? 'Connected' : 'Disconnected'}
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  SQL Server: {systemStatus?.database?.host || 'Unknown'}
+                  SQL Server: {systemStatus?.services?.database?.host || 'Unknown'}
                 </p>
               </CardContent>
             </Card>
@@ -242,13 +242,13 @@ export default function AdminLogs() {
               </CardHeader>
               <CardContent>
                 <div className="flex items-center space-x-2">
-                  <div className={`w-3 h-3 rounded-full ${systemStatus?.sms?.configured ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                  <div className={`w-3 h-3 rounded-full ${systemStatus?.services?.sms?.status === 'connected' ? 'bg-green-500' : 'bg-red-500'}`}></div>
                   <span className="text-sm">
-                    {systemStatus?.sms?.configured ? 'Configured' : 'Not Configured'}
+                    {systemStatus?.services?.sms?.status === 'connected' ? 'Configured' : 'Not Configured'}
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  API Key: {systemStatus?.sms?.hasApiKey ? 'Present' : 'Missing'}
+                  {systemStatus?.services?.sms?.message || 'Status unknown'}
                 </p>
               </CardContent>
             </Card>
@@ -261,13 +261,13 @@ export default function AdminLogs() {
               </CardHeader>
               <CardContent>
                 <div className="flex items-center space-x-2">
-                  <div className={`w-3 h-3 rounded-full ${systemStatus?.email?.configured ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                  <div className={`w-3 h-3 rounded-full ${systemStatus?.services?.email?.status === 'connected' ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
                   <span className="text-sm">
-                    {systemStatus?.email?.configured ? 'Configured' : 'Needs Setup'}
+                    {systemStatus?.services?.email?.status === 'connected' ? 'Configured' : 'Needs Setup'}
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  SMTP: {systemStatus?.email?.host || 'Not configured'}
+                  {systemStatus?.services?.email?.message || 'Status unknown'}
                 </p>
               </CardContent>
             </Card>
@@ -280,13 +280,13 @@ export default function AdminLogs() {
               </CardHeader>
               <CardContent>
                 <div className="flex items-center space-x-2">
-                  <div className={`w-3 h-3 rounded-full ${systemStatus?.whatsapp?.configured ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                  <div className={`w-3 h-3 rounded-full ${systemStatus?.services?.whatsapp?.status === 'connected' ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
                   <span className="text-sm">
-                    {systemStatus?.whatsapp?.configured ? 'Configured' : 'Needs Setup'}
+                    {systemStatus?.services?.whatsapp?.status === 'connected' ? 'Configured' : 'Needs Setup'}
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Gupshup: {systemStatus?.whatsapp?.hasApiKey ? 'API Key Present' : 'API Key Missing'}
+                  {systemStatus?.services?.whatsapp?.message || 'Status unknown'}
                 </p>
               </CardContent>
             </Card>
@@ -303,7 +303,7 @@ export default function AdminLogs() {
                   <span className="text-sm">Active</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Templates: {systemStatus?.templates?.count || 0} configured
+                  Templates: {systemStatus?.services?.templates?.count || 0} configured
                 </p>
               </CardContent>
             </Card>
@@ -320,7 +320,7 @@ export default function AdminLogs() {
                   <span className="text-sm">Online</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Uptime: {systemStatus?.server?.uptime || 'Unknown'}
+                  Uptime: {systemStatus?.system?.uptime || 'Unknown'}
                 </p>
               </CardContent>
             </Card>

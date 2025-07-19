@@ -11,6 +11,7 @@ import sql from 'mssql';
 import { kaleyraSMSService } from "./kaleyra-service";
 import { communicationService } from "./communication-service";
 import { templateService } from "./template-service";
+import { testAllTemplates } from "./template-test";
 import { 
   insertDistributorSchema, 
   insertCustomerSchema, 
@@ -1371,7 +1372,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Test Communication Services endpoint
+  // Test all templates with real data
+  app.post("/api/test-templates", async (req, res) => {
+    try {
+      const { name, email, contact } = req.body;
+      
+      if (!name || !email || !contact) {
+        return res.status(400).json({ message: "Name, email, and contact number are required" });
+      }
+
+      console.log(`Testing all templates for: ${name} (${email}, ${contact})`);
+
+      const testResults = await testAllTemplates({
+        name,
+        email,
+        phone: contact
+      });
+
+      res.json(testResults);
+    } catch (error: any) {
+      console.error('Template test error:', error);
+      res.status(500).json({ 
+        success: false,
+        message: "Template test failed", 
+        error: error.message 
+      });
+    }
+  });
+
+  // Test Communication Services endpoint (basic test)
   app.post("/api/test-communications", async (req, res) => {
     try {
       const { name, email, contact } = req.body;

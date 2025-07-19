@@ -12,6 +12,7 @@ import { kaleyraSMSService } from "./kaleyra-service";
 import { communicationService } from "./communication-service";
 import { templateService } from "./template-service";
 import { testAllTemplates } from "./template-test";
+// Removed nodemailer import - using communicationService instead
 import { 
   insertDistributorSchema, 
   insertCustomerSchema, 
@@ -2407,23 +2408,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "All SMTP fields are required" });
       }
       
-      // Test the configuration before saving
-      const nodemailer = require('nodemailer');
-      const testTransporter = nodemailer.createTransporter({
-        host,
-        port: parseInt(port),
-        secure: false,
-        auth: { user, pass: password }
-      });
-      
-      // Verify connection
-      await testTransporter.verify();
-      
-      // Store in environment (this is temporary for this session)
+      // Store in environment first
       process.env.SMTP_HOST = host;
       process.env.SMTP_PORT = port.toString();
       process.env.SMTP_USER = user;
       process.env.SMTP_PASSWORD = password;
+      
+      // Test the configuration by attempting to send a test email
+      try {
+        const testResult = await communicationService.emailService.sendEmail(
+          user,
+          'SMTP Configuration Test - Xtracover BBG',
+          '<h2>SMTP Configuration Successful!</h2><p>Your SMTP settings are working correctly. Email notifications are now enabled for Xtracover BBG.</p><p>You will receive automatic notifications for customer registrations, claim updates, and referral partner payouts.</p>',
+          'SMTP Configuration Successful! Your email settings are working correctly. Email notifications are now enabled for Xtracover BBG.'
+        );
+        
+        if (!testResult.success) {
+          // Remove the credentials if test fails
+          delete process.env.SMTP_HOST;
+          delete process.env.SMTP_PORT;
+          delete process.env.SMTP_USER;
+          delete process.env.SMTP_PASSWORD;
+          throw new Error(testResult.error || 'SMTP authentication failed');
+        }
+      } catch (error: any) {
+        // Remove the credentials if test fails
+        delete process.env.SMTP_HOST;
+        delete process.env.SMTP_PORT;
+        delete process.env.SMTP_USER;
+        delete process.env.SMTP_PASSWORD;
+        throw error;
+      }
       
       res.json({
         success: true,

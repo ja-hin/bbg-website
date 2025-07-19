@@ -120,17 +120,15 @@ function PayUPaymentForm({
     
     try {
       // Create PayU payment
-      const response = await apiRequest("POST", "/api/create-payu-payment", { 
-        deviceType, 
-        customerData 
+      const paymentData = await apiRequest("/api/create-payu-payment", { 
+        method: "POST",
+        body: { 
+          deviceType, 
+          customerData 
+        }
       });
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Payment creation failed");
-      }
-      
-      const { payuParams, payuUrl } = await response.json();
+      const { payuParams, payuUrl } = paymentData;
 
       // Create form and submit to PayU
       const form = document.createElement('form');
@@ -416,12 +414,7 @@ function RegistrationContent() {
   // Registration mutation
   const mutation = useMutation({
     mutationFn: async (data: CustomerFormData & { paymentIntentId: string }) => {
-      const response = await apiRequest("POST", "/api/customers/register", data);
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Registration failed");
-      }
-      return response.json();
+      return await apiRequest("/api/customers/register", { method: "POST", body: data });
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['/api/customers'] });

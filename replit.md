@@ -193,6 +193,15 @@ KALEYRA_SENDER_ID=XTRCVR  # Configured sender ID
 
 ```
 Changelog:
+- July 19, 2025: ✅ COMPLETED - Fixed PayU payment button errors and API response handling across entire application
+  - RESOLVED: Fixed customer registration OTP functionality by correcting API response handling (removed double JSON parsing)
+  - RESOLVED: Fixed PayU payment button errors by updating API request format in customer registration
+  - Updated all API mutations across codebase to use consistent apiRequest syntax
+  - Fixed API calls in customer-registration.tsx, claim-bbg.tsx, claim-bbg-broken.tsx, and admin-header.tsx
+  - Changed from: apiRequest("POST", "/api/endpoint", data).json() to: apiRequest("/api/endpoint", { method: "POST", body: data })
+  - Eliminated double JSON parsing errors that were causing payment and OTP functionality failures
+  - All OTP sending, verification, PayU payments, claim checking, and admin logout now working correctly
+  - Comprehensive fix ensuring consistent API handling throughout the application
 - July 19, 2025: ✅ COMPLETED - Removed depreciation slabs sections from customer registration page
   - Eliminated "BBG Claim Value Slabs" table section that appeared before the registration form
   - Removed "BBG Claim Value Structure" card section that displayed after the form

@@ -60,8 +60,7 @@ export default function ClaimBBG() {
 
   const checkClaimMutation = useMutation({
     mutationFn: async (data: { voucherCode: string }) => {
-      const response = await apiRequest("POST", "/api/claims/check", data);
-      return response.json();
+      return await apiRequest("/api/claims/check", { method: "POST", body: data });
     },
     onSuccess: (data) => {
       setClaimDetails(data);
@@ -81,8 +80,7 @@ export default function ClaimBBG() {
 
   const submitClaimMutation = useMutation({
     mutationFn: async (data: ClaimFormData) => {
-      const response = await apiRequest("POST", "/api/claims/submit", data);
-      return response.json();
+      return await apiRequest("/api/claims/submit", { method: "POST", body: data });
     },
     onSuccess: () => {
       setClaimSubmitted(true);
@@ -102,8 +100,7 @@ export default function ClaimBBG() {
 
   const sendOtpMutation = useMutation({
     mutationFn: async (contact: string) => {
-      const response = await apiRequest("POST", "/api/otp/send", { contact });
-      return response.json();
+      return await apiRequest("/api/otp/send", { method: "POST", body: { contact } });
     },
     onSuccess: () => {
       setOtpSent(true);
@@ -123,8 +120,7 @@ export default function ClaimBBG() {
 
   const verifyOtpMutation = useMutation({
     mutationFn: async (data: { contact: string, otp: string }) => {
-      const response = await apiRequest("POST", "/api/otp/verify", data);
-      return response.json();
+      return await apiRequest("/api/otp/verify", { method: "POST", body: data });
     },
     onSuccess: () => {
       setOtpVerified(true);

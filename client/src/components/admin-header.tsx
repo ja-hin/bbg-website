@@ -16,9 +16,9 @@ export function AdminHeader() {
   const logoutMutation = useMutation({
     mutationFn: async () => {
       console.log('Logout mutation started');
-      const response = await apiRequest("POST", "/api/admin/logout");
-      console.log('Logout response received:', response.status);
-      return response.json();
+      const result = await apiRequest("/api/admin/logout", { method: "POST" });
+      console.log('Logout response received');
+      return result;
     },
     onSuccess: (data) => {
       console.log('Logout successful:', data);

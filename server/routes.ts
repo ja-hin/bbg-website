@@ -98,6 +98,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const distributor = await storage.createDistributor(validatedData);
+      
+      // Store success data in session for thank you page
+      req.session.thankYouData = {
+        type: 'distributor',
+        sellerCode: distributor.sellerCode,
+        distributorName: distributor.name
+      };
+      
       res.status(201).json({ 
         message: "Distributor registered successfully", 
         sellerCode: distributor.sellerCode,
@@ -566,6 +574,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertCustomerSchema.parse(customerData);
       const customer = await storage.createCustomer(validatedData);
       console.log("Customer created with voucher code:", customer.voucherCode);
+
+      // Store success data in session for thank you page
+      req.session.thankYouData = {
+        type: 'customer',
+        voucherCode: customer.voucherCode,
+        paymentMethod: 'direct',
+        customerName: customer.name,
+        deviceType: customer.deviceType
+      };
 
       res.status(201).json({
         message: "Registration successful! You will receive confirmation shortly.",

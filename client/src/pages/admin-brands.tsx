@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useLocation } from 'wouter';
+import { useRequireAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -28,24 +28,9 @@ interface BrandWithModels extends Brand {
 function AdminBrandsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [, setLocation] = useLocation();
 
-  // Check admin authentication
-  const { data: adminUser, isLoading: adminLoading, error: adminError } = useQuery({
-    queryKey: ['/api/admin/me'],
-    retry: 1,
-    retryDelay: 1000
-  });
-
-  useEffect(() => {
-    // Only redirect to login if we have a definitive authentication failure (401 or 403)
-    if (!adminLoading && !adminUser && adminError) {
-      const errorResponse = adminError as any;
-      if (errorResponse?.response?.status === 401 || errorResponse?.response?.status === 403) {
-        setLocation('/admin/login');
-      }
-    }
-  }, [adminUser, adminLoading, adminError, setLocation]);
+  // Check admin authentication using new hook
+  const { isLoading: adminLoading, isAuthenticated } = useRequireAuth();
   
   const [editingBrand, setEditingBrand] = useState<number | null>(null);
   const [editingModel, setEditingModel] = useState<number | null>(null);
@@ -54,9 +39,10 @@ function AdminBrandsPage() {
   const [editBrandData, setEditBrandData] = useState({ name: '', device_type: '' });
   const [editModelData, setEditModelData] = useState({ name: '' });
 
-  // Fetch brands with their models
+  // Fetch brands with their models only if authenticated
   const { data: brands = [], isLoading } = useQuery({
-    queryKey: ['/api/brands-with-models']
+    queryKey: ['/api/brands-with-models'],
+    enabled: isAuthenticated
   });
 
   // Create brand mutation
@@ -191,7 +177,7 @@ function AdminBrandsPage() {
     setEditModelData({ name: model.name });
   };
 
-  if (adminLoading || !adminUser) {
+  if (adminLoading || !isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -205,7 +191,7 @@ function AdminBrandsPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <AdminHeader adminUser={adminUser} />
+        <AdminHeader />
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="text-center">Loading brands and models...</div>
         </div>
@@ -215,7 +201,7 @@ function AdminBrandsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AdminHeader adminUser={adminUser} />
+      <AdminHeader />
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Brand & Model Management</h1>

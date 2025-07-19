@@ -4,21 +4,10 @@ import { Shield, Database, Tags, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/useAuth";
 
-interface AdminUser {
-  id: number;
-  username: string;
-  email: string;
-  role: string;
-  lastLoginAt?: string;
-  createdAt: string;
-}
-
-interface AdminHeaderProps {
-  adminUser: AdminUser;
-}
-
-export function AdminHeader({ adminUser }: AdminHeaderProps) {
+export function AdminHeader() {
+  const { adminUser } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -47,7 +36,7 @@ export function AdminHeader({ adminUser }: AdminHeaderProps) {
               <Shield className="h-8 w-8 text-blue-600" />
               <div>
                 <h1 className="text-xl font-bold text-gray-900">BBG Admin Panel</h1>
-                <p className="text-sm text-gray-500">Welcome, {adminUser.username}</p>
+                <p className="text-sm text-gray-500">Welcome, {adminUser?.username || 'Admin'}</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">

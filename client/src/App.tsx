@@ -15,16 +15,29 @@ import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminMasters from "@/pages/admin-masters";
 import AdminBrands from "@/pages/admin-brands";
+import { useAuth } from "@/hooks/useAuth";
+
+function AdminRoot() {
+  const { isLoading, isAuthenticated } = useAuth();
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (isAuthenticated) {
+    window.location.href = "/admin/dashboard";
+  } else {
+    window.location.href = "/admin/login";
+  }
+
+  return null;
+}
 
 function Router() {
   return (
     <Switch>
       {/* Admin routes without header/footer */}
-      <Route path="/admin" component={() => {
-        // Redirect /admin to /admin/login
-        window.location.href = "/admin/login";
-        return null;
-      }} />
+      <Route path="/admin" component={AdminRoot} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/admin/masters" component={AdminMasters} />

@@ -1,6 +1,6 @@
-import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
+import { useRequireAuth } from "@/hooks/useAuth";
 import { 
   Shield, 
   Users, 
@@ -76,28 +76,14 @@ export default function AdminDashboard() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Check admin authentication
-  const { data: adminUser, isLoading: adminLoading, error: adminError } = useQuery({
+  // Check admin authentication using new hook
+  const { isLoading: adminLoading, isAuthenticated } = useRequireAuth();
+  const { data: adminUser } = useQuery({
     queryKey: ["/api/admin/me"],
+    enabled: isAuthenticated,
     retry: 1,
     retryDelay: 1000
   });
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    // Only redirect to login if we have a definitive authentication failure (401 or 403)
-    if (!adminLoading && !adminUser && adminError) {
-      const errorResponse = adminError as any;
-      if (errorResponse?.response?.status === 401 || errorResponse?.response?.status === 403) {
-        toast({
-          title: "Authentication Required",
-          description: "Please log in to access the admin panel",
-          variant: "destructive"
-        });
-        setLocation("/admin/login");
-      }
-    }
-  }, [adminLoading, adminError, adminUser, setLocation, toast]);
 
   // Dashboard data
   const { data: dashboardStats, isLoading: statsLoading } = useQuery<DashboardStats>({
@@ -141,7 +127,7 @@ export default function AdminDashboard() {
     }
   });
 
-  if (adminLoading || !adminUser) {
+  if (adminLoading || !isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -154,7 +140,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AdminHeader adminUser={adminUser} />
+      <AdminHeader />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Dashboard Stats */}

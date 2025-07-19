@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,6 +23,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function AdminLogin() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -43,10 +44,16 @@ export default function AdminLogin() {
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginFormData) => {
-      const response = await apiRequest("POST", "/api/admin/login", data);
-      return response.json();
+      const response = await apiRequest("/api/admin/login", {
+        method: "POST",
+        body: data
+      });
+      return response;
     },
     onSuccess: (data) => {
+      // Invalidate auth queries to refresh authentication state
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/me"] });
+      
       // Broadcast login event to other tabs
       localStorage.setItem('admin_login', Date.now().toString());
       localStorage.removeItem('admin_login'); // Clean up immediately

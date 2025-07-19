@@ -550,7 +550,7 @@ function RegistrationContent() {
                                 <SelectValue placeholder="Select device type" />
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent>
+                            <SelectContent side="bottom" align="start">
                               <SelectItem value="mobile">Mobile (₹99)</SelectItem>
                               <SelectItem value="laptop">Laptop (₹125)</SelectItem>
                             </SelectContent>
@@ -575,7 +575,7 @@ function RegistrationContent() {
                                 <SelectValue placeholder="Select device brand" />
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent>
+                            <SelectContent side="bottom" align="start">
                               {deviceBrands.map((brand) => (
                                 <SelectItem key={brand} value={brand}>
                                   {brand}

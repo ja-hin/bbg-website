@@ -733,31 +733,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/admin/logout", (req: any, res) => {
-    console.log('Logout request received, session before logout:', req.session?.adminId);
+    console.log('=== LOGOUT ENDPOINT HIT ===');
+    console.log('Session before logout:', req.session?.adminId);
+    console.log('Full session object:', req.session);
     
-    // Clear all session data manually
+    // Force clear session data immediately
     if (req.session) {
-      delete req.session.adminId;
-      delete req.session.adminUsername;
-      delete req.session.adminRole;
+      req.session.adminId = undefined;
+      req.session.adminUsername = undefined;
+      req.session.adminRole = undefined;
       
-      // Destroy the session completely
-      req.session.destroy((err: any) => {
+      // Regenerate session to completely clear it
+      req.session.regenerate((err: any) => {
         if (err) {
-          console.error('Session destroy error:', err);
-          // Even if destroy fails, clear the cookie
-          res.clearCookie('connect.sid', { path: '/' });
-          console.log('Session cleared manually after destroy error');
-          return res.json({ message: "Logout successful" });
+          console.log('Session regenerate failed, clearing manually');
         }
         
-        // Clear the session cookie
-        res.clearCookie('connect.sid', { path: '/' });
-        console.log('Session destroyed successfully');
+        // Clear the session cookie aggressively
+        res.clearCookie('connect.sid', { 
+          path: '/',
+          httpOnly: true,
+          secure: false 
+        });
+        
+        console.log('=== LOGOUT COMPLETED ===');
         res.json({ message: "Logout successful" });
       });
     } else {
-      console.log('No session found to destroy');
+      console.log('No session found');
       res.clearCookie('connect.sid', { path: '/' });
       res.json({ message: "Logout successful" });
     }
@@ -765,17 +768,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Admin middleware to check authentication
   const isAdminAuthenticated = (req: any, res: any, next: any) => {
-    if (!req.session?.adminId) {
+    console.log('Auth check - Session ID:', req.session?.adminId);
+    console.log('Auth check - Session object:', req.session);
+    
+    if (!req.session?.adminId || req.session.adminId === undefined) {
+      console.log('Authentication failed - no valid session');
       return res.status(401).json({ message: "Admin authentication required" });
     }
     next();
   };
 
   // Get current admin info
-  app.get("/api/admin/me", isAdminAuthenticated, async (req: any, res) => {
+  app.get("/api/admin/me", async (req: any, res) => {
+    // Add no-cache headers to prevent stale authentication responses
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    
+    console.log('/api/admin/me called - Session ID:', req.session?.adminId);
+    console.log('/api/admin/me called - Session username:', req.session?.adminUsername);
+    
+    // Check authentication inline with better error handling
+    if (!req.session?.adminId || req.session.adminId === undefined) {
+      console.log('Admin /me endpoint - Authentication failed');
+      return res.status(401).json({ message: "Admin authentication required" });
+    }
+
     try {
       const admin = await storage.getAdminByUsername(req.session.adminUsername);
       if (!admin) {
+        console.log('Admin not found in database for username:', req.session.adminUsername);
         return res.status(404).json({ message: "Admin not found" });
       }
 
@@ -788,6 +810,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         createdAt: admin.createdAt
       });
     } catch (error: any) {
+      console.error('Get admin info error:', error);
       res.status(500).json({ message: "Failed to get admin info" });
     }
   });

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocation, Link } from "wouter";
+import { useLocation } from "wouter";
 import { 
   Shield, 
   Users, 
@@ -8,9 +8,6 @@ import {
   FileText, 
   AlertCircle, 
   IndianRupee,
-  LogOut,
-  Database,
-  Tags,
   ShoppingCart,
   Calendar,
   User,
@@ -21,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { AdminHeader } from "@/components/admin-header";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface AdminUser {
@@ -151,50 +149,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-3">
-                <Shield className="h-8 w-8 text-blue-600" />
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900">BBG Admin Panel</h1>
-                  <p className="text-sm text-gray-500">Welcome, {adminUser.username}</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Link href="/admin/dashboard">
-                  <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
-                    <Shield className="h-4 w-4 mr-2" />
-                    Dashboard
-                  </Button>
-                </Link>
-                <Link href="/admin/masters">
-                  <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
-                    <Database className="h-4 w-4 mr-2" />
-                    Masters
-                  </Button>
-                </Link>
-                <Link href="/admin/brands">
-                  <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
-                    <Tags className="h-4 w-4 mr-2" />
-                    Brands
-                  </Button>
-                </Link>
-              </div>
-            </div>
-            <Button 
-              variant="outline" 
-              onClick={() => logoutMutation.mutate()}
-              disabled={logoutMutation.isPending}
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
-            </Button>
-          </div>
-        </div>
-      </div>
+      <AdminHeader adminUser={adminUser} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Dashboard Stats */}

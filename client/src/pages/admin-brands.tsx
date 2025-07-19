@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -7,8 +8,18 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import { AdminHeader } from '@/components/admin-header';
 import { Plus, Edit2, Trash2, Save, X } from 'lucide-react';
 import { Brand, DeviceModel, InsertBrand, InsertDeviceModel } from '@shared/schema';
+
+interface AdminUser {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  lastLoginAt?: string;
+  createdAt: string;
+}
 
 interface BrandWithModels extends Brand {
   models: DeviceModel[];
@@ -17,6 +28,19 @@ interface BrandWithModels extends Brand {
 function AdminBrandsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
+
+  // Check admin authentication
+  const { data: adminUser, isLoading: adminLoading } = useQuery({
+    queryKey: ['/api/admin/me'],
+    retry: false
+  });
+
+  useEffect(() => {
+    if (!adminLoading && !adminUser) {
+      setLocation('/admin/login');
+    }
+  }, [adminUser, adminLoading, setLocation]);
   
   const [editingBrand, setEditingBrand] = useState<number | null>(null);
   const [editingModel, setEditingModel] = useState<number | null>(null);
@@ -162,10 +186,22 @@ function AdminBrandsPage() {
     setEditModelData({ name: model.name });
   };
 
+  if (adminLoading || !adminUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p>Loading admin panel...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-6xl mx-auto px-4">
+      <div className="min-h-screen bg-gray-50">
+        <AdminHeader adminUser={adminUser} />
+        <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="text-center">Loading brands and models...</div>
         </div>
       </div>
@@ -173,8 +209,9 @@ function AdminBrandsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
+    <div className="min-h-screen bg-gray-50">
+      <AdminHeader adminUser={adminUser} />
+      <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Brand & Model Management</h1>
           <p className="text-gray-600 mt-2">Manage device brands and models for customer registration</p>

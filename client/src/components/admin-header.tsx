@@ -1,0 +1,86 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation, Link } from "wouter";
+import { Shield, Database, Tags, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+
+interface AdminUser {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  lastLoginAt?: string;
+  createdAt: string;
+}
+
+interface AdminHeaderProps {
+  adminUser: AdminUser;
+}
+
+export function AdminHeader({ adminUser }: AdminHeaderProps) {
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Logout mutation
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest("POST", "/api/admin/logout");
+    },
+    onSuccess: () => {
+      queryClient.clear();
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out"
+      });
+      setLocation("/admin/login");
+    }
+  });
+
+  return (
+    <div className="bg-white shadow-sm border-b">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center py-4">
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-3">
+              <Shield className="h-8 w-8 text-blue-600" />
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">BBG Admin Panel</h1>
+                <p className="text-sm text-gray-500">Welcome, {adminUser.username}</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Link href="/admin/dashboard">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+                  <Shield className="h-4 w-4 mr-2" />
+                  Dashboard
+                </Button>
+              </Link>
+              <Link href="/admin/masters">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+                  <Database className="h-4 w-4 mr-2" />
+                  Masters
+                </Button>
+              </Link>
+              <Link href="/admin/brands">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+                  <Tags className="h-4 w-4 mr-2" />
+                  Brands
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => logoutMutation.mutate()}
+            disabled={logoutMutation.isPending}
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

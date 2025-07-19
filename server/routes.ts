@@ -5,7 +5,9 @@ import path from "path";
 import fs from "fs";
 // Stripe import removed - using PayU only
 import crypto from "crypto";
-import { storage } from "./storage";
+import { storage } from "./sql-storage";
+import { db } from "./db";
+import sql from 'mssql';
 import { kaleyraSMSService } from "./kaleyra-service";
 import { 
   insertDistributorSchema, 
@@ -865,6 +867,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Claim status updated successfully" });
     } catch (error: any) {
       res.status(500).json({ message: "Failed to update claim status" });
+    }
+  });
+
+  // Brand management routes
+  app.get("/api/brands", async (req, res) => {
+    try {
+      await db.connectDB();
+      const deviceType = req.query.deviceType as string;
+      
+      let query = "SELECT * FROM brands WHERE is_active = 1";
+      const request = db.pool.request();
+      
+      if (deviceType) {
+        query += " AND device_type = @deviceType";
+        request.input('deviceType', sql.VarChar, deviceType);
+      }
+      
+      query += " ORDER BY name";
+      const result = await request.query(query);
+      
+      const brands = result.recordset.map((brand: any) => ({
+        id: brand.id,
+        name: brand.name,
+        deviceType: brand.device_type,
+        isActive: brand.is_active
+      }));
+      
+      res.json(brands);
+    } catch (error) {
+      console.error('Error fetching brands:', error);
+      res.status(500).json({ message: 'Failed to fetch brands' });
+    }
+  });
+
+  // Model management routes
+  app.get("/api/models", async (req, res) => {
+    try {
+      await db.connectDB();
+      const brandId = req.query.brandId as string;
+      
+      if (!brandId) {
+        return res.json([]);
+      }
+      
+      const request = db.pool.request();
+      request.input('brandId', sql.Int, parseInt(brandId));
+      
+      const result = await request.query(`
+        SELECT * FROM models 
+        WHERE brand_id = @brandId AND is_active = 1
+        ORDER BY name
+      `);
+      
+      const models = result.recordset.map((model: any) => ({
+        id: model.id,
+        name: model.name,
+        brandId: model.brand_id,
+        isActive: model.is_active
+      }));
+      
+      res.json(models);
+    } catch (error) {
+      console.error('Error fetching models:', error);
+      res.status(500).json({ message: 'Failed to fetch models' });
     }
   });
 

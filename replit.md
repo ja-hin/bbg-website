@@ -193,6 +193,14 @@ KALEYRA_SENDER_ID=XTRCVR  # Configured sender ID
 
 ```
 Changelog:
+- July 19, 2025: ✅ COMPLETED - Reverted database back to SQL Server and repositioned depreciation slabs
+  - Changed database from PostgreSQL back to Microsoft SQL Server at 103.205.66.184:2499
+  - Updated db.ts to use mssql package with raw SQL queries for SQL Server compatibility
+  - Added brand and model management API endpoints (/api/brands and /api/models) for SQL Server
+  - Moved depreciation slabs from inside the registration form to after the form
+  - Removed depreciation slabs toggle button from form and placed slabs in separate card section
+  - Created clean separation between registration form and informational content
+  - Enhanced user experience by showing claim structure after form completion
 - July 18, 2025: ✅ COMPLETED - Fixed customer auto-verification during BBG registration
   - Updated SQL storage createCustomer method to properly save isVerified field to database
   - Added missing is_verified column and parameter in customer INSERT statement

@@ -15,7 +15,7 @@ import FileUpload from "@/components/file-upload";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { 
@@ -311,7 +311,7 @@ function RegistrationContent() {
   const [otpVerified, setOtpVerified] = useState(false);
   const [otp, setOtp] = useState("");
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
-  const [showDepreciationSlabs, setShowDepreciationSlabs] = useState(false);
+
 
   const form = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema),
@@ -979,25 +979,8 @@ function RegistrationContent() {
                   />
                 </div>
 
-                {/* Show Depreciation Slabs */}
-                {showDepreciationSlabs && (
-                  <div className="pt-4">
-                    <DepreciationSlabs />
-                  </div>
-                )}
-
-                {/* Depreciation Info and Submit Button */}
+                {/* Submit Button */}
                 <div className="pt-6 space-y-4">
-                  <div className="text-center">
-                    <Button 
-                      type="button"
-                      variant="outline"
-                      onClick={() => setShowDepreciationSlabs(!showDepreciationSlabs)}
-                      className="mb-4"
-                    >
-                      {showDepreciationSlabs ? "Hide" : "View"} Depreciation Slabs
-                    </Button>
-                  </div>
                   
                   <Button 
                     type="submit" 
@@ -1017,6 +1000,23 @@ function RegistrationContent() {
           </CardContent>
         </Card>
       )}
+      
+      {/* Depreciation Slabs Section - Appears after the form */}
+      <div className="mt-8 max-w-4xl mx-auto">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-center text-2xl text-green-600">
+              BBG Claim Value Structure
+            </CardTitle>
+            <CardDescription className="text-center">
+              Your device's claim value based on age at time of claim
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DepreciationSlabs />
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

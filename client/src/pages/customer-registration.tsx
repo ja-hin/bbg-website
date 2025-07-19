@@ -643,8 +643,8 @@ function RegistrationContent() {
                                 <SelectItem value="none" disabled>No models available</SelectItem>
                               ) : (
                                 models.map((model: any) => (
-                                  <SelectItem key={model.id} value={model.modelName}>
-                                    {model.modelName}
+                                  <SelectItem key={model.id} value={model.name}>
+                                    {model.name}
                                   </SelectItem>
                                 ))
                               )}

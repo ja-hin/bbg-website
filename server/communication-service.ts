@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import axios from 'axios';
+import { templateService } from './template-service';
 
 // Email Service using SMTP
 export class EmailService {
@@ -186,7 +187,7 @@ export class CommunicationService {
     this.whatsappService = new WhatsAppService();
   }
 
-  // Send notifications for different events
+  // Send notifications for different events using templates
   async sendRegistrationConfirmation(
     customerData: {
       name: string;
@@ -204,52 +205,31 @@ export class CommunicationService {
       whatsapp: null as any
     };
 
-    // Email confirmation
-    const emailHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #dc2626;">Xtracover BBG</h1>
-          <h2 style="color: #374151;">Registration Successful!</h2>
-        </div>
-        
-        <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-          <h3 style="color: #374151; margin-top: 0;">Hi ${customerData.name},</h3>
-          <p>Your BBG registration has been completed successfully. Here are your details:</p>
-          
-          <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
-            <strong>BBG Voucher Code: ${customerData.voucherCode}</strong>
-          </div>
-          
-          <ul style="color: #6b7280;">
-            <li><strong>Device:</strong> ${customerData.brand} ${customerData.modelName} (${customerData.deviceType})</li>
-            <li><strong>Contact:</strong> ${customerData.contact}</li>
-            <li><strong>Email:</strong> ${customerData.email}</li>
-          </ul>
-        </div>
-        
-        <div style="background: #fef3c7; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
-          <p style="margin: 0; color: #92400e;"><strong>Important:</strong> Save your voucher code safely. You'll need it to claim your BBG.</p>
-        </div>
-        
-        <div style="text-align: center; margin-top: 30px;">
-          <p style="color: #6b7280;">Thank you for choosing Xtracover BBG!</p>
-        </div>
-      </div>
-    `;
+    try {
+      // Email confirmation using template
+      const emailTemplate = await templateService.getTemplate('email', 'customer_registration');
+      if (emailTemplate) {
+        const emailContent = templateService.renderTemplate(emailTemplate.content, customerData);
+        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'BBG Registration Successful', customerData);
+        results.email = await this.emailService.sendEmail(customerData.email, emailSubject, emailContent);
+      }
 
-    results.email = await this.emailService.sendEmail(
-      customerData.email,
-      'BBG Registration Successful - Xtracover',
-      emailHtml
-    );
+      // SMS confirmation using template
+      const smsTemplate = await templateService.getTemplate('sms', 'customer_registration');
+      if (smsTemplate) {
+        const smsMessage = templateService.renderTemplate(smsTemplate.content, customerData);
+        results.sms = await this.smsService.sendSMS(customerData.contact, smsMessage);
+      }
 
-    // SMS confirmation
-    const smsMessage = `Hi ${customerData.name}, your BBG registration is successful! Your voucher code: ${customerData.voucherCode}. Keep it safe for claiming your BBG. - Xtracover`;
-    results.sms = await this.smsService.sendSMS(customerData.contact, smsMessage);
-
-    // WhatsApp confirmation
-    const whatsappMessage = `🎉 Hi ${customerData.name}!\n\nYour BBG registration is successful!\n\n📱 Device: ${customerData.brand} ${customerData.modelName}\n🎟️ Voucher Code: *${customerData.voucherCode}*\n\n⚠️ Keep your voucher code safe for claiming BBG.\n\nThank you for choosing Xtracover BBG! 🛡️`;
-    results.whatsapp = await this.whatsappService.sendWhatsAppMessage(customerData.contact, whatsappMessage);
+      // WhatsApp confirmation using template
+      const whatsappTemplate = await templateService.getTemplate('whatsapp', 'customer_registration');
+      if (whatsappTemplate) {
+        const whatsappMessage = templateService.renderTemplate(whatsappTemplate.content, customerData);
+        results.whatsapp = await this.whatsappService.sendWhatsAppMessage(customerData.contact, whatsappMessage);
+      }
+    } catch (error) {
+      console.error('Error sending registration confirmation:', error);
+    }
 
     return results;
   }
@@ -269,53 +249,31 @@ export class CommunicationService {
       whatsapp: null as any
     };
 
-    // Email welcome
-    const emailHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #dc2626;">Xtracover BBG</h1>
-          <h2 style="color: #374151;">Welcome to Our Referral Program!</h2>
-        </div>
-        
-        <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-          <h3 style="color: #374151; margin-top: 0;">Hi ${partnerData.name},</h3>
-          <p>Welcome to the Xtracover BBG Referral Program! You're now part of our partner network.</p>
-          
-          <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
-            <strong>Your Referral Code: ${partnerData.sellerCode}</strong>
-          </div>
-          
-          <ul style="color: #6b7280;">
-            ${partnerData.businessName ? `<li><strong>Business:</strong> ${partnerData.businessName}</li>` : ''}
-            <li><strong>Contact:</strong> ${partnerData.contact}</li>
-            <li><strong>Email:</strong> ${partnerData.email}</li>
-            <li><strong>Commission:</strong> ₹25 per successful registration</li>
-          </ul>
-        </div>
-        
-        <div style="background: #ecfdf5; padding: 15px; border-radius: 6px; border-left: 4px solid #10b981;">
-          <p style="margin: 0; color: #065f46;"><strong>Next Steps:</strong> Share your referral code with customers to start earning commissions!</p>
-        </div>
-        
-        <div style="text-align: center; margin-top: 30px;">
-          <p style="color: #6b7280;">Thank you for partnering with Xtracover BBG!</p>
-        </div>
-      </div>
-    `;
+    try {
+      // Email welcome using template
+      const emailTemplate = await templateService.getTemplate('email', 'referral_partner_welcome');
+      if (emailTemplate) {
+        const emailContent = templateService.renderTemplate(emailTemplate.content, partnerData);
+        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'Welcome to Referral Program', partnerData);
+        results.email = await this.emailService.sendEmail(partnerData.email, emailSubject, emailContent);
+      }
 
-    results.email = await this.emailService.sendEmail(
-      partnerData.email,
-      'Welcome to Xtracover BBG Referral Program!',
-      emailHtml
-    );
+      // SMS welcome using template
+      const smsTemplate = await templateService.getTemplate('sms', 'referral_partner_welcome');
+      if (smsTemplate) {
+        const smsMessage = templateService.renderTemplate(smsTemplate.content, partnerData);
+        results.sms = await this.smsService.sendSMS(partnerData.contact, smsMessage);
+      }
 
-    // SMS welcome
-    const smsMessage = `Welcome to Xtracover BBG Referral Program! Your referral code: ${partnerData.sellerCode}. Earn ₹25 per successful registration. Start sharing! - Xtracover`;
-    results.sms = await this.smsService.sendSMS(partnerData.contact, smsMessage);
-
-    // WhatsApp welcome
-    const whatsappMessage = `🎉 Welcome ${partnerData.name}!\n\nYou're now a Xtracover BBG Referral Partner!\n\n🔑 Your Referral Code: *${partnerData.sellerCode}*\n💰 Earn ₹25 per successful registration\n\n📢 Start sharing your code with customers to earn commissions!\n\nWelcome to the team! 🤝`;
-    results.whatsapp = await this.whatsappService.sendWhatsAppMessage(partnerData.contact, whatsappMessage);
+      // WhatsApp welcome using template
+      const whatsappTemplate = await templateService.getTemplate('whatsapp', 'referral_partner_welcome');
+      if (whatsappTemplate) {
+        const whatsappMessage = templateService.renderTemplate(whatsappTemplate.content, partnerData);
+        results.whatsapp = await this.whatsappService.sendWhatsAppMessage(partnerData.contact, whatsappMessage);
+      }
+    } catch (error) {
+      console.error('Error sending referral partner welcome:', error);
+    }
 
     return results;
   }
@@ -336,51 +294,31 @@ export class CommunicationService {
       whatsapp: null as any
     };
 
-    const statusText = {
-      'approved': 'Approved ✅',
-      'rejected': 'Rejected ❌',
-      'processing': 'Under Review 🔍',
-      'paid': 'Payment Completed 💰'
-    }[customerData.status] || customerData.status;
+    try {
+      // Email update using template
+      const emailTemplate = await templateService.getTemplate('email', 'claim_status_update');
+      if (emailTemplate) {
+        const emailContent = templateService.renderTemplate(emailTemplate.content, customerData);
+        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'Claim Status Update', customerData);
+        results.email = await this.emailService.sendEmail(customerData.email, emailSubject, emailContent);
+      }
 
-    // Email update
-    const emailHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #dc2626;">Xtracover BBG</h1>
-          <h2 style="color: #374151;">Claim Status Update</h2>
-        </div>
-        
-        <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-          <h3 style="color: #374151; margin-top: 0;">Hi ${customerData.name},</h3>
-          <p>Your BBG claim status has been updated:</p>
-          
-          <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
-            <p><strong>Voucher Code:</strong> ${customerData.voucherCode}</p>
-            <p><strong>Claim Amount:</strong> ₹${customerData.claimAmount}</p>
-            <p><strong>Status:</strong> <span style="color: ${customerData.status === 'approved' || customerData.status === 'paid' ? '#10b981' : customerData.status === 'rejected' ? '#ef4444' : '#f59e0b'};">${statusText}</span></p>
-          </div>
-        </div>
-        
-        <div style="text-align: center; margin-top: 30px;">
-          <p style="color: #6b7280;">Thank you for choosing Xtracover BBG!</p>
-        </div>
-      </div>
-    `;
+      // SMS update using template
+      const smsTemplate = await templateService.getTemplate('sms', 'claim_status_update');
+      if (smsTemplate) {
+        const smsMessage = templateService.renderTemplate(smsTemplate.content, customerData);
+        results.sms = await this.smsService.sendSMS(customerData.contact, smsMessage);
+      }
 
-    results.email = await this.emailService.sendEmail(
-      customerData.email,
-      `BBG Claim Update - ${statusText} - Xtracover`,
-      emailHtml
-    );
-
-    // SMS update
-    const smsMessage = `Hi ${customerData.name}, your BBG claim (${customerData.voucherCode}) status: ${statusText}. Amount: ₹${customerData.claimAmount}. - Xtracover`;
-    results.sms = await this.smsService.sendSMS(customerData.contact, smsMessage);
-
-    // WhatsApp update
-    const whatsappMessage = `📋 Hi ${customerData.name}!\n\nYour BBG claim status has been updated:\n\n🎟️ Voucher: ${customerData.voucherCode}\n💰 Amount: ₹${customerData.claimAmount}\n📊 Status: ${statusText}\n\nThank you for choosing Xtracover BBG! 🛡️`;
-    results.whatsapp = await this.whatsappService.sendWhatsAppMessage(customerData.contact, whatsappMessage);
+      // WhatsApp update using template
+      const whatsappTemplate = await templateService.getTemplate('whatsapp', 'claim_status_update');
+      if (whatsappTemplate) {
+        const whatsappMessage = templateService.renderTemplate(whatsappTemplate.content, customerData);
+        results.whatsapp = await this.whatsappService.sendWhatsAppMessage(customerData.contact, whatsappMessage);
+      }
+    } catch (error) {
+      console.error('Error sending claim status update:', error);
+    }
 
     return results;
   }
@@ -401,50 +339,31 @@ export class CommunicationService {
       whatsapp: null as any
     };
 
-    const statusText = {
-      'processing': 'Being Processed 🔄',
-      'paid': 'Completed ✅',
-      'failed': 'Failed ❌'
-    }[partnerData.status] || partnerData.status;
+    try {
+      // Email notification using template
+      const emailTemplate = await templateService.getTemplate('email', 'payout_notification');
+      if (emailTemplate) {
+        const emailContent = templateService.renderTemplate(emailTemplate.content, partnerData);
+        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'Payout Update', partnerData);
+        results.email = await this.emailService.sendEmail(partnerData.email, emailSubject, emailContent);
+      }
 
-    // Email notification
-    const emailHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #dc2626;">Xtracover BBG</h1>
-          <h2 style="color: #374151;">Payout Update</h2>
-        </div>
-        
-        <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-          <h3 style="color: #374151; margin-top: 0;">Hi ${partnerData.name},</h3>
-          <p>Your commission payout has been updated:</p>
-          
-          <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
-            <p><strong>Amount:</strong> ₹${partnerData.amount}</p>
-            <p><strong>Status:</strong> <span style="color: ${partnerData.status === 'paid' ? '#10b981' : partnerData.status === 'failed' ? '#ef4444' : '#f59e0b'};">${statusText}</span></p>
-            ${partnerData.paymentReference ? `<p><strong>Reference:</strong> ${partnerData.paymentReference}</p>` : ''}
-          </div>
-        </div>
-        
-        <div style="text-align: center; margin-top: 30px;">
-          <p style="color: #6b7280;">Thank you for being our valued partner!</p>
-        </div>
-      </div>
-    `;
+      // SMS notification using template
+      const smsTemplate = await templateService.getTemplate('sms', 'payout_notification');
+      if (smsTemplate) {
+        const smsMessage = templateService.renderTemplate(smsTemplate.content, partnerData);
+        results.sms = await this.smsService.sendSMS(partnerData.contact, smsMessage);
+      }
 
-    results.email = await this.emailService.sendEmail(
-      partnerData.email,
-      `Payout Update - ${statusText} - Xtracover`,
-      emailHtml
-    );
-
-    // SMS notification
-    const smsMessage = `Hi ${partnerData.name}, your commission payout of ₹${partnerData.amount} status: ${statusText}. ${partnerData.paymentReference ? `Ref: ${partnerData.paymentReference}` : ''} - Xtracover`;
-    results.sms = await this.smsService.sendSMS(partnerData.contact, smsMessage);
-
-    // WhatsApp notification
-    const whatsappMessage = `💰 Hi ${partnerData.name}!\n\nYour commission payout update:\n\n💸 Amount: ₹${partnerData.amount}\n📊 Status: ${statusText}\n${partnerData.paymentReference ? `📋 Reference: ${partnerData.paymentReference}\n` : ''}\nThank you for being our valued partner! 🤝`;
-    results.whatsapp = await this.whatsappService.sendWhatsAppMessage(partnerData.contact, whatsappMessage);
+      // WhatsApp notification using template
+      const whatsappTemplate = await templateService.getTemplate('whatsapp', 'payout_notification');
+      if (whatsappTemplate) {
+        const whatsappMessage = templateService.renderTemplate(whatsappTemplate.content, partnerData);
+        results.whatsapp = await this.whatsappService.sendWhatsAppMessage(partnerData.contact, whatsappMessage);
+      }
+    } catch (error) {
+      console.error('Error sending payout notification:', error);
+    }
 
     return results;
   }

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
-import { Shield, Database, Tags, LogOut, Users } from "lucide-react";
+import { Shield, Database, Tags, LogOut, Users, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -70,6 +70,12 @@ export function AdminHeader() {
                 <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
                   <Users className="h-4 w-4 mr-2" />
                   Distributors
+                </Button>
+              </Link>
+              <Link href="/admin/templates">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+                  <Mail className="h-4 w-4 mr-2" />
+                  Templates
                 </Button>
               </Link>
               <Link href="/admin/masters">

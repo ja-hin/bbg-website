@@ -10,6 +10,7 @@ import { db } from "./db";
 import sql from 'mssql';
 import { kaleyraSMSService } from "./kaleyra-service";
 import { communicationService } from "./communication-service";
+import { templateService } from "./template-service";
 import { 
   insertDistributorSchema, 
   insertCustomerSchema, 
@@ -93,6 +94,9 @@ function generatePayUHash(params: any, salt: string): string {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  
+  // Initialize template service
+  await templateService.initializeTables();
   
   // Distributor registration with file uploads
   app.post("/api/distributors/register", upload.fields([
@@ -1455,6 +1459,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Test SMS sending failed", 
         error: error.message 
       });
+    }
+  });
+
+  // ===== TEMPLATE MANAGEMENT ROUTES =====
+
+  // Get all message templates
+  app.get("/api/admin/templates", isAdminAuthenticated, async (req, res) => {
+    try {
+      const templates = await templateService.getAllTemplates();
+      res.json(templates);
+    } catch (error: any) {
+      console.error("Failed to fetch templates:", error);
+      res.status(500).json({ message: "Failed to fetch templates" });
+    }
+  });
+
+  // Get template by ID
+  app.get("/api/admin/templates/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const templateId = parseInt(req.params.id);
+      const templates = await templateService.getAllTemplates();
+      const template = templates.find(t => t.id === templateId);
+      
+      if (!template) {
+        return res.status(404).json({ message: "Template not found" });
+      }
+      
+      res.json(template);
+    } catch (error: any) {
+      console.error("Failed to fetch template:", error);
+      res.status(500).json({ message: "Failed to fetch template" });
+    }
+  });
+
+  // Create new template
+  app.post("/api/admin/templates", isAdminAuthenticated, async (req, res) => {
+    try {
+      const templateData = req.body;
+      const template = await templateService.createTemplate(templateData);
+      res.status(201).json({
+        message: "Template created successfully",
+        template
+      });
+    } catch (error: any) {
+      console.error("Failed to create template:", error);
+      res.status(500).json({ message: error.message || "Failed to create template" });
+    }
+  });
+
+  // Update template
+  app.put("/api/admin/templates/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const templateId = parseInt(req.params.id);
+      const updates = req.body;
+      await templateService.updateTemplate(templateId, updates);
+      res.json({ message: "Template updated successfully" });
+    } catch (error: any) {
+      console.error("Failed to update template:", error);
+      res.status(500).json({ message: "Failed to update template" });
+    }
+  });
+
+  // Delete template
+  app.delete("/api/admin/templates/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const templateId = parseInt(req.params.id);
+      await templateService.deleteTemplate(templateId);
+      res.json({ message: "Template deleted successfully" });
+    } catch (error: any) {
+      console.error("Failed to delete template:", error);
+      res.status(500).json({ message: "Failed to delete template" });
+    }
+  });
+
+  // Toggle template active status
+  app.patch("/api/admin/templates/:id/toggle", isAdminAuthenticated, async (req, res) => {
+    try {
+      const templateId = parseInt(req.params.id);
+      await templateService.toggleTemplateStatus(templateId);
+      res.json({ message: "Template status updated successfully" });
+    } catch (error: any) {
+      console.error("Failed to toggle template status:", error);
+      res.status(500).json({ message: "Failed to toggle template status" });
+    }
+  });
+
+  // Get available variables for an event
+  app.get("/api/admin/templates/variables/:event", isAdminAuthenticated, async (req, res) => {
+    try {
+      const event = req.params.event;
+      const variables = templateService.getAvailableVariables(event);
+      res.json({ variables });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get available variables" });
+    }
+  });
+
+  // Preview template with sample data
+  app.post("/api/admin/templates/preview", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { content, variables } = req.body;
+      const rendered = templateService.renderTemplate(content, variables);
+      res.json({ rendered });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to preview template" });
     }
   });
 

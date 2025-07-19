@@ -193,6 +193,11 @@ KALEYRA_SENDER_ID=XTRCVR  # Configured sender ID
 
 ```
 Changelog:
+- July 19, 2025: ✅ COMPLETED - Removed depreciation slabs sections from customer registration page
+  - Eliminated "BBG Claim Value Slabs" table section that appeared before the registration form
+  - Removed "BBG Claim Value Structure" card section that displayed after the form
+  - Clean separation achieved - depreciation information no longer clutters registration workflow
+  - Registration page now focuses purely on device registration and payment processing
 - July 19, 2025: ✅ COMPLETED - Eliminated authentication modals and fixed admin logout functionality
   - RESOLVED: Fixed persistent logout functionality using session.regenerate() instead of session.destroy()
   - Updated session configuration with proper resave and saveUninitialized settings for optimal performance

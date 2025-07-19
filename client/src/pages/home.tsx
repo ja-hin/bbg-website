@@ -48,7 +48,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 sm:mb-16 px-4 sm:px-0">
             <Link href="/customer-registration" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
-                Buy and Register <ArrowRight className="ml-2 h-4 h-5 sm:w-5" />
+                Buy BBG <ArrowRight className="ml-2 h-4 h-5 sm:w-5" />
               </Button>
             </Link>
             <Link href="/claim-bbg" className="w-full sm:w-auto">

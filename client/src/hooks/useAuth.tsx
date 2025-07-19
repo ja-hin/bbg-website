@@ -24,13 +24,16 @@ export function useAuth() {
     refetchOnWindowFocus: true, // Refetch when window gains focus
   });
 
-  // Listen for logout events from other tabs
+  // Listen for logout and login events from other tabs
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'admin_logout' && e.newValue) {
         // Clear all queries and redirect to login
         queryClient.clear();
         setLocation("/admin/login");
+      } else if (e.key === 'admin_login' && e.newValue) {
+        // Refresh authentication state when login occurs in another tab
+        refetch();
       }
     };
 

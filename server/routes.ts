@@ -1827,71 +1827,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Temporary endpoint to create test distributor for login testing
-  app.post("/api/admin/create-test-distributor", async (req, res) => {
-    try {
-      const testDistributor = {
-        name: "Test Distributor",
-        businessName: "Test Business",
-        contact: "9769340476",
-        email: "test@example.com",
-        pincode: "400001",
-        location: "Mumbai",
-        preferredMode: "both"
-      };
-      
-      const distributor = await storage.createDistributor(testDistributor);
-      res.json({ 
-        message: "Test distributor created successfully", 
-        distributor 
-      });
-    } catch (error: any) {
-      console.error("Error creating test distributor:", error);
-      res.status(500).json({ message: "Failed to create test distributor: " + error.message });
-    }
-  });
 
-  // Temporary endpoint to create missing distributor_sessions table
-  app.post("/api/admin/create-missing-tables", async (req, res) => {
-    try {
-      await db.connectDB();
-      
-      // Create distributor_sessions table if it doesn't exist
-      await db.pool.request().query(`
-        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='distributor_sessions' AND xtype='U')
-        CREATE TABLE distributor_sessions (
-          id INT IDENTITY(1,1) PRIMARY KEY,
-          distributor_id INT NOT NULL,
-          session_token NVARCHAR(255) NOT NULL UNIQUE,
-          expires_at DATETIME2 NOT NULL,
-          created_at DATETIME2 DEFAULT GETDATE(),
-          FOREIGN KEY (distributor_id) REFERENCES distributors(id) ON DELETE CASCADE
-        )
-      `);
-      
-      // Create commission_payouts table if it doesn't exist
-      await db.pool.request().query(`
-        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='commission_payouts' AND xtype='U')
-        CREATE TABLE commission_payouts (
-          id INT IDENTITY(1,1) PRIMARY KEY,
-          distributor_id INT NOT NULL,
-          customer_id INT NOT NULL,
-          amount DECIMAL(10,2) NOT NULL,
-          status NVARCHAR(50) DEFAULT 'pending',
-          payment_reference NVARCHAR(255),
-          paid_at DATETIME2,
-          created_at DATETIME2 DEFAULT GETDATE(),
-          FOREIGN KEY (distributor_id) REFERENCES distributors(id),
-          FOREIGN KEY (customer_id) REFERENCES customers(id)
-        )
-      `);
-      
-      res.json({ message: "Missing tables created successfully" });
-    } catch (error: any) {
-      console.error("Error creating missing tables:", error);
-      res.status(500).json({ message: "Failed to create missing tables: " + error.message });
-    }
-  });
 
   const httpServer = createServer(app);
   return httpServer;

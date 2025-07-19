@@ -372,8 +372,7 @@ function RegistrationContent() {
   // Send OTP mutation
   const sendOtpMutation = useMutation({
     mutationFn: async (contact: string) => {
-      const response = await apiRequest("POST", "/api/otp/send", { contact });
-      return response.json();
+      return await apiRequest("/api/otp/send", { method: "POST", body: { contact } });
     },
     onSuccess: () => {
       setOtpSent(true);
@@ -394,8 +393,7 @@ function RegistrationContent() {
   // Verify OTP mutation
   const verifyOtpMutation = useMutation({
     mutationFn: async ({ contact, otp }: { contact: string; otp: string }) => {
-      const response = await apiRequest("POST", "/api/otp/verify", { contact, otp });
-      return response.json();
+      return await apiRequest("/api/otp/verify", { method: "POST", body: { contact, otp } });
     },
     onSuccess: (data) => {
       if (data.verified) {

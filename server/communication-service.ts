@@ -236,17 +236,31 @@ export class CommunicationService {
       }
 
       // SMS confirmation using template
+      console.log('🔄 Checking SMS template for customer registration...');
       const smsTemplate = await templateService.getTemplate('sms', 'customer_registration');
       if (smsTemplate) {
+        console.log('✅ SMS template found, sending SMS...');
         const smsMessage = templateService.renderTemplate(smsTemplate.content, customerData);
+        console.log('📱 SMS Message to send:', smsMessage);
         results.sms = await this.smsService.sendSMS(customerData.contact, smsMessage);
+        console.log('📱 SMS Result:', results.sms);
+      } else {
+        console.log('❌ SMS template not found for customer_registration');
+        results.sms = { success: false, error: 'Template not found' };
       }
 
       // WhatsApp confirmation using template
+      console.log('🔄 Checking WhatsApp template for customer registration...');
       const whatsappTemplate = await templateService.getTemplate('whatsapp', 'customer_registration');
       if (whatsappTemplate) {
+        console.log('✅ WhatsApp template found, sending WhatsApp message...');
         const whatsappMessage = templateService.renderTemplate(whatsappTemplate.content, customerData);
+        console.log('💬 WhatsApp Message to send:', whatsappMessage);
         results.whatsapp = await this.whatsappService.sendWhatsAppMessage(customerData.contact, whatsappMessage);
+        console.log('💬 WhatsApp Result:', results.whatsapp);
+      } else {
+        console.log('❌ WhatsApp template not found for customer_registration');
+        results.whatsapp = { success: false, error: 'Template not found' };
       }
     } catch (error) {
       console.error('Error sending registration confirmation:', error);

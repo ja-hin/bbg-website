@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { AdminHeader } from "@/components/admin-header";
 import { 
   RefreshCw, 
   CheckCircle, 
@@ -228,25 +229,27 @@ export default function AdminLogs() {
   }, [recentLogs]);
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">System Logs & Monitoring</h1>
-        <div className="flex gap-2">
-          <Button
-            onClick={() => {
-              refetchStatus();
-              refetchLogs();
-            }}
-            variant="outline"
-            size="sm"
-          >
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh
-          </Button>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <AdminHeader />
+      <div className="container mx-auto p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">System Logs & Monitoring</h1>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => {
+                refetchStatus();
+                refetchLogs();
+              }}
+              variant="outline"
+              size="sm"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Refresh
+            </Button>
+          </div>
         </div>
-      </div>
 
-      <Tabs defaultValue="status" className="space-y-4">
+        <Tabs defaultValue="status" className="space-y-4">
         <TabsList>
           <TabsTrigger value="status">System Status</TabsTrigger>
           <TabsTrigger value="test">Test Communications</TabsTrigger>
@@ -611,6 +614,7 @@ export default function AdminLogs() {
           </Card>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }

@@ -588,6 +588,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Send welcome notifications
         try {
+          console.log('🔔 Starting PayU customer registration notifications...');
+          console.log('📧 Customer contact details:', { 
+            name: customer.name, 
+            email: customer.email, 
+            contact: customer.contact 
+          });
+          
           const notificationResults = await communicationService.sendRegistrationConfirmation({
             name: customer.name,
             email: customer.email,
@@ -597,9 +604,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
             brand: customer.brand,
             modelName: customer.modelName
           });
-          console.log('Customer registration notifications sent:', notificationResults);
+          
+          console.log('🔔 PayU customer registration notifications complete:', {
+            email: notificationResults.email?.success ? '✅ Sent' : `❌ Failed: ${notificationResults.email?.error}`,
+            sms: notificationResults.sms?.success ? '✅ Sent' : `❌ Failed: ${notificationResults.sms?.error}`,
+            whatsapp: notificationResults.whatsapp?.success ? '✅ Sent' : `❌ Failed: ${notificationResults.whatsapp?.error}`
+          });
         } catch (notifyError: any) {
-          console.error('Failed to send notifications:', notifyError.message);
+          console.error('❌ Failed to send PayU notifications:', notifyError.message);
+          console.error('❌ PayU notification error details:', notifyError);
           // Don't fail the registration if notifications fail
         }
         
@@ -669,6 +682,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Send welcome notifications
       try {
+        console.log('🔔 Starting customer registration notifications...');
+        console.log('📧 Customer contact details:', { 
+          name: customer.name, 
+          email: customer.email, 
+          contact: customer.contact 
+        });
+        
         const notificationResults = await communicationService.sendRegistrationConfirmation({
           name: customer.name,
           email: customer.email,
@@ -678,9 +698,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
           brand: customer.brand,
           modelName: customer.modelName
         });
-        console.log('Customer registration notifications sent:', notificationResults);
+        
+        console.log('🔔 Customer registration notifications complete:', {
+          email: notificationResults.email?.success ? '✅ Sent' : `❌ Failed: ${notificationResults.email?.error}`,
+          sms: notificationResults.sms?.success ? '✅ Sent' : `❌ Failed: ${notificationResults.sms?.error}`,
+          whatsapp: notificationResults.whatsapp?.success ? '✅ Sent' : `❌ Failed: ${notificationResults.whatsapp?.error}`
+        });
       } catch (notifyError: any) {
-        console.error('Failed to send notifications:', notifyError.message);
+        console.error('❌ Failed to send notifications:', notifyError.message);
+        console.error('❌ Notification error details:', notifyError);
         // Don't fail the registration if notifications fail
       }
 

@@ -82,7 +82,7 @@ function DepreciationSlabs() {
         <Info className="h-5 w-5 mr-2 text-blue-600" />
         BuyBack Guarantee - Depreciation Slabs
       </h3>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
         {slabs.map((slab, index) => (
           <div key={index} className="bg-white rounded-lg p-3 text-center border border-gray-200">
             <div className="text-sm font-medium text-gray-600">{slab.period}</div>
@@ -486,17 +486,17 @@ function RegistrationContent() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
       {/* Header Section */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">Buy and Register for BuyBack Guarantee</h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+        <p className="text-xl text-gray-600">
           Secure your device investment with our comprehensive BuyBack Guarantee program
         </p>
       </div>
 
       {showPaymentForm && formData ? (
-        <Card className="max-w-md mx-auto">
+        <Card className="w-full">
           <CardHeader>
             <CardTitle className="flex items-center text-lg">
               <CreditCard className="h-5 w-5 mr-2" />
@@ -513,7 +513,7 @@ function RegistrationContent() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
+        <Card className="w-full">
           <CardHeader>
             <CardTitle className="flex items-center text-2xl">
               <ShoppingCart className="h-6 w-6 mr-2" />
@@ -531,7 +531,7 @@ function RegistrationContent() {
                     Device Details
                   </h3>
                   
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     <FormField
                       control={form.control}
                       name="deviceType"
@@ -560,35 +560,6 @@ function RegistrationContent() {
                       )}
                     />
 
-                    <FormField
-                      control={form.control}
-                      name="serialNumber"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <Hash className="h-4 w-4 mr-2" />
-                            Serial No. / IMEI *
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter device serial number or IMEI" {...field} />
-                          </FormControl>
-                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
-                            <div className="flex items-start space-x-2">
-                              <Info className="h-4 w-4 text-blue-600 mt-0.5" />
-                              <div className="text-sm text-blue-800">
-                                <p className="font-medium mb-1">Important: Double Check while entering IMEI/Serial No.</p>
-                                <p className="mb-1">📱 <strong>For Mobile:</strong> Dial *#06# to get IMEI</p>
-                                <p>💻 <strong>For Laptop:</strong> Check sticker on bottom/back or System Info → Hardware</p>
-                              </div>
-                            </div>
-                          </div>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="brand"
@@ -630,9 +601,7 @@ function RegistrationContent() {
                         </FormItem>
                       )}
                     />
-                  </div>
 
-                  <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="invoiceValue"
@@ -640,11 +609,40 @@ function RegistrationContent() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <IndianRupee className="h-4 w-4 mr-2" />
-                            Device Invoice Value (including GST) *
+                            Invoice Value (₹) *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter invoice amount in ₹" {...field} />
+                            <Input placeholder="Enter invoice amount" {...field} />
                           </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="serialNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <Hash className="h-4 w-4 mr-2" />
+                            Serial No. / IMEI *
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter device serial number or IMEI" {...field} />
+                          </FormControl>
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
+                            <div className="flex items-start space-x-2">
+                              <Info className="h-4 w-4 text-blue-600 mt-0.5" />
+                              <div className="text-sm text-blue-800">
+                                <p className="font-medium mb-1">Important: Double Check while entering IMEI/Serial No.</p>
+                                <p className="mb-1">📱 <strong>For Mobile:</strong> Dial *#06# to get IMEI</p>
+                                <p>💻 <strong>For Laptop:</strong> Check sticker on bottom/back or System Info → Hardware</p>
+                              </div>
+                            </div>
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -684,24 +682,24 @@ function RegistrationContent() {
                     Customer Details
                   </h3>
                   
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center">
-                          <User className="h-4 w-4 mr-2" />
-                          Customer Name *
-                        </FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter your full name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <User className="h-4 w-4 mr-2" />
+                            Customer Name *
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter your full name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="contact"
@@ -739,24 +737,24 @@ function RegistrationContent() {
                         </FormItem>
                       )}
                     />
-                  </div>
 
-                  <FormField
-                    control={form.control}
-                    name="pincode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center">
-                          <MapPin className="h-4 w-4 mr-2" />
-                          Pincode *
-                        </FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter 6-digit pincode" maxLength={6} {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    <FormField
+                      control={form.control}
+                      name="pincode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <MapPin className="h-4 w-4 mr-2" />
+                            Pincode *
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter 6-digit pincode" maxLength={6} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
                 {/* Verification & Seller Details Section */}
@@ -804,19 +802,21 @@ function RegistrationContent() {
                     )}
                   </div>
 
-                  <FormField
-                    control={form.control}
-                    name="sellerCode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Seller Code (Optional)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter distributor seller code if you have one" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="sellerCode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Seller Code (Optional)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter distributor seller code if you have one" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   <FormField
                     control={form.control}

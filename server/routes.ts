@@ -2398,6 +2398,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Email SMTP configuration endpoint
+  app.post('/api/admin/configure-smtp', isAdminAuthenticated, async (req, res) => {
+    try {
+      const { host, port, user, password } = req.body;
+      
+      if (!host || !port || !user || !password) {
+        return res.status(400).json({ message: "All SMTP fields are required" });
+      }
+      
+      // Test the configuration before saving
+      const nodemailer = require('nodemailer');
+      const testTransporter = nodemailer.createTransporter({
+        host,
+        port: parseInt(port),
+        secure: false,
+        auth: { user, pass: password }
+      });
+      
+      // Verify connection
+      await testTransporter.verify();
+      
+      // Store in environment (this is temporary for this session)
+      process.env.SMTP_HOST = host;
+      process.env.SMTP_PORT = port.toString();
+      process.env.SMTP_USER = user;
+      process.env.SMTP_PASSWORD = password;
+      
+      res.json({
+        success: true,
+        message: "SMTP configuration saved and verified successfully",
+        config: { host, port, user: user.replace(/(.{3}).*(@.*)/, '$1***$2') }
+      });
+    } catch (error: any) {
+      console.error('SMTP configuration error:', error);
+      res.status(500).json({ 
+        success: false,
+        message: "SMTP configuration failed", 
+        error: error.message 
+      });
+    }
+  });
+
+  // Get current SMTP configuration status
+  app.get('/api/admin/smtp-status', isAdminAuthenticated, async (req, res) => {
+    try {
+      const configured = !!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASSWORD);
+      
+      res.json({
+        configured,
+        config: configured ? {
+          host: process.env.SMTP_HOST,
+          port: process.env.SMTP_PORT || '587',
+          user: process.env.SMTP_USER?.replace(/(.{3}).*(@.*)/, '$1***$2'),
+          hasPassword: !!process.env.SMTP_PASSWORD
+        } : null,
+        instructions: !configured ? `
+📧 EMAIL SMTP SETUP REQUIRED
+
+To enable email notifications for:
+- Customer registration confirmations
+- Claim status updates
+- Referral partner payout notifications
+
+Common SMTP settings:
+• Gmail: smtp.gmail.com, port 587 (requires app password)
+• Outlook: smtp-mail.outlook.com, port 587
+• Custom: Your hosting provider's SMTP settings
+
+For Gmail:
+1. Enable 2-factor authentication on your Google account
+2. Go to Google Account → Security → App passwords
+3. Generate an app password for "Mail"
+4. Use your Gmail address and the app password below
+        ` : "SMTP is configured and ready"
+      });
+    } catch (error: any) {
+      console.error('SMTP status error:', error);
+      res.status(500).json({ message: 'Failed to get SMTP status' });
+    }
+  });
+
   // WhatsApp setup helper endpoint
   app.get('/api/admin/whatsapp-setup', isAdminAuthenticated, async (req, res) => {
     try {

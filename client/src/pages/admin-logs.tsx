@@ -48,6 +48,13 @@ export default function AdminLogs() {
     phone: "9953410422"
   });
   const [customMessage, setCustomMessage] = useState("");
+  const [smtpConfig, setSmtpConfig] = useState({
+    host: "",
+    port: "587",
+    user: "",
+    password: ""
+  });
+  const [showSmtpForm, setShowSmtpForm] = useState(false);
   const { toast } = useToast();
 
   // Fetch system status
@@ -60,6 +67,11 @@ export default function AdminLogs() {
   const { data: recentLogs, refetch: refetchLogs } = useQuery({
     queryKey: ['/api/admin/logs'],
     refetchInterval: 10000, // Refresh every 10 seconds
+  });
+
+  // Fetch SMTP status
+  const { data: smtpStatus, refetch: refetchSmtpStatus } = useQuery({
+    queryKey: ['/api/admin/smtp-status'],
   });
 
   // Test communication channels
@@ -114,6 +126,34 @@ export default function AdminLogs() {
         variant: "destructive",
       });
       addLog('error', 'Kaleyra SMS', 'SMS test failed', error);
+    }
+  });
+
+  // Configure SMTP
+  const configureSMTPMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest('/api/admin/configure-smtp', {
+        method: 'POST',
+        body: smtpConfig
+      });
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "SMTP Configuration Successful",
+        description: "Email service is now configured and ready",
+      });
+      setShowSmtpForm(false);
+      refetchSmtpStatus();
+      refetchStatus();
+      addLog('success', 'Email SMTP', 'SMTP configuration successful', data);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "SMTP Configuration Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      addLog('error', 'Email SMTP', 'SMTP configuration failed', error);
     }
   });
 
@@ -269,6 +309,16 @@ export default function AdminLogs() {
                 <p className="text-xs text-muted-foreground mt-1">
                   {systemStatus?.services?.email?.message || 'Status unknown'}
                 </p>
+                {systemStatus?.services?.email?.status !== 'connected' && (
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="mt-2 w-full"
+                    onClick={() => setShowSmtpForm(!showSmtpForm)}
+                  >
+                    {showSmtpForm ? 'Hide Setup' : 'Configure SMTP'}
+                  </Button>
+                )}
               </CardContent>
             </Card>
 
@@ -325,6 +375,82 @@ export default function AdminLogs() {
               </CardContent>
             </Card>
           </div>
+
+          {/* SMTP Configuration Form */}
+          {showSmtpForm && (
+            <div className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Configure Email SMTP</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Set up SMTP credentials to enable email notifications for registrations, claims, and payouts.
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="smtp-host">SMTP Host</Label>
+                      <Input
+                        id="smtp-host"
+                        placeholder="smtp.gmail.com"
+                        value={smtpConfig.host}
+                        onChange={(e) => setSmtpConfig(prev => ({ ...prev, host: e.target.value }))}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="smtp-port">Port</Label>
+                      <Input
+                        id="smtp-port"
+                        placeholder="587"
+                        value={smtpConfig.port}
+                        onChange={(e) => setSmtpConfig(prev => ({ ...prev, port: e.target.value }))}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="smtp-user">Email Address</Label>
+                    <Input
+                      id="smtp-user"
+                      placeholder="noreply@yourcompany.com"
+                      value={smtpConfig.user}
+                      onChange={(e) => setSmtpConfig(prev => ({ ...prev, user: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="smtp-password">Password</Label>
+                    <Input
+                      id="smtp-password"
+                      type="password"
+                      placeholder="App password or email password"
+                      value={smtpConfig.password}
+                      onChange={(e) => setSmtpConfig(prev => ({ ...prev, password: e.target.value }))}
+                    />
+                  </div>
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <p className="text-sm font-medium text-blue-800">Gmail Setup Instructions:</p>
+                    <ol className="text-xs text-blue-700 mt-1 space-y-1">
+                      <li>1. Enable 2-factor authentication on your Google account</li>
+                      <li>2. Go to Google Account → Security → App passwords</li>
+                      <li>3. Generate an app password for "Mail"</li>
+                      <li>4. Use smtp.gmail.com, port 587, your Gmail address, and the app password</li>
+                    </ol>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => configureSMTPMutation.mutate()}
+                      disabled={configureSMTPMutation.isPending || !smtpConfig.host || !smtpConfig.user || !smtpConfig.password}
+                      className="flex-1"
+                    >
+                      {configureSMTPMutation.isPending ? 'Testing...' : 'Test & Save Configuration'}
+                    </Button>
+                    <Button variant="outline" onClick={() => setShowSmtpForm(false)}>
+                      Cancel
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="test">

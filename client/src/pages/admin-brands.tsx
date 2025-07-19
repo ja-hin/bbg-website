@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRequireAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -6,10 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { AdminHeader } from '@/components/admin-header';
-import { Plus, Edit2, Trash2, Save, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, Upload, FileText, Download } from 'lucide-react';
 import { Brand, DeviceModel, InsertBrand, InsertDeviceModel } from '@shared/schema';
 
 interface AdminUser {
@@ -28,6 +31,7 @@ interface BrandWithModels extends Brand {
 function AdminBrandsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Check admin authentication using new hook
   const { isLoading: adminLoading, isAuthenticated } = useRequireAuth();
@@ -38,6 +42,11 @@ function AdminBrandsPage() {
   const [newModel, setNewModel] = useState({ name: '', brand_id: 0 });
   const [editBrandData, setEditBrandData] = useState({ name: '', device_type: '' });
   const [editModelData, setEditModelData] = useState({ name: '' });
+  
+  // Bulk upload states
+  const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
+  const [csvData, setCsvData] = useState('');
+  const [uploadResults, setUploadResults] = useState<any>(null);
 
   // Fetch brands with their models only if authenticated
   const { data: brands = [], isLoading } = useQuery({
@@ -47,7 +56,7 @@ function AdminBrandsPage() {
 
   // Create brand mutation
   const createBrandMutation = useMutation({
-    mutationFn: (brand: InsertBrand) => apiRequest('POST', '/api/brands', brand),
+    mutationFn: (brand: InsertBrand) => apiRequest('/api/brands', { method: 'POST', body: brand }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
       setNewBrand({ name: '', device_type: '' });
@@ -58,10 +67,28 @@ function AdminBrandsPage() {
     }
   });
 
+  // Bulk upload mutation
+  const bulkUploadMutation = useMutation({
+    mutationFn: (data: Array<{ device: string; brand: string; model: string }>) => 
+      apiRequest('/api/admin/brands/bulk-upload', { method: 'POST', body: { data } }),
+    onSuccess: (results: any) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
+      setUploadResults(results);
+      setCsvData('');
+      toast({ 
+        title: 'Bulk upload completed', 
+        description: `${results.results.successfulRows}/${results.results.totalRows} rows processed successfully`
+      });
+    },
+    onError: (error: any) => {
+      toast({ title: 'Bulk upload failed', description: error.message, variant: 'destructive' });
+    }
+  });
+
   // Update brand mutation
   const updateBrandMutation = useMutation({
     mutationFn: ({ id, updates }: { id: number; updates: Partial<InsertBrand> }) => 
-      apiRequest('PUT', `/api/brands/${id}`, updates),
+      apiRequest(`/api/brands/${id}`, { method: 'PUT', body: updates }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
       setEditingBrand(null);
@@ -74,7 +101,7 @@ function AdminBrandsPage() {
 
   // Delete brand mutation
   const deleteBrandMutation = useMutation({
-    mutationFn: (id: number) => apiRequest('DELETE', `/api/brands/${id}`),
+    mutationFn: (id: number) => apiRequest(`/api/brands/${id}`, { method: 'DELETE' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
       toast({ title: 'Brand deleted successfully' });
@@ -86,7 +113,7 @@ function AdminBrandsPage() {
 
   // Create model mutation
   const createModelMutation = useMutation({
-    mutationFn: (model: InsertDeviceModel) => apiRequest('POST', '/api/models', model),
+    mutationFn: (model: InsertDeviceModel) => apiRequest('/api/models', { method: 'POST', body: model }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
       setNewModel({ name: '', brand_id: 0 });
@@ -100,7 +127,7 @@ function AdminBrandsPage() {
   // Update model mutation
   const updateModelMutation = useMutation({
     mutationFn: ({ id, updates }: { id: number; updates: Partial<InsertDeviceModel> }) => 
-      apiRequest('PUT', `/api/models/${id}`, updates),
+      apiRequest(`/api/models/${id}`, { method: 'PUT', body: updates }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
       setEditingModel(null);
@@ -113,7 +140,7 @@ function AdminBrandsPage() {
 
   // Delete model mutation
   const deleteModelMutation = useMutation({
-    mutationFn: (id: number) => apiRequest('DELETE', `/api/models/${id}`),
+    mutationFn: (id: number) => apiRequest(`/api/models/${id}`, { method: 'DELETE' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
       toast({ title: 'Model deleted successfully' });
@@ -177,6 +204,69 @@ function AdminBrandsPage() {
     setEditModelData({ name: model.name });
   };
 
+  // CSV parsing and bulk upload functions
+  const parseCsvData = (csvText: string): Array<{ device: string; brand: string; model: string }> => {
+    const lines = csvText.trim().split('\n');
+    const data: Array<{ device: string; brand: string; model: string }> = [];
+    
+    // Skip header row if it exists
+    const startIndex = lines[0]?.toLowerCase().includes('device') ? 1 : 0;
+    
+    for (let i = startIndex; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      
+      const columns = line.split(',').map(col => col.trim().replace(/"/g, ''));
+      if (columns.length >= 3) {
+        data.push({
+          device: columns[0],
+          brand: columns[1], 
+          model: columns[2]
+        });
+      }
+    }
+    
+    return data;
+  };
+
+  const handleBulkUpload = () => {
+    if (!csvData.trim()) {
+      toast({ title: 'Please enter CSV data', variant: 'destructive' });
+      return;
+    }
+
+    try {
+      const parsedData = parseCsvData(csvData);
+      if (parsedData.length === 0) {
+        toast({ title: 'No valid data found in CSV', variant: 'destructive' });
+        return;
+      }
+      
+      bulkUploadMutation.mutate(parsedData);
+    } catch (error) {
+      toast({ title: 'Invalid CSV format', variant: 'destructive' });
+    }
+  };
+
+  const downloadSampleCsv = () => {
+    const sampleData = `Device,Brand,Model
+mobile,Apple,iPhone 15 Pro
+mobile,Samsung,Galaxy S24 Ultra
+laptop,Dell,XPS 13
+laptop,MacBook,Air M2`;
+    
+    const blob = new Blob([sampleData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'brands_models_sample.csv';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  };
+
   if (adminLoading || !isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -204,8 +294,117 @@ function AdminBrandsPage() {
       <AdminHeader />
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Brand & Model Management</h1>
-          <p className="text-gray-600 mt-2">Manage device brands and models for customer registration</p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Brand & Model Management</h1>
+              <p className="text-gray-600 mt-2">Manage device brands and models for customer registration</p>
+            </div>
+            
+            {/* Bulk Upload Button */}
+            <Dialog open={bulkUploadOpen} onOpenChange={setBulkUploadOpen}>
+              <DialogTrigger asChild>
+                <Button className="flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  Bulk Upload
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                  <DialogTitle>Bulk Upload Brands & Models</DialogTitle>
+                </DialogHeader>
+                
+                <div className="space-y-6">
+                  {/* Sample CSV Download */}
+                  <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                    <div>
+                      <h4 className="font-medium text-blue-900">Need a template?</h4>
+                      <p className="text-sm text-blue-700">Download sample CSV with correct format</p>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={downloadSampleCsv}>
+                      <Download className="w-4 h-4 mr-2" />
+                      Sample CSV
+                    </Button>
+                  </div>
+
+                  {/* Format Instructions */}
+                  <div className="space-y-2">
+                    <h4 className="font-medium">CSV Format Instructions</h4>
+                    <div className="text-sm text-gray-600 space-y-1">
+                      <p>• <strong>Header:</strong> Device, Brand, Model</p>
+                      <p>• <strong>Device:</strong> Either "mobile" or "laptop"</p>
+                      <p>• <strong>Brand:</strong> Brand name (e.g., Apple, Samsung)</p>
+                      <p>• <strong>Model:</strong> Model name (e.g., iPhone 15 Pro, Galaxy S24)</p>
+                    </div>
+                    <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded mt-2">
+                      <strong>Example:</strong><br/>
+                      Device,Brand,Model<br/>
+                      mobile,Apple,iPhone 15 Pro<br/>
+                      laptop,Dell,XPS 13
+                    </div>
+                  </div>
+
+                  {/* CSV Input */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">CSV Data</label>
+                    <Textarea
+                      placeholder="Paste your CSV data here or type it manually..."
+                      value={csvData}
+                      onChange={(e) => setCsvData(e.target.value)}
+                      rows={8}
+                      className="font-mono text-sm"
+                    />
+                  </div>
+
+                  {/* Upload Results */}
+                  {uploadResults && (
+                    <Alert>
+                      <FileText className="h-4 w-4" />
+                      <AlertDescription>
+                        <div className="space-y-2">
+                          <p className="font-medium">Upload Results:</p>
+                          <p>✅ {uploadResults.results.successfulRows}/{uploadResults.results.totalRows} rows processed successfully</p>
+                          {uploadResults.results.errors.length > 0 && (
+                            <div className="mt-2">
+                              <p className="font-medium text-red-600">Errors:</p>
+                              <ul className="text-sm text-red-600 space-y-1">
+                                {uploadResults.results.errors.slice(0, 5).map((error: string, index: number) => (
+                                  <li key={index}>• {error}</li>
+                                ))}
+                                {uploadResults.results.errors.length > 5 && (
+                                  <li>• ... and {uploadResults.results.errors.length - 5} more errors</li>
+                                )}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  {/* Upload Button */}
+                  <div className="flex gap-3 pt-4">
+                    <Button 
+                      onClick={handleBulkUpload}
+                      disabled={bulkUploadMutation.isPending || !csvData.trim()}
+                      className="flex-1"
+                    >
+                      {bulkUploadMutation.isPending ? 'Uploading...' : 'Upload Data'}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setBulkUploadOpen(false);
+                        setCsvData('');
+                        setUploadResults(null);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

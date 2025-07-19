@@ -1460,6 +1460,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bulk upload brands and models
+  app.post("/api/admin/brands/bulk-upload", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { data } = req.body; // Array of { device, brand, model }
+      
+      if (!Array.isArray(data) || data.length === 0) {
+        return res.status(400).json({ message: "Invalid data format. Expected array of objects." });
+      }
+
+      // Validate data format
+      for (const item of data) {
+        if (!item.device || !item.brand || !item.model) {
+          return res.status(400).json({ 
+            message: "Invalid data format. Each row must have Device, Brand, and Model." 
+          });
+        }
+      }
+
+      const results = await storage.bulkUploadBrandsAndModels(data);
+      res.json({
+        message: "Bulk upload completed successfully",
+        results
+      });
+    } catch (error: any) {
+      console.error("Bulk upload error:", error);
+      res.status(500).json({ message: error.message || "Failed to upload brands and models" });
+    }
+  });
+
   // Distributors Master Management (Enhanced with CRUD)
   app.post("/api/admin/distributors", isAdminAuthenticated, async (req, res) => {
     try {

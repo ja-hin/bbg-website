@@ -685,6 +685,98 @@ export class SqlServerStorage implements IStorage {
     await request.query(query);
   }
 
+  async bulkUploadBrandsAndModels(data: Array<{ device: string; brand: string; model: string }>): Promise<{
+    totalRows: number;
+    successfulRows: number;
+    errors: string[];
+  }> {
+    await db.connectDB();
+    
+    const results = {
+      totalRows: data.length,
+      successfulRows: 0,
+      errors: [] as string[]
+    };
+
+    for (let i = 0; i < data.length; i++) {
+      const row = data[i];
+      try {
+        // Normalize device type
+        const deviceType = row.device.toLowerCase().trim();
+        const brandName = row.brand.trim();
+        const modelName = row.model.trim();
+
+        if (!['mobile', 'laptop'].includes(deviceType)) {
+          results.errors.push(`Row ${i + 1}: Invalid device type '${row.device}'. Must be 'mobile' or 'laptop'.`);
+          continue;
+        }
+
+        // Check if brand exists
+        let brandQuery = `
+          SELECT id FROM brands 
+          WHERE LOWER(name) = LOWER(@brandName) AND device_type = @deviceType
+        `;
+        
+        let brandRequest = db.pool.request();
+        brandRequest.input('brandName', sql.VarChar, brandName);
+        brandRequest.input('deviceType', sql.VarChar, deviceType);
+        
+        let brandResult = await brandRequest.query(brandQuery);
+        let brandId: number;
+
+        if (brandResult.recordset.length === 0) {
+          // Create new brand
+          const createBrandQuery = `
+            INSERT INTO brands (name, device_type)
+            OUTPUT INSERTED.id
+            VALUES (@brandName, @deviceType)
+          `;
+          
+          const createBrandRequest = db.pool.request();
+          createBrandRequest.input('brandName', sql.VarChar, brandName);
+          createBrandRequest.input('deviceType', sql.VarChar, deviceType);
+          
+          const createBrandResult = await createBrandRequest.query(createBrandQuery);
+          brandId = createBrandResult.recordset[0].id;
+        } else {
+          brandId = brandResult.recordset[0].id;
+        }
+
+        // Check if model exists
+        const modelQuery = `
+          SELECT id FROM models 
+          WHERE LOWER(name) = LOWER(@modelName) AND brand_id = @brandId
+        `;
+        
+        const modelRequest = db.pool.request();
+        modelRequest.input('modelName', sql.VarChar, modelName);
+        modelRequest.input('brandId', sql.Int, brandId);
+        
+        const modelResult = await modelRequest.query(modelQuery);
+
+        if (modelResult.recordset.length === 0) {
+          // Create new model
+          const createModelQuery = `
+            INSERT INTO models (name, brand_id, is_active)
+            VALUES (@modelName, @brandId, 1)
+          `;
+          
+          const createModelRequest = db.pool.request();
+          createModelRequest.input('modelName', sql.VarChar, modelName);
+          createModelRequest.input('brandId', sql.Int, brandId);
+          
+          await createModelRequest.query(createModelQuery);
+        }
+
+        results.successfulRows++;
+      } catch (error: any) {
+        results.errors.push(`Row ${i + 1}: ${error.message}`);
+      }
+    }
+
+    return results;
+  }
+
   // Customer operations
   async createCustomer(insertCustomer: InsertCustomer): Promise<Customer> {
     await db.connectDB();

@@ -47,6 +47,8 @@ function AdminBrandsPage() {
   const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
   const [csvData, setCsvData] = useState('');
   const [uploadResults, setUploadResults] = useState<any>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isProcessingFile, setIsProcessingFile] = useState(false);
 
   // Fetch brands with their models only if authenticated
   const { data: brands = [], isLoading } = useQuery({
@@ -229,42 +231,160 @@ function AdminBrandsPage() {
     return data;
   };
 
-  const handleBulkUpload = () => {
-    if (!csvData.trim()) {
-      toast({ title: 'Please enter CSV data', variant: 'destructive' });
-      return;
-    }
-
-    try {
-      const parsedData = parseCsvData(csvData);
-      if (parsedData.length === 0) {
-        toast({ title: 'No valid data found in CSV', variant: 'destructive' });
-        return;
+  const handleBulkUpload = async () => {
+    // Prioritize file upload over manual CSV input
+    if (selectedFile) {
+      setIsProcessingFile(true);
+      try {
+        const parsedData = await processExcelFile(selectedFile);
+        if (parsedData.length === 0) {
+          toast({ title: 'No valid data found in file', variant: 'destructive' });
+          return;
+        }
+        bulkUploadMutation.mutate(parsedData);
+      } catch (error: any) {
+        toast({ title: 'File processing failed', description: error.message, variant: 'destructive' });
+      } finally {
+        setIsProcessingFile(false);
       }
-      
-      bulkUploadMutation.mutate(parsedData);
-    } catch (error) {
-      toast({ title: 'Invalid CSV format', variant: 'destructive' });
+    } else if (csvData.trim()) {
+      // Fallback to manual CSV input
+      try {
+        const parsedData = parseCsvData(csvData);
+        if (parsedData.length === 0) {
+          toast({ title: 'No valid data found in CSV', variant: 'destructive' });
+          return;
+        }
+        bulkUploadMutation.mutate(parsedData);
+      } catch (error) {
+        toast({ title: 'Invalid CSV format', variant: 'destructive' });
+      }
+    } else {
+      toast({ title: 'Please select a file or enter CSV data', variant: 'destructive' });
     }
   };
 
-  const downloadSampleCsv = () => {
-    const sampleData = `Device,Brand,Model
-mobile,Apple,iPhone 15 Pro
-mobile,Samsung,Galaxy S24 Ultra
-laptop,Dell,XPS 13
-laptop,MacBook,Air M2`;
-    
-    const blob = new Blob([sampleData], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    a.download = 'brands_models_sample.csv';
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
+  const downloadSampleExcel = async () => {
+    try {
+      // Dynamically import XLSX library
+      const XLSX = await import('xlsx');
+      
+      // Create sample Excel data
+      const sampleData = [
+        ['Device', 'Brand', 'Model'],
+        ['mobile', 'Apple', 'iPhone 15 Pro'],
+        ['mobile', 'Samsung', 'Galaxy S24 Ultra'],
+        ['laptop', 'Dell', 'XPS 13'],
+        ['laptop', 'MacBook', 'Air M2']
+      ];
+      
+      // Create workbook and worksheet
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.aoa_to_sheet(sampleData);
+      
+      // Add the worksheet to workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Brands & Models');
+      
+      // Generate Excel file and download
+      XLSX.writeFile(workbook, 'brands_models_sample.xlsx');
+      
+      toast({ title: 'Sample file downloaded successfully' });
+    } catch (error) {
+      // Fallback to CSV if Excel generation fails
+      const csvContent = [
+        'Device,Brand,Model',
+        'mobile,Apple,iPhone 15 Pro',
+        'mobile,Samsung,Galaxy S24 Ultra',
+        'laptop,Dell,XPS 13',
+        'laptop,MacBook,Air M2'
+      ].join('\n');
+      
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'brands_models_sample.csv';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({ title: 'Sample CSV file downloaded (Excel not available)' });
+    }
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setCsvData(''); // Clear manual input when file is selected
+    }
+  };
+
+  const processExcelFile = async (file: File): Promise<Array<{ device: string; brand: string; model: string }>> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        try {
+          const data = e.target?.result;
+          if (!data) {
+            reject(new Error('Failed to read file'));
+            return;
+          }
+
+          // For Excel files, we'll use a library to parse
+          // For CSV files, we'll parse manually
+          const fileName = file.name.toLowerCase();
+          
+          if (fileName.endsWith('.csv')) {
+            const text = data as string;
+            const parsedData = parseCsvData(text);
+            resolve(parsedData);
+          } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+            // Import XLSX library dynamically
+            import('xlsx').then((XLSX) => {
+              const workbook = XLSX.read(data, { type: 'array' });
+              const sheetName = workbook.SheetNames[0];
+              const worksheet = workbook.Sheets[sheetName];
+              const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+              
+              const processedData: Array<{ device: string; brand: string; model: string }> = [];
+              
+              // Skip header row if it exists
+              const startIndex = jsonData[0] && Array.isArray(jsonData[0]) && 
+                               (jsonData[0] as any[])[0]?.toString().toLowerCase().includes('device') ? 1 : 0;
+              
+              for (let i = startIndex; i < jsonData.length; i++) {
+                const row = jsonData[i] as any[];
+                if (row && row.length >= 3 && row[0] && row[1] && row[2]) {
+                  processedData.push({
+                    device: row[0].toString().trim(),
+                    brand: row[1].toString().trim(),
+                    model: row[2].toString().trim()
+                  });
+                }
+              }
+              
+              resolve(processedData);
+            }).catch(reject);
+          } else {
+            reject(new Error('Unsupported file format. Please use .xlsx, .xls, or .csv files.'));
+          }
+        } catch (error) {
+          reject(error);
+        }
+      };
+      
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      
+      if (file.name.toLowerCase().endsWith('.csv')) {
+        reader.readAsText(file);
+      } else {
+        reader.readAsArrayBuffer(file);
+      }
+    });
   };
 
   if (adminLoading || !isAuthenticated) {
@@ -314,46 +434,98 @@ laptop,MacBook,Air M2`;
                 </DialogHeader>
                 
                 <div className="space-y-6">
-                  {/* Sample CSV Download */}
+                  {/* Sample File Download */}
                   <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
                     <div>
                       <h4 className="font-medium text-blue-900">Need a template?</h4>
-                      <p className="text-sm text-blue-700">Download sample CSV with correct format</p>
+                      <p className="text-sm text-blue-700">Download sample file with correct format</p>
                     </div>
-                    <Button variant="outline" size="sm" onClick={downloadSampleCsv}>
+                    <Button variant="outline" size="sm" onClick={downloadSampleExcel}>
                       <Download className="w-4 h-4 mr-2" />
-                      Sample CSV
+                      Sample File
                     </Button>
+                  </div>
+
+                  {/* File Upload Section */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Upload Excel/CSV File</h4>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".xlsx,.xls,.csv"
+                        onChange={handleFileSelect}
+                        className="hidden"
+                      />
+                      {selectedFile ? (
+                        <div className="space-y-2">
+                          <FileText className="w-8 h-8 text-green-600 mx-auto" />
+                          <p className="text-sm font-medium text-green-600">{selectedFile.name}</p>
+                          <p className="text-xs text-gray-500">
+                            {(selectedFile.size / 1024).toFixed(1)} KB
+                          </p>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => {
+                              setSelectedFile(null);
+                              if (fileInputRef.current) fileInputRef.current.value = '';
+                            }}
+                          >
+                            Remove File
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <Upload className="w-8 h-8 text-gray-400 mx-auto" />
+                          <p className="text-sm text-gray-600">
+                            Click to select Excel (.xlsx, .xls) or CSV file
+                          </p>
+                          <Button 
+                            variant="outline" 
+                            onClick={() => fileInputRef.current?.click()}
+                          >
+                            Choose File
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* Format Instructions */}
                   <div className="space-y-2">
-                    <h4 className="font-medium">CSV Format Instructions</h4>
+                    <h4 className="font-medium">File Format Requirements</h4>
                     <div className="text-sm text-gray-600 space-y-1">
-                      <p>• <strong>Header:</strong> Device, Brand, Model</p>
+                      <p>• <strong>Columns:</strong> Device, Brand, Model (in this order)</p>
                       <p>• <strong>Device:</strong> Either "mobile" or "laptop"</p>
                       <p>• <strong>Brand:</strong> Brand name (e.g., Apple, Samsung)</p>
                       <p>• <strong>Model:</strong> Model name (e.g., iPhone 15 Pro, Galaxy S24)</p>
+                      <p>• <strong>Supported formats:</strong> .xlsx, .xls, .csv</p>
                     </div>
                     <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded mt-2">
                       <strong>Example:</strong><br/>
-                      Device,Brand,Model<br/>
-                      mobile,Apple,iPhone 15 Pro<br/>
-                      laptop,Dell,XPS 13
+                      Row 1: Device | Brand | Model<br/>
+                      Row 2: mobile | Apple | iPhone 15 Pro<br/>
+                      Row 3: laptop | Dell | XPS 13
                     </div>
                   </div>
 
-                  {/* CSV Input */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">CSV Data</label>
-                    <Textarea
-                      placeholder="Paste your CSV data here or type it manually..."
-                      value={csvData}
-                      onChange={(e) => setCsvData(e.target.value)}
-                      rows={8}
-                      className="font-mono text-sm"
-                    />
-                  </div>
+                  {/* Manual CSV Input (Optional) */}
+                  {!selectedFile && (
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Or paste CSV data manually</label>
+                      <Textarea
+                        placeholder="Device,Brand,Model&#10;mobile,Apple,iPhone 15 Pro&#10;laptop,Dell,XPS 13"
+                        value={csvData}
+                        onChange={(e) => setCsvData(e.target.value)}
+                        rows={6}
+                        className="font-mono text-sm"
+                      />
+                      <p className="text-xs text-gray-500">
+                        Note: File upload takes priority over manual input
+                      </p>
+                    </div>
+                  )}
 
                   {/* Upload Results */}
                   {uploadResults && (
@@ -385,17 +557,21 @@ laptop,MacBook,Air M2`;
                   <div className="flex gap-3 pt-4">
                     <Button 
                       onClick={handleBulkUpload}
-                      disabled={bulkUploadMutation.isPending || !csvData.trim()}
+                      disabled={bulkUploadMutation.isPending || isProcessingFile || (!selectedFile && !csvData.trim())}
                       className="flex-1"
                     >
-                      {bulkUploadMutation.isPending ? 'Uploading...' : 'Upload Data'}
+                      {isProcessingFile ? 'Processing File...' : 
+                       bulkUploadMutation.isPending ? 'Uploading...' : 
+                       'Upload Data'}
                     </Button>
                     <Button 
                       variant="outline" 
                       onClick={() => {
                         setBulkUploadOpen(false);
                         setCsvData('');
+                        setSelectedFile(null);
                         setUploadResults(null);
+                        if (fileInputRef.current) fileInputRef.current.value = '';
                       }}
                     >
                       Cancel

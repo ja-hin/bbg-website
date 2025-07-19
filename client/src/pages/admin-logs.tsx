@@ -426,14 +426,28 @@ export default function AdminLogs() {
                       onChange={(e) => setSmtpConfig(prev => ({ ...prev, password: e.target.value }))}
                     />
                   </div>
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <p className="text-sm font-medium text-blue-800">Gmail Setup Instructions:</p>
-                    <ol className="text-xs text-blue-700 mt-1 space-y-1">
-                      <li>1. Enable 2-factor authentication on your Google account</li>
-                      <li>2. Go to Google Account → Security → App passwords</li>
-                      <li>3. Generate an app password for "Mail"</li>
-                      <li>4. Use smtp.gmail.com, port 587, your Gmail address, and the app password</li>
-                    </ol>
+                  <div className="space-y-3">
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <p className="text-sm font-medium text-blue-800">Gmail Setup Instructions:</p>
+                      <ol className="text-xs text-blue-700 mt-1 space-y-1">
+                        <li>1. Enable 2-factor authentication on your Google account</li>
+                        <li>2. Go to Google Account → Security → App passwords</li>
+                        <li>3. Generate an app password for "Mail"</li>
+                        <li>4. Use smtp.gmail.com, port 587, your Gmail address, and the app password</li>
+                      </ol>
+                    </div>
+                    <div className="bg-green-50 p-4 rounded-lg">
+                      <p className="text-sm font-medium text-green-800">Outlook/Hotmail Setup Instructions:</p>
+                      <ol className="text-xs text-green-700 mt-1 space-y-1">
+                        <li>1. Enable 2-factor authentication on your Microsoft account</li>
+                        <li>2. Go to Microsoft Account → Security → Advanced security options → App passwords</li>
+                        <li>3. Generate an app password for "Mail"</li>
+                        <li>4. Use smtp-mail.outlook.com, port 587, your Outlook email, and the app password</li>
+                      </ol>
+                      <p className="text-xs text-green-600 mt-2 font-medium">
+                        ⚠️ Regular passwords don't work - you MUST use an app password!
+                      </p>
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <Button

@@ -104,11 +104,15 @@ export class SMSService {
 export class WhatsAppService {
   private apiKey: string;
   private appName: string;
+  private accountId: string;
+  private sourceNumber: string;
   private baseUrl: string;
 
   constructor() {
     this.apiKey = process.env.GUPSHUP_API_KEY || '';
     this.appName = process.env.GUPSHUP_APP_NAME || 'xtracover-bbg';
+    this.accountId = process.env.GUPSHUP_ACCOUNT_ID || '2000203987';
+    this.sourceNumber = process.env.GUPSHUP_SOURCE_NUMBER || '919311816849';
     this.baseUrl = 'https://api.gupshup.io/sm/api/v1';
   }
 
@@ -124,7 +128,7 @@ export class WhatsAppService {
 
       let payload: any = {
         channel: 'whatsapp',
-        source: process.env.GUPSHUP_SOURCE_NUMBER || '919999999999',
+        source: this.sourceNumber,
         destination: formattedNumber,
         'src.name': this.appName,
       };
@@ -172,6 +176,22 @@ export class WhatsAppService {
 
   async sendTemplateMessage(to: string, templateName: string, params: string[]) {
     return this.sendWhatsAppMessage(to, '', templateName, params);
+  }
+
+  // Helper method to check if WhatsApp service is configured
+  isConfigured(): boolean {
+    return !!this.apiKey && !!this.sourceNumber;
+  }
+
+  // Method to get configuration status for admin dashboard
+  getServiceStatus() {
+    return {
+      hasApiKey: !!this.apiKey,
+      hasSourceNumber: !!this.sourceNumber,
+      accountId: this.accountId,
+      sourceNumber: this.sourceNumber,
+      appName: this.appName
+    };
   }
 }
 

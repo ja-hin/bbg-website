@@ -2295,12 +2295,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
       
       // Check WhatsApp status with proper validation
-      const hasWhatsAppConfig = !!(process.env.GUPSHUP_API_KEY && process.env.GUPSHUP_APP_NAME);
+      const hasWhatsAppConfig = !!(process.env.GUPSHUP_API_KEY && process.env.GUPSHUP_SOURCE_NUMBER);
       const whatsappStatus = {
         service: "WhatsApp Gupshup",
         status: hasWhatsAppConfig ? "connected" : "disconnected",
-        message: hasWhatsAppConfig ? "Gupshup API configured" : "Gupshup configuration missing",
-        appName: process.env.GUPSHUP_APP_NAME || "Not configured"
+        message: hasWhatsAppConfig ? "Gupshup API configured and ready" : "API key needed - Login to https://www.gupshup.io/whatsapp/dashboard with Account ID: 2000203987",
+        appName: process.env.GUPSHUP_APP_NAME || "xtracover-bbg",
+        sourceNumber: process.env.GUPSHUP_SOURCE_NUMBER || "919311816849",
+        accountId: process.env.GUPSHUP_ACCOUNT_ID || "2000203987"
       };
       
       // Check template count with error handling
@@ -2393,6 +2395,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Logs fetch error:', error);
       res.status(500).json({ message: "Failed to fetch logs" });
+    }
+  });
+
+  // WhatsApp setup helper endpoint
+  app.get('/api/admin/whatsapp-setup', isAdminAuthenticated, async (req, res) => {
+    try {
+      const currentConfig = {
+        hasApiKey: !!process.env.GUPSHUP_API_KEY,
+        accountId: process.env.GUPSHUP_ACCOUNT_ID || '2000203987',
+        sourceNumber: process.env.GUPSHUP_SOURCE_NUMBER || '919311816849',
+        appName: process.env.GUPSHUP_APP_NAME || 'xtracover-bbg'
+      };
+      
+      const instructions = `
+🔧 WHATSAPP SETUP REQUIRED
+
+Your Gupshup account details:
+- Account ID: 2000203987
+- Password: VqFvY7Ypd  
+- WhatsApp Number: +91 93118 16849
+
+📋 To complete setup:
+1. Visit: https://www.gupshup.io/whatsapp/dashboard
+2. Login with Account ID: 2000203987
+3. Use Password: VqFvY7Ypd
+4. Go to "Settings" tab 
+5. Copy your API Key
+6. Provide the API Key to complete WhatsApp integration
+
+Current Status: ${currentConfig.hasApiKey ? '✅ API Key Configured' : '❌ API Key Missing'}
+Required: GUPSHUP_API_KEY environment variable
+      `;
+      
+      res.json({
+        configured: currentConfig.hasApiKey,
+        missing: currentConfig.hasApiKey ? [] : ['GUPSHUP_API_KEY'],
+        instructions,
+        currentConfig
+      });
+    } catch (error: any) {
+      console.error('WhatsApp setup error:', error);
+      res.status(500).json({ message: 'Failed to get WhatsApp setup info', error: error.message });
     }
   });
 

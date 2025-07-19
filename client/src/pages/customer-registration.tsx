@@ -531,13 +531,13 @@ function RegistrationContent() {
                     Device Details
                   </h3>
                   
-                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start">
                     <FormField
                       control={form.control}
                       name="deviceType"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
                             <Smartphone className="h-4 w-4 mr-2" />
                             Device Type *
                           </FormLabel>
@@ -564,8 +564,8 @@ function RegistrationContent() {
                       control={form.control}
                       name="brand"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
                             <Building className="h-4 w-4 mr-2" />
                             Brand *
                           </FormLabel>
@@ -592,8 +592,11 @@ function RegistrationContent() {
                       control={form.control}
                       name="modelName"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Model Name *</FormLabel>
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
+                            <span className="h-4 w-4 mr-2"></span>
+                            Model Name *
+                          </FormLabel>
                           <FormControl>
                             <Input placeholder="e.g., iPhone 14, MacBook Pro" {...field} />
                           </FormControl>
@@ -606,8 +609,8 @@ function RegistrationContent() {
                       control={form.control}
                       name="invoiceValue"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
                             <IndianRupee className="h-4 w-4 mr-2" />
                             Invoice Value (₹) *
                           </FormLabel>
@@ -682,13 +685,13 @@ function RegistrationContent() {
                     Customer Details
                   </h3>
                   
-                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start">
                     <FormField
                       control={form.control}
                       name="name"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
                             <User className="h-4 w-4 mr-2" />
                             Customer Name *
                           </FormLabel>
@@ -704,8 +707,8 @@ function RegistrationContent() {
                       control={form.control}
                       name="contact"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
                             <Phone className="h-4 w-4 mr-2" />
                             Contact Number *
                           </FormLabel>
@@ -725,8 +728,8 @@ function RegistrationContent() {
                       control={form.control}
                       name="email"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
                             <Mail className="h-4 w-4 mr-2" />
                             Email ID *
                           </FormLabel>
@@ -742,8 +745,8 @@ function RegistrationContent() {
                       control={form.control}
                       name="pincode"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
                             <MapPin className="h-4 w-4 mr-2" />
                             Pincode *
                           </FormLabel>

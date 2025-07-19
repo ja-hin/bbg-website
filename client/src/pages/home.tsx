@@ -157,7 +157,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Trusted Network</h3>
                 <p className="text-gray-600 text-sm sm:text-base">
-                  Join our network of verified distributors and satisfied customers across the country.
+                  Join our network of verified referral partners and satisfied customers across the country.
                 </p>
               </CardContent>
             </Card>
@@ -299,14 +299,14 @@ export default function Home() {
       <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-r from-red-600 to-blue-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Award className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 sm:mb-6" />
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">Become a BBG Distributor</h2>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">Join Our Referral Program</h2>
           <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto px-4 sm:px-0">
-            Join our distributor network and start earning commissions on every successful BBG registration. 
+            Join our referral partner network and start earning commissions on every successful BBG registration. 
             Easy setup, dedicated support, and regular payouts.
           </p>
-          <Link href="/distributor-registration" className="inline-block w-full sm:w-auto">
+          <Link href="/referral-partner-registration" className="inline-block w-full sm:w-auto">
             <Button size="lg" variant="secondary" className="w-full sm:w-auto bg-white text-red-600 hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
-              Register as Distributor <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+              Join Referral Program <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
           </Link>
         </div>

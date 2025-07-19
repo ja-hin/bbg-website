@@ -797,7 +797,7 @@ function RegistrationContent() {
                 <div className="space-y-6">
                   <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center">
                     <CheckCircle className="h-5 w-5 mr-2" />
-                    Verification & Seller Details
+                    Verification & Referral Details
                   </h3>
                   
                   {/* OTP Verification */}
@@ -844,9 +844,9 @@ function RegistrationContent() {
                       name="sellerCode"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Seller Code (Optional)</FormLabel>
+                          <FormLabel>Referral Code (Optional)</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter distributor seller code if you have one" {...field} />
+                            <Input placeholder="Enter referral partner code if you have one" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

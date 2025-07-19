@@ -61,7 +61,7 @@ export default function DistributorDashboard() {
       navigator.clipboard.writeText(distributor.sellerCode);
       toast({
         title: "Copied!",
-        description: "Seller code copied to clipboard",
+        description: "Referral code copied to clipboard",
       });
     }
   };
@@ -88,7 +88,7 @@ export default function DistributorDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Distributor Dashboard</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Referral Dashboard</h1>
               <p className="text-gray-600">Welcome back, {distributor.name}!</p>
             </div>
             <Button 
@@ -107,7 +107,7 @@ export default function DistributorDashboard() {
         {/* Distributor Info Card */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Your Distributor Information</CardTitle>
+            <CardTitle>Your Referral Partner Information</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -126,7 +126,7 @@ export default function DistributorDashboard() {
                 <p className="text-lg font-semibold">{distributor.contact}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-500">Seller Code</p>
+                <p className="text-sm font-medium text-gray-500">Referral Code</p>
                 <div className="flex items-center gap-2">
                   <code className="text-lg font-mono bg-gray-100 px-2 py-1 rounded">
                     {distributor.sellerCode}
@@ -211,7 +211,7 @@ export default function DistributorDashboard() {
               <CardHeader>
                 <CardTitle>Customer Registrations</CardTitle>
                 <p className="text-sm text-gray-600">
-                  Customers who registered using your seller code: {distributor.sellerCode}
+                  Customers who registered using your referral code: {distributor.sellerCode}
                 </p>
               </CardHeader>
               <CardContent>

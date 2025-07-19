@@ -47,7 +47,7 @@ export default function Header() {
           </Link>
         );
       })}
-      <Link href="/distributor-registration" onClick={onItemClick}>
+      <Link href="/referral-partner-registration" onClick={onItemClick}>
         <Button 
           className={`
             ${mobile ? 'w-full justify-start space-x-3' : ''}
@@ -56,7 +56,7 @@ export default function Header() {
           size={mobile ? "default" : "sm"}
         >
           <UserPlus className={`${mobile ? 'w-5 h-5' : 'w-4 h-4'}`} />
-          <span>Become Distributor</span>
+          <span>Join Referral Program</span>
         </Button>
       </Link>
       
@@ -71,7 +71,7 @@ export default function Header() {
           size={mobile ? "default" : "sm"}
         >
           <UserPlus className={`${mobile ? 'w-5 h-5' : 'w-4 h-4'}`} />
-          <span>Distributor Login</span>
+          <span>Referral Partner Login</span>
         </Button>
       </Link>
     </>

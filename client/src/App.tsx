@@ -58,7 +58,7 @@ function Router() {
           <main className="flex-1">
             <Switch>
               <Route path="/" component={Home} />
-              <Route path="/distributor-registration" component={DistributorRegistration} />
+              <Route path="/referral-partner-registration" component={DistributorRegistration} />
               <Route path="/customer-registration" component={CustomerRegistration} />
               <Route path="/claim-bbg" component={ClaimBBG} />
               <Route path="/thank-you" component={ThankYou} />

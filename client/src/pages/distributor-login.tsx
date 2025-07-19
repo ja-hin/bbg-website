@@ -10,7 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useDistributorAuth } from "@/hooks/useDistributorAuth";
 import { PhoneCall, Key, Building2, LogIn } from "lucide-react";
 
-export default function DistributorLogin() {
+export default function ReferralPartnerLogin() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { login, isLoginLoading } = useDistributorAuth();
@@ -92,13 +92,13 @@ export default function DistributorLogin() {
       await login({ contact, otp });
       toast({
         title: "Login Successful",
-        description: "Welcome to your distributor dashboard!",
+        description: "Welcome to your referral dashboard!",
       });
       navigate("/distributor/dashboard");
     } catch (error: any) {
       toast({
         title: "Login Failed",
-        description: error.message || "Invalid OTP or distributor not found",
+        description: error.message || "Invalid OTP or referral partner not found",
         variant: "destructive",
       });
     }
@@ -111,9 +111,9 @@ export default function DistributorLogin() {
           <div className="mx-auto w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
             <Building2 className="h-6 w-6 text-indigo-600" />
           </div>
-          <CardTitle className="text-2xl font-bold text-gray-900">Distributor Login</CardTitle>
+          <CardTitle className="text-2xl font-bold text-gray-900">Referral Partner Login</CardTitle>
           <CardDescription>
-            Access your distributor dashboard to view customers and earnings
+            Access your referral dashboard to track referrals and earnings
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -135,7 +135,7 @@ export default function DistributorLogin() {
                 />
               </div>
               <p className="text-xs text-gray-500">
-                Enter the mobile number used during distributor registration
+                Enter the mobile number used during referral partner registration
               </p>
             </div>
 

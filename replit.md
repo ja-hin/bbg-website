@@ -193,6 +193,14 @@ KALEYRA_SENDER_ID=XTRCVR  # Configured sender ID
 
 ```
 Changelog:
+- July 19, 2025: ✅ COMPLETED - Comprehensive terminology rebranding from "distributor" to "referral partner" across entire application
+  - UPDATED: Changed all instances of "distributor" to "referral partner" in client-side pages and components
+  - REBRANDED: "Seller code" terminology updated to "referral code" throughout the application
+  - MODIFIED: Header navigation, forms, dashboards, and admin pages to reflect new referral partner branding
+  - ENHANCED: Customer registration form now uses "referral code" instead of "seller code"  
+  - UPDATED: Admin panel titles and descriptions to use referral partner terminology
+  - MAINTAINED: All existing functionality while improving brand consistency and user clarity
+  - STREAMLINED: User experience with clearer, more intuitive terminology for the referral system
 - July 19, 2025: ✅ COMPLETED - Implemented Excel/CSV bulk upload system for brands and models management
   - CREATED: Complete file upload interface with drag-and-drop functionality and file validation
   - ADDED: Support for .xlsx, .xls, and .csv file formats with automatic parsing using XLSX library

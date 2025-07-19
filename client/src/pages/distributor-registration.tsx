@@ -259,7 +259,7 @@ export default function DistributorRegistration() {
         {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Become a BBG Distributor
+            Join Our Referral Program
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Join our network and start earning commissions on every successful BBG registration. 
@@ -295,7 +295,7 @@ export default function DistributorRegistration() {
                 <TrendingUp className="h-8 w-8 text-purple-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Track Performance</h3>
-              <p className="text-gray-600">Monitor your sales and commission earnings</p>
+              <p className="text-gray-600">Monitor your referrals and commission earnings</p>
             </CardContent>
           </Card>
         </div>
@@ -303,7 +303,7 @@ export default function DistributorRegistration() {
         {/* Registration Form */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Distributor Registration Form</CardTitle>
+            <CardTitle className="text-2xl">Referral Partner Registration Form</CardTitle>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -857,7 +857,7 @@ export default function DistributorRegistration() {
                       Registering...
                     </>
                   ) : (
-                    "Register as Distributor"
+                    "Join Referral Program"
                   )}
                 </Button>
               </form>
@@ -874,7 +874,7 @@ export default function DistributorRegistration() {
               </div>
               <h3 className="text-xl font-semibold text-green-900 mb-2">Registration Successful!</h3>
               <p className="text-green-700 mb-4">
-                Your seller code is: <strong className="text-2xl">{sellerCode}</strong>
+                Your referral code is: <strong className="text-2xl">{sellerCode}</strong>
               </p>
               <p className="text-sm text-green-600">
                 Share this code with customers to earn commissions on their registrations.

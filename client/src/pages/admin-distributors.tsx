@@ -187,15 +187,15 @@ export default function AdminDistributors() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Distributor & Payout Management</h1>
-          <p className="text-gray-600">Manage distributor details and track commission payouts</p>
+          <h1 className="text-2xl font-bold text-gray-900">Referral Partner & Payout Management</h1>
+          <p className="text-gray-600">Manage referral partner details and track commission payouts</p>
         </div>
 
         <Tabs defaultValue="distributors" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="distributors" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              Distributors
+              Referral Partners
             </TabsTrigger>
             <TabsTrigger value="payouts" className="flex items-center gap-2">
               <Wallet className="h-4 w-4" />
@@ -208,7 +208,7 @@ export default function AdminDistributors() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  All Distributors
+                  All Referral Partners
                 </CardTitle>
               </CardHeader>
               <CardContent>

@@ -447,6 +447,19 @@ export default function AdminLogs() {
                       <p className="text-xs text-green-600 mt-2 font-medium">
                         ⚠️ Regular passwords don't work - you MUST use an app password!
                       </p>
+                      <p className="text-xs text-red-600 mt-1 font-medium">
+                        🔒 If you see "account locked" errors, wait 15-30 minutes before trying again.
+                      </p>
+                    </div>
+                    <div className="bg-yellow-50 p-4 rounded-lg">
+                      <p className="text-sm font-medium text-yellow-800">Alternative: Use Gmail for Testing</p>
+                      <ol className="text-xs text-yellow-700 mt-1 space-y-1">
+                        <li>1. Create a free Gmail account if you don't have one</li>
+                        <li>2. Enable 2-factor authentication on the Gmail account</li>
+                        <li>3. Generate an app password for "Mail"</li>
+                        <li>4. Use smtp.gmail.com, port 587, Gmail address, and app password</li>
+                        <li>5. This is often easier and more reliable for SMTP setup</li>
+                      </ol>
                     </div>
                   </div>
                   <div className="flex gap-2">

@@ -9,6 +9,7 @@ import { storage } from "./sql-storage";
 import { db } from "./db";
 import sql from 'mssql';
 import { kaleyraSMSService } from "./kaleyra-service";
+import { communicationService } from "./communication-service";
 import { 
   insertDistributorSchema, 
   insertCustomerSchema, 
@@ -150,6 +151,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const distributor = await storage.createDistributor(validatedData);
+      
+      // Send welcome notifications
+      try {
+        const notificationResults = await communicationService.sendReferralPartnerWelcome({
+          name: distributor.name,
+          email: distributor.email,
+          contact: distributor.contact,
+          sellerCode: distributor.sellerCode,
+          businessName: distributor.businessName
+        });
+        console.log('Referral partner welcome notifications sent:', notificationResults);
+      } catch (notifyError: any) {
+        console.error('Failed to send notifications:', notifyError.message);
+        // Don't fail the registration if notifications fail
+      }
       
       // Store success data in session for thank you page
       req.session.thankYouData = {
@@ -564,6 +580,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         const customer = await storage.createCustomer(submitData);
         
+        // Send welcome notifications
+        try {
+          const notificationResults = await communicationService.sendRegistrationConfirmation({
+            name: customer.name,
+            email: customer.email,
+            contact: customer.contact,
+            voucherCode: customer.voucherCode,
+            deviceType: customer.deviceType,
+            brand: customer.brand,
+            modelName: customer.modelName
+          });
+          console.log('Customer registration notifications sent:', notificationResults);
+        } catch (notifyError: any) {
+          console.error('Failed to send notifications:', notifyError.message);
+          // Don't fail the registration if notifications fail
+        }
+        
         // Clean up temporary storage
         tempStorage.delete(txnid);
         
@@ -627,6 +660,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertCustomerSchema.parse(customerData);
       const customer = await storage.createCustomer(validatedData);
       console.log("Customer created with voucher code:", customer.voucherCode);
+
+      // Send welcome notifications
+      try {
+        const notificationResults = await communicationService.sendRegistrationConfirmation({
+          name: customer.name,
+          email: customer.email,
+          contact: customer.contact,
+          voucherCode: customer.voucherCode,
+          deviceType: customer.deviceType,
+          brand: customer.brand,
+          modelName: customer.modelName
+        });
+        console.log('Customer registration notifications sent:', notificationResults);
+      } catch (notifyError: any) {
+        console.error('Failed to send notifications:', notifyError.message);
+        // Don't fail the registration if notifications fail
+      }
 
       // Store success data in session for thank you page
       req.session.thankYouData = {
@@ -1146,6 +1196,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       await storage.updateClaimStatus(claimId, status);
+      
+      // Send claim status notification if status is final
+      if (['approved', 'rejected', 'paid'].includes(status)) {
+        try {
+          // Get claim details for notification
+          const claim = await storage.getClaimById(claimId);
+          if (claim && claim.customer) {
+            const notificationResults = await communicationService.sendClaimStatusUpdate({
+              name: claim.customer.name,
+              email: claim.customer.email,
+              contact: claim.customer.contact,
+              voucherCode: claim.customer.voucherCode,
+              claimAmount: claim.claimAmount,
+              status: status
+            });
+            console.log('Claim status update notifications sent:', notificationResults);
+          }
+        } catch (notifyError: any) {
+          console.error('Failed to send claim status notifications:', notifyError.message);
+          // Don't fail the status update if notifications fail
+        }
+      }
+      
       res.json({ message: "Claim status updated successfully" });
     } catch (error: any) {
       res.status(500).json({ message: "Failed to update claim status" });
@@ -1291,6 +1364,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Default admin creation error:', error);
       res.status(500).json({ message: "Failed to create default admin user" });
+    }
+  });
+
+  // Test Communication Services endpoint
+  app.post("/api/test-communications", async (req, res) => {
+    try {
+      const { name, email, contact } = req.body;
+      
+      if (!name || !email || !contact) {
+        return res.status(400).json({ message: "Name, email, and contact number are required" });
+      }
+
+      // Test all communication channels
+      const results = await communicationService.testCommunications({
+        name,
+        email,
+        contact
+      });
+
+      res.json({
+        success: true,
+        message: "Communication test completed",
+        results: {
+          email: {
+            success: results.email.success,
+            message: results.email.success ? "Email sent successfully" : results.email.error
+          },
+          sms: {
+            success: results.sms.success,
+            message: results.sms.success ? "SMS sent successfully" : results.sms.error
+          },
+          whatsapp: {
+            success: results.whatsapp.success,
+            message: results.whatsapp.success ? "WhatsApp message sent successfully" : results.whatsapp.error
+          }
+        }
+      });
+    } catch (error: any) {
+      console.error('Communication test error:', error);
+      res.status(500).json({ 
+        success: false,
+        message: "Communication test failed", 
+        error: error.message 
+      });
     }
   });
 
@@ -1506,6 +1623,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       await storage.updatePayoutStatus(payoutId, status, paymentReference);
+      
+      // Send payout notification if status is final
+      if (['processing', 'paid', 'failed'].includes(status)) {
+        try {
+          // Get payout details for notification
+          const payouts = await storage.getAllPayoutsForAdmin();
+          const payout = payouts.find(p => p.id === payoutId);
+          if (payout && payout.distributor) {
+            const notificationResults = await communicationService.sendPayoutNotification({
+              name: payout.distributor.name,
+              email: payout.distributor.email,
+              contact: payout.distributor.contact,
+              amount: payout.amount,
+              status: status,
+              paymentReference: paymentReference
+            });
+            console.log('Payout status update notifications sent:', notificationResults);
+          }
+        } catch (notifyError: any) {
+          console.error('Failed to send payout notifications:', notifyError.message);
+          // Don't fail the status update if notifications fail
+        }
+      }
+      
       res.json({ message: "Payout status updated successfully" });
     } catch (error: any) {
       console.error("Failed to update payout status:", error);

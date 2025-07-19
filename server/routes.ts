@@ -1279,12 +1279,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get brands with their models for admin management
+  app.get("/api/brands-with-models", async (req, res) => {
+    try {
+      await db.connectDB();
+      
+      // Get all brands
+      const brandsResult = await db.query(`
+        SELECT * FROM brands WHERE is_active = 1 ORDER BY name
+      `);
+      
+      const brands = [];
+      for (const brand of brandsResult.recordset) {
+        // Get models for each brand
+        const modelsResult = await db.query(`
+          SELECT * FROM models 
+          WHERE brand_id = ${brand.id} AND is_active = 1 
+          ORDER BY name
+        `);
+        
+        brands.push({
+          id: brand.id,
+          name: brand.name,
+          device_type: brand.device_type,
+          is_active: brand.is_active,
+          created_at: brand.created_at,
+          updated_at: brand.updated_at,
+          models: modelsResult.recordset.map((model: any) => ({
+            id: model.id,
+            name: model.name,
+            brand_id: model.brand_id,
+            is_active: model.is_active,
+            created_at: model.created_at,
+            updated_at: model.updated_at
+          }))
+        });
+      }
+      
+      res.json(brands);
+    } catch (error: any) {
+      console.error('Error fetching brands with models:', error);
+      res.status(500).json({ message: "Failed to get brands with models" });
+    }
+  });
+
   app.get("/api/admin/brands", isAdminAuthenticated, async (req, res) => {
     try {
       const brands = await storage.getAllBrands();
       res.json(brands);
     } catch (error: any) {
       res.status(500).json({ message: "Failed to get brands" });
+    }
+  });
+
+  // Create brand
+  app.post("/api/brands", async (req, res) => {
+    try {
+      await db.connectDB();
+      const { name, device_type, is_active = true } = req.body;
+      
+      if (!name || !device_type) {
+        return res.status(400).json({ message: "Brand name and device type are required" });
+      }
+
+      const request = db.pool.request();
+      request.input('name', sql.VarChar, name);
+      request.input('device_type', sql.VarChar, device_type);
+      request.input('is_active', sql.Bit, is_active);
+      
+      const result = await request.query(`
+        INSERT INTO brands (name, device_type, is_active) 
+        OUTPUT INSERTED.* 
+        VALUES (@name, @device_type, @is_active)
+      `);
+      
+      res.status(201).json({
+        message: "Brand created successfully",
+        brand: result.recordset[0]
+      });
+    } catch (error: any) {
+      console.error('Error creating brand:', error);
+      res.status(500).json({ message: "Failed to create brand" });
     }
   });
 
@@ -1307,6 +1382,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error: any) {
       res.status(500).json({ message: "Failed to create brand" });
+    }
+  });
+
+  // Update brand
+  app.put("/api/brands/:id", async (req, res) => {
+    try {
+      await db.connectDB();
+      const brandId = parseInt(req.params.id);
+      const { name, device_type } = req.body;
+      
+      const request = db.pool.request();
+      request.input('id', sql.Int, brandId);
+      request.input('name', sql.VarChar, name);
+      request.input('device_type', sql.VarChar, device_type);
+      request.input('updated_at', sql.DateTime2, new Date());
+      
+      const result = await request.query(`
+        UPDATE brands 
+        SET name = @name, device_type = @device_type, updated_at = @updated_at
+        OUTPUT INSERTED.*
+        WHERE id = @id
+      `);
+      
+      if (result.recordset.length === 0) {
+        return res.status(404).json({ message: "Brand not found" });
+      }
+      
+      res.json({ 
+        message: "Brand updated successfully",
+        brand: result.recordset[0]
+      });
+    } catch (error: any) {
+      console.error('Error updating brand:', error);
+      res.status(500).json({ message: "Failed to update brand" });
+    }
+  });
+
+  // Delete brand
+  app.delete("/api/brands/:id", async (req, res) => {
+    try {
+      await db.connectDB();
+      const brandId = parseInt(req.params.id);
+      
+      const request = db.pool.request();
+      request.input('id', sql.Int, brandId);
+      
+      // First delete associated models
+      await request.query(`DELETE FROM models WHERE brand_id = @id`);
+      
+      // Then delete the brand
+      const result = await request.query(`DELETE FROM brands WHERE id = @id`);
+      
+      res.json({ message: "Brand deleted successfully" });
+    } catch (error: any) {
+      console.error('Error deleting brand:', error);
+      res.status(500).json({ message: "Failed to delete brand" });
     }
   });
 
@@ -1346,6 +1477,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(models);
     } catch (error: any) {
       res.status(500).json({ message: "Failed to get device models" });
+    }
+  });
+
+  // Create model
+  app.post("/api/models", async (req, res) => {
+    try {
+      await db.connectDB();
+      const { name, brand_id, is_active = true } = req.body;
+      
+      if (!name || !brand_id) {
+        return res.status(400).json({ message: "Model name and brand ID are required" });
+      }
+
+      const request = db.pool.request();
+      request.input('name', sql.VarChar, name);
+      request.input('brand_id', sql.Int, brand_id);
+      request.input('is_active', sql.Bit, is_active);
+      
+      const result = await request.query(`
+        INSERT INTO models (name, brand_id, is_active) 
+        OUTPUT INSERTED.* 
+        VALUES (@name, @brand_id, @is_active)
+      `);
+      
+      res.status(201).json({
+        message: "Model created successfully",
+        model: result.recordset[0]
+      });
+    } catch (error: any) {
+      console.error('Error creating model:', error);
+      res.status(500).json({ message: "Failed to create model" });
+    }
+  });
+
+  // Update model
+  app.put("/api/models/:id", async (req, res) => {
+    try {
+      await db.connectDB();
+      const modelId = parseInt(req.params.id);
+      const { name } = req.body;
+      
+      const request = db.pool.request();
+      request.input('id', sql.Int, modelId);
+      request.input('name', sql.VarChar, name);
+      request.input('updated_at', sql.DateTime2, new Date());
+      
+      const result = await request.query(`
+        UPDATE models 
+        SET name = @name, updated_at = @updated_at
+        OUTPUT INSERTED.*
+        WHERE id = @id
+      `);
+      
+      if (result.recordset.length === 0) {
+        return res.status(404).json({ message: "Model not found" });
+      }
+      
+      res.json({ 
+        message: "Model updated successfully",
+        model: result.recordset[0]
+      });
+    } catch (error: any) {
+      console.error('Error updating model:', error);
+      res.status(500).json({ message: "Failed to update model" });
+    }
+  });
+
+  // Delete model
+  app.delete("/api/models/:id", async (req, res) => {
+    try {
+      await db.connectDB();
+      const modelId = parseInt(req.params.id);
+      
+      const request = db.pool.request();
+      request.input('id', sql.Int, modelId);
+      
+      const result = await request.query(`DELETE FROM models WHERE id = @id`);
+      
+      res.json({ message: "Model deleted successfully" });
+    } catch (error: any) {
+      console.error('Error deleting model:', error);
+      res.status(500).json({ message: "Failed to delete model" });
     }
   });
 

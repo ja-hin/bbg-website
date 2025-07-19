@@ -14,6 +14,7 @@ import ThankYou from "@/pages/thank-you";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminMasters from "@/pages/admin-masters";
+import AdminBrands from "@/pages/admin-brands";
 
 function Router() {
   return (
@@ -27,6 +28,7 @@ function Router() {
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/admin/masters" component={AdminMasters} />
+      <Route path="/admin/brands" component={AdminBrands} />
       
       {/* Regular routes with header/footer */}
       <Route>

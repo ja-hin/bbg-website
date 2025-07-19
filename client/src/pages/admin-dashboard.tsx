@@ -10,6 +10,7 @@ import {
   IndianRupee,
   LogOut,
   Database,
+  Tags,
   ShoppingCart,
   Calendar,
   User,
@@ -173,6 +174,12 @@ export default function AdminDashboard() {
                   <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
                     <Database className="h-4 w-4 mr-2" />
                     Masters
+                  </Button>
+                </Link>
+                <Link href="/admin/brands">
+                  <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+                    <Tags className="h-4 w-4 mr-2" />
+                    Brands
                   </Button>
                 </Link>
               </div>

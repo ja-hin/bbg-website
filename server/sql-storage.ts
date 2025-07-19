@@ -264,6 +264,41 @@ export class SqlServerStorage implements IStorage {
           created_at DATETIME2 DEFAULT GETDATE()
         );
       END
+
+      -- Create brands table
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'brands')
+      BEGIN
+        CREATE TABLE brands (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          name NVARCHAR(100) NOT NULL,
+          device_type NVARCHAR(20) NOT NULL CHECK (device_type IN ('mobile', 'laptop')),
+          is_active BIT DEFAULT 1,
+          created_at DATETIME2 DEFAULT GETDATE(),
+          updated_at DATETIME2 DEFAULT GETDATE()
+        );
+
+        -- Insert default brands
+        INSERT INTO brands (name, device_type) VALUES
+        ('Apple', 'mobile'), ('Samsung', 'mobile'), ('Xiaomi', 'mobile'), ('OnePlus', 'mobile'), ('Oppo', 'mobile'),
+        ('Vivo', 'mobile'), ('Realme', 'mobile'), ('Motorola', 'mobile'), ('Google', 'mobile'), ('Nokia', 'mobile'),
+        ('Huawei', 'mobile'), ('Honor', 'mobile'), ('Nothing', 'mobile'), ('iQOO', 'mobile'), ('Poco', 'mobile'),
+        ('Apple', 'laptop'), ('Dell', 'laptop'), ('HP', 'laptop'), ('Lenovo', 'laptop'), ('Asus', 'laptop'),
+        ('Acer', 'laptop'), ('MSI', 'laptop'), ('Samsung', 'laptop'), ('Microsoft', 'laptop'), ('LG', 'laptop');
+      END
+
+      -- Create models table
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'models')
+      BEGIN
+        CREATE TABLE models (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          name NVARCHAR(100) NOT NULL,
+          brand_id INT NOT NULL,
+          is_active BIT DEFAULT 1,
+          created_at DATETIME2 DEFAULT GETDATE(),
+          updated_at DATETIME2 DEFAULT GETDATE(),
+          FOREIGN KEY (brand_id) REFERENCES brands(id) ON DELETE CASCADE
+        );
+      END
     `;
 
     const request = db.pool.request();

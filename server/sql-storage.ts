@@ -315,6 +315,36 @@ export class SqlServerStorage implements IStorage {
           FOREIGN KEY (brand_id) REFERENCES brands(id) ON DELETE CASCADE
         );
       END
+
+      -- Create distributor_sessions table
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'distributor_sessions')
+      BEGIN
+        CREATE TABLE distributor_sessions (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          distributor_id INT NOT NULL,
+          session_token NVARCHAR(255) NOT NULL UNIQUE,
+          expires_at DATETIME2 NOT NULL,
+          created_at DATETIME2 DEFAULT GETDATE(),
+          FOREIGN KEY (distributor_id) REFERENCES distributors(id) ON DELETE CASCADE
+        );
+      END
+
+      -- Create commission_payouts table
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'commission_payouts')
+      BEGIN
+        CREATE TABLE commission_payouts (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          distributor_id INT NOT NULL,
+          customer_id INT NOT NULL,
+          amount DECIMAL(10,2) NOT NULL,
+          status NVARCHAR(50) DEFAULT 'pending',
+          payment_reference NVARCHAR(255),
+          paid_at DATETIME2,
+          created_at DATETIME2 DEFAULT GETDATE(),
+          FOREIGN KEY (distributor_id) REFERENCES distributors(id),
+          FOREIGN KEY (customer_id) REFERENCES customers(id)
+        );
+      END
     `;
 
     const request = db.pool.request();
@@ -396,13 +426,12 @@ export class SqlServerStorage implements IStorage {
     expiresAt.setHours(expiresAt.getHours() + 24); // 24-hour session
 
     const query = `
-      INSERT INTO distributor_sessions (distributor_id, contact, session_token, expires_at)
-      VALUES (@distributorId, @contact, @sessionToken, @expiresAt)
+      INSERT INTO distributor_sessions (distributor_id, session_token, expires_at)
+      VALUES (@distributorId, @sessionToken, @expiresAt)
     `;
 
     const request = db.pool.request();
     request.input('distributorId', sql.Int, distributorId);
-    request.input('contact', sql.NVarChar, contact);
     request.input('sessionToken', sql.NVarChar, sessionToken);
     request.input('expiresAt', sql.DateTime2, expiresAt);
 

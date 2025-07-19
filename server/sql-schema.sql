@@ -68,10 +68,40 @@ CREATE TABLE otp_verifications (
     created_at DATETIME2 DEFAULT GETDATE()
 );
 
+-- Create distributor sessions table
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='distributor_sessions' AND xtype='U')
+CREATE TABLE distributor_sessions (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    distributor_id INT NOT NULL,
+    contact NVARCHAR(10) NOT NULL,
+    session_token NVARCHAR(255) NOT NULL UNIQUE,
+    expires_at DATETIME2 NOT NULL,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY (distributor_id) REFERENCES distributors(id)
+);
+
+-- Create commission payouts tracking table
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='commission_payouts' AND xtype='U')
+CREATE TABLE commission_payouts (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    distributor_id INT NOT NULL,
+    customer_id INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    status NVARCHAR(50) DEFAULT 'pending', -- 'pending', 'processing', 'paid', 'cancelled'
+    payment_reference NVARCHAR(255),
+    paid_at DATETIME2,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY (distributor_id) REFERENCES distributors(id),
+    FOREIGN KEY (customer_id) REFERENCES customers(id)
+);
+
 -- Create indexes for better performance
 CREATE NONCLUSTERED INDEX IX_distributors_seller_code ON distributors(seller_code);
 CREATE NONCLUSTERED INDEX IX_distributors_email ON distributors(email);
+CREATE NONCLUSTERED INDEX IX_distributors_contact ON distributors(contact);
 CREATE NONCLUSTERED INDEX IX_customers_voucher_code ON customers(voucher_code);
 CREATE NONCLUSTERED INDEX IX_customers_seller_code ON customers(seller_code);
+CREATE NONCLUSTERED INDEX IX_distributor_sessions_token ON distributor_sessions(session_token);
+CREATE NONCLUSTERED INDEX IX_commission_payouts_distributor ON commission_payouts(distributor_id);
 CREATE NONCLUSTERED INDEX IX_claims_voucher_code ON claims(voucher_code);
 CREATE NONCLUSTERED INDEX IX_otp_contact ON otp_verifications(contact);

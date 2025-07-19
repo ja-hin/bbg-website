@@ -15,6 +15,8 @@ import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminMasters from "@/pages/admin-masters";
 import AdminBrands from "@/pages/admin-brands";
+import DistributorLogin from "@/pages/distributor-login";
+import DistributorDashboard from "@/pages/distributor-dashboard";
 import { useAuth } from "@/hooks/useAuth";
 
 function AdminRoot() {
@@ -42,6 +44,10 @@ function Router() {
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/admin/masters" component={AdminMasters} />
       <Route path="/admin/brands" component={AdminBrands} />
+      
+      {/* Distributor routes without header/footer */}
+      <Route path="/distributor/login" component={DistributorLogin} />
+      <Route path="/distributor/dashboard" component={DistributorDashboard} />
       
       {/* Regular routes with header/footer */}
       <Route>

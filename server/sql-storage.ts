@@ -34,9 +34,25 @@ export interface IStorage {
   createDistributor(distributor: InsertDistributor): Promise<Distributor>;
   getDistributorBySellerCode(sellerCode: string): Promise<Distributor | undefined>;
   getDistributorByEmail(email: string): Promise<Distributor | undefined>;
+  getDistributorByContact(contact: string): Promise<Distributor | undefined>;
   getAllDistributors(): Promise<Distributor[]>;
   updateDistributor(id: number, updates: Partial<InsertDistributor>): Promise<void>;
   deleteDistributor(id: number): Promise<void>;
+  
+  // Distributor Authentication
+  createDistributorSession(distributorId: number, contact: string): Promise<string>;
+  verifyDistributorSession(token: string): Promise<Distributor | null>;
+  deleteDistributorSession(token: string): Promise<void>;
+  
+  // Distributor Dashboard
+  getDistributorStats(distributorId: number): Promise<{
+    totalCustomers: number;
+    totalEarnings: number;
+    pendingPayouts: number;
+    completedPayouts: number;
+  }>;
+  getDistributorCustomers(distributorId: number): Promise<Customer[]>;
+  getDistributorPayouts(distributorId: number): Promise<any[]>;
   
   // Customer operations (Master)
   createCustomer(customer: InsertCustomer): Promise<Customer>;
@@ -361,6 +377,173 @@ export class SqlServerStorage implements IStorage {
     return result.recordset.length > 0 ? this.mapDistributorFromDb(result.recordset[0]) : undefined;
   }
 
+  async getDistributorByContact(contact: string): Promise<Distributor | undefined> {
+    await db.connectDB();
+    const query = `SELECT * FROM distributors WHERE contact = @contact`;
+    
+    const request = db.pool.request();
+    request.input('contact', sql.NVarChar, contact);
+    
+    const result = await request.query(query);
+    return result.recordset.length > 0 ? this.mapDistributorFromDb(result.recordset[0]) : undefined;
+  }
+
+  // Distributor Authentication
+  async createDistributorSession(distributorId: number, contact: string): Promise<string> {
+    await db.connectDB();
+    const sessionToken = this.generateSessionToken();
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 24); // 24-hour session
+
+    const query = `
+      INSERT INTO distributor_sessions (distributor_id, contact, session_token, expires_at)
+      VALUES (@distributorId, @contact, @sessionToken, @expiresAt)
+    `;
+
+    const request = db.pool.request();
+    request.input('distributorId', sql.Int, distributorId);
+    request.input('contact', sql.NVarChar, contact);
+    request.input('sessionToken', sql.NVarChar, sessionToken);
+    request.input('expiresAt', sql.DateTime2, expiresAt);
+
+    await request.query(query);
+    return sessionToken;
+  }
+
+  async verifyDistributorSession(token: string): Promise<Distributor | null> {
+    await db.connectDB();
+    const query = `
+      SELECT d.*, ds.expires_at 
+      FROM distributors d
+      INNER JOIN distributor_sessions ds ON d.id = ds.distributor_id
+      WHERE ds.session_token = @token AND ds.expires_at > GETDATE()
+    `;
+
+    const request = db.pool.request();
+    request.input('token', sql.NVarChar, token);
+
+    const result = await request.query(query);
+    if (result.recordset.length > 0) {
+      return this.mapDistributorFromDb(result.recordset[0]);
+    }
+    return null;
+  }
+
+  async deleteDistributorSession(token: string): Promise<void> {
+    await db.connectDB();
+    const query = `DELETE FROM distributor_sessions WHERE session_token = @token`;
+    
+    const request = db.pool.request();
+    request.input('token', sql.NVarChar, token);
+    
+    await request.query(query);
+  }
+
+  // Distributor Dashboard
+  async getDistributorStats(distributorId: number): Promise<{
+    totalCustomers: number;
+    totalEarnings: number;
+    pendingPayouts: number;
+    completedPayouts: number;
+  }> {
+    await db.connectDB();
+    const query = `
+      SELECT 
+        d.total_customers,
+        d.commission_earned as total_earnings,
+        ISNULL(pending.pending_amount, 0) as pending_payouts,
+        ISNULL(completed.completed_amount, 0) as completed_payouts
+      FROM distributors d
+      LEFT JOIN (
+        SELECT distributor_id, SUM(amount) as pending_amount
+        FROM commission_payouts 
+        WHERE status IN ('pending', 'processing') 
+        GROUP BY distributor_id
+      ) pending ON d.id = pending.distributor_id
+      LEFT JOIN (
+        SELECT distributor_id, SUM(amount) as completed_amount
+        FROM commission_payouts 
+        WHERE status = 'paid'
+        GROUP BY distributor_id
+      ) completed ON d.id = completed.distributor_id
+      WHERE d.id = @distributorId
+    `;
+
+    const request = db.pool.request();
+    request.input('distributorId', sql.Int, distributorId);
+
+    const result = await request.query(query);
+    if (result.recordset.length > 0) {
+      const row = result.recordset[0];
+      return {
+        totalCustomers: row.total_customers || 0,
+        totalEarnings: parseFloat(row.total_earnings) || 0,
+        pendingPayouts: parseFloat(row.pending_payouts) || 0,
+        completedPayouts: parseFloat(row.completed_payouts) || 0
+      };
+    }
+    
+    return {
+      totalCustomers: 0,
+      totalEarnings: 0,
+      pendingPayouts: 0,
+      completedPayouts: 0
+    };
+  }
+
+  async getDistributorCustomers(distributorId: number): Promise<Customer[]> {
+    await db.connectDB();
+    const query = `
+      SELECT c.* FROM customers c
+      INNER JOIN distributors d ON c.seller_code = d.seller_code
+      WHERE d.id = @distributorId
+      ORDER BY c.created_at DESC
+    `;
+
+    const request = db.pool.request();
+    request.input('distributorId', sql.Int, distributorId);
+
+    const result = await request.query(query);
+    return result.recordset.map(row => this.mapCustomerFromDb(row));
+  }
+
+  async getDistributorPayouts(distributorId: number): Promise<any[]> {
+    await db.connectDB();
+    const query = `
+      SELECT 
+        cp.*,
+        c.name as customer_name,
+        c.contact as customer_contact,
+        c.device_type,
+        c.brand,
+        c.model_name
+      FROM commission_payouts cp
+      INNER JOIN customers c ON cp.customer_id = c.id
+      WHERE cp.distributor_id = @distributorId
+      ORDER BY cp.created_at DESC
+    `;
+
+    const request = db.pool.request();
+    request.input('distributorId', sql.Int, distributorId);
+
+    const result = await request.query(query);
+    return result.recordset.map(row => ({
+      id: row.id,
+      amount: parseFloat(row.amount),
+      status: row.status,
+      paymentReference: row.payment_reference,
+      paidAt: row.paid_at,
+      createdAt: row.created_at,
+      customer: {
+        name: row.customer_name,
+        contact: row.customer_contact,
+        deviceType: row.device_type,
+        brand: row.brand,
+        modelName: row.model_name
+      }
+    }));
+  }
+
   // Customer operations
   async createCustomer(insertCustomer: InsertCustomer): Promise<Customer> {
     await db.connectDB();
@@ -395,7 +578,7 @@ export class SqlServerStorage implements IStorage {
 
     const result = await request.query(query);
 
-    // Update distributor commission if seller code provided
+    // Update distributor commission and create payout if seller code provided
     if (insertCustomer.sellerCode) {
       const updateQuery = `
         UPDATE distributors 
@@ -406,6 +589,21 @@ export class SqlServerStorage implements IStorage {
       const updateRequest = db.pool.request();
       updateRequest.input('sellerCode', sql.NVarChar, insertCustomer.sellerCode);
       await updateRequest.query(updateQuery);
+
+      // Create commission payout record
+      const distributor = await this.getDistributorBySellerCode(insertCustomer.sellerCode);
+      if (distributor) {
+        const payoutQuery = `
+          INSERT INTO commission_payouts (distributor_id, customer_id, amount, status)
+          VALUES (@distributorId, @customerId, @amount, @status)
+        `;
+        const payoutRequest = db.pool.request();
+        payoutRequest.input('distributorId', sql.Int, distributor.id);
+        payoutRequest.input('customerId', sql.Int, result.recordset[0].id);
+        payoutRequest.input('amount', sql.Decimal(10, 2), 25.00);
+        payoutRequest.input('status', sql.NVarChar, 'pending');
+        await payoutRequest.query(payoutQuery);
+      }
     }
 
     return this.mapCustomerFromDb(result.recordset[0]);
@@ -709,6 +907,10 @@ export class SqlServerStorage implements IStorage {
 
   private generateVoucherCode(): string {
     return 'BBG' + Math.random().toString(36).substring(2, 12).toUpperCase();
+  }
+
+  private generateSessionToken(): string {
+    return 'DST' + Math.random().toString(36).substring(2, 15).toUpperCase() + Date.now().toString(36).toUpperCase();
   }
 
   private mapAdminFromDb(row: any): AdminUser {

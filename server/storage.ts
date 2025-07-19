@@ -19,9 +19,25 @@ export interface IStorage {
   createDistributor(distributor: InsertDistributor): Promise<Distributor>;
   getDistributorBySellerCode(sellerCode: string): Promise<Distributor | undefined>;
   getDistributorByEmail(email: string): Promise<Distributor | undefined>;
+  getDistributorByContact(contact: string): Promise<Distributor | undefined>;
   getAllDistributors(): Promise<Distributor[]>;
   updateDistributor(id: number, updates: Partial<InsertDistributor>): Promise<void>;
   deleteDistributor(id: number): Promise<void>;
+  
+  // Distributor Authentication
+  createDistributorSession(distributorId: number, contact: string): Promise<string>;
+  verifyDistributorSession(token: string): Promise<Distributor | null>;
+  deleteDistributorSession(token: string): Promise<void>;
+  
+  // Distributor Dashboard
+  getDistributorStats(distributorId: number): Promise<{
+    totalCustomers: number;
+    totalEarnings: number;
+    pendingPayouts: number;
+    completedPayouts: number;
+  }>;
+  getDistributorCustomers(distributorId: number): Promise<Customer[]>;
+  getDistributorPayouts(distributorId: number): Promise<any[]>;
   
   // Customer operations (Master)
   createCustomer(customer: InsertCustomer): Promise<Customer>;

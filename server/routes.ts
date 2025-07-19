@@ -223,6 +223,162 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Distributor Authentication Routes
+  // Distributor login with mobile and OTP
+  app.post("/api/distributor/login", async (req, res) => {
+    try {
+      const { contact, otp } = req.body;
+      
+      if (!contact || !otp) {
+        return res.status(400).json({ message: "Contact number and OTP are required" });
+      }
+
+      // Verify OTP first
+      const isOtpValid = await storage.verifyOtp(contact, otp);
+      if (!isOtpValid) {
+        return res.status(400).json({ message: "Invalid or expired OTP" });
+      }
+
+      // Find distributor by contact
+      const distributor = await storage.getDistributorByContact(contact);
+      if (!distributor) {
+        return res.status(404).json({ message: "Distributor not found. Please register first." });
+      }
+
+      // Create session token
+      const sessionToken = await storage.createDistributorSession(distributor.id, contact);
+      
+      res.json({
+        message: "Login successful",
+        distributor: {
+          id: distributor.id,
+          name: distributor.name,
+          businessName: distributor.businessName,
+          contact: distributor.contact,
+          email: distributor.email,
+          sellerCode: distributor.sellerCode
+        },
+        sessionToken
+      });
+    } catch (error: any) {
+      console.error("Distributor login error:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  // Distributor logout
+  app.post("/api/distributor/logout", async (req, res) => {
+    try {
+      const { sessionToken } = req.body;
+      
+      if (!sessionToken) {
+        return res.status(400).json({ message: "Session token required" });
+      }
+
+      await storage.deleteDistributorSession(sessionToken);
+      res.json({ message: "Logout successful" });
+    } catch (error: any) {
+      console.error("Distributor logout error:", error);
+      res.status(500).json({ message: "Logout failed" });
+    }
+  });
+
+  // Verify distributor session
+  app.get("/api/distributor/me", async (req, res) => {
+    try {
+      const sessionToken = req.headers.authorization?.replace('Bearer ', '');
+      
+      if (!sessionToken) {
+        return res.status(401).json({ message: "No session token provided" });
+      }
+
+      const distributor = await storage.verifyDistributorSession(sessionToken);
+      if (!distributor) {
+        return res.status(401).json({ message: "Invalid or expired session" });
+      }
+
+      res.json({
+        distributor: {
+          id: distributor.id,
+          name: distributor.name,
+          businessName: distributor.businessName,
+          contact: distributor.contact,
+          email: distributor.email,
+          sellerCode: distributor.sellerCode
+        }
+      });
+    } catch (error: any) {
+      console.error("Session verification error:", error);
+      res.status(500).json({ message: "Session verification failed" });
+    }
+  });
+
+  // Get distributor dashboard stats
+  app.get("/api/distributor/stats", async (req, res) => {
+    try {
+      const sessionToken = req.headers.authorization?.replace('Bearer ', '');
+      
+      if (!sessionToken) {
+        return res.status(401).json({ message: "No session token provided" });
+      }
+
+      const distributor = await storage.verifyDistributorSession(sessionToken);
+      if (!distributor) {
+        return res.status(401).json({ message: "Invalid or expired session" });
+      }
+
+      const stats = await storage.getDistributorStats(distributor.id);
+      res.json(stats);
+    } catch (error: any) {
+      console.error("Dashboard stats error:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard stats" });
+    }
+  });
+
+  // Get distributor customers
+  app.get("/api/distributor/customers", async (req, res) => {
+    try {
+      const sessionToken = req.headers.authorization?.replace('Bearer ', '');
+      
+      if (!sessionToken) {
+        return res.status(401).json({ message: "No session token provided" });
+      }
+
+      const distributor = await storage.verifyDistributorSession(sessionToken);
+      if (!distributor) {
+        return res.status(401).json({ message: "Invalid or expired session" });
+      }
+
+      const customers = await storage.getDistributorCustomers(distributor.id);
+      res.json(customers);
+    } catch (error: any) {
+      console.error("Distributor customers error:", error);
+      res.status(500).json({ message: "Failed to fetch customers" });
+    }
+  });
+
+  // Get distributor payouts
+  app.get("/api/distributor/payouts", async (req, res) => {
+    try {
+      const sessionToken = req.headers.authorization?.replace('Bearer ', '');
+      
+      if (!sessionToken) {
+        return res.status(401).json({ message: "No session token provided" });
+      }
+
+      const distributor = await storage.verifyDistributorSession(sessionToken);
+      if (!distributor) {
+        return res.status(401).json({ message: "Invalid or expired session" });
+      }
+
+      const payouts = await storage.getDistributorPayouts(distributor.id);
+      res.json(payouts);
+    } catch (error: any) {
+      console.error("Distributor payouts error:", error);
+      res.status(500).json({ message: "Failed to fetch payouts" });
+    }
+  });
+
   // Verify OTP (legacy endpoint)
   app.post("/api/otp/verify", async (req, res) => {
     try {

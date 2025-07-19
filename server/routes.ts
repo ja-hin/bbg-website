@@ -5,9 +5,7 @@ import path from "path";
 import fs from "fs";
 // Stripe import removed - using PayU only
 import crypto from "crypto";
-import { storage } from "./sql-storage";
-import { db } from "./db";
-import sql from 'mssql';
+import { storage } from "./storage";
 import { kaleyraSMSService } from "./kaleyra-service";
 import { 
   insertDistributorSchema, 
@@ -1194,6 +1192,147 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Customer deleted successfully" });
     } catch (error: any) {
       res.status(500).json({ message: "Failed to delete customer" });
+    }
+  });
+
+  // ===== BRAND MANAGEMENT ROUTES =====
+  app.get("/api/brands", async (req, res) => {
+    try {
+      const deviceType = req.query.deviceType as string;
+      let brands;
+      
+      if (deviceType) {
+        brands = await storage.getBrandsByDeviceType(deviceType);
+      } else {
+        brands = await storage.getAllBrands();
+      }
+      
+      res.json(brands);
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get brands" });
+    }
+  });
+
+  app.get("/api/admin/brands", isAdminAuthenticated, async (req, res) => {
+    try {
+      const brands = await storage.getAllBrands();
+      res.json(brands);
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get brands" });
+    }
+  });
+
+  app.post("/api/admin/brands", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { name, deviceType } = req.body;
+      
+      if (!name || !deviceType) {
+        return res.status(400).json({ message: "Brand name and device type are required" });
+      }
+
+      const brand = await storage.createBrand({
+        name,
+        deviceType
+      });
+
+      res.status(201).json({
+        message: "Brand created successfully",
+        brand
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to create brand" });
+    }
+  });
+
+  app.put("/api/admin/brands/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const brandId = parseInt(req.params.id);
+      const updates = req.body;
+      await storage.updateBrand(brandId, updates);
+      res.json({ message: "Brand updated successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to update brand" });
+    }
+  });
+
+  app.delete("/api/admin/brands/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const brandId = parseInt(req.params.id);
+      await storage.deleteBrand(brandId);
+      res.json({ message: "Brand deleted successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to delete brand" });
+    }
+  });
+
+  // ===== DEVICE MODEL MANAGEMENT ROUTES =====
+  app.get("/api/models", async (req, res) => {
+    try {
+      const brandId = req.query.brandId as string;
+      let models;
+      
+      if (brandId) {
+        models = await storage.getModelsByBrandId(parseInt(brandId));
+      } else {
+        models = await storage.getAllDeviceModels();
+      }
+      
+      res.json(models);
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get device models" });
+    }
+  });
+
+  app.get("/api/admin/models", isAdminAuthenticated, async (req, res) => {
+    try {
+      const models = await storage.getAllDeviceModels();
+      res.json(models);
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get device models" });
+    }
+  });
+
+  app.post("/api/admin/models", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { brandId, modelName, deviceType } = req.body;
+      
+      if (!brandId || !modelName || !deviceType) {
+        return res.status(400).json({ message: "Brand ID, model name, and device type are required" });
+      }
+
+      const model = await storage.createDeviceModel({
+        brandId,
+        modelName,
+        deviceType
+      });
+
+      res.status(201).json({
+        message: "Device model created successfully",
+        model
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to create device model" });
+    }
+  });
+
+  app.put("/api/admin/models/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const modelId = parseInt(req.params.id);
+      const updates = req.body;
+      await storage.updateDeviceModel(modelId, updates);
+      res.json({ message: "Device model updated successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to update device model" });
+    }
+  });
+
+  app.delete("/api/admin/models/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const modelId = parseInt(req.params.id);
+      await storage.deleteDeviceModel(modelId);
+      res.json({ message: "Device model deleted successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to delete device model" });
     }
   });
 

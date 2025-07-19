@@ -6,13 +6,17 @@ import {
   type OtpVerification,
   type AdminUser,
   type PendingPayment,
+  type Brand,
+  type DeviceModel,
   type InsertUserRole,
   type InsertDistributor, 
   type InsertCustomer, 
   type InsertClaim, 
   type InsertOtp,
   type InsertAdminUser,
-  type InsertPendingPayment
+  type InsertPendingPayment,
+  type InsertBrand,
+  type InsertDeviceModel
 } from "@shared/schema";
 import { db } from "./db";
 import sql from 'mssql';
@@ -69,6 +73,20 @@ export interface IStorage {
   getPendingPaymentById(id: number): Promise<PendingPayment | undefined>;
   updatePendingPaymentStatus(id: number, status: string): Promise<void>;
   deletePendingPayment(id: number): Promise<void>;
+
+  // Brand operations
+  createBrand(brand: InsertBrand): Promise<Brand>;
+  getAllBrands(): Promise<Brand[]>;
+  getBrandsByDeviceType(deviceType: string): Promise<Brand[]>;
+  updateBrand(id: number, updates: Partial<InsertBrand>): Promise<void>;
+  deleteBrand(id: number): Promise<void>;
+
+  // Device Model operations
+  createDeviceModel(model: InsertDeviceModel): Promise<DeviceModel>;
+  getAllDeviceModels(): Promise<DeviceModel[]>;
+  getModelsByBrandId(brandId: number): Promise<DeviceModel[]>;
+  updateDeviceModel(id: number, updates: Partial<InsertDeviceModel>): Promise<void>;
+  deleteDeviceModel(id: number): Promise<void>;
 }
 
 export class SqlServerStorage implements IStorage {

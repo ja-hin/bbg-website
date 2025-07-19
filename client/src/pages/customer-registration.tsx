@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { z } from "zod";
 import { insertCustomerSchema } from "@shared/schema";
@@ -313,14 +313,6 @@ function RegistrationContent() {
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
   const [showDepreciationSlabs, setShowDepreciationSlabs] = useState(false);
 
-  // Device brands - this will come from admin panel later
-  const deviceBrands = [
-    "Apple", "Samsung", "OnePlus", "Xiaomi", "Realme", "Oppo", "Vivo", 
-    "Google", "Nokia", "Motorola", "Sony", "Huawei", "Honor", "Nothing",
-    "HP", "Dell", "Lenovo", "Asus", "Acer", "MSI", "Apple MacBook", 
-    "Microsoft Surface", "Alienware", "Razer", "Gigabyte", "Other"
-  ];
-
   const form = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema),
     defaultValues: {
@@ -339,6 +331,43 @@ function RegistrationContent() {
       agreeToTerms: false
     }
   });
+
+  // Watch device type to fetch appropriate brands
+  const deviceType = form.watch("deviceType");
+  const selectedBrand = form.watch("brand");
+
+  // Fetch brands based on device type
+  const { data: brands = [], isLoading: brandsLoading } = useQuery({
+    queryKey: ["/api/brands", deviceType],
+    enabled: !!deviceType,
+    queryFn: async () => {
+      const response = await fetch(`/api/brands?deviceType=${deviceType}`);
+      if (!response.ok) throw new Error("Failed to fetch brands");
+      return response.json();
+    }
+  });
+
+  // Fetch models based on selected brand
+  const { data: models = [], isLoading: modelsLoading } = useQuery({
+    queryKey: ["/api/models", selectedBrand],
+    enabled: !!selectedBrand && brands.length > 0,
+    queryFn: async () => {
+      const brand = brands.find((b: any) => b.name === selectedBrand);
+      if (!brand) return [];
+      const response = await fetch(`/api/models?brandId=${brand.id}`);
+      if (!response.ok) throw new Error("Failed to fetch models");
+      return response.json();
+    }
+  });
+
+  // Handle device type change
+  const handleDeviceTypeChange = (deviceType: string) => {
+    form.setValue("brand", "");
+    form.setValue("modelName", "");
+    // Auto-calculate price based on device type
+    const price = deviceType === 'laptop' ? 125 : 99;
+    console.log(`Device type changed to ${deviceType}, price: ₹${price}`);
+  };
 
   // Send OTP mutation
   const sendOtpMutation = useMutation({
@@ -439,11 +468,7 @@ function RegistrationContent() {
     verifyOtpMutation.mutate({ contact, otp });
   };
 
-  const handleDeviceTypeChange = (deviceType: string) => {
-    // Auto-calculate price based on device type
-    const price = deviceType === 'laptop' ? 125 : 99;
-    console.log(`Device type changed to ${deviceType}, price: ₹${price}`);
-  };
+
 
   const onSubmit = (data: CustomerFormData) => {
     console.log("=== FORM SUBMIT CALLED ===");
@@ -494,6 +519,90 @@ function RegistrationContent() {
           Secure your device investment with our comprehensive BuyBack Guarantee program
         </p>
       </div>
+
+      {/* BBG Depreciation Slabs Section */}
+      <section className="mb-12 bg-gray-50 rounded-lg p-6">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">
+            BBG Claim Value Slabs
+          </h2>
+          <p className="text-lg text-gray-600">
+            Know exactly what you'll get when you claim your BBG at different device ages
+          </p>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-red-600 text-white">
+                <tr>
+                  <th className="py-3 px-4 text-left font-semibold text-sm">Device Age</th>
+                  <th className="py-3 px-4 text-left font-semibold text-sm">Claim Percentage</th>
+                  <th className="py-3 px-4 text-left font-semibold text-sm">Condition Required</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                <tr className="hover:bg-gray-50">
+                  <td className="py-3 px-4 text-sm font-medium text-gray-900">6-12 months</td>
+                  <td className="py-3 px-4">
+                    <span className="text-lg font-bold text-green-600">70%</span>
+                    <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-600">Functional and fair condition</td>
+                </tr>
+                <tr className="hover:bg-gray-50">
+                  <td className="py-3 px-4 text-sm font-medium text-gray-900">13-18 months</td>
+                  <td className="py-3 px-4">
+                    <span className="text-lg font-bold text-green-600">60%</span>
+                    <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-600">Functional and fair condition</td>
+                </tr>
+                <tr className="hover:bg-gray-50">
+                  <td className="py-3 px-4 text-sm font-medium text-gray-900">19-24 months</td>
+                  <td className="py-3 px-4">
+                    <span className="text-lg font-bold text-yellow-600">50%</span>
+                    <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-600">Functional and fair condition</td>
+                </tr>
+                <tr className="hover:bg-gray-50">
+                  <td className="py-3 px-4 text-sm font-medium text-gray-900">25-30 months</td>
+                  <td className="py-3 px-4">
+                    <span className="text-lg font-bold text-yellow-600">40%</span>
+                    <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-600">Functional and fair condition</td>
+                </tr>
+                <tr className="hover:bg-gray-50">
+                  <td className="py-3 px-4 text-sm font-medium text-gray-900">31-36 months</td>
+                  <td className="py-3 px-4">
+                    <span className="text-lg font-bold text-orange-600">30%</span>
+                    <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-600">Functional and fair condition</td>
+                </tr>
+                <tr className="hover:bg-gray-50">
+                  <td className="py-3 px-4 text-sm font-medium text-gray-900">37-48 months</td>
+                  <td className="py-3 px-4">
+                    <span className="text-lg font-bold text-orange-600">20%</span>
+                    <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-600">Functional and fair condition</td>
+                </tr>
+                <tr className="hover:bg-gray-50">
+                  <td className="py-3 px-4 text-sm font-medium text-gray-900">49-60 months</td>
+                  <td className="py-3 px-4">
+                    <span className="text-lg font-bold text-red-600">10%</span>
+                    <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-600">Functional and fair condition</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
       {showPaymentForm && formData ? (
         <Card className="w-full">
@@ -576,11 +685,17 @@ function RegistrationContent() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent side="bottom" align="start">
-                              {deviceBrands.map((brand) => (
-                                <SelectItem key={brand} value={brand}>
-                                  {brand}
-                                </SelectItem>
-                              ))}
+                              {brandsLoading ? (
+                                <SelectItem value="loading" disabled>Loading brands...</SelectItem>
+                              ) : brands.length === 0 ? (
+                                <SelectItem value="none" disabled>No brands available</SelectItem>
+                              ) : (
+                                brands.map((brand: any) => (
+                                  <SelectItem key={brand.id} value={brand.name}>
+                                    {brand.name}
+                                  </SelectItem>
+                                ))
+                              )}
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -597,9 +712,26 @@ function RegistrationContent() {
                             <span className="h-4 w-4 mr-2"></span>
                             Model Name *
                           </FormLabel>
-                          <FormControl>
-                            <Input placeholder="e.g., iPhone 14, MacBook Pro" {...field} />
-                          </FormControl>
+                          <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!selectedBrand}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder={selectedBrand ? "Select model" : "Select brand first"} />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent side="bottom" align="start">
+                              {modelsLoading ? (
+                                <SelectItem value="loading" disabled>Loading models...</SelectItem>
+                              ) : models.length === 0 ? (
+                                <SelectItem value="none" disabled>No models available</SelectItem>
+                              ) : (
+                                models.map((model: any) => (
+                                  <SelectItem key={model.id} value={model.modelName}>
+                                    {model.modelName}
+                                  </SelectItem>
+                                ))
+                              )}
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}

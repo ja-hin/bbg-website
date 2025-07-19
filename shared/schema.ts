@@ -74,6 +74,24 @@ export const otpVerifications = pgTable("otp_verifications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Master data tables for admin management
+export const brands = pgTable("brands", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  deviceType: text("device_type").notNull(), // 'mobile', 'laptop', or 'both'
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const deviceModels = pgTable("device_models", {
+  id: serial("id").primaryKey(),
+  brandId: integer("brand_id").notNull(),
+  modelName: text("model_name").notNull(),
+  deviceType: text("device_type").notNull(), // 'mobile', 'laptop'
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // User Roles Master
 export const userRoles = pgTable("user_roles", {
   id: serial("id").primaryKey(),
@@ -167,6 +185,18 @@ export const insertPendingPaymentSchema = createInsertSchema(pendingPayments).om
   createdAt: true
 });
 
+export const insertBrandSchema = createInsertSchema(brands).omit({
+  id: true,
+  isActive: true,
+  createdAt: true,
+});
+
+export const insertDeviceModelSchema = createInsertSchema(deviceModels).omit({
+  id: true,
+  isActive: true,
+  createdAt: true,
+});
+
 export type UserRole = typeof userRoles.$inferSelect;
 export type Distributor = typeof distributors.$inferSelect;
 export type Customer = typeof customers.$inferSelect;
@@ -174,6 +204,8 @@ export type Claim = typeof claims.$inferSelect;
 export type OtpVerification = typeof otpVerifications.$inferSelect;
 export type AdminUser = typeof adminUsers.$inferSelect;
 export type PendingPayment = typeof pendingPayments.$inferSelect;
+export type Brand = typeof brands.$inferSelect;
+export type DeviceModel = typeof deviceModels.$inferSelect;
 
 export type InsertUserRole = z.infer<typeof insertUserRoleSchema>;
 export type InsertDistributor = z.infer<typeof insertDistributorSchema>;
@@ -182,3 +214,5 @@ export type InsertClaim = z.infer<typeof insertClaimSchema>;
 export type InsertOtp = z.infer<typeof insertOtpSchema>;
 export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
 export type InsertPendingPayment = z.infer<typeof insertPendingPaymentSchema>;
+export type InsertBrand = z.infer<typeof insertBrandSchema>;
+export type InsertDeviceModel = z.infer<typeof insertDeviceModelSchema>;

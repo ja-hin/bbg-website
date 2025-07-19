@@ -1,31 +1,36 @@
-import { 
-  type Distributor, 
-  type Customer, 
-  type Claim, 
-  type OtpVerification,
-  type AdminUser,
-  type InsertDistributor, 
-  type InsertCustomer, 
-  type InsertClaim, 
-  type InsertOtp,
-  type InsertAdminUser
+import { distributors, customers, claims, otpVerifications, adminUsers, pendingPayments, brands, deviceModels, userRoles } from "@shared/schema";
+import type { 
+  Distributor, Customer, Claim, OtpVerification, AdminUser, PendingPayment, Brand, DeviceModel, UserRole,
+  InsertDistributor, InsertCustomer, InsertClaim, InsertOtp, InsertAdminUser, InsertPendingPayment, InsertBrand, InsertDeviceModel, InsertUserRole
 } from "@shared/schema";
 import { db } from "./db";
-import sql from 'mssql';
+import { eq, and } from "drizzle-orm";
+import bcrypt from 'bcryptjs';
 
 export interface IStorage {
-  // Distributor operations
+  // User Role operations (Master)
+  createUserRole(role: InsertUserRole): Promise<UserRole>;
+  getAllUserRoles(): Promise<UserRole[]>;
+  getUserRoleById(id: number): Promise<UserRole | undefined>;
+  updateUserRole(id: number, updates: Partial<InsertUserRole>): Promise<void>;
+  deleteUserRole(id: number): Promise<void>;
+  
+  // Distributor operations (Master)
   createDistributor(distributor: InsertDistributor): Promise<Distributor>;
   getDistributorBySellerCode(sellerCode: string): Promise<Distributor | undefined>;
   getDistributorByEmail(email: string): Promise<Distributor | undefined>;
   getAllDistributors(): Promise<Distributor[]>;
+  updateDistributor(id: number, updates: Partial<InsertDistributor>): Promise<void>;
+  deleteDistributor(id: number): Promise<void>;
   
-  // Customer operations
+  // Customer operations (Master)
   createCustomer(customer: InsertCustomer): Promise<Customer>;
   getCustomerByVoucherCode(voucherCode: string): Promise<Customer | undefined>;
   getCustomersBySellerCode(sellerCode: string): Promise<Customer[]>;
   getAllCustomers(): Promise<Customer[]>;
   updateCustomerVerification(id: number, isVerified: boolean): Promise<void>;
+  updateCustomer(id: number, updates: Partial<InsertCustomer>): Promise<void>;
+  deleteCustomer(id: number): Promise<void>;
   
   // Claim operations
   createClaim(claim: InsertClaim): Promise<Claim>;
@@ -38,187 +43,315 @@ export interface IStorage {
   getOtpByContact(contact: string): Promise<OtpVerification | undefined>;
   verifyOtp(contact: string, otp: string): Promise<boolean>;
   
-  // Admin operations
+  // Admin operations (Master)
   createAdminUser(admin: InsertAdminUser): Promise<AdminUser>;
   getAdminByUsername(username: string): Promise<AdminUser | undefined>;
+  getAllAdminUsers(): Promise<AdminUser[]>;
+  updateAdminUser(id: number, updates: Partial<InsertAdminUser>): Promise<void>;
+  deleteAdminUser(id: number): Promise<void>;
   updateAdminLastLogin(id: number): Promise<void>;
   verifyAdminPassword(username: string, password: string): Promise<AdminUser | null>;
+
+  // Pending Payment operations
+  createPendingPayment(payment: InsertPendingPayment): Promise<PendingPayment>;
+  getAllPendingPayments(): Promise<PendingPayment[]>;
+  getPendingPaymentById(id: number): Promise<PendingPayment | undefined>;
+  updatePendingPaymentStatus(id: number, status: string): Promise<void>;
+  deletePendingPayment(id: number): Promise<void>;
+
+  // Brand operations
+  createBrand(brand: InsertBrand): Promise<Brand>;
+  getAllBrands(): Promise<Brand[]>;
+  getBrandsByDeviceType(deviceType: string): Promise<Brand[]>;
+  updateBrand(id: number, updates: Partial<InsertBrand>): Promise<void>;
+  deleteBrand(id: number): Promise<void>;
+
+  // Device Model operations
+  createDeviceModel(model: InsertDeviceModel): Promise<DeviceModel>;
+  getAllDeviceModels(): Promise<DeviceModel[]>;
+  getModelsByBrandId(brandId: number): Promise<DeviceModel[]>;
+  updateDeviceModel(id: number, updates: Partial<InsertDeviceModel>): Promise<void>;
+  deleteDeviceModel(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
-  // Distributor operations
-  async createDistributor(insertDistributor: InsertDistributor): Promise<Distributor> {
-    const distributorData = {
-      ...insertDistributor,
-      businessName: insertDistributor.businessName ?? null,
-      gstin: insertDistributor.gstin ?? null,
-      bankAccount: insertDistributor.bankAccount ?? null,
-      ifscCode: insertDistributor.ifscCode ?? null,
-      sellerCode: this.generateSellerCode(),
-      isActive: true,
-      createdAt: new Date()
-    };
+  // Helper methods for code generation
+  private generateSellerCode(): string {
+    return "XTRA" + Date.now().toString().slice(-8);
+  }
 
-    const [distributor] = await db
-      .insert(distributors)
-      .values(distributorData)
-      .returning();
-    
-    return distributor;
+  private generateVoucherCode(): string {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let result = "BBG";
+    for (let i = 0; i < 10; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+
+  // User Role operations
+  async createUserRole(role: InsertUserRole): Promise<UserRole> {
+    const [createdRole] = await db.insert(userRoles).values(role).returning();
+    return createdRole;
+  }
+
+  async getAllUserRoles(): Promise<UserRole[]> {
+    return await db.select().from(userRoles).where(eq(userRoles.isActive, true));
+  }
+
+  async getUserRoleById(id: number): Promise<UserRole | undefined> {
+    const [role] = await db.select().from(userRoles).where(eq(userRoles.id, id));
+    return role || undefined;
+  }
+
+  async updateUserRole(id: number, updates: Partial<InsertUserRole>): Promise<void> {
+    await db.update(userRoles).set(updates).where(eq(userRoles.id, id));
+  }
+
+  async deleteUserRole(id: number): Promise<void> {
+    await db.update(userRoles).set({ isActive: false }).where(eq(userRoles.id, id));
+  }
+
+  // Distributor operations
+  async createDistributor(distributor: InsertDistributor): Promise<Distributor> {
+    const distributorData = {
+      ...distributor,
+      sellerCode: this.generateSellerCode(),
+    };
+    const [createdDistributor] = await db.insert(distributors).values(distributorData).returning();
+    return createdDistributor;
   }
 
   async getDistributorBySellerCode(sellerCode: string): Promise<Distributor | undefined> {
-    const [distributor] = await db
-      .select()
-      .from(distributors)
-      .where(eq(distributors.sellerCode, sellerCode));
-    
+    const [distributor] = await db.select().from(distributors).where(eq(distributors.sellerCode, sellerCode));
     return distributor || undefined;
   }
 
   async getDistributorByEmail(email: string): Promise<Distributor | undefined> {
-    const [distributor] = await db
-      .select()
-      .from(distributors)
-      .where(eq(distributors.email, email));
-    
+    const [distributor] = await db.select().from(distributors).where(eq(distributors.email, email));
     return distributor || undefined;
   }
 
-  // Customer operations
-  async createCustomer(insertCustomer: InsertCustomer): Promise<Customer> {
-    const customerData = {
-      ...insertCustomer,
-      sellerCode: insertCustomer.sellerCode ?? null,
-      paymentIntentId: insertCustomer.paymentIntentId ?? null,
-      voucherCode: this.generateVoucherCode(),
-      isVerified: false,
-      createdAt: new Date()
-    };
+  async getAllDistributors(): Promise<Distributor[]> {
+    return await db.select().from(distributors);
+  }
 
-    const [customer] = await db
-      .insert(customers)
-      .values(customerData)
-      .returning();
-    
-    return customer;
+  async updateDistributor(id: number, updates: Partial<InsertDistributor>): Promise<void> {
+    await db.update(distributors).set(updates).where(eq(distributors.id, id));
+  }
+
+  async deleteDistributor(id: number): Promise<void> {
+    await db.update(distributors).set({ isActive: false }).where(eq(distributors.id, id));
+  }
+
+  // Customer operations
+  async createCustomer(customer: InsertCustomer): Promise<Customer> {
+    const customerData = {
+      ...customer,
+      voucherCode: this.generateVoucherCode(),
+    };
+    const [createdCustomer] = await db.insert(customers).values(customerData).returning();
+    return createdCustomer;
   }
 
   async getCustomerByVoucherCode(voucherCode: string): Promise<Customer | undefined> {
-    const [customer] = await db
-      .select()
-      .from(customers)
-      .where(eq(customers.voucherCode, voucherCode));
-    
+    const [customer] = await db.select().from(customers).where(eq(customers.voucherCode, voucherCode));
     return customer || undefined;
   }
 
   async getCustomersBySellerCode(sellerCode: string): Promise<Customer[]> {
-    const customerList = await db
-      .select()
-      .from(customers)
-      .where(eq(customers.sellerCode, sellerCode));
-    
-    return customerList;
+    return await db.select().from(customers).where(eq(customers.sellerCode, sellerCode));
+  }
+
+  async getAllCustomers(): Promise<Customer[]> {
+    return await db.select().from(customers);
   }
 
   async updateCustomerVerification(id: number, isVerified: boolean): Promise<void> {
-    await db
-      .update(customers)
-      .set({ isVerified })
-      .where(eq(customers.id, id));
+    await db.update(customers).set({ isVerified }).where(eq(customers.id, id));
+  }
+
+  async updateCustomer(id: number, updates: Partial<InsertCustomer>): Promise<void> {
+    await db.update(customers).set(updates).where(eq(customers.id, id));
+  }
+
+  async deleteCustomer(id: number): Promise<void> {
+    await db.delete(customers).where(eq(customers.id, id));
   }
 
   // Claim operations
-  async createClaim(insertClaim: InsertClaim): Promise<Claim> {
-    // Note: insertClaim only contains contact, email, voucherCode
-    // claimPercentage and claimAmount should be calculated in the route handler
-    const claimData = {
-      ...insertClaim,
-      claimPercentage: 0, // Will be updated by route handler
-      claimAmount: "0", // Will be updated by route handler  
-      status: "pending"
-    };
-
-    const [claim] = await db
-      .insert(claims)
-      .values(claimData)
-      .returning();
-    
-    return claim;
+  async createClaim(claim: InsertClaim): Promise<Claim> {
+    const [createdClaim] = await db.insert(claims).values(claim).returning();
+    return createdClaim;
   }
 
   async getClaimByVoucherCode(voucherCode: string): Promise<Claim | undefined> {
-    const [claim] = await db
-      .select()
-      .from(claims)
-      .where(eq(claims.voucherCode, voucherCode));
-    
+    const [claim] = await db.select().from(claims).where(eq(claims.voucherCode, voucherCode));
     return claim || undefined;
   }
 
+  async getAllClaims(): Promise<Claim[]> {
+    return await db.select().from(claims);
+  }
+
   async updateClaimStatus(id: number, status: string): Promise<void> {
-    await db
-      .update(claims)
-      .set({ status })
-      .where(eq(claims.id, id));
+    await db.update(claims).set({ status }).where(eq(claims.id, id));
   }
 
   // OTP operations
-  async createOtp(insertOtp: InsertOtp): Promise<OtpVerification> {
-    const otpData = {
-      ...insertOtp,
-      isVerified: false,
-      createdAt: new Date(),
-      expiresAt: new Date(Date.now() + 10 * 60 * 1000) // 10 minutes from now
-    };
-
-    const [otp] = await db
-      .insert(otpVerifications)
-      .values(otpData)
-      .returning();
-    
-    return otp;
+  async createOtp(otp: InsertOtp): Promise<OtpVerification> {
+    const [createdOtp] = await db.insert(otpVerifications).values(otp).returning();
+    return createdOtp;
   }
 
   async getOtpByContact(contact: string): Promise<OtpVerification | undefined> {
-    const [otp] = await db
-      .select()
-      .from(otpVerifications)
-      .where(eq(otpVerifications.contact, contact));
-    
+    const [otp] = await db.select().from(otpVerifications)
+      .where(eq(otpVerifications.contact, contact))
+      .orderBy(otpVerifications.createdAt);
     return otp || undefined;
   }
 
   async verifyOtp(contact: string, otp: string): Promise<boolean> {
-    const [otpRecord] = await db
-      .select()
-      .from(otpVerifications)
-      .where(eq(otpVerifications.contact, contact));
-
-    if (!otpRecord || otpRecord.otp !== otp) {
+    const [verification] = await db.select().from(otpVerifications)
+      .where(and(
+        eq(otpVerifications.contact, contact),
+        eq(otpVerifications.otp, otp)
+      ))
+      .orderBy(otpVerifications.createdAt);
+    
+    if (!verification || verification.expiresAt < new Date()) {
       return false;
     }
 
-    if (otpRecord.expiresAt && new Date() > otpRecord.expiresAt) {
-      return false;
-    }
-
-    await db
-      .update(otpVerifications)
+    await db.update(otpVerifications)
       .set({ isVerified: true })
-      .where(eq(otpVerifications.contact, contact));
-
+      .where(eq(otpVerifications.id, verification.id));
+    
     return true;
   }
 
-  // Helper methods
-  private generateSellerCode(): string {
-    return `XTR${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+  // Admin operations
+  async createAdminUser(admin: InsertAdminUser): Promise<AdminUser> {
+    const hashedPassword = await bcrypt.hash(admin.passwordHash, 12);
+    const [createdAdmin] = await db.insert(adminUsers)
+      .values({ ...admin, passwordHash: hashedPassword })
+      .returning();
+    return createdAdmin;
   }
 
-  private generateVoucherCode(): string {
-    return `BBG${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
+  async getAdminByUsername(username: string): Promise<AdminUser | undefined> {
+    const [admin] = await db.select().from(adminUsers).where(eq(adminUsers.username, username));
+    return admin || undefined;
+  }
+
+  async getAllAdminUsers(): Promise<AdminUser[]> {
+    return await db.select().from(adminUsers).where(eq(adminUsers.isActive, true));
+  }
+
+  async updateAdminUser(id: number, updates: Partial<InsertAdminUser>): Promise<void> {
+    const updateData = { ...updates };
+    if (updates.passwordHash) {
+      updateData.passwordHash = await bcrypt.hash(updates.passwordHash, 12);
+    }
+    await db.update(adminUsers).set(updateData).where(eq(adminUsers.id, id));
+  }
+
+  async deleteAdminUser(id: number): Promise<void> {
+    await db.update(adminUsers).set({ isActive: false }).where(eq(adminUsers.id, id));
+  }
+
+  async updateAdminLastLogin(id: number): Promise<void> {
+    await db.update(adminUsers).set({ lastLoginAt: new Date() }).where(eq(adminUsers.id, id));
+  }
+
+  async verifyAdminPassword(username: string, password: string): Promise<AdminUser | null> {
+    const admin = await this.getAdminByUsername(username);
+    if (!admin || !admin.isActive) {
+      return null;
+    }
+
+    const isValid = await bcrypt.compare(password, admin.passwordHash);
+    if (!isValid) {
+      return null;
+    }
+
+    await this.updateAdminLastLogin(admin.id);
+    return admin;
+  }
+
+  // Pending Payment operations
+  async createPendingPayment(payment: InsertPendingPayment): Promise<PendingPayment> {
+    const [createdPayment] = await db.insert(pendingPayments).values(payment).returning();
+    return createdPayment;
+  }
+
+  async getAllPendingPayments(): Promise<PendingPayment[]> {
+    return await db.select().from(pendingPayments);
+  }
+
+  async getPendingPaymentById(id: number): Promise<PendingPayment | undefined> {
+    const [payment] = await db.select().from(pendingPayments).where(eq(pendingPayments.id, id));
+    return payment || undefined;
+  }
+
+  async updatePendingPaymentStatus(id: number, status: string): Promise<void> {
+    await db.update(pendingPayments).set({ status }).where(eq(pendingPayments.id, id));
+  }
+
+  async deletePendingPayment(id: number): Promise<void> {
+    await db.delete(pendingPayments).where(eq(pendingPayments.id, id));
+  }
+
+  // Brand operations
+  async createBrand(brand: InsertBrand): Promise<Brand> {
+    const [createdBrand] = await db.insert(brands).values(brand).returning();
+    return createdBrand;
+  }
+
+  async getAllBrands(): Promise<Brand[]> {
+    return await db.select().from(brands).where(eq(brands.isActive, true));
+  }
+
+  async getBrandsByDeviceType(deviceType: string): Promise<Brand[]> {
+    return await db.select().from(brands)
+      .where(and(
+        eq(brands.isActive, true),
+        eq(brands.deviceType, deviceType)
+      ));
+  }
+
+  async updateBrand(id: number, updates: Partial<InsertBrand>): Promise<void> {
+    await db.update(brands).set(updates).where(eq(brands.id, id));
+  }
+
+  async deleteBrand(id: number): Promise<void> {
+    await db.update(brands).set({ isActive: false }).where(eq(brands.id, id));
+  }
+
+  // Device Model operations
+  async createDeviceModel(model: InsertDeviceModel): Promise<DeviceModel> {
+    const [createdModel] = await db.insert(deviceModels).values(model).returning();
+    return createdModel;
+  }
+
+  async getAllDeviceModels(): Promise<DeviceModel[]> {
+    return await db.select().from(deviceModels).where(eq(deviceModels.isActive, true));
+  }
+
+  async getModelsByBrandId(brandId: number): Promise<DeviceModel[]> {
+    return await db.select().from(deviceModels)
+      .where(and(
+        eq(deviceModels.brandId, brandId),
+        eq(deviceModels.isActive, true)
+      ));
+  }
+
+  async updateDeviceModel(id: number, updates: Partial<InsertDeviceModel>): Promise<void> {
+    await db.update(deviceModels).set(updates).where(eq(deviceModels.id, id));
+  }
+
+  async deleteDeviceModel(id: number): Promise<void> {
+    await db.update(deviceModels).set({ isActive: false }).where(eq(deviceModels.id, id));
   }
 }
 

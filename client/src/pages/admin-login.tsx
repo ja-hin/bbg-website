@@ -70,46 +70,11 @@ export default function AdminLogin() {
     loginMutation.mutate(data);
   };
 
-  // Show loading state while checking authentication
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <div className="p-3 bg-blue-100 rounded-full">
-                <Loader2 className="h-8 w-8 text-blue-600 animate-spin" />
-              </div>
-            </div>
-            <CardTitle className="text-2xl font-bold">Checking Authentication</CardTitle>
-            <CardDescription>
-              Please wait while we verify your session...
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    );
-  }
+  // Removed authentication checking modal to prevent modal spam
 
-  // Don't show login form if already authenticated (will redirect automatically)
+  // Silent redirect if already authenticated (no modal)
   if (isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <div className="p-3 bg-green-100 rounded-full">
-                <Shield className="h-8 w-8 text-green-600" />
-              </div>
-            </div>
-            <CardTitle className="text-2xl font-bold">Already Logged In</CardTitle>
-            <CardDescription>
-              Redirecting to dashboard...
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    );
+    return null; // Don't show anything while redirecting
   }
 
   return (

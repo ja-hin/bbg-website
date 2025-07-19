@@ -193,6 +193,14 @@ KALEYRA_SENDER_ID=XTRCVR  # Configured sender ID
 
 ```
 Changelog:
+- July 19, 2025: ✅ COMPLETED - Fixed admin session persistence and improved navigation
+  - Enhanced admin authentication logic to handle session persistence across new tabs
+  - Fixed issue where opening admin links in new tabs would redirect to login page
+  - Added retry mechanism with proper error status code checking (401/403) before redirecting
+  - Created shared AdminHeader component for consistent navigation across all admin pages
+  - Added admin masters page with navigation to brands management and placeholder features
+  - Improved authentication resilience with 1-second retry delay and specific error handling
+  - Admin sessions now persist properly when opening admin pages in new browser tabs
 - July 19, 2025: ✅ COMPLETED - Reverted database back to SQL Server and repositioned depreciation slabs
   - Changed database from PostgreSQL back to Microsoft SQL Server at 103.205.66.184:2499
   - Updated db.ts to use mssql package with raw SQL queries for SQL Server compatibility

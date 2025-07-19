@@ -31,16 +31,21 @@ function AdminBrandsPage() {
   const [, setLocation] = useLocation();
 
   // Check admin authentication
-  const { data: adminUser, isLoading: adminLoading } = useQuery({
+  const { data: adminUser, isLoading: adminLoading, error: adminError } = useQuery({
     queryKey: ['/api/admin/me'],
-    retry: false
+    retry: 1,
+    retryDelay: 1000
   });
 
   useEffect(() => {
-    if (!adminLoading && !adminUser) {
-      setLocation('/admin/login');
+    // Only redirect to login if we have a definitive authentication failure (401 or 403)
+    if (!adminLoading && !adminUser && adminError) {
+      const errorResponse = adminError as any;
+      if (errorResponse?.response?.status === 401 || errorResponse?.response?.status === 403) {
+        setLocation('/admin/login');
+      }
     }
-  }, [adminUser, adminLoading, setLocation]);
+  }, [adminUser, adminLoading, adminError, setLocation]);
   
   const [editingBrand, setEditingBrand] = useState<number | null>(null);
   const [editingModel, setEditingModel] = useState<number | null>(null);

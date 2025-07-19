@@ -79,18 +79,23 @@ export default function AdminDashboard() {
   // Check admin authentication
   const { data: adminUser, isLoading: adminLoading, error: adminError } = useQuery({
     queryKey: ["/api/admin/me"],
-    retry: false
+    retry: 1,
+    retryDelay: 1000
   });
 
   // Redirect to login if not authenticated
   useEffect(() => {
-    if (!adminLoading && (adminError || !adminUser)) {
-      toast({
-        title: "Authentication Required",
-        description: "Please log in to access the admin panel",
-        variant: "destructive"
-      });
-      setLocation("/admin/login");
+    // Only redirect to login if we have a definitive authentication failure (401 or 403)
+    if (!adminLoading && !adminUser && adminError) {
+      const errorResponse = adminError as any;
+      if (errorResponse?.response?.status === 401 || errorResponse?.response?.status === 403) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to access the admin panel",
+          variant: "destructive"
+        });
+        setLocation("/admin/login");
+      }
     }
   }, [adminLoading, adminError, adminUser, setLocation, toast]);
 

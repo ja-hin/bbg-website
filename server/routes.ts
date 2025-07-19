@@ -2247,6 +2247,103 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
+  // System status endpoint for admin monitoring
+  app.get("/api/admin/system-status", async (req, res) => {
+    // Simple auth check instead of middleware
+    if (!req.session?.adminId) {
+      return res.status(401).json({ message: "Admin authentication required" });
+    }
+    
+    try {
+      // Check database connection
+      const dbStatus = await checkDatabaseConnection();
+      
+      // Check SMS service configuration
+      const smsStatus = {
+        configured: !!process.env.KALEYRA_API_KEY,
+        hasApiKey: !!process.env.KALEYRA_API_KEY,
+        service: 'Kaleyra'
+      };
+
+      // Check email configuration
+      const emailStatus = {
+        configured: !!(process.env.SMTP_HOST && process.env.SMTP_USER),
+        host: process.env.SMTP_HOST || null
+      };
+
+      // Check WhatsApp configuration
+      const whatsappStatus = {
+        configured: !!process.env.GUPSHUP_API_KEY,
+        hasApiKey: !!process.env.GUPSHUP_API_KEY,
+        service: 'Gupshup'
+      };
+
+      // Get template count
+      const templates = await storage.getAllTemplates();
+
+      res.json({
+        database: dbStatus,
+        sms: smsStatus,
+        email: emailStatus,
+        whatsapp: whatsappStatus,
+        templates: {
+          count: templates.length,
+          active: templates.filter(t => t.isActive).length
+        },
+        server: {
+          uptime: process.uptime(),
+          timestamp: new Date().toISOString()
+        }
+      });
+    } catch (error: any) {
+      console.error('System status error:', error);
+      res.status(500).json({ message: "Failed to get system status" });
+    }
+  });
+
+  // System logs endpoint for admin monitoring
+  app.get("/api/admin/logs", async (req, res) => {
+    // Simple auth check instead of middleware
+    if (!req.session?.adminId) {
+      return res.status(401).json({ message: "Admin authentication required" });
+    }
+    try {
+      // In a real app, you'd fetch from a log store
+      // For now, return recent activity logs
+      const recentLogs = [
+        {
+          timestamp: new Date().toISOString(),
+          level: 'info',
+          service: 'System',
+          message: 'Admin logs endpoint accessed',
+          details: { endpoint: '/api/admin/logs', user: 'admin' }
+        }
+      ];
+
+      res.json(recentLogs);
+    } catch (error: any) {
+      console.error('Logs fetch error:', error);
+      res.status(500).json({ message: "Failed to fetch logs" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
+
+  // Helper function to check database connection
+  async function checkDatabaseConnection() {
+    try {
+      await sql.connect(config);
+      return {
+        status: 'connected',
+        host: config.server,
+        database: config.database
+      };
+    } catch (error) {
+      return {
+        status: 'disconnected',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
 }

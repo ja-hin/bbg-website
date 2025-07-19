@@ -1490,6 +1490,22 @@ export class SqlServerStorage implements IStorage {
       createdAt: row.created_at
     };
   }
+
+  async getAllTemplates(): Promise<any[]> {
+    try {
+      await sql.connect(config);
+      const result = await sql.query`
+        SELECT * FROM message_templates
+        ORDER BY event_type, channel_type, created_at DESC
+      `;
+      return result.recordset;
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+      throw error;
+    } finally {
+      await sql.close();
+    }
+  }
 }
 
 export const storage = new SqlServerStorage();

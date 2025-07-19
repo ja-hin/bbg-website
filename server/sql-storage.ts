@@ -358,17 +358,26 @@ export class SqlServerStorage implements IStorage {
     
     const query = `
       INSERT INTO distributors (
-        name, business_name, contact, email, pincode, location, 
-        preferred_mode, gstin, bank_account, ifsc_code, seller_code
+        name, business_name, contact, email, pincode, location, preferred_mode,
+        pan_number, pan_copy_file, is_gst_registered, gstin, gst_certificate_file,
+        registered_business_address, is_msme_registered, msme_certificate_file,
+        account_holder_name, bank_account, bank_account_confirm, ifsc_code, upi_id,
+        cancelled_cheque_file, info_declaration, tds_understanding, gst_invoice_agreement,
+        terms_agreement, seller_code
       ) 
       OUTPUT INSERTED.*
       VALUES (
-        @name, @businessName, @contact, @email, @pincode, @location, 
-        @preferredMode, @gstin, @bankAccount, @ifscCode, @sellerCode
+        @name, @businessName, @contact, @email, @pincode, @location, @preferredMode,
+        @panNumber, @panCopyFile, @isGstRegistered, @gstin, @gstCertificateFile,
+        @registeredBusinessAddress, @isMsmeRegistered, @msmeCertificateFile,
+        @accountHolderName, @bankAccount, @bankAccountConfirm, @ifscCode, @upiId,
+        @cancelledChequeFile, @infoDeclaration, @tdsUnderstanding, @gstInvoiceAgreement,
+        @termsAgreement, @sellerCode
       )
     `;
 
     const request = db.pool.request();
+    // Basic info
     request.input('name', sql.NVarChar, insertDistributor.name);
     request.input('businessName', sql.NVarChar, insertDistributor.businessName || null);
     request.input('contact', sql.NVarChar, insertDistributor.contact);
@@ -376,9 +385,31 @@ export class SqlServerStorage implements IStorage {
     request.input('pincode', sql.NVarChar, insertDistributor.pincode);
     request.input('location', sql.NVarChar, insertDistributor.location);
     request.input('preferredMode', sql.NVarChar, insertDistributor.preferredMode);
+    
+    // Tax & Compliance Details
+    request.input('panNumber', sql.NVarChar, insertDistributor.panNumber);
+    request.input('panCopyFile', sql.NVarChar, insertDistributor.panCopyFile || null);
+    request.input('isGstRegistered', sql.Bit, insertDistributor.isGstRegistered || false);
     request.input('gstin', sql.NVarChar, insertDistributor.gstin || null);
-    request.input('bankAccount', sql.NVarChar, insertDistributor.bankAccount || null);
-    request.input('ifscCode', sql.NVarChar, insertDistributor.ifscCode || null);
+    request.input('gstCertificateFile', sql.NVarChar, insertDistributor.gstCertificateFile || null);
+    request.input('registeredBusinessAddress', sql.NVarChar, insertDistributor.registeredBusinessAddress || null);
+    request.input('isMsmeRegistered', sql.Bit, insertDistributor.isMsmeRegistered || false);
+    request.input('msmeCertificateFile', sql.NVarChar, insertDistributor.msmeCertificateFile || null);
+    
+    // Bank Details
+    request.input('accountHolderName', sql.NVarChar, insertDistributor.accountHolderName);
+    request.input('bankAccount', sql.NVarChar, insertDistributor.bankAccount);
+    request.input('bankAccountConfirm', sql.NVarChar, insertDistributor.bankAccountConfirm);
+    request.input('ifscCode', sql.NVarChar, insertDistributor.ifscCode);
+    request.input('upiId', sql.NVarChar, insertDistributor.upiId || null);
+    request.input('cancelledChequeFile', sql.NVarChar, insertDistributor.cancelledChequeFile);
+    
+    // Declarations
+    request.input('infoDeclaration', sql.Bit, insertDistributor.infoDeclaration || false);
+    request.input('tdsUnderstanding', sql.Bit, insertDistributor.tdsUnderstanding || false);
+    request.input('gstInvoiceAgreement', sql.Bit, insertDistributor.gstInvoiceAgreement || false);
+    request.input('termsAgreement', sql.Bit, insertDistributor.termsAgreement || false);
+    
     request.input('sellerCode', sql.NVarChar, sellerCode);
 
     const result = await request.query(query);

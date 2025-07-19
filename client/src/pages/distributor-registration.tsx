@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Loader2, DollarSign, Users, TrendingUp, Building, MapPin, Phone, Mail, CreditCard } from "lucide-react";
+import { Loader2, DollarSign, Users, TrendingUp, Building, MapPin, Phone, Mail, CreditCard, Upload, FileText, Shield, Receipt } from "lucide-react";
 
 const distributorSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -26,12 +26,36 @@ const distributorSchema = z.object({
   preferredMode: z.enum(["in-store", "online", "both"], {
     required_error: "Please select a preferred mode"
   }),
+  // Tax & Compliance Details
+  panNumber: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN format (e.g., ABCDE1234F)"),
+  panCopyFile: z.instanceof(File).optional(),
+  isGstRegistered: z.boolean(),
   gstin: z.string().optional(),
-  // Bank details (optional)
-  bankAccount: z.string().optional(),
-  ifscCode: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code format").optional().or(z.literal("")),
-  accountHolderName: z.string().optional(),
-  agreeToTerms: z.boolean().refine(val => val === true, "You must agree to the terms")
+  gstCertificateFile: z.instanceof(File).optional(),
+  registeredBusinessAddress: z.string().optional(),
+  isMsmeRegistered: z.boolean(),
+  msmeCertificateFile: z.instanceof(File).optional(),
+  // Bank Details
+  accountHolderName: z.string().min(2, "Account holder name is required"),
+  bankAccount: z.string().min(8, "Bank account number must be at least 8 digits"),
+  bankAccountConfirm: z.string().min(8, "Please confirm bank account number"),
+  ifscCode: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code format"),
+  upiId: z.string().optional(),
+  cancelledChequeFile: z.instanceof(File, { message: "Cancelled cheque file is required" }),
+  // Declarations
+  infoDeclaration: z.boolean().refine(val => val === true, "You must declare the information is correct"),
+  tdsUnderstanding: z.boolean().refine(val => val === true, "You must understand TDS compliance"),
+  gstInvoiceAgreement: z.boolean().refine(val => val === true, "You must agree to GST invoice terms"),
+  termsAgreement: z.boolean().refine(val => val === true, "You must agree to terms and conditions")
+}).refine((data) => data.bankAccount === data.bankAccountConfirm, {
+  message: "Bank account numbers must match",
+  path: ["bankAccountConfirm"]
+}).refine((data) => !data.isGstRegistered || (data.gstin && data.gstCertificateFile), {
+  message: "GSTIN and GST certificate are required for GST registered businesses",
+  path: ["gstin"]
+}).refine((data) => !data.isMsmeRegistered || data.msmeCertificateFile, {
+  message: "MSME certificate is required if you are MSME registered",
+  path: ["msmeCertificateFile"]
 });
 
 type DistributorFormData = z.infer<typeof distributorSchema>;
@@ -54,11 +78,27 @@ export default function DistributorRegistration() {
       pincode: "",
       location: "",
       preferredMode: undefined,
+      // Tax & Compliance Details
+      panNumber: "",
+      panCopyFile: undefined,
+      isGstRegistered: false,
       gstin: "",
-      bankAccount: "",
-      ifscCode: "",
+      gstCertificateFile: undefined,
+      registeredBusinessAddress: "",
+      isMsmeRegistered: false,
+      msmeCertificateFile: undefined,
+      // Bank Details
       accountHolderName: "",
-      agreeToTerms: false
+      bankAccount: "",
+      bankAccountConfirm: "",
+      ifscCode: "",
+      upiId: "",
+      cancelledChequeFile: undefined,
+      // Declarations
+      infoDeclaration: false,
+      tdsUnderstanding: false,
+      gstInvoiceAgreement: false,
+      termsAgreement: false
     }
   });
 
@@ -111,10 +151,24 @@ export default function DistributorRegistration() {
   });
 
   const registerMutation = useMutation({
-    mutationFn: async (data: Omit<DistributorFormData, 'agreeToTerms'>) => {
+    mutationFn: async (data: DistributorFormData) => {
+      // Create FormData for file uploads
+      const formData = new FormData();
+      
+      // Add all text fields
+      Object.entries(data).forEach(([key, value]) => {
+        if (value instanceof File) {
+          formData.append(key, value);
+        } else if (typeof value === 'boolean') {
+          formData.append(key, value.toString());
+        } else if (value !== undefined && value !== null) {
+          formData.append(key, value.toString());
+        }
+      });
+      
       const response = await apiRequest("/api/distributors/register", {
         method: "POST",
-        body: data
+        body: formData
       });
       return response;
     },
@@ -180,8 +234,7 @@ export default function DistributorRegistration() {
       return;
     }
 
-    const { agreeToTerms, ...submitData } = data;
-    registerMutation.mutate(submitData);
+    registerMutation.mutate(data);
   };
 
   return (
@@ -411,29 +464,197 @@ export default function DistributorRegistration() {
                         </FormItem>
                       )}
                     />
+                  </div>
+                </div>
+
+                {/* Tax & Compliance Details */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center">
+                    <Shield className="h-5 w-5 mr-2" />
+                    Tax & Compliance Details
+                  </h3>
+                  
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="panNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <Receipt className="h-4 w-4 mr-2" />
+                            PAN Number * (Required for TDS compliance)
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., ABCDE1234F" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
                     <FormField
                       control={form.control}
-                      name="gstin"
-                      render={({ field }) => (
+                      name="panCopyFile"
+                      render={({ field: { onChange, value, ...field } }) => (
                         <FormItem>
-                          <FormLabel>GSTIN (Optional)</FormLabel>
+                          <FormLabel className="flex items-center">
+                            <Upload className="h-4 w-4 mr-2" />
+                            Upload PAN Copy (PDF/JPEG)
+                          </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter GSTIN number" {...field} />
+                            <Input 
+                              type="file" 
+                              accept=".pdf,.jpg,.jpeg,.png"
+                              onChange={(e) => onChange(e.target.files?.[0])}
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
+
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="isGstRegistered"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox 
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal">
+                            Are You GST Registered?
+                          </FormLabel>
+                        </FormItem>
+                      )}
+                    />
+
+                    {form.watch("isGstRegistered") && (
+                      <div className="grid md:grid-cols-2 gap-6 ml-6">
+                        <FormField
+                          control={form.control}
+                          name="gstin"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>GSTIN *</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Enter GSTIN number" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="gstCertificateFile"
+                          render={({ field: { onChange, value, ...field } }) => (
+                            <FormItem>
+                              <FormLabel>Upload GST Certificate *</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="file" 
+                                  accept=".pdf,.jpg,.jpeg,.png"
+                                  onChange={(e) => onChange(e.target.files?.[0])}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="registeredBusinessAddress"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Registered Business Address (Optional)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter registered business address" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="isMsmeRegistered"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox 
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal">
+                            Are you covered in MSME?
+                          </FormLabel>
+                        </FormItem>
+                      )}
+                    />
+
+                    {form.watch("isMsmeRegistered") && (
+                      <div className="ml-6">
+                        <FormField
+                          control={form.control}
+                          name="msmeCertificateFile"
+                          render={({ field: { onChange, value, ...field } }) => (
+                            <FormItem>
+                              <FormLabel>Upload MSME Certificate *</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="file" 
+                                  accept=".pdf,.jpg,.jpeg,.png"
+                                  onChange={(e) => onChange(e.target.files?.[0])}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Bank Details */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Bank Details (Optional)</h3>
-                  <p className="text-sm text-gray-600">Required for commission payouts</p>
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center">
+                    <CreditCard className="h-5 w-5 mr-2" />
+                    Bank Details (for Monthly Payouts)
+                  </h3>
                   
                   <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="accountHolderName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <Building className="h-4 w-4 mr-2" />
+                            Bank Account Holder Name * (Must match PAN)
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter account holder name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
                     <FormField
                       control={form.control}
                       name="bankAccount"
@@ -441,10 +662,31 @@ export default function DistributorRegistration() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <CreditCard className="h-4 w-4 mr-2" />
-                            Bank Account Number
+                            Bank Account Number *
                           </FormLabel>
                           <FormControl>
                             <Input placeholder="Enter bank account number" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="bankAccountConfirm"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm Account Number * (No copy-paste allowed)</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Re-enter bank account number"
+                              onPaste={(e) => e.preventDefault()}
+                              onDrop={(e) => e.preventDefault()}
+                              {...field} 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -456,9 +698,9 @@ export default function DistributorRegistration() {
                       name="ifscCode"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>IFSC Code</FormLabel>
+                          <FormLabel>IFSC Code *</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter IFSC code" {...field} />
+                            <Input placeholder="e.g., SBIN0001234" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -466,49 +708,132 @@ export default function DistributorRegistration() {
                     />
                   </div>
 
-                  <FormField
-                    control={form.control}
-                    name="accountHolderName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Account Holder Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter account holder name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="upiId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>UPI ID (Optional but Recommended)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., yourname@paytm" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="cancelledChequeFile"
+                      render={({ field: { onChange, value, ...field } }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <Upload className="h-4 w-4 mr-2" />
+                            Upload Cancelled Cheque / Bank Passbook *
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="file" 
+                              accept=".pdf,.jpg,.jpeg,.png"
+                              onChange={(e) => onChange(e.target.files?.[0])}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
-                {/* Terms and Conditions */}
-                <FormField
-                  control={form.control}
-                  name="agreeToTerms"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          I agree to the terms and conditions *
-                        </FormLabel>
-                        <p className="text-xs text-gray-600">
-                          By registering, you agree to our distributor terms and commission structure.
-                        </p>
-                      </div>
-                    </FormItem>
-                  )}
-                />
+                {/* Declaration & Consent */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center">
+                    <FileText className="h-5 w-5 mr-2" />
+                    Declaration & Consent
+                  </h3>
+                  
+                  <div className="space-y-3">
+                    <FormField
+                      control={form.control}
+                      name="infoDeclaration"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox 
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal leading-relaxed">
+                            I declare that the information provided above is true and correct
+                          </FormLabel>
+                        </FormItem>
+                      )}
+                    />
 
+                    <FormField
+                      control={form.control}
+                      name="tdsUnderstanding"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox 
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal leading-relaxed">
+                            I understand that commission payout is subject to TDS as per income tax laws
+                          </FormLabel>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="gstInvoiceAgreement"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox 
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal leading-relaxed">
+                            If GST registered, I agree to raise tax invoices to XtraCover for each month's referral commission - TBD
+                          </FormLabel>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="termsAgreement"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox 
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal leading-relaxed">
+                            I agree to the terms and conditions of the XtraCover Referral Program
+                          </FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* Submit Button */}
                 <Button 
                   type="submit" 
-                  className="w-full bg-red-600 hover:bg-red-700"
-                  disabled={registerMutation.isPending || !otpVerified}
+                  className="w-full"
+                  disabled={!otpVerified || registerMutation.isPending}
                 >
                   {registerMutation.isPending ? (
                     <>
@@ -523,6 +848,24 @@ export default function DistributorRegistration() {
             </Form>
           </CardContent>
         </Card>
+
+        {/* Success State */}
+        {sellerCode && (
+          <Card className="bg-green-50 border-green-200">
+            <CardContent className="p-6 text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <DollarSign className="h-8 w-8 text-green-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-green-900 mb-2">Registration Successful!</h3>
+              <p className="text-green-700 mb-4">
+                Your seller code is: <strong className="text-2xl">{sellerCode}</strong>
+              </p>
+              <p className="text-sm text-green-600">
+                Share this code with customers to earn commissions on their registrations.
+              </p>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

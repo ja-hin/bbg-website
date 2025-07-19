@@ -13,11 +13,28 @@ export const distributors = pgTable("distributors", {
   pincode: text("pincode").notNull(),
   location: text("location").notNull(), // city/location
   preferredMode: text("preferred_mode").notNull(), // 'in-store', 'online', 'both'
-  gstin: text("gstin"), // optional
-  // Bank details (optional for commission payouts)
-  bankAccount: text("bank_account"),
-  ifscCode: text("ifsc_code"),
-  accountHolderName: text("account_holder_name"),
+  // Tax & Compliance Details
+  panNumber: text("pan_number").notNull(),
+  panCopyFile: text("pan_copy_file"),
+  isGstRegistered: boolean("is_gst_registered").default(false),
+  gstin: text("gstin"),
+  gstCertificateFile: text("gst_certificate_file"),
+  registeredBusinessAddress: text("registered_business_address"),
+  isMsmeRegistered: boolean("is_msme_registered").default(false),
+  msmeCertificateFile: text("msme_certificate_file"),
+  // Bank Details
+  accountHolderName: text("account_holder_name").notNull(),
+  bankAccount: text("bank_account").notNull(),
+  bankAccountConfirm: text("bank_account_confirm").notNull(),
+  ifscCode: text("ifsc_code").notNull(),
+  upiId: text("upi_id"),
+  cancelledChequeFile: text("cancelled_cheque_file").notNull(),
+  // Declarations
+  infoDeclaration: boolean("info_declaration").default(false),
+  tdsUnderstanding: boolean("tds_understanding").default(false),
+  gstInvoiceAgreement: boolean("gst_invoice_agreement").default(false),
+  termsAgreement: boolean("terms_agreement").default(false),
+  // System fields
   sellerCode: text("seller_code").notNull().unique(),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),

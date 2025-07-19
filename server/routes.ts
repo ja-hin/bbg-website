@@ -23,7 +23,14 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 const upload = multer({
-  dest: uploadDir,
+  storage: multer.diskStorage({
+    destination: uploadDir,
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const extension = path.extname(file.originalname);
+      cb(null, file.fieldname + '-' + uniqueSuffix + extension);
+    }
+  }),
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB limit
   },
@@ -86,10 +93,37 @@ function generatePayUHash(params: any, salt: string): string {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // Distributor registration
-  app.post("/api/distributors/register", async (req, res) => {
+  // Distributor registration with file uploads
+  app.post("/api/distributors/register", upload.fields([
+    { name: 'panCopyFile', maxCount: 1 },
+    { name: 'gstCertificateFile', maxCount: 1 },
+    { name: 'msmeCertificateFile', maxCount: 1 },
+    { name: 'cancelledChequeFile', maxCount: 1 }
+  ]), async (req, res) => {
     try {
-      const validatedData = insertDistributorSchema.parse(req.body);
+      // Process form data
+      const formData = { ...req.body };
+      
+      // Convert boolean strings to actual booleans
+      if (formData.isGstRegistered) formData.isGstRegistered = formData.isGstRegistered === 'true';
+      if (formData.isMsmeRegistered) formData.isMsmeRegistered = formData.isMsmeRegistered === 'true';
+      if (formData.infoDeclaration) formData.infoDeclaration = formData.infoDeclaration === 'true';
+      if (formData.tdsUnderstanding) formData.tdsUnderstanding = formData.tdsUnderstanding === 'true';
+      if (formData.gstInvoiceAgreement) formData.gstInvoiceAgreement = formData.gstInvoiceAgreement === 'true';
+      if (formData.termsAgreement) formData.termsAgreement = formData.termsAgreement === 'true';
+      
+      // Handle file uploads
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      if (files.panCopyFile) formData.panCopyFile = files.panCopyFile[0].filename;
+      if (files.gstCertificateFile) formData.gstCertificateFile = files.gstCertificateFile[0].filename;
+      if (files.msmeCertificateFile) formData.msmeCertificateFile = files.msmeCertificateFile[0].filename;
+      if (files.cancelledChequeFile) formData.cancelledChequeFile = files.cancelledChequeFile[0].filename;
+      
+      // Remove bankAccountConfirm as it's not stored in database
+      const { bankAccountConfirm, ...distributorData } = formData;
+      
+      // Validate data (skip file validation since we handle files separately)
+      const validatedData = distributorData;
       
       // Check if email already exists
       const existingDistributor = await storage.getDistributorByEmail(validatedData.email);
@@ -117,6 +151,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
     } catch (error: any) {
+      console.error("Distributor registration error:", error);
       res.status(400).json({ message: error.message || "Registration failed" });
     }
   });

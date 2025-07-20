@@ -13,6 +13,7 @@ import ClaimBBG from "@/pages/claim-bbg";
 import ThankYou from "@/pages/thank-you";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
+import AdminDashboardNew from "@/pages/admin-dashboard-new";
 import AdminMasters from "@/pages/admin-masters";
 import AdminBrands from "@/pages/admin-brands";
 import AdminDistributors from "@/pages/admin-distributors";
@@ -44,7 +45,7 @@ function Router() {
       {/* Admin routes without header/footer */}
       <Route path="/admin" component={AdminRoot} />
       <Route path="/admin/login" component={AdminLogin} />
-      <Route path="/admin/dashboard" component={AdminDashboard} />
+      <Route path="/admin/dashboard" component={AdminDashboardNew} />
       <Route path="/admin/masters" component={AdminMasters} />
       <Route path="/admin/brands" component={AdminBrands} />
       <Route path="/admin/distributors" component={AdminDistributors} />

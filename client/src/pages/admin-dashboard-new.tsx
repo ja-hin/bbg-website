@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocation } from "wouter";
 import { useRequireAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -11,21 +10,13 @@ import {
   AlertCircle, 
   IndianRupee,
   ShoppingCart,
-  Calendar,
-  User,
-  Phone,
-  CreditCard,
   Search,
-  ChevronLeft,
-  ChevronRight,
   Eye,
-  Edit,
   CheckCircle,
   XCircle,
-  Clock,
+  Phone,
   Mail,
-  MapPin,
-  Filter
+  MapPin
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -37,15 +28,6 @@ import { AdminHeader } from "@/components/admin-header";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { apiRequest } from "@/lib/queryClient";
 
-interface AdminUser {
-  id: number;
-  username: string;
-  email: string;
-  role: string;
-  lastLoginAt?: string;
-  createdAt: string;
-}
-
 interface DashboardStats {
   stats: {
     totalDistributors: number;
@@ -53,8 +35,6 @@ interface DashboardStats {
     totalClaims: number;
     pendingClaims: number;
     totalRevenue: number;
-    recentCustomers: any[];
-    recentClaims: any[];
   };
 }
 
@@ -103,77 +83,45 @@ interface Distributor {
   createdAt: string;
 }
 
-interface PendingPayment {
-  id: number;
-  name: string;
-  contact: string;
-  email: string;
-  deviceType: string;
-  modelName: string;
-  invoiceValue: string;
-  paymentAmount: string;
-  transactionId?: string;
-  status: string;
-  expiresAt: string;
-  createdAt: string;
-}
-
-export default function AdminDashboard() {
-  const [, setLocation] = useLocation();
+export default function AdminDashboardNew() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  // State for filters and pagination
+  // State for filters and search
   const [customerSearch, setCustomerSearch] = useState("");
   const [claimFilter, setClaimFilter] = useState("all");
   const [distributorSearch, setDistributorSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
   const [activeTab, setActiveTab] = useState("overview");
-  const itemsPerPage = 10;
 
-  // Check admin authentication using new hook
+  // Check admin authentication
   const { isLoading: adminLoading, isAuthenticated } = useRequireAuth();
   const { data: adminUser } = useQuery({
     queryKey: ["/api/admin/me"],
     enabled: isAuthenticated,
-    retry: 1,
-    retryDelay: 1000
   });
 
   // Dashboard data
   const { data: dashboardStats, isLoading: statsLoading } = useQuery<DashboardStats>({
     queryKey: ["/api/admin/dashboard"],
     enabled: !!adminUser,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    staleTime: 0 // Always consider data stale to force fresh fetch
   });
 
-  // Fetch recent orders (customers)
-  const { data: recentOrders, isLoading: ordersLoading } = useQuery<Customer[]>({
+  // Fetch customers
+  const { data: customers, isLoading: customersLoading } = useQuery<Customer[]>({
     queryKey: ["/api/admin/customers"],
     enabled: !!adminUser,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    staleTime: 0
   });
 
-  // Fetch claims data
+  // Fetch claims
   const { data: claims, isLoading: claimsLoading } = useQuery<Claim[]>({
     queryKey: ["/api/admin/claims"],
     enabled: !!adminUser,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    staleTime: 0
   });
 
-  // Fetch distributors data
+  // Fetch distributors
   const { data: distributors, isLoading: distributorsLoading } = useQuery<Distributor[]>({
     queryKey: ["/api/admin/distributors"],
     enabled: !!adminUser,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    staleTime: 0
   });
 
   // Update claim status mutation
@@ -193,8 +141,6 @@ export default function AdminDashboard() {
       toast({ title: "Failed to update claim status", variant: "destructive" });
     }
   });
-
-
 
   if (adminLoading || !isAuthenticated) {
     return (
@@ -233,7 +179,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center">
                   <Users className="h-8 w-8 text-blue-600" />
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Distributors</p>
+                    <p className="text-sm font-medium text-gray-600">Referral Partners</p>
                     <p className="text-2xl font-bold text-gray-900">{dashboardStats.stats.totalDistributors || 0}</p>
                   </div>
                 </div>
@@ -288,11 +234,7 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </div>
-        ) : (
-          <div className="mb-8 p-6 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-700">Failed to load dashboard statistics. Please refresh the page.</p>
-          </div>
-        )}
+        ) : null}
 
         {/* Navigation Tabs */}
         <div className="mb-8">
@@ -302,7 +244,7 @@ export default function AdminDashboard() {
                 { id: "overview", name: "Overview", icon: Shield },
                 { id: "customers", name: "Customers", icon: Users },
                 { id: "claims", name: "Claims", icon: FileText },
-                { id: "distributors", name: "Distributors", icon: ShoppingCart }
+                { id: "distributors", name: "Referral Partners", icon: ShoppingCart }
               ].map((tab) => {
                 const Icon = tab.icon;
                 return (
@@ -336,79 +278,39 @@ export default function AdminDashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {ordersLoading ? (
+                {customersLoading ? (
                   <div className="space-y-4">
                     {[...Array(5)].map((_, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg animate-pulse">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-                      <div className="space-y-1">
-                        <div className="w-32 h-4 bg-gray-200 rounded"></div>
-                        <div className="w-24 h-3 bg-gray-200 rounded"></div>
-                      </div>
-                    </div>
-                    <div className="text-right space-y-1">
-                      <div className="w-20 h-4 bg-gray-200 rounded"></div>
-                      <div className="w-16 h-3 bg-gray-200 rounded"></div>
-                    </div>
+                      <div key={i} className="h-16 bg-gray-100 rounded animate-pulse"></div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            ) : recentOrders && recentOrders.length > 0 ? (
-              <div className="space-y-4">
-                {recentOrders.slice(0, 10).map((order) => (
-                  <div key={order.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div>
-                        <div className="flex items-center space-x-2">
-                          <p className="font-medium text-gray-900">{order.name}</p>
-                          <span className={`px-2 py-1 text-xs rounded-full ${
-                            order.isVerified 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {order.isVerified ? 'Verified' : 'Pending'}
-                          </span>
+                ) : customers && customers.length > 0 ? (
+                  <div className="space-y-4">
+                    {customers.slice(0, 5).map((customer) => (
+                      <div key={customer.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div>
+                          <div className="font-medium text-gray-900">{customer.name}</div>
+                          <div className="text-sm text-gray-500">{customer.contact} • {customer.deviceType}</div>
                         </div>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
-                          <span className="flex items-center">
-                            <Phone className="h-3 w-3 mr-1" />
-                            {order.contact}
-                          </span>
-                          <span className="flex items-center">
-                            <Smartphone className="h-3 w-3 mr-1" />
-                            {order.deviceType} - {order.modelName}
-                          </span>
+                        <div className="text-right">
+                          <Badge variant={customer.isVerified ? "default" : "secondary"}>
+                            {customer.isVerified ? "Verified" : "Pending"}
+                          </Badge>
+                          <div className="text-sm text-gray-500 mt-1">
+                            {formatCurrency(customer.invoiceValue)}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="flex items-center space-x-2">
-                        <IndianRupee className="h-4 w-4 text-gray-400" />
-                        <span className="font-semibold text-gray-900">{formatCurrency(order.invoiceValue)}</span>
-                      </div>
-                      <div className="flex items-center space-x-1 text-sm text-gray-500">
-                        <Calendar className="h-3 w-3" />
-                        <span>{formatDate(order.createdAt)}</span>
-                      </div>
-                      <div className="text-xs text-gray-400 mt-1">
-                        #{order.voucherCode}
-                      </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                <ShoppingCart className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                <p>No orders found</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <Users className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <p>No customers found</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Recent Claims */}
             <Card>
@@ -422,19 +324,13 @@ export default function AdminDashboard() {
                 {claimsLoading ? (
                   <div className="space-y-4">
                     {[...Array(5)].map((_, i) => (
-                      <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg animate-pulse">
-                        <div className="space-y-2">
-                          <div className="w-32 h-4 bg-gray-200 rounded"></div>
-                          <div className="w-24 h-3 bg-gray-200 rounded"></div>
-                        </div>
-                        <div className="w-20 h-6 bg-gray-200 rounded"></div>
-                      </div>
+                      <div key={i} className="h-16 bg-gray-100 rounded animate-pulse"></div>
                     ))}
                   </div>
                 ) : claims && claims.length > 0 ? (
                   <div className="space-y-4">
                     {claims.slice(0, 5).map((claim) => (
-                      <div key={claim.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      <div key={claim.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                         <div>
                           <div className="font-medium text-gray-900">{claim.customerName}</div>
                           <div className="text-sm text-gray-500">
@@ -476,21 +372,19 @@ export default function AdminDashboard() {
                   <Users className="h-5 w-5 mr-2 text-blue-600" />
                   Customer Management
                 </CardTitle>
-                <div className="flex items-center space-x-2">
-                  <div className="relative">
-                    <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                    <Input
-                      placeholder="Search customers..."
-                      value={customerSearch}
-                      onChange={(e) => setCustomerSearch(e.target.value)}
-                      className="pl-10 w-64"
-                    />
-                  </div>
+                <div className="relative">
+                  <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Input
+                    placeholder="Search customers..."
+                    value={customerSearch}
+                    onChange={(e) => setCustomerSearch(e.target.value)}
+                    className="pl-10 w-64"
+                  />
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              {ordersLoading ? (
+              {customersLoading ? (
                 <div className="animate-pulse">
                   <div className="h-10 bg-gray-200 rounded mb-4"></div>
                   {[...Array(5)].map((_, i) => (
@@ -513,12 +407,12 @@ export default function AdminDashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {recentOrders?.filter(customer => 
+                      {customers?.filter(customer => 
                         customerSearch === "" || 
                         customer.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
                         customer.contact.includes(customerSearch) ||
                         customer.voucherCode.toLowerCase().includes(customerSearch.toLowerCase())
-                      ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((customer) => (
+                      ).map((customer) => (
                         <TableRow key={customer.id}>
                           <TableCell>
                             <div>
@@ -583,20 +477,18 @@ export default function AdminDashboard() {
                   <FileText className="h-5 w-5 mr-2 text-purple-600" />
                   Claims Management
                 </CardTitle>
-                <div className="flex items-center space-x-2">
-                  <Select value={claimFilter} onValueChange={setClaimFilter}>
-                    <SelectTrigger className="w-40">
-                      <SelectValue placeholder="Filter by status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Claims</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="approved">Approved</SelectItem>
-                      <SelectItem value="rejected">Rejected</SelectItem>
-                      <SelectItem value="paid">Paid</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <Select value={claimFilter} onValueChange={setClaimFilter}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Claims</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="paid">Paid</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </CardHeader>
             <CardContent>
@@ -626,7 +518,7 @@ export default function AdminDashboard() {
                     <TableBody>
                       {claims?.filter(claim => 
                         claimFilter === "all" || claim.status === claimFilter
-                      ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((claim) => (
+                      ).map((claim) => (
                         <TableRow key={claim.id}>
                           <TableCell>
                             <div>
@@ -714,18 +606,16 @@ export default function AdminDashboard() {
               <div className="flex justify-between items-center">
                 <CardTitle className="flex items-center text-lg font-semibold">
                   <ShoppingCart className="h-5 w-5 mr-2 text-green-600" />
-                  Distributor Management
+                  Referral Partner Management
                 </CardTitle>
-                <div className="flex items-center space-x-2">
-                  <div className="relative">
-                    <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                    <Input
-                      placeholder="Search distributors..."
-                      value={distributorSearch}
-                      onChange={(e) => setDistributorSearch(e.target.value)}
-                      className="pl-10 w-64"
-                    />
-                  </div>
+                <div className="relative">
+                  <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Input
+                    placeholder="Search referral partners..."
+                    value={distributorSearch}
+                    onChange={(e) => setDistributorSearch(e.target.value)}
+                    className="pl-10 w-64"
+                  />
                 </div>
               </div>
             </CardHeader>
@@ -742,10 +632,10 @@ export default function AdminDashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Distributor</TableHead>
+                        <TableHead>Referral Partner</TableHead>
                         <TableHead>Business</TableHead>
                         <TableHead>Contact</TableHead>
-                        <TableHead>Seller Code</TableHead>
+                        <TableHead>Referral Code</TableHead>
                         <TableHead>Location</TableHead>
                         <TableHead>Mode</TableHead>
                         <TableHead>Total Commission</TableHead>
@@ -760,12 +650,15 @@ export default function AdminDashboard() {
                         distributor.name.toLowerCase().includes(distributorSearch.toLowerCase()) ||
                         distributor.contact.includes(distributorSearch) ||
                         distributor.sellerCode.toLowerCase().includes(distributorSearch.toLowerCase())
-                      ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((distributor) => (
+                      ).map((distributor) => (
                         <TableRow key={distributor.id}>
                           <TableCell>
                             <div>
                               <div className="font-medium text-gray-900">{distributor.name}</div>
-                              <div className="text-sm text-gray-500">{distributor.email}</div>
+                              <div className="text-sm text-gray-500 flex items-center">
+                                <Mail className="h-3 w-3 mr-1" />
+                                {distributor.email}
+                              </div>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -824,76 +717,6 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         )}
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-                      <div className="space-y-1">
-                        <div className="w-32 h-4 bg-gray-200 rounded"></div>
-                        <div className="w-24 h-3 bg-gray-200 rounded"></div>
-                      </div>
-                    </div>
-                    <div className="text-right space-y-1">
-                      <div className="w-20 h-4 bg-gray-200 rounded"></div>
-                      <div className="w-16 h-3 bg-gray-200 rounded"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : pendingPayments && pendingPayments.length > 0 ? (
-              <div className="space-y-4">
-                {pendingPayments.slice(0, 10).map((payment) => (
-                  <div key={payment.id} className="flex items-center justify-between p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors border border-orange-200">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                        <AlertCircle className="h-5 w-5 text-orange-600" />
-                      </div>
-                      <div>
-                        <div className="flex items-center space-x-2">
-                          <p className="font-medium text-gray-900">{payment.name}</p>
-                          <span className="px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-800">
-                            Payment Pending
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
-                          <span className="flex items-center">
-                            <Phone className="h-3 w-3 mr-1" />
-                            {payment.contact}
-                          </span>
-                          <span className="flex items-center">
-                            <Smartphone className="h-3 w-3 mr-1" />
-                            {payment.deviceType} - {payment.modelName}
-                          </span>
-                        </div>
-                        {payment.transactionId && (
-                          <div className="text-xs text-gray-400 mt-1">
-                            Transaction: {payment.transactionId}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="flex items-center space-x-2">
-                        <IndianRupee className="h-4 w-4 text-orange-600" />
-                        <span className="font-semibold text-orange-900">{formatCurrency(payment.paymentAmount)}</span>
-                      </div>
-                      <div className="flex items-center space-x-1 text-sm text-gray-500">
-                        <Calendar className="h-3 w-3" />
-                        <span>{formatDate(payment.createdAt)}</span>
-                      </div>
-                      <div className="text-xs text-red-500 mt-1">
-                        Expires: {formatDate(payment.expiresAt)}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                <CreditCard className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                <p>No pending payments found</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

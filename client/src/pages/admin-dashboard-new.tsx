@@ -46,7 +46,7 @@ interface Customer {
   deviceType: string;
   brand?: string;
   modelName: string;
-  invoiceValue: string;
+  invoiceValue: number;
   voucherCode: string;
   isVerified: boolean;
   createdAt: string;
@@ -56,7 +56,6 @@ interface Customer {
 interface Claim {
   id: number;
   customerId: number;
-  customerName: string;
   voucherCode: string;
   contact: string;
   email: string;
@@ -64,7 +63,6 @@ interface Claim {
   claimPercentage: number;
   status: 'pending' | 'approved' | 'rejected' | 'paid';
   deviceAgeMonths: number;
-  pickupDate: string;
   createdAt: string;
 }
 
@@ -78,8 +76,8 @@ interface Distributor {
   location: string;
   preferredMode: string;
   gstin?: string;
-  totalCommission: number;
-  pendingCommission: number;
+  commissionEarned: number;
+  totalCustomers: number;
   createdAt: string;
 }
 
@@ -332,7 +330,7 @@ export default function AdminDashboardNew() {
                     {claims.slice(0, 5).map((claim) => (
                       <div key={claim.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                         <div>
-                          <div className="font-medium text-gray-900">{claim.customerName}</div>
+                          <div className="font-medium text-gray-900">{claim.contact}</div>
                           <div className="text-sm text-gray-500">
                             Voucher: {claim.voucherCode} • Age: {claim.deviceAgeMonths} months
                           </div>
@@ -511,7 +509,7 @@ export default function AdminDashboardNew() {
                         <TableHead>Claim %</TableHead>
                         <TableHead>Claim Amount</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Pickup Date</TableHead>
+                        <TableHead>Claim Date</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -522,7 +520,7 @@ export default function AdminDashboardNew() {
                         <TableRow key={claim.id}>
                           <TableCell>
                             <div>
-                              <div className="font-medium text-gray-900">{claim.customerName}</div>
+                              <div className="font-medium text-gray-900">{claim.contact}</div>
                               <div className="text-sm text-gray-500">{claim.email}</div>
                             </div>
                           </TableCell>
@@ -554,7 +552,7 @@ export default function AdminDashboardNew() {
                               {claim.status}
                             </Badge>
                           </TableCell>
-                          <TableCell>{formatDate(claim.pickupDate)}</TableCell>
+                          <TableCell>{formatDate(claim.createdAt)}</TableCell>
                           <TableCell>
                             <div className="flex space-x-1">
                               {claim.status === 'pending' && (
@@ -639,7 +637,7 @@ export default function AdminDashboardNew() {
                         <TableHead>Location</TableHead>
                         <TableHead>Mode</TableHead>
                         <TableHead>Total Commission</TableHead>
-                        <TableHead>Pending</TableHead>
+                        <TableHead>Total Customers</TableHead>
                         <TableHead>Joined</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
@@ -692,13 +690,12 @@ export default function AdminDashboardNew() {
                           <TableCell>
                             <div className="flex items-center">
                               <IndianRupee className="h-4 w-4 mr-1 text-gray-400" />
-                              {distributor.totalCommission.toLocaleString()}
+                              {distributor.commissionEarned.toLocaleString()}
                             </div>
                           </TableCell>
                           <TableCell>
-                            <div className="flex items-center">
-                              <IndianRupee className="h-4 w-4 mr-1 text-gray-400" />
-                              {distributor.pendingCommission.toLocaleString()}
+                            <div className="text-center">
+                              {distributor.totalCustomers}
                             </div>
                           </TableCell>
                           <TableCell>{formatDate(distributor.createdAt)}</TableCell>

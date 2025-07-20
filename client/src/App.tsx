@@ -16,6 +16,7 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import AdminDashboardNew from "@/pages/admin-dashboard-new";
 import AdminMasters from "@/pages/admin-masters";
 import AdminBrands from "@/pages/admin-brands";
+import AdminBrandsNew from "@/pages/admin-brands-new";
 import AdminDistributors from "@/pages/admin-distributors";
 import AdminTemplates from "@/pages/admin-templates";
 import AdminLogs from "@/pages/admin-logs";
@@ -47,7 +48,7 @@ function Router() {
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboardNew} />
       <Route path="/admin/masters" component={AdminMasters} />
-      <Route path="/admin/brands" component={AdminBrands} />
+      <Route path="/admin/brands" component={AdminBrandsNew} />
       <Route path="/admin/distributors" component={AdminDistributors} />
       <Route path="/admin/templates" component={AdminTemplates} />
       <Route path="/admin/logs" component={AdminLogs} />

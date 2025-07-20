@@ -1848,6 +1848,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bulk upload brands and models with file upload
+  app.post("/api/admin/bulk-upload-brands", isAdminAuthenticated, upload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const XLSX = require('xlsx');
+      const workbook = XLSX.readFile(req.file.path);
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const data = XLSX.utils.sheet_to_json(worksheet);
+
+      if (!Array.isArray(data) || data.length === 0) {
+        return res.status(400).json({ message: "File is empty or invalid format" });
+      }
+
+      // Normalize column names and validate
+      const normalizedData = data.map((row: any, index: number) => {
+        const keys = Object.keys(row);
+        const deviceKey = keys.find(k => k.toLowerCase().includes('device') || k.toLowerCase().includes('type'));
+        const brandKey = keys.find(k => k.toLowerCase().includes('brand'));
+        const modelKey = keys.find(k => k.toLowerCase().includes('model'));
+
+        if (!deviceKey || !brandKey || !modelKey) {
+          throw new Error(`Row ${index + 1}: Missing required columns (Device Type, Brand, Model)`);
+        }
+
+        return {
+          device: row[deviceKey]?.toString().trim().toLowerCase(),
+          brand: row[brandKey]?.toString().trim(),
+          model: row[modelKey]?.toString().trim()
+        };
+      });
+
+      // Validate data
+      let successfulRows = 0;
+      const errors: string[] = [];
+
+      for (let i = 0; i < normalizedData.length; i++) {
+        const item = normalizedData[i];
+        if (!item.device || !item.brand || !item.model) {
+          errors.push(`Row ${i + 1}: Missing required data`);
+          continue;
+        }
+        if (!['mobile', 'laptop'].includes(item.device)) {
+          errors.push(`Row ${i + 1}: Device type must be 'mobile' or 'laptop'`);
+          continue;
+        }
+        successfulRows++;
+      }
+
+      if (successfulRows === 0) {
+        return res.status(400).json({ 
+          message: "No valid rows found",
+          errors
+        });
+      }
+
+      // Process valid data
+      const results = await storage.bulkUploadBrandsAndModels(normalizedData.filter(item => 
+        item.device && item.brand && item.model && ['mobile', 'laptop'].includes(item.device)
+      ));
+
+      // Clean up uploaded file
+      try {
+        require('fs').unlinkSync(req.file.path);
+      } catch (cleanupError) {
+        console.error('Failed to cleanup uploaded file:', cleanupError);
+      }
+
+      res.json({
+        message: "Bulk upload completed",
+        successfulRows,
+        errors,
+        results
+      });
+
+    } catch (error: any) {
+      console.error("Bulk upload error:", error);
+      res.status(500).json({ message: error.message || "Failed to process file" });
+    }
+  });
+
   // Distributors Master Management (Enhanced with CRUD)
   app.post("/api/admin/distributors", isAdminAuthenticated, async (req, res) => {
     try {
@@ -2109,6 +2193,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/admin/brands/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const brandId = parseInt(req.params.id);
+      const updates = req.body;
+      await storage.updateBrand(brandId, updates);
+      res.json({ message: "Brand updated successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to update brand" });
+    }
+  });
+
   app.delete("/api/admin/brands/:id", isAdminAuthenticated, async (req, res) => {
     try {
       const brandId = parseInt(req.params.id);
@@ -2252,6 +2347,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.put("/api/admin/models/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const modelId = parseInt(req.params.id);
+      const updates = req.body;
+      await storage.updateDeviceModel(modelId, updates);
+      res.json({ message: "Device model updated successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to update device model" });
+    }
+  });
+
+  app.patch("/api/admin/models/:id", isAdminAuthenticated, async (req, res) => {
     try {
       const modelId = parseInt(req.params.id);
       const updates = req.body;

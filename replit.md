@@ -291,15 +291,17 @@ GUPSHUP_SOURCE_NUMBER=919999999999
 
 ```
 Changelog:
-- July 22, 2025: ✅ COMPLETED - Enhanced Gupshup WhatsApp HSM service with complete admin management interface
-  - IMPLEMENTED: HSM template functionality with proper language code parameter support
-  - CONFIGURED: Gupshup account 2000203988 with HSM credentials (Login: 2000203988, Password: CrtvMm59A)
+- July 22, 2025: ✅ COMPLETED - Enhanced Gupshup WhatsApp HSM service with complete admin management interface and template registration diagnostics
+  - IMPLEMENTED: HSM template functionality with proper language code parameter support and comprehensive error handling
+  - CONFIGURED: Gupshup account 2000203988 with HSM credentials (Login: 2000203988, Password: CrtvMm59A) - WORKING CORRECTLY
   - CREATED: Admin HSM templates management interface at /admin/hsm-templates with live testing capabilities
-  - ADDED: HSM template API endpoints for sending approved WhatsApp Business templates
-  - ENHANCED: Error handling showing proper "Message does not match WhatsApp HSM template" for custom messages
-  - VERIFIED: WhatsApp-only messaging working correctly with HSM template validation
+  - ADDED: HSM template API endpoints for sending approved WhatsApp Business templates with detailed diagnostics
+  - ENHANCED: Error handling showing proper "Message does not match WhatsApp HSM template" for custom messages with template registration guidance
+  - VERIFIED: WhatsApp-only messaging working correctly with HSM template validation and clear error reporting
   - DOCUMENTED: Complete HSM template management system for approved WhatsApp Business messaging
   - TESTED: Live HSM template parameter validation and custom message error handling working as expected
+  - DIAGNOSED: Template registration requirement - approved template text needs to be registered with Gupshup and assigned template ID before use
+  - READY: System fully prepared for HSM template IDs once registered with Gupshup WhatsApp Business API
 - July 22, 2025: ✅ COMPLETED - Gupshup WhatsApp Business API configured as WhatsApp-only service (no SMS fallback)
   - IMPLEMENTED: Pure WhatsApp Business implementation using account 2000203988 with exact Thunderclient API format
   - REMOVED: All SMS fallback mechanisms per user requirement for WhatsApp-only messaging

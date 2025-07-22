@@ -1507,16 +1507,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Test HSM template functionality
   app.post('/api/test-hsm-template', async (req: any, res) => {
     try {
-      const { phone, template, params = [] } = req.body;
+      const { phone, templateText, params = [] } = req.body;
       
-      if (!phone || !template) {
+      if (!phone) {
         return res.status(400).json({ 
           success: false, 
-          message: 'Phone number and template name are required' 
+          message: 'Phone number is required' 
         });
       }
 
-      const result = await gupshupService.sendHSMTemplate(phone, template, params);
+      const result = await gupshupService.sendHSMTemplate(phone, templateText, params);
+      
+      // Handle both successful and template registration required responses
+      if (result.success === false) {
+        return res.json({
+          success: false,
+          result: result,
+          message: result.response.details
+        });
+      }
       
       res.json({
         success: true,

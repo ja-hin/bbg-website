@@ -189,40 +189,60 @@ export class GupshupService {
     console.log(`Gupshup delivery ${enabled ? 'enabled' : 'disabled'}`);
   }
 
-  // Send HSM approved template message with parameters
-  async sendHSMTemplate(phone: string, templateName: string, parameters: string[] = []): Promise<GupshupResponse> {
+  // Send HSM approved template message (using exact approved template text)
+  async sendHSMTemplate(phone: string, templateText?: string, parameters: string[] = []): Promise<GupshupResponse> {
     const phoneNumber = phone.replace(/\D/g, '');
     const formattedPhone = phoneNumber.startsWith('91') ? phoneNumber : '91' + phoneNumber;
 
-    // For HSM templates, use the WhatsApp Business API format
-    if (this.apiKey) {
-      try {
-        const templateMessage = await this.sendWhatsAppTemplate(formattedPhone, templateName, parameters);
-        return templateMessage;
-      } catch (error: any) {
-        console.log('HSM template failed via WhatsApp API:', error);
-        throw new Error(`HSM Template error: ${error.message}`);
-      }
-    }
+    // Use the exact approved HSM template text provided by user
+    const approvedTemplate = templateText || `Dear Customer,
 
-    // Fallback to HSM account format for template messaging
-    const params = new URLSearchParams({
-      userid: this.hsmLogin,
-      password: this.hsmPassword,
-      send_to: formattedPhone,
-      v: '1.1',
-      format: 'json',
-      msg_type: 'HSM',
-      method: 'SENDMESSAGE',
-      template_name: templateName,
-      template_language_code: 'en',
-      template_params: parameters.join('|')
-    });
+Thank you for completing your product registration, Your Protection Plan is auto-activated and registered with us.
+
+Please share your purchasing experience with us on the given link below.
+
+Share Your Experience and Rating 
+
+Best Regards
+Team XtraCover`;
+
+    // Try different HSM approaches
+    let params;
+    
+    // First try: HSM with template ID approach (common for approved templates)
+    if (templateText && templateText.includes('template_id:')) {
+      const templateId = templateText.split('template_id:')[1].trim();
+      params = new URLSearchParams({
+        userid: this.hsmLogin,
+        password: this.hsmPassword,
+        send_to: formattedPhone,
+        v: '1.1',
+        format: 'json',
+        msg_type: 'HSM',
+        method: 'SENDMESSAGE',
+        template_id: templateId,
+        msg: approvedTemplate
+      });
+    } else {
+      // Second try: Direct HSM template text sending
+      params = new URLSearchParams({
+        userid: this.hsmLogin,
+        password: this.hsmPassword,
+        send_to: formattedPhone,
+        v: '1.1',
+        format: 'json',
+        msg_type: 'HSM',
+        method: 'SENDMESSAGE',
+        msg: approvedTemplate
+      });
+    }
 
     const fullUrl = `${this.hsmBaseUrl}?${params.toString()}`;
 
-    console.log(`Sending HSM template "${templateName}" to ${formattedPhone}`);
-    console.log('Template parameters:', parameters);
+    console.log(`Sending HSM approved template to ${formattedPhone}`);
+    console.log('Full template content:');
+    console.log(approvedTemplate);
+    console.log('Full HSM URL:', fullUrl);
 
     try {
       const response = await axios.get(fullUrl, {
@@ -241,15 +261,43 @@ export class GupshupService {
             status: 'success',
             id: response.data.response.id,
             phone: formattedPhone,
-            details: `HSM template "${templateName}" sent successfully`
+            details: `HSM approved template sent successfully`
           }
         };
       } else {
         const errorMessage = response.data?.response?.details || 'HSM template failed';
-        throw new Error(errorMessage);
+        console.log('HSM template failed response:', response.data);
+        console.log('IMPORTANT: This error suggests the HSM template needs to be registered with Gupshup first');
+        console.log('The approved template text must be submitted to Gupshup for HSM approval and assigned a template ID');
+        
+        // Return detailed response instead of throwing error
+        return {
+          success: false,
+          response: {
+            status: 'hsm_template_error',
+            id: response.data?.response?.id || 'unknown',
+            phone: formattedPhone,
+            details: `HSM Template Error: ${errorMessage}. This template needs to be registered with Gupshup first.`
+          }
+        };
       }
     } catch (error: any) {
       console.log('HSM template delivery failed:', error);
+      console.log('IMPORTANT: The HSM template needs to be registered with Gupshup and assigned a template ID/name');
+      
+      // Check if it's the template mismatch error
+      if (error.message && error.message.includes('Message does not match WhatsApp HSM template')) {
+        return {
+          success: false,
+          response: {
+            status: 'hsm_registration_required',
+            id: 'template_not_registered',
+            phone: formattedPhone,
+            details: 'HSM Template Registration Required: The approved template text needs to be registered with Gupshup and assigned a template ID/name before it can be used.'
+          }
+        };
+      }
+      
       throw new Error(`HSM template delivery failed: ${error.message}`);
     }
   }

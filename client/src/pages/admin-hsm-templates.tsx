@@ -81,7 +81,7 @@ export default function AdminHSMTemplates() {
 
   // Test HSM template mutation
   const testHSMMutation = useMutation({
-    mutationFn: async (data: { phone: string; template: string; params: string[] }) => {
+    mutationFn: async (data: { phone: string; templateText?: string; params?: string[] }) => {
       return apiRequest(`/api/test-hsm-template`, {
         method: 'POST',
         body: data

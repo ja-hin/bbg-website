@@ -31,7 +31,9 @@ import {
   Building,
   IndianRupee,
   Upload,
-  Info
+  Info,
+  Calendar,
+  ExternalLink
 } from "lucide-react";
 
 // Initialize Stripe - will be null if key not configured
@@ -52,6 +54,7 @@ const customerSchema = z.object({
   brand: z.string().min(2, "Brand is required"),
   modelName: z.string().min(2, "Model name is required"),
   invoiceValue: z.string().min(1, "Device invoice value is required"),
+  dateOfPurchase: z.string().min(1, "Date of purchase is required"),
   // File upload
   invoiceFile: z.instanceof(File).optional(),
   // Seller Details
@@ -325,6 +328,7 @@ function RegistrationContent() {
       brand: "",
       modelName: "",
       invoiceValue: "",
+      dateOfPurchase: "",
       invoiceFile: undefined,
       sellerCode: "",
       otpCode: "",
@@ -654,6 +658,23 @@ function RegistrationContent() {
                         </FormItem>
                       )}
                     />
+
+                    <FormField
+                      control={form.control}
+                      name="dateOfPurchase"
+                      render={({ field }) => (
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
+                            <Calendar className="h-4 w-4 mr-2" />
+                            Date of Purchase *
+                          </FormLabel>
+                          <FormControl>
+                            <Input type="date" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
 
                   <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-6">
@@ -838,16 +859,35 @@ function RegistrationContent() {
                     )}
                   </div>
 
-                  <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-4">
                     <FormField
                       control={form.control}
                       name="sellerCode"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Referral Code (Optional)</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter referral partner code if you have one" {...field} />
-                          </FormControl>
+                          <div className="flex gap-2">
+                            <FormControl>
+                              <Input placeholder="Enter referral partner code if you have one" {...field} className="flex-1" />
+                            </FormControl>
+                            <Button 
+                              type="button" 
+                              variant="outline"
+                              onClick={() => {
+                                if (field.value) {
+                                  // Validate referral code
+                                  toast({
+                                    title: "Referral Code",
+                                    description: "Referral code validation feature will be added soon"
+                                  });
+                                }
+                              }}
+                              disabled={!field.value}
+                              className="flex-shrink-0"
+                            >
+                              Check
+                            </Button>
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -869,7 +909,17 @@ function RegistrationContent() {
                         </FormControl>
                         <div className="space-y-1 leading-none">
                           <FormLabel>
-                            I agree to the terms and conditions *
+                            I agree to the{" "}
+                            <a 
+                              href="/terms-and-conditions" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 underline inline-flex items-center"
+                            >
+                              terms and conditions
+                              <ExternalLink className="h-3 w-3 ml-1" />
+                            </a>
+                            {" *"}
                           </FormLabel>
                           <p className="text-xs text-gray-600">
                             By registering, you agree to our BBG terms and conditions.

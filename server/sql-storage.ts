@@ -154,12 +154,25 @@ export class SqlServerStorage implements IStorage {
           contact NVARCHAR(10) NOT NULL UNIQUE,
           email NVARCHAR(255) NOT NULL UNIQUE,
           pincode NVARCHAR(6) NOT NULL,
-          location NVARCHAR(255) NOT NULL,
           preferred_mode NVARCHAR(50) NOT NULL,
+          pan_number NVARCHAR(10),
+          pan_copy_file NVARCHAR(255),
+          is_gst_registered BIT DEFAULT 0,
           gstin NVARCHAR(15),
-          bank_account NVARCHAR(50),
-          ifsc_code NVARCHAR(11),
+          gst_certificate_file NVARCHAR(255),
+          registered_business_address NVARCHAR(500),
+          is_msme_registered BIT DEFAULT 0,
+          msme_certificate_file NVARCHAR(255),
           account_holder_name NVARCHAR(255),
+          bank_account NVARCHAR(50),
+          bank_account_confirm NVARCHAR(50),
+          ifsc_code NVARCHAR(11),
+          upi_id NVARCHAR(100),
+          cancelled_cheque_file NVARCHAR(255),
+          info_declaration BIT DEFAULT 0,
+          tds_understanding BIT DEFAULT 0,
+          gst_invoice_agreement BIT DEFAULT 0,
+          terms_agreement BIT DEFAULT 0,
           seller_code NVARCHAR(10) NOT NULL UNIQUE,
           commission_earned DECIMAL(10,2) DEFAULT 0,
           total_customers INT DEFAULT 0,
@@ -183,12 +196,22 @@ export class SqlServerStorage implements IStorage {
           brand NVARCHAR(100) NOT NULL,
           model_name NVARCHAR(255) NOT NULL,
           invoice_value DECIMAL(10,2) NOT NULL,
+          date_of_purchase NVARCHAR(20),
           seller_code NVARCHAR(10),
           voucher_code NVARCHAR(15) NOT NULL UNIQUE,
           payment_intent_id NVARCHAR(255),
           is_verified BIT DEFAULT 0,
           created_at DATETIME2 DEFAULT GETDATE()
         );
+      END
+      
+      -- Add date_of_purchase column to existing customers table if it doesn't exist
+      IF EXISTS (SELECT * FROM sys.tables WHERE name = 'customers')
+      BEGIN
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'date_of_purchase')
+        BEGIN
+          ALTER TABLE customers ADD date_of_purchase NVARCHAR(20);
+        END
       END
 
       -- Create claims table
@@ -816,12 +839,12 @@ export class SqlServerStorage implements IStorage {
     const query = `
       INSERT INTO customers (
         name, contact, email, pincode, device_type, serial_number, 
-        brand, model_name, invoice_value, seller_code, voucher_code, payment_intent_id, is_verified
+        brand, model_name, invoice_value, date_of_purchase, seller_code, voucher_code, payment_intent_id, is_verified
       ) 
       OUTPUT INSERTED.*
       VALUES (
         @name, @contact, @email, @pincode, @deviceType, @serialNumber, 
-        @brand, @modelName, @invoiceValue, @sellerCode, @voucherCode, @paymentIntentId, @isVerified
+        @brand, @modelName, @invoiceValue, @dateOfPurchase, @sellerCode, @voucherCode, @paymentIntentId, @isVerified
       )
     `;
 
@@ -835,6 +858,7 @@ export class SqlServerStorage implements IStorage {
     request.input('brand', sql.NVarChar, insertCustomer.brand);
     request.input('modelName', sql.NVarChar, insertCustomer.modelName);
     request.input('invoiceValue', sql.Decimal(10, 2), insertCustomer.invoiceValue);
+    request.input('dateOfPurchase', sql.NVarChar, insertCustomer.dateOfPurchase || null);
     request.input('sellerCode', sql.NVarChar, insertCustomer.sellerCode || null);
     request.input('voucherCode', sql.NVarChar, voucherCode);
     request.input('paymentIntentId', sql.NVarChar, insertCustomer.paymentIntentId || null);
@@ -1106,11 +1130,25 @@ export class SqlServerStorage implements IStorage {
       contact: row.contact,
       email: row.email,
       pincode: row.pincode,
-      location: row.location,
       preferredMode: row.preferred_mode,
+      panNumber: row.pan_number,
+      panCopyFile: row.pan_copy_file,
+      isGstRegistered: Boolean(row.is_gst_registered),
       gstin: row.gstin,
+      gstCertificateFile: row.gst_certificate_file,
+      registeredBusinessAddress: row.registered_business_address,
+      isMsmeRegistered: Boolean(row.is_msme_registered),
+      msmeCertificateFile: row.msme_certificate_file,
+      accountHolderName: row.account_holder_name,
       bankAccount: row.bank_account,
+      bankAccountConfirm: row.bank_account_confirm,
       ifscCode: row.ifsc_code,
+      upiId: row.upi_id,
+      cancelledChequeFile: row.cancelled_cheque_file,
+      infoDeclaration: Boolean(row.info_declaration),
+      tdsUnderstanding: Boolean(row.tds_understanding),
+      gstInvoiceAgreement: Boolean(row.gst_invoice_agreement),
+      termsAgreement: Boolean(row.terms_agreement),
       sellerCode: row.seller_code,
       commissionEarned: parseFloat(row.commission_earned || 0),
       totalCustomers: row.total_customers || 0,
@@ -1131,6 +1169,7 @@ export class SqlServerStorage implements IStorage {
       brand: row.brand,
       modelName: row.model_name,
       invoiceValue: parseFloat(row.invoice_value),
+      dateOfPurchase: row.date_of_purchase,
       sellerCode: row.seller_code,
       voucherCode: row.voucher_code,
       paymentIntentId: row.payment_intent_id,

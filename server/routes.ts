@@ -659,9 +659,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const customerData = {
         ...req.body,
         invoiceValue: req.body.invoiceValue?.toString() || "0",
+        dateOfPurchase: req.body.dateOfPurchase || new Date().toISOString().split('T')[0],
         // Handle legacy fields for compatibility
         address: req.body.address || "",
-        purchaseDate: req.body.purchaseDate || new Date().toISOString().split('T')[0],
+        purchaseDate: req.body.purchaseDate || req.body.dateOfPurchase || new Date().toISOString().split('T')[0],
         invoiceNumber: req.body.invoiceNumber || "N/A",
         invoiceFile: "N/A", // No file upload in new flow
         paymentIntentId: req.body.paymentIntentId || null,

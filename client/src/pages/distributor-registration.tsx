@@ -14,22 +14,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Loader2, DollarSign, Users, TrendingUp, Building, MapPin, Phone, Mail, CreditCard, Upload, FileText, Shield, Receipt } from "lucide-react";
+import { Loader2, IndianRupee, Users, TrendingUp, Building, MapPin, Phone, Mail, CreditCard, Upload, FileText, Shield, Receipt, ExternalLink } from "lucide-react";
 
 const distributorSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  businessName: z.string().optional(),
+  name: z.string().min(2, "Full name (as per PAN/GST) is required"),
   contact: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
   email: z.string().email("Invalid email address"),
   pincode: z.string().regex(/^\d{6}$/, "Pincode must be exactly 6 digits"),
-  location: z.string().min(2, "Location/City is required"),
   preferredMode: z.enum(["in-store", "online", "both"], {
     required_error: "Please select a preferred mode"
   }),
   // Tax & Compliance Details
   panNumber: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN format (e.g., ABCDE1234F)"),
-  panCopyFile: z.instanceof(File).optional(),
+  panCopyFile: z.instanceof(File, { message: "PAN copy is required" }),
   isGstRegistered: z.boolean(),
+  businessName: z.string().optional(),
   gstin: z.string().optional(),
   gstCertificateFile: z.instanceof(File).optional(),
   registeredBusinessAddress: z.string().optional(),
@@ -50,8 +49,8 @@ const distributorSchema = z.object({
 }).refine((data) => data.bankAccount === data.bankAccountConfirm, {
   message: "Bank account numbers must match",
   path: ["bankAccountConfirm"]
-}).refine((data) => !data.isGstRegistered || (data.gstin && data.gstCertificateFile), {
-  message: "GSTIN and GST certificate are required for GST registered businesses",
+}).refine((data) => !data.isGstRegistered || (data.businessName && data.gstin && data.gstCertificateFile), {
+  message: "Business name, GSTIN and GST certificate are required for GST registered businesses",
   path: ["gstin"]
 }).refine((data) => !data.isMsmeRegistered || data.msmeCertificateFile, {
   message: "MSME certificate is required if you are MSME registered",
@@ -72,16 +71,15 @@ export default function DistributorRegistration() {
     resolver: zodResolver(distributorSchema),
     defaultValues: {
       name: "",
-      businessName: "",
       contact: "",
       email: "",
       pincode: "",
-      location: "",
       preferredMode: undefined,
       // Tax & Compliance Details
       panNumber: "",
       panCopyFile: undefined,
       isGstRegistered: false,
+      businessName: "",
       gstin: "",
       gstCertificateFile: undefined,
       registeredBusinessAddress: "",
@@ -272,7 +270,7 @@ export default function DistributorRegistration() {
           <Card className="text-center p-6">
             <CardContent className="p-0">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <DollarSign className="h-8 w-8 text-green-600" />
+                <IndianRupee className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Earn Commission</h3>
               <p className="text-gray-600">Get paid for every successful BBG registration</p>
@@ -321,7 +319,7 @@ export default function DistributorRegistration() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Building className="h-4 w-4 mr-2" />
-                            Full Name *
+                            Full Name (as per PAN / GST) *
                           </FormLabel>
                           <FormControl>
                             <Input placeholder="Enter your full name" {...field} />
@@ -441,25 +439,6 @@ export default function DistributorRegistration() {
 
                     <FormField
                       control={form.control}
-                      name="location"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <MapPin className="h-4 w-4 mr-2" />
-                            Location/City *
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter your city/location" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
                       name="preferredMode"
                       render={({ field }) => (
                         <FormItem>
@@ -515,7 +494,7 @@ export default function DistributorRegistration() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Upload className="h-4 w-4 mr-2" />
-                            Upload PAN Copy (PDF/JPEG)
+                            Upload PAN Copy (PDF/JPEG) *
                           </FormLabel>
                           <FormControl>
                             <Input 
@@ -536,54 +515,85 @@ export default function DistributorRegistration() {
                       control={form.control}
                       name="isGstRegistered"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox 
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm font-normal">
-                            Are You GST Registered?
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium">
+                            Are You GST Registered? *
                           </FormLabel>
+                          <FormControl>
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                variant={field.value ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => field.onChange(true)}
+                              >
+                                Yes
+                              </Button>
+                              <Button
+                                type="button"
+                                variant={!field.value ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => field.onChange(false)}
+                              >
+                                No
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
 
                     {form.watch("isGstRegistered") && (
-                      <div className="grid md:grid-cols-2 gap-6 ml-6">
+                      <div className="space-y-4 ml-6">
                         <FormField
                           control={form.control}
-                          name="gstin"
+                          name="businessName"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>GSTIN *</FormLabel>
+                              <FormLabel>Business Name (as per GST) *</FormLabel>
                               <FormControl>
-                                <Input placeholder="Enter GSTIN number" {...field} />
+                                <Input placeholder="Enter business name as registered" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
+                        
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <FormField
+                            control={form.control}
+                            name="gstin"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>GSTIN *</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Enter GSTIN number" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                        <FormField
-                          control={form.control}
-                          name="gstCertificateFile"
-                          render={({ field: { onChange, value, ...field } }) => (
-                            <FormItem>
-                              <FormLabel>Upload GST Certificate *</FormLabel>
-                              <FormControl>
-                                <Input 
-                                  type="file" 
-                                  accept=".pdf,.jpg,.jpeg,.png"
-                                  onChange={(e) => onChange(e.target.files?.[0])}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                          <FormField
+                            control={form.control}
+                            name="gstCertificateFile"
+                            render={({ field: { onChange, value, ...field } }) => (
+                              <FormItem>
+                                <FormLabel>Upload GST Certificate *</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    type="file" 
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    onChange={(e) => onChange(e.target.files?.[0])}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>
@@ -607,16 +617,31 @@ export default function DistributorRegistration() {
                       control={form.control}
                       name="isMsmeRegistered"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox 
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm font-normal">
-                            Are you covered in MSME?
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium">
+                            Are you covered in MSME? *
                           </FormLabel>
+                          <FormControl>
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                variant={field.value ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => field.onChange(true)}
+                              >
+                                Yes
+                              </Button>
+                              <Button
+                                type="button"
+                                variant={!field.value ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => field.onChange(false)}
+                              >
+                                No
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -837,7 +862,17 @@ export default function DistributorRegistration() {
                             />
                           </FormControl>
                           <FormLabel className="text-sm font-normal leading-relaxed">
-                            I agree to the terms and conditions of the XtraCover Referral Program
+                            I agree to the{" "}
+                            <a 
+                              href="/terms-and-conditions" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 underline inline-flex items-center"
+                            >
+                              terms and conditions
+                              <ExternalLink className="h-3 w-3 ml-1" />
+                            </a>
+                            {" "}of the XtraCover Referral Program
                           </FormLabel>
                         </FormItem>
                       )}

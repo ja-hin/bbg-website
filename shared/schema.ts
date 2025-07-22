@@ -7,15 +7,14 @@ import { z } from "zod";
 export const distributors = pgTable("distributors", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  businessName: text("business_name"), // optional
+  businessName: text("business_name"), // optional, only for GST registered
   contact: text("contact").notNull(),
   email: text("email").notNull(),
   pincode: text("pincode").notNull(),
-  location: text("location").notNull(), // city/location
   preferredMode: text("preferred_mode").notNull(), // 'in-store', 'online', 'both'
   // Tax & Compliance Details
   panNumber: text("pan_number").notNull(),
-  panCopyFile: text("pan_copy_file"),
+  panCopyFile: text("pan_copy_file").notNull(),
   isGstRegistered: boolean("is_gst_registered").default(false),
   gstin: text("gstin"),
   gstCertificateFile: text("gst_certificate_file"),
@@ -28,7 +27,7 @@ export const distributors = pgTable("distributors", {
   bankAccountConfirm: text("bank_account_confirm").notNull(),
   ifscCode: text("ifsc_code").notNull(),
   upiId: text("upi_id"),
-  cancelledChequeFile: text("cancelled_cheque_file").notNull(),
+  cancelledChequeFile: text("cancelled_cheque_file"),
   // Declarations
   infoDeclaration: boolean("info_declaration").default(false),
   tdsUnderstanding: boolean("tds_understanding").default(false),
@@ -53,6 +52,7 @@ export const customers = pgTable("customers", {
   brand: text("brand").notNull(),
   modelName: text("model_name").notNull(),
   invoiceValue: decimal("invoice_value", { precision: 10, scale: 2 }).notNull(),
+  dateOfPurchase: text("date_of_purchase").notNull(),
   // Legacy fields (kept for compatibility)
   address: text("address"),
   purchaseDate: text("purchase_date"),

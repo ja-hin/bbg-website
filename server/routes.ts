@@ -1504,6 +1504,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test HSM template functionality
+  app.post('/api/test-hsm-template', async (req: any, res) => {
+    try {
+      const { phone, template, params = [] } = req.body;
+      
+      if (!phone || !template) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Phone number and template name are required' 
+        });
+      }
+
+      const result = await gupshupService.sendHSMTemplate(phone, template, params);
+      
+      res.json({
+        success: true,
+        result: result,
+        message: 'HSM template sent successfully'
+      });
+    } catch (error: any) {
+      console.log('HSM template test error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to send HSM template',
+        error: error.message
+      });
+    }
+  });
+
   // Test Kaleyra SMS service endpoint
   app.post("/api/test-kaleyra-sms", async (req, res) => {
     try {

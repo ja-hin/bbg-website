@@ -18,11 +18,12 @@ export interface GupshupResponse {
 export class GupshupService {
   // WhatsApp Business API endpoint for HSM templates
   private readonly whatsappBaseUrl = 'https://api.gupshup.io/sm/api/v1';
-  // Pure SMS Gateway API endpoint (not WhatsApp)
-  private readonly smsBaseUrl = 'https://media.smsgupshup.com/GatewayAPI/rest';
+  // HSM Gateway API endpoint 
+  private readonly hsmBaseUrl = 'https://media.smsgupshup.com/GatewayAPI/rest';
   
-  private readonly userId = '2000203988';
-  private readonly password = 'CrtvMm59A';
+  private readonly hsmLogin = '2000203988';
+  private readonly hsmPassword = 'CrtvMm59A';
+  private readonly verificationCode = 'PMTW';
   private readonly apiKey = process.env.GUPSHUP_API_KEY || '';
   private readonly sourceNumber = '919999999999';
   
@@ -61,14 +62,14 @@ export class GupshupService {
       }
     }
 
-    // Use account 2000203988 for WhatsApp messages (HSM template-based)
+    // Use HSM account 2000203988 for WhatsApp messages (HSM template-based)
     try {
-      const whatsappHSMResult = await this.sendWhatsAppHSMMessage(phoneNumber, message.message);
-      return whatsappHSMResult;
+      const hsmResult = await this.sendHSMMessage(phoneNumber, message.message);
+      return hsmResult;
     } catch (error: any) {
-      console.log('WhatsApp HSM failed:', error);
+      console.log('HSM WhatsApp failed:', error);
       // Don't fallback - just throw the HSM template error
-      throw new Error(`WhatsApp message failed: ${error.message}`);
+      throw new Error(`WhatsApp HSM template error: ${error.message}`);
     }
   }
 
@@ -112,11 +113,13 @@ export class GupshupService {
     }
   }
 
-  // Account 2000203988 - WhatsApp Business HSM (your Thunderclient format)
-  private async sendWhatsAppHSMMessage(phoneNumber: string, messageText: string): Promise<GupshupResponse> {
-    // Use the exact API format that works in Thunderclient
-    const userId = '2000203988';  // Your working account from Thunderclient
-    const password = 'CrtvMm59A';  // Your working password from Thunderclient
+  // HSM Account 2000203988 - WhatsApp Business HSM (your Thunderclient format)
+  private async sendHSMMessage(phoneNumber: string, messageText: string): Promise<GupshupResponse> {
+    return this.sendHSMMessageWithTemplate(phoneNumber, messageText);
+  }
+
+  // Send HSM message with template (exact Thunderclient format)
+  private async sendHSMMessageWithTemplate(phoneNumber: string, messageText: string): Promise<GupshupResponse> {
     
     // Clean up message for SMS
     let formattedMessage = messageText.replace(/[🎉🛡️📱🔄📋💰📦❌✅💳⏳📞💬🔐]/g, '').trim();
@@ -127,10 +130,9 @@ export class GupshupService {
     }
 
     // Build the EXACT URL format from your working Thunderclient example
-    const baseUrl = 'https://media.smsgupshup.com/GatewayAPI/rest';
     const params = new URLSearchParams({
-      userid: userId,
-      password: password,
+      userid: this.hsmLogin,
+      password: this.hsmPassword,
       send_to: phoneNumber,
       v: '1.1',
       format: 'json',
@@ -139,9 +141,9 @@ export class GupshupService {
       msg: formattedMessage
     });
 
-    const fullUrl = `${baseUrl}?${params.toString()}`;
+    const fullUrl = `${this.hsmBaseUrl}?${params.toString()}`;
     
-    console.log('Sending WhatsApp message via Gupshup account 2000203988 (exact Thunderclient format) to:', phoneNumber);
+    console.log(`Sending HSM WhatsApp message via Gupshup account ${this.hsmLogin} (exact Thunderclient format) to:`, phoneNumber);
     console.log('Full URL:', fullUrl);
     console.log('WhatsApp message content:', formattedMessage);
 
@@ -185,6 +187,110 @@ export class GupshupService {
   setDeliveryEnabled(enabled: boolean) {
     this.deliveryEnabled = enabled;
     console.log(`Gupshup delivery ${enabled ? 'enabled' : 'disabled'}`);
+  }
+
+  // Send HSM approved template message with parameters
+  async sendHSMTemplate(phone: string, templateName: string, parameters: string[] = []): Promise<GupshupResponse> {
+    const phoneNumber = phone.replace(/\D/g, '');
+    const formattedPhone = phoneNumber.startsWith('91') ? phoneNumber : '91' + phoneNumber;
+
+    // For HSM templates, use the WhatsApp Business API format
+    if (this.apiKey) {
+      try {
+        const templateMessage = await this.sendWhatsAppTemplate(formattedPhone, templateName, parameters);
+        return templateMessage;
+      } catch (error: any) {
+        console.log('HSM template failed via WhatsApp API:', error);
+        throw new Error(`HSM Template error: ${error.message}`);
+      }
+    }
+
+    // Fallback to HSM account format for template messaging
+    const params = new URLSearchParams({
+      userid: this.hsmLogin,
+      password: this.hsmPassword,
+      send_to: formattedPhone,
+      v: '1.1',
+      format: 'json',
+      msg_type: 'HSM',
+      method: 'SENDMESSAGE',
+      template_name: templateName,
+      template_language_code: 'en',
+      template_params: parameters.join('|')
+    });
+
+    const fullUrl = `${this.hsmBaseUrl}?${params.toString()}`;
+
+    console.log(`Sending HSM template "${templateName}" to ${formattedPhone}`);
+    console.log('Template parameters:', parameters);
+
+    try {
+      const response = await axios.get(fullUrl, {
+        timeout: 10000,
+        headers: {
+          'User-Agent': 'Mozilla/5.0',
+          'Accept': 'application/json'
+        }
+      });
+
+      console.log('HSM template response:', response.data);
+
+      if (response.data?.response?.status === 'success') {
+        return {
+          response: {
+            status: 'success',
+            id: response.data.response.id,
+            phone: formattedPhone,
+            details: `HSM template "${templateName}" sent successfully`
+          }
+        };
+      } else {
+        const errorMessage = response.data?.response?.details || 'HSM template failed';
+        throw new Error(errorMessage);
+      }
+    } catch (error: any) {
+      console.log('HSM template delivery failed:', error);
+      throw new Error(`HSM template delivery failed: ${error.message}`);
+    }
+  }
+
+  // WhatsApp Business API template method
+  private async sendWhatsAppTemplate(phoneNumber: string, templateName: string, parameters: string[]): Promise<GupshupResponse> {
+    const headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'apikey': this.apiKey
+    };
+
+    const templateData = {
+      channel: 'whatsapp',
+      source: this.sourceNumber,
+      destination: phoneNumber,
+      'template': JSON.stringify({
+        id: templateName,
+        params: parameters
+      })
+    };
+
+    try {
+      const response = await axios.post(`${this.whatsappBaseUrl}/template/msg`, templateData, { headers });
+      
+      console.log('WhatsApp template response:', response.data);
+
+      if (response.data?.status === 'submitted') {
+        return {
+          response: {
+            status: 'success',
+            id: response.data.messageId || 'template-' + Date.now(),
+            phone: phoneNumber,
+            details: `WhatsApp template "${templateName}" sent successfully`
+          }
+        };
+      } else {
+        throw new Error('WhatsApp template failed: ' + (response.data?.message || 'Unknown error'));
+      }
+    } catch (error: any) {
+      throw new Error('WhatsApp template API error: ' + error.message);
+    }
   }
 
   async sendWelcomeMessage(name: string, phone: string, referralCode: string): Promise<void> {

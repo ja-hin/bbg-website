@@ -13,7 +13,7 @@ import { Loader2, MessageCircle, Send, CheckCircle, XCircle } from "lucide-react
 export default function AdminWhatsAppTest() {
   const { toast } = useToast();
   const [phone, setPhone] = useState("9564137489");
-  const [message, setMessage] = useState("Hello! This is a test message from Xtracover BBG WhatsApp system. If you received this, our WhatsApp integration is working perfectly! 🎉");
+  const [message, setMessage] = useState("Hello! This is a test message from Xtracover BBG system. If you received this message, our WhatsApp integration is working correctly.");
   const [lastResult, setLastResult] = useState<any>(null);
 
   const testGupshupMutation = useMutation({
@@ -72,9 +72,9 @@ export default function AdminWhatsAppTest() {
   return (
     <div className="container mx-auto p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">WhatsApp & Communication Testing</h1>
+        <h1 className="text-3xl font-bold mb-2">Gupshup SMS Gateway Testing</h1>
         <p className="text-muted-foreground">
-          Test Gupshup WhatsApp API and all communication channels
+          Test Gupshup SMS Gateway API and communication channels (Production Ready)
         </p>
       </div>
 
@@ -83,7 +83,7 @@ export default function AdminWhatsAppTest() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5" />
-            Gupshup Configuration
+            Gupshup SMS Gateway Configuration
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -94,16 +94,22 @@ export default function AdminWhatsAppTest() {
             </div>
             <div>
               <Label className="text-sm font-medium">Status</Label>
-              <Badge variant="default">Production Ready</Badge>
+              <Badge variant="default">Production SMS Gateway</Badge>
             </div>
             <div>
               <Label className="text-sm font-medium">Service</Label>
-              <p className="text-sm text-muted-foreground">SMS Gateway API</p>
+              <p className="text-sm text-muted-foreground">SMS Gateway API (not WhatsApp HSM)</p>
             </div>
             <div>
               <Label className="text-sm font-medium">Message Type</Label>
-              <p className="text-sm text-muted-foreground">TEXT</p>
+              <p className="text-sm text-muted-foreground">SMS TEXT</p>
             </div>
+          </div>
+          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+            <p className="text-sm text-blue-800">
+              <strong>Production Status:</strong> Gupshup account (2000203988) is configured and ready. 
+              WhatsApp HSM templates need approval for business messaging, so using SMS fallback for testing.
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -270,11 +276,12 @@ export default function AdminWhatsAppTest() {
         </CardHeader>
         <CardContent>
           <div className="space-y-2 text-sm text-muted-foreground">
-            <p>• <strong>WhatsApp Only:</strong> Tests direct Gupshup SMS Gateway API</p>
-            <p>• <strong>All Channels:</strong> Tests Email (SMTP), SMS (Kaleyra), and WhatsApp (Gupshup)</p>
+            <p>• <strong>SMS Gateway Test:</strong> Tests direct Gupshup SMS Gateway API (2000203988)</p>
+            <p>• <strong>All Channels:</strong> Tests Email (SMTP), SMS (Kaleyra), and SMS (Gupshup)</p>
             <p>• Phone numbers should be Indian mobile numbers without +91 prefix</p>
-            <p>• Messages are sent in real-time to the specified number</p>
-            <p>• Check the response details to verify delivery status</p>
+            <p>• Production credentials configured - messages sent to real numbers</p>
+            <p>• WhatsApp HSM requires pre-approved templates (using SMS fallback)</p>
+            <p>• Check response details to verify delivery status and fallback handling</p>
           </div>
         </CardContent>
       </Card>

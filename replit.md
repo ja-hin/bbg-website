@@ -189,6 +189,44 @@ KALEYRA_SENDER_ID=XTRCVR  # Configured sender ID
 - OTP generation and verification working perfectly
 - Professional message templates active
 
+## Gupshup Integration
+
+### Gupshup SMS Gateway Service
+- **Provider**: Gupshup SMS Gateway API (Account: 2000203988)
+- **Configuration**: Production credentials configured with Login: 2000203988 & Password: CrtvMm59A
+- **Service Type**: SMS Gateway API (not WhatsApp Business HSM due to template approval requirements)
+- **Features**:
+  - Production SMS delivery via Gupshup infrastructure
+  - Automatic phone number formatting (91 prefix)
+  - Message length optimization (160 char limit)
+  - Fallback mode for WhatsApp HSM template issues
+  - Clean message formatting (removes emojis/special chars)
+
+### Production Credentials
+```bash
+# Production HSM account (requires approved templates)
+HSM_LOGIN=2000203988
+HSM_PASSWORD=CrtvMm59A
+HSM_VERIFICATION=PMTW
+
+# Two-Way account 
+TWOWAY_LOGIN=2000203989
+TWOWAY_PASSWORD=EEoHp1K9S
+TWOWAY_VERIFICATION=MDDA
+```
+
+### API Endpoints
+- `POST /api/test-gupshup-whatsapp` - Test Gupshup SMS Gateway delivery
+- Integrated into CommunicationService for customer/partner notifications
+- Admin interface at `/admin/whatsapp-test` for message testing
+
+### Production Status
+✅ **PRODUCTION READY** - Gupshup SMS Gateway configured with fallback handling
+- Account 2000203988 configured and tested
+- SMS delivery via Gupshup Gateway API working
+- WhatsApp Business HSM templates require approval (using SMS fallback)
+- Message formatting and delivery optimization active
+
 ## Communication System
 
 ### Multi-Channel Notifications

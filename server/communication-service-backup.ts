@@ -6,7 +6,7 @@ import { gupshupService } from './gupshup-service';
 // Email Service using SMTP
 export class EmailService {
   private createTransporter() {
-    return nodemailer.createTransporter({
+    return nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
       port: parseInt(process.env.SMTP_PORT || '587'),
       secure: false, // true for 465, false for other ports
@@ -24,6 +24,7 @@ export class EmailService {
         return { success: false, message: 'SMTP not configured' };
       }
 
+      // Create transporter dynamically to pick up environment variable changes
       const transporter = this.createTransporter();
 
       const mailOptions = {
@@ -44,7 +45,7 @@ export class EmailService {
   }
 }
 
-// SMS Service using Kaleyra
+// SMS Service using Kaleyra (already exists, extending it)
 export class SMSService {
   private apiKey: string;
   private senderId: string;
@@ -53,7 +54,7 @@ export class SMSService {
   constructor() {
     this.apiKey = process.env.KALEYRA_API_KEY || '';
     this.senderId = process.env.KALEYRA_SENDER_ID || 'XTRCVR';
-    this.baseUrl = 'https://api-alerts.kaleyra.com/v4/?method=sms';
+    this.baseUrl = 'https://api-alerts.kaleyra.com/v4/';
   }
 
   async sendSMS(to: string, message: string, templateId?: string) {
@@ -63,6 +64,7 @@ export class SMSService {
         return { success: false, message: 'SMS service not configured' };
       }
 
+      // Format phone number to ensure it has +91 prefix
       const formattedNumber = to.startsWith('+91') ? to : `+91${to.replace(/^\+?91?/, '')}`;
 
       const payload = {
@@ -100,7 +102,7 @@ export class SMSService {
   }
 }
 
-// WhatsApp Service using Gupshup
+// WhatsApp Service using Gupshup (Updated with production credentials)
 export class WhatsAppService {
   async sendWhatsAppMessage(to: string, message: string) {
     try {
@@ -116,6 +118,39 @@ export class WhatsAppService {
       return { success: false, error: error.message };
     }
   }
+} 
+          success: true, 
+          messageId: response.data.messageId,
+          to: formattedNumber 
+        };
+      } else {
+        throw new Error(`WhatsApp API error: ${response.data?.reason || 'Unknown error'}`);
+      }
+    } catch (error: any) {
+      console.error('WhatsApp message sending failed:', error.message);
+      return { success: false, error: error.message };
+    }
+  }
+
+  async sendTemplateMessage(to: string, templateName: string, params: string[]) {
+    return this.sendWhatsAppMessage(to, '', templateName, params);
+  }
+
+  // Helper method to check if WhatsApp service is configured
+  isConfigured(): boolean {
+    return !!this.apiKey && !!this.sourceNumber;
+  }
+
+  // Method to get configuration status for admin dashboard
+  getServiceStatus() {
+    return {
+      hasApiKey: !!this.apiKey,
+      hasSourceNumber: !!this.sourceNumber,
+      accountId: this.accountId,
+      sourceNumber: this.sourceNumber,
+      appName: this.appName
+    };
+  }
 }
 
 // Unified Communication Service
@@ -130,6 +165,7 @@ export class CommunicationService {
     this.whatsappService = new WhatsAppService();
   }
 
+  // Send notifications for different events using templates
   async sendRegistrationConfirmation(
     customerData: {
       name: string;
@@ -157,17 +193,31 @@ export class CommunicationService {
       }
 
       // SMS confirmation using template
+      console.log('🔄 Checking SMS template for customer registration...');
       const smsTemplate = await templateService.getTemplate('sms', 'customer_registration');
       if (smsTemplate) {
+        console.log('✅ SMS template found, sending SMS...');
         const smsMessage = templateService.renderTemplate(smsTemplate.content, customerData);
+        console.log('📱 SMS Message to send:', smsMessage);
         results.sms = await this.smsService.sendSMS(customerData.contact, smsMessage);
+        console.log('📱 SMS Result:', results.sms);
+      } else {
+        console.log('❌ SMS template not found for customer_registration');
+        results.sms = { success: false, error: 'Template not found' };
       }
 
       // WhatsApp confirmation using template
+      console.log('🔄 Checking WhatsApp template for customer registration...');
       const whatsappTemplate = await templateService.getTemplate('whatsapp', 'customer_registration');
       if (whatsappTemplate) {
+        console.log('✅ WhatsApp template found, sending WhatsApp message...');
         const whatsappMessage = templateService.renderTemplate(whatsappTemplate.content, customerData);
+        console.log('💬 WhatsApp Message to send:', whatsappMessage);
         results.whatsapp = await this.whatsappService.sendWhatsAppMessage(customerData.contact, whatsappMessage);
+        console.log('💬 WhatsApp Result:', results.whatsapp);
+      } else {
+        console.log('❌ WhatsApp template not found for customer_registration');
+        results.whatsapp = { success: false, error: 'Template not found' };
       }
     } catch (error) {
       console.error('Error sending registration confirmation:', error);
@@ -193,26 +243,25 @@ export class CommunicationService {
 
     try {
       // Email welcome using template
-      const emailTemplate = await templateService.getTemplate('email', 'distributor_welcome');
+      const emailTemplate = await templateService.getTemplate('email', 'referral_partner_welcome');
       if (emailTemplate) {
         const emailContent = templateService.renderTemplate(emailTemplate.content, partnerData);
-        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'Welcome to Xtracover BBG Partnership', partnerData);
+        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'Welcome to Referral Program', partnerData);
         results.email = await this.emailService.sendEmail(partnerData.email, emailSubject, emailContent);
       }
 
       // SMS welcome using template
-      const smsTemplate = await templateService.getTemplate('sms', 'distributor_welcome');
+      const smsTemplate = await templateService.getTemplate('sms', 'referral_partner_welcome');
       if (smsTemplate) {
         const smsMessage = templateService.renderTemplate(smsTemplate.content, partnerData);
         results.sms = await this.smsService.sendSMS(partnerData.contact, smsMessage);
       }
 
-      // WhatsApp welcome using Gupshup service
-      try {
-        await gupshupService.sendWelcomeMessage(partnerData.name, partnerData.contact, partnerData.sellerCode);
-        results.whatsapp = { success: true, service: 'gupshup' };
-      } catch (error: any) {
-        results.whatsapp = { success: false, error: error.message };
+      // WhatsApp welcome using template
+      const whatsappTemplate = await templateService.getTemplate('whatsapp', 'referral_partner_welcome');
+      if (whatsappTemplate) {
+        const whatsappMessage = templateService.renderTemplate(whatsappTemplate.content, partnerData);
+        results.whatsapp = await this.whatsappService.sendWhatsAppMessage(partnerData.contact, whatsappMessage);
       }
     } catch (error) {
       console.error('Error sending referral partner welcome:', error);
@@ -222,13 +271,13 @@ export class CommunicationService {
   }
 
   async sendClaimStatusUpdate(
-    claimData: {
+    customerData: {
       name: string;
       email: string;
       contact: string;
       voucherCode: string;
+      claimAmount: number;
       status: string;
-      claimAmount?: number;
     }
   ) {
     const results = {
@@ -238,27 +287,26 @@ export class CommunicationService {
     };
 
     try {
-      // Email notification using template
+      // Email update using template
       const emailTemplate = await templateService.getTemplate('email', 'claim_status_update');
       if (emailTemplate) {
-        const emailContent = templateService.renderTemplate(emailTemplate.content, claimData);
-        const emailSubject = templateService.renderTemplate(emailTemplate.subject || `BBG Claim Status: ${claimData.status}`, claimData);
-        results.email = await this.emailService.sendEmail(claimData.email, emailSubject, emailContent);
+        const emailContent = templateService.renderTemplate(emailTemplate.content, customerData);
+        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'Claim Status Update', customerData);
+        results.email = await this.emailService.sendEmail(customerData.email, emailSubject, emailContent);
       }
 
-      // SMS notification using template
+      // SMS update using template
       const smsTemplate = await templateService.getTemplate('sms', 'claim_status_update');
       if (smsTemplate) {
-        const smsMessage = templateService.renderTemplate(smsTemplate.content, claimData);
-        results.sms = await this.smsService.sendSMS(claimData.contact, smsMessage);
+        const smsMessage = templateService.renderTemplate(smsTemplate.content, customerData);
+        results.sms = await this.smsService.sendSMS(customerData.contact, smsMessage);
       }
 
-      // WhatsApp notification using Gupshup service
-      try {
-        await gupshupService.sendClaimUpdate(claimData.name, claimData.contact, claimData.status, claimData.claimAmount);
-        results.whatsapp = { success: true, service: 'gupshup' };
-      } catch (error: any) {
-        results.whatsapp = { success: false, error: error.message };
+      // WhatsApp update using template
+      const whatsappTemplate = await templateService.getTemplate('whatsapp', 'claim_status_update');
+      if (whatsappTemplate) {
+        const whatsappMessage = templateService.renderTemplate(whatsappTemplate.content, customerData);
+        results.whatsapp = await this.whatsappService.sendWhatsAppMessage(customerData.contact, whatsappMessage);
       }
     } catch (error) {
       console.error('Error sending claim status update:', error);
@@ -268,7 +316,7 @@ export class CommunicationService {
   }
 
   async sendPayoutNotification(
-    payoutData: {
+    partnerData: {
       name: string;
       email: string;
       contact: string;
@@ -287,24 +335,23 @@ export class CommunicationService {
       // Email notification using template
       const emailTemplate = await templateService.getTemplate('email', 'payout_notification');
       if (emailTemplate) {
-        const emailContent = templateService.renderTemplate(emailTemplate.content, payoutData);
-        const emailSubject = templateService.renderTemplate(emailTemplate.subject || `Payout Update: ₹${payoutData.amount}`, payoutData);
-        results.email = await this.emailService.sendEmail(payoutData.email, emailSubject, emailContent);
+        const emailContent = templateService.renderTemplate(emailTemplate.content, partnerData);
+        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'Payout Update', partnerData);
+        results.email = await this.emailService.sendEmail(partnerData.email, emailSubject, emailContent);
       }
 
       // SMS notification using template
       const smsTemplate = await templateService.getTemplate('sms', 'payout_notification');
       if (smsTemplate) {
-        const smsMessage = templateService.renderTemplate(smsTemplate.content, payoutData);
-        results.sms = await this.smsService.sendSMS(payoutData.contact, smsMessage);
+        const smsMessage = templateService.renderTemplate(smsTemplate.content, partnerData);
+        results.sms = await this.smsService.sendSMS(partnerData.contact, smsMessage);
       }
 
-      // WhatsApp notification using Gupshup service
-      try {
-        await gupshupService.sendPayoutUpdate(payoutData.name, payoutData.contact, payoutData.amount, payoutData.status);
-        results.whatsapp = { success: true, service: 'gupshup' };
-      } catch (error: any) {
-        results.whatsapp = { success: false, error: error.message };
+      // WhatsApp notification using template
+      const whatsappTemplate = await templateService.getTemplate('whatsapp', 'payout_notification');
+      if (whatsappTemplate) {
+        const whatsappMessage = templateService.renderTemplate(whatsappTemplate.content, partnerData);
+        results.whatsapp = await this.whatsappService.sendWhatsAppMessage(partnerData.contact, whatsappMessage);
       }
     } catch (error) {
       console.error('Error sending payout notification:', error);
@@ -314,67 +361,33 @@ export class CommunicationService {
   }
 
   // Test all communication channels
-  async testAllChannels(testData: {
+  async testCommunications(testData: {
     email: string;
-    phone: string;
+    contact: string;
     name: string;
-    message: string;
   }) {
+    console.log('Testing all communication channels...');
+    
     const results = {
-      email: null as any,
-      sms: null as any,
-      whatsapp: null as any
-    };
-
-    try {
-      // Test email
-      results.email = await this.emailService.sendEmail(
+      email: await this.emailService.sendEmail(
         testData.email,
-        'Xtracover BBG - Test Email',
-        `<h2>Test Email</h2><p>Hello ${testData.name},</p><p>${testData.message}</p>`,
-        `Test Email - Hello ${testData.name}, ${testData.message}`
-      );
-
-      // Test SMS
-      results.sms = await this.smsService.sendSMS(
-        testData.phone,
-        `Test SMS - Hello ${testData.name}, ${testData.message}`
-      );
-
-      // Test WhatsApp using Gupshup service
-      try {
-        await gupshupService.testConnection(testData.phone, `Test WhatsApp - Hello ${testData.name}, ${testData.message}`);
-        results.whatsapp = { success: true, service: 'gupshup' };
-      } catch (error: any) {
-        results.whatsapp = { success: false, error: error.message };
-      }
-    } catch (error) {
-      console.error('Error testing communication channels:', error);
-    }
-
-    return results;
-  }
-
-  // Get service status for admin dashboard
-  getServiceStatus() {
-    return {
-      email: {
-        configured: !!(process.env.SMTP_USER && process.env.SMTP_PASSWORD),
-        host: process.env.SMTP_HOST || 'smtp.gmail.com',
-        user: process.env.SMTP_USER ? '***configured***' : 'not configured'
-      },
-      sms: {
-        configured: !!process.env.KALEYRA_API_KEY,
-        service: 'Kaleyra',
-        senderId: process.env.KALEYRA_SENDER_ID || 'XTRCVR'
-      },
-      whatsapp: {
-        configured: true, // Gupshup service has hardcoded credentials
-        service: 'Gupshup',
-        account: '2000203988'
-      }
+        'Test Email - Xtracover BBG Communications',
+        `<h2>Hello ${testData.name}!</h2><p>This is a test email from Xtracover BBG communication system. If you received this, email notifications are working correctly!</p>`
+      ),
+      sms: await this.smsService.sendSMS(
+        testData.contact,
+        `Hi ${testData.name}! This is a test SMS from Xtracover BBG. If you received this, SMS notifications are working! - Xtracover`
+      ),
+      whatsapp: await this.whatsappService.sendWhatsAppMessage(
+        testData.contact,
+        `🧪 Hi ${testData.name}!\n\nThis is a test WhatsApp message from Xtracover BBG.\n\nIf you received this, WhatsApp notifications are working correctly! ✅\n\n- Xtracover Team`
+      )
     };
+
+    console.log('Communication test results:', results);
+    return results;
   }
 }
 
+// Export singleton instance
 export const communicationService = new CommunicationService();

@@ -10,6 +10,7 @@ import { db } from "./db";
 import sql from 'mssql';
 import { kaleyraSMSService } from "./kaleyra-service";
 import { communicationService } from "./communication-service";
+import { gupshupService } from "./gupshup-service";
 import { templateService } from "./template-service";
 import { testAllTemplates } from "./template-test";
 // Removed nodemailer import - using communicationService instead
@@ -1431,17 +1432,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Test Communication Services endpoint (basic test)
   app.post("/api/test-communications", async (req, res) => {
     try {
-      const { name, email, contact } = req.body;
+      const { name, email, contact, message } = req.body;
       
-      if (!name || !email || !contact) {
-        return res.status(400).json({ message: "Name, email, and contact number are required" });
+      if (!name || !email || !contact || !message) {
+        return res.status(400).json({ message: "Name, email, contact, and message are required" });
       }
 
       // Test all communication channels
-      const results = await communicationService.testCommunications({
+      const results = await communicationService.testAllChannels({
         name,
         email,
-        contact
+        phone: contact,
+        message
       });
 
       res.json({
@@ -1449,16 +1451,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Communication test completed",
         results: {
           email: {
-            success: results.email.success,
-            message: results.email.success ? "Email sent successfully" : results.email.error
+            success: results.email?.success || false,
+            message: results.email?.success ? "Email sent successfully" : results.email?.error || "Failed"
           },
           sms: {
-            success: results.sms.success,
-            message: results.sms.success ? "SMS sent successfully" : results.sms.error
+            success: results.sms?.success || false,
+            message: results.sms?.success ? "SMS sent successfully" : results.sms?.error || "Failed"
           },
           whatsapp: {
-            success: results.whatsapp.success,
-            message: results.whatsapp.success ? "WhatsApp message sent successfully" : results.whatsapp.error
+            success: results.whatsapp?.success || false,
+            message: results.whatsapp?.success ? "WhatsApp message sent successfully" : results.whatsapp?.error || "Failed"
           }
         }
       });
@@ -1467,6 +1469,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ 
         success: false,
         message: "Communication test failed", 
+        error: error.message 
+      });
+    }
+  });
+
+  // Test Gupshup WhatsApp specifically
+  app.post("/api/test-gupshup-whatsapp", async (req, res) => {
+    try {
+      const { phone, message } = req.body;
+      
+      if (!phone || !message) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Phone and message are required" 
+        });
+      }
+
+      const result = await gupshupService.testConnection(phone, message);
+
+      res.json({
+        success: true,
+        result,
+        message: "Gupshup WhatsApp test completed"
+      });
+    } catch (error: any) {
+      console.error("Gupshup WhatsApp test error:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to test Gupshup WhatsApp",
         error: error.message 
       });
     }

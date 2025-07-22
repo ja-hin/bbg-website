@@ -20,6 +20,7 @@ import AdminBrandsNew from "@/pages/admin-brands-new";
 import AdminDistributors from "@/pages/admin-distributors";
 import AdminTemplates from "@/pages/admin-templates";
 import AdminLogs from "@/pages/admin-logs";
+import AdminWhatsAppTest from "@/pages/admin-whatsapp-test";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import { useAuth } from "@/hooks/useAuth";
@@ -52,6 +53,7 @@ function Router() {
       <Route path="/admin/distributors" component={AdminDistributors} />
       <Route path="/admin/templates" component={AdminTemplates} />
       <Route path="/admin/logs" component={AdminLogs} />
+      <Route path="/admin/whatsapp-test" component={AdminWhatsAppTest} />
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />

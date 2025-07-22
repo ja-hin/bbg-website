@@ -984,7 +984,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (distributor) {
         res.json({ 
           valid: true, 
-          message: "Valid Referral Code",
+          message: `Valid referral code for ${distributor.name}`,
           distributorName: distributor.name
         });
       } else {

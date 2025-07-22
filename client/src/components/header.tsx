@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, X, Home, Shield, UserPlus, FileText, ShoppingCart } from "lucide-react";
+import { Menu, X, Home, Shield, UserPlus, FileText } from "lucide-react";
 import { useState } from "react";
 
 export default function Header() {
@@ -10,8 +10,7 @@ export default function Header() {
 
   const navigationItems = [
     { href: "/", label: "Home", icon: Home },
-    { href: "/buy-bbg", label: "Buy BBG", icon: ShoppingCart },
-    { href: "/customer-registration", label: "Register Device", icon: Shield },
+    { href: "/customer-registration", label: "Register BBG", icon: Shield },
     { href: "/claim-bbg", label: "Claim BBG", icon: FileText },
   ];
 

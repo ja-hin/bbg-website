@@ -9,8 +9,6 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import DistributorRegistration from "@/pages/distributor-registration";
 import CustomerRegistration from "@/pages/customer-registration";
-import BuyBBG from "@/pages/buy-bbg";
-import BuySuccess from "@/pages/buy-success";
 import ClaimBBG from "@/pages/claim-bbg";
 import ThankYou from "@/pages/thank-you";
 import AdminLogin from "@/pages/admin-login";
@@ -66,8 +64,6 @@ function Router() {
           <main className="flex-1">
             <Switch>
               <Route path="/" component={Home} />
-              <Route path="/buy-bbg" component={BuyBBG} />
-              <Route path="/buy-success" component={BuySuccess} />
               <Route path="/referral-partner-registration" component={DistributorRegistration} />
               <Route path="/customer-registration" component={CustomerRegistration} />
               <Route path="/claim-bbg" component={ClaimBBG} />

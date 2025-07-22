@@ -720,7 +720,7 @@ export default function DistributorRegistration() {
                       name="bankAccountConfirm"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Confirm Account Number * (No copy-paste allowed)</FormLabel>
+                          <FormLabel>Confirm Account Number *</FormLabel>
                           <FormControl>
                             <Input 
                               placeholder="Re-enter bank account number"
@@ -844,7 +844,7 @@ export default function DistributorRegistration() {
                             />
                           </FormControl>
                           <FormLabel className="text-sm font-normal leading-relaxed">
-                            If GST registered, I agree to raise tax invoices to XtraCover for each month's referral commission - TBD
+                            If GST registered, I agree to raise tax invoices to XtraCover for each month's referral commission
                           </FormLabel>
                         </FormItem>
                       )}

@@ -19,11 +19,11 @@ export default function Home() {
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:space-x-8 space-y-2 sm:space-y-0 py-2 sm:py-0">
-            <Link href="/distributor-registration" className="py-3 sm:py-4 px-3 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm hover:border-red-300 transition-colors rounded sm:rounded-none">
-              Distributor Registration
+            <Link href="/buy-bbg" className="py-3 sm:py-4 px-3 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm hover:border-red-300 transition-colors rounded sm:rounded-none">
+              Buy BBG Protection
             </Link>
             <Link href="/customer-registration" className="py-3 sm:py-4 px-3 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm hover:border-red-300 transition-colors rounded sm:rounded-none">
-              Customer Registration
+              Register Device
             </Link>
             <Link href="/claim-bbg" className="py-3 sm:py-4 px-3 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm hover:border-red-300 transition-colors rounded sm:rounded-none">
               Claim BBG
@@ -46,9 +46,9 @@ export default function Home() {
           
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 sm:mb-16 px-4 sm:px-0">
-            <Link href="/customer-registration" className="w-full sm:w-auto">
+            <Link href="/buy-bbg" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
-                Buy BBG <ArrowRight className="ml-2 h-4 h-5 sm:w-5" />
+                Buy BBG Protection <ArrowRight className="ml-2 h-4 h-5 sm:w-5" />
               </Button>
             </Link>
             <Link href="/claim-bbg" className="w-full sm:w-auto">

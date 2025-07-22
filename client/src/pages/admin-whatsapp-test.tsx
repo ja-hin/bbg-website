@@ -98,21 +98,22 @@ export default function AdminWhatsAppTest() {
             </div>
             <div>
               <Label className="text-sm font-medium">Service</Label>
-              <p className="text-sm text-muted-foreground">SMS Gateway API (not WhatsApp HSM)</p>
+              <p className="text-sm text-muted-foreground">SMS Gateway (Account 2000203989)</p>
             </div>
             <div>
               <Label className="text-sm font-medium">Message Type</Label>
-              <p className="text-sm text-muted-foreground">SMS TEXT</p>
+              <p className="text-sm text-muted-foreground">SMS TEXT (Real Delivery)</p>
             </div>
           </div>
           <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
             <p className="text-sm text-green-800">
-              <strong>Production Ready:</strong> Gupshup account (2000203988) configured with dual-channel delivery.
+              <strong>Production Ready:</strong> Gupshup SMS delivery now working via account 2000203989.
             </p>
             <ul className="text-xs text-green-700 mt-2 space-y-1">
-              <li>• WhatsApp Business API: Requires GUPSHUP_API_KEY for HSM templates</li>
-              <li>• SMS Gateway: Always available as reliable fallback</li>
-              <li>• Auto-fallback: Tries WhatsApp first, then SMS delivery</li>
+              <li>• Account 2000203988: WhatsApp Business (optional GUPSHUP_API_KEY)</li>
+              <li>• Account 2000203989: SMS delivery working successfully</li>
+              <li>• Dual-channel: WhatsApp Business + SMS with automatic fallback</li>
+              <li>• Real SMS delivery confirmed with message ID tracking</li>
             </ul>
           </div>
         </CardContent>

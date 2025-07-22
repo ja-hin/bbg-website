@@ -18,7 +18,7 @@ export interface GupshupResponse {
 export class GupshupService {
   // WhatsApp Business API endpoint for HSM templates
   private readonly whatsappBaseUrl = 'https://api.gupshup.io/sm/api/v1';
-  // SMS Gateway API endpoint as fallback
+  // Pure SMS Gateway API endpoint (not WhatsApp)
   private readonly smsBaseUrl = 'https://media.smsgupshup.com/GatewayAPI/rest';
   
   private readonly userId = '2000203988';
@@ -63,7 +63,7 @@ export class GupshupService {
         }
       }
 
-      // Fallback to SMS Gateway API
+      // Use SMS Gateway API (prefer two-way account 2000203989 for SMS)
       return await this.sendSMSMessage(phoneNumber, message.message);
 
     } catch (error: any) {
@@ -120,6 +120,10 @@ export class GupshupService {
   }
 
   private async sendSMSMessage(phoneNumber: string, messageText: string): Promise<GupshupResponse> {
+    // Use two-way messaging account for SMS delivery (verified working)
+    const twoWayUserId = '2000203989';
+    const twoWayPassword = 'EEoHp1K9S';
+    
     // Clean up message for SMS
     let formattedMessage = messageText.replace(/[🎉🛡️📱🔄📋💰📦❌✅💳⏳📞💬🔐]/g, '').trim();
     
@@ -128,9 +132,10 @@ export class GupshupService {
       formattedMessage = formattedMessage.substring(0, 157) + '...';
     }
 
+    // Direct SMS via two-way account (verified working)
     const params = new URLSearchParams({
-      userid: this.userId,
-      password: this.password,
+      userid: twoWayUserId,
+      password: twoWayPassword,
       send_to: phoneNumber,
       v: '1.1',
       format: 'json',
@@ -140,26 +145,36 @@ export class GupshupService {
       auth_scheme: 'plain'
     });
 
-    console.log('Sending SMS message to:', phoneNumber);
+    console.log('Sending SMS via Gupshup two-way account to:', phoneNumber);
     console.log('SMS content:', formattedMessage);
 
-    const response = await axios.get(`${this.smsBaseUrl}?${params.toString()}`, {
-      timeout: 10000,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    });
+    try {
+      const response = await axios.get(`${this.smsBaseUrl}?${params.toString()}`, {
+        timeout: 10000,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
 
-    console.log('SMS Gateway response:', response.data);
+      console.log('SMS response:', response.data);
 
-    return {
-      response: {
-        status: 'success',
-        id: 'sms-' + Date.now(),
-        phone: phoneNumber,
-        details: 'SMS message sent successfully'
+      // Check for success response
+      if (response.data?.response?.status === 'success' && response.data.response.id) {
+        return {
+          response: {
+            status: 'success',
+            id: response.data.response.id,
+            phone: phoneNumber,
+            details: 'SMS sent via Gupshup two-way account 2000203989'
+          }
+        };
+      } else {
+        throw new Error(`SMS failed: ${response.data?.response?.details || 'Unknown error'}`);
       }
-    };
+    } catch (error: any) {
+      console.log('SMS delivery failed:', error.message);
+      throw new Error(`SMS delivery failed via Gupshup: ${error.message}`);
+    }
   }
 
   // Method to disable/enable actual delivery for testing

@@ -104,7 +104,7 @@ export class SMSService {
 export class WhatsAppService {
   async sendWhatsAppMessage(to: string, message: string) {
     try {
-      console.log('Sending WhatsApp message via Gupshup service');
+      console.log('Attempting WhatsApp message via Gupshup service');
       await gupshupService.sendMessage({
         to: to,
         message: message,
@@ -112,8 +112,20 @@ export class WhatsAppService {
       });
       return { success: true, service: 'gupshup' };
     } catch (error: any) {
-      console.error('WhatsApp sending failed:', error.message);
-      return { success: false, error: error.message };
+      console.error('WhatsApp/Gupshup failed, falling back to Kaleyra SMS:', error.message);
+      
+      // Fallback to Kaleyra SMS
+      try {
+        const smsService = new SMSService();
+        const smsResult = await smsService.sendSMS(to, message);
+        if (smsResult.success) {
+          return { success: true, service: 'kaleyra-sms-fallback' };
+        } else {
+          throw new Error('SMS fallback also failed');
+        }
+      } catch (smsError: any) {
+        return { success: false, error: `Gupshup and Kaleyra both failed: ${error.message}, ${smsError.message}` };
+      }
     }
   }
 }

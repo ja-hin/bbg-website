@@ -728,7 +728,7 @@ function RegistrationContent() {
                     />
                   </div>
 
-                  <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="serialNumber"
@@ -736,18 +736,16 @@ function RegistrationContent() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Hash className="h-4 w-4 mr-2" />
-                            Serial No. / IMEI *
+                            IMEI/Serial Number *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter device serial number or IMEI" {...field} />
+                            <Input placeholder="Enter IMEI or Serial" {...field} />
                           </FormControl>
-                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 mt-1">
                             <div className="flex items-start space-x-2">
-                              <Info className="h-4 w-4 text-blue-600 mt-0.5" />
-                              <div className="text-sm text-blue-800">
-                                <p className="font-medium mb-1">Important: Double Check while entering IMEI/Serial No.</p>
-                                <p className="mb-1">📱 <strong>For Mobile:</strong> Dial *#06# to get IMEI</p>
-                                <p>💻 <strong>For Laptop:</strong> Check sticker on bottom/back or System Info → Hardware</p>
+                              <Info className="h-3 w-3 text-blue-600 mt-0.5" />
+                              <div className="text-xs text-blue-800">
+                                <p className="font-medium">📱 Mobile: Dial *#06# | 💻 Laptop: Check system info</p>
                               </div>
                             </div>
                           </div>
@@ -763,7 +761,7 @@ function RegistrationContent() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Upload className="h-4 w-4 mr-2" />
-                            Upload Device Tax Invoice *
+                            Upload Tax Invoice *
                           </FormLabel>
                           <FormControl>
                             <FileUpload
@@ -772,7 +770,7 @@ function RegistrationContent() {
                                 setInvoiceFile(file);
                                 field.onChange(file);
                               }}
-                              placeholder="Upload invoice (PDF/Image)"
+                              placeholder="Upload invoice"
                               className="w-full"
                             />
                           </FormControl>
@@ -872,54 +870,55 @@ function RegistrationContent() {
                     Verification & Referral Details
                   </h3>
                   
-                  {/* OTP Verification */}
-                  <div className="space-y-3">
-                    <div className="flex gap-2">
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        onClick={handleSendOtp}
-                        disabled={otpSent || otpVerified || sendOtpMutation.isPending}
-                        className="flex-shrink-0"
-                      >
-                        {sendOtpMutation.isPending ? "Sending..." : otpVerified ? "Verified" : "Send OTP"}
-                      </Button>
-                      <div className="flex-1">
-                        <Input 
-                          placeholder="Enter 6-digit OTP" 
-                          maxLength={6}
-                          value={otp}
-                          onChange={(e) => setOtp(e.target.value)}
-                          disabled={!otpSent || otpVerified}
-                        />
+                  {/* OTP Verification and Referral Code in same row */}
+                  <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">OTP Verification *</label>
+                      <div className="flex gap-2">
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          onClick={handleSendOtp}
+                          disabled={otpSent || otpVerified || sendOtpMutation.isPending}
+                          className="flex-shrink-0 text-xs px-3"
+                        >
+                          {sendOtpMutation.isPending ? "Sending..." : otpVerified ? "Verified" : "Send OTP"}
+                        </Button>
+                        <div className="flex-1">
+                          <Input 
+                            placeholder="Enter 6-digit OTP" 
+                            maxLength={6}
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value)}
+                            disabled={!otpSent || otpVerified}
+                          />
+                        </div>
+                        <Button 
+                          type="button" 
+                          onClick={handleVerifyOtp}
+                          disabled={!otpSent || otpVerified || verifyOtpMutation.isPending}
+                          className="flex-shrink-0 text-xs px-3"
+                        >
+                          {verifyOtpMutation.isPending ? "Verifying..." : "Verify"}
+                        </Button>
                       </div>
-                      <Button 
-                        type="button" 
-                        onClick={handleVerifyOtp}
-                        disabled={!otpSent || otpVerified || verifyOtpMutation.isPending}
-                        className="flex-shrink-0"
-                      >
-                        {verifyOtpMutation.isPending ? "Verifying..." : "Verify"}
-                      </Button>
+                      {otpVerified && (
+                        <div className="flex items-center text-green-600 text-xs">
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Phone verified successfully
+                        </div>
+                      )}
                     </div>
-                    {otpVerified && (
-                      <div className="flex items-center text-green-600 text-sm">
-                        <CheckCircle className="h-4 w-4 mr-2" />
-                        Phone number verified successfully
-                      </div>
-                    )}
-                  </div>
 
-                  <div className="space-y-3">
                     <FormField
                       control={form.control}
                       name="sellerCode"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Referral Code (Optional)</FormLabel>
+                          <FormLabel className="text-sm font-medium">Referral Code (Optional)</FormLabel>
                           <FormControl>
                             <Input 
-                              placeholder="Enter referral partner code if you have one" 
+                              placeholder="Enter referral code" 
                               {...field}
                               onChange={(e) => {
                                 field.onChange(e);
@@ -928,20 +927,20 @@ function RegistrationContent() {
                             />
                           </FormControl>
                           {referralCodeStatus.message && (
-                            <div className={`text-sm mt-1 flex items-center ${
+                            <div className={`text-xs mt-1 flex items-center ${
                               referralCodeStatus.isValid 
                                 ? 'text-green-600' 
                                 : referralCodeStatus.isValid === false 
                                   ? 'text-red-600' 
                                   : 'text-gray-600'
                             }`}>
-                              {referralCodeStatus.isValid && <CheckCircle className="h-4 w-4 mr-1" />}
-                              {referralCodeStatus.isValid === false && <X className="h-4 w-4 mr-1" />}
+                              {referralCodeStatus.isValid && <CheckCircle className="h-3 w-3 mr-1" />}
+                              {referralCodeStatus.isValid === false && <X className="h-3 w-3 mr-1" />}
                               {referralCodeStatus.message}
                             </div>
                           )}
                           {validateReferralCodeMutation.isPending && (
-                            <div className="text-sm text-gray-500 mt-1">
+                            <div className="text-xs text-gray-500 mt-1">
                               Validating referral code...
                             </div>
                           )}

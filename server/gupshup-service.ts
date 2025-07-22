@@ -59,12 +59,23 @@ export class GupshupService {
             return whatsappResult;
           }
         } catch (error) {
-          console.log('WhatsApp API failed, trying SMS fallback:', error);
+          console.log('WhatsApp Business API failed (HSM templates required), trying SMS fallback:', error);
         }
       }
 
-      // Use SMS Gateway API (prefer two-way account 2000203989 for SMS)
-      return await this.sendSMSMessage(phoneNumber, message.message);
+      // For account 2000203988: Try direct HSM-compatible format first  
+      try {
+        const hsm2000203988Result = await this.sendHSMMessage(phoneNumber, message.message);
+        if (hsm2000203988Result.response.status === 'success') {
+          return hsm2000203988Result;
+        }
+      } catch (error) {
+        console.log('Account 2000203988 HSM failed (expected - requires approved templates), trying SMS account 2000203989:', error);
+      }
+
+      // Fallback to account 2000203989 for pure SMS delivery
+      console.log('Falling back to SMS account 2000203989...');
+      return await this.sendPureSMSMessage(phoneNumber, message.message);
 
     } catch (error: any) {
       console.error('All delivery methods failed:', error);
@@ -119,10 +130,11 @@ export class GupshupService {
     }
   }
 
-  private async sendSMSMessage(phoneNumber: string, messageText: string): Promise<GupshupResponse> {
-    // Use two-way messaging account for SMS delivery (verified working)
-    const twoWayUserId = '2000203989';
-    const twoWayPassword = 'EEoHp1K9S';
+  // Account 2000203988 - WhatsApp Business HSM (your Thunderclient format)
+  private async sendHSMMessage(phoneNumber: string, messageText: string): Promise<GupshupResponse> {
+    // Use the exact API format that works in Thunderclient
+    const userId = '2000203988';  // Your working account from Thunderclient
+    const password = 'CrtvMm59A';  // Your working password from Thunderclient
     
     // Clean up message for SMS
     let formattedMessage = messageText.replace(/[🎉🛡️📱🔄📋💰📦❌✅💳⏳📞💬🔐]/g, '').trim();
@@ -132,48 +144,111 @@ export class GupshupService {
       formattedMessage = formattedMessage.substring(0, 157) + '...';
     }
 
-    // Direct SMS via two-way account (verified working)
+    // Build the EXACT URL format from your working Thunderclient example
+    const baseUrl = 'https://media.smsgupshup.com/GatewayAPI/rest';
     const params = new URLSearchParams({
-      userid: twoWayUserId,
-      password: twoWayPassword,
+      userid: userId,
+      password: password,
       send_to: phoneNumber,
       v: '1.1',
       format: 'json',
       msg_type: 'TEXT',
       method: 'SENDMESSAGE',
-      msg: formattedMessage,
-      auth_scheme: 'plain'
+      msg: formattedMessage
     });
 
-    console.log('Sending SMS via Gupshup two-way account to:', phoneNumber);
+    const fullUrl = `${baseUrl}?${params.toString()}`;
+    
+    console.log('Sending SMS via Gupshup (exact Thunderclient format) to:', phoneNumber);
+    console.log('Full URL:', fullUrl);
     console.log('SMS content:', formattedMessage);
 
     try {
-      const response = await axios.get(`${this.smsBaseUrl}?${params.toString()}`, {
+      // Use GET request exactly like your working Thunderclient example
+      const response = await axios.get(fullUrl, {
         timeout: 10000,
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+          'Accept': 'application/json'
         }
       });
 
       console.log('SMS response:', response.data);
 
-      // Check for success response
-      if (response.data?.response?.status === 'success' && response.data.response.id) {
+      // Check for success response (adapt based on actual response format)
+      if (response.data && (response.data.status === 'success' || response.data.response?.status === 'success')) {
+        return {
+          response: {
+            status: 'success',
+            id: response.data.id || response.data.response?.id || 'gupshup-' + Date.now(),
+            phone: phoneNumber,
+            details: 'SMS sent via Gupshup account 2000203988 (Thunderclient format)'
+          }
+        };
+      } else {
+        throw new Error(`SMS failed: ${response.data?.message || response.data?.response?.details || 'Unknown error'}`);
+      }
+    } catch (error: any) {
+      console.log('SMS delivery failed:', error.message);
+      console.log('Error response:', error.response?.data);
+      throw new Error(`SMS delivery failed via Gupshup: ${error.message}`);
+    }
+  }
+
+  // Account 2000203989 - Pure SMS Gateway (fallback for arbitrary messages)
+  private async sendPureSMSMessage(phoneNumber: string, messageText: string): Promise<GupshupResponse> {
+    const smsUserId = '2000203989';  // Two-way account for SMS
+    const smsPassword = 'EEoHp1K9S';
+    
+    // Clean up message for SMS
+    let formattedMessage = messageText.replace(/[🎉🛡️📱🔄📋💰📦❌✅💳⏳📞💬🔐]/g, '').trim();
+    if (formattedMessage.length > 160) {
+      formattedMessage = formattedMessage.substring(0, 157) + '...';
+    }
+
+    const baseUrl = 'https://media.smsgupshup.com/GatewayAPI/rest';
+    const params = new URLSearchParams({
+      userid: smsUserId,
+      password: smsPassword,
+      send_to: phoneNumber,
+      v: '1.1',
+      format: 'json',
+      msg_type: 'TEXT',
+      method: 'SENDMESSAGE',
+      msg: formattedMessage
+    });
+
+    const fullUrl = `${baseUrl}?${params.toString()}`;
+    
+    console.log('Sending SMS via account 2000203989 (SMS fallback) to:', phoneNumber);
+    console.log('SMS content:', formattedMessage);
+
+    try {
+      const response = await axios.get(fullUrl, {
+        timeout: 10000,
+        headers: {
+          'User-Agent': 'Mozilla/5.0',
+          'Accept': 'application/json'
+        }
+      });
+
+      console.log('SMS fallback response:', response.data);
+
+      if (response.data?.response?.status === 'success') {
         return {
           response: {
             status: 'success',
             id: response.data.response.id,
             phone: phoneNumber,
-            details: 'SMS sent via Gupshup two-way account 2000203989'
+            details: 'SMS sent via Gupshup account 2000203989 (SMS Gateway)'
           }
         };
       } else {
         throw new Error(`SMS failed: ${response.data?.response?.details || 'Unknown error'}`);
       }
     } catch (error: any) {
-      console.log('SMS delivery failed:', error.message);
-      throw new Error(`SMS delivery failed via Gupshup: ${error.message}`);
+      console.log('SMS fallback also failed:', error.message);
+      throw new Error(`All Gupshup methods failed: ${error.message}`);
     }
   }
 

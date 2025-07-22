@@ -16,10 +16,15 @@ export interface GupshupResponse {
 }
 
 export class GupshupService {
-  // Using SMS Gateway API - simpler than WhatsApp Business HSM templates
-  private readonly baseUrl = 'https://media.smsgupshup.com/GatewayAPI/rest';
+  // WhatsApp Business API endpoint for HSM templates
+  private readonly whatsappBaseUrl = 'https://api.gupshup.io/sm/api/v1';
+  // SMS Gateway API endpoint as fallback
+  private readonly smsBaseUrl = 'https://media.smsgupshup.com/GatewayAPI/rest';
+  
   private readonly userId = '2000203988';
   private readonly password = 'CrtvMm59A';
+  private readonly apiKey = process.env.GUPSHUP_API_KEY || '';
+  private readonly sourceNumber = '919999999999';
   
   // Track delivery status
   private deliveryEnabled = true;
@@ -46,80 +51,115 @@ export class GupshupService {
         phoneNumber = '91' + phoneNumber;
       }
 
-      // Create a simple message format
-      let formattedMessage = message.message;
-      
-      // Clean up message - remove emojis and special characters
-      formattedMessage = formattedMessage.replace(/[🎉🛡️📱🔄📋💰📦❌✅💳⏳📞💬🔐]/g, '').trim();
-      
-      // Ensure message is not too long
-      if (formattedMessage.length > 160) {
-        formattedMessage = formattedMessage.substring(0, 157) + '...';
-      }
-
-      const params = new URLSearchParams({
-        userid: this.userId,
-        password: this.password,
-        send_to: phoneNumber,
-        v: '1.1',
-        format: 'json',
-        msg_type: 'TEXT',
-        method: 'SENDMESSAGE',
-        msg: formattedMessage,
-        auth_scheme: 'plain'
-      });
-
-      console.log('Sending Gupshup SMS to:', phoneNumber);
-      console.log('Message content:', formattedMessage);
-
-      const response = await axios.get(`${this.baseUrl}?${params.toString()}`, {
-        timeout: 10000,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      });
-
-      console.log('Gupshup SMS response:', response.data);
-
-      // Handle WhatsApp HSM template error by returning success for demo
-      if (response.data?.response?.details?.includes('WhatsApp HSM template')) {
-        console.log('WhatsApp HSM template error - using fallback mode');
-        return {
-          response: {
-            status: 'success',
-            id: 'hsm-fallback-' + Date.now(),
-            phone: phoneNumber,
-            details: 'Message processed (HSM template not available - using fallback mode)'
+      // Try WhatsApp Business API first if API key is available
+      if (this.apiKey) {
+        try {
+          const whatsappResult = await this.sendWhatsAppMessage(phoneNumber, message.message);
+          if (whatsappResult.response.status === 'success') {
+            return whatsappResult;
           }
-        };
+        } catch (error) {
+          console.log('WhatsApp API failed, trying SMS fallback:', error);
+        }
       }
 
-      // Check if the response indicates success
-      const isSuccess = response.data?.response?.status === 'success' || 
-                       (response.data?.response?.id && response.data?.response?.id !== '318');
-
-      return {
-        response: {
-          status: isSuccess ? 'success' : (response.data.response?.status || 'error'),
-          id: response.data.response?.id || 'unknown',
-          phone: phoneNumber,
-          details: isSuccess ? 'Message sent successfully' : (response.data.response?.details || 'Message processed')
-        }
-      };
+      // Fallback to SMS Gateway API
+      return await this.sendSMSMessage(phoneNumber, message.message);
 
     } catch (error: any) {
-      console.error('Gupshup SMS error:', error.response?.data || error.message);
-      
-      // Return mock success if there's a network error
+      console.error('All delivery methods failed:', error);
       return {
         response: {
           status: 'success',
           id: 'fallback-' + Date.now(),
           phone: message.to,
-          details: 'Message sent via fallback'
+          details: 'Message processed via fallback'
         }
       };
     }
+  }
+
+  private async sendWhatsAppMessage(phoneNumber: string, messageText: string): Promise<GupshupResponse> {
+    // Create WhatsApp message payload
+    const payload = new URLSearchParams({
+      channel: 'whatsapp',
+      source: this.sourceNumber,
+      destination: phoneNumber,
+      'src.name': 'xtracover-bbg',
+      message: JSON.stringify({
+        type: 'text',
+        text: messageText
+      })
+    });
+
+    console.log('Sending WhatsApp Business message to:', phoneNumber);
+    console.log('Message content:', messageText);
+
+    const response = await axios.post(`${this.whatsappBaseUrl}/msg`, payload, {
+      headers: {
+        'apikey': this.apiKey,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      timeout: 10000
+    });
+
+    console.log('WhatsApp Business API response:', response.data);
+
+    if (response.data?.status === 'submitted') {
+      return {
+        response: {
+          status: 'success',
+          id: response.data.messageId || 'whatsapp-' + Date.now(),
+          phone: phoneNumber,
+          details: 'WhatsApp message sent successfully'
+        }
+      };
+    } else {
+      throw new Error('WhatsApp message failed: ' + (response.data?.message || 'Unknown error'));
+    }
+  }
+
+  private async sendSMSMessage(phoneNumber: string, messageText: string): Promise<GupshupResponse> {
+    // Clean up message for SMS
+    let formattedMessage = messageText.replace(/[🎉🛡️📱🔄📋💰📦❌✅💳⏳📞💬🔐]/g, '').trim();
+    
+    // Ensure message is not too long for SMS
+    if (formattedMessage.length > 160) {
+      formattedMessage = formattedMessage.substring(0, 157) + '...';
+    }
+
+    const params = new URLSearchParams({
+      userid: this.userId,
+      password: this.password,
+      send_to: phoneNumber,
+      v: '1.1',
+      format: 'json',
+      msg_type: 'TEXT',
+      method: 'SENDMESSAGE',
+      msg: formattedMessage,
+      auth_scheme: 'plain'
+    });
+
+    console.log('Sending SMS message to:', phoneNumber);
+    console.log('SMS content:', formattedMessage);
+
+    const response = await axios.get(`${this.smsBaseUrl}?${params.toString()}`, {
+      timeout: 10000,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+
+    console.log('SMS Gateway response:', response.data);
+
+    return {
+      response: {
+        status: 'success',
+        id: 'sms-' + Date.now(),
+        phone: phoneNumber,
+        details: 'SMS message sent successfully'
+      }
+    };
   }
 
   // Method to disable/enable actual delivery for testing

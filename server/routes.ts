@@ -13,6 +13,7 @@ import { communicationService } from "./communication-service";
 import { gupshupService } from "./gupshup-service";
 import { templateService } from "./template-service";
 import { testAllTemplates } from "./template-test";
+import { registerTestRoutes } from "./test-services";
 // Removed nodemailer import - using communicationService instead
 import { 
   insertDistributorSchema, 
@@ -2699,6 +2700,9 @@ Required: GUPSHUP_API_KEY environment variable
       res.status(500).json({ message: 'Failed to get WhatsApp setup info', error: error.message });
     }
   });
+
+  // Register test routes for individual service testing
+  registerTestRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

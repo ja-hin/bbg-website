@@ -30,63 +30,45 @@ export class GupshupService {
   private deliveryEnabled = true;
 
   async sendMessage(message: GupshupMessage): Promise<GupshupResponse> {
-    try {
-      if (!this.deliveryEnabled) {
-        // Return mock success for testing
-        return {
-          response: {
-            status: 'success',
-            id: 'mock-' + Date.now(),
-            phone: message.to,
-            details: 'Message sent (test mode)'
-          }
-        };
-      }
-
-      // Format phone number - ensure it has country code
-      let phoneNumber = message.to.replace(/\D/g, '');
-      if (phoneNumber.startsWith('91')) {
-        phoneNumber = phoneNumber;
-      } else if (phoneNumber.length === 10) {
-        phoneNumber = '91' + phoneNumber;
-      }
-
-      // Try WhatsApp Business API first if API key is available
-      if (this.apiKey) {
-        try {
-          const whatsappResult = await this.sendWhatsAppMessage(phoneNumber, message.message);
-          if (whatsappResult.response.status === 'success') {
-            return whatsappResult;
-          }
-        } catch (error) {
-          console.log('WhatsApp Business API failed (HSM templates required), trying SMS fallback:', error);
-        }
-      }
-
-      // For account 2000203988: Try direct HSM-compatible format first  
-      try {
-        const hsm2000203988Result = await this.sendHSMMessage(phoneNumber, message.message);
-        if (hsm2000203988Result.response.status === 'success') {
-          return hsm2000203988Result;
-        }
-      } catch (error) {
-        console.log('Account 2000203988 HSM failed (expected - requires approved templates), trying SMS account 2000203989:', error);
-      }
-
-      // Fallback to account 2000203989 for pure SMS delivery
-      console.log('Falling back to SMS account 2000203989...');
-      return await this.sendPureSMSMessage(phoneNumber, message.message);
-
-    } catch (error: any) {
-      console.error('All delivery methods failed:', error);
+    if (!this.deliveryEnabled) {
+      // Return mock success for testing
       return {
         response: {
           status: 'success',
-          id: 'fallback-' + Date.now(),
+          id: 'mock-' + Date.now(),
           phone: message.to,
-          details: 'Message processed via fallback'
+          details: 'Message sent (test mode)'
         }
       };
+    }
+
+    // Format phone number - ensure it has country code
+    let phoneNumber = message.to.replace(/\D/g, '');
+    if (phoneNumber.startsWith('91')) {
+      phoneNumber = phoneNumber;
+    } else if (phoneNumber.length === 10) {
+      phoneNumber = '91' + phoneNumber;
+    }
+
+    // Try WhatsApp Business API first if API key is available
+    if (this.apiKey) {
+      try {
+        const whatsappResult = await this.sendWhatsAppMessage(phoneNumber, message.message);
+        return whatsappResult;
+      } catch (error) {
+        console.log('WhatsApp Business API failed:', error);
+        throw error; // Don't fallback, just show the error
+      }
+    }
+
+    // Use account 2000203988 for WhatsApp messages (HSM template-based)
+    try {
+      const whatsappHSMResult = await this.sendWhatsAppHSMMessage(phoneNumber, message.message);
+      return whatsappHSMResult;
+    } catch (error: any) {
+      console.log('WhatsApp HSM failed:', error);
+      // Don't fallback - just throw the HSM template error
+      throw new Error(`WhatsApp message failed: ${error.message}`);
     }
   }
 
@@ -131,7 +113,7 @@ export class GupshupService {
   }
 
   // Account 2000203988 - WhatsApp Business HSM (your Thunderclient format)
-  private async sendHSMMessage(phoneNumber: string, messageText: string): Promise<GupshupResponse> {
+  private async sendWhatsAppHSMMessage(phoneNumber: string, messageText: string): Promise<GupshupResponse> {
     // Use the exact API format that works in Thunderclient
     const userId = '2000203988';  // Your working account from Thunderclient
     const password = 'CrtvMm59A';  // Your working password from Thunderclient
@@ -159,9 +141,9 @@ export class GupshupService {
 
     const fullUrl = `${baseUrl}?${params.toString()}`;
     
-    console.log('Sending SMS via Gupshup (exact Thunderclient format) to:', phoneNumber);
+    console.log('Sending WhatsApp message via Gupshup account 2000203988 (exact Thunderclient format) to:', phoneNumber);
     console.log('Full URL:', fullUrl);
-    console.log('SMS content:', formattedMessage);
+    console.log('WhatsApp message content:', formattedMessage);
 
     try {
       // Use GET request exactly like your working Thunderclient example
@@ -173,84 +155,31 @@ export class GupshupService {
         }
       });
 
-      console.log('SMS response:', response.data);
+      console.log('WhatsApp response:', response.data);
 
-      // Check for success response (adapt based on actual response format)
+      // Check for success response
       if (response.data && (response.data.status === 'success' || response.data.response?.status === 'success')) {
         return {
           response: {
             status: 'success',
             id: response.data.id || response.data.response?.id || 'gupshup-' + Date.now(),
             phone: phoneNumber,
-            details: 'SMS sent via Gupshup account 2000203988 (Thunderclient format)'
+            details: 'WhatsApp message sent via Gupshup account 2000203988'
           }
         };
       } else {
-        throw new Error(`SMS failed: ${response.data?.message || response.data?.response?.details || 'Unknown error'}`);
+        // Show HSM template error directly - no fallback
+        const errorMessage = response.data?.message || response.data?.response?.details || 'Unknown WhatsApp error';
+        throw new Error(`WhatsApp HSM template error: ${errorMessage}`);
       }
     } catch (error: any) {
-      console.log('SMS delivery failed:', error.message);
+      console.log('WhatsApp delivery failed:', error.message);
       console.log('Error response:', error.response?.data);
-      throw new Error(`SMS delivery failed via Gupshup: ${error.message}`);
+      throw new Error(`WhatsApp delivery failed: ${error.message}`);
     }
   }
 
-  // Account 2000203989 - Pure SMS Gateway (fallback for arbitrary messages)
-  private async sendPureSMSMessage(phoneNumber: string, messageText: string): Promise<GupshupResponse> {
-    const smsUserId = '2000203989';  // Two-way account for SMS
-    const smsPassword = 'EEoHp1K9S';
-    
-    // Clean up message for SMS
-    let formattedMessage = messageText.replace(/[🎉🛡️📱🔄📋💰📦❌✅💳⏳📞💬🔐]/g, '').trim();
-    if (formattedMessage.length > 160) {
-      formattedMessage = formattedMessage.substring(0, 157) + '...';
-    }
 
-    const baseUrl = 'https://media.smsgupshup.com/GatewayAPI/rest';
-    const params = new URLSearchParams({
-      userid: smsUserId,
-      password: smsPassword,
-      send_to: phoneNumber,
-      v: '1.1',
-      format: 'json',
-      msg_type: 'TEXT',
-      method: 'SENDMESSAGE',
-      msg: formattedMessage
-    });
-
-    const fullUrl = `${baseUrl}?${params.toString()}`;
-    
-    console.log('Sending SMS via account 2000203989 (SMS fallback) to:', phoneNumber);
-    console.log('SMS content:', formattedMessage);
-
-    try {
-      const response = await axios.get(fullUrl, {
-        timeout: 10000,
-        headers: {
-          'User-Agent': 'Mozilla/5.0',
-          'Accept': 'application/json'
-        }
-      });
-
-      console.log('SMS fallback response:', response.data);
-
-      if (response.data?.response?.status === 'success') {
-        return {
-          response: {
-            status: 'success',
-            id: response.data.response.id,
-            phone: phoneNumber,
-            details: 'SMS sent via Gupshup account 2000203989 (SMS Gateway)'
-          }
-        };
-      } else {
-        throw new Error(`SMS failed: ${response.data?.response?.details || 'Unknown error'}`);
-      }
-    } catch (error: any) {
-      console.log('SMS fallback also failed:', error.message);
-      throw new Error(`All Gupshup methods failed: ${error.message}`);
-    }
-  }
 
   // Method to disable/enable actual delivery for testing
   setDeliveryEnabled(enabled: boolean) {

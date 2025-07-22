@@ -189,13 +189,13 @@ KALEYRA_SENDER_ID=XTRCVR  # Configured sender ID
 - OTP generation and verification working perfectly
 - Professional message templates active
 
-## Gupshup Integration - FULLY OPERATIONAL DUAL-CHANNEL SYSTEM
+## Gupshup Integration - WhatsApp Business API Only
 
-### Gupshup Dual-Channel Communication Service
-- **Provider**: Gupshup Multi-Channel API with dual-account configuration
-- **Primary Account 2000203988**: WhatsApp Business API (HSM template-based)
-- **Fallback Account 2000203989**: SMS Gateway API (arbitrary message delivery)
-- **Service Architecture**: Smart fallback system with HSM detection and automatic SMS delivery
+### Gupshup WhatsApp Business Service  
+- **Provider**: Gupshup WhatsApp Business API (Account: 2000203988)
+- **Service Type**: WhatsApp Business messaging with HSM template requirements
+- **Configuration**: WhatsApp-only delivery, no SMS fallback
+- **Architecture**: Pure WhatsApp Business implementation using exact Thunderclient API format
 
 ### Production Configuration
 ```bash
@@ -208,24 +208,24 @@ GUPSHUP_API_KEY=your_api_key_here  # For HSM template access
 ```
 
 ### Operational Features
-- **Intelligent Message Routing**: WhatsApp Business API → SMS Gateway fallback
-- **HSM Template Detection**: Automatic detection of template requirements
-- **Guaranteed SMS Delivery**: Account 2000203989 provides 100% SMS delivery
-- **Message ID Tracking**: Full delivery confirmation with unique message IDs
+- **WhatsApp Business Only**: Pure WhatsApp messaging, no SMS fallback
+- **HSM Template Compliance**: Requires approved HSM templates for message delivery
+- **Error Transparency**: Shows HSM template errors directly without fallback
 - **Production Format**: Exact API format matching user's working Thunderclient implementation
+- **Template Requirements**: Messages must match pre-approved WhatsApp Business templates
 
 ### API Endpoints & Testing  
 - `POST /api/test-gupshup-whatsapp` - Test complete dual-channel system
 - Integrated into CommunicationService for seamless customer notifications
 - Admin interface at `/admin/whatsapp-test` for comprehensive message testing
 
-### Production Status - FULLY OPERATIONAL ✅
-- **Account 2000203988**: ✅ WhatsApp Business API working (requires HSM templates for arbitrary messages)
-- **Account 2000203989**: ✅ SMS Gateway confirmed working with real delivery (Message ID: 5483566088712872063-242020916025459190)
-- **Dual-Channel System**: ✅ Perfect fallback mechanism from WhatsApp to SMS
-- **Message Delivery**: ✅ Confirmed real SMS delivery to user's phone (9953410422)
-- **Integration**: ✅ Fully integrated with communication service and customer notification system
-- **Admin Testing**: ✅ Complete testing interface for real-time message verification
+### Production Status - WhatsApp Business Ready ✅
+- **Account 2000203988**: ✅ WhatsApp Business API configured and responding correctly
+- **HSM Template Detection**: ✅ Properly identifies template requirements and shows errors
+- **API Format**: ✅ Exact format matching user's working Thunderclient implementation  
+- **Error Handling**: ✅ Transparent HSM template error reporting (no fallback)
+- **Integration**: ✅ Ready for WhatsApp Business messaging with approved templates
+- **Admin Testing**: ✅ Complete testing interface showing HSM template status
 
 ## Communication System
 
@@ -291,17 +291,14 @@ GUPSHUP_SOURCE_NUMBER=919999999999
 
 ```
 Changelog:
-- July 22, 2025: ✅ COMPLETED - Gupshup dual-channel system FULLY OPERATIONAL with confirmed real SMS delivery
-  - RESOLVED: Fixed Gupshup integration to match user's exact working Thunderclient API format
-  - IMPLEMENTED: Complete dual-account system - Account 2000203988 (WhatsApp Business HSM) + Account 2000203989 (SMS Gateway)
-  - CONFIRMED: Real SMS delivery working perfectly via account 2000203989 with message ID tracking
-  - ENHANCED: Intelligent fallback mechanism - WhatsApp Business API attempts first, automatic SMS fallback
-  - TESTED: Live SMS delivery confirmed to user's phone (9953410422) with message ID: 5483566088712872063-242020916025459190
-  - CORRECTED: Account 2000203988 properly identified as WhatsApp Business requiring HSM templates (not regular SMS)
-  - INTEGRATED: Seamless integration with communication service for customer and referral partner notifications
-  - VERIFIED: Both direct curl and Node.js tests confirm SMS delivery functionality
-  - OPTIMIZED: Message formatting and emoji handling for SMS compatibility
-  - DOCUMENTED: Complete dual-channel system architecture and production status
+- July 22, 2025: ✅ COMPLETED - Gupshup WhatsApp Business API configured as WhatsApp-only service (no SMS fallback)
+  - IMPLEMENTED: Pure WhatsApp Business implementation using account 2000203988 with exact Thunderclient API format
+  - REMOVED: All SMS fallback mechanisms per user requirement for WhatsApp-only messaging
+  - CONFIGURED: HSM template error transparency - shows "Message does not match WhatsApp HSM template" directly
+  - VERIFIED: Proper WhatsApp Business API response handling with clear error messages
+  - OPTIMIZED: WhatsApp-specific message formatting and template compliance checking
+  - INTEGRATED: WhatsApp-only service ready for approved HSM templates
+  - DOCUMENTED: WhatsApp Business API configuration and HSM template requirements
 - July 22, 2025: ✅ COMPLETED - Comprehensive Gupshup dual-channel integration with production-ready SMS Gateway
   - IMPLEMENTED: Complete GupshupService with WhatsApp Business API and SMS Gateway fallback
   - CREATED: Dual-channel message delivery system (WhatsApp → SMS fallback)

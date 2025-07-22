@@ -253,6 +253,11 @@ GUPSHUP_SOURCE_NUMBER=919999999999
 
 ```
 Changelog:
+- July 22, 2025: ✅ COMPLETED - Updated customer registration form terminology
+  - CHANGED: "Invoice Value" field label to "Device Invoice Value (Inclusive of GST)" in customer registration form
+  - UPDATED: Form validation message to reflect new terminology
+  - FIXED: TypeScript errors by properly handling form schema and data flow
+  - ENHANCED: Customer clarity by explicitly specifying GST inclusion in device invoice value field
 - July 19, 2025: ✅ COMPLETED - Email SMTP Configuration Interface with Real-time Testing
   - CREATED: Complete SMTP configuration interface in admin logs page for direct credential input
   - IMPLEMENTED: Real-time SMTP testing that validates credentials before saving to environment

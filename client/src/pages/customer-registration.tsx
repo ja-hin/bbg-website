@@ -51,11 +51,13 @@ const customerSchema = z.object({
   serialNumber: z.string().min(5, "Serial number/IMEI must be at least 5 characters"),
   brand: z.string().min(2, "Brand is required"),
   modelName: z.string().min(2, "Model name is required"),
-  invoiceValue: z.string().min(1, "Invoice value is required"),
+  invoiceValue: z.string().min(1, "Device invoice value is required"),
   // File upload
   invoiceFile: z.instanceof(File).optional(),
   // Seller Details
   sellerCode: z.string().optional(),
+  // OTP verification
+  otpCode: z.string().optional(),
   // Terms agreement
   agreeToTerms: z.boolean().refine(val => val === true, "You must agree to the terms")
 });
@@ -481,12 +483,10 @@ function RegistrationContent() {
     if (!formData) return;
 
     // Create JSON data with payment info
+    const { agreeToTerms, otpCode, ...customerData } = formData;
     const submitData = {
-      ...formData,
-      paymentIntentId,
-      // Remove fields not needed for backend
-      agreeToTerms: undefined,
-      otpCode: undefined
+      ...customerData,
+      paymentIntentId
     };
     
     console.log("Submitting customer data:", submitData);
@@ -645,7 +645,7 @@ function RegistrationContent() {
                         <FormItem className="h-full">
                           <FormLabel className="flex items-center h-6 mb-2">
                             <IndianRupee className="h-4 w-4 mr-2" />
-                            Invoice Value (₹) *
+                            Device Invoice Value (Inclusive of GST) (₹) *
                           </FormLabel>
                           <FormControl>
                             <Input placeholder="Enter invoice amount" {...field} />

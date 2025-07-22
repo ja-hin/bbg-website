@@ -53,8 +53,8 @@ const customerSchema = z.object({
   serialNumber: z.string().min(5, "Serial number/IMEI must be at least 5 characters"),
   brand: z.string().min(2, "Brand is required"),
   modelName: z.string().min(2, "Model name is required"),
-  invoiceValue: z.string().min(1, "Device invoice value is required"),
-  dateOfPurchase: z.string().min(1, "Date of purchase is required"),
+  invoiceValue: z.string().min(1, "Device invoice value (inclusive of GST) is required"),
+  dateOfPurchase: z.string().min(10, "Date of purchase is required"),
   // File upload
   invoiceFile: z.instanceof(File).optional(),
   // Seller Details
@@ -649,7 +649,7 @@ function RegistrationContent() {
                         <FormItem className="h-full">
                           <FormLabel className="flex items-center h-6 mb-2">
                             <IndianRupee className="h-4 w-4 mr-2" />
-                            Device Invoice Value (Inclusive of GST) (₹) *
+                            Device Invoice Value (Inclusive of GST) *
                           </FormLabel>
                           <FormControl>
                             <Input placeholder="Enter invoice amount" {...field} />

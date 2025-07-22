@@ -970,6 +970,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Validate referral code endpoint
+  app.get("/api/validate-referral-code/:code", async (req, res) => {
+    try {
+      const { code } = req.params;
+      
+      if (!code || code.trim() === '') {
+        return res.status(400).json({ valid: false, message: "Referral code is required" });
+      }
+
+      const distributor = await storage.getDistributorBySellerCode(code);
+      
+      if (distributor) {
+        res.json({ 
+          valid: true, 
+          message: `Valid referral code for ${distributor.name}`,
+          distributorName: distributor.name
+        });
+      } else {
+        res.json({ 
+          valid: false, 
+          message: "Invalid referral code" 
+        });
+      }
+    } catch (error) {
+      console.error("Error validating referral code:", error);
+      res.status(500).json({ valid: false, message: "Error validating referral code" });
+    }
+  });
+
   // Get distributor stats
   app.get("/api/distributors/:sellerCode/stats", async (req, res) => {
     try {

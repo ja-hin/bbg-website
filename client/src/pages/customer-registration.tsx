@@ -33,7 +33,8 @@ import {
   Upload,
   Info,
   Calendar,
-  ExternalLink
+  ExternalLink,
+  X
 } from "lucide-react";
 
 // Initialize Stripe - will be null if key not configured
@@ -309,6 +310,11 @@ function RegistrationContent() {
   const queryClient = useQueryClient();
   
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [referralCodeStatus, setReferralCodeStatus] = useState<{
+    isValid: boolean | null;
+    message: string;
+    distributorName?: string;
+  }>({ isValid: null, message: "" });
   const [formData, setFormData] = useState<CustomerFormData | null>(null);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
@@ -456,6 +462,51 @@ function RegistrationContent() {
     const contact = form.getValues("contact");
     verifyOtpMutation.mutate({ contact, otp });
   };
+
+  // Validate referral code mutation
+  const validateReferralCodeMutation = useMutation({
+    mutationFn: async (code: string) => {
+      if (!code || code.trim() === '') {
+        return { valid: false, message: "" };
+      }
+      return await apiRequest(`/api/validate-referral-code/${encodeURIComponent(code)}`, { method: "GET" });
+    },
+    onSuccess: (data) => {
+      setReferralCodeStatus({
+        isValid: data.valid,
+        message: data.message || "",
+        distributorName: data.distributorName
+      });
+    },
+    onError: () => {
+      setReferralCodeStatus({
+        isValid: false,
+        message: "Error validating referral code"
+      });
+    }
+  });
+
+  // Debounced referral code validation with cleanup
+  const validateReferralCode = (() => {
+    let timeoutId: NodeJS.Timeout | null = null;
+    
+    return (code: string) => {
+      // Clear previous timeout
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      
+      if (!code || code.trim() === '') {
+        setReferralCodeStatus({ isValid: null, message: "" });
+        return;
+      }
+      
+      // Set new timeout for debouncing
+      timeoutId = setTimeout(() => {
+        validateReferralCodeMutation.mutate(code);
+      }, 800);
+    };
+  })();
 
 
 
@@ -866,28 +917,34 @@ function RegistrationContent() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Referral Code (Optional)</FormLabel>
-                          <div className="flex gap-2">
-                            <FormControl>
-                              <Input placeholder="Enter referral partner code if you have one" {...field} className="flex-1" />
-                            </FormControl>
-                            <Button 
-                              type="button" 
-                              variant="outline"
-                              onClick={() => {
-                                if (field.value) {
-                                  // Validate referral code
-                                  toast({
-                                    title: "Referral Code",
-                                    description: "Referral code validation feature will be added soon"
-                                  });
-                                }
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter referral partner code if you have one" 
+                              {...field}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                validateReferralCode(e.target.value);
                               }}
-                              disabled={!field.value}
-                              className="flex-shrink-0"
-                            >
-                              Check
-                            </Button>
-                          </div>
+                            />
+                          </FormControl>
+                          {referralCodeStatus.message && (
+                            <div className={`text-sm mt-1 flex items-center ${
+                              referralCodeStatus.isValid 
+                                ? 'text-green-600' 
+                                : referralCodeStatus.isValid === false 
+                                  ? 'text-red-600' 
+                                  : 'text-gray-600'
+                            }`}>
+                              {referralCodeStatus.isValid && <CheckCircle className="h-4 w-4 mr-1" />}
+                              {referralCodeStatus.isValid === false && <X className="h-4 w-4 mr-1" />}
+                              {referralCodeStatus.message}
+                            </div>
+                          )}
+                          {validateReferralCodeMutation.isPending && (
+                            <div className="text-sm text-gray-500 mt-1">
+                              Validating referral code...
+                            </div>
+                          )}
                           <FormMessage />
                         </FormItem>
                       )}

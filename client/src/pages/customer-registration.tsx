@@ -538,9 +538,8 @@ function RegistrationContent() {
     if (!formData) return;
 
     // Create JSON data with payment info
-    const { agreeToTerms, otpCode, ...customerData } = formData;
     const submitData = {
-      ...customerData,
+      ...formData,
       paymentIntentId
     };
     
@@ -709,13 +708,15 @@ function RegistrationContent() {
                         </FormItem>
                       )}
                     />
+                  </div>
 
+                  <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name="dateOfPurchase"
                       render={({ field }) => (
-                        <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
+                        <FormItem>
+                          <FormLabel className="flex items-center">
                             <Calendar className="h-4 w-4 mr-2" />
                             Date of Purchase *
                           </FormLabel>
@@ -726,9 +727,7 @@ function RegistrationContent() {
                         </FormItem>
                       )}
                     />
-                  </div>
 
-                  <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="serialNumber"
@@ -741,14 +740,6 @@ function RegistrationContent() {
                           <FormControl>
                             <Input placeholder="Enter IMEI or Serial" {...field} />
                           </FormControl>
-                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 mt-1">
-                            <div className="flex items-start space-x-2">
-                              <Info className="h-3 w-3 text-blue-600 mt-0.5" />
-                              <div className="text-xs text-blue-800">
-                                <p className="font-medium">📱 Mobile: Dial *#06# | 💻 Laptop: Check system info</p>
-                              </div>
-                            </div>
-                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -778,6 +769,15 @@ function RegistrationContent() {
                         </FormItem>
                       )}
                     />
+                  </div>
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
+                    <div className="flex items-start space-x-2">
+                      <Info className="h-3 w-3 text-blue-600 mt-0.5" />
+                      <div className="text-xs text-blue-800">
+                        <p className="font-medium">📱 Mobile: Dial *#06# to get IMEI | 💻 Laptop: Check sticker on bottom/back or System Info → Hardware</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -897,7 +897,7 @@ function RegistrationContent() {
                           type="button" 
                           onClick={handleVerifyOtp}
                           disabled={!otpSent || otpVerified || verifyOtpMutation.isPending}
-                          className="flex-shrink-0 text-xs px-3"
+                          className="flex-shrink-0 text-xs px-4 bg-green-600 hover:bg-green-700 text-white border-0"
                         >
                           {verifyOtpMutation.isPending ? "Verifying..." : "Verify"}
                         </Button>

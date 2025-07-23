@@ -1210,11 +1210,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin - Get all customers
+  // Admin - Get all customers (grouped by contact number)
   app.get("/api/admin/customers", isAdminAuthenticated, async (req, res) => {
     try {
-      const customers = await storage.getAllCustomers();
-      res.json(customers);
+      const allCustomers = await storage.getAllCustomers();
+      
+      // Group customers by contact number
+      const groupedCustomers = allCustomers.reduce((groups: any, customer: any) => {
+        const contact = customer.contact;
+        if (!groups[contact]) {
+          groups[contact] = {
+            ...customer, // Use the first customer's data as base
+            registrationCount: 1,
+            totalInvoiceValue: parseFloat(customer.invoiceValue || 0),
+            allVoucherCodes: [customer.voucherCode],
+            devices: [{ 
+              deviceType: customer.deviceType, 
+              brand: customer.brand, 
+              modelName: customer.modelName,
+              serialNumber: customer.serialNumber,
+              voucherCode: customer.voucherCode
+            }]
+          };
+        } else {
+          groups[contact].registrationCount += 1;
+          groups[contact].totalInvoiceValue += parseFloat(customer.invoiceValue || 0);
+          groups[contact].allVoucherCodes.push(customer.voucherCode);
+          groups[contact].devices.push({ 
+            deviceType: customer.deviceType, 
+            brand: customer.brand, 
+            modelName: customer.modelName,
+            serialNumber: customer.serialNumber,
+            voucherCode: customer.voucherCode
+          });
+        }
+        return groups;
+      }, {});
+      
+      // Convert grouped data back to array
+      const groupedCustomersArray = Object.values(groupedCustomers);
+      
+      res.json(groupedCustomersArray);
     } catch (error: any) {
       res.status(500).json({ message: "Failed to get customers" });
     }

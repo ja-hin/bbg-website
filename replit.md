@@ -291,6 +291,13 @@ GUPSHUP_SOURCE_NUMBER=919999999999
 
 ```
 Changelog:
+- July 23, 2025: ✅ COMPLETED - Fixed admin customer display to show aggregated data instead of duplicates
+  - IMPLEMENTED: Customer grouping by mobile number in admin dashboard to eliminate duplicate entries
+  - ENHANCED: Server-side customer aggregation showing registration count per mobile number
+  - ADDED: Total invoice value calculation across all registrations for same customer
+  - IMPROVED: Admin table display with registration count badges and device summary
+  - OPTIMIZED: Customer search to work with grouped voucher codes and customer data
+  - STREAMLINED: Admin dashboard now shows clean customer list without duplicate mobile numbers
 - July 23, 2025: ✅ COMPLETED - Fixed cart abandonment tracking duplicate entries and optimized performance
   - IMPLEMENTED: Debouncing logic in cart tracking to prevent multiple API calls for same stage
   - ENHANCED: Smart tracking that only monitors important form fields (name, contact, email, deviceType, serialNumber)

@@ -288,14 +288,21 @@ export default function AdminDashboardNew() {
                       <div key={customer.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                         <div>
                           <div className="font-medium text-gray-900">{customer.name}</div>
-                          <div className="text-sm text-gray-500">{customer.contact} • {customer.deviceType}</div>
+                          <div className="text-sm text-gray-500">
+                            {customer.contact} • {customer.deviceType}
+                            {customer.registrationCount > 1 && (
+                              <span className="ml-2 text-blue-600">
+                                ({customer.registrationCount} registrations)
+                              </span>
+                            )}
+                          </div>
                         </div>
                         <div className="text-right">
                           <Badge variant={customer.isVerified ? "default" : "secondary"}>
                             {customer.isVerified ? "Verified" : "Pending"}
                           </Badge>
                           <div className="text-sm text-gray-500 mt-1">
-                            {formatCurrency(customer.invoiceValue)}
+                            {formatCurrency(customer.totalInvoiceValue || customer.invoiceValue)}
                           </div>
                         </div>
                       </div>
@@ -396,9 +403,9 @@ export default function AdminDashboardNew() {
                       <TableRow>
                         <TableHead>Customer</TableHead>
                         <TableHead>Contact</TableHead>
-                        <TableHead>Device</TableHead>
-                        <TableHead>Voucher Code</TableHead>
-                        <TableHead>Invoice Value</TableHead>
+                        <TableHead>Registrations</TableHead>
+                        <TableHead>Total Value</TableHead>
+                        <TableHead>Primary Device</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Registration Date</TableHead>
                         <TableHead>Actions</TableHead>
@@ -409,7 +416,9 @@ export default function AdminDashboardNew() {
                         customerSearch === "" || 
                         customer.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
                         customer.contact.includes(customerSearch) ||
-                        customer.voucherCode.toLowerCase().includes(customerSearch.toLowerCase())
+                        (customer.allVoucherCodes && customer.allVoucherCodes.some((code: string) => 
+                          code.toLowerCase().includes(customerSearch.toLowerCase())
+                        ))
                       ).map((customer) => (
                         <TableRow key={customer.id}>
                           <TableCell>
@@ -426,22 +435,30 @@ export default function AdminDashboardNew() {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center">
+                              <Badge variant="outline" className="mr-2">
+                                {customer.registrationCount || 1} {customer.registrationCount === 1 ? 'Registration' : 'Registrations'}
+                              </Badge>
+                              {customer.registrationCount > 1 && (
+                                <Button variant="ghost" size="sm" className="text-xs p-1 h-6">
+                                  <Eye className="h-3 w-3 mr-1" />
+                                  View All
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center">
+                              <IndianRupee className="h-4 w-4 mr-1 text-gray-400" />
+                              {formatCurrency(customer.totalInvoiceValue || customer.invoiceValue)}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center">
                               <Smartphone className="h-4 w-4 mr-2 text-gray-400" />
                               <div>
                                 <div className="font-medium">{customer.brand} {customer.modelName}</div>
                                 <div className="text-sm text-gray-500 capitalize">{customer.deviceType}</div>
                               </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <code className="bg-gray-100 px-2 py-1 rounded text-sm">
-                              {customer.voucherCode}
-                            </code>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center">
-                              <IndianRupee className="h-4 w-4 mr-1 text-gray-400" />
-                              {formatCurrency(customer.invoiceValue)}
                             </div>
                           </TableCell>
                           <TableCell>

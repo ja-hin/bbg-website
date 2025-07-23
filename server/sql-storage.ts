@@ -1888,11 +1888,11 @@ export class SqlServerStorage implements IStorage {
     const query = `
       INSERT INTO models (name, brand_id, device_type, is_active)
       OUTPUT INSERTED.*
-      VALUES (@modelName, @brandId, @deviceType, 1)
+      VALUES (@name, @brandId, @deviceType, 1)
     `;
 
     const request = db.pool.request();
-    request.input('modelName', sql.NVarChar, model.modelName);
+    request.input('name', sql.NVarChar, model.modelName);
     request.input('brandId', sql.Int, model.brandId);
     request.input('deviceType', sql.NVarChar, model.deviceType);
 

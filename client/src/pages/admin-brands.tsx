@@ -166,7 +166,8 @@ function AdminBrandsPage() {
     }
     createModelMutation.mutate({
       modelName: newModel.modelName,
-      brandId: newModel.brandId
+      brandId: newModel.brandId,
+      deviceType: brands.find(b => b.id === newModel.brandId)?.deviceType || 'mobile'
     });
   };
 

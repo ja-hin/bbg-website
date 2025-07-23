@@ -1758,6 +1758,162 @@ export class SqlServerStorage implements IStorage {
       updatedAt: row.updated_at
     };
   }
+
+  // Brand operations
+  async createBrand(brand: InsertBrand): Promise<Brand> {
+    await db.connectDB();
+    const query = `
+      INSERT INTO brands (name, device_type, is_active)
+      OUTPUT INSERTED.*
+      VALUES (@name, @deviceType, 1)
+    `;
+
+    const request = db.pool.request();
+    request.input('name', sql.NVarChar, brand.name);
+    request.input('deviceType', sql.NVarChar, brand.deviceType);
+
+    const result = await request.query(query);
+    return this.mapBrandFromDb(result.recordset[0]);
+  }
+
+  async getAllBrands(): Promise<Brand[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM brands WHERE is_active = 1 ORDER BY name`;
+    const request = db.pool.request();
+    const result = await request.query(query);
+    return result.recordset.map(row => this.mapBrandFromDb(row));
+  }
+
+  async getBrandsByDeviceType(deviceType: string): Promise<Brand[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM brands WHERE device_type = @deviceType AND is_active = 1 ORDER BY name`;
+    
+    const request = db.pool.request();
+    request.input('deviceType', sql.NVarChar, deviceType);
+    
+    const result = await request.query(query);
+    return result.recordset.map(row => this.mapBrandFromDb(row));
+  }
+
+  async updateBrand(id: number, updates: Partial<InsertBrand>): Promise<void> {
+    await db.connectDB();
+    const setParts = [];
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+
+    if (updates.name !== undefined) {
+      setParts.push('name = @name');
+      request.input('name', sql.NVarChar, updates.name);
+    }
+    if (updates.deviceType !== undefined) {
+      setParts.push('device_type = @deviceType');
+      request.input('deviceType', sql.NVarChar, updates.deviceType);
+    }
+
+    if (setParts.length > 0) {
+      const query = `UPDATE brands SET ${setParts.join(', ')} WHERE id = @id`;
+      await request.query(query);
+    }
+  }
+
+  async deleteBrand(id: number): Promise<void> {
+    await db.connectDB();
+    const query = `UPDATE brands SET is_active = 0 WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    await request.query(query);
+  }
+
+  // Device Model operations
+  async createDeviceModel(model: InsertDeviceModel): Promise<DeviceModel> {
+    await db.connectDB();
+    const query = `
+      INSERT INTO models (name, brand_id, device_type, is_active)
+      OUTPUT INSERTED.*
+      VALUES (@modelName, @brandId, @deviceType, 1)
+    `;
+
+    const request = db.pool.request();
+    request.input('modelName', sql.NVarChar, model.modelName);
+    request.input('brandId', sql.Int, model.brandId);
+    request.input('deviceType', sql.NVarChar, model.deviceType);
+
+    const result = await request.query(query);
+    return this.mapModelFromDb(result.recordset[0]);
+  }
+
+  async getAllDeviceModels(): Promise<DeviceModel[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM models WHERE is_active = 1 ORDER BY name`;
+    const request = db.pool.request();
+    const result = await request.query(query);
+    return result.recordset.map(row => this.mapModelFromDb(row));
+  }
+
+  async getModelsByBrandId(brandId: number): Promise<DeviceModel[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM models WHERE brand_id = @brandId AND is_active = 1 ORDER BY name`;
+    
+    const request = db.pool.request();
+    request.input('brandId', sql.Int, brandId);
+    
+    const result = await request.query(query);
+    return result.recordset.map(row => this.mapModelFromDb(row));
+  }
+
+  async updateDeviceModel(id: number, updates: Partial<InsertDeviceModel>): Promise<void> {
+    await db.connectDB();
+    const setParts = [];
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+
+    if (updates.modelName !== undefined) {
+      setParts.push('name = @modelName');
+      request.input('modelName', sql.NVarChar, updates.modelName);
+    }
+    if (updates.brandId !== undefined) {
+      setParts.push('brand_id = @brandId');
+      request.input('brandId', sql.Int, updates.brandId);
+    }
+    if (updates.deviceType !== undefined) {
+      setParts.push('device_type = @deviceType');
+      request.input('deviceType', sql.NVarChar, updates.deviceType);
+    }
+
+    if (setParts.length > 0) {
+      const query = `UPDATE models SET ${setParts.join(', ')} WHERE id = @id`;
+      await request.query(query);
+    }
+  }
+
+  async deleteDeviceModel(id: number): Promise<void> {
+    await db.connectDB();
+    const query = `UPDATE models SET is_active = 0 WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    await request.query(query);
+  }
+
+  private mapBrandFromDb(row: any): Brand {
+    return {
+      id: row.id,
+      name: row.name,
+      deviceType: row.device_type,
+      isActive: row.is_active,
+      createdAt: row.created_at
+    };
+  }
+
+  private mapModelFromDb(row: any): DeviceModel {
+    return {
+      id: row.id,
+      modelName: row.name,
+      brandId: row.brand_id,
+      deviceType: row.device_type,
+      isActive: row.is_active,
+      createdAt: row.created_at
+    };
+  }
 }
 
 export const storage = new SqlServerStorage();

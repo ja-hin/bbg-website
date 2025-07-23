@@ -2228,7 +2228,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const brands = await storage.getAllBrands();
       res.json(brands);
     } catch (error: any) {
+      console.error('Error in /api/admin/brands:', error);
       res.status(500).json({ message: "Failed to get brands" });
+    }
+  });
+
+  // Brands with models API endpoint for admin brands page
+  app.get("/api/brands-with-models", isAdminAuthenticated, async (req, res) => {
+    try {
+      const brands = await storage.getAllBrands();
+      const brandsWithModels = await Promise.all(
+        brands.map(async (brand) => {
+          const models = await storage.getModelsByBrandId(brand.id);
+          return {
+            ...brand,
+            models
+          };
+        })
+      );
+      
+      res.json(brandsWithModels);
+    } catch (error: any) {
+      console.error('Error in /api/brands-with-models:', error);
+      res.status(500).json({ message: "Failed to get brands with models" });
     }
   });
 
@@ -2478,6 +2500,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const models = await storage.getAllDeviceModels();
       res.json(models);
     } catch (error: any) {
+      console.error('Error in /api/admin/models:', error);
       res.status(500).json({ message: "Failed to get device models" });
     }
   });

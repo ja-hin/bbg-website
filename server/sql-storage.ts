@@ -777,89 +777,147 @@ export class SqlServerStorage implements IStorage {
     totalRows: number;
     successfulRows: number;
     errors: string[];
+    created: { brands: number; models: number; };
   }> {
     await db.connectDB();
     
     const results = {
       totalRows: data.length,
       successfulRows: 0,
-      errors: [] as string[]
+      errors: [] as string[],
+      created: { brands: 0, models: 0 }
     };
 
-    for (let i = 0; i < data.length; i++) {
-      const row = data[i];
-      try {
-        // Normalize device type
+    // Process in batches for better performance
+    const BATCH_SIZE = 50;
+    const transaction = db.pool.transaction();
+    
+    try {
+      await transaction.begin();
+      
+      // Group data by device type and brand for bulk processing
+      const brandMap = new Map<string, number>();
+      const uniqueBrands = new Set<string>();
+      const uniqueModels = new Set<string>();
+      
+      // First pass: collect unique brands and models
+      for (let i = 0; i < data.length; i++) {
+        const row = data[i];
         const deviceType = row.device.toLowerCase().trim();
         const brandName = row.brand.trim();
         const modelName = row.model.trim();
-
+        
         if (!['mobile', 'laptop'].includes(deviceType)) {
           results.errors.push(`Row ${i + 1}: Invalid device type '${row.device}'. Must be 'mobile' or 'laptop'.`);
           continue;
         }
-
-        // Check if brand exists
-        let brandQuery = `
-          SELECT id FROM brands 
-          WHERE LOWER(name) = LOWER(@brandName) AND device_type = @deviceType
-        `;
         
-        let brandRequest = db.pool.request();
-        brandRequest.input('brandName', sql.VarChar, brandName);
-        brandRequest.input('deviceType', sql.VarChar, deviceType);
-        
-        let brandResult = await brandRequest.query(brandQuery);
-        let brandId: number;
-
-        if (brandResult.recordset.length === 0) {
-          // Create new brand
-          const createBrandQuery = `
-            INSERT INTO brands (name, device_type)
-            OUTPUT INSERTED.id
-            VALUES (@brandName, @deviceType)
-          `;
-          
-          const createBrandRequest = db.pool.request();
-          createBrandRequest.input('brandName', sql.VarChar, brandName);
-          createBrandRequest.input('deviceType', sql.VarChar, deviceType);
-          
-          const createBrandResult = await createBrandRequest.query(createBrandQuery);
-          brandId = createBrandResult.recordset[0].id;
-        } else {
-          brandId = brandResult.recordset[0].id;
-        }
-
-        // Check if model exists
-        const modelQuery = `
-          SELECT id FROM models 
-          WHERE LOWER(name) = LOWER(@modelName) AND brand_id = @brandId
-        `;
-        
-        const modelRequest = db.pool.request();
-        modelRequest.input('modelName', sql.VarChar, modelName);
-        modelRequest.input('brandId', sql.Int, brandId);
-        
-        const modelResult = await modelRequest.query(modelQuery);
-
-        if (modelResult.recordset.length === 0) {
-          // Create new model
-          const createModelQuery = `
-            INSERT INTO models (name, brand_id, is_active)
-            VALUES (@modelName, @brandId, 1)
-          `;
-          
-          const createModelRequest = db.pool.request();
-          createModelRequest.input('modelName', sql.VarChar, modelName);
-          createModelRequest.input('brandId', sql.Int, brandId);
-          
-          await createModelRequest.query(createModelQuery);
-        }
-
-        results.successfulRows++;
-      } catch (error: any) {
-        results.errors.push(`Row ${i + 1}: ${error.message}`);
+        const brandKey = `${brandName}|${deviceType}`;
+        uniqueBrands.add(brandKey);
+        uniqueModels.add(`${brandKey}|${modelName}`);
       }
+
+      // Get existing brands
+      const existingBrandsQuery = `
+        SELECT id, name, device_type FROM brands 
+        WHERE name IN (${Array.from(uniqueBrands).map(() => '?').join(',')})
+      `;
+      
+      // Create brands that don't exist
+      for (const brandKey of uniqueBrands) {
+        const [brandName, deviceType] = brandKey.split('|');
+        
+        try {
+          const brandRequest = transaction.request();
+          brandRequest.input('brandName', sql.VarChar, brandName);
+          brandRequest.input('deviceType', sql.VarChar, deviceType);
+          
+          const existingBrand = await brandRequest.query(`
+            SELECT id FROM brands 
+            WHERE LOWER(name) = LOWER(@brandName) AND device_type = @deviceType
+          `);
+          
+          if (existingBrand.recordset.length === 0) {
+            const createBrandRequest = transaction.request();
+            createBrandRequest.input('brandName', sql.VarChar, brandName);
+            createBrandRequest.input('deviceType', sql.VarChar, deviceType);
+            
+            const newBrand = await createBrandRequest.query(`
+              INSERT INTO brands (name, device_type, is_active)
+              OUTPUT INSERTED.id
+              VALUES (@brandName, @deviceType, 1)
+            `);
+            
+            brandMap.set(brandKey, newBrand.recordset[0].id);
+            results.created.brands++;
+          } else {
+            brandMap.set(brandKey, existingBrand.recordset[0].id);
+          }
+        } catch (error: any) {
+          console.error(`Error processing brand ${brandName}:`, error);
+        }
+      }
+
+      // Create models in batches
+      for (let i = 0; i < data.length; i += BATCH_SIZE) {
+        const batch = data.slice(i, i + BATCH_SIZE);
+        
+        for (const row of batch) {
+          try {
+            const deviceType = row.device.toLowerCase().trim();
+            const brandName = row.brand.trim();
+            const modelName = row.model.trim();
+            
+            if (!['mobile', 'laptop'].includes(deviceType)) {
+              continue; // Already logged error above
+            }
+            
+            const brandKey = `${brandName}|${deviceType}`;
+            const brandId = brandMap.get(brandKey);
+            
+            if (!brandId) {
+              results.errors.push(`Row ${i + 1}: Could not find or create brand ${brandName}`);
+              continue;
+            }
+            
+            // Check if model exists
+            const modelRequest = transaction.request();
+            modelRequest.input('modelName', sql.VarChar, modelName);
+            modelRequest.input('brandId', sql.Int, brandId);
+            
+            const existingModel = await modelRequest.query(`
+              SELECT id FROM models 
+              WHERE LOWER(name) = LOWER(@modelName) AND brand_id = @brandId
+            `);
+            
+            if (existingModel.recordset.length === 0) {
+              const createModelRequest = transaction.request();
+              createModelRequest.input('modelName', sql.VarChar, modelName);
+              createModelRequest.input('brandId', sql.Int, brandId);
+              createModelRequest.input('deviceType', sql.VarChar, deviceType);
+              
+              await createModelRequest.query(`
+                INSERT INTO models (name, brand_id, device_type, is_active)
+                VALUES (@modelName, @brandId, @deviceType, 1)
+              `);
+              
+              results.created.models++;
+            }
+            
+            results.successfulRows++;
+          } catch (error: any) {
+            results.errors.push(`Row ${i + 1}: ${error.message}`);
+          }
+        }
+      }
+      
+      await transaction.commit();
+      console.log(`Bulk upload completed: ${results.created.brands} brands, ${results.created.models} models created`);
+      
+    } catch (error: any) {
+      await transaction.rollback();
+      console.error('Bulk upload transaction failed:', error);
+      results.errors.push(`Transaction failed: ${error.message}`);
     }
 
     return results;
@@ -1844,10 +1902,19 @@ export class SqlServerStorage implements IStorage {
 
   async getAllDeviceModels(): Promise<DeviceModel[]> {
     await db.connectDB();
-    const query = `SELECT * FROM models WHERE is_active = 1 ORDER BY name`;
-    const request = db.pool.request();
-    const result = await request.query(query);
-    return result.recordset.map(row => this.mapModelFromDb(row));
+    const query = `
+      SELECT m.*, b.name as brand_name 
+      FROM models m
+      LEFT JOIN brands b ON m.brand_id = b.id
+      WHERE m.is_active = 1
+      ORDER BY b.name, m.name
+    `;
+    
+    const result = await db.pool.request().query(query);
+    return result.recordset.map(row => ({
+      ...this.mapModelFromDb(row),
+      brandName: row.brand_name || 'Unknown Brand'
+    }));
   }
 
   async getModelsByBrandId(brandId: number): Promise<DeviceModel[]> {
@@ -1909,7 +1976,7 @@ export class SqlServerStorage implements IStorage {
       id: row.id,
       modelName: row.name,
       brandId: row.brand_id,
-      deviceType: row.device_type,
+      deviceType: row.device_type || 'mobile',
       isActive: row.is_active,
       createdAt: row.created_at
     };

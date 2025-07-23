@@ -2111,9 +2111,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         message: "Bulk upload completed",
-        successfulRows,
-        errors,
-        results
+        totalRows: normalizedData.length,
+        successfulRows: results.successfulRows,
+        errors: results.errors,
+        created: results.created
       });
 
     } catch (error: any) {

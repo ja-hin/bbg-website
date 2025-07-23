@@ -42,8 +42,13 @@ interface Model {
 }
 
 interface BulkUploadResult {
+  totalRows: number;
   successfulRows: number;
   errors: string[];
+  created?: {
+    brands: number;
+    models: number;
+  };
 }
 
 export default function AdminBrandsNew() {
@@ -201,7 +206,7 @@ export default function AdminBrandsNew() {
     }
   });
 
-  // Bulk upload mutation
+  // Bulk upload mutation with enhanced progress reporting
   const bulkUploadMutation = useMutation({
     mutationFn: async (file: File) => {
       const formData = new FormData();
@@ -213,7 +218,8 @@ export default function AdminBrandsNew() {
       });
       
       if (!response.ok) {
-        throw new Error('Upload failed');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Upload failed');
       }
       
       return response.json();
@@ -224,14 +230,20 @@ export default function AdminBrandsNew() {
       setUploadFile(null);
       setIsUploading(false);
       
+      const { totalRows, successfulRows, errors, created } = result;
+      
       toast({
         title: "Bulk upload completed",
-        description: `${result.successfulRows} rows processed. ${result.errors.length} errors.`
+        description: `${successfulRows}/${totalRows} rows processed successfully. ${created?.brands || 0} brands and ${created?.models || 0} models created. ${errors.length} errors.`
       });
     },
-    onError: () => {
+    onError: (error) => {
       setIsUploading(false);
-      toast({ title: "Bulk upload failed", variant: "destructive" });
+      toast({ 
+        title: "Bulk upload failed", 
+        description: error.message,
+        variant: "destructive" 
+      });
     }
   });
 

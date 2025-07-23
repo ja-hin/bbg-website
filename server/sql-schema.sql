@@ -114,6 +114,32 @@ CREATE TABLE commission_payouts (
     FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
 
+-- Create brands table for brand management
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='brands' AND xtype='U')
+CREATE TABLE brands (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    name NVARCHAR(100) NOT NULL,
+    device_type NVARCHAR(20) NOT NULL,
+    is_active BIT DEFAULT 1,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    updated_at DATETIME2 DEFAULT GETDATE(),
+    UNIQUE(name, device_type)
+);
+
+-- Create models table for model management
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='models' AND xtype='U')
+CREATE TABLE models (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    name NVARCHAR(255) NOT NULL,
+    brand_id INT NOT NULL,
+    device_type NVARCHAR(20) NOT NULL,
+    is_active BIT DEFAULT 1,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    updated_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY (brand_id) REFERENCES brands(id),
+    UNIQUE(name, brand_id)
+);
+
 -- Create indexes for better performance
 CREATE NONCLUSTERED INDEX IX_distributors_seller_code ON distributors(seller_code);
 CREATE NONCLUSTERED INDEX IX_distributors_email ON distributors(email);

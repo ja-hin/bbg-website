@@ -165,10 +165,6 @@ export default function Header() {
               </SheetTrigger>
               <SheetContent side="right" className="w-80">
                 <div className="flex flex-col space-y-4 mt-8">
-                  <div className="px-4">
-                    <h2 className="text-lg font-semibold text-gray-900">Navigation</h2>
-                    <p className="text-sm text-gray-500 mt-1">Access all sections of Xtracover</p>
-                  </div>
                   <nav className="flex flex-col space-y-2">
                     <NavLinks 
                       mobile={true} 

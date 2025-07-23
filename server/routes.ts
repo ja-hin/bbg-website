@@ -5,7 +5,9 @@ import path from "path";
 import fs from "fs";
 // Stripe import removed - using PayU only
 import crypto from "crypto";
-import { storage } from "./storage";
+import { storage } from "./sql-storage";
+import { db } from "./db";
+import sql from 'mssql';
 import { kaleyraSMSService } from "./kaleyra-service";
 import { communicationService } from "./communication-service";
 import { gupshupService } from "./gupshup-service";
@@ -98,7 +100,7 @@ function generatePayUHash(params: any, salt: string): string {
 export async function registerRoutes(app: Express): Promise<Server> {
   
   // Initialize template service
-  // await templateService.initializeTables(); // Temporarily disabled
+  await templateService.initializeTables();
   
   // Distributor registration with file uploads
   app.post("/api/distributors/register", upload.fields([

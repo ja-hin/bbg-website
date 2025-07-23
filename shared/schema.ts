@@ -11,6 +11,7 @@ export const distributors = pgTable("distributors", {
   contact: text("contact").notNull(),
   email: text("email").notNull(),
   pincode: text("pincode").notNull(),
+  location: text("location").notNull(),
   preferredMode: text("preferred_mode").notNull(), // 'in-store', 'online', 'both'
   // Tax & Compliance Details
   panNumber: text("pan_number").notNull(),
@@ -156,6 +157,28 @@ export const adminUsers = pgTable("admin_users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Distributor Sessions table for authentication
+export const distributorSessions = pgTable("distributor_sessions", {
+  id: serial("id").primaryKey(),
+  distributorId: integer("distributor_id").notNull(),
+  sessionToken: text("session_token").notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Commission Payouts table
+export const commissionPayouts = pgTable("commission_payouts", {
+  id: serial("id").primaryKey(),
+  distributorId: integer("distributor_id").notNull(),
+  customerId: integer("customer_id").notNull(),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  status: text("status").notNull().default('pending'), // 'pending', 'processing', 'paid', 'failed'
+  paymentReference: text("payment_reference"),
+  paidAt: timestamp("paid_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Cart Abandonment tracking
 export const cartAbandonments = pgTable("cart_abandonments", {
   id: serial("id").primaryKey(),
@@ -244,6 +267,8 @@ export type PendingPayment = typeof pendingPayments.$inferSelect;
 export type Brand = typeof brands.$inferSelect;
 export type DeviceModel = typeof deviceModels.$inferSelect;
 export type CartAbandonment = typeof cartAbandonments.$inferSelect;
+export type DistributorSession = typeof distributorSessions.$inferSelect;
+export type CommissionPayout = typeof commissionPayouts.$inferSelect;
 
 export type InsertUserRole = z.infer<typeof insertUserRoleSchema>;
 export type InsertDistributor = z.infer<typeof insertDistributorSchema>;

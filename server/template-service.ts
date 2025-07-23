@@ -1,5 +1,6 @@
 import { db } from "./db";
-import sql from 'mssql';
+import { pgTable, text, serial, boolean, timestamp } from "drizzle-orm/pg-core";
+import { eq, and } from "drizzle-orm";
 
 export interface MessageTemplate {
   id: number;

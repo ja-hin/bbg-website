@@ -1,11 +1,12 @@
-import { distributors, customers, claims, otpVerifications, adminUsers, pendingPayments, brands, deviceModels, userRoles, cartAbandonments } from "@shared/schema";
+import { distributors, customers, claims, otpVerifications, adminUsers, pendingPayments, brands, deviceModels, userRoles, cartAbandonments, distributorSessions, commissionPayouts } from "@shared/schema";
 import type { 
-  Distributor, Customer, Claim, OtpVerification, AdminUser, PendingPayment, Brand, DeviceModel, UserRole, CartAbandonment,
+  Distributor, Customer, Claim, OtpVerification, AdminUser, PendingPayment, Brand, DeviceModel, UserRole, CartAbandonment, DistributorSession, CommissionPayout,
   InsertDistributor, InsertCustomer, InsertClaim, InsertOtp, InsertAdminUser, InsertPendingPayment, InsertBrand, InsertDeviceModel, InsertUserRole, InsertCartAbandonment
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and } from "drizzle-orm";
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 export interface IStorage {
   // User Role operations (Master)
@@ -157,6 +158,11 @@ export class DatabaseStorage implements IStorage {
     return distributor || undefined;
   }
 
+  async getDistributorByContact(contact: string): Promise<Distributor | undefined> {
+    const [distributor] = await db.select().from(distributors).where(eq(distributors.contact, contact));
+    return distributor || undefined;
+  }
+
   async getAllDistributors(): Promise<Distributor[]> {
     return await db.select().from(distributors);
   }
@@ -167,6 +173,154 @@ export class DatabaseStorage implements IStorage {
 
   async deleteDistributor(id: number): Promise<void> {
     await db.update(distributors).set({ isActive: false }).where(eq(distributors.id, id));
+  }
+
+  // Distributor Authentication methods
+  async createDistributorSession(distributorId: number, contact: string): Promise<string> {
+    const sessionToken = this.generateSessionToken();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+    
+    await db.insert(distributorSessions).values({
+      distributorId,
+      sessionToken,
+      expiresAt,
+    });
+    
+    return sessionToken;
+  }
+
+  async verifyDistributorSession(token: string): Promise<Distributor | null> {
+    const [session] = await db.select()
+      .from(distributorSessions)
+      .innerJoin(distributors, eq(distributorSessions.distributorId, distributors.id))
+      .where(and(
+        eq(distributorSessions.sessionToken, token),
+        eq(distributors.isActive, true)
+      ));
+
+    if (!session || session.distributor_sessions.expiresAt < new Date()) {
+      return null;
+    }
+
+    return session.distributors;
+  }
+
+  async deleteDistributorSession(token: string): Promise<void> {
+    await db.delete(distributorSessions).where(eq(distributorSessions.sessionToken, token));
+  }
+
+  async deleteDistributorSessionsByDistributorId(distributorId: number): Promise<void> {
+    await db.delete(distributorSessions).where(eq(distributorSessions.distributorId, distributorId));
+  }
+
+  // Distributor Dashboard methods
+  async getDistributorStats(distributorId: number): Promise<{
+    totalCustomers: number;
+    totalEarnings: number;
+    pendingPayouts: number;
+    completedPayouts: number;
+  }> {
+    const distributor = await db.select().from(distributors).where(eq(distributors.id, distributorId));
+    if (!distributor.length) {
+      return { totalCustomers: 0, totalEarnings: 0, pendingPayouts: 0, completedPayouts: 0 };
+    }
+
+    const sellerCode = distributor[0].sellerCode;
+    
+    // Get customers registered with this seller code
+    const customerCount = await db.select().from(customers).where(eq(customers.sellerCode, sellerCode));
+    
+    // Get payouts for this distributor
+    const allPayouts = await db.select().from(commissionPayouts).where(eq(commissionPayouts.distributorId, distributorId));
+    const pendingPayouts = allPayouts.filter(p => p.status === 'pending');
+    const completedPayouts = allPayouts.filter(p => p.status === 'paid');
+    
+    const totalEarnings = completedPayouts.reduce((sum, payout) => sum + Number(payout.amount), 0);
+    const pendingAmount = pendingPayouts.reduce((sum, payout) => sum + Number(payout.amount), 0);
+
+    return {
+      totalCustomers: customerCount.length,
+      totalEarnings,
+      pendingPayouts: pendingAmount,
+      completedPayouts: completedPayouts.length,
+    };
+  }
+
+  async getDistributorCustomers(distributorId: number): Promise<Customer[]> {
+    const distributor = await db.select().from(distributors).where(eq(distributors.id, distributorId));
+    if (!distributor.length) return [];
+
+    const sellerCode = distributor[0].sellerCode;
+    return await db.select().from(customers).where(eq(customers.sellerCode, sellerCode));
+  }
+
+  async getDistributorPayouts(distributorId: number): Promise<any[]> {
+    return await db.select().from(commissionPayouts).where(eq(commissionPayouts.distributorId, distributorId));
+  }
+
+  // Additional admin methods needed
+  async getAllDistributorsForAdmin(): Promise<Distributor[]> {
+    return await db.select().from(distributors);
+  }
+
+  async getAllPayoutsForAdmin(): Promise<CommissionPayout[]> {
+    return await db.select().from(commissionPayouts);
+  }
+
+  async updatePayoutStatus(id: number, status: string, paymentReference?: string): Promise<void> {
+    const updateData: any = { status };
+    if (status === 'paid') {
+      updateData.paidAt = new Date();
+    }
+    if (paymentReference) {
+      updateData.paymentReference = paymentReference;
+    }
+    await db.update(commissionPayouts).set(updateData).where(eq(commissionPayouts.id, id));
+  }
+
+  async getClaimById(id: number): Promise<Claim | undefined> {
+    const [claim] = await db.select().from(claims).where(eq(claims.id, id));
+    return claim || undefined;
+  }
+
+  async bulkUploadBrandsAndModels(data: any[]): Promise<{ success: number; errors: string[] }> {
+    let success = 0;
+    const errors: string[] = [];
+    
+    for (const item of data) {
+      try {
+        // Create brand if it doesn't exist
+        const existingBrand = await db.select().from(brands)
+          .where(and(eq(brands.name, item.brand), eq(brands.deviceType, item.deviceType)));
+        
+        let brandId: number;
+        if (existingBrand.length === 0) {
+          const [newBrand] = await db.insert(brands)
+            .values({ name: item.brand, deviceType: item.deviceType })
+            .returning();
+          brandId = newBrand.id;
+        } else {
+          brandId = existingBrand[0].id;
+        }
+        
+        // Create model
+        await db.insert(deviceModels).values({
+          brandId,
+          modelName: item.model,
+          deviceType: item.deviceType,
+        });
+        
+        success++;
+      } catch (error) {
+        errors.push(`Error processing ${item.brand} ${item.model}: ${error}`);
+      }
+    }
+    
+    return { success, errors };
+  }
+
+  private generateSessionToken(): string {
+    return crypto.randomBytes(32).toString('hex');
   }
 
   // Customer operations

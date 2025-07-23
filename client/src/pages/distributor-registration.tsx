@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Loader2, IndianRupee, Users, TrendingUp, Building, MapPin, Phone, Mail, CreditCard, Upload, FileText, Shield, Receipt, ExternalLink } from "lucide-react";
+import { Loader2, IndianRupee, Users, TrendingUp, Building, MapPin, Phone, Mail, CreditCard, Upload, FileText, Shield, Receipt, ExternalLink, DollarSign } from "lucide-react";
 
 const distributorSchema = z.object({
   name: z.string().min(2, "Full name (as per PAN/GST) is required"),

@@ -331,13 +331,24 @@ export class SqlServerStorage implements IStorage {
       BEGIN
         CREATE TABLE models (
           id INT IDENTITY(1,1) PRIMARY KEY,
-          name NVARCHAR(100) NOT NULL,
+          name NVARCHAR(255) NOT NULL,
           brand_id INT NOT NULL,
+          device_type NVARCHAR(20) NOT NULL,
           is_active BIT DEFAULT 1,
           created_at DATETIME2 DEFAULT GETDATE(),
           updated_at DATETIME2 DEFAULT GETDATE(),
-          FOREIGN KEY (brand_id) REFERENCES brands(id) ON DELETE CASCADE
+          FOREIGN KEY (brand_id) REFERENCES brands(id) ON DELETE CASCADE,
+          UNIQUE(name, brand_id)
         );
+      END
+      
+      -- Add device_type column to existing models table if it doesn't exist
+      IF EXISTS (SELECT * FROM sys.tables WHERE name = 'models')
+      BEGIN
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('models') AND name = 'device_type')
+        BEGIN
+          ALTER TABLE models ADD device_type NVARCHAR(20) NOT NULL DEFAULT 'mobile';
+        END
       END
 
       -- Create distributor_sessions table

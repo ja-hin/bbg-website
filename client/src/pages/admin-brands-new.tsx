@@ -290,9 +290,45 @@ export default function AdminBrandsNew() {
     bulkUploadMutation.mutate(bulkData.trim());
   };
 
-  // Sample data for reference
+  // Sample data for reference with comprehensive dummy data
   const getSampleData = () => {
-    return "Device Type,Brand,Model\nmobile,Apple,iPhone 15\nmobile,Samsung,Galaxy S24\nlaptop,Dell,XPS 13\nlaptop,HP,Pavilion 15";
+    return `Device Type,Brand,Model
+mobile,Apple,iPhone 15
+mobile,Apple,iPhone 14
+mobile,Apple,iPhone 13
+mobile,Samsung,Galaxy S24
+mobile,Samsung,Galaxy S23
+mobile,Samsung,Galaxy A54
+mobile,OnePlus,OnePlus 12
+mobile,OnePlus,OnePlus 11
+mobile,Xiaomi,Mi 14
+mobile,Xiaomi,Redmi Note 13
+mobile,Vivo,V30
+mobile,Vivo,Y28
+mobile,Oppo,Find X7
+mobile,Oppo,A78
+mobile,Realme,GT 6
+mobile,Realme,Narzo 70
+mobile,Google,Pixel 8
+mobile,Google,Pixel 7a
+mobile,Nothing,Phone 2
+mobile,Motorola,Edge 50
+laptop,Apple,MacBook Air M3
+laptop,Apple,MacBook Pro 14
+laptop,Dell,XPS 13
+laptop,Dell,Inspiron 15
+laptop,HP,Pavilion 15
+laptop,HP,Spectre x360
+laptop,Lenovo,ThinkPad X1
+laptop,Lenovo,IdeaPad 3
+laptop,Asus,ZenBook 14
+laptop,Asus,VivoBook 15
+laptop,Acer,Swift 3
+laptop,Acer,Aspire 5
+laptop,MSI,Modern 14
+laptop,MSI,Gaming GF63
+laptop,Surface,Laptop 5
+laptop,Surface,Pro 9`;
   };
 
   const insertSampleData = () => {

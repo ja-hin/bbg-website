@@ -8,6 +8,7 @@ import crypto from "crypto";
 import { storage } from "./sql-storage";
 import { db } from "./db";
 import sql from 'mssql';
+import XLSX from 'xlsx';
 import { kaleyraSMSService } from "./kaleyra-service";
 import { communicationService } from "./communication-service";
 import { gupshupService } from "./gupshup-service";
@@ -2044,7 +2045,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      const XLSX = require('xlsx');
+      // XLSX is now imported at the top
       const workbook = XLSX.readFile(req.file.path);
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];

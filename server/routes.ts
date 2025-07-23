@@ -2227,7 +2227,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Add dummy data endpoint for quick setup
+  // Add dummy data endpoint for quick setup using direct inserts
   app.post('/api/admin/add-dummy-data', isAdminAuthenticated, async (req, res) => {
     try {
       const dummyData = [
@@ -2272,14 +2272,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { device: 'laptop', brand: 'Surface', model: 'Pro 9' }
       ];
 
-      const results = await storage.bulkUploadBrandsAndModels(dummyData);
+      let brandsCreated = 0;
+      let modelsCreated = 0;
+      const brandMap = new Map<string, number>();
+
+      // Step 1: Create unique brands first
+      const uniqueBrands = new Set<string>();
+      dummyData.forEach(item => {
+        uniqueBrands.add(`${item.brand}|${item.device}`);
+      });
+
+      for (const brandKey of uniqueBrands) {
+        const [brandName, deviceType] = brandKey.split('|');
+        try {
+          // Check if brand already exists
+          const brands = await storage.getBrandsByDeviceType(deviceType);
+          const existingBrand = brands.find(b => b.name.toLowerCase() === brandName.toLowerCase());
+          
+          if (!existingBrand) {
+            const newBrand = await storage.createBrand({
+              name: brandName,
+              deviceType: deviceType,
+              isActive: true
+            });
+            brandMap.set(brandKey, newBrand.id);
+            brandsCreated++;
+          } else {
+            brandMap.set(brandKey, existingBrand.id);
+          }
+        } catch (error) {
+          console.error(`Error creating brand ${brandName}:`, error);
+        }
+      }
+
+      // Step 2: Create models
+      for (const item of dummyData) {
+        const brandKey = `${item.brand}|${item.device}`;
+        const brandId = brandMap.get(brandKey);
+        
+        if (brandId) {
+          try {
+            // Check if model already exists
+            const existingModels = await storage.getModelsByBrandId(brandId);
+            const modelExists = existingModels.find(m => m.modelName.toLowerCase() === item.model.toLowerCase());
+            
+            if (!modelExists) {
+              await storage.createDeviceModel({
+                brandId: brandId,
+                modelName: item.model,
+                deviceType: item.device,
+                isActive: true
+              });
+              modelsCreated++;
+            }
+          } catch (error) {
+            console.error(`Error creating model ${item.model}:`, error);
+          }
+        }
+      }
       
-      console.log(`Dummy data added: ${results.created.brands} brands, ${results.created.models} models created`);
+      console.log(`Dummy data added: ${brandsCreated} brands, ${modelsCreated} models created`);
       
       res.json({
         success: true,
         message: 'Dummy data added successfully',
-        created: results.created,
+        created: { brands: brandsCreated, models: modelsCreated },
         totalProcessed: dummyData.length
       });
       
@@ -2287,7 +2344,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error adding dummy data:', error);
       res.status(500).json({
         success: false,
-        message: 'Failed to add dummy data'
+        message: 'Failed to add dummy data: ' + error.message
       });
     }
   });

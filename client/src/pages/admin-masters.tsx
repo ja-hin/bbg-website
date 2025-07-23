@@ -1,56 +1,13 @@
-import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { useLocation, Link } from "wouter";
+import { Link } from "wouter";
 import { Database, Users, Smartphone, FileText, Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { AdminHeader } from "@/components/admin-header";
-
-interface AdminUser {
-  id: number;
-  username: string;
-  email: string;
-  role: string;
-  lastLoginAt?: string;
-  createdAt: string;
-}
+import { AdminLayout } from "@/components/admin-layout";
 
 function AdminMastersPage() {
-  const [, setLocation] = useLocation();
-
-  // Check admin authentication
-  const { data: adminUser, isLoading: adminLoading, error: adminError } = useQuery({
-    queryKey: ['/api/admin/me'],
-    retry: 1,
-    retryDelay: 1000
-  });
-
-  useEffect(() => {
-    // Only redirect to login if we have a definitive authentication failure (401 or 403)
-    if (!adminLoading && !adminUser && adminError) {
-      const errorResponse = adminError as any;
-      if (errorResponse?.response?.status === 401 || errorResponse?.response?.status === 403) {
-        setLocation('/admin/login');
-      }
-    }
-  }, [adminUser, adminLoading, adminError, setLocation]);
-
-  if (adminLoading || !adminUser) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p>Loading admin panel...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <AdminHeader adminUser={adminUser} />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <AdminLayout>
+      <div className="space-y-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Master Data Management</h1>
           <p className="text-gray-600 mt-2">Configure and manage system master data</p>
@@ -170,7 +127,7 @@ function AdminMastersPage() {
           </Card>
         </div>
       </div>
-    </div>
+    </AdminLayout>
   );
 }
 

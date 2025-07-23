@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRequireAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -11,18 +10,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { AdminHeader } from '@/components/admin-header';
+import { AdminLayout } from '@/components/admin-layout';
 import { Plus, Edit2, Trash2, Save, X, Upload, FileText, Download } from 'lucide-react';
 import { Brand, DeviceModel, InsertBrand, InsertDeviceModel } from '@shared/schema';
-
-interface AdminUser {
-  id: number;
-  username: string;
-  email: string;
-  role: string;
-  lastLoginAt?: string;
-  createdAt: string;
-}
 
 interface BrandWithModels extends Brand {
   models: DeviceModel[];
@@ -32,9 +22,6 @@ function AdminBrandsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Check admin authentication using new hook
-  const { isLoading: adminLoading, isAuthenticated } = useRequireAuth();
   
   const [editingBrand, setEditingBrand] = useState<number | null>(null);
   const [editingModel, setEditingModel] = useState<number | null>(null);
@@ -50,10 +37,9 @@ function AdminBrandsPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
 
-  // Fetch brands with their models only if authenticated
+  // Fetch brands with their models
   const { data: brands = [], isLoading } = useQuery({
-    queryKey: ['/api/brands-with-models'],
-    enabled: isAuthenticated
+    queryKey: ['/api/brands-with-models']
   });
 
   // Create brand mutation
@@ -388,19 +374,15 @@ function AdminBrandsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <AdminHeader />
-        <div className="max-w-6xl mx-auto px-4 py-8">
-          <div className="text-center">Loading brands and models...</div>
-        </div>
-      </div>
+      <AdminLayout>
+        <div className="text-center">Loading brands and models...</div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <AdminHeader />
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <AdminLayout>
+      <div className="space-y-6">
         <div className="mb-8">
           <div className="flex justify-between items-start">
             <div>
@@ -771,7 +753,7 @@ function AdminBrandsPage() {
           </Card>
         </div>
       </div>
-    </div>
+    </AdminLayout>
   );
 }
 

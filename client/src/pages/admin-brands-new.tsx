@@ -147,7 +147,7 @@ export default function AdminBrandsNew() {
     mutationFn: async (model: { name: string; brandId: number }) => {
       return apiRequest("/api/admin/models", {
         method: "POST",
-        body: { name: model.name, brandId: model.brandId }
+        body: { modelName: model.name, brandId: model.brandId, deviceType: "mobile" }
       });
     },
     onSuccess: () => {
@@ -163,10 +163,15 @@ export default function AdminBrandsNew() {
 
   // Update model mutation
   const updateModelMutation = useMutation({
-    mutationFn: async ({ id, ...updates }: { id: number } & Partial<Model>) => {
+    mutationFn: async ({ id, ...updates }: { id: number } & Partial<any>) => {
+      // Convert name to modelName for backend compatibility
+      const body = { ...updates };
+      if (body.name && !body.modelName) {
+        body.modelName = body.name;
+      }
       return apiRequest(`/api/admin/models/${id}`, {
         method: "PATCH",
-        body: updates
+        body
       });
     },
     onSuccess: () => {
@@ -261,7 +266,7 @@ export default function AdminBrandsNew() {
 
   const filteredModels = modelsWithBrandNames.filter(model => 
     (modelSearch === "" || 
-     model.name.toLowerCase().includes(modelSearch.toLowerCase()) ||
+     (model.modelName || model.name || "").toLowerCase().includes(modelSearch.toLowerCase()) ||
      model.brandName.toLowerCase().includes(modelSearch.toLowerCase())) &&
     (brandFilter === "all" || model.brandId.toString() === brandFilter)
   );
@@ -526,12 +531,12 @@ export default function AdminBrandsNew() {
                           <TableCell>
                             {editingModel?.id === model.id ? (
                               <Input
-                                value={editingModel.name}
-                                onChange={(e) => setEditingModel({ ...editingModel, name: e.target.value })}
+                                value={editingModel.modelName || editingModel.name || ""}
+                                onChange={(e) => setEditingModel({ ...editingModel, modelName: e.target.value, name: e.target.value })}
                                 className="w-full"
                               />
                             ) : (
-                              <div className="font-medium text-gray-900">{model.name}</div>
+                              <div className="font-medium text-gray-900">{model.modelName || model.name}</div>
                             )}
                           </TableCell>
                           <TableCell>

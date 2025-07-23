@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { AdminHeader } from "@/components/admin-header";
+import { AdminLayout } from "@/components/admin-layout";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { 
@@ -305,18 +305,16 @@ export default function AdminTemplates() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-100">
-        <AdminHeader />
+      <AdminLayout>
         <div className="container mx-auto px-4 py-8">
           <div>Loading templates...</div>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <AdminHeader />
+    <AdminLayout>
       
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
@@ -525,6 +523,6 @@ export default function AdminTemplates() {
           ))}
         </Tabs>
       </div>
-    </div>
+    </AdminLayout>
   );
 }

@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { AdminHeader } from "@/components/admin-header";
+import { AdminLayout } from "@/components/admin-layout";
 import { 
   RefreshCw, 
   CheckCircle, 
@@ -229,8 +229,7 @@ export default function AdminLogs() {
   }, [recentLogs]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <AdminHeader />
+    <AdminLayout>
       <div className="container mx-auto p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">System Logs & Monitoring</h1>
@@ -615,6 +614,6 @@ export default function AdminLogs() {
         </TabsContent>
       </Tabs>
       </div>
-    </div>
+    </AdminLayout>
   );
 }

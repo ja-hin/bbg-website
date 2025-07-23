@@ -23,6 +23,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import { AdminLayout } from "@/components/admin-layout";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -81,6 +82,8 @@ export default function AdminBrandsNew() {
   // Bulk upload state
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'completed' | 'error'>('idle');
 
   // Fetch brands
   const { data: brands, isLoading: brandsLoading } = useQuery<Brand[]>({
@@ -212,38 +215,71 @@ export default function AdminBrandsNew() {
       const formData = new FormData();
       formData.append('file', file);
       
-      const response = await fetch('/api/admin/bulk-upload-brands', {
-        method: 'POST',
-        body: formData,
-      });
+      // Start upload progress simulation
+      setUploadProgress(10);
+      setUploadStatus('uploading');
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Upload failed');
+      // Simulate progress during upload
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => Math.min(prev + Math.random() * 20, 90));
+      }, 500);
+      
+      try {
+        const response = await fetch('/api/admin/bulk-upload-brands', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        clearInterval(progressInterval);
+        setUploadProgress(100);
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Upload failed');
+        }
+        
+        return response.json();
+      } catch (error) {
+        clearInterval(progressInterval);
+        throw error;
       }
-      
-      return response.json();
     },
     onSuccess: (result: BulkUploadResult) => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/brands"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/models"] });
-      setUploadFile(null);
-      setIsUploading(false);
       
       const { totalRows, successfulRows, errors, created } = result;
       
+      setUploadStatus('completed');
+      setIsUploading(false);
+      
       toast({
-        title: "Bulk upload completed",
-        description: `${successfulRows}/${totalRows} rows processed successfully. ${created?.brands || 0} brands and ${created?.models || 0} models created. ${errors.length} errors.`
+        title: "✅ Bulk upload completed successfully!",
+        description: `${successfulRows}/${totalRows} rows processed. ${created?.brands || 0} brands and ${created?.models || 0} models created.${errors.length > 0 ? ` ${errors.length} errors found.` : ''}`
       });
+      
+      // Reset after 3 seconds
+      setTimeout(() => {
+        setUploadFile(null);
+        setUploadProgress(0);
+        setUploadStatus('idle');
+      }, 3000);
     },
     onError: (error) => {
       setIsUploading(false);
+      setUploadStatus('error');
+      setUploadProgress(0);
+      
       toast({ 
-        title: "Bulk upload failed", 
+        title: "❌ Bulk upload failed", 
         description: error.message,
         variant: "destructive" 
       });
+      
+      // Reset after 3 seconds
+      setTimeout(() => {
+        setUploadStatus('idle');
+      }, 3000);
     }
   });
 
@@ -706,7 +742,7 @@ export default function AdminBrandsNew() {
               </div>
 
               {uploadFile && (
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-gray-50 p-4 rounded-lg space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">Selected file: {uploadFile.name}</p>
@@ -714,9 +750,14 @@ export default function AdminBrandsNew() {
                     </div>
                     <div className="space-x-2">
                       <Button
-                        onClick={() => setUploadFile(null)}
+                        onClick={() => {
+                          setUploadFile(null);
+                          setUploadProgress(0);
+                          setUploadStatus('idle');
+                        }}
                         variant="outline"
                         size="sm"
+                        disabled={isUploading}
                       >
                         Remove
                       </Button>
@@ -728,6 +769,41 @@ export default function AdminBrandsNew() {
                       </Button>
                     </div>
                   </div>
+                  
+                  {/* Progress Bar */}
+                  {uploadStatus === 'uploading' && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-blue-600">Uploading...</span>
+                        <span className="text-sm text-gray-500">{Math.round(uploadProgress)}%</span>
+                      </div>
+                      <Progress value={uploadProgress} className="w-full" />
+                    </div>
+                  )}
+                  
+                  {/* Completion Status */}
+                  {uploadStatus === 'completed' && (
+                    <div className="flex items-center space-x-2 text-green-600 bg-green-50 p-3 rounded-md">
+                      <div className="w-5 h-5 rounded-full bg-green-600 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <span className="font-medium">Upload completed successfully!</span>
+                    </div>
+                  )}
+                  
+                  {/* Error Status */}
+                  {uploadStatus === 'error' && (
+                    <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-md">
+                      <div className="w-5 h-5 rounded-full bg-red-600 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <span className="font-medium">Upload failed. Please try again.</span>
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>

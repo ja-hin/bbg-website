@@ -80,9 +80,8 @@ export default function AdminBrandsNew() {
   const [newModel, setNewModel] = useState({ name: "", brandId: "" });
   
   // Bulk upload state
-  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [bulkData, setBulkData] = useState('');
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'completed' | 'error'>('idle');
 
   // Fetch brands
@@ -209,72 +208,25 @@ export default function AdminBrandsNew() {
     }
   });
 
-  // Bulk upload mutation with enhanced progress reporting
+  // Bulk upload mutation for text input
   const bulkUploadMutation = useMutation({
-    mutationFn: async (file: File) => {
-      const formData = new FormData();
-      formData.append('file', file);
-      
-      // Start upload progress
-      setUploadProgress(0);
+    mutationFn: async (data: string) => {
       setUploadStatus('uploading');
       
-      // Progressive update function
-      let currentProgress = 0;
-      const updateProgress = (target: number, duration: number = 1000) => {
-        const startProgress = currentProgress;
-        const progressDiff = target - startProgress;
-        const steps = Math.max(10, Math.floor(duration / 50));
-        const stepSize = progressDiff / steps;
-        
-        return new Promise<void>((resolve) => {
-          let step = 0;
-          const interval = setInterval(() => {
-            step++;
-            currentProgress = Math.min(startProgress + (stepSize * step), target);
-            setUploadProgress(currentProgress);
-            
-            if (step >= steps || currentProgress >= target) {
-              clearInterval(interval);
-              currentProgress = target;
-              setUploadProgress(target);
-              resolve();
-            }
-          }, 50);
-        });
-      };
+      const response = await fetch('/api/admin/bulk-upload-text', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data }),
+      });
       
-      try {
-        // Phase 1: Initial progress (0-30%)
-        await updateProgress(30, 500);
-        
-        // Phase 2: Upload progress (30-70%)
-        const uploadPromise = fetch('/api/admin/bulk-upload-brands', {
-          method: 'POST',
-          body: formData,
-        });
-        
-        await updateProgress(70, 1500);
-        
-        // Phase 3: Processing (70-90%)
-        await updateProgress(90, 800);
-        
-        const response = await uploadPromise;
-        
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Upload failed');
-        }
-        
-        // Phase 4: Finalizing (90-100%)
-        const result = await response.json();
-        await updateProgress(100, 300);
-        
-        return result;
-      } catch (error) {
-        setUploadProgress(0);
-        throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Upload failed');
       }
+      
+      return response.json();
     },
     onSuccess: (result: BulkUploadResult) => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/brands"] });
@@ -290,17 +242,15 @@ export default function AdminBrandsNew() {
         description: `${successfulRows}/${totalRows} rows processed. ${created?.brands || 0} brands and ${created?.models || 0} models created.${errors.length > 0 ? ` ${errors.length} errors found.` : ''}`
       });
       
-      // Reset after 5 seconds
+      // Reset after 3 seconds
       setTimeout(() => {
-        setUploadFile(null);
-        setUploadProgress(0);
+        setBulkData('');
         setUploadStatus('idle');
-      }, 5000);
+      }, 3000);
     },
     onError: (error) => {
       setIsUploading(false);
       setUploadStatus('error');
-      setUploadProgress(0);
       
       toast({ 
         title: "Bulk upload failed", 
@@ -308,11 +258,10 @@ export default function AdminBrandsNew() {
         variant: "destructive" 
       });
       
-      // Reset after 5 seconds
+      // Reset after 3 seconds
       setTimeout(() => {
         setUploadStatus('idle');
-        setUploadProgress(0);
-      }, 5000);
+      }, 3000);
     }
   });
 
@@ -334,23 +283,20 @@ export default function AdminBrandsNew() {
     }
   });
 
-  // Handle file upload
-  const handleFileUpload = () => {
-    if (!uploadFile) return;
+  // Handle bulk data submit
+  const handleBulkSubmit = () => {
+    if (!bulkData.trim()) return;
     setIsUploading(true);
-    bulkUploadMutation.mutate(uploadFile);
+    bulkUploadMutation.mutate(bulkData.trim());
   };
 
-  // Download sample file
-  const downloadSample = () => {
-    const csvContent = "Device Type,Brand,Model\nmobile,Apple,iPhone 15\nlaptop,Dell,XPS 13";
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'brands_models_sample.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
+  // Sample data for reference
+  const getSampleData = () => {
+    return "Device Type,Brand,Model\nmobile,Apple,iPhone 15\nmobile,Samsung,Galaxy S24\nlaptop,Dell,XPS 13\nlaptop,HP,Pavilion 15";
+  };
+
+  const insertSampleData = () => {
+    setBulkData(getSampleData());
   };
 
   // Filtered and paginated data
@@ -740,105 +686,83 @@ export default function AdminBrandsNew() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="text-center">
-                <Button onClick={downloadSample} variant="outline">
+              <div className="flex space-x-2 justify-center">
+                <Button onClick={insertSampleData} variant="outline" size="sm">
                   <Download className="h-4 w-4 mr-2" />
-                  Download Sample CSV
+                  Insert Sample Data
                 </Button>
-                <p className="text-sm text-gray-500 mt-2">
-                  Download the sample file to see the correct format
-                </p>
+                <Button 
+                  onClick={() => setBulkData('')} 
+                  variant="outline" 
+                  size="sm"
+                  disabled={!bulkData}
+                >
+                  Clear
+                </Button>
               </div>
 
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                <div className="text-center">
-                  <Upload className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                  <div className="space-y-2">
-                    <input
-                      type="file"
-                      accept=".csv,.xlsx,.xls"
-                      onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
-                      className="hidden"
-                      id="file-upload"
-                    />
-                    <label
-                      htmlFor="file-upload"
-                      className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-                    >
-                      Choose File
-                    </label>
-                    <p className="text-sm text-gray-500">
-                      Supports CSV, Excel (.xlsx, .xls) files
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    CSV Data (Device Type, Brand, Model)
+                  </label>
+                  <textarea
+                    value={bulkData}
+                    onChange={(e) => setBulkData(e.target.value)}
+                    placeholder="Device Type,Brand,Model&#10;mobile,Apple,iPhone 15&#10;mobile,Samsung,Galaxy S24&#10;laptop,Dell,XPS 13&#10;laptop,HP,Pavilion 15"
+                    className="w-full h-48 p-4 border border-gray-300 rounded-lg resize-none font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    disabled={isUploading}
+                  />
+                  <div className="flex justify-between items-center mt-2">
+                    <p className="text-xs text-gray-500">
+                      Enter one row per line. First line should be headers: Device Type,Brand,Model
                     </p>
+                    <span className="text-xs text-gray-600">
+                      {bulkData ? `${bulkData.split('\n').filter(line => line.trim()).length} rows` : '0 rows'}
+                    </span>
                   </div>
                 </div>
+                
+                <div className="flex justify-end">
+                  <Button
+                    onClick={handleBulkSubmit}
+                    disabled={!bulkData.trim() || isUploading || bulkUploadMutation.isPending}
+                    className="min-w-[140px]"
+                  >
+                    {isUploading ? "Processing..." : "Upload Data"}
+                  </Button>
+                </div>
+                
+                {/* Status Messages */}
+                {uploadStatus === 'uploading' && (
+                  <div className="flex items-center space-x-2 text-blue-600 bg-blue-50 p-3 rounded-md">
+                    <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="font-medium">Processing your data...</span>
+                  </div>
+                )}
+                
+                {uploadStatus === 'completed' && (
+                  <div className="flex items-center space-x-2 text-green-600 bg-green-50 p-3 rounded-md">
+                    <div className="w-5 h-5 rounded-full bg-green-600 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="font-medium">Upload completed successfully!</span>
+                  </div>
+                )}
+                
+                {uploadStatus === 'error' && (
+                  <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-md">
+                    <div className="w-5 h-5 rounded-full bg-red-600 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <span className="font-medium">Upload failed. Please try again.</span>
+                  </div>
+                )}
               </div>
-
-              {uploadFile && (
-                <div className="bg-gray-50 p-4 rounded-lg space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">Selected file: {uploadFile.name}</p>
-                      <p className="text-sm text-gray-500">Size: {(uploadFile.size / 1024).toFixed(2)} KB</p>
-                    </div>
-                    <div className="space-x-2">
-                      <Button
-                        onClick={() => {
-                          setUploadFile(null);
-                          setUploadProgress(0);
-                          setUploadStatus('idle');
-                        }}
-                        variant="outline"
-                        size="sm"
-                        disabled={isUploading}
-                      >
-                        Remove
-                      </Button>
-                      <Button
-                        onClick={handleFileUpload}
-                        disabled={isUploading || bulkUploadMutation.isPending}
-                      >
-                        {isUploading ? "Uploading..." : "Upload"}
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  {/* Progress Bar */}
-                  {uploadStatus === 'uploading' && (
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-blue-600">Uploading...</span>
-                        <span className="text-sm text-gray-500">{Math.round(uploadProgress)}%</span>
-                      </div>
-                      <Progress value={uploadProgress} className="w-full" />
-                    </div>
-                  )}
-                  
-                  {/* Completion Status */}
-                  {uploadStatus === 'completed' && (
-                    <div className="flex items-center space-x-2 text-green-600 bg-green-50 p-3 rounded-md">
-                      <div className="w-5 h-5 rounded-full bg-green-600 flex items-center justify-center">
-                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <span className="font-medium">Upload completed successfully!</span>
-                    </div>
-                  )}
-                  
-                  {/* Error Status */}
-                  {uploadStatus === 'error' && (
-                    <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-md">
-                      <div className="w-5 h-5 rounded-full bg-red-600 flex items-center justify-center">
-                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <span className="font-medium">Upload failed. Please try again.</span>
-                    </div>
-                  )}
-                </div>
-              )}
             </CardContent>
           </Card>
         )}

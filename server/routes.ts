@@ -2123,6 +2123,110 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bulk upload brands text endpoint
+  app.post('/api/admin/bulk-upload-text', isAdminAuthenticated, async (req, res) => {
+    try {
+      const { data } = req.body;
+      
+      if (!data || typeof data !== 'string') {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Invalid data format. Expected CSV text data.' 
+        });
+      }
+      
+      // Parse CSV data
+      const lines = data.split('\n').filter(line => line.trim());
+      
+      if (lines.length <= 1) {
+        return res.status(400).json({
+          success: false,
+          message: 'CSV data must contain at least a header row and one data row.'
+        });
+      }
+      
+      // Process the header
+      const header = lines[0].split(',').map(col => col.trim());
+      const expectedColumns = ['Device Type', 'Brand', 'Model'];
+      
+      if (!expectedColumns.every(col => header.includes(col))) {
+        return res.status(400).json({
+          success: false,
+          message: `CSV must contain columns: ${expectedColumns.join(', ')}`
+        });
+      }
+      
+      const deviceTypeIndex = header.indexOf('Device Type');
+      const brandIndex = header.indexOf('Brand');
+      const modelIndex = header.indexOf('Model');
+      
+      const errors: string[] = [];
+      const processedData: any[] = [];
+      
+      // Process data rows
+      const dataRows = lines.slice(1);
+      
+      for (const [rowIndex, line] of dataRows.entries()) {
+        const actualRowNumber = rowIndex + 2; // +2 for header and 0-based index
+        const values = line.split(',').map(val => val.trim());
+        
+        if (values.length < Math.max(deviceTypeIndex, brandIndex, modelIndex) + 1) {
+          errors.push(`Row ${actualRowNumber}: Insufficient columns`);
+          continue;
+        }
+        
+        const deviceType = values[deviceTypeIndex]?.toLowerCase();
+        const brandName = values[brandIndex];
+        const modelName = values[modelIndex];
+        
+        if (!deviceType || !brandName || !modelName) {
+          errors.push(`Row ${actualRowNumber}: Missing required fields`);
+          continue;
+        }
+        
+        if (!['mobile', 'laptop'].includes(deviceType)) {
+          errors.push(`Row ${actualRowNumber}: Device Type must be 'mobile' or 'laptop'`);
+          continue;
+        }
+        
+        processedData.push({
+          device: deviceType,
+          brand: brandName,
+          model: modelName
+        });
+      }
+      
+      if (processedData.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'No valid rows found',
+          errors
+        });
+      }
+      
+      // Use existing bulk upload method
+      const results = await storage.bulkUploadBrandsAndModels(processedData);
+      
+      console.log(`Bulk text upload completed: ${results.created.brands} brands, ${results.created.models} models created`);
+      
+      res.json({
+        success: true,
+        message: 'Bulk upload completed successfully',
+        totalRows: dataRows.length,
+        successfulRows: results.successfulRows,
+        errors: [...errors, ...results.errors],
+        created: results.created
+      });
+      
+    } catch (error: any) {
+      console.error('Bulk text upload error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error during bulk upload'
+      });
+    }
+  });
+
   // Distributors Master Management (Enhanced with CRUD)
   app.post("/api/admin/distributors", isAdminAuthenticated, async (req, res) => {
     try {

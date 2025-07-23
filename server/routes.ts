@@ -2227,6 +2227,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Add dummy data endpoint for quick setup
+  app.post('/api/admin/add-dummy-data', isAdminAuthenticated, async (req, res) => {
+    try {
+      const dummyData = [
+        // Mobile brands and models
+        { device: 'mobile', brand: 'Apple', model: 'iPhone 15' },
+        { device: 'mobile', brand: 'Apple', model: 'iPhone 14' },
+        { device: 'mobile', brand: 'Apple', model: 'iPhone 13' },
+        { device: 'mobile', brand: 'Samsung', model: 'Galaxy S24' },
+        { device: 'mobile', brand: 'Samsung', model: 'Galaxy S23' },
+        { device: 'mobile', brand: 'Samsung', model: 'Galaxy A54' },
+        { device: 'mobile', brand: 'OnePlus', model: 'OnePlus 12' },
+        { device: 'mobile', brand: 'OnePlus', model: 'OnePlus 11' },
+        { device: 'mobile', brand: 'Xiaomi', model: 'Mi 14' },
+        { device: 'mobile', brand: 'Xiaomi', model: 'Redmi Note 13' },
+        { device: 'mobile', brand: 'Vivo', model: 'V30' },
+        { device: 'mobile', brand: 'Vivo', model: 'Y28' },
+        { device: 'mobile', brand: 'Oppo', model: 'Find X7' },
+        { device: 'mobile', brand: 'Oppo', model: 'A78' },
+        { device: 'mobile', brand: 'Realme', model: 'GT 6' },
+        { device: 'mobile', brand: 'Realme', model: 'Narzo 70' },
+        { device: 'mobile', brand: 'Google', model: 'Pixel 8' },
+        { device: 'mobile', brand: 'Google', model: 'Pixel 7a' },
+        { device: 'mobile', brand: 'Nothing', model: 'Phone 2' },
+        { device: 'mobile', brand: 'Motorola', model: 'Edge 50' },
+        
+        // Laptop brands and models
+        { device: 'laptop', brand: 'Apple', model: 'MacBook Air M3' },
+        { device: 'laptop', brand: 'Apple', model: 'MacBook Pro 14' },
+        { device: 'laptop', brand: 'Dell', model: 'XPS 13' },
+        { device: 'laptop', brand: 'Dell', model: 'Inspiron 15' },
+        { device: 'laptop', brand: 'HP', model: 'Pavilion 15' },
+        { device: 'laptop', brand: 'HP', model: 'Spectre x360' },
+        { device: 'laptop', brand: 'Lenovo', model: 'ThinkPad X1' },
+        { device: 'laptop', brand: 'Lenovo', model: 'IdeaPad 3' },
+        { device: 'laptop', brand: 'Asus', model: 'ZenBook 14' },
+        { device: 'laptop', brand: 'Asus', model: 'VivoBook 15' },
+        { device: 'laptop', brand: 'Acer', model: 'Swift 3' },
+        { device: 'laptop', brand: 'Acer', model: 'Aspire 5' },
+        { device: 'laptop', brand: 'MSI', model: 'Modern 14' },
+        { device: 'laptop', brand: 'MSI', model: 'Gaming GF63' },
+        { device: 'laptop', brand: 'Surface', model: 'Laptop 5' },
+        { device: 'laptop', brand: 'Surface', model: 'Pro 9' }
+      ];
+
+      const results = await storage.bulkUploadBrandsAndModels(dummyData);
+      
+      console.log(`Dummy data added: ${results.created.brands} brands, ${results.created.models} models created`);
+      
+      res.json({
+        success: true,
+        message: 'Dummy data added successfully',
+        created: results.created,
+        totalProcessed: dummyData.length
+      });
+      
+    } catch (error: any) {
+      console.error('Error adding dummy data:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to add dummy data'
+      });
+    }
+  });
+
   // Distributors Master Management (Enhanced with CRUD)
   app.post("/api/admin/distributors", isAdminAuthenticated, async (req, res) => {
     try {

@@ -335,6 +335,41 @@ laptop,Surface,Pro 9`;
     setBulkData(getSampleData());
   };
 
+  // Add dummy data mutation
+  const addDummyDataMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch('/api/admin/add-dummy-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to add dummy data');
+      }
+      
+      return response.json();
+    },
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/brands"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/models"] });
+      
+      toast({
+        title: "Dummy data added successfully!",
+        description: `${result.created?.brands || 0} brands and ${result.created?.models || 0} models created from ${result.totalProcessed} entries.`
+      });
+    },
+    onError: (error) => {
+      toast({ 
+        title: "Failed to add dummy data", 
+        description: error.message,
+        variant: "destructive" 
+      });
+    }
+  });
+
   // Filtered and paginated data
   const filteredBrands = brands?.filter(brand => 
     (brandSearch === "" || brand.name.toLowerCase().includes(brandSearch.toLowerCase())) &&
@@ -734,6 +769,15 @@ laptop,Surface,Pro 9`;
                   disabled={!bulkData}
                 >
                   Clear
+                </Button>
+                <Button 
+                  onClick={() => addDummyDataMutation.mutate()}
+                  variant="default" 
+                  size="sm"
+                  disabled={addDummyDataMutation.isPending}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  {addDummyDataMutation.isPending ? "Adding..." : "Add Dummy Data to DB"}
                 </Button>
               </div>
 

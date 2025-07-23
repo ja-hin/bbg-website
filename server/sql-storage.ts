@@ -155,6 +155,7 @@ export class SqlServerStorage implements IStorage {
           contact NVARCHAR(10) NOT NULL UNIQUE,
           email NVARCHAR(255) NOT NULL UNIQUE,
           pincode NVARCHAR(6) NOT NULL,
+          location NVARCHAR(255) NOT NULL,
           preferred_mode NVARCHAR(50) NOT NULL,
           pan_number NVARCHAR(10),
           pan_copy_file NVARCHAR(255),
@@ -181,6 +182,15 @@ export class SqlServerStorage implements IStorage {
           is_verified BIT DEFAULT 0,
           created_at DATETIME2 DEFAULT GETDATE()
         );
+      END
+      
+      -- Add location column to existing distributors table if it doesn't exist
+      IF EXISTS (SELECT * FROM sys.tables WHERE name = 'distributors')
+      BEGIN
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('distributors') AND name = 'location')
+        BEGIN
+          ALTER TABLE distributors ADD location NVARCHAR(255) NOT NULL DEFAULT '';
+        END
       END
 
       -- Create customers table (Master)
@@ -1244,6 +1254,7 @@ export class SqlServerStorage implements IStorage {
       contact: row.contact,
       email: row.email,
       pincode: row.pincode,
+      location: row.location,
       preferredMode: row.preferred_mode,
       panNumber: row.pan_number,
       panCopyFile: row.pan_copy_file,

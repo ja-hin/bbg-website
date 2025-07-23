@@ -2591,6 +2591,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Clear all models - admin only
+  app.delete("/api/admin/models", isAdminAuthenticated, async (req, res) => {
+    try {
+      await db.connectDB();
+      const query = `DELETE FROM models`;
+      const request = db.pool.request();
+      const result = await request.query(query);
+      res.json({ 
+        message: "All models cleared successfully", 
+        deletedCount: result.rowsAffected[0] 
+      });
+    } catch (error: any) {
+      console.error("Failed to clear all models:", error);
+      res.status(500).json({ message: "Failed to clear all models" });
+    }
+  });
+
 
 
   // System status endpoint for admin monitoring

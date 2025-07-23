@@ -65,6 +65,7 @@ export default function AdminBrandsNew() {
   // Edit state
   const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
   const [editingModel, setEditingModel] = useState<Model | null>(null);
+  const [isClearingModels, setIsClearingModels] = useState(false);
   const [isAddingBrand, setIsAddingBrand] = useState(false);
   const [isAddingModel, setIsAddingModel] = useState(false);
   
@@ -231,6 +232,24 @@ export default function AdminBrandsNew() {
     onError: () => {
       setIsUploading(false);
       toast({ title: "Bulk upload failed", variant: "destructive" });
+    }
+  });
+
+  // Clear all models mutation
+  const clearModelsMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest("/api/admin/models", {
+        method: "DELETE"
+      });
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/models"] });
+      toast({ title: `All models cleared successfully! Deleted ${data.deletedCount} models` });
+      setIsClearingModels(false);
+    },
+    onError: (error) => {
+      toast({ title: "Failed to clear models", variant: "destructive" });
+      setIsClearingModels(false);
     }
   });
 
@@ -476,10 +495,25 @@ export default function AdminBrandsNew() {
                   <Laptop className="h-5 w-5 mr-2 text-green-600" />
                   Model Management
                 </CardTitle>
-                <Button onClick={() => setIsAddingModel(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Model
-                </Button>
+                <div className="flex space-x-2">
+                  <Button onClick={() => setIsAddingModel(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Model
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() => {
+                      if (confirm("Are you sure you want to clear all models? This action cannot be undone.")) {
+                        setIsClearingModels(true);
+                        clearModelsMutation.mutate();
+                      }
+                    }}
+                    disabled={clearModelsMutation.isPending || isClearingModels}
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    {clearModelsMutation.isPending || isClearingModels ? "Clearing..." : "Clear All Models"}
+                  </Button>
+                </div>
               </div>
               <div className="flex items-center space-x-4 mt-4">
                 <div className="relative flex-1">

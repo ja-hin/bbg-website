@@ -221,8 +221,11 @@ export default function AdminBrandsNew() {
       
       // Simulate progress during upload
       const progressInterval = setInterval(() => {
-        setUploadProgress(prev => Math.min(prev + Math.random() * 20, 90));
-      }, 500);
+        setUploadProgress(prev => {
+          const newProgress = Math.min(prev + Math.random() * 15 + 5, 85);
+          return newProgress;
+        });
+      }, 300);
       
       try {
         const response = await fetch('/api/admin/bulk-upload-brands', {
@@ -230,40 +233,52 @@ export default function AdminBrandsNew() {
           body: formData,
         });
         
+        // Clear interval and complete progress
         clearInterval(progressInterval);
-        setUploadProgress(100);
+        setUploadProgress(95);
         
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || 'Upload failed');
         }
         
-        return response.json();
+        const result = await response.json();
+        
+        // Complete progress
+        setUploadProgress(100);
+        
+        return result;
       } catch (error) {
         clearInterval(progressInterval);
+        setUploadProgress(0);
         throw error;
       }
     },
     onSuccess: (result: BulkUploadResult) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/brands"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/models"] });
+      // Ensure progress reaches 100%
+      setUploadProgress(100);
       
-      const { totalRows, successfulRows, errors, created } = result;
-      
-      setUploadStatus('completed');
-      setIsUploading(false);
-      
-      toast({
-        title: "✅ Bulk upload completed successfully!",
-        description: `${successfulRows}/${totalRows} rows processed. ${created?.brands || 0} brands and ${created?.models || 0} models created.${errors.length > 0 ? ` ${errors.length} errors found.` : ''}`
-      });
-      
-      // Reset after 3 seconds
       setTimeout(() => {
-        setUploadFile(null);
-        setUploadProgress(0);
-        setUploadStatus('idle');
-      }, 3000);
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/brands"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/models"] });
+        
+        const { totalRows, successfulRows, errors, created } = result;
+        
+        setUploadStatus('completed');
+        setIsUploading(false);
+        
+        toast({
+          title: "Bulk upload completed successfully!",
+          description: `${successfulRows}/${totalRows} rows processed. ${created?.brands || 0} brands and ${created?.models || 0} models created.${errors.length > 0 ? ` ${errors.length} errors found.` : ''}`
+        });
+        
+        // Reset after 4 seconds
+        setTimeout(() => {
+          setUploadFile(null);
+          setUploadProgress(0);
+          setUploadStatus('idle');
+        }, 4000);
+      }, 200);
     },
     onError: (error) => {
       setIsUploading(false);
@@ -271,15 +286,16 @@ export default function AdminBrandsNew() {
       setUploadProgress(0);
       
       toast({ 
-        title: "❌ Bulk upload failed", 
+        title: "Bulk upload failed", 
         description: error.message,
         variant: "destructive" 
       });
       
-      // Reset after 3 seconds
+      // Reset after 4 seconds
       setTimeout(() => {
         setUploadStatus('idle');
-      }, 3000);
+        setUploadProgress(0);
+      }, 4000);
     }
   });
 

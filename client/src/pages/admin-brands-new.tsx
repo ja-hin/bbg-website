@@ -215,70 +215,87 @@ export default function AdminBrandsNew() {
       const formData = new FormData();
       formData.append('file', file);
       
-      // Start upload progress simulation
-      setUploadProgress(10);
+      // Start upload progress
+      setUploadProgress(0);
       setUploadStatus('uploading');
       
-      // Simulate progress during upload
-      const progressInterval = setInterval(() => {
-        setUploadProgress(prev => {
-          const newProgress = Math.min(prev + Math.random() * 15 + 5, 85);
-          return newProgress;
+      // Progressive update function
+      let currentProgress = 0;
+      const updateProgress = (target: number, duration: number = 1000) => {
+        const startProgress = currentProgress;
+        const progressDiff = target - startProgress;
+        const steps = Math.max(10, Math.floor(duration / 50));
+        const stepSize = progressDiff / steps;
+        
+        return new Promise<void>((resolve) => {
+          let step = 0;
+          const interval = setInterval(() => {
+            step++;
+            currentProgress = Math.min(startProgress + (stepSize * step), target);
+            setUploadProgress(currentProgress);
+            
+            if (step >= steps || currentProgress >= target) {
+              clearInterval(interval);
+              currentProgress = target;
+              setUploadProgress(target);
+              resolve();
+            }
+          }, 50);
         });
-      }, 300);
+      };
       
       try {
-        const response = await fetch('/api/admin/bulk-upload-brands', {
+        // Phase 1: Initial progress (0-30%)
+        await updateProgress(30, 500);
+        
+        // Phase 2: Upload progress (30-70%)
+        const uploadPromise = fetch('/api/admin/bulk-upload-brands', {
           method: 'POST',
           body: formData,
         });
         
-        // Clear interval and complete progress
-        clearInterval(progressInterval);
-        setUploadProgress(95);
+        await updateProgress(70, 1500);
+        
+        // Phase 3: Processing (70-90%)
+        await updateProgress(90, 800);
+        
+        const response = await uploadPromise;
         
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || 'Upload failed');
         }
         
+        // Phase 4: Finalizing (90-100%)
         const result = await response.json();
-        
-        // Complete progress
-        setUploadProgress(100);
+        await updateProgress(100, 300);
         
         return result;
       } catch (error) {
-        clearInterval(progressInterval);
         setUploadProgress(0);
         throw error;
       }
     },
     onSuccess: (result: BulkUploadResult) => {
-      // Ensure progress reaches 100%
-      setUploadProgress(100);
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/brands"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/models"] });
       
+      const { totalRows, successfulRows, errors, created } = result;
+      
+      setUploadStatus('completed');
+      setIsUploading(false);
+      
+      toast({
+        title: "Bulk upload completed successfully!",
+        description: `${successfulRows}/${totalRows} rows processed. ${created?.brands || 0} brands and ${created?.models || 0} models created.${errors.length > 0 ? ` ${errors.length} errors found.` : ''}`
+      });
+      
+      // Reset after 5 seconds
       setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ["/api/admin/brands"] });
-        queryClient.invalidateQueries({ queryKey: ["/api/admin/models"] });
-        
-        const { totalRows, successfulRows, errors, created } = result;
-        
-        setUploadStatus('completed');
-        setIsUploading(false);
-        
-        toast({
-          title: "Bulk upload completed successfully!",
-          description: `${successfulRows}/${totalRows} rows processed. ${created?.brands || 0} brands and ${created?.models || 0} models created.${errors.length > 0 ? ` ${errors.length} errors found.` : ''}`
-        });
-        
-        // Reset after 4 seconds
-        setTimeout(() => {
-          setUploadFile(null);
-          setUploadProgress(0);
-          setUploadStatus('idle');
-        }, 4000);
-      }, 200);
+        setUploadFile(null);
+        setUploadProgress(0);
+        setUploadStatus('idle');
+      }, 5000);
     },
     onError: (error) => {
       setIsUploading(false);
@@ -291,11 +308,11 @@ export default function AdminBrandsNew() {
         variant: "destructive" 
       });
       
-      // Reset after 4 seconds
+      // Reset after 5 seconds
       setTimeout(() => {
         setUploadStatus('idle');
         setUploadProgress(0);
-      }, 4000);
+      }, 5000);
     }
   });
 

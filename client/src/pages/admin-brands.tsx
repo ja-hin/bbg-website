@@ -25,10 +25,10 @@ function AdminBrandsPage() {
   
   const [editingBrand, setEditingBrand] = useState<number | null>(null);
   const [editingModel, setEditingModel] = useState<number | null>(null);
-  const [newBrand, setNewBrand] = useState({ name: '', device_type: '' });
-  const [newModel, setNewModel] = useState({ name: '', brand_id: 0 });
-  const [editBrandData, setEditBrandData] = useState({ name: '', device_type: '' });
-  const [editModelData, setEditModelData] = useState({ name: '' });
+  const [newBrand, setNewBrand] = useState({ name: '', deviceType: '' });
+  const [newModel, setNewModel] = useState({ modelName: '', brandId: 0 });
+  const [editBrandData, setEditBrandData] = useState({ name: '', deviceType: '' });
+  const [editModelData, setEditModelData] = useState({ modelName: '' });
   
   // Bulk upload states
   const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
@@ -38,7 +38,7 @@ function AdminBrandsPage() {
   const [isProcessingFile, setIsProcessingFile] = useState(false);
 
   // Fetch brands with their models
-  const { data: brands = [], isLoading } = useQuery({
+  const { data: brands = [], isLoading } = useQuery<BrandWithModels[]>({
     queryKey: ['/api/brands-with-models']
   });
 
@@ -47,7 +47,7 @@ function AdminBrandsPage() {
     mutationFn: (brand: InsertBrand) => apiRequest('/api/brands', { method: 'POST', body: brand }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
-      setNewBrand({ name: '', device_type: '' });
+      setNewBrand({ name: '', deviceType: '' });
       toast({ title: 'Brand created successfully' });
     },
     onError: () => {
@@ -104,7 +104,7 @@ function AdminBrandsPage() {
     mutationFn: (model: InsertDeviceModel) => apiRequest('/api/models', { method: 'POST', body: model }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands-with-models'] });
-      setNewModel({ name: '', brand_id: 0 });
+      setNewModel({ modelName: '', brandId: 0 });
       toast({ title: 'Model created successfully' });
     },
     onError: () => {
@@ -139,14 +139,13 @@ function AdminBrandsPage() {
   });
 
   const handleCreateBrand = () => {
-    if (!newBrand.name || !newBrand.device_type) {
+    if (!newBrand.name || !newBrand.deviceType) {
       toast({ title: 'Please fill all fields', variant: 'destructive' });
       return;
     }
     createBrandMutation.mutate({
       name: newBrand.name,
-      device_type: newBrand.device_type,
-      is_active: true
+      deviceType: newBrand.deviceType
     });
   };
 
@@ -155,41 +154,40 @@ function AdminBrandsPage() {
       id,
       updates: {
         name: editBrandData.name,
-        device_type: editBrandData.device_type
+        deviceType: editBrandData.deviceType
       }
     });
   };
 
   const handleCreateModel = () => {
-    if (!newModel.name || !newModel.brand_id) {
+    if (!newModel.modelName || !newModel.brandId) {
       toast({ title: 'Please fill all fields', variant: 'destructive' });
       return;
     }
     createModelMutation.mutate({
-      name: newModel.name,
-      brand_id: newModel.brand_id,
-      is_active: true
+      modelName: newModel.modelName,
+      brandId: newModel.brandId
     });
   };
 
   const handleUpdateModel = (id: number) => {
     updateModelMutation.mutate({
       id,
-      updates: { name: editModelData.name }
+      updates: { modelName: editModelData.modelName }
     });
   };
 
-  const startEditBrand = (brand: Brand) => {
+  const startEditBrand = (brand: BrandWithModels) => {
     setEditingBrand(brand.id);
     setEditBrandData({
       name: brand.name,
-      device_type: brand.device_type
+      deviceType: brand.deviceType
     });
   };
 
   const startEditModel = (model: DeviceModel) => {
     setEditingModel(model.id);
-    setEditModelData({ name: model.name });
+    setEditModelData({ modelName: model.modelName });
   };
 
   // CSV parsing and bulk upload functions
@@ -361,7 +359,7 @@ function AdminBrandsPage() {
     });
   };
 
-  if (adminLoading || !isAuthenticated) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -537,8 +535,8 @@ function AdminBrandsPage() {
                     onChange={(e) => setNewBrand(prev => ({ ...prev, name: e.target.value }))}
                   />
                   <Select
-                    value={newBrand.device_type}
-                    onValueChange={(value) => setNewBrand(prev => ({ ...prev, device_type: value }))}
+                    value={newBrand.deviceType}
+                    onValueChange={(value) => setNewBrand(prev => ({ ...prev, deviceType: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Device type" />
@@ -570,8 +568,8 @@ function AdminBrandsPage() {
                             onChange={(e) => setEditBrandData(prev => ({ ...prev, name: e.target.value }))}
                           />
                           <Select
-                            value={editBrandData.device_type}
-                            onValueChange={(value) => setEditBrandData(prev => ({ ...prev, device_type: value }))}
+                            value={editBrandData.deviceType}
+                            onValueChange={(value) => setEditBrandData(prev => ({ ...prev, deviceType: value }))}
                           >
                             <SelectTrigger>
                               <SelectValue />
@@ -604,11 +602,11 @@ function AdminBrandsPage() {
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{brand.name}</span>
-                            <Badge variant={brand.device_type === 'mobile' ? 'default' : 'secondary'}>
-                              {brand.device_type}
+                            <Badge variant={brand.deviceType === 'mobile' ? 'default' : 'secondary'}>
+                              {brand.deviceType}
                             </Badge>
-                            <Badge variant={brand.is_active ? 'default' : 'secondary'}>
-                              {brand.is_active ? 'Active' : 'Inactive'}
+                            <Badge variant={brand.isActive ? 'default' : 'secondary'}>
+                              {brand.isActive ? 'Active' : 'Inactive'}
                             </Badge>
                           </div>
                           <p className="text-sm text-gray-500">{brand.models.length} models</p>
@@ -652,24 +650,24 @@ function AdminBrandsPage() {
                 <h3 className="font-semibold text-gray-900">Add New Model</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Select
-                    value={newModel.brand_id.toString()}
-                    onValueChange={(value) => setNewModel(prev => ({ ...prev, brand_id: parseInt(value) }))}
+                    value={newModel.brandId.toString()}
+                    onValueChange={(value) => setNewModel(prev => ({ ...prev, brandId: parseInt(value) }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select brand" />
                     </SelectTrigger>
                     <SelectContent>
-                      {brands.map((brand: Brand) => (
+                      {brands.map((brand: BrandWithModels) => (
                         <SelectItem key={brand.id} value={brand.id.toString()}>
-                          {brand.name} ({brand.device_type})
+                          {brand.name} ({brand.deviceType})
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                   <Input
                     placeholder="Model name"
-                    value={newModel.name}
-                    onChange={(e) => setNewModel(prev => ({ ...prev, name: e.target.value }))}
+                    value={newModel.modelName}
+                    onChange={(e) => setNewModel(prev => ({ ...prev, modelName: e.target.value }))}
                   />
                 </div>
                 <Button 
@@ -686,7 +684,7 @@ function AdminBrandsPage() {
                 {brands.map((brand: BrandWithModels) => (
                   <div key={brand.id} className="border rounded-lg p-4">
                     <h4 className="font-medium text-gray-900 mb-3">
-                      {brand.name} ({brand.device_type})
+                      {brand.name} ({brand.deviceType})
                     </h4>
                     <div className="space-y-2">
                       {brand.models.map((model: DeviceModel) => (
@@ -694,8 +692,8 @@ function AdminBrandsPage() {
                           {editingModel === model.id ? (
                             <div className="flex items-center gap-2 flex-1">
                               <Input
-                                value={editModelData.name}
-                                onChange={(e) => setEditModelData({ name: e.target.value })}
+                                value={editModelData.modelName}
+                                onChange={(e) => setEditModelData({ modelName: e.target.value })}
                                 className="flex-1"
                               />
                               <Button 
@@ -716,9 +714,9 @@ function AdminBrandsPage() {
                           ) : (
                             <>
                               <div className="flex items-center gap-2">
-                                <span>{model.name}</span>
-                                <Badge variant={model.is_active ? 'default' : 'secondary'}>
-                                  {model.is_active ? 'Active' : 'Inactive'}
+                                <span>{model.modelName}</span>
+                                <Badge variant={model.isActive ? 'default' : 'secondary'}>
+                                  {model.isActive ? 'Active' : 'Inactive'}
                                 </Badge>
                               </div>
                               <div className="flex gap-2">

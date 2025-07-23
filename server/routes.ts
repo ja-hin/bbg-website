@@ -50,6 +50,36 @@ const upload = multer({
   }
 });
 
+// Separate upload configuration for bulk data uploads (Excel/CSV)
+const bulkUpload = multer({
+  storage: multer.diskStorage({
+    destination: uploadDir,
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const extension = path.extname(file.originalname);
+      cb(null, file.fieldname + '-' + uniqueSuffix + extension);
+    }
+  }),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit for data files
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [
+      'text/csv',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/excel',
+      'application/x-excel',
+      'application/x-msexcel'
+    ];
+    if (allowedTypes.includes(file.mimetype) || file.originalname.toLowerCase().endsWith('.csv') || file.originalname.toLowerCase().endsWith('.xlsx') || file.originalname.toLowerCase().endsWith('.xls')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only CSV and Excel files (.csv, .xlsx, .xls) are allowed.'));
+    }
+  }
+});
+
 // Stripe removed - using PayU only
 
 // PayU Configuration - Using environment variables with test fallback for debugging
@@ -2008,7 +2038,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Bulk upload brands and models with file upload
-  app.post("/api/admin/bulk-upload-brands", isAdminAuthenticated, upload.single('file'), async (req, res) => {
+  app.post("/api/admin/bulk-upload-brands", isAdminAuthenticated, bulkUpload.single('file'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });

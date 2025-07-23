@@ -1161,14 +1161,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin Dashboard Data
   app.get("/api/admin/dashboard", isAdminAuthenticated, async (req, res) => {
     try {
-      const [distributors, customers, claims] = await Promise.all([
+      const [distributors, allCustomers, claims] = await Promise.all([
         storage.getAllDistributors(),
         storage.getAllCustomers(),
         storage.getAllClaims()
       ]);
 
-      // Calculate more accurate revenue based on device types
-      const totalRevenue = customers.reduce((total, customer) => {
+      // Group customers by contact number to get unique customer count
+      const uniqueCustomers = allCustomers.reduce((groups: any, customer: any) => {
+        const contact = customer.contact;
+        if (!groups[contact]) {
+          groups[contact] = {
+            ...customer,
+            registrationCount: 1,
+            totalInvoiceValue: parseFloat(customer.invoiceValue || 0)
+          };
+        } else {
+          groups[contact].registrationCount += 1;
+          groups[contact].totalInvoiceValue += parseFloat(customer.invoiceValue || 0);
+        }
+        return groups;
+      }, {});
+
+      const uniqueCustomersArray = Object.values(uniqueCustomers);
+
+      // Calculate more accurate revenue based on device types (total registrations)
+      const totalRevenue = allCustomers.reduce((total, customer) => {
         const deviceTypeRevenue = customer.deviceType === 'laptop' ? 125 : 99;
         return total + deviceTypeRevenue;
       }, 0);
@@ -1177,7 +1195,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log('Dashboard stats:', {
         distributors: distributors.length,
-        customers: customers.length,
+        customers: uniqueCustomersArray.length, // unique customers
+        totalRegistrations: allCustomers.length, // total registrations
         claims: claims.length,
         pendingClaims,
         totalRevenue
@@ -1186,11 +1205,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({
         stats: {
           totalDistributors: distributors.length || 0,
-          totalCustomers: customers.length || 0,
+          totalCustomers: uniqueCustomersArray.length || 0, // unique customers
+          totalRegistrations: allCustomers.length || 0, // total registrations
           totalClaims: claims.length || 0,
           pendingClaims: pendingClaims || 0,
           totalRevenue: totalRevenue || 0,
-          recentCustomers: customers.slice(0, 10),
+          recentCustomers: uniqueCustomersArray.slice(0, 10),
           recentClaims: claims.slice(0, 10)
         }
       });

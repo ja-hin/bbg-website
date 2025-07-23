@@ -298,6 +298,8 @@ Changelog:
   - IMPROVED: Admin table display with registration count badges and device summary
   - OPTIMIZED: Customer search to work with grouped voucher codes and customer data
   - STREAMLINED: Admin dashboard now shows clean customer list without duplicate mobile numbers
+  - FIXED: Dashboard statistics now show correct unique customer count instead of total registrations
+  - ENHANCED: Dashboard displays both unique customers and total registrations for complete visibility
 - July 23, 2025: ✅ COMPLETED - Fixed cart abandonment tracking duplicate entries and optimized performance
   - IMPLEMENTED: Debouncing logic in cart tracking to prevent multiple API calls for same stage
   - ENHANCED: Smart tracking that only monitors important form fields (name, contact, email, deviceType, serialNumber)

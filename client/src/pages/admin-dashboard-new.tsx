@@ -189,8 +189,11 @@ export default function AdminDashboardNew() {
                 <div className="flex items-center">
                   <Smartphone className="h-8 w-8 text-green-600" />
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Customers</p>
+                    <p className="text-sm font-medium text-gray-600">Unique Customers</p>
                     <p className="text-2xl font-bold text-gray-900">{dashboardStats.stats.totalCustomers || 0}</p>
+                    <p className="text-xs text-gray-500">
+                      {dashboardStats.stats.totalRegistrations || 0} total registrations
+                    </p>
                   </div>
                 </div>
               </CardContent>

@@ -15,22 +15,7 @@ import {
 export default function Home() {
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
-      {/* Quick Navigation Tabs */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:space-x-8 space-y-2 sm:space-y-0 py-2 sm:py-0">
-            <Link href="/distributor-registration" className="py-3 sm:py-4 px-3 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm hover:border-red-300 transition-colors rounded sm:rounded-none">
-              Distributor Registration
-            </Link>
-            <Link href="/customer-registration" className="py-3 sm:py-4 px-3 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm hover:border-red-300 transition-colors rounded sm:rounded-none">
-              Customer Registration
-            </Link>
-            <Link href="/claim-bbg" className="py-3 sm:py-4 px-3 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm hover:border-red-300 transition-colors rounded sm:rounded-none">
-              Claim BBG
-            </Link>
-          </div>
-        </div>
-      </div>
+
 
       {/* Hero Section */}
       <section className="py-12 sm:py-16 lg:py-20">

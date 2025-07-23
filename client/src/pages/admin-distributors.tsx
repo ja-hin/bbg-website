@@ -38,7 +38,6 @@ interface Distributor {
   contact: string;
   email: string;
   pincode: string;
-  location?: string;
   preferredMode?: string;
   gstin?: string;
   bankAccount?: string;
@@ -280,11 +279,9 @@ export default function AdminDistributors() {
                           <div className="space-y-1">
                             <p className="text-sm text-gray-500 flex items-center gap-1">
                               <MapPin className="h-3 w-3" />
-                              Location
+                              Pincode
                             </p>
-                            <p className="font-medium">
-                              {distributor.location ? `${distributor.location}, ${distributor.pincode}` : distributor.pincode}
-                            </p>
+                            <p className="font-medium">{distributor.pincode}</p>
                           </div>
                           <div className="space-y-1">
                             <p className="text-sm text-gray-500 flex items-center gap-1">

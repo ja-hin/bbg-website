@@ -11,7 +11,7 @@ export const distributors = pgTable("distributors", {
   contact: text("contact").notNull(),
   email: text("email").notNull(),
   pincode: text("pincode").notNull(),
-  location: text("location").notNull(),
+
   preferredMode: text("preferred_mode").notNull(), // 'in-store', 'online', 'both'
   // Tax & Compliance Details
   panNumber: text("pan_number").notNull(),

@@ -746,7 +746,7 @@ export default function AdminDashboard() {
                         <TableHead>Business</TableHead>
                         <TableHead>Contact</TableHead>
                         <TableHead>Seller Code</TableHead>
-                        <TableHead>Location</TableHead>
+
                         <TableHead>Mode</TableHead>
                         <TableHead>Total Commission</TableHead>
                         <TableHead>Pending</TableHead>
@@ -787,12 +787,7 @@ export default function AdminDashboard() {
                               {distributor.sellerCode}
                             </code>
                           </TableCell>
-                          <TableCell>
-                            <div className="flex items-center">
-                              <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                              {distributor.location}
-                            </div>
-                          </TableCell>
+
                           <TableCell>
                             <Badge variant="outline">{distributor.preferredMode}</Badge>
                           </TableCell>
@@ -824,76 +819,6 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         )}
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-                      <div className="space-y-1">
-                        <div className="w-32 h-4 bg-gray-200 rounded"></div>
-                        <div className="w-24 h-3 bg-gray-200 rounded"></div>
-                      </div>
-                    </div>
-                    <div className="text-right space-y-1">
-                      <div className="w-20 h-4 bg-gray-200 rounded"></div>
-                      <div className="w-16 h-3 bg-gray-200 rounded"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : pendingPayments && pendingPayments.length > 0 ? (
-              <div className="space-y-4">
-                {pendingPayments.slice(0, 10).map((payment) => (
-                  <div key={payment.id} className="flex items-center justify-between p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors border border-orange-200">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                        <AlertCircle className="h-5 w-5 text-orange-600" />
-                      </div>
-                      <div>
-                        <div className="flex items-center space-x-2">
-                          <p className="font-medium text-gray-900">{payment.name}</p>
-                          <span className="px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-800">
-                            Payment Pending
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
-                          <span className="flex items-center">
-                            <Phone className="h-3 w-3 mr-1" />
-                            {payment.contact}
-                          </span>
-                          <span className="flex items-center">
-                            <Smartphone className="h-3 w-3 mr-1" />
-                            {payment.deviceType} - {payment.modelName}
-                          </span>
-                        </div>
-                        {payment.transactionId && (
-                          <div className="text-xs text-gray-400 mt-1">
-                            Transaction: {payment.transactionId}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="flex items-center space-x-2">
-                        <IndianRupee className="h-4 w-4 text-orange-600" />
-                        <span className="font-semibold text-orange-900">{formatCurrency(payment.paymentAmount)}</span>
-                      </div>
-                      <div className="flex items-center space-x-1 text-sm text-gray-500">
-                        <Calendar className="h-3 w-3" />
-                        <span>{formatDate(payment.createdAt)}</span>
-                      </div>
-                      <div className="text-xs text-red-500 mt-1">
-                        Expires: {formatDate(payment.expiresAt)}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                <CreditCard className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                <p>No pending payments found</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

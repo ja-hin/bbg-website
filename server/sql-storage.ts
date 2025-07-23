@@ -155,7 +155,6 @@ export class SqlServerStorage implements IStorage {
           contact NVARCHAR(10) NOT NULL UNIQUE,
           email NVARCHAR(255) NOT NULL UNIQUE,
           pincode NVARCHAR(6) NOT NULL,
-          location NVARCHAR(255) NOT NULL,
           preferred_mode NVARCHAR(50) NOT NULL,
           pan_number NVARCHAR(10),
           pan_copy_file NVARCHAR(255),
@@ -184,14 +183,7 @@ export class SqlServerStorage implements IStorage {
         );
       END
       
-      -- Add location column to existing distributors table if it doesn't exist
-      IF EXISTS (SELECT * FROM sys.tables WHERE name = 'distributors')
-      BEGIN
-        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('distributors') AND name = 'location')
-        BEGIN
-          ALTER TABLE distributors ADD location NVARCHAR(255) NOT NULL DEFAULT '';
-        END
-      END
+
 
       -- Create customers table (Master)
       IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'customers')
@@ -426,7 +418,7 @@ export class SqlServerStorage implements IStorage {
     
     const query = `
       INSERT INTO distributors (
-        name, business_name, contact, email, pincode, location, preferred_mode,
+        name, business_name, contact, email, pincode, preferred_mode,
         pan_number, pan_copy_file, is_gst_registered, gstin, gst_certificate_file,
         registered_business_address, is_msme_registered, msme_certificate_file,
         account_holder_name, bank_account, bank_account_confirm, ifsc_code, upi_id,
@@ -435,7 +427,7 @@ export class SqlServerStorage implements IStorage {
       ) 
       OUTPUT INSERTED.*
       VALUES (
-        @name, @businessName, @contact, @email, @pincode, @location, @preferredMode,
+        @name, @businessName, @contact, @email, @pincode, @preferredMode,
         @panNumber, @panCopyFile, @isGstRegistered, @gstin, @gstCertificateFile,
         @registeredBusinessAddress, @isMsmeRegistered, @msmeCertificateFile,
         @accountHolderName, @bankAccount, @bankAccountConfirm, @ifscCode, @upiId,
@@ -451,7 +443,6 @@ export class SqlServerStorage implements IStorage {
     request.input('contact', sql.NVarChar, insertDistributor.contact);
     request.input('email', sql.NVarChar, insertDistributor.email);
     request.input('pincode', sql.NVarChar, insertDistributor.pincode);
-    request.input('location', sql.NVarChar, insertDistributor.location);
     request.input('preferredMode', sql.NVarChar, insertDistributor.preferredMode);
     
     // Tax & Compliance Details
@@ -716,7 +707,6 @@ export class SqlServerStorage implements IStorage {
       contact: row.contact,
       email: row.email,
       pincode: row.pincode,
-      location: row.location,
       preferredMode: row.preferred_mode,
       gstin: row.gstin,
       bankAccount: row.bank_account,
@@ -1254,7 +1244,6 @@ export class SqlServerStorage implements IStorage {
       contact: row.contact,
       email: row.email,
       pincode: row.pincode,
-      location: row.location,
       preferredMode: row.preferred_mode,
       panNumber: row.pan_number,
       panCopyFile: row.pan_copy_file,
@@ -1463,10 +1452,7 @@ export class SqlServerStorage implements IStorage {
       setParts.push('pincode = @pincode');
       request.input('pincode', sql.NVarChar, updates.pincode);
     }
-    if (updates.location !== undefined) {
-      setParts.push('location = @location');
-      request.input('location', sql.NVarChar, updates.location);
-    }
+
 
     if (setParts.length > 0) {
       const query = `UPDATE distributors SET ${setParts.join(', ')} WHERE id = @id`;

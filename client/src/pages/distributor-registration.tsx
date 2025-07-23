@@ -21,7 +21,7 @@ const distributorSchema = z.object({
   contact: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
   email: z.string().email("Invalid email address"),
   pincode: z.string().regex(/^\d{6}$/, "Pincode must be exactly 6 digits"),
-  location: z.string().min(2, "City/Location is required"),
+
   preferredMode: z.enum(["in-store", "online", "both"], {
     required_error: "Please select a preferred mode"
   }),
@@ -75,7 +75,7 @@ export default function DistributorRegistration() {
       contact: "",
       email: "",
       pincode: "",
-      location: "",
+
       preferredMode: undefined,
       // Tax & Compliance Details
       panNumber: "",
@@ -421,24 +421,7 @@ export default function DistributorRegistration() {
                     </div>
                   )}
 
-                  <div className="grid md:grid-cols-3 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="location"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <MapPin className="h-4 w-4 mr-2" />
-                            City/Location *
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter your city" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
+                  <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="pincode"

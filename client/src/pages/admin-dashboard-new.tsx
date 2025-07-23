@@ -797,7 +797,7 @@ export default function AdminDashboardNew() {
                         <TableHead>Business</TableHead>
                         <TableHead>Contact</TableHead>
                         <TableHead>Referral Code</TableHead>
-                        <TableHead>Location</TableHead>
+
                         <TableHead>Mode</TableHead>
                         <TableHead>Total Commission</TableHead>
                         <TableHead>Total Customers</TableHead>
@@ -841,12 +841,7 @@ export default function AdminDashboardNew() {
                               {distributor.sellerCode}
                             </code>
                           </TableCell>
-                          <TableCell>
-                            <div className="flex items-center">
-                              <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                              {distributor.location}
-                            </div>
-                          </TableCell>
+
                           <TableCell>
                             <Badge variant="outline">{distributor.preferredMode}</Badge>
                           </TableCell>

@@ -450,39 +450,63 @@ function RegistrationContent() {
     }
   });
 
-  // Cart abandonment tracking function
-  const trackCartAbandonment = (stage: string) => {
-    const formValues = form.getValues();
-    const trackingData = {
-      sessionId,
-      stage,
-      name: formValues.name || null,
-      contact: formValues.contact || null,
-      email: formValues.email || null,
-      pincode: formValues.pincode || null,
-      deviceType: formValues.deviceType || null,
-      serialNumber: formValues.serialNumber || null,
-      brand: formValues.brand || null,
-      modelName: formValues.modelName || null,
-      invoiceValue: formValues.invoiceValue ? parseFloat(formValues.invoiceValue) : null,
-      sellerCode: formValues.sellerCode || null
-    };
+  // Cart abandonment tracking function with debouncing
+  const trackCartAbandonment = (() => {
+    let timeoutId: NodeJS.Timeout | null = null;
+    let lastStage = '';
+    
+    return (stage: string) => {
+      // Clear previous timeout
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      
+      // Skip if same stage as last call
+      if (lastStage === stage && stage === 'details_entered') {
+        return;
+      }
+      
+      lastStage = stage;
+      
+      // Debounce for form changes, immediate for important stages
+      const delay = stage === 'details_entered' ? 2000 : 0;
+      
+      timeoutId = setTimeout(() => {
+        const formValues = form.getValues();
+        const trackingData = {
+          sessionId,
+          stage,
+          name: formValues.name || null,
+          contact: formValues.contact || null,
+          email: formValues.email || null,
+          pincode: formValues.pincode || null,
+          deviceType: formValues.deviceType || null,
+          serialNumber: formValues.serialNumber || null,
+          brand: formValues.brand || null,
+          modelName: formValues.modelName || null,
+          invoiceValue: formValues.invoiceValue ? parseFloat(formValues.invoiceValue) : null,
+          sellerCode: formValues.sellerCode || null
+        };
 
-    // Only track if there's meaningful data
-    if (trackingData.name || trackingData.contact || trackingData.deviceType) {
-      trackCartAbandonmentMutation.mutate(trackingData);
-    }
-  };
+        // Only track if there's meaningful data
+        if (trackingData.name || trackingData.contact || trackingData.deviceType) {
+          trackCartAbandonmentMutation.mutate(trackingData);
+        }
+      }, delay);
+    };
+  })();
 
   // Track form start on component mount
   useEffect(() => {
     trackCartAbandonment('form_started');
   }, []);
 
-  // Track when user starts entering details
+  // Track when user starts entering details - only for key fields
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
-      if (name && value[name]) {
+      // Only track for important fields that indicate real user engagement
+      const importantFields = ['name', 'contact', 'email', 'deviceType', 'serialNumber'];
+      if (name && importantFields.includes(name) && value[name]) {
         trackCartAbandonment('details_entered');
       }
     });

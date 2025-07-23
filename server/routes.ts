@@ -2779,14 +2779,17 @@ Required: GUPSHUP_API_KEY environment variable
     try {
       const { sessionId, stage, ...data } = req.body;
       
-      // Check if session already exists
-      const existingAbandonments = await storage.getAllCartAbandonments();
-      const existingAbandonment = existingAbandonments.find(a => a.sessionId === sessionId);
+      // Check if session already exists using more efficient query
+      const existingAbandonment = await storage.getCartAbandonmentBySessionId(sessionId);
       
       if (existingAbandonment) {
-        // Update existing abandonment
-        await storage.updateCartAbandonment(sessionId, { ...data, stage });
-        res.json({ message: "Cart abandonment updated" });
+        // Only update if stage has changed or data is significantly different
+        if (existingAbandonment.stage !== stage || JSON.stringify(existingAbandonment.name) !== JSON.stringify(data.name)) {
+          await storage.updateCartAbandonment(sessionId, { ...data, stage });
+          res.json({ message: "Cart abandonment updated" });
+        } else {
+          res.json({ message: "No changes needed" });
+        }
       } else {
         // Create new abandonment tracking
         const abandonment = await storage.createCartAbandonment({

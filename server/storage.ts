@@ -92,6 +92,7 @@ export interface IStorage {
 
   // Cart Abandonment operations
   createCartAbandonment(abandonment: InsertCartAbandonment): Promise<CartAbandonment>;
+  getCartAbandonmentBySessionId(sessionId: string): Promise<CartAbandonment | null>;
   updateCartAbandonment(sessionId: string, updates: Partial<InsertCartAbandonment>): Promise<void>;
   getAllCartAbandonments(): Promise<CartAbandonment[]>;
   deleteCartAbandonment(id: number): Promise<void>;

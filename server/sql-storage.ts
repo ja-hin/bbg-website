@@ -1681,6 +1681,17 @@ export class SqlServerStorage implements IStorage {
     }
   }
 
+  async getCartAbandonmentBySessionId(sessionId: string): Promise<any | null> {
+    await db.connectDB();
+    const query = `SELECT * FROM cart_abandonments WHERE session_id = @sessionId`;
+    
+    const request = db.pool.request();
+    request.input('sessionId', sql.NVarChar, sessionId);
+    
+    const result = await request.query(query);
+    return result.recordset.length > 0 ? this.mapCartAbandonmentFromDb(result.recordset[0]) : null;
+  }
+
   async getAllCartAbandonments(): Promise<any[]> {
     await db.connectDB();
     const query = `

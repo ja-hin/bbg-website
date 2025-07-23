@@ -291,6 +291,13 @@ GUPSHUP_SOURCE_NUMBER=919999999999
 
 ```
 Changelog:
+- July 23, 2025: ✅ COMPLETED - Fixed cart abandonment tracking duplicate entries and optimized performance
+  - IMPLEMENTED: Debouncing logic in cart tracking to prevent multiple API calls for same stage
+  - ENHANCED: Smart tracking that only monitors important form fields (name, contact, email, deviceType, serialNumber)
+  - OPTIMIZED: Server-side deduplication to prevent unnecessary database operations for unchanged data
+  - ADDED: Efficient getCartAbandonmentBySessionId method for better session tracking
+  - FIXED: React Suspense warning by properly importing Suspense component
+  - TESTED: Cart abandonment system now working without duplicate entries while maintaining full tracking capability
 - July 22, 2025: ✅ COMPLETED - Enhanced Gupshup WhatsApp HSM service with complete admin management interface and template registration diagnostics
   - IMPLEMENTED: HSM template functionality with proper language code parameter support and comprehensive error handling
   - CONFIGURED: Gupshup account 2000203988 with HSM credentials (Login: 2000203988, Password: CrtvMm59A) - WORKING CORRECTLY

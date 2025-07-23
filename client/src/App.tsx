@@ -1,5 +1,5 @@
 import { Switch, Route } from "wouter";
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -22,6 +22,7 @@ import AdminDistributors from "@/pages/admin-distributors";
 import AdminTemplates from "@/pages/admin-templates";
 import AdminLogs from "@/pages/admin-logs";
 import AdminWhatsAppTest from "@/pages/admin-whatsapp-test";
+import AdminCartAbandonments from "@/pages/admin-cart-abandonments";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import { useAuth } from "@/hooks/useAuth";
@@ -56,7 +57,11 @@ function Router() {
       <Route path="/admin/logs" component={AdminLogs} />
       <Route path="/admin/whatsapp-test" component={AdminWhatsAppTest} />
       <Route path="/admin/hsm-templates" component={lazy(() => import("./pages/admin-hsm-templates"))} />
-      <Route path="/admin/cart-abandonments" component={lazy(() => import("./pages/admin-cart-abandonments"))} />
+      <Route path="/admin/cart-abandonments">
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+          <AdminCartAbandonments />
+        </Suspense>
+      </Route>
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />

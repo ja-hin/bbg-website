@@ -65,6 +65,7 @@ export interface IStorage {
   
   // Claim operations
   createClaim(claim: InsertClaim): Promise<Claim>;
+  getClaimById(id: number): Promise<Claim | undefined>;
   getClaimByVoucherCode(voucherCode: string): Promise<Claim | undefined>;
   getAllClaims(): Promise<Claim[]>;
   updateClaimStatus(id: number, status: string): Promise<void>;
@@ -993,6 +994,17 @@ export class SqlServerStorage implements IStorage {
 
     const result = await request.query(query);
     return this.mapClaimFromDb(result.recordset[0]);
+  }
+
+  async getClaimById(id: number): Promise<Claim | undefined> {
+    await db.connectDB();
+    const query = `SELECT * FROM claims WHERE id = @id`;
+    
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    
+    const result = await request.query(query);
+    return result.recordset.length > 0 ? this.mapClaimFromDb(result.recordset[0]) : undefined;
   }
 
   async getClaimByVoucherCode(voucherCode: string): Promise<Claim | undefined> {

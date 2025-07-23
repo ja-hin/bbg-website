@@ -16,7 +16,8 @@ import {
   XCircle,
   Phone,
   Mail,
-  MapPin
+  MapPin,
+  X
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AdminHeader } from "@/components/admin-header";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { apiRequest } from "@/lib/queryClient";
@@ -32,6 +34,7 @@ interface DashboardStats {
   stats: {
     totalDistributors: number;
     totalCustomers: number;
+    totalRegistrations: number;
     totalClaims: number;
     pendingClaims: number;
     totalRevenue: number;
@@ -43,7 +46,9 @@ interface Customer {
   name: string;
   contact: string;
   email: string;
+  pincode: string;
   deviceType: string;
+  serialNumber: string;
   brand?: string;
   modelName: string;
   invoiceValue: number;
@@ -51,6 +56,10 @@ interface Customer {
   isVerified: boolean;
   createdAt: string;
   sellerCode?: string;
+  // Additional properties from grouped data
+  registrationCount?: number;
+  totalInvoiceValue?: number;
+  allVoucherCodes?: string[];
 }
 
 interface Claim {
@@ -90,6 +99,8 @@ export default function AdminDashboardNew() {
   const [claimFilter, setClaimFilter] = useState("all");
   const [distributorSearch, setDistributorSearch] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
 
   // Check admin authentication
   const { isLoading: adminLoading, isAuthenticated } = useRequireAuth();
@@ -293,7 +304,7 @@ export default function AdminDashboardNew() {
                           <div className="font-medium text-gray-900">{customer.name}</div>
                           <div className="text-sm text-gray-500">
                             {customer.contact} • {customer.deviceType}
-                            {customer.registrationCount > 1 && (
+                            {(customer.registrationCount || 0) > 1 && (
                               <span className="ml-2 text-blue-600">
                                 ({customer.registrationCount} registrations)
                               </span>
@@ -437,17 +448,9 @@ export default function AdminDashboardNew() {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <div className="flex items-center">
-                              <Badge variant="outline" className="mr-2">
-                                {customer.registrationCount || 1} {customer.registrationCount === 1 ? 'Registration' : 'Registrations'}
-                              </Badge>
-                              {customer.registrationCount > 1 && (
-                                <Button variant="ghost" size="sm" className="text-xs p-1 h-6">
-                                  <Eye className="h-3 w-3 mr-1" />
-                                  View All
-                                </Button>
-                              )}
-                            </div>
+                            <Badge variant="outline">
+                              {customer.registrationCount || 1} {customer.registrationCount === 1 ? 'Registration' : 'Registrations'}
+                            </Badge>
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center">
@@ -471,10 +474,152 @@ export default function AdminDashboardNew() {
                           </TableCell>
                           <TableCell>{formatDate(customer.createdAt)}</TableCell>
                           <TableCell>
-                            <Button variant="outline" size="sm">
-                              <Eye className="h-4 w-4 mr-1" />
-                              View
-                            </Button>
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => setSelectedCustomer(customer)}
+                                >
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  View
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle className="flex items-center">
+                                    <Users className="h-5 w-5 mr-2 text-blue-600" />
+                                    Customer Details - {selectedCustomer?.name}
+                                  </DialogTitle>
+                                </DialogHeader>
+                                
+                                {selectedCustomer && (
+                                  <div className="space-y-6">
+                                    {/* Basic Information */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <Card>
+                                        <CardHeader>
+                                          <CardTitle className="text-lg">Contact Information</CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="space-y-3">
+                                          <div className="flex items-center">
+                                            <Phone className="h-4 w-4 mr-2 text-gray-400" />
+                                            <span className="font-medium">{selectedCustomer.contact}</span>
+                                          </div>
+                                          <div className="flex items-center">
+                                            <Mail className="h-4 w-4 mr-2 text-gray-400" />
+                                            <span>{selectedCustomer.email}</span>
+                                          </div>
+                                          <div className="flex items-center">
+                                            <MapPin className="h-4 w-4 mr-2 text-gray-400" />
+                                            <span>{selectedCustomer.pincode}</span>
+                                          </div>
+                                          <div className="flex items-center">
+                                            <Badge variant={selectedCustomer.isVerified ? "default" : "secondary"}>
+                                              {selectedCustomer.isVerified ? "Verified" : "Pending"}
+                                            </Badge>
+                                          </div>
+                                        </CardContent>
+                                      </Card>
+
+                                      <Card>
+                                        <CardHeader>
+                                          <CardTitle className="text-lg">Device Information</CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="space-y-3">
+                                          <div className="flex items-center">
+                                            <Smartphone className="h-4 w-4 mr-2 text-gray-400" />
+                                            <div>
+                                              <div className="font-medium">{selectedCustomer.brand} {selectedCustomer.modelName}</div>
+                                              <div className="text-sm text-gray-500 capitalize">{selectedCustomer.deviceType}</div>
+                                            </div>
+                                          </div>
+                                          <div>
+                                            <span className="text-sm text-gray-500">Serial Number:</span>
+                                            <div className="font-mono text-sm bg-gray-100 p-2 rounded">
+                                              {selectedCustomer.serialNumber}
+                                            </div>
+                                          </div>
+                                          <div className="flex items-center">
+                                            <IndianRupee className="h-4 w-4 mr-1 text-gray-400" />
+                                            <span className="font-medium">
+                                              {formatCurrency(selectedCustomer.totalInvoiceValue || selectedCustomer.invoiceValue)}
+                                            </span>
+                                          </div>
+                                        </CardContent>
+                                      </Card>
+                                    </div>
+
+                                    {/* Registration Summary */}
+                                    <Card>
+                                      <CardHeader>
+                                        <CardTitle className="text-lg">Registration Summary</CardTitle>
+                                      </CardHeader>
+                                      <CardContent>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                          <div className="text-center p-4 bg-blue-50 rounded-lg">
+                                            <div className="text-2xl font-bold text-blue-600">
+                                              {selectedCustomer.registrationCount || 1}
+                                            </div>
+                                            <div className="text-sm text-gray-600">
+                                              {selectedCustomer.registrationCount === 1 ? 'Registration' : 'Registrations'}
+                                            </div>
+                                          </div>
+                                          <div className="text-center p-4 bg-green-50 rounded-lg">
+                                            <div className="text-2xl font-bold text-green-600">
+                                              {formatCurrency(selectedCustomer.totalInvoiceValue || selectedCustomer.invoiceValue)}
+                                            </div>
+                                            <div className="text-sm text-gray-600">Total Value</div>
+                                          </div>
+                                          <div className="text-center p-4 bg-purple-50 rounded-lg">
+                                            <div className="text-2xl font-bold text-purple-600">
+                                              {formatDate(selectedCustomer.createdAt)}
+                                            </div>
+                                            <div className="text-sm text-gray-600">First Registration</div>
+                                          </div>
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+
+                                    {/* Voucher Codes */}
+                                    {selectedCustomer.allVoucherCodes && selectedCustomer.allVoucherCodes.length > 1 && (
+                                      <Card>
+                                        <CardHeader>
+                                          <CardTitle className="text-lg">All Voucher Codes</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                            {selectedCustomer.allVoucherCodes.map((code: string, index: number) => (
+                                              <div key={index} className="bg-gray-100 p-3 rounded font-mono text-sm">
+                                                {code}
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </CardContent>
+                                      </Card>
+                                    )}
+
+                                    {/* Referral Information */}
+                                    {selectedCustomer.sellerCode && (
+                                      <Card>
+                                        <CardHeader>
+                                          <CardTitle className="text-lg">Referral Information</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                          <div className="flex items-center">
+                                            <ShoppingCart className="h-4 w-4 mr-2 text-gray-400" />
+                                            <span className="text-sm text-gray-500 mr-2">Referral Code:</span>
+                                            <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+                                              {selectedCustomer.sellerCode}
+                                            </code>
+                                          </div>
+                                        </CardContent>
+                                      </Card>
+                                    )}
+                                  </div>
+                                )}
+                              </DialogContent>
+                            </Dialog>
                           </TableCell>
                         </TableRow>
                       ))}

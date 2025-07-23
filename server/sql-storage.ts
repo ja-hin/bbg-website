@@ -368,6 +368,29 @@ export class SqlServerStorage implements IStorage {
           FOREIGN KEY (customer_id) REFERENCES customers(id)
         );
       END
+
+      -- Create cart_abandonments table for tracking incomplete registrations
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'cart_abandonments')
+      BEGIN
+        CREATE TABLE cart_abandonments (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          name NVARCHAR(255),
+          contact NVARCHAR(15),
+          email NVARCHAR(255),
+          pincode NVARCHAR(10),
+          device_type NVARCHAR(50),
+          serial_number NVARCHAR(255),
+          brand NVARCHAR(100),
+          model_name NVARCHAR(255),
+          invoice_value DECIMAL(10,2),
+          seller_code NVARCHAR(20),
+          session_id NVARCHAR(255) NOT NULL,
+          stage NVARCHAR(50) DEFAULT 'form_started',
+          last_activity DATETIME2 DEFAULT GETDATE(),
+          created_at DATETIME2 DEFAULT GETDATE(),
+          updated_at DATETIME2 DEFAULT GETDATE()
+        );
+      END
     `;
 
     const request = db.pool.request();
@@ -1561,6 +1584,156 @@ export class SqlServerStorage implements IStorage {
         return [];
       }
     }
+  }
+
+  // Cart Abandonment operations
+  async createCartAbandonment(abandonment: any): Promise<any> {
+    await db.connectDB();
+    
+    const query = `
+      INSERT INTO cart_abandonments (
+        name, contact, email, pincode, device_type, serial_number, 
+        brand, model_name, invoice_value, seller_code, session_id, stage, last_activity
+      ) 
+      OUTPUT INSERTED.*
+      VALUES (
+        @name, @contact, @email, @pincode, @deviceType, @serialNumber,
+        @brand, @modelName, @invoiceValue, @sellerCode, @sessionId, @stage, GETDATE()
+      )
+    `;
+
+    const request = db.pool.request();
+    request.input('name', sql.NVarChar, abandonment.name);
+    request.input('contact', sql.NVarChar, abandonment.contact);
+    request.input('email', sql.NVarChar, abandonment.email);
+    request.input('pincode', sql.NVarChar, abandonment.pincode);
+    request.input('deviceType', sql.NVarChar, abandonment.deviceType);
+    request.input('serialNumber', sql.NVarChar, abandonment.serialNumber);
+    request.input('brand', sql.NVarChar, abandonment.brand);
+    request.input('modelName', sql.NVarChar, abandonment.modelName);
+    request.input('invoiceValue', sql.Decimal(10, 2), abandonment.invoiceValue);
+    request.input('sellerCode', sql.NVarChar, abandonment.sellerCode);
+    request.input('sessionId', sql.NVarChar, abandonment.sessionId);
+    request.input('stage', sql.NVarChar, abandonment.stage || 'form_started');
+
+    const result = await request.query(query);
+    return this.mapCartAbandonmentFromDb(result.recordset[0]);
+  }
+
+  async updateCartAbandonment(sessionId: string, updates: any): Promise<void> {
+    await db.connectDB();
+    
+    const updateFields = [];
+    const request = db.pool.request();
+    request.input('sessionId', sql.NVarChar, sessionId);
+
+    if (updates.name !== undefined) {
+      updateFields.push('name = @name');
+      request.input('name', sql.NVarChar, updates.name);
+    }
+    if (updates.contact !== undefined) {
+      updateFields.push('contact = @contact');
+      request.input('contact', sql.NVarChar, updates.contact);
+    }
+    if (updates.email !== undefined) {
+      updateFields.push('email = @email');
+      request.input('email', sql.NVarChar, updates.email);
+    }
+    if (updates.pincode !== undefined) {
+      updateFields.push('pincode = @pincode');
+      request.input('pincode', sql.NVarChar, updates.pincode);
+    }
+    if (updates.deviceType !== undefined) {
+      updateFields.push('device_type = @deviceType');
+      request.input('deviceType', sql.NVarChar, updates.deviceType);
+    }
+    if (updates.serialNumber !== undefined) {
+      updateFields.push('serial_number = @serialNumber');
+      request.input('serialNumber', sql.NVarChar, updates.serialNumber);
+    }
+    if (updates.brand !== undefined) {
+      updateFields.push('brand = @brand');
+      request.input('brand', sql.NVarChar, updates.brand);
+    }
+    if (updates.modelName !== undefined) {
+      updateFields.push('model_name = @modelName');
+      request.input('modelName', sql.NVarChar, updates.modelName);
+    }
+    if (updates.invoiceValue !== undefined) {
+      updateFields.push('invoice_value = @invoiceValue');
+      request.input('invoiceValue', sql.Decimal(10, 2), updates.invoiceValue);
+    }
+    if (updates.sellerCode !== undefined) {
+      updateFields.push('seller_code = @sellerCode');
+      request.input('sellerCode', sql.NVarChar, updates.sellerCode);
+    }
+    if (updates.stage !== undefined) {
+      updateFields.push('stage = @stage');
+      request.input('stage', sql.NVarChar, updates.stage);
+    }
+
+    updateFields.push('last_activity = GETDATE()');
+    updateFields.push('updated_at = GETDATE()');
+
+    if (updateFields.length > 0) {
+      const query = `UPDATE cart_abandonments SET ${updateFields.join(', ')} WHERE session_id = @sessionId`;
+      await request.query(query);
+    }
+  }
+
+  async getAllCartAbandonments(): Promise<any[]> {
+    await db.connectDB();
+    const query = `
+      SELECT * FROM cart_abandonments 
+      ORDER BY last_activity DESC, created_at DESC
+    `;
+    
+    const result = await db.pool.request().query(query);
+    return result.recordset.map(row => this.mapCartAbandonmentFromDb(row));
+  }
+
+  async deleteCartAbandonment(id: number): Promise<void> {
+    await db.connectDB();
+    const query = `DELETE FROM cart_abandonments WHERE id = @id`;
+    
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    
+    await request.query(query);
+  }
+
+  async cleanupOldCartAbandonments(daysOld: number): Promise<void> {
+    await db.connectDB();
+    const query = `
+      DELETE FROM cart_abandonments 
+      WHERE created_at < DATEADD(day, -@daysOld, GETDATE())
+    `;
+    
+    const request = db.pool.request();
+    request.input('daysOld', sql.Int, daysOld);
+    
+    await request.query(query);
+  }
+
+  private mapCartAbandonmentFromDb(row: any): any {
+    return {
+      id: row.id,
+      name: row.name,
+      contact: row.contact,
+      email: row.email,
+      pincode: row.pincode,
+      deviceType: row.device_type,
+      serialNumber: row.serial_number,
+      brand: row.brand,
+      modelName: row.model_name,
+      invoiceValue: row.invoice_value,
+      sellerCode: row.seller_code,
+      sessionId: row.session_id,
+      stage: row.stage,
+      lastActivity: row.last_activity,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
   }
 }
 

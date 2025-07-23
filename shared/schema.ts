@@ -156,6 +156,26 @@ export const adminUsers = pgTable("admin_users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Cart Abandonment tracking
+export const cartAbandonments = pgTable("cart_abandonments", {
+  id: serial("id").primaryKey(),
+  name: text("name"),
+  contact: text("contact"),
+  email: text("email"),
+  pincode: text("pincode"),
+  deviceType: text("device_type"),
+  serialNumber: text("serial_number"),
+  brand: text("brand"),
+  modelName: text("model_name"),
+  invoiceValue: decimal("invoice_value", { precision: 10, scale: 2 }),
+  sellerCode: text("seller_code"),
+  sessionId: text("session_id").notNull(),
+  stage: text("stage").notNull().default("form_started"), // form_started, details_entered, otp_verified, payment_pending
+  lastActivity: timestamp("last_activity").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
+});
+
 export const insertDistributorSchema = createInsertSchema(distributors).omit({
   id: true,
   sellerCode: true,
@@ -223,6 +243,7 @@ export type AdminUser = typeof adminUsers.$inferSelect;
 export type PendingPayment = typeof pendingPayments.$inferSelect;
 export type Brand = typeof brands.$inferSelect;
 export type DeviceModel = typeof deviceModels.$inferSelect;
+export type CartAbandonment = typeof cartAbandonments.$inferSelect;
 
 export type InsertUserRole = z.infer<typeof insertUserRoleSchema>;
 export type InsertDistributor = z.infer<typeof insertDistributorSchema>;
@@ -233,3 +254,4 @@ export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
 export type InsertPendingPayment = z.infer<typeof insertPendingPaymentSchema>;
 export type InsertBrand = z.infer<typeof insertBrandSchema>;
 export type InsertDeviceModel = z.infer<typeof insertDeviceModelSchema>;
+export type InsertCartAbandonment = typeof cartAbandonments.$inferInsert;

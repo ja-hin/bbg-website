@@ -2774,6 +2774,69 @@ Required: GUPSHUP_API_KEY environment variable
   // Register test routes for individual service testing
   registerTestRoutes(app);
 
+  // Cart Abandonment tracking endpoints
+  app.post("/api/cart-abandonment", async (req, res) => {
+    try {
+      const { sessionId, stage, ...data } = req.body;
+      
+      // Check if session already exists
+      const existingAbandonments = await storage.getAllCartAbandonments();
+      const existingAbandonment = existingAbandonments.find(a => a.sessionId === sessionId);
+      
+      if (existingAbandonment) {
+        // Update existing abandonment
+        await storage.updateCartAbandonment(sessionId, { ...data, stage });
+        res.json({ message: "Cart abandonment updated" });
+      } else {
+        // Create new abandonment tracking
+        const abandonment = await storage.createCartAbandonment({
+          ...data,
+          sessionId,
+          stage: stage || 'form_started'
+        });
+        res.json({ message: "Cart abandonment tracked", id: abandonment.id });
+      }
+    } catch (error: any) {
+      console.error("Cart abandonment tracking error:", error);
+      res.status(500).json({ message: "Failed to track cart abandonment" });
+    }
+  });
+
+  // Admin endpoint to get all cart abandonments
+  app.get("/api/admin/cart-abandonments", async (req, res) => {
+    try {
+      const abandonments = await storage.getAllCartAbandonments();
+      res.json(abandonments);
+    } catch (error: any) {
+      console.error("Error fetching cart abandonments:", error);
+      res.status(500).json({ message: "Failed to fetch cart abandonments" });
+    }
+  });
+
+  // Admin endpoint to delete cart abandonment
+  app.delete("/api/admin/cart-abandonments/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteCartAbandonment(id);
+      res.json({ message: "Cart abandonment deleted successfully" });
+    } catch (error: any) {
+      console.error("Error deleting cart abandonment:", error);
+      res.status(500).json({ message: "Failed to delete cart abandonment" });
+    }
+  });
+
+  // Admin endpoint to cleanup old cart abandonments (older than 30 days)
+  app.post("/api/admin/cart-abandonments/cleanup", async (req, res) => {
+    try {
+      const daysOld = req.body.daysOld || 30;
+      await storage.cleanupOldCartAbandonments(daysOld);
+      res.json({ message: `Cart abandonments older than ${daysOld} days cleaned up` });
+    } catch (error: any) {
+      console.error("Error cleaning up cart abandonments:", error);
+      res.status(500).json({ message: "Failed to cleanup cart abandonments" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
@@ -9,6 +9,11 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { validatePhoneNumber, validateEmail, validatePincode } from "@/lib/utils";
 import FileUpload from "@/components/file-upload";
+
+// Generate unique session ID for cart abandonment tracking
+const generateSessionId = () => {
+  return 'cart_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+};
 
 // Stripe imports removed - using PayU only
 
@@ -321,6 +326,15 @@ function RegistrationContent() {
   const [otp, setOtp] = useState("");
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
 
+  // Cart abandonment tracking
+  const [sessionId] = useState(() => {
+    const stored = sessionStorage.getItem('cart_session_id');
+    if (stored) return stored;
+    const newId = generateSessionId();
+    sessionStorage.setItem('cart_session_id', newId);
+    return newId;
+  });
+
 
   const form = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema),
@@ -412,6 +426,8 @@ function RegistrationContent() {
           title: "Verified",
           description: "Contact number verified successfully",
         });
+        // Track OTP verification stage
+        trackCartAbandonment('otp_verified');
       }
     },
     onError: (error: any) => {
@@ -422,6 +438,56 @@ function RegistrationContent() {
       });
     }
   });
+
+  // Cart abandonment tracking mutation
+  const trackCartAbandonmentMutation = useMutation({
+    mutationFn: async (data: any) => {
+      return await apiRequest("/api/cart-abandonment", { method: "POST", body: data });
+    },
+    onError: (error: any) => {
+      // Silent error - cart abandonment tracking shouldn't interrupt user flow
+      console.log("Cart abandonment tracking error:", error.message);
+    }
+  });
+
+  // Cart abandonment tracking function
+  const trackCartAbandonment = (stage: string) => {
+    const formValues = form.getValues();
+    const trackingData = {
+      sessionId,
+      stage,
+      name: formValues.name || null,
+      contact: formValues.contact || null,
+      email: formValues.email || null,
+      pincode: formValues.pincode || null,
+      deviceType: formValues.deviceType || null,
+      serialNumber: formValues.serialNumber || null,
+      brand: formValues.brand || null,
+      modelName: formValues.modelName || null,
+      invoiceValue: formValues.invoiceValue ? parseFloat(formValues.invoiceValue) : null,
+      sellerCode: formValues.sellerCode || null
+    };
+
+    // Only track if there's meaningful data
+    if (trackingData.name || trackingData.contact || trackingData.deviceType) {
+      trackCartAbandonmentMutation.mutate(trackingData);
+    }
+  };
+
+  // Track form start on component mount
+  useEffect(() => {
+    trackCartAbandonment('form_started');
+  }, []);
+
+  // Track when user starts entering details
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name && value[name]) {
+        trackCartAbandonment('details_entered');
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   // Registration mutation
   const mutation = useMutation({
@@ -531,6 +597,8 @@ function RegistrationContent() {
     // Store form data and show payment form
     setFormData(data);
     setShowPaymentForm(true);
+    // Track when user proceeds to payment
+    trackCartAbandonment('payment_pending');
     console.log("Form data set, payment form should show");
   };
 

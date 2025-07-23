@@ -1,7 +1,7 @@
-import { distributors, customers, claims, otpVerifications, adminUsers, pendingPayments, brands, deviceModels, userRoles } from "@shared/schema";
+import { distributors, customers, claims, otpVerifications, adminUsers, pendingPayments, brands, deviceModels, userRoles, cartAbandonments } from "@shared/schema";
 import type { 
-  Distributor, Customer, Claim, OtpVerification, AdminUser, PendingPayment, Brand, DeviceModel, UserRole,
-  InsertDistributor, InsertCustomer, InsertClaim, InsertOtp, InsertAdminUser, InsertPendingPayment, InsertBrand, InsertDeviceModel, InsertUserRole
+  Distributor, Customer, Claim, OtpVerification, AdminUser, PendingPayment, Brand, DeviceModel, UserRole, CartAbandonment,
+  InsertDistributor, InsertCustomer, InsertClaim, InsertOtp, InsertAdminUser, InsertPendingPayment, InsertBrand, InsertDeviceModel, InsertUserRole, InsertCartAbandonment
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and } from "drizzle-orm";
@@ -89,6 +89,13 @@ export interface IStorage {
   getModelsByBrandId(brandId: number): Promise<DeviceModel[]>;
   updateDeviceModel(id: number, updates: Partial<InsertDeviceModel>): Promise<void>;
   deleteDeviceModel(id: number): Promise<void>;
+
+  // Cart Abandonment operations
+  createCartAbandonment(abandonment: InsertCartAbandonment): Promise<CartAbandonment>;
+  updateCartAbandonment(sessionId: string, updates: Partial<InsertCartAbandonment>): Promise<void>;
+  getAllCartAbandonments(): Promise<CartAbandonment[]>;
+  deleteCartAbandonment(id: number): Promise<void>;
+  cleanupOldCartAbandonments(daysOld: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {

@@ -56,6 +56,7 @@ function Router() {
       <Route path="/admin/logs" component={AdminLogs} />
       <Route path="/admin/whatsapp-test" component={AdminWhatsAppTest} />
       <Route path="/admin/hsm-templates" component={lazy(() => import("./pages/admin-hsm-templates"))} />
+      <Route path="/admin/cart-abandonments" component={lazy(() => import("./pages/admin-cart-abandonments"))} />
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />

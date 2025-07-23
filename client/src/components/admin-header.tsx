@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
-import { Shield, Database, Tags, LogOut, Users, Mail, Activity, MessageCircle } from "lucide-react";
+import { Shield, Database, Tags, LogOut, Users, Mail, Activity, MessageCircle, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 
 export function AdminHeader() {
-  const { adminUser } = useAuth();
+  const { user } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -56,7 +56,7 @@ export function AdminHeader() {
               <Shield className="h-8 w-8 text-blue-600" />
               <div>
                 <h1 className="text-xl font-bold text-gray-900">BBG Admin Panel</h1>
-                <p className="text-sm text-gray-500">Welcome, {adminUser?.username || 'Admin'}</p>
+                <p className="text-sm text-gray-500">Welcome, {(user as any)?.username || 'Admin'}</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -70,6 +70,12 @@ export function AdminHeader() {
                 <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
                   <Users className="h-4 w-4 mr-2" />
                   Distributors
+                </Button>
+              </Link>
+              <Link href="/admin/cart-abandonments">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+                  <ShoppingCart className="h-4 w-4 mr-2" />
+                  Cart Tracking
                 </Button>
               </Link>
               <Link href="/admin/templates">

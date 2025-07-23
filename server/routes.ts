@@ -330,7 +330,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Distributor not found. Please register first." });
       }
 
-      // Create session token
+      // Clean up any existing sessions for this distributor (security measure)
+      await storage.deleteDistributorSessionsByDistributorId(distributor.id);
+
+      // Create new session token
       const sessionToken = await storage.createDistributorSession(distributor.id, contact);
       
       res.json({

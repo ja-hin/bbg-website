@@ -28,6 +28,7 @@ export interface IStorage {
   createDistributorSession(distributorId: number, contact: string): Promise<string>;
   verifyDistributorSession(token: string): Promise<Distributor | null>;
   deleteDistributorSession(token: string): Promise<void>;
+  deleteDistributorSessionsByDistributorId(distributorId: number): Promise<void>;
   
   // Distributor Dashboard
   getDistributorStats(distributorId: number): Promise<{

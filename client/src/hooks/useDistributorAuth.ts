@@ -25,7 +25,7 @@ export function useDistributorAuth() {
     queryKey: ["/api/distributor/me"],
     retry: false,
     enabled: !!getStoredToken(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 0, // Don't cache distributor data
     meta: {
       headers: {
         Authorization: `Bearer ${getStoredToken()}`
@@ -36,17 +36,25 @@ export function useDistributorAuth() {
   // Login mutation
   const loginMutation = useMutation({
     mutationFn: async ({ contact, otp }: { contact: string; otp: string }) => {
+      // Clear all previous cache and tokens before login
+      queryClient.clear();
+      localStorage.removeItem('distributorToken');
+      
       const response = await apiRequest("/api/distributor/login", {
         method: "POST",
         body: { contact, otp }
       });
       
-      // Store session token
+      // Store new session token
       localStorage.setItem('distributorToken', response.sessionToken);
       return response;
     },
     onSuccess: () => {
+      // Force refresh all distributor-related queries
       queryClient.invalidateQueries({ queryKey: ["/api/distributor/me"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/distributor/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/distributor/customers"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/distributor/payouts"] });
     }
   });
 
@@ -61,19 +69,21 @@ export function useDistributorAuth() {
         });
       }
       
-      // Clear token
+      // Clear all local storage and cache
       localStorage.removeItem('distributorToken');
+      queryClient.clear();
     },
     onSuccess: () => {
+      // Force clear all cache and redirect
       queryClient.clear();
       window.location.href = "/distributor/login";
     }
   });
 
   return {
-    distributor: distributor?.distributor,
+    distributor: (distributor as any)?.distributor,
     isLoading,
-    isAuthenticated: !!distributor?.distributor && !error,
+    isAuthenticated: !!(distributor as any)?.distributor && !error,
     login: loginMutation.mutateAsync,
     logout: logoutMutation.mutateAsync,
     isLoginLoading: loginMutation.isPending,
@@ -86,6 +96,7 @@ export function useDistributorStats() {
   return useQuery<DistributorStats>({
     queryKey: ["/api/distributor/stats"],
     enabled: !!getStoredToken(),
+    staleTime: 0, // Always fetch fresh data
     meta: {
       headers: {
         Authorization: `Bearer ${getStoredToken()}`
@@ -98,6 +109,7 @@ export function useDistributorCustomers() {
   return useQuery({
     queryKey: ["/api/distributor/customers"],
     enabled: !!getStoredToken(),
+    staleTime: 0, // Always fetch fresh data
     meta: {
       headers: {
         Authorization: `Bearer ${getStoredToken()}`
@@ -110,6 +122,7 @@ export function useDistributorPayouts() {
   return useQuery({
     queryKey: ["/api/distributor/payouts"],
     enabled: !!getStoredToken(),
+    staleTime: 0, // Always fetch fresh data
     meta: {
       headers: {
         Authorization: `Bearer ${getStoredToken()}`

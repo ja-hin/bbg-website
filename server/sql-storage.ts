@@ -522,6 +522,16 @@ export class SqlServerStorage implements IStorage {
     await request.query(query);
   }
 
+  async deleteDistributorSessionsByDistributorId(distributorId: number): Promise<void> {
+    await db.connectDB();
+    const query = `DELETE FROM distributor_sessions WHERE distributor_id = @distributorId`;
+    
+    const request = db.pool.request();
+    request.input('distributorId', sql.Int, distributorId);
+    
+    await request.query(query);
+  }
+
   // Distributor Dashboard
   async getDistributorStats(distributorId: number): Promise<{
     totalCustomers: number;

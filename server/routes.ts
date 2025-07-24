@@ -16,6 +16,7 @@ import { templateService } from "./template-service";
 import { testAllTemplates } from "./template-test";
 import { registerTestRoutes } from "./test-services";
 import { s3Service, createS3Upload } from "./s3-service";
+import AWS from 'aws-sdk';
 // Removed nodemailer import - using communicationService instead
 import { 
   insertDistributorSchema, 
@@ -3194,7 +3195,6 @@ Required: GUPSHUP_API_KEY environment variable
 
       // Test the configuration by attempting to connect
       try {
-        const AWS = require('aws-sdk');
         AWS.config.update({
           accessKeyId,
           secretAccessKey,
@@ -3207,7 +3207,7 @@ Required: GUPSHUP_API_KEY environment variable
         await s3.headBucket({ Bucket: bucketName }).promise();
         
         // Update global S3 configuration flag
-        global.isS3Configured = true;
+        (global as any).isS3Configured = true;
         
         res.json({
           success: true,

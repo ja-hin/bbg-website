@@ -45,16 +45,24 @@ export default function AdminStorage() {
 
   const configureMutation = useMutation({
     mutationFn: async (credentials: typeof awsCredentials) => {
-      // This would require a backend endpoint to update environment variables
-      // For now, we'll just show the configuration
-      return credentials;
+      return apiRequest('/api/storage/configure-s3', {
+        method: 'POST',
+        body: credentials
+      });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
-        title: "Configuration Updated",
-        description: "AWS S3 configuration has been updated. Restart the server to apply changes.",
+        title: "S3 Configuration Updated",
+        description: data.message || "AWS S3 configuration has been updated successfully.",
       });
       refetchStatus();
+      // Clear the form
+      setAwsCredentials({
+        accessKeyId: '',
+        secretAccessKey: '',
+        bucketName: '',
+        region: 'us-east-1'
+      });
     },
     onError: (error: any) => {
       toast({

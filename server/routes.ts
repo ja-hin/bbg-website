@@ -3175,6 +3175,79 @@ Required: GUPSHUP_API_KEY environment variable
     });
   });
 
+  // S3 configuration endpoint
+  app.post('/api/storage/configure-s3', isAdminAuthenticated, async (req, res) => {
+    try {
+      const { accessKeyId, secretAccessKey, bucketName, region } = req.body;
+      
+      if (!accessKeyId || !secretAccessKey || !bucketName || !region) {
+        return res.status(400).json({ 
+          message: 'All AWS credentials are required' 
+        });
+      }
+
+      // Set environment variables
+      process.env.AWS_ACCESS_KEY_ID = accessKeyId;
+      process.env.AWS_SECRET_ACCESS_KEY = secretAccessKey;
+      process.env.AWS_S3_BUCKET_NAME = bucketName;
+      process.env.AWS_REGION = region;
+
+      // Test the configuration by attempting to connect
+      try {
+        const AWS = require('aws-sdk');
+        AWS.config.update({
+          accessKeyId,
+          secretAccessKey,
+          region
+        });
+        
+        const s3 = new AWS.S3();
+        
+        // Test bucket access
+        await s3.headBucket({ Bucket: bucketName }).promise();
+        
+        // Update global S3 configuration flag
+        global.isS3Configured = true;
+        
+        res.json({
+          success: true,
+          message: 'S3 configuration updated successfully. The service is now active.',
+          configuration: {
+            bucketName,
+            region,
+            s3Configured: true
+          }
+        });
+      } catch (testError: any) {
+        console.error('S3 test connection error:', testError);
+        
+        let errorMessage = 'Failed to configure S3';
+        if (testError.code === 'NoSuchBucket') {
+          errorMessage = 'Bucket not found. Please check the bucket name.';
+        } else if (testError.code === 'InvalidAccessKeyId') {
+          errorMessage = 'Invalid Access Key ID. Please check your credentials.';
+        } else if (testError.code === 'SignatureDoesNotMatch') {
+          errorMessage = 'Invalid Secret Access Key. Please check your credentials.';
+        } else if (testError.code === 'AccessDenied') {
+          errorMessage = 'Access denied. Please check your bucket permissions.';
+        }
+
+        res.status(500).json({ 
+          success: false,
+          message: errorMessage,
+          error: testError.message 
+        });
+      }
+    } catch (error: any) {
+      console.error('S3 configuration error:', error);
+      res.status(500).json({ 
+        success: false,
+        message: 'Failed to configure S3',
+        error: error.message 
+      });
+    }
+  });
+
   registerTestRoutes(app);
 
   // Cart Abandonment tracking endpoints

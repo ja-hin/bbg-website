@@ -169,11 +169,16 @@ export default function AdminDashboardNew() {
         {statsLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
             {[...Array(5)].map((_, i) => (
-              <Card key={i}>
+              <Card key={i} className="hover:shadow-lg transition-all duration-200">
                 <CardContent className="p-6">
-                  <div className="animate-pulse">
-                    <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
-                    <div className="h-8 bg-gray-200 rounded w-16"></div>
+                  <div className="flex items-center justify-between animate-pulse">
+                    <div className="flex-1">
+                      <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
+                      <div className="h-8 bg-gray-200 rounded w-16"></div>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -181,64 +186,89 @@ export default function AdminDashboardNew() {
           </div>
         ) : dashboardStats ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-            <Card>
+            {/* Referral Partners Card */}
+            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 hover:shadow-lg transition-all duration-200">
               <CardContent className="p-6">
-                <div className="flex items-center">
-                  <Users className="h-8 w-8 text-blue-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Referral Partners</p>
-                    <p className="text-2xl font-bold text-gray-900">{dashboardStats.stats.totalDistributors || 0}</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-blue-700 mb-1">Referral Partners</p>
+                    <p className="text-3xl font-bold text-blue-900">{dashboardStats.stats.totalDistributors || 0}</p>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                      <Users className="h-6 w-6 text-white" />
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+            {/* Customers Card */}
+            <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 hover:shadow-lg transition-all duration-200">
               <CardContent className="p-6">
-                <div className="flex items-center">
-                  <Smartphone className="h-8 w-8 text-green-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Unique Customers</p>
-                    <p className="text-2xl font-bold text-gray-900">{dashboardStats.stats.totalCustomers || 0}</p>
-                    <p className="text-xs text-gray-500">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-green-700 mb-1">Unique Customers</p>
+                    <p className="text-3xl font-bold text-green-900">{dashboardStats.stats.totalCustomers || 0}</p>
+                    <p className="text-xs text-green-600 mt-1">
                       {dashboardStats.stats.totalRegistrations || 0} total registrations
                     </p>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center">
-                  <FileText className="h-8 w-8 text-purple-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Total Claims</p>
-                    <p className="text-2xl font-bold text-gray-900">{dashboardStats.stats.totalClaims || 0}</p>
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                      <Smartphone className="h-6 w-6 text-white" />
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+            {/* Total Claims Card */}
+            <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200 hover:shadow-lg transition-all duration-200">
               <CardContent className="p-6">
-                <div className="flex items-center">
-                  <AlertCircle className="h-8 w-8 text-orange-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Pending Claims</p>
-                    <p className="text-2xl font-bold text-gray-900">{dashboardStats.stats.pendingClaims || 0}</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-purple-700 mb-1">Total Claims</p>
+                    <p className="text-3xl font-bold text-purple-900">{dashboardStats.stats.totalClaims || 0}</p>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+                      <FileText className="h-6 w-6 text-white" />
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+            {/* Pending Claims Card */}
+            <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200 hover:shadow-lg transition-all duration-200">
               <CardContent className="p-6">
-                <div className="flex items-center">
-                  <IndianRupee className="h-8 w-8 text-emerald-600" />
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Revenue</p>
-                    <p className="text-2xl font-bold text-gray-900">{formatCurrency(dashboardStats.stats.totalRevenue || 0)}</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-orange-700 mb-1">Pending Claims</p>
+                    <p className="text-3xl font-bold text-orange-900">{dashboardStats.stats.pendingClaims || 0}</p>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
+                      <AlertCircle className="h-6 w-6 text-white" />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Revenue Card */}
+            <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200 hover:shadow-lg transition-all duration-200">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-emerald-700 mb-1">Total Revenue</p>
+                    <p className="text-3xl font-bold text-emerald-900">{formatCurrency(dashboardStats.stats.totalRevenue || 0)}</p>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-emerald-500 rounded-lg flex items-center justify-center">
+                      <IndianRupee className="h-6 w-6 text-white" />
+                    </div>
                   </div>
                 </div>
               </CardContent>

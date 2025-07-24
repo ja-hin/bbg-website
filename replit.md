@@ -287,10 +287,48 @@ GUPSHUP_SOURCE_NUMBER=919999999999
 - **Template History**: Created/updated timestamps for template version tracking
 - **Unique Constraints**: One active template per type/event combination
 
+## AWS S3 Integration
+
+### File Storage System
+- **AWS S3 Service**: Integrated S3Service class with secure file upload/download capabilities
+- **Multer S3 Integration**: Direct file uploads to S3 using multer-s3 middleware
+- **Fallback Support**: Automatic fallback to local storage if S3 not configured
+- **Admin Management**: Complete storage management interface at `/admin/storage`
+- **Signed URLs**: Secure temporary file access with 1-hour expiry
+- **Environment Configuration**: AWS credentials via environment variables
+
+### Storage Features
+- **Private Bucket Access**: All files stored privately with signed URL access
+- **File Organization**: Structured folder system (documents, images, temp)
+- **Automatic Cleanup**: Failed uploads automatically cleaned up
+- **Type Validation**: Supports JPEG, PNG, PDF files with 5MB size limit
+- **Dual Mode**: Works with or without S3 configuration
+
+### Security & Performance
+- **Encrypted Storage**: Files encrypted at rest in S3
+- **Access Control**: Only authenticated users can generate signed URLs
+- **Cost Optimization**: Pay-per-use pricing with free tier benefits
+- **Global CDN**: Fast file access worldwide via S3's global infrastructure
+
+### API Endpoints
+- `GET /api/storage/status` - Check S3 configuration status
+- `GET /api/files/signed-url/:key` - Generate secure file access URLs
+- `GET /api/files/local/:filename` - Serve local files (fallback mode)
+
 ## Changelog
 
 ```
 Changelog:
+- July 24, 2025: ✅ COMPLETED - Comprehensive AWS S3 integration for secure cloud file storage
+  - IMPLEMENTED: Complete S3Service class with upload, download, and signed URL generation
+  - CREATED: Multer-S3 integration for direct file uploads to cloud storage
+  - ADDED: Admin storage management interface at /admin/storage with configuration panel
+  - ENHANCED: Fallback system - works with local storage if S3 not configured
+  - INTEGRATED: File upload endpoints updated to handle both S3 and local storage
+  - SECURED: Private bucket access with temporary signed URLs (1-hour expiry)
+  - CONFIGURED: Environment variables for AWS credentials and bucket configuration
+  - DOCUMENTED: Complete setup guide (S3_SETUP.md) with step-by-step AWS configuration
+  - OPTIMIZED: Cost-effective storage solution with unlimited scalability and global CDN
 - July 23, 2025: ✅ COMPLETED - Completely removed location field requirement from referral partner registration system
   - REMOVED: Location field from distributor registration form schema and UI components
   - UPDATED: Database schema to remove location column from distributors table creation script

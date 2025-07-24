@@ -23,6 +23,7 @@ import AdminTemplates from "@/pages/admin-templates";
 import AdminLogs from "@/pages/admin-logs";
 import AdminWhatsAppTest from "@/pages/admin-whatsapp-test";
 import AdminCartAbandonments from "@/pages/admin-cart-abandonments";
+import AdminStorage from "@/pages/admin-storage";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import { useAuth } from "@/hooks/useAuth";
@@ -55,6 +56,7 @@ function Router() {
       <Route path="/admin/distributors" component={AdminDistributors} />
       <Route path="/admin/templates" component={AdminTemplates} />
       <Route path="/admin/logs" component={AdminLogs} />
+      <Route path="/admin/storage" component={AdminStorage} />
       <Route path="/admin/whatsapp-test" component={AdminWhatsAppTest} />
       <Route path="/admin/hsm-templates" component={lazy(() => import("./pages/admin-hsm-templates"))} />
       <Route path="/admin/cart-abandonments">

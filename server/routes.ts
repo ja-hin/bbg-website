@@ -15,6 +15,7 @@ import { gupshupService } from "./gupshup-service";
 import { templateService } from "./template-service";
 import { testAllTemplates } from "./template-test";
 import { registerTestRoutes } from "./test-services";
+import { s3Service, createS3Upload } from "./s3-service";
 // Removed nodemailer import - using communicationService instead
 import { 
   insertDistributorSchema, 
@@ -23,13 +24,17 @@ import {
   insertOtpSchema 
 } from "@shared/schema";
 
-// Configure multer for file uploads
+// Configure multer for file uploads (fallback to local storage if S3 not configured)
 const uploadDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-const upload = multer({
+// Check if S3 is configured
+const isS3Configured = process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY && process.env.AWS_S3_BUCKET_NAME;
+
+// Use S3 upload if configured, otherwise fallback to local storage
+const upload = isS3Configured ? createS3Upload('documents') : multer({
   storage: multer.diskStorage({
     destination: uploadDir,
     filename: (req, file, cb) => {
@@ -156,25 +161,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (formData.gstInvoiceAgreement) formData.gstInvoiceAgreement = formData.gstInvoiceAgreement === 'true';
       if (formData.termsAgreement) formData.termsAgreement = formData.termsAgreement === 'true';
       
-      // Handle file uploads safely
+      // Handle file uploads safely (S3 or local storage)
       const files = req.files as { [fieldname: string]: Express.Multer.File[] } || {};
       console.log("Files object:", files);
       
       if (files && files.panCopyFile && files.panCopyFile[0]) {
-        formData.panCopyFile = files.panCopyFile[0].filename;
-        console.log("PAN copy file uploaded:", files.panCopyFile[0].filename);
+        // For S3, use the key, for local storage use filename
+        formData.panCopyFile = isS3Configured ? (files.panCopyFile[0] as any).key : files.panCopyFile[0].filename;
+        console.log("PAN copy file uploaded:", formData.panCopyFile);
       }
       if (files && files.gstCertificateFile && files.gstCertificateFile[0]) {
-        formData.gstCertificateFile = files.gstCertificateFile[0].filename;
-        console.log("GST certificate file uploaded:", files.gstCertificateFile[0].filename);
+        formData.gstCertificateFile = isS3Configured ? (files.gstCertificateFile[0] as any).key : files.gstCertificateFile[0].filename;
+        console.log("GST certificate file uploaded:", formData.gstCertificateFile);
       }
       if (files && files.msmeCertificateFile && files.msmeCertificateFile[0]) {
-        formData.msmeCertificateFile = files.msmeCertificateFile[0].filename;
-        console.log("MSME certificate file uploaded:", files.msmeCertificateFile[0].filename);
+        formData.msmeCertificateFile = isS3Configured ? (files.msmeCertificateFile[0] as any).key : files.msmeCertificateFile[0].filename;
+        console.log("MSME certificate file uploaded:", formData.msmeCertificateFile);
       }
       if (files && files.cancelledChequeFile && files.cancelledChequeFile[0]) {
-        formData.cancelledChequeFile = files.cancelledChequeFile[0].filename;
-        console.log("Cancelled cheque file uploaded:", files.cancelledChequeFile[0].filename);
+        formData.cancelledChequeFile = isS3Configured ? (files.cancelledChequeFile[0] as any).key : files.cancelledChequeFile[0].filename;
+        console.log("Cancelled cheque file uploaded:", formData.cancelledChequeFile);
       }
       
       // Remove bankAccountConfirm as it's not stored in database
@@ -3126,6 +3132,49 @@ Required: GUPSHUP_API_KEY environment variable
   });
 
   // Register test routes for individual service testing
+  // File management API endpoints for S3
+  app.get('/api/files/signed-url/:key', async (req, res) => {
+    try {
+      if (!isS3Configured) {
+        return res.status(400).json({ message: 'S3 storage not configured' });
+      }
+      
+      const { key } = req.params;
+      const signedUrl = await s3Service.getSignedUrl(key);
+      
+      res.json({ signedUrl });
+    } catch (error: any) {
+      console.error('Error generating signed URL:', error);
+      res.status(500).json({ message: 'Failed to generate file access URL' });
+    }
+  });
+
+  // Serve local files if S3 not configured
+  app.get('/api/files/local/:filename', (req, res) => {
+    if (isS3Configured) {
+      return res.status(400).json({ message: 'Local file access not available when S3 is configured' });
+    }
+    
+    const { filename } = req.params;
+    const filePath = path.join(uploadDir, filename);
+    
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+    
+    res.sendFile(filePath);
+  });
+
+  // S3 configuration status endpoint
+  app.get('/api/storage/status', (req, res) => {
+    res.json({
+      s3Configured: isS3Configured,
+      bucketName: process.env.AWS_S3_BUCKET_NAME || 'Not configured',
+      region: process.env.AWS_REGION || 'us-east-1',
+      storageType: isS3Configured ? 'Amazon S3' : 'Local Storage'
+    });
+  });
+
   registerTestRoutes(app);
 
   // Cart Abandonment tracking endpoints

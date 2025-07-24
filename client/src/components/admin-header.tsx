@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
-import { Shield, Database, Tags, LogOut, Users, Mail, Activity, MessageCircle, ShoppingCart } from "lucide-react";
+import { Shield, Database, Tags, LogOut, Users, Mail, Activity, MessageCircle, ShoppingCart, Cloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -88,6 +88,12 @@ export function AdminHeader() {
                 <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
                   <Activity className="h-4 w-4 mr-2" />
                   System Logs
+                </Button>
+              </Link>
+              <Link href="/admin/storage">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+                  <Cloud className="h-4 w-4 mr-2" />
+                  Storage
                 </Button>
               </Link>
               <Link href="/admin/whatsapp-test">

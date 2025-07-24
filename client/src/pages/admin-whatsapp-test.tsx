@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { AdminLayout } from "@/components/admin-layout";
 import { Loader2, MessageCircle, Send, CheckCircle, XCircle } from "lucide-react";
 
 export default function AdminWhatsAppTest() {
@@ -70,9 +71,10 @@ export default function AdminWhatsAppTest() {
   });
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Gupshup SMS Gateway Testing</h1>
+    <AdminLayout>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Gupshup SMS Gateway Testing</h1>
         <p className="text-muted-foreground">
           Test Gupshup SMS Gateway API and communication channels (Production Ready)
         </p>
@@ -290,6 +292,7 @@ export default function AdminWhatsAppTest() {
           </div>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }

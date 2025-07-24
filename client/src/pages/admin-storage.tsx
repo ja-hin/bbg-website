@@ -65,9 +65,20 @@ export default function AdminStorage() {
       });
     },
     onError: (error: any) => {
+      const errorData = error.response?.data || error;
+      let description = errorData.message || "Failed to update S3 configuration";
+      
+      if (errorData.troubleshooting) {
+        description += ` ${errorData.troubleshooting}`;
+      }
+      
+      if (errorData.awsErrorCode) {
+        description += ` (AWS Error: ${errorData.awsErrorCode})`;
+      }
+      
       toast({
-        title: "Configuration Failed",
-        description: error.message || "Failed to update S3 configuration",
+        title: "S3 Configuration Failed",
+        description,
         variant: "destructive",
       });
     },
@@ -358,6 +369,19 @@ export default function AdminStorage() {
               <Download className="h-4 w-4" />
               <AlertDescription>
                 <strong>Security Note:</strong> Keep your AWS credentials secure. Never share them publicly or commit them to version control.
+              </AlertDescription>
+            </Alert>
+
+            <Alert>
+              <Settings className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Common Issues:</strong>
+                <ul className="mt-2 space-y-1 text-sm">
+                  <li><strong>Forbidden/Access Denied:</strong> Your AWS user needs AmazonS3FullAccess policy</li>
+                  <li><strong>Bucket Not Found:</strong> Ensure bucket exists in the specified region</li>
+                  <li><strong>Invalid Credentials:</strong> Verify Access Key ID and Secret Access Key</li>
+                  <li><strong>Region Mismatch:</strong> Bucket and configuration must use same region</li>
+                </ul>
               </AlertDescription>
             </Alert>
           </CardContent>

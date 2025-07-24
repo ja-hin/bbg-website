@@ -3222,20 +3222,35 @@ Required: GUPSHUP_API_KEY environment variable
         console.error('S3 test connection error:', testError);
         
         let errorMessage = 'Failed to configure S3';
+        let troubleshooting = '';
+        
         if (testError.code === 'NoSuchBucket') {
-          errorMessage = 'Bucket not found. Please check the bucket name.';
+          errorMessage = 'Bucket not found. Please check the bucket name and region.';
+          troubleshooting = 'Ensure the bucket exists in the specified region and the name is correct.';
         } else if (testError.code === 'InvalidAccessKeyId') {
           errorMessage = 'Invalid Access Key ID. Please check your credentials.';
+          troubleshooting = 'Verify your Access Key ID in AWS IAM console.';
         } else if (testError.code === 'SignatureDoesNotMatch') {
           errorMessage = 'Invalid Secret Access Key. Please check your credentials.';
-        } else if (testError.code === 'AccessDenied') {
-          errorMessage = 'Access denied. Please check your bucket permissions.';
+          troubleshooting = 'Verify your Secret Access Key in AWS IAM console.';
+        } else if (testError.code === 'AccessDenied' || testError.code === 'Forbidden') {
+          errorMessage = 'Access denied to S3 bucket. Please check your IAM permissions.';
+          troubleshooting = 'Your AWS user needs AmazonS3FullAccess policy or at minimum: s3:ListBucket, s3:GetObject, s3:PutObject permissions for this bucket.';
+        } else if (testError.code === 'CredentialsError') {
+          errorMessage = 'AWS credentials error. Please check your Access Key and Secret Key.';
+          troubleshooting = 'Ensure your AWS credentials are valid and not expired.';
+        } else if (testError.code === 'NetworkingError') {
+          errorMessage = 'Network error connecting to AWS. Please try again.';
+          troubleshooting = 'Check your internet connection and AWS service status.';
         }
 
         res.status(500).json({ 
           success: false,
           message: errorMessage,
-          error: testError.message 
+          troubleshooting,
+          error: testError.message || testError.code,
+          awsErrorCode: testError.code,
+          statusCode: testError.statusCode
         });
       }
     } catch (error: any) {

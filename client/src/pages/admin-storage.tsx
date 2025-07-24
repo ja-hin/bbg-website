@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { AdminLayout } from "@/components/admin-layout";
 import { 
   Cloud, 
   HardDrive, 
@@ -18,21 +19,8 @@ import {
   FileText,
   Image,
   Download,
-  ExternalLink,
-  Shield,
-  Users,
-  Database,
-  Tags,
-  Mail,
-  Activity,
-  MessageCircle,
-  ShoppingCart,
-  LogOut,
-  Menu
+  ExternalLink
 } from "lucide-react";
-import { Link, useLocation } from "wouter";
-import { useMutation as useLogoutMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "@/hooks/useAuth";
 
 interface StorageStatus {
   s3Configured: boolean;
@@ -43,9 +31,6 @@ interface StorageStatus {
 
 export default function AdminStorage() {
   const { toast } = useToast();
-  const { user } = useAuth();
-  const [, setLocation] = useLocation();
-  const queryClient = useQueryClient();
   
   const [awsCredentials, setAwsCredentials] = useState({
     accessKeyId: '',
@@ -56,31 +41,6 @@ export default function AdminStorage() {
 
   const { data: storageStatus, refetch: refetchStatus } = useQuery<StorageStatus>({
     queryKey: ['/api/storage/status'],
-  });
-
-  // Logout mutation
-  const logoutMutation = useLogoutMutation({
-    mutationFn: async () => {
-      const result = await apiRequest("/api/admin/logout", { method: "POST" });
-      return result;
-    },
-    onSuccess: () => {
-      queryClient.clear();
-      toast({
-        title: "Logged Out",
-        description: "You have been successfully logged out"
-      });
-      setLocation("/admin/login");
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Logout Error",
-        description: error.message || "Failed to logout properly",
-        variant: "destructive"
-      });
-      queryClient.clear();
-      setLocation("/admin/login");
-    }
   });
 
   const configureMutation = useMutation({
@@ -118,112 +78,16 @@ export default function AdminStorage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg">
-        <div className="p-6">
-          <div className="flex items-center space-x-3">
-            <Shield className="h-8 w-8 text-blue-600" />
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">BBG Admin</h1>
-              <p className="text-sm text-gray-500">Welcome, {(user as any)?.username || 'Admin'}</p>
-            </div>
+    <AdminLayout>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Storage Management</h1>
+            <p className="text-gray-600">Configure file storage options for documents and images</p>
           </div>
         </div>
-        
-        <nav className="mt-6">
-          <div className="px-3">
-            <Link href="/admin/dashboard">
-              <Button variant="ghost" className="w-full justify-start mb-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                <Shield className="h-4 w-4 mr-3" />
-                Dashboard
-              </Button>
-            </Link>
-            
-            <Link href="/admin/distributors">
-              <Button variant="ghost" className="w-full justify-start mb-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                <Users className="h-4 w-4 mr-3" />
-                Distributors
-              </Button>
-            </Link>
-            
-            <Link href="/admin/cart-abandonments">
-              <Button variant="ghost" className="w-full justify-start mb-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                <ShoppingCart className="h-4 w-4 mr-3" />
-                Cart Tracking
-              </Button>
-            </Link>
-            
-            <Link href="/admin/templates">
-              <Button variant="ghost" className="w-full justify-start mb-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                <Mail className="h-4 w-4 mr-3" />
-                Templates
-              </Button>
-            </Link>
-            
-            <Link href="/admin/logs">
-              <Button variant="ghost" className="w-full justify-start mb-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                <Activity className="h-4 w-4 mr-3" />
-                System Logs
-              </Button>
-            </Link>
-            
-            <Link href="/admin/storage">
-              <Button variant="ghost" className="w-full justify-start mb-1 text-blue-600 bg-blue-50 hover:bg-blue-100">
-                <Cloud className="h-4 w-4 mr-3" />
-                Storage
-              </Button>
-            </Link>
-            
-            <Link href="/admin/whatsapp-test">
-              <Button variant="ghost" className="w-full justify-start mb-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                <MessageCircle className="h-4 w-4 mr-3" />
-                WhatsApp Test
-              </Button>
-            </Link>
-            
-            <Link href="/admin/masters">
-              <Button variant="ghost" className="w-full justify-start mb-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                <Database className="h-4 w-4 mr-3" />
-                Masters
-              </Button>
-            </Link>
-            
-            <Link href="/admin/brands">
-              <Button variant="ghost" className="w-full justify-start mb-1 text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                <Tags className="h-4 w-4 mr-3" />
-                Brands
-              </Button>
-            </Link>
-          </div>
-        </nav>
-        
-        <div className="absolute bottom-0 left-0 right-0 w-64 p-4 border-t">
-          <Button 
-            variant="outline" 
-            className="w-full"
-            onClick={() => logoutMutation.mutate()}
-            disabled={logoutMutation.isPending}
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            {logoutMutation.isPending ? "Logging out..." : "Logout"}
-          </Button>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Storage Management</h1>
-              <p className="text-gray-600">Configure file storage options for documents and images</p>
-            </div>
-          </div>
-          
-          <div className="space-y-6">
-            {/* Current Storage Status */}
-            <Card>
+        {/* Current Storage Status */}
+        <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Settings className="h-5 w-5" />
@@ -284,10 +148,10 @@ export default function AdminStorage() {
               </div>
             )}
           </CardContent>
-            </Card>
+        </Card>
 
-            {/* S3 Configuration */}
-            <Card>
+        {/* S3 Configuration */}
+        <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Cloud className="h-5 w-5" />
@@ -377,11 +241,11 @@ export default function AdminStorage() {
               </Button>
             </div>
           </CardContent>
-            </Card>
+        </Card>
 
-            {/* Storage Benefits */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
+        {/* Storage Benefits */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Cloud className="h-5 w-5 text-blue-600" />
@@ -418,9 +282,9 @@ export default function AdminStorage() {
                 </div>
               </div>
             </CardContent>
-              </Card>
+          </Card>
 
-              <Card>
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <HardDrive className="h-5 w-5 text-gray-600" />
@@ -457,11 +321,11 @@ export default function AdminStorage() {
                 </div>
               </div>
             </CardContent>
-              </Card>
-            </div>
+          </Card>
+        </div>
 
-            {/* Setup Instructions */}
-            <Card>
+        {/* Setup Instructions */}
+        <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <FileText className="h-5 w-5" />
@@ -488,11 +352,9 @@ export default function AdminStorage() {
                 <strong>Security Note:</strong> Keep your AWS credentials secure. Never share them publicly or commit them to version control.
               </AlertDescription>
             </Alert>
-            </CardContent>
-            </Card>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </AdminLayout>
   );
 }

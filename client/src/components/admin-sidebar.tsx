@@ -12,7 +12,8 @@ import {
   ShoppingCart,
   BarChart3,
   Settings,
-  Home
+  Home,
+  Cloud
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -87,6 +88,12 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       href: "/admin/logs",
       icon: Activity,
       active: location === "/admin/logs"
+    },
+    {
+      label: "Storage",
+      href: "/admin/storage",
+      icon: Cloud,
+      active: location === "/admin/storage"
     },
     {
       label: "WhatsApp Test",

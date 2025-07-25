@@ -6,53 +6,63 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, CheckCircle, Upload, Smartphone, Laptop } from "lucide-react";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { 
+  Calendar, 
+  CheckCircle, 
+  Upload, 
+  Smartphone, 
+  Laptop,
+  User,
+  Phone,
+  Mail,
+  MapPin,
+  Hash,
+  IndianRupee,
+  Info,
+  Building
+} from "lucide-react";
+import FileUpload from "@/components/file-upload";
 
 const acerRegistrationSchema = z.object({
+  // Device Details
   deviceType: z.enum(["mobile", "laptop"], {
-    required_error: "Please select a device type",
+    required_error: "Please select device type"
   }),
-  imeiSerial: z.string().min(1, "IMEI/Serial number is required"),
+  imeiSerial: z.string().min(5, "IMEI/Serial number must be at least 5 characters"),
   brand: z.string().min(1, "Brand is required"),
-  name: z.string().min(1, "Name is required"),
   model: z.string().min(1, "Model is required"),
-  email: z.string().email("Please enter a valid email address"),
-  phone: z.string().regex(/^[6-9]\d{9}$/, "Please enter a valid 10-digit Indian mobile number"),
   purchasePrice: z.string().min(1, "Purchase price is required"),
-  alternatePhone: z.string().optional(),
   purchaseDate: z.string().min(1, "Purchase date is required"),
-  addressLine1: z.string().min(1, "Address line 1 is required"),
+  // Customer Details  
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  phone: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
+  email: z.string().email("Invalid email address"),
+  alternatePhone: z.string().optional(),
+  // Address Details
+  addressLine1: z.string().min(5, "Address line 1 is required"),
   addressLine2: z.string().optional(),
-  invoice: z.any().optional(),
+  // File upload
+  invoiceFile: z.instanceof(File).optional(),
 });
 
 type AcerRegistrationData = z.infer<typeof acerRegistrationSchema>;
 
 export default function AcerBBG() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
   const { toast } = useToast();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    watch,
-    reset,
-  } = useForm<AcerRegistrationData>({
+  const form = useForm<AcerRegistrationData>({
     resolver: zodResolver(acerRegistrationSchema),
     defaultValues: {
       brand: "Acer",
     },
   });
 
-  const deviceType = watch("deviceType");
+  const deviceType = form.watch("deviceType");
 
   const registrationMutation = useMutation({
     mutationFn: async (data: AcerRegistrationData) => {
@@ -60,14 +70,14 @@ export default function AcerBBG() {
       
       // Add all form fields
       Object.entries(data).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
+        if (value !== undefined && value !== null && key !== 'invoiceFile') {
           formData.append(key, value);
         }
       });
 
       // Add file if selected
-      if (selectedFile) {
-        formData.append('invoice', selectedFile);
+      if (invoiceFile) {
+        formData.append('invoice', invoiceFile);
       }
 
       const response = await apiRequest("/api/acer-bbg/register", {
@@ -84,8 +94,8 @@ export default function AcerBBG() {
       });
       
       // Reset form
-      reset();
-      setSelectedFile(null);
+      form.reset();
+      setInvoiceFile(null);
       
       // Store success data in session storage for thank you page
       sessionStorage.setItem('acerRegistrationSuccess', JSON.stringify({
@@ -108,50 +118,13 @@ export default function AcerBBG() {
     },
   });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Check file size (2MB limit)
-      if (file.size > 2 * 1024 * 1024) {
-        toast({
-          title: "File Too Large",
-          description: "Please select a file smaller than 2MB",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // Check file type
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
-      if (!allowedTypes.includes(file.type)) {
-        toast({
-          title: "Invalid File Type",
-          description: "Please upload a JPEG, PNG, or PDF file",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      setSelectedFile(file);
-    }
-  };
-
   const onSubmit = (data: AcerRegistrationData) => {
-    if (!selectedFile) {
-      toast({
-        title: "Invoice Required",
-        description: "Please upload an invoice document",
-        variant: "destructive",
-      });
-      return;
-    }
-    
     registrationMutation.mutate(data);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
-      <div className="container mx-auto px-4 max-w-4xl">
+      <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
@@ -175,296 +148,356 @@ export default function AcerBBG() {
           <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
             <CardTitle className="text-2xl flex items-center">
               <CheckCircle className="h-6 w-6 mr-2" />
-              Device Registration Form
+              Acer Device Registration Form
             </CardTitle>
+            <CardDescription className="text-blue-100 mt-2">
+              Complete all sections to activate your BBG protection
+            </CardDescription>
           </CardHeader>
           <CardContent className="p-8">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              {/* Device Type */}
-              <div>
-                <Label htmlFor="deviceType" className="text-base font-semibold">
-                  Select Device *
-                </Label>
-                <Select onValueChange={(value) => setValue("deviceType", value as "mobile" | "laptop")}>
-                  <SelectTrigger className="mt-2">
-                    <SelectValue placeholder="Choose your device type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="mobile">
-                      <div className="flex items-center">
-                        <Smartphone className="h-4 w-4 mr-2" />
-                        Mobile
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                
+                {/* Device Details Section */}
+                <div className="space-y-4">
+                  <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
+                    <Smartphone className="h-4 w-4 mr-2" />
+                    Device Details
+                  </h3>
+                  
+                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
+                    <FormField
+                      control={form.control}
+                      name="deviceType"
+                      render={({ field }) => (
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
+                            <Smartphone className="h-4 w-4 mr-2" />
+                            Device Type *
+                          </FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select device type" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="mobile">
+                                <div className="flex items-center">
+                                  <Smartphone className="h-4 w-4 mr-2" />
+                                  Mobile
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="laptop">
+                                <div className="flex items-center">
+                                  <Laptop className="h-4 w-4 mr-2" />
+                                  Laptop
+                                </div>
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="brand"
+                      render={({ field }) => (
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
+                            <Building className="h-4 w-4 mr-2" />
+                            Brand *
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Brand" 
+                              {...field} 
+                              value="Acer"
+                              readOnly
+                              className="bg-gray-50"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="model"
+                      render={({ field }) => (
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
+                            <Hash className="h-4 w-4 mr-2" />
+                            Model *
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., Aspire 5, Predator Helios" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="purchasePrice"
+                      render={({ field }) => (
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
+                            <IndianRupee className="h-4 w-4 mr-2" />
+                            Purchase Price *
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter purchase amount" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="purchaseDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <Calendar className="h-4 w-4 mr-2" />
+                            Purchase Date *
+                          </FormLabel>
+                          <FormControl>
+                            <Input type="date" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="imeiSerial"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <Hash className="h-4 w-4 mr-2" />
+                            IMEI/Serial Number *
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter IMEI or Serial" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="invoiceFile"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <Upload className="h-4 w-4 mr-2" />
+                            Upload Tax Invoice
+                          </FormLabel>
+                          <FormControl>
+                            <FileUpload
+                              accept="image/*,.pdf"
+                              onFileChange={(file) => {
+                                setInvoiceFile(file);
+                                field.onChange(file);
+                              }}
+                              placeholder="Upload invoice"
+                              className="w-full"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
+                    <div className="flex items-start space-x-2">
+                      <Info className="h-3 w-3 text-blue-600 mt-0.5" />
+                      <div className="text-xs text-blue-800">
+                        <p className="font-medium">📱 Mobile: Dial *#06# to get IMEI | 💻 Laptop: Check sticker on bottom/back or System Info → Hardware</p>
                       </div>
-                    </SelectItem>
-                    <SelectItem value="laptop">
-                      <div className="flex items-center">
-                        <Laptop className="h-4 w-4 mr-2" />
-                        Laptop
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.deviceType && (
-                  <p className="text-red-500 text-sm mt-1">{errors.deviceType.message}</p>
-                )}
-              </div>
-
-              {/* Two Column Layout */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* IMEI/Serial Number */}
-                <div>
-                  <Label htmlFor="imeiSerial" className="text-base font-semibold">
-                    IMEI/Serial Number *
-                  </Label>
-                  <Input
-                    id="imeiSerial"
-                    {...register("imeiSerial")}
-                    placeholder={deviceType === "mobile" ? "Dial *#06# to find IMEI" : "Check system settings"}
-                    className="mt-2"
-                  />
-                  {errors.imeiSerial && (
-                    <p className="text-red-500 text-sm mt-1">{errors.imeiSerial.message}</p>
-                  )}
-                </div>
-
-                {/* Brand */}
-                <div>
-                  <Label htmlFor="brand" className="text-base font-semibold">
-                    Brand *
-                  </Label>
-                  <Input
-                    id="brand"
-                    {...register("brand")}
-                    value="Acer"
-                    readOnly
-                    className="mt-2 bg-gray-50"
-                  />
-                  {errors.brand && (
-                    <p className="text-red-500 text-sm mt-1">{errors.brand.message}</p>
-                  )}
-                </div>
-
-                {/* Name */}
-                <div>
-                  <Label htmlFor="name" className="text-base font-semibold">
-                    Name *
-                  </Label>
-                  <Input
-                    id="name"
-                    {...register("name")}
-                    placeholder="Enter your full name"
-                    className="mt-2"
-                  />
-                  {errors.name && (
-                    <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-                  )}
-                </div>
-
-                {/* Model */}
-                <div>
-                  <Label htmlFor="model" className="text-base font-semibold">
-                    Model *
-                  </Label>
-                  <Input
-                    id="model"
-                    {...register("model")}
-                    placeholder="e.g., Aspire 5, Predator Helios"
-                    className="mt-2"
-                  />
-                  {errors.model && (
-                    <p className="text-red-500 text-sm mt-1">{errors.model.message}</p>
-                  )}
-                </div>
-
-                {/* Email */}
-                <div>
-                  <Label htmlFor="email" className="text-base font-semibold">
-                    Email ID *
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    {...register("email")}
-                    placeholder="your.email@example.com"
-                    className="mt-2"
-                  />
-                  {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-                  )}
-                </div>
-
-                {/* Phone */}
-                <div>
-                  <Label htmlFor="phone" className="text-base font-semibold">
-                    Phone *
-                  </Label>
-                  <Input
-                    id="phone"
-                    {...register("phone")}
-                    placeholder="10-digit mobile number"
-                    className="mt-2"
-                  />
-                  {errors.phone && (
-                    <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
-                  )}
-                </div>
-
-                {/* Purchase Price */}
-                <div>
-                  <Label htmlFor="purchasePrice" className="text-base font-semibold">
-                    Purchase Price *
-                  </Label>
-                  <Input
-                    id="purchasePrice"
-                    {...register("purchasePrice")}
-                    placeholder="₹ Enter purchase amount"
-                    className="mt-2"
-                  />
-                  {errors.purchasePrice && (
-                    <p className="text-red-500 text-sm mt-1">{errors.purchasePrice.message}</p>
-                  )}
-                </div>
-
-                {/* Alternate Phone */}
-                <div>
-                  <Label htmlFor="alternatePhone" className="text-base font-semibold">
-                    Alternate Phone
-                  </Label>
-                  <Input
-                    id="alternatePhone"
-                    {...register("alternatePhone")}
-                    placeholder="Optional alternate number"
-                    className="mt-2"
-                  />
-                </div>
-              </div>
-
-              {/* Purchase Date */}
-              <div>
-                <Label htmlFor="purchaseDate" className="text-base font-semibold">
-                  Purchase Date *
-                </Label>
-                <Input
-                  id="purchaseDate"
-                  type="date"
-                  {...register("purchaseDate")}
-                  className="mt-2"
-                />
-                {errors.purchaseDate && (
-                  <p className="text-red-500 text-sm mt-1">{errors.purchaseDate.message}</p>
-                )}
-              </div>
-
-              {/* Address */}
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="addressLine1" className="text-base font-semibold">
-                    Address Line 1 *
-                  </Label>
-                  <Textarea
-                    id="addressLine1"
-                    {...register("addressLine1")}
-                    placeholder="Street address, house number, building name"
-                    className="mt-2"
-                    rows={2}
-                  />
-                  {errors.addressLine1 && (
-                    <p className="text-red-500 text-sm mt-1">{errors.addressLine1.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="addressLine2" className="text-base font-semibold">
-                    Address Line 2
-                  </Label>
-                  <Textarea
-                    id="addressLine2"
-                    {...register("addressLine2")}
-                    placeholder="Landmark, area, city, state, pincode (optional)"
-                    className="mt-2"
-                    rows={2}
-                  />
-                </div>
-              </div>
-
-              {/* Invoice Upload */}
-              <div>
-                <Label htmlFor="invoice" className="text-base font-semibold">
-                  Upload Invoice * (Max. Size 2 MB)
-                </Label>
-                <div className="mt-2 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
-                  <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <input
-                    type="file"
-                    onChange={handleFileChange}
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    className="hidden"
-                    id="invoice-upload"
-                  />
-                  <label htmlFor="invoice-upload" className="cursor-pointer">
-                    <span className="text-blue-600 font-semibold">Click to upload</span>
-                    <span className="text-gray-500"> or drag and drop</span>
-                  </label>
-                  <p className="text-sm text-gray-500 mt-2">
-                    PDF, PNG, JPG up to 2MB
-                  </p>
-                  {selectedFile && (
-                    <div className="mt-4 p-3 bg-green-50 rounded-lg">
-                      <p className="text-green-700 font-medium">
-                        ✓ {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
-                      </p>
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
 
-              {/* Submit Button */}
-              <div className="pt-6 border-t">
-                <Button
-                  type="submit"
-                  disabled={registrationMutation.isPending}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-4 text-lg"
-                >
-                  {registrationMutation.isPending ? (
-                    "Registering..."
-                  ) : (
-                    "Register for Acer BBG"
-                  )}
-                </Button>
-              </div>
-            </form>
+                {/* Customer Details Section */}
+                <div className="space-y-4">
+                  <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
+                    <User className="h-4 w-4 mr-2" />
+                    Customer Details
+                  </h3>
+                  
+                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
+                            <User className="h-4 w-4 mr-2" />
+                            Customer Name *
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter your full name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
+                            <Phone className="h-4 w-4 mr-2" />
+                            Contact Number *
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter 10-digit mobile number" 
+                              maxLength={10}
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
+                            <Mail className="h-4 w-4 mr-2" />
+                            Email ID *
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter your email address" type="email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="alternatePhone"
+                      render={({ field }) => (
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
+                            <Phone className="h-4 w-4 mr-2" />
+                            Alternate Phone
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Alternate contact (optional)" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* Address Details Section */}
+                <div className="space-y-4">
+                  <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    Address Details
+                  </h3>
+                  
+                  <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="addressLine1"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <MapPin className="h-4 w-4 mr-2" />
+                            Address Line 1 *
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter your address" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="addressLine2"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <MapPin className="h-4 w-4 mr-2" />
+                            Address Line 2
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Apartment, suite, etc. (optional)" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex justify-center pt-6">
+                  <Button 
+                    type="submit" 
+                    size="lg" 
+                    disabled={registrationMutation.isPending}
+                    className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg shadow-lg transform transition hover:scale-105"
+                  >
+                    {registrationMutation.isPending ? (
+                      <>
+                        <Upload className="h-5 w-5 mr-2 animate-spin" />
+                        Registering...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="h-5 w-5 mr-2" />
+                        Register Acer Device
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </CardContent>
         </Card>
 
-        {/* BBG Benefits */}
-        <Card className="mt-8 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-xl text-center">
-              Why Choose Acer BBG?
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-              <div>
-                <div className="bg-blue-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <CheckCircle className="h-8 w-8 text-blue-600" />
-                </div>
-                <h3 className="font-semibold mb-2">Up to 70% Value Back</h3>
-                <p className="text-gray-600 text-sm">Get maximum return on your device investment</p>
+        {/* BBG Benefits Card */}
+        <Card className="shadow-lg mt-8">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center">Your Acer BBG Benefits</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="text-2xl font-bold text-green-600 mb-1">Up to 70%</div>
+                <div className="text-sm text-green-700">Maximum buyback value</div>
               </div>
-              <div>
-                <div className="bg-green-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <Calendar className="h-8 w-8 text-green-600" />
-                </div>
-                <h3 className="font-semibold mb-2">5 Year Coverage</h3>
-                <p className="text-gray-600 text-sm">Long-term protection for your device</p>
+              <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="text-2xl font-bold text-blue-600 mb-1">60 Months</div>
+                <div className="text-sm text-blue-700">Coverage period</div>
               </div>
-              <div>
-                <div className="bg-purple-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <Smartphone className="h-8 w-8 text-purple-600" />
-                </div>
-                <h3 className="font-semibold mb-2">Easy Process</h3>
-                <p className="text-gray-600 text-sm">Simple registration and claim process</p>
+              <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <div className="text-2xl font-bold text-purple-600 mb-1">Free</div>
+                <div className="text-sm text-purple-700">Home pickup service</div>
               </div>
             </div>
           </CardContent>

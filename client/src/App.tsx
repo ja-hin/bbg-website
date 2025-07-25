@@ -12,6 +12,8 @@ import DistributorRegistration from "@/pages/distributor-registration";
 import CustomerRegistration from "@/pages/customer-registration";
 import ClaimBBG from "@/pages/claim-bbg";
 import ThankYou from "@/pages/thank-you";
+import AcerBBG from "@/pages/acer-bbg";
+import AcerThankYou from "@/pages/acer-thank-you";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminDashboardNew from "@/pages/admin-dashboard-new";
@@ -24,6 +26,7 @@ import AdminLogs from "@/pages/admin-logs";
 import AdminWhatsAppTest from "@/pages/admin-whatsapp-test";
 import AdminCartAbandonments from "@/pages/admin-cart-abandonments";
 import AdminStorage from "@/pages/admin-storage";
+import AdminAcerRegistrations from "@/pages/admin-acer-registrations";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import { useAuth } from "@/hooks/useAuth";
@@ -64,6 +67,7 @@ function Router() {
           <AdminCartAbandonments />
         </Suspense>
       </Route>
+      <Route path="/admin/acer-registrations" component={AdminAcerRegistrations} />
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />
@@ -80,6 +84,8 @@ function Router() {
               <Route path="/customer-registration" component={CustomerRegistration} />
               <Route path="/claim-bbg" component={ClaimBBG} />
               <Route path="/thank-you" component={ThankYou} />
+              <Route path="/acer" component={AcerBBG} />
+              <Route path="/acer-thank-you" component={AcerThankYou} />
               <Route component={NotFound} />
             </Switch>
           </main>

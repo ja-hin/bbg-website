@@ -100,6 +100,79 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Acer BBG Section */}
+      <section className="py-12 sm:py-16 bg-gradient-to-r from-blue-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="flex items-center justify-center mb-4">
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Acer_2011.svg/1200px-Acer_2011.svg.png" 
+                alt="Acer Logo" 
+                className="h-8 sm:h-12 mr-4"
+              />
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
+                Acer Device Protection
+              </h2>
+            </div>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Special BBG registration for Acer users. Register your Acer devices and get the same amazing protection with up to 70% buyback value.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-xl p-6 sm:p-8 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div>
+                <h3 className="text-xl sm:text-2xl font-bold mb-4 text-gray-900">
+                  Register Your Acer Device
+                </h3>
+                <ul className="space-y-3 text-gray-600 mb-6">
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                    Easy registration process for Acer devices
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                    Same 70% maximum buyback guarantee
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                    5-year coverage period for all Acer products
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                    Direct admin panel integration
+                  </li>
+                </ul>
+                <Link href="/acer">
+                  <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg font-semibold">
+                    Register Acer Device <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </div>
+              <div className="flex justify-center">
+                <div className="relative">
+                  <div className="w-48 h-48 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center shadow-lg">
+                    <div className="text-center">
+                      <Laptop className="h-16 w-16 text-blue-600 mx-auto mb-2" />
+                      <Smartphone className="h-12 w-12 text-purple-600 mx-auto" />
+                    </div>
+                  </div>
+                  <div className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full p-2">
+                    <Shield className="h-6 w-6" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-8">
+            <p className="text-sm text-gray-500">
+              * Acer BBG registrations are processed separately and managed directly in the admin panel
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

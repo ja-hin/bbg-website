@@ -3331,6 +3331,176 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // Acer BBG Registration endpoints
+  app.post('/api/acer-bbg/register', upload.single('invoice'), async (req, res) => {
+    try {
+      console.log('Acer BBG registration request received:', req.body);
+      
+      const {
+        deviceType,
+        imeiSerial,
+        brand,
+        name,
+        model,
+        email,
+        phone,
+        purchasePrice,
+        alternatePhone,
+        purchaseDate,
+        addressLine1,
+        addressLine2
+      } = req.body;
+
+      // Validate required fields
+      if (!deviceType || !imeiSerial || !brand || !name || !model || !email || !phone || !purchasePrice || !purchaseDate || !addressLine1) {
+        return res.status(400).json({
+          success: false,
+          message: "All required fields must be provided"
+        });
+      }
+
+      // Validate phone number format
+      const phoneRegex = /^[6-9]\d{9}$/;
+      if (!phoneRegex.test(phone)) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide a valid 10-digit Indian mobile number"
+        });
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide a valid email address"
+        });
+      }
+
+      // Generate unique registration ID
+      const registrationId = 'ACR' + Date.now().toString().slice(-8) + Math.random().toString(36).substr(2, 3).toUpperCase();
+
+      // Handle file upload path
+      let invoiceFilePath = null;
+      if (req.file) {
+        if (isS3Configured) {
+          invoiceFilePath = req.file.location || req.file.key;
+        } else {
+          invoiceFilePath = req.file.filename;
+        }
+      }
+
+      // Create Acer BBG registration table if it doesn't exist
+      await pool.request().query(`
+        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='acer_bbg_registrations' AND xtype='U')
+        CREATE TABLE acer_bbg_registrations (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          registration_id NVARCHAR(50) UNIQUE NOT NULL,
+          device_type NVARCHAR(20) NOT NULL,
+          imei_serial NVARCHAR(100) NOT NULL,
+          brand NVARCHAR(50) NOT NULL,
+          name NVARCHAR(100) NOT NULL,
+          model NVARCHAR(100) NOT NULL,
+          email NVARCHAR(100) NOT NULL,
+          phone NVARCHAR(15) NOT NULL,
+          purchase_price NVARCHAR(20) NOT NULL,
+          alternate_phone NVARCHAR(15) NULL,
+          purchase_date DATE NOT NULL,
+          address_line1 NVARCHAR(200) NOT NULL,
+          address_line2 NVARCHAR(200) NULL,
+          invoice_file_path NVARCHAR(500) NULL,
+          status NVARCHAR(20) DEFAULT 'registered',
+          created_at DATETIME DEFAULT GETDATE(),
+          updated_at DATETIME DEFAULT GETDATE()
+        )
+      `);
+
+      // Insert registration data
+      const result = await pool.request()
+        .input('registrationId', sql.NVarChar, registrationId)
+        .input('deviceType', sql.NVarChar, deviceType)
+        .input('imeiSerial', sql.NVarChar, imeiSerial)
+        .input('brand', sql.NVarChar, brand)
+        .input('name', sql.NVarChar, name)
+        .input('model', sql.NVarChar, model)
+        .input('email', sql.NVarChar, email)
+        .input('phone', sql.NVarChar, phone)
+        .input('purchasePrice', sql.NVarChar, purchasePrice)
+        .input('alternatePhone', sql.NVarChar, alternatePhone || null)
+        .input('purchaseDate', sql.Date, new Date(purchaseDate))
+        .input('addressLine1', sql.NVarChar, addressLine1)
+        .input('addressLine2', sql.NVarChar, addressLine2 || null)
+        .input('invoiceFilePath', sql.NVarChar, invoiceFilePath)
+        .query(`
+          INSERT INTO acer_bbg_registrations (
+            registration_id, device_type, imei_serial, brand, name, model, 
+            email, phone, purchase_price, alternate_phone, purchase_date, 
+            address_line1, address_line2, invoice_file_path
+          ) VALUES (
+            @registrationId, @deviceType, @imeiSerial, @brand, @name, @model,
+            @email, @phone, @purchasePrice, @alternatePhone, @purchaseDate,
+            @addressLine1, @addressLine2, @invoiceFilePath
+          )
+        `);
+
+      console.log('Acer BBG registration created successfully:', registrationId);
+
+      // Send welcome notification
+      try {
+        await communicationService.sendWelcomeMessage({
+          name,
+          email,
+          phone,
+          voucherCode: registrationId,
+          deviceType,
+          brand,
+          model
+        });
+      } catch (notificationError) {
+        console.error('Failed to send welcome notification:', notificationError);
+        // Don't fail the registration if notification fails
+      }
+
+      res.json({
+        success: true,
+        message: "Acer BBG registration completed successfully",
+        registrationId,
+        name,
+        deviceType,
+        brand,
+        model
+      });
+
+    } catch (error) {
+      console.error('Acer BBG registration error:', error);
+      res.status(500).json({
+        success: false,
+        message: "Registration failed. Please try again.",
+        error: error.message
+      });
+    }
+  });
+
+  // Get all Acer BBG registrations for admin
+  app.get('/api/admin/acer-registrations', isAdminAuthenticated, async (req, res) => {
+    try {
+      const result = await pool.request().query(`
+        SELECT 
+          id, registration_id, device_type, imei_serial, brand, name, model,
+          email, phone, purchase_price, alternate_phone, purchase_date,
+          address_line1, address_line2, invoice_file_path, status,
+          created_at, updated_at
+        FROM acer_bbg_registrations 
+        ORDER BY created_at DESC
+      `);
+      
+      res.json(result.recordset);
+    } catch (error) {
+      console.error('Error fetching Acer registrations:', error);
+      res.status(500).json({ message: 'Failed to fetch Acer registrations' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 

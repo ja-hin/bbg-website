@@ -78,6 +78,12 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       active: location === "/admin/cart-abandonments"
     },
     {
+      label: "Acer Registrations",
+      href: "/admin/acer-registrations",
+      icon: Laptop,
+      active: location === "/admin/acer-registrations"
+    },
+    {
       label: "Communication",
       href: "/admin/templates",
       icon: Mail,

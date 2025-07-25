@@ -135,16 +135,9 @@ export default function AcerBBG() {
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Acer_2011.svg/1200px-Acer_2011.svg.png" 
-              alt="Acer Logo" 
-              className="h-12 mr-4"
-            />
-            <h1 className="text-4xl font-bold text-gray-900">
-              Acer BBG Registration
-            </h1>
-          </div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Acer BBG Registration
+          </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Register your Acer device for Buy Back Guarantee protection. 
             Get up to 70% of your device value back after 6 months!

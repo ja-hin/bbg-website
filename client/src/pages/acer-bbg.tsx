@@ -26,6 +26,7 @@ import {
   Building
 } from "lucide-react";
 import FileUpload from "@/components/file-upload";
+import { ValidatedField } from "@/components/validated-field";
 
 const acerRegistrationSchema = z.object({
   // Device Details
@@ -241,7 +242,13 @@ export default function AcerBBG() {
                             Model *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g., Aspire 5, Predator Helios" {...field} />
+                            <ValidatedField
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                              placeholder="e.g., Aspire 5, Predator Helios"
+                              validationType="model"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -258,7 +265,14 @@ export default function AcerBBG() {
                             Purchase Price *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter purchase amount" {...field} />
+                            <ValidatedField
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                              placeholder="Enter purchase amount"
+                              validationType="price"
+                              type="number"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -294,7 +308,14 @@ export default function AcerBBG() {
                             IMEI/Serial Number *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter IMEI or Serial" {...field} />
+                            <ValidatedField
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                              placeholder="Enter IMEI or Serial"
+                              validationType="imei"
+                              customValidation="imeiExists"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -355,7 +376,13 @@ export default function AcerBBG() {
                             Customer Name *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter your full name" {...field} />
+                            <ValidatedField
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                              placeholder="Enter your full name"
+                              validationType="name"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -372,10 +399,14 @@ export default function AcerBBG() {
                             Contact Number *
                           </FormLabel>
                           <FormControl>
-                            <Input 
-                              placeholder="Enter 10-digit mobile number" 
-                              maxLength={10}
-                              {...field} 
+                            <ValidatedField
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                              placeholder="Enter 10-digit mobile number"
+                              validationType="phone"
+                              customValidation="phoneExists"
+                              type="tel"
                             />
                           </FormControl>
                           <FormMessage />
@@ -393,7 +424,15 @@ export default function AcerBBG() {
                             Email ID *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter your email address" type="email" {...field} />
+                            <ValidatedField
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                              placeholder="Enter your email address"
+                              validationType="email"
+                              customValidation="emailExists"
+                              type="email"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -437,7 +476,13 @@ export default function AcerBBG() {
                             Address Line 1 *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter your address" {...field} />
+                            <ValidatedField
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                              placeholder="Enter your address"
+                              validationType="address"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

@@ -83,30 +83,11 @@ export default function ClaimBBG() {
     onError: (error: any) => {
       // Clear any previous claim details
       setClaimDetails(null);
-      
-      try {
-        // Parse the JSON from the error message (format: "400: {json}")
-        const errorMessage = error.message || "";
-        const jsonStart = errorMessage.indexOf("{");
-        if (jsonStart !== -1) {
-          const jsonPart = errorMessage.substring(jsonStart);
-          const errorData = JSON.parse(jsonPart);
-          
-          // Check if this is an eligibility error
-          if (errorData.eligible === false) {
-            setEligibilityError(errorData);
-            return;
-          }
-        }
-      } catch (parseError) {
-        // If JSON parsing fails, fall through to default error handling
-      }
-      
-      // Default error handling for other types of errors
       setEligibilityError(null);
+      
       toast({
-        title: "Failed to Check Claim",
-        description: error.message,
+        title: "Invalid BBG Voucher Code",
+        description: error.message || "Please check your voucher code and try again.",
         variant: "destructive",
       });
     }

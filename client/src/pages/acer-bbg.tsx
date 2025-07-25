@@ -90,7 +90,19 @@ export default function AcerBBG() {
 
       if (!response.ok) {
         const text = await response.text();
-        throw new Error(`${response.status}: ${text}`);
+        
+        // Try to extract clean error message from JSON response
+        try {
+          const errorData = JSON.parse(text);
+          if (errorData.message) {
+            throw new Error(errorData.message);
+          }
+        } catch (parseError) {
+          // If not JSON or no message field, use the raw text
+        }
+        
+        // Fallback to status text or raw response
+        throw new Error(text || response.statusText || 'Registration failed');
       }
 
       return await response.json();

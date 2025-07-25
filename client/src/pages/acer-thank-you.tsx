@@ -1,10 +1,21 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { CheckCircle, Download, Home, Calendar, Smartphone, Laptop } from "lucide-react";
 import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { 
+  CheckCircle, 
+  Smartphone, 
+  Laptop, 
+  ArrowRight, 
+  Download,
+  Mail,
+  MessageSquare,
+  Phone,
+  Home
+} from "lucide-react";
 
-interface RegistrationData {
+interface AcerRegistrationData {
   registrationId: string;
   name: string;
   deviceType: string;
@@ -13,57 +24,42 @@ interface RegistrationData {
 }
 
 export default function AcerThankYou() {
-  const [registrationData, setRegistrationData] = useState<RegistrationData | null>(null);
+  const [registrationData, setRegistrationData] = useState<AcerRegistrationData | null>(null);
 
   useEffect(() => {
+    // Get registration data from session storage
     const data = sessionStorage.getItem('acerRegistrationSuccess');
     if (data) {
-      setRegistrationData(JSON.parse(data));
-      // Clear the data after use
-      sessionStorage.removeItem('acerRegistrationSuccess');
+      try {
+        const parsedData = JSON.parse(data);
+        setRegistrationData(parsedData);
+        // Clear session storage after retrieving
+        sessionStorage.removeItem('acerRegistrationSuccess');
+      } catch (error) {
+        console.error('Error parsing registration data:', error);
+      }
     }
   }, []);
 
-  const handleDownloadReceipt = () => {
-    if (!registrationData) return;
-    
-    // Create a simple receipt
-    const receiptContent = `
-ACER BBG REGISTRATION RECEIPT
-=============================
+  const getDeviceIcon = () => {
+    if (registrationData?.deviceType === 'mobile') {
+      return <Smartphone className="h-12 w-12 text-blue-600" />;
+    }
+    return <Laptop className="h-12 w-12 text-purple-600" />;
+  };
 
-Registration ID: ${registrationData.registrationId}
-Name: ${registrationData.name}
-Device Type: ${registrationData.deviceType.charAt(0).toUpperCase() + registrationData.deviceType.slice(1)}
-Brand: ${registrationData.brand}
-Model: ${registrationData.model}
-Registration Date: ${new Date().toLocaleDateString()}
-
-Thank you for registering with Acer BBG!
-Your device is now protected under our Buy Back Guarantee program.
-
-For support, contact: support@xtracover.com
-    `;
-
-    const blob = new Blob([receiptContent], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `acer-bbg-receipt-${registrationData.registrationId}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+  const getDevicePrice = () => {
+    return registrationData?.deviceType === 'mobile' ? '₹99' : '₹125';
   };
 
   if (!registrationData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <Card className="max-w-md">
+        <Card className="max-w-md mx-auto">
           <CardContent className="text-center p-8">
-            <p className="text-gray-600">No registration data found. Please complete a registration first.</p>
+            <p className="text-gray-600 mb-4">No registration data found.</p>
             <Link href="/acer">
-              <Button className="mt-4">Go to Registration</Button>
+              <Button>Register Your Acer Device</Button>
             </Link>
           </CardContent>
         </Card>
@@ -72,149 +68,185 @@ For support, contact: support@xtracover.com
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
-      <div className="container mx-auto px-4 max-w-3xl">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Success Header */}
         <div className="text-center mb-8">
-          <div className="bg-green-100 rounded-full p-6 w-24 h-24 mx-auto mb-6 flex items-center justify-center">
-            <CheckCircle className="h-12 w-12 text-green-600" />
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mr-4">
+              <CheckCircle className="h-12 w-12 text-green-600" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900">Registration Successful!</h1>
+              <p className="text-lg text-gray-600 mt-2">Your Acer BBG registration is complete</p>
+            </div>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Registration Successful!
-          </h1>
-          <p className="text-lg text-gray-600">
-            Your Acer device has been successfully registered for BBG protection.
-          </p>
         </div>
 
-        {/* Registration Details */}
+        {/* Registration Details Card */}
         <Card className="shadow-xl mb-8">
-          <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 text-white">
-            <CardTitle className="text-2xl flex items-center">
-              {registrationData.deviceType === 'mobile' ? (
-                <Smartphone className="h-6 w-6 mr-2" />
-              ) : (
-                <Laptop className="h-6 w-6 mr-2" />
-              )}
-              Registration Details
+          <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+            <CardTitle className="text-2xl flex items-center justify-center">
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Acer_2011.svg/1200px-Acer_2011.svg.png" 
+                alt="Acer Logo" 
+                className="h-8 mr-3"
+              />
+              Acer BBG Protection Activated
             </CardTitle>
           </CardHeader>
           <CardContent className="p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="font-semibold text-gray-700 mb-2">Registration ID</h3>
-                <p className="text-xl font-mono bg-gray-100 p-3 rounded border">
-                  {registrationData.registrationId}
-                </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Registration Info */}
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-xl font-semibold mb-4 text-gray-900">Registration Details</h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="font-medium text-gray-700">Registration ID:</span>
+                      <Badge variant="outline" className="font-mono text-sm px-3 py-1">
+                        {registrationData.registrationId}
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="font-medium text-gray-700">Customer Name:</span>
+                      <span className="font-semibold">{registrationData.name}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="font-medium text-gray-700">Device:</span>
+                      <div className="flex items-center">
+                        {getDeviceIcon()}
+                        <span className="ml-2 font-semibold">
+                          {registrationData.brand} {registrationData.model}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t pt-6">
+                  <h3 className="text-lg font-semibold mb-3 text-gray-900">What's Next?</h3>
+                  <ul className="space-y-2 text-gray-600">
+                    <li className="flex items-center">
+                      <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                      Keep your registration ID safe for future reference
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                      You'll receive confirmation via email and SMS
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                      Your BBG coverage starts immediately
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                      Claim your BBG after 6 months of purchase
+                    </li>
+                  </ul>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-gray-700 mb-2">Registration Date</h3>
-                <p className="text-lg text-gray-900">
-                  {new Date().toLocaleDateString('en-IN', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
-                </p>
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-700 mb-2">Customer Name</h3>
-                <p className="text-lg text-gray-900">{registrationData.name}</p>
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-700 mb-2">Device Details</h3>
-                <p className="text-lg text-gray-900">
-                  {registrationData.brand} {registrationData.model}
-                </p>
-                <p className="text-sm text-gray-600 capitalize">
-                  {registrationData.deviceType}
-                </p>
+
+              {/* BBG Benefits */}
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-xl font-semibold mb-4 text-gray-900">Your BBG Benefits</h3>
+                  <div className="space-y-4">
+                    <div className="p-4 border-2 border-green-200 rounded-lg bg-green-50">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-green-600 mb-1">Up to 70%</div>
+                        <div className="text-sm text-green-700">Maximum buyback value</div>
+                      </div>
+                    </div>
+                    <div className="p-4 border-2 border-blue-200 rounded-lg bg-blue-50">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-blue-600 mb-1">60 Months</div>
+                        <div className="text-sm text-blue-700">Coverage period</div>
+                      </div>
+                    </div>
+                    <div className="p-4 border-2 border-purple-200 rounded-lg bg-purple-50">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-purple-600 mb-1">Free</div>
+                        <div className="text-sm text-purple-700">Pickup service</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t pt-6">
+                  <h3 className="text-lg font-semibold mb-3 text-gray-900">Contact Support</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center text-gray-600">
+                      <Mail className="h-4 w-4 mr-2" />
+                      <span>support@xtracover.com</span>
+                    </div>
+                    <div className="flex items-center text-gray-600">
+                      <Phone className="h-4 w-4 mr-2" />
+                      <span>+91-9953410422</span>
+                    </div>
+                    <div className="flex items-center text-gray-600">
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      <span>WhatsApp support available</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="mt-8 p-6 bg-blue-50 rounded-lg">
-              <h3 className="font-semibold text-blue-900 mb-3 flex items-center">
-                <Calendar className="h-5 w-5 mr-2" />
-                Important Information
-              </h3>
-              <ul className="space-y-2 text-blue-800">
-                <li>• Your device is now covered under Acer BBG for up to 5 years</li>
-                <li>• Claims can be made after 6 months from registration date</li>
-                <li>• Keep your registration ID safe for future reference</li>
-                <li>• You'll receive email confirmation within 24 hours</li>
-              </ul>
+            {/* Action Buttons */}
+            <div className="border-t pt-8 mt-8">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link href="/">
+                  <Button variant="outline" className="w-full sm:w-auto">
+                    <Home className="h-4 w-4 mr-2" />
+                    Back to Home
+                  </Button>
+                </Link>
+                <Link href="/claim-bbg">
+                  <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+                    <ArrowRight className="h-4 w-4 mr-2" />
+                    Claim BBG (After 6 months)
+                  </Button>
+                </Link>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* BBG Claim Value Structure */}
-        <Card className="shadow-xl mb-8">
+        {/* Important Notes */}
+        <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="text-xl">BBG Claim Value Structure</CardTitle>
+            <CardTitle className="text-lg">Important Information</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-gray-300">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="border border-gray-300 px-4 py-2 text-left">Age of Device</th>
-                    <th className="border border-gray-300 px-4 py-2 text-left">Claim Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="border border-gray-300 px-4 py-2">6-12 months</td>
-                    <td className="border border-gray-300 px-4 py-2 font-semibold text-green-600">70%</td>
-                  </tr>
-                  <tr className="bg-gray-50">
-                    <td className="border border-gray-300 px-4 py-2">13-18 months</td>
-                    <td className="border border-gray-300 px-4 py-2 font-semibold text-green-600">60%</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-gray-300 px-4 py-2">19-24 months</td>
-                    <td className="border border-gray-300 px-4 py-2 font-semibold text-blue-600">50%</td>
-                  </tr>
-                  <tr className="bg-gray-50">
-                    <td className="border border-gray-300 px-4 py-2">25-36 months</td>
-                    <td className="border border-gray-300 px-4 py-2 font-semibold text-blue-600">40%</td>
-                  </tr>
-                  <tr>
-                    <td className="border border-gray-300 px-4 py-2">37-48 months</td>
-                    <td className="border border-gray-300 px-4 py-2 font-semibold text-orange-600">30%</td>
-                  </tr>
-                  <tr className="bg-gray-50">
-                    <td className="border border-gray-300 px-4 py-2">49-60 months</td>
-                    <td className="border border-gray-300 px-4 py-2 font-semibold text-orange-600">25%</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-600">
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Claim Eligibility</h4>
+                <ul className="space-y-1">
+                  <li>• Minimum 6 months from purchase date</li>
+                  <li>• Device must be in working condition</li>
+                  <li>• Original purchase invoice required</li>
+                  <li>• No physical damage or water damage</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">BBG Process</h4>
+                <ul className="space-y-1">
+                  <li>• Submit claim online with registration ID</li>
+                  <li>• Free home pickup within 24-48 hours</li>
+                  <li>• Device evaluation within 7 business days</li>
+                  <li>• Payment within 7 days of approval</li>
+                </ul>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Action Buttons */}
-        <div className="text-center space-y-4">
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              onClick={handleDownloadReceipt}
-              className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Download Receipt
-            </Button>
-            <Link href="/">
-              <Button variant="outline" className="flex items-center justify-center w-full sm:w-auto">
-                <Home className="h-4 w-4 mr-2" />
-                Back to Home
-              </Button>
-            </Link>
-          </div>
-          
-          <p className="text-sm text-gray-600 mt-6">
-            Need help? Contact us at{" "}
-            <a href="mailto:support@xtracover.com" className="text-blue-600 hover:underline">
-              support@xtracover.com
-            </a>
+        {/* Footer Note */}
+        <div className="text-center mt-8">
+          <p className="text-sm text-gray-500">
+            Thank you for choosing Xtracover BBG protection for your Acer device. 
+            Save your registration ID for future reference.
           </p>
         </div>
       </div>

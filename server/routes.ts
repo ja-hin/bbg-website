@@ -3334,7 +3334,10 @@ Required: GUPSHUP_API_KEY environment variable
   // Acer BBG Registration endpoints
   app.post('/api/acer-bbg/register', upload.single('invoice'), async (req, res) => {
     try {
-      console.log('Acer BBG registration request received:', req.body);
+      console.log('Acer BBG registration request received:');
+      console.log('Body:', req.body);
+      console.log('File:', req.file);
+      console.log('Headers:', req.headers);
       
       const {
         deviceType,
@@ -3390,7 +3393,22 @@ Required: GUPSHUP_API_KEY environment variable
         }
       }
 
-      // Create Acer BBG registration table if it doesn't exist
+      // Create Acer BBG registration table if it doesn't exist using existing connection
+      const dbConfig = {
+        server: process.env.SQL_SERVER_HOST || '103.205.66.184',
+        port: parseInt(process.env.SQL_SERVER_PORT || '2499'),
+        database: process.env.SQL_SERVER_DATABASE || 'prexoDB',
+        user: process.env.SQL_SERVER_USER || 'prexo',
+        password: process.env.SQL_SERVER_PASSWORD || 'Prexo@123',
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+      };
+      
+      const pool = new sql.ConnectionPool(dbConfig);
+      await pool.connect();
+      
       await pool.request().query(`
         IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='acer_bbg_registrations' AND xtype='U')
         CREATE TABLE acer_bbg_registrations (
@@ -3484,6 +3502,22 @@ Required: GUPSHUP_API_KEY environment variable
   // Get all Acer BBG registrations for admin
   app.get('/api/admin/acer-registrations', isAdminAuthenticated, async (req, res) => {
     try {
+      // Database configuration
+      const dbConfig = {
+        server: process.env.SQL_SERVER_HOST || '103.205.66.184',
+        port: parseInt(process.env.SQL_SERVER_PORT || '2499'),
+        database: process.env.SQL_SERVER_DATABASE || 'prexoDB',
+        user: process.env.SQL_SERVER_USER || 'prexo',
+        password: process.env.SQL_SERVER_PASSWORD || 'Prexo@123',
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+      };
+      
+      const pool = new sql.ConnectionPool(dbConfig);
+      await pool.connect();
+      
       const result = await pool.request().query(`
         SELECT 
           id, registration_id, device_type, imei_serial, brand, name, model,

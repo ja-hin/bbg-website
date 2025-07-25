@@ -54,7 +54,7 @@ export function ValidationBubble({
       baseClasses,
       positionClasses[position],
       typeClasses[type],
-      "animate-in fade-in-0 zoom-in-95",
+      show ? "animate-in fade-in-0 zoom-in-95 scale-100 opacity-100" : "animate-out fade-out-0 zoom-out-95 scale-95 opacity-0",
       className
     )}>
       <div className="flex items-center space-x-2">

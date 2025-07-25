@@ -39,18 +39,18 @@ export const ValidatedField = forwardRef<HTMLInputElement, ValidatedFieldProps>(
 
     const {
       validation,
+      handleFocus,
+      handleBlur,
       isValidating,
       isValid,
       isInvalid,
-      hasMessage
+      showBubble
     } = useRealtimeValidation(value, {
       schema,
       customValidation: customValidator,
       debounceMs: 300,
       validateOnChange: true
     });
-
-    const showBubble = hasMessage && value && value.toString().trim() !== '';
 
     const getBubbleType = () => {
       if (isValidating) return "loading";
@@ -79,7 +79,11 @@ export const ValidatedField = forwardRef<HTMLInputElement, ValidatedFieldProps>(
             type={type}
             value={value || ""}
             onChange={(e) => onChange(e.target.value)}
-            onBlur={onBlur}
+            onFocus={handleFocus}
+            onBlur={(e) => {
+              handleBlur();
+              if (onBlur) onBlur();
+            }}
             placeholder={placeholder}
             className={fieldClasses}
             disabled={disabled}

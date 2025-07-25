@@ -5,6 +5,8 @@ interface ValidationState {
   status: "idle" | "validating" | "valid" | "invalid";
   message: string;
   isValid: boolean;
+  showBubble: boolean;
+  isFocused: boolean;
 }
 
 interface UseRealtimeValidationOptions {
@@ -30,7 +32,9 @@ export function useRealtimeValidation(
   const [validation, setValidation] = useState<ValidationState>({
     status: "idle",
     message: "",
-    isValid: false
+    isValid: false,
+    showBubble: false,
+    isFocused: false
   });
 
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
@@ -43,15 +47,21 @@ export function useRealtimeValidation(
 
     const runValidation = async () => {
       if (!val || (typeof val === 'string' && val.trim() === '')) {
-        setValidation({
+        setValidation(prev => ({
+          ...prev,
           status: "idle",
           message: "",
-          isValid: false
-        });
+          isValid: false,
+          showBubble: false
+        }));
         return;
       }
 
-      setValidation(prev => ({ ...prev, status: "validating" }));
+      setValidation(prev => ({ 
+        ...prev, 
+        status: "validating",
+        showBubble: prev.isFocused
+      }));
 
       try {
         // Schema validation first
@@ -63,33 +73,41 @@ export function useRealtimeValidation(
         if (customValidation) {
           const customResult = await customValidation(val);
           if (customResult) {
-            setValidation({
+            setValidation(prev => ({
+              ...prev,
               status: "invalid",
               message: customResult,
-              isValid: false
-            });
+              isValid: false,
+              showBubble: prev.isFocused
+            }));
             return;
           }
         }
 
-        setValidation({
+        setValidation(prev => ({
+          ...prev,
           status: "valid",
           message: "Valid",
-          isValid: true
-        });
+          isValid: true,
+          showBubble: prev.isFocused
+        }));
       } catch (error) {
         if (error instanceof z.ZodError) {
-          setValidation({
+          setValidation(prev => ({
+            ...prev,
             status: "invalid",
             message: error.errors[0]?.message || "Invalid input",
-            isValid: false
-          });
+            isValid: false,
+            showBubble: prev.isFocused
+          }));
         } else {
-          setValidation({
+          setValidation(prev => ({
+            ...prev,
             status: "invalid",
             message: "Validation failed",
-            isValid: false
-          });
+            isValid: false,
+            showBubble: prev.isFocused
+          }));
         }
       }
     };
@@ -116,14 +134,28 @@ export function useRealtimeValidation(
 
   const validateImmediate = () => validateValue(value, true);
 
+  const handleFocus = () => {
+    setValidation(prev => ({ ...prev, isFocused: true, showBubble: true }));
+  };
+
+  const handleBlur = () => {
+    setValidation(prev => ({ ...prev, isFocused: false, showBubble: false }));
+    if (validateOnBlur) {
+      validateValue(value, true);
+    }
+  };
+
   return {
     validation,
     validateImmediate,
+    handleFocus,
+    handleBlur,
     isValidating: validation.status === "validating",
     isValid: validation.isValid,
     isInvalid: validation.status === "invalid",
     hasMessage: Boolean(validation.message),
-    message: validation.message
+    message: validation.message,
+    showBubble: validation.showBubble && Boolean(validation.message)
   };
 }
 

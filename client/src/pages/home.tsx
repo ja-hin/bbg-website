@@ -104,16 +104,9 @@ export default function Home() {
       <section className="py-12 sm:py-16 bg-gradient-to-r from-blue-50 to-purple-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
-            <div className="flex items-center justify-center mb-4">
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Acer_2011.svg/1200px-Acer_2011.svg.png" 
-                alt="Acer Logo" 
-                className="h-8 sm:h-12 mr-4"
-              />
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
-                Acer Device Protection
-              </h2>
-            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              Acer Device Protection
+            </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Special BBG registration for Acer users. Register your Acer devices and get the same amazing protection with up to 70% buyback value.
             </p>

@@ -13,7 +13,8 @@ import {
   BarChart3,
   Settings,
   Home,
-  Cloud
+  Cloud,
+  Laptop
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";

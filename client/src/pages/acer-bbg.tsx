@@ -71,7 +71,7 @@ export default function AcerBBG() {
       // Add all form fields
       Object.entries(data).forEach(([key, value]) => {
         if (value !== undefined && value !== null && key !== 'invoiceFile') {
-          formData.append(key, value);
+          formData.append(key, value.toString());
         }
       });
 
@@ -80,12 +80,19 @@ export default function AcerBBG() {
         formData.append('invoice', invoiceFile);
       }
 
-      const response = await apiRequest("/api/acer-bbg/register", {
+      // Use fetch directly for FormData instead of apiRequest to avoid JSON headers
+      const response = await fetch("/api/acer-bbg/register", {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
 
-      return response;
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`${response.status}: ${text}`);
+      }
+
+      return await response.json();
     },
     onSuccess: (data) => {
       toast({

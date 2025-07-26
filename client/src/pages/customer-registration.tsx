@@ -9,6 +9,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { validatePhoneNumber, validateEmail, validatePincode } from "@/lib/utils";
 import FileUpload from "@/components/file-upload";
+import { SuccessConfetti } from "@/components/confetti";
 
 // Generate unique session ID for cart abandonment tracking
 const generateSessionId = () => {
@@ -325,6 +326,7 @@ function RegistrationContent() {
   const [otpVerified, setOtpVerified] = useState(false);
   const [otp, setOtp] = useState("");
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   // Cart abandonment tracking
   const [sessionId] = useState(() => {
@@ -520,11 +522,15 @@ function RegistrationContent() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['/api/customers'] });
+      setShowConfetti(true);
       toast({
         title: "Registration Successful!",
         description: `Your BBG voucher code is: ${data.voucherCode}`,
       });
-      setLocation("/thank-you");
+      // Delay navigation to allow confetti to show
+      setTimeout(() => {
+        setLocation("/thank-you");
+      }, 2000);
     },
     onError: (error: any) => {
       toast({
@@ -1098,6 +1104,14 @@ function RegistrationContent() {
             </Form>
           </CardContent>
         </Card>
+      )}
+
+      {/* Success Confetti */}
+      {showConfetti && (
+        <SuccessConfetti 
+          isActive={showConfetti} 
+          onComplete={() => setShowConfetti(false)} 
+        />
       )}
 
     </div>

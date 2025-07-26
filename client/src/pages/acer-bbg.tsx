@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import FileUpload from "@/components/file-upload";
 import { ValidatedField } from "@/components/validated-field";
+import { SuccessConfetti } from "@/components/confetti";
 
 const acerRegistrationSchema = z.object({
   // Device Details
@@ -54,6 +55,7 @@ type AcerRegistrationData = z.infer<typeof acerRegistrationSchema>;
 
 export default function AcerBBG() {
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<AcerRegistrationData>({
@@ -108,6 +110,7 @@ export default function AcerBBG() {
       return await response.json();
     },
     onSuccess: (data) => {
+      setShowConfetti(true);
       toast({
         title: "Registration Successful!",
         description: `Your Acer BBG registration has been submitted successfully. Registration ID: ${data.registrationId}`,
@@ -559,6 +562,14 @@ export default function AcerBBG() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Success Confetti */}
+        {showConfetti && (
+          <SuccessConfetti 
+            isActive={showConfetti} 
+            onComplete={() => setShowConfetti(false)} 
+          />
+        )}
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { SuccessConfetti } from "@/components/confetti";
 
 const claimSchema = z.object({
   voucherCode: z.string().min(5, "Valid BBG voucher code required"),
@@ -44,6 +45,7 @@ export default function ClaimBBG() {
   const [claimSubmitted, setClaimSubmitted] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const [otp, setOtp] = useState("");
 
   const form = useForm<ClaimFormData>({
@@ -84,6 +86,7 @@ export default function ClaimBBG() {
     },
     onSuccess: () => {
       setClaimSubmitted(true);
+      setShowConfetti(true);
       toast({
         title: "Claim Submitted Successfully",
         description: "You will be contacted for device verification",
@@ -578,6 +581,14 @@ export default function ClaimBBG() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Success Confetti */}
+        {showConfetti && (
+          <SuccessConfetti 
+            isActive={showConfetti} 
+            onComplete={() => setShowConfetti(false)} 
+          />
+        )}
       </div>
     </div>
   );

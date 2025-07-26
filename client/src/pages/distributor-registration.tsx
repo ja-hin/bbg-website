@@ -15,6 +15,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Loader2, IndianRupee, Users, TrendingUp, Building, MapPin, Phone, Mail, CreditCard, Upload, FileText, Shield, Receipt, ExternalLink, DollarSign } from "lucide-react";
+import { SuccessConfetti } from "@/components/confetti";
 
 const distributorSchema = z.object({
   name: z.string().min(2, "Full name (as per PAN/GST) is required"),
@@ -67,6 +68,7 @@ export default function DistributorRegistration() {
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [otp, setOtp] = useState("");
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const form = useForm<DistributorFormData>({
     resolver: zodResolver(distributorSchema),
@@ -190,6 +192,7 @@ export default function DistributorRegistration() {
     },
     onSuccess: (data) => {
       setSellerCode(data.sellerCode);
+      setShowConfetti(true);
       toast({
         title: "Registration Successful!",
         description: `Your seller code is: ${data.sellerCode}`,
@@ -918,6 +921,14 @@ export default function DistributorRegistration() {
               </p>
             </CardContent>
           </Card>
+        )}
+
+        {/* Success Confetti */}
+        {showConfetti && (
+          <SuccessConfetti 
+            isActive={showConfetti} 
+            onComplete={() => setShowConfetti(false)} 
+          />
         )}
       </div>
     </div>

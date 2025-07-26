@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { validatePhoneNumber, validateEmail, validatePincode } from "@/lib/utils";
 import FileUpload from "@/components/file-upload";
 import { SuccessConfetti } from "@/components/confetti";
+import { scrollToTopInstant } from "@/hooks/useScrollToTop";
 
 // Generate unique session ID for cart abandonment tracking
 const generateSessionId = () => {
@@ -627,6 +628,8 @@ function RegistrationContent() {
     // Store form data and show payment form
     setFormData(data);
     setShowPaymentForm(true);
+    // Scroll to top when payment form is shown
+    scrollToTopInstant();
     // Track when user proceeds to payment
     trackCartAbandonment('payment_pending');
     console.log("Form data set, payment form should show");

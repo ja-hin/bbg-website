@@ -9,3 +9,12 @@ export function useScrollToTop() {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, [location]);
 }
+
+// Enhanced scroll function for immediate use
+export function scrollToTopSmooth() {
+  window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+}
+
+export function scrollToTopInstant() {
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+}

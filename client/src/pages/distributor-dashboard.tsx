@@ -25,6 +25,7 @@ import {
   Laptop,
   IndianRupee
 } from "lucide-react";
+import { ScrollToTopButton } from "@/components/scroll-to-top-button";
 
 export default function DistributorDashboard() {
   const [, navigate] = useLocation();
@@ -348,6 +349,7 @@ export default function DistributorDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+      <ScrollToTopButton />
     </div>
   );
 }

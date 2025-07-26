@@ -2,6 +2,7 @@ import { AdminSidebar } from "./admin-sidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import { useLocation } from "wouter";
+import { ScrollToTopButton } from "./scroll-to-top-button";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -44,6 +45,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </div>
         </main>
       </div>
+      <ScrollToTopButton />
     </div>
   );
 }

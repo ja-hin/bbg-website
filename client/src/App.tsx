@@ -31,6 +31,7 @@ import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
+import { ScrollToTopButton } from "@/components/scroll-to-top-button";
 
 function AdminRoot() {
   const { isLoading, isAuthenticated } = useAuth();
@@ -94,6 +95,7 @@ function Router() {
             </Switch>
           </main>
           <Footer />
+          <ScrollToTopButton />
         </div>
       </Route>
     </Switch>

@@ -340,6 +340,15 @@ GUPSHUP_SOURCE_NUMBER=919999999999
 
 ```
 Changelog:
+- July 26, 2025: ✅ COMPLETED - Scroll-to-top functionality enhancement across entire application
+  - CREATED: ScrollToTopButton component with smooth scroll behavior and professional styling
+  - IMPLEMENTED: Enhanced useScrollToTop hook with additional scroll functions (scrollToTopInstant, scrollToTopSmooth)
+  - FIXED: Payment page navigation scroll-to-top issue - page now automatically scrolls to top when payment form is shown
+  - INTEGRATED: Scroll-to-top button appears on all pages after scrolling down 300px with fade-in animation
+  - ENHANCED: Fixed bottom-right floating button with blue theme and hover effects
+  - APPLIED: Universal scroll-to-top functionality across customer pages, admin pages, and distributor pages
+  - OPTIMIZED: Instant scroll behavior for payment navigation and smooth scroll for manual button clicks
+  - IMPROVED: User experience with consistent scroll-to-top availability throughout the application
 - July 25, 2025: ✅ COMPLETED - Real-time Validation Feedback Bubbles implementation with enhanced UX
   - CREATED: ValidationBubble component with success/error/loading/info states and smooth animations
   - IMPLEMENTED: useRealtimeValidation hook with focus-based display logic and 300ms debouncing

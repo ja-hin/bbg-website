@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useDistributorAuth } from "@/hooks/useDistributorAuth";
 import { PhoneCall, Key, Building2, LogIn } from "lucide-react";
+import { ScrollToTopButton } from "@/components/scroll-to-top-button";
 
 export default function ReferralPartnerLogin() {
   const [, navigate] = useLocation();
@@ -221,6 +222,7 @@ export default function ReferralPartnerLogin() {
           </div>
         </CardContent>
       </Card>
+      <ScrollToTopButton />
     </div>
   );
 }

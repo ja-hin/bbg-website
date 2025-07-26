@@ -345,7 +345,7 @@ Changelog:
   - IMPLEMENTED: Enhanced useScrollToTop hook with additional scroll functions (scrollToTopInstant, scrollToTopSmooth)
   - FIXED: Payment page navigation scroll-to-top issue - page now automatically scrolls to top when payment form is shown
   - INTEGRATED: Scroll-to-top button appears on all pages after scrolling down 300px with fade-in animation
-  - ENHANCED: Fixed bottom-right floating button with blue theme and hover effects
+  - ENHANCED: Fixed bottom-right floating button with red theme and hover effects
   - APPLIED: Universal scroll-to-top functionality across customer pages, admin pages, and distributor pages
   - OPTIMIZED: Instant scroll behavior for payment navigation and smooth scroll for manual button clicks
   - IMPROVED: User experience with consistent scroll-to-top availability throughout the application

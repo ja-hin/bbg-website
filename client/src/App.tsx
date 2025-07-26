@@ -30,6 +30,7 @@ import AdminAcerRegistrations from "@/pages/admin-acer-registrations";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import { useAuth } from "@/hooks/useAuth";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 function AdminRoot() {
   const { isLoading, isAuthenticated } = useAuth();
@@ -48,6 +49,9 @@ function AdminRoot() {
 }
 
 function Router() {
+  // Automatically scroll to top on route changes
+  useScrollToTop();
+  
   return (
     <Switch>
       {/* Admin routes without header/footer */}

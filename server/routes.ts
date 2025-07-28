@@ -798,22 +798,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Customer registration not yet verified" });
       }
 
-      // Calculate claim percentage based on device age
+      // Calculate claim percentage based on device age (using purchase date, not registration date)
       const currentDate = new Date();
-      const createdDate = new Date(customer.createdAt!);
+      const purchaseDate = new Date(customer.dateOfPurchase || customer.createdAt!);
       
       // More accurate month calculation
-      let monthsDiff = (currentDate.getFullYear() - createdDate.getFullYear()) * 12;
-      monthsDiff += currentDate.getMonth() - createdDate.getMonth();
+      let monthsDiff = (currentDate.getFullYear() - purchaseDate.getFullYear()) * 12;
+      monthsDiff += currentDate.getMonth() - purchaseDate.getMonth();
       
-      // Adjust if current day is before the creation day in the month
-      if (currentDate.getDate() < createdDate.getDate()) {
+      // Adjust if current day is before the purchase day in the month
+      if (currentDate.getDate() < purchaseDate.getDate()) {
         monthsDiff--;
       }
       
       console.log("Date calculation:", {
         currentDate: currentDate.toISOString(),
-        createdDate: createdDate.toISOString(),
+        purchaseDate: purchaseDate.toISOString(),
         monthsDiff
       });
       
@@ -884,8 +884,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Claim already submitted for this voucher code" });
       }
 
-      // Calculate claim percentage based on device age
-      const monthsDiff = Math.floor((Date.now() - customer.createdAt!.getTime()) / (1000 * 60 * 60 * 24 * 30));
+      // Calculate claim percentage based on device age (using purchase date, not registration date)
+      const purchaseDate = new Date(customer.dateOfPurchase || customer.createdAt!);
+      const monthsDiff = Math.floor((Date.now() - purchaseDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
       let claimPercentage = 0;
       
       if (monthsDiff >= 6 && monthsDiff <= 12) claimPercentage = 70;

@@ -3332,7 +3332,7 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
-  // Acer BBG Registration endpoints
+  // Acer BBG Registration endpoints - using unified customer system
   app.post('/api/acer-bbg/register', upload.single('invoice'), async (req, res) => {
     try {
       console.log('Acer BBG registration request received:');
@@ -3381,9 +3381,6 @@ Required: GUPSHUP_API_KEY environment variable
         });
       }
 
-      // Generate unique registration ID
-      const registrationId = 'ACR' + Date.now().toString().slice(-8) + Math.random().toString(36).substr(2, 3).toUpperCase();
-
       // Handle file upload path
       let invoiceFilePath = null;
       if (req.file) {
@@ -3394,86 +3391,43 @@ Required: GUPSHUP_API_KEY environment variable
         }
       }
 
-      // Create Acer BBG registration table if it doesn't exist using existing connection
-      const dbConfig = {
-        server: process.env.SQL_SERVER_HOST || '103.205.66.184',
-        port: parseInt(process.env.SQL_SERVER_PORT || '2499'),
-        database: process.env.SQL_SERVER_DATABASE || 'prexoDB',
-        user: process.env.SQL_SERVER_USER || 'prexo',
-        password: process.env.SQL_SERVER_PASSWORD || 'Prexo@123',
-        options: {
-          encrypt: false,
-          trustServerCertificate: true,
-        },
+      // Extract pincode from address (try to get 6-digit pincode from address)
+      const pincodeMatch = (addressLine1 + ' ' + (addressLine2 || '')).match(/\b\d{6}\b/);
+      const pincode = pincodeMatch ? pincodeMatch[0] : '000000'; // Default if no pincode found
+
+      // Create unified customer data structure for Acer registration
+      const customerData = {
+        name,
+        contact: phone,
+        email,
+        pincode,
+        deviceType: deviceType.toLowerCase(), // Ensure lowercase for consistency
+        serialNumber: imeiSerial,
+        brand,
+        modelName: model,
+        invoiceValue: parseFloat(purchasePrice),
+        dateOfPurchase: purchaseDate,
+        sellerCode: null, // No seller code for direct Acer registrations
+        isVerified: true, // Auto-verify Acer registrations
+        invoiceFile: invoiceFilePath,
+        registrationSource: 'acer' // Track registration source
       };
-      
-      const pool = new sql.ConnectionPool(dbConfig);
-      await pool.connect();
-      
-      await pool.request().query(`
-        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='acer_bbg_registrations' AND xtype='U')
-        CREATE TABLE acer_bbg_registrations (
-          id INT IDENTITY(1,1) PRIMARY KEY,
-          registration_id NVARCHAR(50) UNIQUE NOT NULL,
-          device_type NVARCHAR(20) NOT NULL,
-          imei_serial NVARCHAR(100) NOT NULL,
-          brand NVARCHAR(50) NOT NULL,
-          name NVARCHAR(100) NOT NULL,
-          model NVARCHAR(100) NOT NULL,
-          email NVARCHAR(100) NOT NULL,
-          phone NVARCHAR(15) NOT NULL,
-          purchase_price NVARCHAR(20) NOT NULL,
-          alternate_phone NVARCHAR(15) NULL,
-          purchase_date DATE NOT NULL,
-          address_line1 NVARCHAR(200) NOT NULL,
-          address_line2 NVARCHAR(200) NULL,
-          invoice_file_path NVARCHAR(500) NULL,
-          status NVARCHAR(20) DEFAULT 'registered',
-          created_at DATETIME DEFAULT GETDATE(),
-          updated_at DATETIME DEFAULT GETDATE()
-        )
-      `);
 
-      // Insert registration data
-      const result = await pool.request()
-        .input('registrationId', sql.NVarChar, registrationId)
-        .input('deviceType', sql.NVarChar, deviceType)
-        .input('imeiSerial', sql.NVarChar, imeiSerial)
-        .input('brand', sql.NVarChar, brand)
-        .input('name', sql.NVarChar, name)
-        .input('model', sql.NVarChar, model)
-        .input('email', sql.NVarChar, email)
-        .input('phone', sql.NVarChar, phone)
-        .input('purchasePrice', sql.NVarChar, purchasePrice)
-        .input('alternatePhone', sql.NVarChar, alternatePhone || null)
-        .input('purchaseDate', sql.Date, new Date(purchaseDate))
-        .input('addressLine1', sql.NVarChar, addressLine1)
-        .input('addressLine2', sql.NVarChar, addressLine2 || null)
-        .input('invoiceFilePath', sql.NVarChar, invoiceFilePath)
-        .query(`
-          INSERT INTO acer_bbg_registrations (
-            registration_id, device_type, imei_serial, brand, name, model, 
-            email, phone, purchase_price, alternate_phone, purchase_date, 
-            address_line1, address_line2, invoice_file_path
-          ) VALUES (
-            @registrationId, @deviceType, @imeiSerial, @brand, @name, @model,
-            @email, @phone, @purchasePrice, @alternatePhone, @purchaseDate,
-            @addressLine1, @addressLine2, @invoiceFilePath
-          )
-        `);
+      // Use existing storage system to create customer with unified voucher code
+      const customer = await storage.createCustomer(customerData);
 
-      console.log('Acer BBG registration created successfully:', registrationId);
+      console.log('Acer BBG customer created successfully with voucher code:', customer.voucherCode);
 
-      // Send welcome notification
+      // Send welcome notification using unified voucher code
       try {
         await communicationService.sendWelcomeMessage({
           name,
           email,
           phone,
-          voucherCode: registrationId,
+          voucherCode: customer.voucherCode,
           deviceType,
           brand,
-          model
+          model: model
         });
       } catch (notificationError) {
         console.error('Failed to send welcome notification:', notificationError);
@@ -3483,7 +3437,8 @@ Required: GUPSHUP_API_KEY environment variable
       res.json({
         success: true,
         message: "Acer BBG registration completed successfully",
-        registrationId,
+        registrationId: customer.voucherCode, // Return voucher code as registration ID
+        voucherCode: customer.voucherCode, // Also provide as voucher code
         name,
         deviceType,
         brand,
@@ -3500,41 +3455,9 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
-  // Get all Acer BBG registrations for admin
-  app.get('/api/admin/acer-registrations', isAdminAuthenticated, async (req, res) => {
-    try {
-      // Database configuration
-      const dbConfig = {
-        server: process.env.SQL_SERVER_HOST || '103.205.66.184',
-        port: parseInt(process.env.SQL_SERVER_PORT || '2499'),
-        database: process.env.SQL_SERVER_DATABASE || 'prexoDB',
-        user: process.env.SQL_SERVER_USER || 'prexo',
-        password: process.env.SQL_SERVER_PASSWORD || 'Prexo@123',
-        options: {
-          encrypt: false,
-          trustServerCertificate: true,
-        },
-      };
-      
-      const pool = new sql.ConnectionPool(dbConfig);
-      await pool.connect();
-      
-      const result = await pool.request().query(`
-        SELECT 
-          id, registration_id, device_type, imei_serial, brand, name, model,
-          email, phone, purchase_price, alternate_phone, purchase_date,
-          address_line1, address_line2, invoice_file_path, status,
-          created_at, updated_at
-        FROM acer_bbg_registrations 
-        ORDER BY created_at DESC
-      `);
-      
-      res.json(result.recordset);
-    } catch (error) {
-      console.error('Error fetching Acer registrations:', error);
-      res.status(500).json({ message: 'Failed to fetch Acer registrations' });
-    }
-  });
+  // Note: Acer BBG registrations now use the unified customer system
+  // Admin can view all Acer registrations through the main customer endpoint
+  // Filter by registrationSource: 'acer' to identify Acer-specific registrations
 
   const httpServer = createServer(app);
   return httpServer;

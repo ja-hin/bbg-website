@@ -62,6 +62,7 @@ export const customers = pgTable("customers", {
   sellerCode: text("seller_code"),
   voucherCode: text("voucher_code").notNull().unique(),
   isVerified: boolean("is_verified").default(false),
+  registrationSource: text("registration_source").default("regular"), // 'regular' or 'acer'
   createdAt: timestamp("created_at").defaultNow(),
 });
 

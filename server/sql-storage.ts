@@ -215,6 +215,18 @@ export class SqlServerStorage implements IStorage {
         BEGIN
           ALTER TABLE customers ADD date_of_purchase NVARCHAR(20);
         END
+        
+        -- Add registration_source column to track source of registration (acer, regular)
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'registration_source')
+        BEGIN
+          ALTER TABLE customers ADD registration_source NVARCHAR(20) DEFAULT 'regular';
+        END
+        
+        -- Add invoice_file column for Acer registrations that upload files
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'invoice_file')
+        BEGIN
+          ALTER TABLE customers ADD invoice_file NVARCHAR(500);
+        END
       END
 
       -- Create claims table
@@ -939,12 +951,14 @@ export class SqlServerStorage implements IStorage {
     const query = `
       INSERT INTO customers (
         name, contact, email, pincode, device_type, serial_number, 
-        brand, model_name, invoice_value, date_of_purchase, seller_code, voucher_code, payment_intent_id, is_verified
+        brand, model_name, invoice_value, date_of_purchase, seller_code, voucher_code, payment_intent_id, is_verified,
+        registration_source, invoice_file
       ) 
       OUTPUT INSERTED.*
       VALUES (
         @name, @contact, @email, @pincode, @deviceType, @serialNumber, 
-        @brand, @modelName, @invoiceValue, @dateOfPurchase, @sellerCode, @voucherCode, @paymentIntentId, @isVerified
+        @brand, @modelName, @invoiceValue, @dateOfPurchase, @sellerCode, @voucherCode, @paymentIntentId, @isVerified,
+        @registrationSource, @invoiceFile
       )
     `;
 
@@ -963,6 +977,8 @@ export class SqlServerStorage implements IStorage {
     request.input('voucherCode', sql.NVarChar, voucherCode);
     request.input('paymentIntentId', sql.NVarChar, insertCustomer.paymentIntentId || null);
     request.input('isVerified', sql.Bit, insertCustomer.isVerified || false);
+    request.input('registrationSource', sql.NVarChar, (insertCustomer as any).registrationSource || 'regular');
+    request.input('invoiceFile', sql.NVarChar, (insertCustomer as any).invoiceFile || null);
 
     const result = await request.query(query);
 

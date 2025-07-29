@@ -123,6 +123,7 @@ export default function AcerBBG() {
       // Store success data in session storage for thank you page
       sessionStorage.setItem('acerRegistrationSuccess', JSON.stringify({
         registrationId: data.registrationId,
+        voucherCode: data.voucherCode || data.registrationId, // Use voucherCode if available, fallback to registrationId
         name: data.name,
         deviceType: data.deviceType,
         brand: data.brand,

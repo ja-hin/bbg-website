@@ -365,7 +365,7 @@ Team XtraCover`;
     let message = `BBG Claim Update for ${name}. Status: ${status.toUpperCase()}.`;
     
     if (status === 'approved' && amount) {
-      message += ` Amount: Rs.${amount}. Pickup will be scheduled.`;
+      message += ` Amount: Upto Rs.${amount}. Pickup will be scheduled.`;
     } else if (status === 'rejected') {
       message += ` Contact support: 8860396039`;
     } else if (status === 'paid' && amount) {

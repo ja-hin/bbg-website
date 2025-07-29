@@ -187,7 +187,7 @@ export class TemplateService {
     
     <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
       <p><strong>Voucher Code:</strong> {{voucherCode}}</p>
-      <p><strong>Claim Amount:</strong> ₹{{claimAmount}}</p>
+      <p><strong>Claim Amount:</strong> Upto ₹{{claimAmount}}</p>
       <p><strong>Status:</strong> {{status}}</p>
     </div>
   </div>

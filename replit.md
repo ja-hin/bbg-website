@@ -340,6 +340,11 @@ GUPSHUP_SOURCE_NUMBER=919999999999
 
 ```
 Changelog:
+- July 29, 2025: ✅ COMPLETED - Updated claim amount display to show "Upto" prefix across communication templates
+  - UPDATED: Email template in template-service.ts to show "Upto ₹{{claimAmount}}" instead of "₹{{claimAmount}}"
+  - UPDATED: WhatsApp claim update message in gupshup-service.ts to show "Upto Rs.{amount}" for approved claims
+  - CLARIFIED: Claim amounts now indicate maximum possible value rather than fixed guaranteed amount
+  - ENHANCED: User communication clarity by showing claim amounts are subject to device condition verification
 - July 29, 2025: ✅ COMPLETED - Removed Business Name and Registered Business Address fields from referral partner registration
   - REMOVED: Business Name (Optional) field from referral partner registration form UI
   - REMOVED: Registered Business Address (Optional) field from referral partner registration form UI  

@@ -3133,6 +3133,154 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // Acer IMEI Validation API Endpoints
+  // Admin endpoint to upload Acer IMEI data for validation
+  app.post('/api/admin/acer-imei/upload', isAdminAuthenticated, bulkUpload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      // Parse Excel/CSV file with IMEI data
+      const workbook = XLSX.readFile(req.file.path);
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const data = XLSX.utils.sheet_to_json(worksheet);
+
+      if (!Array.isArray(data) || data.length === 0) {
+        return res.status(400).json({ message: "File is empty or invalid format" });
+      }
+
+      // Normalize IMEI data from Acer file
+      const normalizedData = data.map((row: any, index: number) => {
+        const keys = Object.keys(row);
+        const imeiKey = keys.find(k => k.toLowerCase().includes('imei') || k.toLowerCase().includes('serial'));
+        const modelKey = keys.find(k => k.toLowerCase().includes('model'));
+        
+        if (!imeiKey) {
+          throw new Error(`Row ${index + 1}: Missing IMEI/Serial column`);
+        }
+
+        return {
+          imei: row[imeiKey]?.toString().trim(),
+          model: row[modelKey]?.toString().trim() || 'Unknown',
+          brand: 'Acer',
+          uploadedAt: new Date()
+        };
+      });
+
+      // Insert IMEI data into database
+      await db.connectDB();
+      let successfulRows = 0;
+      const errors: string[] = [];
+
+      for (let i = 0; i < normalizedData.length; i++) {
+        const item = normalizedData[i];
+        if (!item.imei) {
+          errors.push(`Row ${i + 1}: Missing IMEI/Serial number`);
+          continue;
+        }
+
+        try {
+          const request = db.pool.request();
+          request.input('imei', sql.VarChar, item.imei);
+          request.input('model', sql.VarChar, item.model);
+          request.input('brand', sql.VarChar, item.brand);
+          request.input('uploaded_at', sql.DateTime2, item.uploadedAt);
+          
+          await request.query(`
+            IF NOT EXISTS (SELECT 1 FROM acer_imei_validation WHERE imei = @imei)
+            INSERT INTO acer_imei_validation (imei, model, brand, uploaded_at) 
+            VALUES (@imei, @model, @brand, @uploaded_at)
+          `);
+          successfulRows++;
+        } catch (dbError: any) {
+          errors.push(`Row ${i + 1}: Database error - ${dbError.message}`);
+        }
+      }
+
+      // Clean up uploaded file
+      try {
+        require('fs').unlinkSync(req.file.path);
+      } catch (cleanupError) {
+        console.error('Failed to cleanup uploaded file:', cleanupError);
+      }
+
+      res.json({
+        message: "Acer IMEI data uploaded successfully",
+        totalRows: normalizedData.length,
+        successfulRows,
+        errors
+      });
+    } catch (error: any) {
+      console.error("Acer IMEI upload error:", error);
+      res.status(500).json({ message: error.message || "Failed to upload Acer IMEI data" });
+    }
+  });
+
+  // API endpoint to validate IMEI for Acer registrations
+  app.post('/api/validate-acer-imei', async (req, res) => {
+    try {
+      const { imei } = req.body;
+      
+      if (!imei) {
+        return res.status(400).json({ message: "IMEI is required" });
+      }
+
+      await db.connectDB();
+      const request = db.pool.request();
+      request.input('imei', sql.VarChar, imei);
+      
+      const result = await request.query(`
+        SELECT imei, model, brand, uploaded_at 
+        FROM acer_imei_validation 
+        WHERE imei = @imei
+      `);
+
+      if (result.recordset.length === 0) {
+        return res.json({
+          valid: false,
+          message: "IMEI not found in Acer database. Please verify the serial number."
+        });
+      }
+
+      const imeiData = result.recordset[0];
+      res.json({
+        valid: true,
+        message: "IMEI validated successfully",
+        data: {
+          imei: imeiData.imei,
+          model: imeiData.model,
+          brand: imeiData.brand
+        }
+      });
+    } catch (error: any) {
+      console.error("IMEI validation error:", error);
+      res.status(500).json({ message: "Failed to validate IMEI" });
+    }
+  });
+
+  // Admin endpoint to view uploaded Acer IMEI data
+  app.get('/api/admin/acer-imei', isAdminAuthenticated, async (req, res) => {
+    try {
+      await db.connectDB();
+      const result = await db.pool.request().query(`
+        SELECT imei, model, brand, uploaded_at,
+               ROW_NUMBER() OVER (ORDER BY uploaded_at DESC) as row_num
+        FROM acer_imei_validation 
+        ORDER BY uploaded_at DESC
+      `);
+
+      res.json({
+        data: result.recordset,
+        total: result.recordset.length
+      });
+    } catch (error: any) {
+      console.error("Error fetching Acer IMEI data:", error);
+      res.status(500).json({ message: "Failed to fetch Acer IMEI data" });
+    }
+  });
+
   // Register test routes for individual service testing
   // File management API endpoints for S3
   app.get('/api/files/signed-url/:key', async (req, res) => {

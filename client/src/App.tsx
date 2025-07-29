@@ -73,6 +73,7 @@ function Router() {
         </Suspense>
       </Route>
       <Route path="/admin/acer-registrations" component={AdminAcerRegistrations} />
+      <Route path="/admin/acer-imei" component={lazy(() => import("./pages/admin-acer-imei"))} />
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />

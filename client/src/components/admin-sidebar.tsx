@@ -85,6 +85,12 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       active: location === "/admin/acer-registrations"
     },
     {
+      label: "Acer IMEI Management",
+      href: "/admin/acer-imei",
+      icon: Shield,
+      active: location === "/admin/acer-imei"
+    },
+    {
       label: "Communication",
       href: "/admin/templates",
       icon: Mail,

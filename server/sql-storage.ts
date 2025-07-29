@@ -417,6 +417,22 @@ export class SqlServerStorage implements IStorage {
           updated_at DATETIME2 DEFAULT GETDATE()
         );
       END
+
+      -- Create acer_imei_validation table for Acer IMEI/Serial validation
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'acer_imei_validation')
+      BEGIN
+        CREATE TABLE acer_imei_validation (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          imei NVARCHAR(255) NOT NULL UNIQUE,
+          model NVARCHAR(255) NOT NULL,
+          brand NVARCHAR(100) DEFAULT 'Acer',
+          uploaded_at DATETIME2 DEFAULT GETDATE(),
+          created_at DATETIME2 DEFAULT GETDATE()
+        );
+        
+        -- Create index for faster IMEI lookups
+        CREATE INDEX IX_acer_imei_validation_imei ON acer_imei_validation(imei);
+      END
     `;
 
     const request = db.pool.request();

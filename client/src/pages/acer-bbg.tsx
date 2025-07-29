@@ -30,15 +30,15 @@ import { ValidatedField } from "@/components/validated-field";
 import { SuccessConfetti } from "@/components/confetti";
 
 const acerRegistrationSchema = z.object({
-  // Device Details
-  deviceType: z.enum(["mobile", "laptop"], {
-    required_error: "Please select device type"
+  // Device Details - Only laptops for Acer registration
+  deviceType: z.literal("laptop", {
+    required_error: "Device type must be laptop"
   }),
-  imeiSerial: z.string().min(5, "IMEI/Serial number must be at least 5 characters"),
+  imeiSerial: z.string().min(5, "Serial number must be at least 5 characters"),
   brand: z.string().min(1, "Brand is required"),
   model: z.string().min(1, "Model is required"),
-  purchasePrice: z.string().min(1, "Purchase price is required"),
-  purchaseDate: z.string().min(1, "Purchase date is required"),
+  purchasePrice: z.string().min(1, "Device purchase price is required"),
+  purchaseDate: z.string().min(1, "Device purchase date is required"),
   // Customer Details  
   name: z.string().min(2, "Name must be at least 2 characters"),
   phone: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
@@ -62,6 +62,7 @@ export default function AcerBBG() {
     resolver: zodResolver(acerRegistrationSchema),
     defaultValues: {
       brand: "Acer",
+      deviceType: "laptop", // Fixed as laptop for Acer registration
     },
   });
 
@@ -182,41 +183,7 @@ export default function AcerBBG() {
                     Device Details
                   </h3>
                   
-                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
-                    <FormField
-                      control={form.control}
-                      name="deviceType"
-                      render={({ field }) => (
-                        <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <Smartphone className="h-4 w-4 mr-2" />
-                            Device Type *
-                          </FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select device type" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="mobile">
-                                <div className="flex items-center">
-                                  <Smartphone className="h-4 w-4 mr-2" />
-                                  Mobile
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="laptop">
-                                <div className="flex items-center">
-                                  <Laptop className="h-4 w-4 mr-2" />
-                                  Laptop
-                                </div>
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
 
                     <FormField
                       control={form.control}
@@ -271,7 +238,7 @@ export default function AcerBBG() {
                         <FormItem className="h-full">
                           <FormLabel className="flex items-center h-6 mb-2">
                             <IndianRupee className="h-4 w-4 mr-2" />
-                            Purchase Price *
+                            Device Purchase Price (Inclusive of GST) *
                           </FormLabel>
                           <FormControl>
                             <ValidatedField
@@ -297,7 +264,7 @@ export default function AcerBBG() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Calendar className="h-4 w-4 mr-2" />
-                            Purchase Date *
+                            Device Purchase Date *
                           </FormLabel>
                           <FormControl>
                             <Input type="date" {...field} />
@@ -314,16 +281,16 @@ export default function AcerBBG() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Hash className="h-4 w-4 mr-2" />
-                            IMEI/Serial Number *
+                            Serial No. *
                           </FormLabel>
                           <FormControl>
                             <ValidatedField
                               value={field.value}
                               onChange={field.onChange}
                               onBlur={field.onBlur}
-                              placeholder="Enter IMEI or Serial"
+                              placeholder="Enter Serial Number"
                               validationType="imei"
-                              customValidation="imeiExists"
+                              customValidation="acerImeiValidation"
                             />
                           </FormControl>
                           <FormMessage />
@@ -338,7 +305,7 @@ export default function AcerBBG() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Upload className="h-4 w-4 mr-2" />
-                            Upload Tax Invoice
+                            Upload Device Tax Invoice
                           </FormLabel>
                           <FormControl>
                             <FileUpload
@@ -361,7 +328,7 @@ export default function AcerBBG() {
                     <div className="flex items-start space-x-2">
                       <Info className="h-3 w-3 text-blue-600 mt-0.5" />
                       <div className="text-xs text-blue-800">
-                        <p className="font-medium">📱 Mobile: Dial *#06# to get IMEI | 💻 Laptop: Check sticker on bottom/back or System Info → Hardware</p>
+                        <p className="font-medium">💻 Laptop Serial Number: Check sticker on bottom/back of device or System Info → Hardware</p>
                       </div>
                     </div>
                   </div>

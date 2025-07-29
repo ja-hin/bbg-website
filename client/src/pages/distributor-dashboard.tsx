@@ -231,20 +231,9 @@ export default function DistributorDashboard() {
                   <div className="space-y-4">
                     {customers.map((customer: any) => (
                       <div key={customer.id} className="border rounded-lg p-4">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <h4 className="font-semibold">{customer.name}</h4>
-                            <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                              <Phone className="w-3 h-3" />
-                              {customer.contact}
-                            </div>
-                            <div className="flex items-center gap-1 text-sm text-gray-600">
-                              <Mail className="w-3 h-3" />
-                              {customer.email}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 mb-2">
                               {customer.deviceType === 'mobile' ? (
                                 <Smartphone className="w-4 h-4 text-blue-600" />
                               ) : (
@@ -253,10 +242,10 @@ export default function DistributorDashboard() {
                               <span className="font-medium">{customer.brand} {customer.modelName}</span>
                             </div>
                             <p className="text-sm text-gray-600">
-                              Invoice Value: ₹{customer.invoiceValue}
+                              Device Type: {customer.deviceType === 'mobile' ? 'Mobile' : 'Laptop'}
                             </p>
-                            <p className="text-xs text-gray-500">
-                              Voucher: {customer.voucherCode}
+                            <p className="text-sm text-gray-600">
+                              Invoice Value: ₹{customer.invoiceValue}
                             </p>
                           </div>
                           <div className="text-right">
@@ -320,10 +309,10 @@ export default function DistributorDashboard() {
                               </Badge>
                             </div>
                             <p className="text-sm text-gray-600">
-                              Customer: {payout.customer.name} ({payout.customer.contact})
+                              Device: {payout.customer.brand} {payout.customer.modelName}
                             </p>
                             <p className="text-sm text-gray-600">
-                              Device: {payout.customer.brand} {payout.customer.modelName}
+                              Device Type: {payout.customer.deviceType === 'mobile' ? 'Mobile' : 'Laptop'}
                             </p>
                             {payout.paymentReference && (
                               <p className="text-xs text-gray-500 mt-1">

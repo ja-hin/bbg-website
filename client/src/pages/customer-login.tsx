@@ -63,8 +63,8 @@ export default function CustomerLogin() {
     },
     onSuccess: (data) => {
       // Store customer session
-      localStorage.setItem('customerPhone', phone);
-      localStorage.setItem('customerAuthenticated', 'true');
+      sessionStorage.setItem('customerPhone', phone);
+      sessionStorage.setItem('customerAuthenticated', 'true');
       
       toast({
         title: "Login Successful",

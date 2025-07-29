@@ -29,7 +29,7 @@ export class KaleyraSMSService {
   constructor(config: KaleyraSMSConfig) {
     this.apiKey = config.apiKey;
     this.sid = config.sid || ''; // Not used in v4 API
-    this.senderId = config.senderId || 'XTRCVR';
+    this.senderId = config.senderId || 'XTCOVR';
     this.baseURL = 'https://api-alerts.kaleyra.com/v4/';
   }
 
@@ -163,12 +163,12 @@ function createKaleyraSMSService(): KaleyraSMSService {
     console.warn('⚠️  Kaleyra SMS service not configured. Missing KALEYRA_API_KEY environment variable.');
     console.log('📝 To enable SMS functionality, add this to your environment:');
     console.log('   KALEYRA_API_KEY=your_api_key');
-    console.log('   KALEYRA_SENDER_ID=XTRCVR (optional, defaults to XTRCVR)');
+    console.log('   KALEYRA_SENDER_ID=XTCOVR (optional, defaults to XTCOVR)');
   }
 
   return new KaleyraSMSService({
     apiKey: apiKey || '',
-    senderId: process.env.KALEYRA_SENDER_ID || 'XTRCVR'
+    senderId: process.env.KALEYRA_SENDER_ID || 'XTCOVR'
   });
 }
 

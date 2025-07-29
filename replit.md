@@ -173,7 +173,7 @@ This is a full-stack web application for Xtracover's BuyBack Guarantee (BBG) sys
 ### Environment Variables Required
 ```bash
 KALEYRA_API_KEY=A67fc67b5dccd5dee027eb35fca957094  # Working API key configured
-KALEYRA_SENDER_ID=XTRCVR  # Configured sender ID
+KALEYRA_SENDER_ID=XTCOVR  # Configured sender ID
 ```
 
 ### API Endpoints

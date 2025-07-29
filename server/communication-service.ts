@@ -52,7 +52,7 @@ export class SMSService {
 
   constructor() {
     this.apiKey = process.env.KALEYRA_API_KEY || '';
-    this.senderId = process.env.KALEYRA_SENDER_ID || 'XTRCVR';
+    this.senderId = process.env.KALEYRA_SENDER_ID || 'XTCOVR';
     this.baseUrl = 'https://api-alerts.kaleyra.com/v4/?method=sms';
   }
 
@@ -378,7 +378,7 @@ export class CommunicationService {
       sms: {
         configured: !!process.env.KALEYRA_API_KEY,
         service: 'Kaleyra',
-        senderId: process.env.KALEYRA_SENDER_ID || 'XTRCVR'
+        senderId: process.env.KALEYRA_SENDER_ID || 'XTCOVR'
       },
       whatsapp: {
         configured: true, // Gupshup service has hardcoded credentials

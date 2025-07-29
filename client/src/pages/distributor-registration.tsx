@@ -30,10 +30,8 @@ const distributorSchema = z.object({
   panNumber: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN format (e.g., ABCDE1234F)"),
   panCopyFile: z.instanceof(File, { message: "PAN copy is required" }),
   isGstRegistered: z.boolean(),
-  businessName: z.string().optional(),
   gstin: z.string().optional(),
   gstCertificateFile: z.instanceof(File).optional(),
-  registeredBusinessAddress: z.string().optional(),
   isMsmeRegistered: z.boolean(),
   msmeCertificateFile: z.instanceof(File).optional(),
   // Bank Details
@@ -51,8 +49,8 @@ const distributorSchema = z.object({
 }).refine((data) => data.bankAccount === data.bankAccountConfirm, {
   message: "Bank account numbers must match",
   path: ["bankAccountConfirm"]
-}).refine((data) => !data.isGstRegistered || (data.businessName && data.gstin && data.gstCertificateFile), {
-  message: "Business name, GSTIN and GST certificate are required for GST registered businesses",
+}).refine((data) => !data.isGstRegistered || (data.gstin && data.gstCertificateFile), {
+  message: "GSTIN and GST certificate are required for GST registered businesses",
   path: ["gstin"]
 }).refine((data) => !data.isMsmeRegistered || data.msmeCertificateFile, {
   message: "MSME certificate is required if you are MSME registered",
@@ -83,10 +81,8 @@ export default function DistributorRegistration() {
       panNumber: "",
       panCopyFile: undefined,
       isGstRegistered: false,
-      businessName: "",
       gstin: "",
       gstCertificateFile: undefined,
-      registeredBusinessAddress: "",
       isMsmeRegistered: false,
       msmeCertificateFile: undefined,
       // Bank Details
@@ -316,7 +312,7 @@ export default function DistributorRegistration() {
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Basic Information</h3>
                   
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid md:grid-cols-1 gap-6">
                     <FormField
                       control={form.control}
                       name="name"
@@ -328,23 +324,6 @@ export default function DistributorRegistration() {
                           </FormLabel>
                           <FormControl>
                             <Input placeholder="Enter your full name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="businessName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <Building className="h-4 w-4 mr-2" />
-                            Business Name (Optional)
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter your business name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -603,19 +582,7 @@ export default function DistributorRegistration() {
                     )}
                   </div>
 
-                  <FormField
-                    control={form.control}
-                    name="registeredBusinessAddress"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Registered Business Address (Optional)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter registered business address" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+
 
                   <div className="space-y-4">
                     <FormField

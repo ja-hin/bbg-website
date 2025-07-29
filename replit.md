@@ -340,6 +340,21 @@ GUPSHUP_SOURCE_NUMBER=919999999999
 
 ```
 Changelog:
+- July 29, 2025: ✅ COMPLETED - Removed Business Name and Registered Business Address fields from referral partner registration
+  - REMOVED: Business Name (Optional) field from referral partner registration form UI
+  - REMOVED: Registered Business Address (Optional) field from referral partner registration form UI  
+  - UPDATED: Form validation schema to remove businessName and registeredBusinessAddress requirements
+  - MODIFIED: SQL Server storage layer to exclude these fields from INSERT operations
+  - CLEANED: Database mapping functions to remove businessName and registeredBusinessAddress references
+  - STREAMLINED: Registration form layout with single-column grid for Full Name field
+  - MAINTAINED: Database table structure unchanged for backward compatibility
+  - SIMPLIFIED: Form submission and validation without removed field dependencies
+- July 29, 2025: ✅ COMPLETED - Enhanced Referral Partner Dashboard privacy controls
+  - HIDDEN: Customer personal details (name, phone, email) from referral partner view
+  - HIDDEN: BBG voucher codes from referral partner access for security
+  - MAINTAINED: Device details visibility (brand, model, type, invoice value) for business tracking
+  - PRESERVED: Commission tracking and registration dates for earnings management
+  - IMPROVED: Privacy compliance while maintaining essential business metrics visibility
 - July 26, 2025: ✅ COMPLETED - Scroll-to-top functionality enhancement across entire application
   - CREATED: ScrollToTopButton component with smooth scroll behavior and professional styling
   - IMPLEMENTED: Enhanced useScrollToTop hook with additional scroll functions (scrollToTopInstant, scrollToTopSmooth)

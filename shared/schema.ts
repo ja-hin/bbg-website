@@ -7,7 +7,6 @@ import { z } from "zod";
 export const distributors = pgTable("distributors", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  businessName: text("business_name"), // optional, only for GST registered
   contact: text("contact").notNull(),
   email: text("email").notNull(),
   pincode: text("pincode").notNull(),
@@ -19,7 +18,6 @@ export const distributors = pgTable("distributors", {
   isGstRegistered: boolean("is_gst_registered").default(false),
   gstin: text("gstin"),
   gstCertificateFile: text("gst_certificate_file"),
-  registeredBusinessAddress: text("registered_business_address"),
   isMsmeRegistered: boolean("is_msme_registered").default(false),
   msmeCertificateFile: text("msme_certificate_file"),
   // Bank Details

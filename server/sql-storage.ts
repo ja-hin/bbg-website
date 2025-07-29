@@ -418,18 +418,18 @@ export class SqlServerStorage implements IStorage {
     
     const query = `
       INSERT INTO distributors (
-        name, business_name, contact, email, pincode, preferred_mode,
+        name, contact, email, pincode, preferred_mode,
         pan_number, pan_copy_file, is_gst_registered, gstin, gst_certificate_file,
-        registered_business_address, is_msme_registered, msme_certificate_file,
+        is_msme_registered, msme_certificate_file,
         account_holder_name, bank_account, bank_account_confirm, ifsc_code, upi_id,
         cancelled_cheque_file, info_declaration, tds_understanding, gst_invoice_agreement,
         terms_agreement, seller_code
       ) 
       OUTPUT INSERTED.*
       VALUES (
-        @name, @businessName, @contact, @email, @pincode, @preferredMode,
+        @name, @contact, @email, @pincode, @preferredMode,
         @panNumber, @panCopyFile, @isGstRegistered, @gstin, @gstCertificateFile,
-        @registeredBusinessAddress, @isMsmeRegistered, @msmeCertificateFile,
+        @isMsmeRegistered, @msmeCertificateFile,
         @accountHolderName, @bankAccount, @bankAccountConfirm, @ifscCode, @upiId,
         @cancelledChequeFile, @infoDeclaration, @tdsUnderstanding, @gstInvoiceAgreement,
         @termsAgreement, @sellerCode
@@ -439,7 +439,6 @@ export class SqlServerStorage implements IStorage {
     const request = db.pool.request();
     // Basic info
     request.input('name', sql.NVarChar, insertDistributor.name);
-    request.input('businessName', sql.NVarChar, insertDistributor.businessName || null);
     request.input('contact', sql.NVarChar, insertDistributor.contact);
     request.input('email', sql.NVarChar, insertDistributor.email);
     request.input('pincode', sql.NVarChar, insertDistributor.pincode);
@@ -451,7 +450,6 @@ export class SqlServerStorage implements IStorage {
     request.input('isGstRegistered', sql.Bit, insertDistributor.isGstRegistered || false);
     request.input('gstin', sql.NVarChar, insertDistributor.gstin || null);
     request.input('gstCertificateFile', sql.NVarChar, insertDistributor.gstCertificateFile || null);
-    request.input('registeredBusinessAddress', sql.NVarChar, insertDistributor.registeredBusinessAddress || null);
     request.input('isMsmeRegistered', sql.Bit, insertDistributor.isMsmeRegistered || false);
     request.input('msmeCertificateFile', sql.NVarChar, insertDistributor.msmeCertificateFile || null);
     
@@ -703,7 +701,6 @@ export class SqlServerStorage implements IStorage {
     return result.recordset.map(row => ({
       id: row.id,
       name: row.name,
-      businessName: row.business_name,
       contact: row.contact,
       email: row.email,
       pincode: row.pincode,
@@ -1240,7 +1237,6 @@ export class SqlServerStorage implements IStorage {
     return {
       id: row.id,
       name: row.name,
-      businessName: row.business_name,
       contact: row.contact,
       email: row.email,
       pincode: row.pincode,
@@ -1250,7 +1246,6 @@ export class SqlServerStorage implements IStorage {
       isGstRegistered: Boolean(row.is_gst_registered),
       gstin: row.gstin,
       gstCertificateFile: row.gst_certificate_file,
-      registeredBusinessAddress: row.registered_business_address,
       isMsmeRegistered: Boolean(row.is_msme_registered),
       msmeCertificateFile: row.msme_certificate_file,
       accountHolderName: row.account_holder_name,

@@ -61,6 +61,21 @@ export default function Header() {
         </Button>
       </Link>
       
+      {/* Customer Login Link */}
+      <Link href="/customer-login" onClick={onItemClick}>
+        <Button 
+          variant="outline"
+          className={`
+            ${mobile ? 'w-full justify-start space-x-3' : ''}
+            border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700
+          `}
+          size={mobile ? "default" : "sm"}
+        >
+          <Shield className={`${mobile ? 'w-5 h-5' : 'w-4 h-4'}`} />
+          <span>Customer Login</span>
+        </Button>
+      </Link>
+      
       {/* Distributor Login Link */}
       <Link href="/distributor/login" onClick={onItemClick}>
         <Button 

@@ -248,128 +248,13 @@ export default function CustomerDashboard() {
   };
 
   if (!isAuthenticated) {
+    // Redirect to customer login page
+    window.location.href = '/customer-login';
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
-        <div className="container mx-auto px-4 max-w-md">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Customer Dashboard
-            </h1>
-            <p className="text-lg text-gray-600">
-              Login with your mobile number to view BBG registrations
-            </p>
-          </div>
-
-          <Card className="shadow-xl">
-            <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-              <CardTitle className="text-xl flex items-center">
-                <Phone className="h-5 w-5 mr-2" />
-                Mobile Login
-              </CardTitle>
-              <CardDescription className="text-blue-100">
-                Enter your registered mobile number
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-6">
-              {!showOtpField ? (
-                <Form {...loginForm}>
-                  <form onSubmit={loginForm.handleSubmit(handleSendOtp)} className="space-y-4">
-                    <FormField
-                      control={loginForm.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Mobile Number</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Enter 10-digit mobile number"
-                              {...field}
-                              disabled={sendOtpMutation.isPending}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button 
-                      type="submit" 
-                      className="w-full"
-                      disabled={sendOtpMutation.isPending}
-                    >
-                      {sendOtpMutation.isPending ? 'Sending OTP...' : 'Send OTP'}
-                    </Button>
-                  </form>
-                </Form>
-              ) : (
-                <div className="space-y-4">
-                  <Alert>
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>
-                      OTP sent to {loginForm.getValues('phone')}. Enter the 4-digit code below.
-                    </AlertDescription>
-                  </Alert>
-                  
-                  <Form {...otpForm}>
-                    <form onSubmit={otpForm.handleSubmit(handleVerifyOtp)} className="space-y-4">
-                      <FormField
-                        control={otpForm.control}
-                        name="otp"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Verification Code</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Enter 4-digit OTP"
-                                {...field}
-                                disabled={verifyOtpMutation.isPending}
-                                maxLength={6}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <div className="flex space-x-3">
-                        <Button 
-                          type="submit" 
-                          className="flex-1"
-                          disabled={verifyOtpMutation.isPending}
-                        >
-                          {verifyOtpMutation.isPending ? 'Verifying...' : 'Verify OTP'}
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => {
-                            setShowOtpField(false);
-                            setOtpSent(false);
-                            otpForm.reset();
-                          }}
-                        >
-                          Back
-                        </Button>
-                      </div>
-                    </form>
-                  </Form>
-
-                  {countdown > 0 ? (
-                    <p className="text-sm text-gray-500 text-center">
-                      Resend OTP in {countdown} seconds
-                    </p>
-                  ) : (
-                    <Button
-                      variant="link"
-                      className="w-full"
-                      onClick={() => sendOtpMutation.mutate(loginForm.getValues('phone'))}
-                      disabled={sendOtpMutation.isPending}
-                    >
-                      Resend OTP
-                    </Button>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecting to login...</p>
         </div>
       </div>
     );

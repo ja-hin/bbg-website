@@ -239,13 +239,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Send OTP (for both customer and distributor registration)
   app.post("/api/send-otp", async (req, res) => {
     try {
-      const { contact } = req.body;
-      if (!contact || contact.length !== 10) {
+      const { contact, phone } = req.body;
+      const phoneNumber = contact || phone; // Support both field names
+      
+      if (!phoneNumber || phoneNumber.length !== 10) {
         return res.status(400).json({ message: "Valid 10-digit contact number required" });
       }
 
       // Validate phone number format
-      if (!kaleyraSMSService.isValidPhoneNumber(contact)) {
+      if (!kaleyraSMSService.isValidPhoneNumber(phoneNumber)) {
         return res.status(400).json({ message: "Please enter a valid Indian mobile number" });
       }
 
@@ -254,24 +256,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Store OTP in database
       await storage.createOtp({
-        contact,
+        contact: phoneNumber,
         otp,
         expiresAt
       });
 
       // Send OTP via Kaleyra SMS service
-      const smsResult = await kaleyraSMSService.sendOTP(contact, otp);
+      const smsResult = await kaleyraSMSService.sendOTP(phoneNumber, otp);
       
       if (smsResult.success) {
-        console.log(`OTP sent via Kaleyra to ${contact}: ${otp} (Message ID: ${smsResult.messageId})`);
+        console.log(`OTP sent via Kaleyra to ${phoneNumber}: ${otp} (Message ID: ${smsResult.messageId})`);
         res.json({ 
           message: "OTP sent successfully",
           messageId: smsResult.messageId 
         });
       } else {
-        console.error(`Failed to send OTP via Kaleyra to ${contact}:`, smsResult.error);
+        console.error(`Failed to send OTP via Kaleyra to ${phoneNumber}:`, smsResult.error);
         // Fallback: log OTP for development/testing
-        console.log(`FALLBACK - OTP for ${contact}: ${otp}`);
+        console.log(`FALLBACK - OTP for ${phoneNumber}: ${otp}`);
         res.json({ 
           message: "OTP sent successfully", 
           warning: "SMS service temporarily unavailable, please check console for OTP" 
@@ -333,8 +335,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Verify OTP (for both customer and distributor registration)
   app.post("/api/verify-otp", async (req, res) => {
     try {
-      const { contact, otp } = req.body;
-      const isValid = await storage.verifyOtp(contact, otp);
+      const { contact, phone, otp } = req.body;
+      const phoneNumber = contact || phone; // Support both field names
+      const isValid = await storage.verifyOtp(phoneNumber, otp);
       
       if (isValid) {
         res.json({ message: "OTP verified successfully", verified: true });

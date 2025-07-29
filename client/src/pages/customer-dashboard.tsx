@@ -72,6 +72,7 @@ export default function CustomerDashboard() {
   const [showOtpField, setShowOtpField] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   // Check if user is already logged in
@@ -79,10 +80,17 @@ export default function CustomerDashboard() {
     const savedPhone = sessionStorage.getItem('customerPhone');
     const savedAuth = sessionStorage.getItem('customerAuthenticated');
     
+    console.log('Checking authentication:', { savedPhone, savedAuth });
+    
     if (savedPhone && savedAuth === 'true') {
       setCustomerPhone(savedPhone);
       setIsAuthenticated(true);
+      console.log('User authenticated with phone:', savedPhone);
+    } else {
+      console.log('User not authenticated, redirecting to login');
     }
+    
+    setIsLoading(false);
   }, []);
 
   // Countdown timer for OTP resend
@@ -185,7 +193,7 @@ export default function CustomerDashboard() {
   });
 
   // Fetch customer registrations
-  const { data: registrations = [], isLoading, refetch } = useQuery<CustomerRegistration[]>({
+  const { data: registrations = [], isLoading: isLoadingRegistrations, refetch } = useQuery<CustomerRegistration[]>({
     queryKey: ['/api/customer/registrations', customerPhone],
     queryFn: async () => {
       const response = await fetch(`/api/customer/registrations?phone=${customerPhone}`);
@@ -246,6 +254,17 @@ export default function CustomerDashboard() {
       </Badge>
     );
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     // Redirect to customer login page
@@ -316,7 +335,7 @@ export default function CustomerDashboard() {
         </Card>
 
         {/* Registrations List */}
-        {isLoading ? (
+        {isLoadingRegistrations ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3].map((i) => (
               <Card key={i} className="animate-pulse">

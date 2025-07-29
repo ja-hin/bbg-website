@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { 
   Calendar, 
   CheckCircle, 
@@ -23,7 +25,11 @@ import {
   Hash,
   IndianRupee,
   Info,
-  Building
+  Building,
+  AlertTriangle,
+  Clock,
+  Plus,
+  Search
 } from "lucide-react";
 import FileUpload from "@/components/file-upload";
 import { ValidatedField } from "@/components/validated-field";
@@ -37,7 +43,9 @@ const acerRegistrationSchema = z.object({
   imeiSerial: z.string().min(5, "Serial number must be at least 5 characters"),
   brand: z.string().min(1, "Brand is required"),
   model: z.string().min(1, "Model is required"),
-  purchasePrice: z.string().min(1, "Device purchase price is required"),
+  isCustomModel: z.boolean().optional(),
+  customModelName: z.string().optional(),
+  purchasePrice: z.string().min(1, "Device purchase price (without GST) is required"),
   purchaseDate: z.string().min(1, "Device purchase date is required"),
   // Customer Details  
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -49,6 +57,15 @@ const acerRegistrationSchema = z.object({
   addressLine2: z.string().optional(),
   // File upload
   invoiceFile: z.instanceof(File).optional(),
+}).refine((data) => {
+  // If custom model is selected, custom model name is required
+  if (data.isCustomModel && !data.customModelName?.trim()) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Custom model name is required when adding new model",
+  path: ["customModelName"]
 });
 
 type AcerRegistrationData = z.infer<typeof acerRegistrationSchema>;
@@ -56,6 +73,9 @@ type AcerRegistrationData = z.infer<typeof acerRegistrationSchema>;
 export default function AcerBBG() {
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [modelSearch, setModelSearch] = useState("");
+  const [showCustomModel, setShowCustomModel] = useState(false);
+  const [is72HourExpired, setIs72HourExpired] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<AcerRegistrationData>({
@@ -63,10 +83,34 @@ export default function AcerBBG() {
     defaultValues: {
       brand: "Acer",
       deviceType: "laptop", // Fixed as laptop for Acer registration
+      isCustomModel: false,
     },
   });
 
   const deviceType = form.watch("deviceType");
+  const purchaseDate = form.watch("purchaseDate");
+  const isCustomModel = form.watch("isCustomModel");
+
+  // Fetch laptop models
+  const { data: models = [] } = useQuery({
+    queryKey: ["/api/models", "laptop"],
+    staleTime: 300000, // 5 minutes cache
+  });
+
+  // Check if 72 hours have passed since purchase
+  useEffect(() => {
+    if (purchaseDate) {
+      const purchase = new Date(purchaseDate);
+      const now = new Date();
+      const hoursDiff = (now.getTime() - purchase.getTime()) / (1000 * 60 * 60);
+      setIs72HourExpired(hoursDiff > 72);
+    }
+  }, [purchaseDate]);
+
+  // Filter models based on search
+  const filteredModels = models.filter((model: any) =>
+    model.name.toLowerCase().includes(modelSearch.toLowerCase())
+  );
 
   const registrationMutation = useMutation({
     mutationFn: async (data: AcerRegistrationData) => {
@@ -161,6 +205,37 @@ export default function AcerBBG() {
           </p>
         </div>
 
+        {/* 72-hour Warning Alert */}
+        {is72HourExpired && (
+          <Alert className="mb-6 border-orange-200 bg-orange-50">
+            <AlertTriangle className="h-4 w-4 text-orange-600" />
+            <AlertDescription className="text-orange-800">
+              <div className="flex items-center space-x-2">
+                <Clock className="h-4 w-4" />
+                <span className="font-medium">Registration Time Limit Exceeded!</span>
+              </div>
+              <p className="mt-1 text-sm">
+                Please note: You should register your Acer BBG within 72 hours of purchase for optimal processing. 
+                You can still register, but processing may take longer.
+              </p>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Important Registration Notice */}
+        <Alert className="mb-6 border-blue-200 bg-blue-50">
+          <Info className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="text-blue-800">
+            <div className="flex items-center space-x-2">
+              <Clock className="h-4 w-4" />
+              <span className="font-medium">⏰ Register within 72 hours of BBG purchase</span>
+            </div>
+            <p className="mt-1 text-sm">
+              For fastest processing, complete your registration within 72 hours of purchasing your BBG protection.
+            </p>
+          </AlertDescription>
+        </Alert>
+
         {/* Registration Form */}
         <Card className="shadow-xl">
           <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
@@ -218,13 +293,90 @@ export default function AcerBBG() {
                             Model *
                           </FormLabel>
                           <FormControl>
-                            <ValidatedField
-                              value={field.value}
-                              onChange={field.onChange}
-                              onBlur={field.onBlur}
-                              placeholder="e.g., Aspire 5, Predator Helios"
-                              validationType="model"
-                            />
+                            <div className="space-y-2">
+                              {!isCustomModel ? (
+                                <div className="relative">
+                                  <Input
+                                    placeholder="Search model or select from dropdown..."
+                                    value={modelSearch}
+                                    onChange={(e) => setModelSearch(e.target.value)}
+                                    className="pr-10"
+                                  />
+                                  <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                </div>
+                              ) : null}
+                              
+                              {!isCustomModel && modelSearch && (
+                                <div className="border rounded-md max-h-32 overflow-y-auto bg-white">
+                                  {filteredModels.length > 0 ? (
+                                    filteredModels.map((model: any) => (
+                                      <div
+                                        key={model.id}
+                                        className="px-3 py-2 hover:bg-gray-100 cursor-pointer border-b last:border-b-0"
+                                        onClick={() => {
+                                          field.onChange(model.name);
+                                          setModelSearch("");
+                                        }}
+                                      >
+                                        {model.name}
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="px-3 py-2 text-gray-500 text-sm">
+                                      No models found
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                              
+                              {!isCustomModel && (
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    form.setValue("isCustomModel", true);
+                                    setShowCustomModel(true);
+                                  }}
+                                  className="w-full text-xs"
+                                >
+                                  <Plus className="h-3 w-3 mr-1" />
+                                  Model not found? Add new model
+                                </Button>
+                              )}
+                              
+                              {isCustomModel && (
+                                <div className="space-y-2">
+                                  <Input
+                                    placeholder="Enter new model name"
+                                    value={field.value}
+                                    onChange={(e) => {
+                                      field.onChange(e.target.value);
+                                      form.setValue("customModelName", e.target.value);
+                                    }}
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      form.setValue("isCustomModel", false);
+                                      form.setValue("model", "");
+                                      setShowCustomModel(false);
+                                    }}
+                                    className="text-xs"
+                                  >
+                                    Back to model list
+                                  </Button>
+                                </div>
+                              )}
+                              
+                              {field.value && !isCustomModel && (
+                                <Badge variant="secondary" className="text-xs">
+                                  Selected: {field.value}
+                                </Badge>
+                              )}
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -238,18 +390,21 @@ export default function AcerBBG() {
                         <FormItem className="h-full">
                           <FormLabel className="flex items-center h-6 mb-2">
                             <IndianRupee className="h-4 w-4 mr-2" />
-                            Device Purchase Price (Inclusive of GST) *
+                            Device Purchase Price (Without GST) *
                           </FormLabel>
                           <FormControl>
                             <ValidatedField
                               value={field.value}
                               onChange={field.onChange}
                               onBlur={field.onBlur}
-                              placeholder="Enter purchase amount"
+                              placeholder="Enter purchase amount (excluding GST)"
                               validationType="price"
                               type="number"
                             />
                           </FormControl>
+                          <div className="text-xs text-blue-600 mt-1">
+                            💡 Payout amount will be calculated based on this GST-excluded price
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}

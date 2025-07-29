@@ -8,7 +8,7 @@
 - **API Endpoint**: `https://api-alerts.kaleyra.com/v4/`
 - **Configuration**: 
   - ✅ KALEYRA_API_KEY configured and working
-  - ✅ KALEYRA_SENDER_ID set to 'XTRCVR'
+  - ✅ KALEYRA_SENDER_ID set to 'XTCOVR'
 - **Test Results**: Successfully sending SMS with message IDs
 - **Phone Number Support**: Indian mobile numbers (+91)
 

@@ -36,7 +36,7 @@ GUPSHUP_API_KEY=your_whatsapp_business_api_key
 **Status**: ✅ Already working and delivering real SMS
 ```bash
 KALEYRA_API_KEY=A67fc67b5dccd5dee027eb35fca957094  # Active
-KALEYRA_SENDER_ID=XTRCVR
+KALEYRA_SENDER_ID=XTCOVR
 ```
 
 ### Option 3: Alternative SMS Provider

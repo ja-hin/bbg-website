@@ -251,7 +251,7 @@ SMTP_PASSWORD=your_app_password
 
 # SMS (Kaleyra) Configuration
 KALEYRA_API_KEY=your_kaleyra_api_key
-KALEYRA_SENDER_ID=XTRCVR
+KALEYRA_SENDER_ID=XTCOVR
 
 # WhatsApp (Gupshup) Configuration
 GUPSHUP_API_KEY=your_gupshup_api_key_here

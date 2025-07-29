@@ -3646,6 +3646,102 @@ Required: GUPSHUP_API_KEY environment variable
   // Admin can view all Acer registrations through the main customer endpoint
   // Filter by registrationSource: 'acer' to identify Acer-specific registrations
 
+  // Customer Dashboard Routes
+  app.get('/api/customer/registrations/:phone', async (req, res) => {
+    try {
+      const phone = req.params.phone;
+      
+      // Validate phone number format
+      const phoneRegex = /^[6-9]\d{9}$/;
+      if (!phoneRegex.test(phone)) {
+        return res.status(400).json({ message: "Invalid phone number format" });
+      }
+
+      await db.connectDB();
+      const request = db.pool.request();
+      request.input('phone', sql.VarChar, phone);
+      
+      const result = await request.query(`
+        SELECT 
+          id,
+          voucher_code as voucherCode,
+          name,
+          contact,
+          email,
+          pincode,
+          device_type as deviceType,
+          serial_number as serialNumber,
+          brand,
+          model_name as modelName,
+          invoice_value as invoiceValue,
+          date_of_purchase as dateOfPurchase,
+          registration_date as registrationDate,
+          seller_code as sellerCode,
+          registration_source as registrationSource,
+          is_verified as isVerified,
+          invoice_file as invoiceFile
+        FROM customers 
+        WHERE contact = @phone 
+        ORDER BY registration_date DESC
+      `);
+      
+      res.json(result.recordset);
+    } catch (error) {
+      console.error('Error fetching customer registrations:', error);
+      res.status(500).json({ message: "Failed to fetch registrations" });
+    }
+  });
+
+  // Customer Dashboard Route - Alternative endpoint for React Query
+  app.get('/api/customer/registrations', async (req, res) => {
+    try {
+      const phone = req.query.phone as string;
+      
+      if (!phone) {
+        return res.status(400).json({ message: "Phone number is required" });
+      }
+      
+      // Validate phone number format
+      const phoneRegex = /^[6-9]\d{9}$/;
+      if (!phoneRegex.test(phone)) {
+        return res.status(400).json({ message: "Invalid phone number format" });
+      }
+
+      await db.connectDB();
+      const request = db.pool.request();
+      request.input('phone', sql.VarChar, phone);
+      
+      const result = await request.query(`
+        SELECT 
+          id,
+          voucher_code as voucherCode,
+          name,
+          contact,
+          email,
+          pincode,
+          device_type as deviceType,
+          serial_number as serialNumber,
+          brand,
+          model_name as modelName,
+          invoice_value as invoiceValue,
+          date_of_purchase as dateOfPurchase,
+          registration_date as registrationDate,
+          seller_code as sellerCode,
+          registration_source as registrationSource,
+          is_verified as isVerified,
+          invoice_file as invoiceFile
+        FROM customers 
+        WHERE contact = @phone 
+        ORDER BY registration_date DESC
+      `);
+      
+      res.json(result.recordset);
+    } catch (error) {
+      console.error('Error fetching customer registrations:', error);
+      res.status(500).json({ message: "Failed to fetch registrations" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 

@@ -14,6 +14,7 @@ import ClaimBBG from "@/pages/claim-bbg";
 import ThankYou from "@/pages/thank-you";
 import AcerBBG from "@/pages/acer-bbg";
 import AcerThankYou from "@/pages/acer-thank-you";
+import CustomerDashboard from "@/pages/customer-dashboard";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminDashboardNew from "@/pages/admin-dashboard-new";
@@ -96,7 +97,9 @@ function Router() {
               <Route path="/claim-bbg" component={ClaimBBG} />
               <Route path="/thank-you" component={ThankYou} />
               <Route path="/acer" component={AcerBBG} />
+              <Route path="/acer-bbg" component={AcerBBG} />
               <Route path="/acer-thank-you" component={AcerThankYou} />
+              <Route path="/customer-dashboard" component={CustomerDashboard} />
               <Route component={NotFound} />
             </Switch>
           </main>

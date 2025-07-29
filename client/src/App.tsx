@@ -27,6 +27,7 @@ import AdminWhatsAppTest from "@/pages/admin-whatsapp-test";
 import AdminCartAbandonments from "@/pages/admin-cart-abandonments";
 import AdminStorage from "@/pages/admin-storage";
 import AdminAcerRegistrations from "@/pages/admin-acer-registrations";
+import AdminAcerImei from "@/pages/admin-acer-imei";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import { useAuth } from "@/hooks/useAuth";
@@ -73,7 +74,11 @@ function Router() {
         </Suspense>
       </Route>
       <Route path="/admin/acer-registrations" component={AdminAcerRegistrations} />
-      <Route path="/admin/acer-imei" component={lazy(() => import("./pages/admin-acer-imei"))} />
+      <Route path="/admin/acer-imei">
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+          <AdminAcerImei />
+        </Suspense>
+      </Route>
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />

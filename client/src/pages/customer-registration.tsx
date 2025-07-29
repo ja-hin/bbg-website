@@ -61,7 +61,7 @@ const customerSchema = z.object({
   serialNumber: z.string().min(5, "Serial number/IMEI must be at least 5 characters"),
   brand: z.string().min(2, "Brand is required"),
   modelName: z.string().min(2, "Model name is required"),
-  invoiceValue: z.string().min(1, "Device invoice value (inclusive of GST) is required"),
+  invoiceValue: z.string().min(1, "Device purchase price (inclusive of GST) is required"),
   dateOfPurchase: z.string().min(10, "Date of purchase is required"),
   // File upload
   invoiceFile: z.instanceof(File).optional(),
@@ -800,7 +800,7 @@ function RegistrationContent() {
                         <FormItem className="h-full">
                           <FormLabel className="flex items-center h-6 mb-2">
                             <IndianRupee className="h-4 w-4 mr-2" />
-                            Device Invoice Value (Inclusive of GST) *
+                            Device Purchase Price (Inclusive of GST) *
                           </FormLabel>
                           <FormControl>
                             <Input placeholder="Enter invoice amount" {...field} />
@@ -819,7 +819,7 @@ function RegistrationContent() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Calendar className="h-4 w-4 mr-2" />
-                            Date of Purchase *
+                            Device Purchase Date *
                           </FormLabel>
                           <FormControl>
                             <Input type="date" {...field} />
@@ -853,7 +853,7 @@ function RegistrationContent() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Upload className="h-4 w-4 mr-2" />
-                            Upload Tax Invoice *
+                            Upload Device Tax Invoice *
                           </FormLabel>
                           <FormControl>
                             <FileUpload

@@ -311,7 +311,7 @@ function PaymentMethodSelector({
   );
 }
 
-function RegistrationContent() {
+function BuyBBGContent() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -652,7 +652,7 @@ function RegistrationContent() {
     <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
       {/* Header Section */}
       <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Buy and Register for BuyBack Guarantee</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Buy BuyBack Guarantee</h1>
         <p className="text-lg text-gray-600">
           Secure your device investment with our comprehensive BuyBack Guarantee program
         </p>
@@ -682,7 +682,7 @@ function RegistrationContent() {
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center text-lg">
               <ShoppingCart className="h-5 w-5 mr-2" />
-              Buy & Register Form
+              Buy BBG Form
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
@@ -1079,7 +1079,7 @@ function RegistrationContent() {
                             {" *"}
                           </FormLabel>
                           <p className="text-xs text-gray-600">
-                            By registering, you agree to our BBG terms and conditions.
+                            By purchasing BBG, you agree to our BBG terms and conditions.
                           </p>
                         </div>
                       </FormItem>
@@ -1095,7 +1095,7 @@ function RegistrationContent() {
                     className="w-full bg-green-600 hover:bg-green-700 py-2 text-md font-semibold"
                     disabled={!otpVerified || mutation.isPending}
                   >
-                    {mutation.isPending ? "Processing..." : "Buy & Register for BBG"}
+                    {mutation.isPending ? "Processing..." : "Buy BBG Protection"}
                   </Button>
                   {!otpVerified && (
                     <p className="text-sm text-gray-500 text-center mt-2">
@@ -1124,7 +1124,7 @@ function RegistrationContent() {
 export default function CustomerRegistration() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <RegistrationContent />
+      <BuyBBGContent />
     </div>
   );
 }

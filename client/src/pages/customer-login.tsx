@@ -136,11 +136,11 @@ export default function CustomerLogin() {
             <div className="space-y-2">
               <Label htmlFor="phone">Mobile Number</Label>
               <div className="relative">
-                <PhoneCall className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <PhoneCall className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder="Enter 10-digit mobile number"
+                  placeholder="Enter your mobile number"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="pl-10"
@@ -148,6 +148,9 @@ export default function CustomerLogin() {
                   disabled={isOtpSent}
                 />
               </div>
+              <p className="text-xs text-gray-500">
+                Enter the mobile number used during customer registration
+              </p>
             </div>
 
             {/* Send OTP Button */}
@@ -156,7 +159,7 @@ export default function CustomerLogin() {
                 type="button"
                 onClick={handleSendOtp}
                 disabled={sendOtpMutation.isPending || phone.length !== 10}
-                className="w-full bg-indigo-600 hover:bg-indigo-700"
+                className="w-full"
               >
                 {sendOtpMutation.isPending ? "Sending..." : "Send OTP"}
               </Button>
@@ -168,7 +171,7 @@ export default function CustomerLogin() {
                 <div className="space-y-2">
                   <Label htmlFor="otp">Enter OTP</Label>
                   <div className="relative">
-                    <Key className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Key className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       id="otp"
                       type="text"
@@ -179,22 +182,19 @@ export default function CustomerLogin() {
                       maxLength={6}
                     />
                   </div>
+                  <p className="text-xs text-gray-500">
+                    OTP sent to {phone}. Check your SMS inbox.
+                  </p>
                 </div>
 
                 {/* Login Button */}
                 <Button
                   type="submit"
                   disabled={loginMutation.isPending || otp.length !== 6}
-                  className="w-full bg-indigo-600 hover:bg-indigo-700"
+                  className="w-full"
                 >
-                  {loginMutation.isPending ? (
-                    "Logging in..."
-                  ) : (
-                    <>
-                      <LogIn className="mr-2 h-4 w-4" />
-                      Login
-                    </>
-                  )}
+                  <LogIn className="w-4 h-4 mr-2" />
+                  {loginMutation.isPending ? "Logging in..." : "Login to Dashboard"}
                 </Button>
 
                 {/* Resend OTP */}
@@ -207,9 +207,9 @@ export default function CustomerLogin() {
                     <Button
                       type="button"
                       variant="ghost"
+                      size="sm"
                       onClick={handleSendOtp}
                       disabled={sendOtpMutation.isPending}
-                      className="text-indigo-600 hover:text-indigo-700"
                     >
                       Resend OTP
                     </Button>

@@ -100,7 +100,7 @@ function Router() {
               <Route path="/acer" component={AcerBBG} />
               <Route path="/acer-bbg" component={AcerBBG} />
               <Route path="/acer-thank-you" component={AcerThankYou} />
-              <Route path="/customer-login" component={CustomerLogin} />
+              <Route path="/customer/login" component={CustomerLogin} />
               <Route path="/customer-dashboard" component={CustomerDashboard} />
               <Route component={NotFound} />
             </Switch>

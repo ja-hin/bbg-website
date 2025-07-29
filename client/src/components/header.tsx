@@ -62,7 +62,7 @@ export default function Header() {
       </Link>
       
       {/* Customer Login Link */}
-      <Link href="/customer-login" onClick={onItemClick}>
+      <Link href="/customer/login" onClick={onItemClick}>
         <Button 
           variant="outline"
           className={`

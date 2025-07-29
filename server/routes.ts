@@ -349,6 +349,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Customer Authentication Routes
+  // Customer login with mobile and OTP
+  app.post("/api/customer/login", async (req, res) => {
+    try {
+      const { phone, otp } = req.body;
+      
+      if (!phone || !otp) {
+        return res.status(400).json({ message: "Phone number and OTP are required" });
+      }
+
+      // Verify OTP first
+      const isOtpValid = await storage.verifyOtp(phone, otp);
+      if (!isOtpValid) {
+        return res.status(400).json({ message: "Invalid or expired OTP" });
+      }
+
+      // Find customer by phone number
+      const customers = await storage.getCustomersByContact(phone);
+      if (!customers || customers.length === 0) {
+        return res.status(404).json({ message: "Customer not found. Please register first." });
+      }
+
+      // Return customer information
+      res.json({
+        message: "Login successful",
+        customer: {
+          phone: phone,
+          registrations: customers.length
+        }
+      });
+    } catch (error: any) {
+      console.error("Customer login error:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
   // Distributor Authentication Routes
   // Distributor login with mobile and OTP
   app.post("/api/distributor/login", async (req, res) => {

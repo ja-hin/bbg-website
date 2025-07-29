@@ -58,6 +58,7 @@ export interface IStorage {
   createCustomer(customer: InsertCustomer): Promise<Customer>;
   getCustomerByVoucherCode(voucherCode: string): Promise<Customer | undefined>;
   getCustomersBySellerCode(sellerCode: string): Promise<Customer[]>;
+  getCustomersByContact(contact: string): Promise<Customer[]>;
   getAllCustomers(): Promise<Customer[]>;
   updateCustomerVerification(id: number, isVerified: boolean): Promise<void>;
   updateCustomer(id: number, updates: Partial<InsertCustomer>): Promise<void>;
@@ -1046,6 +1047,17 @@ export class SqlServerStorage implements IStorage {
     
     const request = db.pool.request();
     request.input('sellerCode', sql.NVarChar, sellerCode);
+    
+    const result = await request.query(query);
+    return result.recordset.map(row => this.mapCustomerFromDb(row));
+  }
+
+  async getCustomersByContact(contact: string): Promise<Customer[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM customers WHERE contact = @contact ORDER BY created_at DESC`;
+    
+    const request = db.pool.request();
+    request.input('contact', sql.NVarChar, contact);
     
     const result = await request.query(query);
     return result.recordset.map(row => this.mapCustomerFromDb(row));

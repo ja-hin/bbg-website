@@ -364,6 +364,11 @@ GUPSHUP_SOURCE_NUMBER=919999999999
 
 ```
 Changelog:
+- July 30, 2025: ✅ COMPLETED - Hidden customer login option from header navigation
+  - REMOVED: Customer login button from header navigation (both desktop and mobile versions)
+  - MAINTAINED: Direct URL access to /customer/login still functional for existing customer dashboard usage
+  - STREAMLINED: Header navigation now only shows referral partner login, reducing user confusion
+  - IMPROVED: Cleaner navigation experience focusing on main BBG registration and claim flows
 - July 29, 2025: ✅ COMPLETED - Implemented comprehensive Acer IMEI validation system
   - CREATED: Complete database infrastructure with acer_imei_validation table and proper indexing
   - BUILT: Admin interface at /admin/acer-imei for bulk IMEI data upload and management

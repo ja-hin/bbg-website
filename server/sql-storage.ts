@@ -2181,21 +2181,43 @@ export class SqlServerStorage implements IStorage {
   // Claim Value Slabs operations
   async createClaimValueSlab(slab: InsertClaimValueSlab): Promise<ClaimValueSlab> {
     await db.connectDB();
-    const query = `
-      INSERT INTO claim_value_slabs (device_type, min_months, max_months, percentage, is_active)
-      OUTPUT INSERTED.*
-      VALUES (@deviceType, @minMonths, @maxMonths, @percentage, @isActive)
-    `;
+    
+    // Try modern query with device_type column first
+    try {
+      const query = `
+        INSERT INTO claim_value_slabs (device_type, min_months, max_months, percentage, is_active)
+        OUTPUT INSERTED.*
+        VALUES (@deviceType, @minMonths, @maxMonths, @percentage, @isActive)
+      `;
 
-    const request = db.pool.request();
-    request.input('deviceType', sql.NVarChar, slab.deviceType || 'mobile');
-    request.input('minMonths', sql.Int, slab.minMonths);
-    request.input('maxMonths', sql.Int, slab.maxMonths);
-    request.input('percentage', sql.Int, slab.percentage);
-    request.input('isActive', sql.Bit, slab.isActive ?? true);
+      const request = db.pool.request();
+      request.input('deviceType', sql.NVarChar, slab.deviceType || 'mobile');
+      request.input('minMonths', sql.Int, slab.minMonths);
+      request.input('maxMonths', sql.Int, slab.maxMonths);
+      request.input('percentage', sql.Int, slab.percentage);
+      request.input('isActive', sql.Bit, slab.isActive ?? true);
 
-    const result = await request.query(query);
-    return this.mapClaimValueSlabFromDb(result.recordset[0]);
+      const result = await request.query(query);
+      return this.mapClaimValueSlabFromDb(result.recordset[0]);
+    } catch (error: any) {
+      console.log('Modern insert failed, attempting fallback without device_type:', error.message);
+      
+      // Fallback to basic insert without device_type column
+      const fallbackQuery = `
+        INSERT INTO claim_value_slabs (min_months, max_months, percentage, is_active)
+        OUTPUT INSERTED.*, 'mobile' as device_type
+        VALUES (@minMonths, @maxMonths, @percentage, @isActive)
+      `;
+
+      const fallbackRequest = db.pool.request();
+      fallbackRequest.input('minMonths', sql.Int, slab.minMonths);
+      fallbackRequest.input('maxMonths', sql.Int, slab.maxMonths);
+      fallbackRequest.input('percentage', sql.Int, slab.percentage);
+      fallbackRequest.input('isActive', sql.Bit, slab.isActive ?? true);
+
+      const fallbackResult = await fallbackRequest.query(fallbackQuery);
+      return this.mapClaimValueSlabFromDb(fallbackResult.recordset[0]);
+    }
   }
 
   async getAllClaimValueSlabs(): Promise<ClaimValueSlab[]> {
@@ -2288,9 +2310,41 @@ export class SqlServerStorage implements IStorage {
     }
 
     if (setParts.length > 0) {
-      setParts.push('updated_at = GETDATE()');
-      const query = `UPDATE claim_value_slabs SET ${setParts.join(', ')} WHERE id = @id`;
-      await request.query(query);
+      try {
+        setParts.push('updated_at = GETDATE()');
+        const query = `UPDATE claim_value_slabs SET ${setParts.join(', ')} WHERE id = @id`;
+        await request.query(query);
+      } catch (error: any) {
+        console.log('Modern update failed, attempting fallback without device_type:', error.message);
+        
+        // Fallback update without device_type column
+        const fallbackParts = [];
+        const fallbackRequest = db.pool.request();
+        fallbackRequest.input('id', sql.Int, id);
+
+        if (updates.minMonths !== undefined) {
+          fallbackParts.push('min_months = @minMonths');
+          fallbackRequest.input('minMonths', sql.Int, updates.minMonths);
+        }
+        if (updates.maxMonths !== undefined) {
+          fallbackParts.push('max_months = @maxMonths');
+          fallbackRequest.input('maxMonths', sql.Int, updates.maxMonths);
+        }
+        if (updates.percentage !== undefined) {
+          fallbackParts.push('percentage = @percentage');
+          fallbackRequest.input('percentage', sql.Int, updates.percentage);
+        }
+        if (updates.isActive !== undefined) {
+          fallbackParts.push('is_active = @isActive');
+          fallbackRequest.input('isActive', sql.Bit, updates.isActive);
+        }
+
+        if (fallbackParts.length > 0) {
+          fallbackParts.push('updated_at = GETDATE()');
+          const fallbackQuery = `UPDATE claim_value_slabs SET ${fallbackParts.join(', ')} WHERE id = @id`;
+          await fallbackRequest.query(fallbackQuery);
+        }
+      }
     }
   }
 

@@ -37,6 +37,11 @@ export default function AdminClaimSlabs() {
     retry: false,
   });
 
+  // Filter slabs by device type and active status
+  const activeSlabs = slabs?.filter((slab: ClaimValueSlab) => slab.isActive) || [];
+  const mobileSlabs = slabs?.filter((slab: ClaimValueSlab) => slab.deviceType === 'mobile') || [];
+  const laptopSlabs = slabs?.filter((slab: ClaimValueSlab) => slab.deviceType === 'laptop') || [];
+
   // Create claim value slab mutation
   const createSlabMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -187,11 +192,6 @@ export default function AdminClaimSlabs() {
     setFormData({ deviceType: 'mobile', minMonths: '', maxMonths: '', percentage: '', isActive: true });
     setEditingSlab(null);
   };
-
-  // Filter slabs by device type and active status
-  const mobileSlabs = slabs?.filter((slab: ClaimValueSlab) => slab.deviceType === 'mobile') || [];
-  const laptopSlabs = slabs?.filter((slab: ClaimValueSlab) => slab.deviceType === 'laptop') || [];
-  const activeSlabs = slabs?.filter((slab: ClaimValueSlab) => slab.isActive) || [];
 
   return (
     <AdminLayout>

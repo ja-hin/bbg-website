@@ -474,6 +474,49 @@ export class SqlServerStorage implements IStorage {
         -- Create index for faster IMEI lookups
         CREATE INDEX IX_acer_imei_validation_imei ON acer_imei_validation(imei);
       END
+
+      -- Create claim_value_slabs table for dynamic claim percentage management
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'claim_value_slabs')
+      BEGIN
+        CREATE TABLE claim_value_slabs (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          min_months INT NOT NULL,
+          max_months INT NOT NULL,
+          percentage INT NOT NULL,
+          is_active BIT DEFAULT 1,
+          created_at DATETIME2 DEFAULT GETDATE(),
+          updated_at DATETIME2 DEFAULT GETDATE()
+        );
+
+        -- Insert default claim value slabs
+        INSERT INTO claim_value_slabs (min_months, max_months, percentage, is_active) VALUES
+        (6, 12, 70, 1),
+        (13, 18, 60, 1),
+        (19, 24, 50, 1),
+        (25, 30, 40, 1),
+        (31, 36, 30, 1),
+        (37, 48, 25, 1),
+        (49, 60, 20, 1);
+      END
+
+      -- Add claim_value_slab_id column to customers table if it doesn't exist
+      IF EXISTS (SELECT * FROM sys.tables WHERE name = 'customers')
+      BEGIN
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'claim_value_slab_id')
+        BEGIN
+          ALTER TABLE customers ADD claim_value_slab_id INT;
+        END
+        
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'date_of_purchase')
+        BEGIN
+          ALTER TABLE customers ADD date_of_purchase NVARCHAR(10);
+        END
+        
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'registration_source')
+        BEGIN
+          ALTER TABLE customers ADD registration_source NVARCHAR(20) DEFAULT 'regular';
+        END
+      END
     `;
 
     const request = db.pool.request();
@@ -1005,6 +1048,24 @@ export class SqlServerStorage implements IStorage {
     await db.connectDB();
     const voucherCode = this.generateVoucherCode();
     
+    // Calculate device age and determine appropriate claim value slab
+    let claimValueSlabId = null;
+    if (insertCustomer.dateOfPurchase) {
+      const purchaseDate = new Date(insertCustomer.dateOfPurchase);
+      const currentDate = new Date();
+      const ageInMonths = Math.floor((currentDate.getTime() - purchaseDate.getTime()) / (1000 * 60 * 60 * 24 * 30.44));
+      
+      // Find the appropriate claim value slab for this device age
+      const activeSlabs = await this.getActiveClaimValueSlabs();
+      const applicableSlab = activeSlabs.find(slab => 
+        ageInMonths >= slab.minMonths && ageInMonths <= slab.maxMonths
+      );
+      
+      if (applicableSlab) {
+        claimValueSlabId = applicableSlab.id;
+      }
+    }
+    
     const query = `
       INSERT INTO customers (
         name, contact, email, pincode, device_type, serial_number, 
@@ -1039,7 +1100,7 @@ export class SqlServerStorage implements IStorage {
     const invoiceFileValue = (insertCustomer as any).invoiceFile;
     const validInvoiceFile = (invoiceFileValue && typeof invoiceFileValue === 'string') ? invoiceFileValue : null;
     request.input('invoiceFile', sql.NVarChar, validInvoiceFile);
-    request.input('claimValueSlabId', sql.Int, (insertCustomer as any).claimValueSlabId || null);
+    request.input('claimValueSlabId', sql.Int, claimValueSlabId);
 
     const result = await request.query(query);
 

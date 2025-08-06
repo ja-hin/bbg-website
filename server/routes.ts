@@ -4268,13 +4268,20 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
-  // Get claim percentage for specific device age
+  // Get claim percentage for specific device age or date of purchase
   app.post('/api/claims/calculate-percentage', async (req, res) => {
     try {
-      const { deviceAgeMonths } = req.body;
+      let { deviceAgeMonths, dateOfPurchase } = req.body;
+
+      // If dateOfPurchase is provided but deviceAgeMonths is not, calculate age
+      if (dateOfPurchase && !deviceAgeMonths) {
+        const purchaseDate = new Date(dateOfPurchase);
+        const currentDate = new Date();
+        deviceAgeMonths = Math.floor((currentDate.getTime() - purchaseDate.getTime()) / (1000 * 60 * 60 * 24 * 30.44));
+      }
 
       if (!deviceAgeMonths || deviceAgeMonths < 0) {
-        return res.status(400).json({ message: "Invalid device age" });
+        return res.status(400).json({ message: "Invalid device age or date of purchase" });
       }
 
       const activeSlabs = await storage.getActiveClaimValueSlabs();
@@ -4284,7 +4291,7 @@ Required: GUPSHUP_API_KEY environment variable
 
       if (!applicableSlab) {
         return res.status(400).json({ 
-          message: "No claim percentage available for device age", 
+          message: "Device too old for BBG claim. Maximum age is 5 years.", 
           deviceAgeMonths 
         });
       }

@@ -53,9 +53,12 @@ CREATE TABLE customers (
     brand NVARCHAR(100) NOT NULL,
     model_name NVARCHAR(255) NOT NULL,
     invoice_value DECIMAL(10,2) NOT NULL,
+    date_of_purchase NVARCHAR(10) NOT NULL,
     seller_code NVARCHAR(10),
     voucher_code NVARCHAR(15) NOT NULL UNIQUE,
     payment_intent_id NVARCHAR(255),
+    registration_source NVARCHAR(20) DEFAULT 'regular', -- 'regular' or 'acer'
+    claim_value_slab_id INT, -- Reference to active claim slab when registered
     is_verified BIT DEFAULT 0,
     created_at DATETIME2 DEFAULT GETDATE()
 );
@@ -138,6 +141,18 @@ CREATE TABLE models (
     updated_at DATETIME2 DEFAULT GETDATE(),
     FOREIGN KEY (brand_id) REFERENCES brands(id),
     UNIQUE(name, brand_id)
+);
+
+-- Create claim_value_slabs table for dynamic claim percentage management
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='claim_value_slabs' AND xtype='U')
+CREATE TABLE claim_value_slabs (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    min_months INT NOT NULL,
+    max_months INT NOT NULL,
+    percentage INT NOT NULL, -- Percentage value (0-100)
+    is_active BIT DEFAULT 1,
+    created_at DATETIME2 DEFAULT GETDATE(),
+    updated_at DATETIME2 DEFAULT GETDATE()
 );
 
 -- Create indexes for better performance

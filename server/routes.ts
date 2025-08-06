@@ -3344,7 +3344,7 @@ Required: GUPSHUP_API_KEY environment variable
       const imeiData = result.recordset[0];
       res.json({
         valid: true,
-        message: "IMEI validated successfully",
+        message: "Valid IMEI",
         data: {
           imei: imeiData.imei,
           model: imeiData.model,

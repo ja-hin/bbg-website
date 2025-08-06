@@ -77,6 +77,7 @@ Preferred communication style: Simple, everyday language.
   - FIXED: Cache-control headers to prevent stale IMEI data in admin interface
   - UPDATED: Simplified validation messages to "Valid IMEI" and "IMEI Not Found"
   - CONFIRMED: Complete IMEI validation flow now working - uploaded IMEIs appear valid in Acer registration form
+  - FIXED: Added missing `registration_source` column to customers table for proper Acer registration tracking
 
 - **July 30, 2025**: ✅ Fixed template creation unique constraint violations
   - RESOLVED: Database template creation errors causing server startup warnings

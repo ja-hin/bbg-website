@@ -242,12 +242,16 @@ export class TemplateService {
 
       for (const template of defaultTemplates) {
         try {
-          await this.createTemplate(template as CreateTemplateData);
-        } catch (error: any) {
-          // Template might already exist, continue with others
-          if (!error.message?.includes('Violation of UNIQUE KEY constraint')) {
-            console.error('Error creating default template:', template.name, error);
+          // Check if template already exists
+          const existing = await this.getTemplateByTypeAndEvent(template.type as string, template.event as string);
+          if (!existing) {
+            await this.createTemplate(template as CreateTemplateData);
+            console.log(`Created default template: ${template.name}`);
+          } else {
+            console.log(`Template already exists, skipping: ${template.name}`);
           }
+        } catch (error: any) {
+          console.error('Error with default template:', template.name, error);
         }
       }
       
@@ -284,6 +288,43 @@ export class TemplateService {
     } catch (error) {
       console.error('Error fetching templates:', error);
       throw error;
+    }
+  }
+
+  // Get template by type and event (for checking existence)
+  async getTemplateByTypeAndEvent(type: string, event: string): Promise<MessageTemplate | null> {
+    try {
+      await db.connectDB();
+      const query = `
+        SELECT id, name, type, event, subject, content, variables, is_active, created_at, updated_at 
+        FROM message_templates 
+        WHERE type = @type AND event = @event
+      `;
+      
+      const request = db.pool.request();
+      request.input('type', sql.VarChar, type);
+      request.input('event', sql.VarChar, event);
+      
+      const result = await request.query(query);
+      
+      if (result.recordset.length === 0) return null;
+      
+      const row = result.recordset[0];
+      return {
+        id: row.id,
+        name: row.name,
+        type: row.type,
+        event: row.event,
+        subject: row.subject,
+        content: row.content,
+        variables: row.variables ? JSON.parse(row.variables) : [],
+        isActive: row.is_active,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      };
+    } catch (error) {
+      console.error('Error checking template existence:', error);
+      return null;
     }
   }
 

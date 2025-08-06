@@ -67,3 +67,17 @@ Preferred communication style: Simple, everyday language.
     - bcryptjs (password hashing)
     - Zod (schema validation)
     - XLSX (Excel/CSV parsing for bulk uploads)
+
+## Recent Changes
+
+- **July 30, 2025**: ✅ Fixed template creation unique constraint violations
+  - RESOLVED: Database template creation errors causing server startup warnings
+  - IMPLEMENTED: Smart template existence checking before insertion
+  - IMPROVED: Clean server startup without SQL constraint violation errors
+  - ENHANCED: Proper error handling for duplicate template prevention
+
+- **July 30, 2025**: ✅ Hidden customer login option from header navigation
+  - REMOVED: Customer login button from header navigation (both desktop and mobile versions)
+  - MAINTAINED: Direct URL access to /customer/login still functional for existing customer dashboard usage
+  - STREAMLINED: Header navigation now only shows referral partner login, reducing user confusion
+  - IMPROVED: Cleaner navigation experience focusing on main BBG registration and claim flows

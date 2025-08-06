@@ -232,6 +232,8 @@ export const customValidations = {
       return null; // Let the schema handle basic validation
     }
 
+    console.log('🔍 Acer IMEI Validation triggered for:', imei);
+
     try {
       // Check if device already registered in customers table
       const existsResponse = await fetch('/api/check-device-registration', {
@@ -242,32 +244,40 @@ export const customValidations = {
       
       if (existsResponse.ok) {
         const existsData = await existsResponse.json();
+        console.log('📋 Device registration check result:', existsData);
         if (existsData.exists) {
           return "This device is already registered";
         }
       }
 
       // Validate IMEI against Acer database
+      console.log('🔎 Validating against Acer IMEI database...');
       const response = await fetch('/api/validate-acer-imei', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imei })
       });
       
+      console.log('🔎 Acer validation response status:', response.status);
+      
       if (!response.ok) {
+        console.error('❌ Acer IMEI validation failed with status:', response.status);
         return "Unable to validate IMEI at this time";
       }
       
       const data = await response.json();
+      console.log('🔎 Acer validation data:', data);
       
       if (!data.valid) {
+        console.log('❌ IMEI not valid in Acer database');
         return data.message || "IMEI not found in Acer database. Please verify the serial number.";
       }
       
       // IMEI is valid
+      console.log('✅ IMEI is valid in Acer database');
       return null;
     } catch (error) {
-      console.error('Acer IMEI validation error:', error);
+      console.error('❌ Acer IMEI validation error:', error);
       return "Unable to validate IMEI. Please check your connection.";
     }
   }

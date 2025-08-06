@@ -2272,13 +2272,20 @@ export class SqlServerStorage implements IStorage {
     } catch (error: any) {
       console.log(`Device-specific query failed for ${deviceType}, using fallback:`, error.message);
       
-      // Fallback to basic query and filter by device type
-      const fallbackQuery = `SELECT *, 'mobile' as device_type FROM claim_value_slabs WHERE is_active = 1 ORDER BY min_months ASC`;
+      // Get all slabs since device_type column doesn't exist yet
+      const fallbackQuery = `SELECT * FROM claim_value_slabs WHERE is_active = 1 ORDER BY min_months ASC`;
       const fallbackResult = await db.pool.request().query(fallbackQuery);
       const allSlabs = fallbackResult.recordset.map(row => this.mapClaimValueSlabFromDb(row));
       
-      // Filter by device type if needed (for compatibility)
-      return deviceType === 'mobile' ? allSlabs : [];
+      // For fallback mode, distribute slabs between mobile and laptop
+      // First 8 slabs are for mobile, remaining are for laptop
+      if (deviceType === 'mobile') {
+        return allSlabs.slice(0, 8).map(slab => ({ ...slab, deviceType: 'mobile' }));
+      } else if (deviceType === 'laptop') {
+        return allSlabs.slice(8).map(slab => ({ ...slab, deviceType: 'laptop' }));
+      }
+      
+      return [];
     }
   }
 

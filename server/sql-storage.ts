@@ -2280,12 +2280,21 @@ export class SqlServerStorage implements IStorage {
       const fallbackResult = await db.pool.request().query(fallbackQuery);
       const allSlabs = fallbackResult.recordset.map(row => this.mapClaimValueSlabFromDb(row));
       
-      // For fallback mode, distribute slabs between mobile and laptop
-      // First 8 slabs are for mobile, remaining are for laptop
+      // For fallback mode, manually assign device types based on known IDs
+      // Mobile slabs: 1-14 (original), plus any others we know are mobile
+      // Laptop slabs: 25-30 (newly created laptop slabs)
+      const reassignedSlabs = allSlabs.map((slab) => {
+        // Known laptop IDs: 25, 26, 27, 28, 29, 30
+        if ([25, 26, 27, 28, 29, 30].includes(slab.id)) {
+          return { ...slab, deviceType: 'laptop' };
+        }
+        return { ...slab, deviceType: 'mobile' };
+      });
+      
       if (deviceType === 'mobile') {
-        return allSlabs.slice(0, 8).map(slab => ({ ...slab, deviceType: 'mobile' }));
+        return reassignedSlabs.filter(slab => slab.deviceType === 'mobile');
       } else if (deviceType === 'laptop') {
-        return allSlabs.slice(8).map(slab => ({ ...slab, deviceType: 'laptop' }));
+        return reassignedSlabs.filter(slab => slab.deviceType === 'laptop');
       }
       
       return [];
@@ -2383,7 +2392,7 @@ export class SqlServerStorage implements IStorage {
   private mapClaimValueSlabFromDb(row: any): ClaimValueSlab {
     return {
       id: row.id,
-      deviceType: row.device_type || 'mobile',
+      deviceType: row.device_type || row.deviceType || 'mobile', // Preserve existing deviceType from memory
       minMonths: row.min_months,
       maxMonths: row.max_months,
       percentage: row.percentage,

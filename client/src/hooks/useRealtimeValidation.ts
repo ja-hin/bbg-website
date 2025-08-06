@@ -192,15 +192,16 @@ export const customValidations = {
         }
       }
 
-      // Validate IMEI against Acer database using absolute URL to avoid routing issues
-      const baseUrl = window.location.origin;
-      const response = await fetch(`${baseUrl}/api/validate-acer-imei`, {
+      // Validate IMEI against Acer database
+      const response = await fetch('/api/validate-acer-imei', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Cache-Control': 'no-cache'
+          'Cache-Control': 'no-cache',
+          'X-Requested-With': 'XMLHttpRequest'
         },
+        credentials: 'same-origin',
         body: JSON.stringify({ imei })
       });
       

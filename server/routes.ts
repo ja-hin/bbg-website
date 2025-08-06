@@ -3341,9 +3341,17 @@ Required: GUPSHUP_API_KEY environment variable
         ORDER BY uploaded_at DESC
       `);
 
+      // Prevent caching to ensure fresh data
+      res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+
       res.json({
         data: result.recordset,
-        total: result.recordset.length
+        total: result.recordset.length,
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       console.error("Error fetching Acer IMEI data:", error);

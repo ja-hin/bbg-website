@@ -14,10 +14,13 @@ export default function AdminAcerImei() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch Acer IMEI data
-  const { data: imeiData, isLoading } = useQuery({
+  // Fetch Acer IMEI data with force refresh
+  const { data: imeiData, isLoading, refetch } = useQuery({
     queryKey: ['/api/admin/acer-imei'],
-    select: (response: any) => response.data || []
+    select: (response: any) => response.data || [],
+    refetchInterval: 5000, // Refresh every 5 seconds for real-time updates
+    staleTime: 0, // Always consider data stale
+    cacheTime: 0, // Don't cache the response
   });
 
   // Upload mutation
@@ -117,15 +120,30 @@ export default function AdminAcerImei() {
             <h1 className="text-2xl font-bold">Acer IMEI Management</h1>
             <p className="text-gray-600">Upload and manage Acer device IMEI/Serial numbers for validation</p>
           </div>
-          <Button 
-            onClick={downloadSampleFile}
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-2"
-          >
-            <Download className="h-4 w-4" />
-            Download Sample
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={() => {
+                queryClient.invalidateQueries({ queryKey: ['/api/admin/acer-imei'] });
+                refetch();
+              }}
+              variant="outline"
+              size="sm"
+              disabled={isLoading}
+              className="flex items-center gap-2"
+            >
+              <Database className="h-4 w-4" />
+              {isLoading ? "Refreshing..." : "Refresh"}
+            </Button>
+            <Button 
+              onClick={downloadSampleFile}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Download className="h-4 w-4" />
+              Download Sample
+            </Button>
+          </div>
         </div>
 
         <div className="grid gap-6">

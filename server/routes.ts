@@ -660,10 +660,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         // Create customer registration with PayU transaction ID
+        // Clean up file data for SQL insertion - PayU payments don't include files
+        const {invoiceFile, ...cleanCustomerData} = customerData;
         const submitData = {
-          ...customerData,
+          ...cleanCustomerData,
           paymentIntentId: `payu_${txnid}`,
           isVerified: true
+          // Remove invoiceFile completely for PayU payments
         };
 
         const customer = await storage.createCustomer(submitData);
@@ -677,6 +680,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           cartRequest.input('email', sql.VarChar, customer.email);
           cartRequest.input('device_type', sql.VarChar, customer.deviceType);
           cartRequest.input('stage', sql.VarChar, 'payment_completed');
+          cartRequest.input('session_id', sql.VarChar, `payu_${txnid}`); // Use txnid as session identifier
           cartRequest.input('metadata', sql.NVarChar, JSON.stringify({
             amount: amount,
             paymentMethod: 'payu',
@@ -685,8 +689,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }));
           
           await cartRequest.query(`
-            INSERT INTO cart_abandonments (name, contact, email, device_type, stage, metadata, created_at)
-            VALUES (@name, @contact, @email, @device_type, @stage, @metadata, GETDATE())
+            INSERT INTO cart_abandonments (name, contact, email, device_type, stage, session_id, metadata, created_at)
+            VALUES (@name, @contact, @email, @device_type, @stage, @session_id, @metadata, GETDATE())
           `);
           
           console.log('✅ Cart abandonment completion tracked for:', customer.contact);

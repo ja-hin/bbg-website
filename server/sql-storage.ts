@@ -995,7 +995,10 @@ export class SqlServerStorage implements IStorage {
     request.input('paymentIntentId', sql.NVarChar, insertCustomer.paymentIntentId || null);
     request.input('isVerified', sql.Bit, insertCustomer.isVerified || false);
     request.input('registrationSource', sql.NVarChar, (insertCustomer as any).registrationSource || 'regular');
-    request.input('invoiceFile', sql.NVarChar, (insertCustomer as any).invoiceFile || null);
+    // Handle invoiceFile - ensure it's a valid string or null
+    const invoiceFileValue = (insertCustomer as any).invoiceFile;
+    const validInvoiceFile = (invoiceFileValue && typeof invoiceFileValue === 'string') ? invoiceFileValue : null;
+    request.input('invoiceFile', sql.NVarChar, validInvoiceFile);
 
     const result = await request.query(query);
 

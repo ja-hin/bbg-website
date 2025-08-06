@@ -170,9 +170,11 @@ function PayUPaymentForm({
             email: customerData.email,
             deviceType: customerData.deviceType,
             stage: 'payment_initiated',
+            sessionId: payuParams.txnid, // Use PayU transaction ID as session
             metadata: {
               amount: amount,
-              paymentMethod: 'payu'
+              paymentMethod: 'payu',
+              transactionId: payuParams.txnid
             }
           }
         });

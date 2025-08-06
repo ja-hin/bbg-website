@@ -3619,7 +3619,7 @@ Required: GUPSHUP_API_KEY environment variable
         imeiRequest.input('imei', sql.VarChar, imeiSerial);
         
         const imeiResult = await imeiRequest.query(`
-          SELECT id, imei, status FROM acer_imei_validation 
+          SELECT imei, model, brand FROM acer_imei_validation 
           WHERE imei = @imei
         `);
         
@@ -3627,14 +3627,6 @@ Required: GUPSHUP_API_KEY environment variable
           return res.status(400).json({
             success: false,
             message: "IMEI/Serial number not found in Acer database. Please verify your device IMEI."
-          });
-        }
-        
-        const imeiRecord = imeiResult.recordset[0];
-        if (imeiRecord.status === 'used') {
-          return res.status(400).json({
-            success: false,
-            message: "This IMEI/Serial number has already been registered for BBG."
           });
         }
         

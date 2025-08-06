@@ -38,8 +38,7 @@ export default function AdminClaimSlabs() {
     mutationFn: async (data: any) => {
       await apiRequest('/api/admin/claim-value-slabs', {
         method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' }
+        body: data
       });
     },
     onSuccess: () => {
@@ -63,10 +62,11 @@ export default function AdminClaimSlabs() {
   // Update claim value slab mutation
   const updateSlabMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: any }) => {
+      console.log('Updating slab with data:', data);
+      
       await apiRequest(`/api/admin/claim-value-slabs/${id}`, {
         method: 'PUT',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' }
+        body: data
       });
     },
     onSuccess: () => {
@@ -113,12 +113,56 @@ export default function AdminClaimSlabs() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate form data first
+    if (!formData.minMonths || !formData.maxMonths || !formData.percentage) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const minMonths = parseInt(formData.minMonths);
+    const maxMonths = parseInt(formData.maxMonths);
+    const percentage = parseInt(formData.percentage);
+
+    // Validate ranges
+    if (isNaN(minMonths) || isNaN(maxMonths) || isNaN(percentage)) {
+      toast({
+        title: "Error",
+        description: "Please enter valid numbers",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (minMonths >= maxMonths) {
+      toast({
+        title: "Error",
+        description: "Min months must be less than max months",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (percentage < 0 || percentage > 100) {
+      toast({
+        title: "Error",
+        description: "Percentage must be between 0 and 100",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     const data = {
-      minMonths: parseInt(formData.minMonths),
-      maxMonths: parseInt(formData.maxMonths),
-      percentage: parseInt(formData.percentage),
+      minMonths,
+      maxMonths,
+      percentage,
       isActive: formData.isActive
     };
+
+    console.log('Form data to submit:', data);
 
     if (editingSlab) {
       updateSlabMutation.mutate({ id: editingSlab.id, data });

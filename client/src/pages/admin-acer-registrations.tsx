@@ -1,104 +1,95 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AdminLayout } from "@/components/admin-layout";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { AdminLayout } from "@/components/admin-layout";
-import { 
-  Search, 
-  Eye, 
-  Download, 
-  Calendar, 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Smartphone, 
-  Laptop,
-  User,
-  CreditCard,
-  FileText,
-  Building,
-  CheckCircle
-} from "lucide-react";
+import { Search, Download, Eye, Calendar, User, Smartphone, FileText } from "lucide-react";
+import { format } from "date-fns";
 
 interface AcerRegistration {
   id: number;
-  registration_id: string;
-  device_type: string;
-  imei_serial: string;
-  brand: string;
   name: string;
-  model: string;
+  contact: string;
   email: string;
-  phone: string;
-  purchase_price: string;
-  alternate_phone?: string;
-  purchase_date: string;
-  address_line1: string;
-  address_line2?: string;
-  invoice_file_path?: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
+  pincode: string;
+  deviceType: string;
+  serialNumber: string;
+  brand: string;
+  modelName: string;
+  invoiceValue: number;
+  dateOfPurchase: string;
+  sellerCode: string;
+  voucherCode: string;
+  paymentIntentId: string;
+  isVerified: boolean;
+  registrationSource: string;
+  createdAt: string;
 }
 
 export default function AdminAcerRegistrations() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRegistration, setSelectedRegistration] = useState<AcerRegistration | null>(null);
 
-  const { data: registrations = [], isLoading, refetch } = useQuery({
-    queryKey: ["/api/admin/acer-registrations"],
+  const { data: registrations = [], isLoading, error } = useQuery({
+    queryKey: ['/api/admin/acer-registrations'],
+    refetchInterval: 30000, // Refresh every 30 seconds
   });
 
-  const filteredRegistrations = registrations.filter((reg: AcerRegistration) =>
-    reg.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    reg.registration_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    reg.phone.includes(searchTerm) ||
-    reg.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    reg.model.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredRegistrations = registrations.filter((registration: AcerRegistration) =>
+    registration.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    registration.contact.includes(searchTerm) ||
+    registration.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    registration.serialNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    registration.voucherCode.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-IN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
+    try {
+      return format(new Date(dateString), 'dd MMM yyyy, HH:mm');
+    } catch {
+      return dateString;
+    }
   };
 
-  const formatPrice = (price: string) => {
-    return `₹${parseFloat(price).toLocaleString('en-IN')}`;
-  };
+  const exportToCSV = () => {
+    const headers = [
+      'ID', 'Name', 'Contact', 'Email', 'Device Type', 'Serial Number',
+      'Brand', 'Model', 'Invoice Value', 'Purchase Date', 'Seller Code',
+      'Voucher Code', 'Payment Status', 'Verified', 'Registration Date'
+    ];
 
-  const handleDownloadData = () => {
-    const csvContent = [
-      [
-        'Registration ID', 'Name', 'Device Type', 'Brand', 'Model', 'IMEI/Serial',
-        'Email', 'Phone', 'Alternate Phone', 'Purchase Price', 'Purchase Date',
-        'Address Line 1', 'Address Line 2', 'Status', 'Registration Date'
-      ],
-      ...filteredRegistrations.map((reg: AcerRegistration) => [
-        reg.registration_id,
-        reg.name,
-        reg.device_type,
-        reg.brand,
-        reg.model,
-        reg.imei_serial,
-        reg.email,
-        reg.phone,
-        reg.alternate_phone || '',
-        reg.purchase_price,
-        formatDate(reg.purchase_date),
-        reg.address_line1,
-        reg.address_line2 || '',
-        reg.status,
-        formatDate(reg.created_at)
-      ])
-    ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    const csvData = filteredRegistrations.map((reg: AcerRegistration) => [
+      reg.id,
+      reg.name,
+      reg.contact,
+      reg.email,
+      reg.deviceType,
+      reg.serialNumber,
+      reg.brand,
+      reg.modelName,
+      reg.invoiceValue,
+      reg.dateOfPurchase,
+      reg.sellerCode || 'N/A',
+      reg.voucherCode,
+      reg.paymentIntentId ? 'Paid' : 'Pending',
+      reg.isVerified ? 'Yes' : 'No',
+      formatDate(reg.createdAt)
+    ]);
+
+    const csvContent = [headers, ...csvData]
+      .map(row => row.map(cell => `"${cell}"`).join(','))
+      .join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -111,288 +102,211 @@ export default function AdminAcerRegistrations() {
     document.body.removeChild(link);
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'registered':
-        return 'bg-green-100 text-green-800';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'processing':
-        return 'bg-blue-100 text-blue-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+  if (error) {
+    return (
+      <AdminLayout>
+        <div className="p-6">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-center text-red-600">
+                Error loading Acer registrations. Please try again.
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+      <div className="p-6 space-y-6">
+        <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Acer BBG Registrations</h1>
-            <p className="text-muted-foreground">
-              Manage and view all Acer device BBG registrations
-            </p>
+            <h1 className="text-3xl font-bold">Acer BBG Registrations</h1>
+            <p className="text-gray-600">Manage Acer-specific device registrations</p>
           </div>
-          <div className="flex space-x-2">
-            <Button onClick={() => refetch()} variant="outline">
-              Refresh
-            </Button>
-            <Button onClick={handleDownloadData} className="flex items-center space-x-2">
-              <Download className="h-4 w-4" />
-              <span>Export CSV</span>
-            </Button>
-          </div>
+          <Button onClick={exportToCSV} disabled={!filteredRegistrations.length}>
+            <Download className="h-4 w-4 mr-2" />
+            Export CSV
+          </Button>
         </div>
 
-        {/* Stats Cards */}
+        {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Registrations</CardTitle>
-              <CheckCircle className="h-4 w-4 text-muted-foreground" />
+              <User className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{registrations.length}</div>
             </CardContent>
           </Card>
+          
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Mobile Devices</CardTitle>
-              <Smartphone className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Verified</CardTitle>
+              <Eye className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
-                {registrations.filter((reg: AcerRegistration) => reg.device_type === 'mobile').length}
+              <div className="text-2xl font-bold text-green-600">
+                {registrations.filter((r: AcerRegistration) => r.isVerified).length}
               </div>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Laptop Devices</CardTitle>
-              <Laptop className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {registrations.filter((reg: AcerRegistration) => reg.device_type === 'laptop').length}
-              </div>
-            </CardContent>
-          </Card>
+          
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Value</CardTitle>
-              <CreditCard className="h-4 w-4 text-muted-foreground" />
+              <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                ₹{registrations.reduce((sum: number, reg: AcerRegistration) => 
-                  sum + parseFloat(reg.purchase_price || '0'), 0
-                ).toLocaleString('en-IN')}
+                {formatCurrency(registrations.reduce((sum: number, r: AcerRegistration) => sum + r.invoiceValue, 0))}
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Paid Registrations</CardTitle>
+              <Smartphone className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-blue-600">
+                {registrations.filter((r: AcerRegistration) => r.paymentIntentId).length}
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Search */}
-        <div className="flex items-center space-x-2">
-          <div className="relative flex-1">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by name, registration ID, phone, email, or model..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8"
-            />
-          </div>
-        </div>
+        {/* Search and Filters */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Search & Filter</CardTitle>
+            <CardDescription>Search by name, contact, email, serial number, or voucher code</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search registrations..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Registrations Table */}
         <Card>
           <CardHeader>
             <CardTitle>Acer Registrations ({filteredRegistrations.length})</CardTitle>
+            <CardDescription>
+              {isLoading ? "Loading registrations..." : `Showing ${filteredRegistrations.length} of ${registrations.length} registrations`}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
-              <div className="text-center py-8">Loading...</div>
-            ) : filteredRegistrations.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                {searchTerm ? 'No registrations found matching your search.' : 'No Acer registrations yet.'}
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-4 font-medium">Registration ID</th>
-                      <th className="text-left p-4 font-medium">Customer</th>
-                      <th className="text-left p-4 font-medium">Device</th>
-                      <th className="text-left p-4 font-medium">Purchase Price</th>
-                      <th className="text-left p-4 font-medium">Date</th>
-                      <th className="text-left p-4 font-medium">Status</th>
-                      <th className="text-left p-4 font-medium">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredRegistrations.map((registration: AcerRegistration) => (
-                      <tr key={registration.id} className="border-b hover:bg-gray-50">
-                        <td className="p-4">
-                          <div className="font-mono text-sm">{registration.registration_id}</div>
-                        </td>
-                        <td className="p-4">
-                          <div className="font-medium">{registration.name}</div>
-                          <div className="text-sm text-gray-500">{registration.phone}</div>
-                        </td>
-                        <td className="p-4">
-                          <div className="flex items-center space-x-2">
-                            {registration.device_type === 'mobile' ? (
-                              <Smartphone className="h-4 w-4 text-blue-600" />
-                            ) : (
-                              <Laptop className="h-4 w-4 text-purple-600" />
-                            )}
-                            <div>
-                              <div className="font-medium">{registration.brand} {registration.model}</div>
-                              <div className="text-sm text-gray-500 capitalize">{registration.device_type}</div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Device</TableHead>
+                    <TableHead>Purchase Details</TableHead>
+                    <TableHead>BBG Details</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Registration Date</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8">
+                        Loading registrations...
+                      </TableCell>
+                    </TableRow>
+                  ) : filteredRegistrations.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                        {searchTerm ? "No registrations match your search" : "No Acer registrations found"}
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredRegistrations.map((registration: AcerRegistration) => (
+                      <TableRow key={registration.id}>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="font-medium">{registration.name}</div>
+                            <div className="text-sm text-gray-500">{registration.contact}</div>
+                            <div className="text-sm text-gray-500">{registration.email}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="font-medium">{registration.brand} {registration.modelName}</div>
+                            <div className="text-sm text-gray-500">
+                              <Badge variant="outline" className="text-xs">
+                                {registration.deviceType}
+                              </Badge>
+                            </div>
+                            <div className="text-sm font-mono">{registration.serialNumber}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="font-medium">{formatCurrency(registration.invoiceValue)}</div>
+                            <div className="text-sm text-gray-500 flex items-center">
+                              <Calendar className="h-3 w-3 mr-1" />
+                              {registration.dateOfPurchase}
                             </div>
                           </div>
-                        </td>
-                        <td className="p-4">
-                          <div className="font-medium">{formatPrice(registration.purchase_price)}</div>
-                        </td>
-                        <td className="p-4">
-                          <div className="text-sm">{formatDate(registration.created_at)}</div>
-                        </td>
-                        <td className="p-4">
-                          <Badge className={getStatusColor(registration.status)}>
-                            {registration.status}
-                          </Badge>
-                        </td>
-                        <td className="p-4">
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setSelectedRegistration(registration)}
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
+                              {registration.voucherCode}
+                            </div>
+                            {registration.sellerCode && (
+                              <div className="text-sm text-gray-500">
+                                Seller: {registration.sellerCode}
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-2">
+                            <Badge 
+                              variant={registration.isVerified ? "default" : "secondary"}
+                              className={registration.isVerified ? "bg-green-600" : ""}
+                            >
+                              {registration.isVerified ? "Verified" : "Unverified"}
+                            </Badge>
+                            <div>
+                              <Badge 
+                                variant={registration.paymentIntentId ? "default" : "destructive"}
+                                className={registration.paymentIntentId ? "bg-blue-600" : ""}
                               >
-                                <Eye className="h-4 w-4 mr-1" />
-                                View
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-4xl max-h-[90vh]">
-                              <DialogHeader>
-                                <DialogTitle>Acer Registration Details</DialogTitle>
-                              </DialogHeader>
-                              {selectedRegistration && (
-                                <ScrollArea className="max-h-[70vh]">
-                                  <div className="space-y-6 p-4">
-                                    {/* Registration Info */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                      <div className="space-y-4">
-                                        <div>
-                                          <h3 className="font-semibold mb-3 flex items-center">
-                                            <User className="h-4 w-4 mr-2" />
-                                            Customer Information
-                                          </h3>
-                                          <div className="space-y-2 text-sm">
-                                            <div><strong>Name:</strong> {selectedRegistration.name}</div>
-                                            <div className="flex items-center">
-                                              <Mail className="h-3 w-3 mr-2" />
-                                              {selectedRegistration.email}
-                                            </div>
-                                            <div className="flex items-center">
-                                              <Phone className="h-3 w-3 mr-2" />
-                                              {selectedRegistration.phone}
-                                            </div>
-                                            {selectedRegistration.alternate_phone && (
-                                              <div className="flex items-center">
-                                                <Phone className="h-3 w-3 mr-2" />
-                                                {selectedRegistration.alternate_phone} (Alt)
-                                              </div>
-                                            )}
-                                          </div>
-                                        </div>
-
-                                        <div>
-                                          <h3 className="font-semibold mb-3 flex items-center">
-                                            <MapPin className="h-4 w-4 mr-2" />
-                                            Address
-                                          </h3>
-                                          <div className="text-sm space-y-1">
-                                            <div>{selectedRegistration.address_line1}</div>
-                                            {selectedRegistration.address_line2 && (
-                                              <div>{selectedRegistration.address_line2}</div>
-                                            )}
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <div className="space-y-4">
-                                        <div>
-                                          <h3 className="font-semibold mb-3 flex items-center">
-                                            {selectedRegistration.device_type === 'mobile' ? (
-                                              <Smartphone className="h-4 w-4 mr-2" />
-                                            ) : (
-                                              <Laptop className="h-4 w-4 mr-2" />
-                                            )}
-                                            Device Information
-                                          </h3>
-                                          <div className="space-y-2 text-sm">
-                                            <div><strong>Type:</strong> <span className="capitalize">{selectedRegistration.device_type}</span></div>
-                                            <div><strong>Brand:</strong> {selectedRegistration.brand}</div>
-                                            <div><strong>Model:</strong> {selectedRegistration.model}</div>
-                                            <div><strong>IMEI/Serial:</strong> {selectedRegistration.imei_serial}</div>
-                                          </div>
-                                        </div>
-
-                                        <div>
-                                          <h3 className="font-semibold mb-3 flex items-center">
-                                            <CreditCard className="h-4 w-4 mr-2" />
-                                            Purchase Information
-                                          </h3>
-                                          <div className="space-y-2 text-sm">
-                                            <div><strong>Price:</strong> {formatPrice(selectedRegistration.purchase_price)}</div>
-                                            <div><strong>Date:</strong> {formatDate(selectedRegistration.purchase_date)}</div>
-                                            <div><strong>Status:</strong> 
-                                              <Badge className={`ml-2 ${getStatusColor(selectedRegistration.status)}`}>
-                                                {selectedRegistration.status}
-                                              </Badge>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <Separator />
-
-                                    {/* Registration Details */}
-                                    <div>
-                                      <h3 className="font-semibold mb-3 flex items-center">
-                                        <FileText className="h-4 w-4 mr-2" />
-                                        Registration Details
-                                      </h3>
-                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                        <div><strong>Registration ID:</strong> <span className="font-mono">{selectedRegistration.registration_id}</span></div>
-                                        <div><strong>Registration Date:</strong> {formatDate(selectedRegistration.created_at)}</div>
-                                        {selectedRegistration.invoice_file_path && (
-                                          <div><strong>Invoice:</strong> 
-                                            <span className="text-blue-600 ml-1">File uploaded</span>
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </ScrollArea>
-                              )}
-                            </DialogContent>
-                          </Dialog>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                                {registration.paymentIntentId ? "Paid" : "Pending"}
+                              </Badge>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            {formatDate(registration.createdAt)}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       </div>

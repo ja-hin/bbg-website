@@ -3351,6 +3351,41 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // Admin endpoint to view Acer BBG registrations
+  app.get('/api/admin/acer-registrations', isAdminAuthenticated, async (req, res) => {
+    try {
+      await db.connectDB();
+      const result = await db.pool.request().query(`
+        SELECT 
+          id,
+          name,
+          contact,
+          email,
+          pincode,
+          device_type as deviceType,
+          serial_number as serialNumber,
+          brand,
+          model_name as modelName,
+          invoice_value as invoiceValue,
+          date_of_purchase as dateOfPurchase,
+          seller_code as sellerCode,
+          voucher_code as voucherCode,
+          payment_intent_id as paymentIntentId,
+          is_verified as isVerified,
+          registration_source as registrationSource,
+          created_at as createdAt
+        FROM customers 
+        WHERE registration_source = 'acer'
+        ORDER BY created_at DESC
+      `);
+
+      res.json(result.recordset);
+    } catch (error: any) {
+      console.error("Error fetching Acer registrations:", error);
+      res.status(500).json({ message: "Failed to fetch Acer registrations" });
+    }
+  });
+
   // Register test routes for individual service testing
   // File management API endpoints for S3
   app.get('/api/files/signed-url/:key', async (req, res) => {

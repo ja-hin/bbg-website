@@ -790,9 +790,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      const validatedData = insertCustomerSchema.parse(customerData);
+      // Get active claim value slab to associate with registration
+      let activeClaimValueSlab;
+      try {
+        const activeSlabs = await storage.getActiveClaimValueSlabs();
+        // For now, get the first active slab (you can add more logic here)
+        activeClaimValueSlab = activeSlabs.length > 0 ? activeSlabs[0] : null;
+      } catch (error) {
+        console.log('Warning: Could not fetch active claim value slab:', error);
+        activeClaimValueSlab = null;
+      }
+
+      const validatedData = insertCustomerSchema.parse({
+        ...customerData,
+        claimValueSlabId: activeClaimValueSlab?.id || null
+      });
       const customer = await storage.createCustomer(validatedData);
-      console.log("Customer created with voucher code:", customer.voucherCode);
+      console.log("Customer created with voucher code:", customer.voucherCode, "and claim slab ID:", activeClaimValueSlab?.id);
 
       // Send welcome notifications
       try {
@@ -957,18 +971,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Calculate claim percentage based on device age (using purchase date, not registration date)
       const purchaseDate = new Date(customer.dateOfPurchase || customer.createdAt!);
       const monthsDiff = Math.floor((Date.now() - purchaseDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
-      let claimPercentage = 0;
       
-      if (monthsDiff >= 6 && monthsDiff <= 12) claimPercentage = 70;
-      else if (monthsDiff >= 13 && monthsDiff <= 18) claimPercentage = 60;
-      else if (monthsDiff >= 19 && monthsDiff <= 24) claimPercentage = 50;
-      else if (monthsDiff >= 25 && monthsDiff <= 30) claimPercentage = 40;
-      else if (monthsDiff >= 31 && monthsDiff <= 36) claimPercentage = 30;
-      else if (monthsDiff >= 37 && monthsDiff <= 48) claimPercentage = 25;
-      else if (monthsDiff >= 49 && monthsDiff <= 60) claimPercentage = 20;
+      console.log('Date calculation:', {
+        currentDate: new Date().toISOString(),
+        purchaseDate: purchaseDate.toISOString(),
+        monthsDiff
+      });
+
+      // Try to use the claim value slab that was active when customer registered
+      let claimPercentage = 0;
+      let applicableSlab = null;
+      
+      try {
+        if (customer.claimValueSlabId) {
+          // Use the slab that was active when customer registered
+          applicableSlab = await storage.getClaimValueSlabById(customer.claimValueSlabId);
+          if (applicableSlab && applicableSlab.isActive && 
+              monthsDiff >= applicableSlab.minMonths && monthsDiff <= applicableSlab.maxMonths) {
+            claimPercentage = applicableSlab.percentage;
+            console.log('Using registered claim slab:', applicableSlab);
+          }
+        }
+        
+        // If no registered slab or it doesn't match current age, use current active slabs
+        if (claimPercentage === 0) {
+          const activeSlabs = await storage.getActiveClaimValueSlabs();
+          applicableSlab = activeSlabs.find(slab => 
+            monthsDiff >= slab.minMonths && monthsDiff <= slab.maxMonths
+          );
+          
+          if (applicableSlab) {
+            claimPercentage = applicableSlab.percentage;
+            console.log('Using current active slab:', applicableSlab);
+          }
+        }
+      } catch (slabError) {
+        console.error('Error fetching claim value slabs:', slabError);
+        // Fallback to hardcoded values if database fails
+        if (monthsDiff >= 6 && monthsDiff <= 12) claimPercentage = 70;
+        else if (monthsDiff >= 13 && monthsDiff <= 18) claimPercentage = 60;
+        else if (monthsDiff >= 19 && monthsDiff <= 24) claimPercentage = 50;
+        else if (monthsDiff >= 25 && monthsDiff <= 30) claimPercentage = 40;
+        else if (monthsDiff >= 31 && monthsDiff <= 36) claimPercentage = 30;
+        else if (monthsDiff >= 37 && monthsDiff <= 48) claimPercentage = 20;
+        else if (monthsDiff >= 49 && monthsDiff <= 60) claimPercentage = 10;
+        
+        console.log('Using fallback hardcoded percentage:', claimPercentage);
+      }
 
       if (claimPercentage === 0) {
-        return res.status(400).json({ message: "Device is not eligible for claim. BBG coverage is valid for 6-60 months." });
+        return res.status(400).json({ 
+          message: "Device is not yet eligible for claim or claim period has expired.",
+          deviceAgeMonths: monthsDiff,
+          eligibilityNote: "BBG coverage is typically valid from 6 months after purchase."
+        });
       }
 
       const claimAmount = (customer.invoiceValue * claimPercentage) / 100;
@@ -3758,6 +3814,17 @@ Required: GUPSHUP_API_KEY environment variable
         }
       }
 
+      // Get active claim value slab to associate with registration
+      let activeClaimValueSlab;
+      try {
+        const activeSlabs = await storage.getActiveClaimValueSlabs();
+        // For now, get the first active slab (you can add more logic here)
+        activeClaimValueSlab = activeSlabs.length > 0 ? activeSlabs[0] : null;
+      } catch (error) {
+        console.log('Warning: Could not fetch active claim value slab:', error);
+        activeClaimValueSlab = null;
+      }
+
       // Create unified customer data structure for Acer registration
       // Note: purchasePrice is already GST-excluded as per form requirement
       const customerData = {
@@ -3774,7 +3841,8 @@ Required: GUPSHUP_API_KEY environment variable
         sellerCode: null, // No seller code for direct Acer registrations
         isVerified: true, // Auto-verify Acer registrations
         invoiceFile: invoiceFilePath,
-        registrationSource: 'acer' // Track registration source
+        registrationSource: 'acer', // Track registration source
+        claimValueSlabId: activeClaimValueSlab?.id || null // Track which slab was active during registration
       };
 
       // Use existing storage system to create customer with unified voucher code
@@ -4096,6 +4164,139 @@ Required: GUPSHUP_API_KEY environment variable
     } catch (error: any) {
       console.error('Referral partner export error:', error);
       res.status(500).json({ message: "Failed to export referral partner data" });
+    }
+  });
+
+  // ==============================
+  // CLAIM VALUE SLABS ENDPOINTS
+  // ==============================
+
+  // Get all claim value slabs (for admin)
+  app.get('/api/admin/claim-value-slabs', isAdminAuthenticated, async (req, res) => {
+    try {
+      const slabs = await storage.getAllClaimValueSlabs();
+      res.json(slabs);
+    } catch (error: any) {
+      console.error('Error fetching claim value slabs:', error);
+      res.status(500).json({ message: "Failed to fetch claim value slabs", error: error.message });
+    }
+  });
+
+  // Get active claim value slabs (for public use, e.g., claims form)
+  app.get('/api/claim-value-slabs/active', async (req, res) => {
+    try {
+      const slabs = await storage.getActiveClaimValueSlabs();
+      res.json(slabs);
+    } catch (error: any) {
+      console.error('Error fetching active claim value slabs:', error);
+      res.status(500).json({ message: "Failed to fetch active claim value slabs", error: error.message });
+    }
+  });
+
+  // Create new claim value slab
+  app.post('/api/admin/claim-value-slabs', isAdminAuthenticated, async (req, res) => {
+    try {
+      const { minMonths, maxMonths, percentage, isActive } = req.body;
+
+      // Validate required fields
+      if (!minMonths || !maxMonths || !percentage) {
+        return res.status(400).json({ message: "Missing required fields: minMonths, maxMonths, percentage" });
+      }
+
+      // Validate ranges
+      if (minMonths >= maxMonths) {
+        return res.status(400).json({ message: "minMonths must be less than maxMonths" });
+      }
+
+      if (percentage < 0 || percentage > 100) {
+        return res.status(400).json({ message: "Percentage must be between 0 and 100" });
+      }
+
+      const slab = await storage.createClaimValueSlab({
+        minMonths: parseInt(minMonths),
+        maxMonths: parseInt(maxMonths),
+        percentage: parseInt(percentage),
+        isActive: isActive !== false // Default to true if not specified
+      });
+
+      res.json({ success: true, slab });
+    } catch (error: any) {
+      console.error('Error creating claim value slab:', error);
+      res.status(500).json({ message: "Failed to create claim value slab", error: error.message });
+    }
+  });
+
+  // Update claim value slab
+  app.put('/api/admin/claim-value-slabs/:id', isAdminAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { minMonths, maxMonths, percentage, isActive } = req.body;
+
+      const updates: any = {};
+      if (minMonths !== undefined) updates.minMonths = parseInt(minMonths);
+      if (maxMonths !== undefined) updates.maxMonths = parseInt(maxMonths);
+      if (percentage !== undefined) {
+        if (percentage < 0 || percentage > 100) {
+          return res.status(400).json({ message: "Percentage must be between 0 and 100" });
+        }
+        updates.percentage = parseInt(percentage);
+      }
+      if (isActive !== undefined) updates.isActive = isActive;
+
+      // Validate ranges if both are being updated
+      if (updates.minMonths && updates.maxMonths && updates.minMonths >= updates.maxMonths) {
+        return res.status(400).json({ message: "minMonths must be less than maxMonths" });
+      }
+
+      await storage.updateClaimValueSlab(id, updates);
+      res.json({ success: true, message: "Claim value slab updated successfully" });
+    } catch (error: any) {
+      console.error('Error updating claim value slab:', error);
+      res.status(500).json({ message: "Failed to update claim value slab", error: error.message });
+    }
+  });
+
+  // Delete claim value slab (soft delete - set isActive to false)
+  app.delete('/api/admin/claim-value-slabs/:id', isAdminAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteClaimValueSlab(id);
+      res.json({ success: true, message: "Claim value slab deleted successfully" });
+    } catch (error: any) {
+      console.error('Error deleting claim value slab:', error);
+      res.status(500).json({ message: "Failed to delete claim value slab", error: error.message });
+    }
+  });
+
+  // Get claim percentage for specific device age
+  app.post('/api/claims/calculate-percentage', async (req, res) => {
+    try {
+      const { deviceAgeMonths } = req.body;
+
+      if (!deviceAgeMonths || deviceAgeMonths < 0) {
+        return res.status(400).json({ message: "Invalid device age" });
+      }
+
+      const activeSlabs = await storage.getActiveClaimValueSlabs();
+      const applicableSlab = activeSlabs.find(slab => 
+        deviceAgeMonths >= slab.minMonths && deviceAgeMonths <= slab.maxMonths
+      );
+
+      if (!applicableSlab) {
+        return res.status(400).json({ 
+          message: "No claim percentage available for device age", 
+          deviceAgeMonths 
+        });
+      }
+
+      res.json({
+        deviceAgeMonths,
+        percentage: applicableSlab.percentage,
+        slab: applicableSlab
+      });
+    } catch (error: any) {
+      console.error('Error calculating claim percentage:', error);
+      res.status(500).json({ message: "Failed to calculate claim percentage", error: error.message });
     }
   });
 

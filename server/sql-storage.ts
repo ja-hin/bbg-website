@@ -16,7 +16,9 @@ import {
   type InsertAdminUser,
   type InsertPendingPayment,
   type InsertBrand,
-  type InsertDeviceModel
+  type InsertDeviceModel,
+  type InsertClaimValueSlab,
+  type ClaimValueSlab
 } from "@shared/schema";
 import { db } from "./db";
 import sql from 'mssql';
@@ -105,6 +107,14 @@ export interface IStorage {
   getModelsByBrandId(brandId: number): Promise<DeviceModel[]>;
   updateDeviceModel(id: number, updates: Partial<InsertDeviceModel>): Promise<void>;
   deleteDeviceModel(id: number): Promise<void>;
+
+  // Claim Value Slabs operations
+  createClaimValueSlab(slab: InsertClaimValueSlab): Promise<ClaimValueSlab>;
+  getAllClaimValueSlabs(): Promise<ClaimValueSlab[]>;
+  getActiveClaimValueSlabs(): Promise<ClaimValueSlab[]>;
+  updateClaimValueSlab(id: number, updates: Partial<InsertClaimValueSlab>): Promise<void>;
+  deleteClaimValueSlab(id: number): Promise<void>;
+  getClaimValueSlabById(id: number): Promise<ClaimValueSlab | undefined>;
 }
 
 export class SqlServerStorage implements IStorage {
@@ -228,6 +238,12 @@ export class SqlServerStorage implements IStorage {
         BEGIN
           ALTER TABLE customers ADD invoice_file NVARCHAR(500);
         END
+        
+        -- Add claim_value_slab_id column to track which slab was active during registration
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'claim_value_slab_id')
+        BEGIN
+          ALTER TABLE customers ADD claim_value_slab_id INT;
+        END
       END
 
       -- Create claims table
@@ -267,6 +283,30 @@ export class SqlServerStorage implements IStorage {
         BEGIN
           ALTER TABLE claims ADD pickup_time_slot NVARCHAR(50) DEFAULT '';
         END
+      END
+
+      -- Create claim_value_slabs table for managing depreciation percentages
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'claim_value_slabs')
+      BEGIN
+        CREATE TABLE claim_value_slabs (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          min_months INT NOT NULL,
+          max_months INT NOT NULL,
+          percentage INT NOT NULL,
+          is_active BIT DEFAULT 1,
+          created_at DATETIME2 DEFAULT GETDATE(),
+          updated_at DATETIME2 DEFAULT GETDATE()
+        );
+        
+        -- Insert default claim value slabs
+        INSERT INTO claim_value_slabs (min_months, max_months, percentage, is_active) VALUES
+        (6, 12, 70, 1),
+        (13, 18, 60, 1),
+        (19, 24, 50, 1),
+        (25, 30, 40, 1),
+        (31, 36, 30, 1),
+        (37, 48, 20, 1),
+        (49, 60, 10, 1);
       END
 
       -- Create otp_verifications table
@@ -969,13 +1009,13 @@ export class SqlServerStorage implements IStorage {
       INSERT INTO customers (
         name, contact, email, pincode, device_type, serial_number, 
         brand, model_name, invoice_value, date_of_purchase, seller_code, voucher_code, payment_intent_id, is_verified,
-        registration_source, invoice_file
+        registration_source, invoice_file, claim_value_slab_id
       ) 
       OUTPUT INSERTED.*
       VALUES (
         @name, @contact, @email, @pincode, @deviceType, @serialNumber, 
         @brand, @modelName, @invoiceValue, @dateOfPurchase, @sellerCode, @voucherCode, @paymentIntentId, @isVerified,
-        @registrationSource, @invoiceFile
+        @registrationSource, @invoiceFile, @claimValueSlabId
       )
     `;
 
@@ -999,6 +1039,7 @@ export class SqlServerStorage implements IStorage {
     const invoiceFileValue = (insertCustomer as any).invoiceFile;
     const validInvoiceFile = (invoiceFileValue && typeof invoiceFileValue === 'string') ? invoiceFileValue : null;
     request.input('invoiceFile', sql.NVarChar, validInvoiceFile);
+    request.input('claimValueSlabId', sql.Int, (insertCustomer as any).claimValueSlabId || null);
 
     const result = await request.query(query);
 
@@ -1330,6 +1371,7 @@ export class SqlServerStorage implements IStorage {
       voucherCode: row.voucher_code,
       paymentIntentId: row.payment_intent_id,
       isVerified: Boolean(row.is_verified),
+      claimValueSlabId: row.claim_value_slab_id || null,
       createdAt: row.created_at
     };
   }
@@ -2029,6 +2071,105 @@ export class SqlServerStorage implements IStorage {
       deviceType: row.device_type || 'mobile',
       isActive: row.is_active,
       createdAt: row.created_at
+    };
+  }
+
+  // Claim Value Slabs operations
+  async createClaimValueSlab(slab: InsertClaimValueSlab): Promise<ClaimValueSlab> {
+    await db.connectDB();
+    const query = `
+      INSERT INTO claim_value_slabs (min_months, max_months, percentage, is_active)
+      OUTPUT INSERTED.*
+      VALUES (@minMonths, @maxMonths, @percentage, @isActive)
+    `;
+
+    const request = db.pool.request();
+    request.input('minMonths', sql.Int, slab.minMonths);
+    request.input('maxMonths', sql.Int, slab.maxMonths);
+    request.input('percentage', sql.Int, slab.percentage);
+    request.input('isActive', sql.Bit, slab.isActive ?? true);
+
+    const result = await request.query(query);
+    return this.mapClaimValueSlabFromDb(result.recordset[0]);
+  }
+
+  async getAllClaimValueSlabs(): Promise<ClaimValueSlab[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM claim_value_slabs ORDER BY min_months ASC`;
+    
+    const result = await db.pool.request().query(query);
+    return result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+  }
+
+  async getActiveClaimValueSlabs(): Promise<ClaimValueSlab[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM claim_value_slabs WHERE is_active = 1 ORDER BY min_months ASC`;
+    
+    const result = await db.pool.request().query(query);
+    return result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+  }
+
+  async updateClaimValueSlab(id: number, updates: Partial<InsertClaimValueSlab>): Promise<void> {
+    await db.connectDB();
+    const setParts = [];
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+
+    if (updates.minMonths !== undefined) {
+      setParts.push('min_months = @minMonths');
+      request.input('minMonths', sql.Int, updates.minMonths);
+    }
+    if (updates.maxMonths !== undefined) {
+      setParts.push('max_months = @maxMonths');
+      request.input('maxMonths', sql.Int, updates.maxMonths);
+    }
+    if (updates.percentage !== undefined) {
+      setParts.push('percentage = @percentage');
+      request.input('percentage', sql.Int, updates.percentage);
+    }
+    if (updates.isActive !== undefined) {
+      setParts.push('is_active = @isActive');
+      request.input('isActive', sql.Bit, updates.isActive);
+    }
+
+    if (setParts.length > 0) {
+      setParts.push('updated_at = GETDATE()');
+      const query = `UPDATE claim_value_slabs SET ${setParts.join(', ')} WHERE id = @id`;
+      await request.query(query);
+    }
+  }
+
+  async deleteClaimValueSlab(id: number): Promise<void> {
+    await db.connectDB();
+    const query = `UPDATE claim_value_slabs SET is_active = 0 WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    await request.query(query);
+  }
+
+  async getClaimValueSlabById(id: number): Promise<ClaimValueSlab | undefined> {
+    await db.connectDB();
+    const query = `SELECT * FROM claim_value_slabs WHERE id = @id`;
+    
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    
+    const result = await request.query(query);
+    if (result.recordset.length > 0) {
+      return this.mapClaimValueSlabFromDb(result.recordset[0]);
+    }
+    return undefined;
+  }
+
+  private mapClaimValueSlabFromDb(row: any): ClaimValueSlab {
+    return {
+      id: row.id,
+      minMonths: row.min_months,
+      maxMonths: row.max_months,
+      percentage: row.percentage,
+      isActive: row.is_active,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
     };
   }
 }

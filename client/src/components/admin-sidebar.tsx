@@ -14,7 +14,8 @@ import {
   Settings,
   Home,
   Cloud,
-  Laptop
+  Laptop,
+  Calculator
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -89,6 +90,12 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       href: "/admin/acer-imei",
       icon: Shield,
       active: location === "/admin/acer-imei"
+    },
+    {
+      label: "Claim Value Slabs",
+      href: "/admin/claim-slabs",
+      icon: Calculator,
+      active: location === "/admin/claim-slabs"
     },
     {
       label: "Communication",

@@ -30,6 +30,7 @@ import AdminCartAbandonments from "@/pages/admin-cart-abandonments";
 import AdminStorage from "@/pages/admin-storage";
 import AdminAcerRegistrations from "@/pages/admin-acer-registrations";
 import AdminAcerImei from "@/pages/admin-acer-imei";
+import AdminClaimSlabs from "@/pages/admin-claim-slabs";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import { useAuth } from "@/hooks/useAuth";
@@ -81,6 +82,7 @@ function Router() {
           <AdminAcerImei />
         </Suspense>
       </Route>
+      <Route path="/admin/claim-slabs" component={AdminClaimSlabs} />
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />

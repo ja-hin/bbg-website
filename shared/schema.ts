@@ -63,7 +63,19 @@ export const customers = pgTable("customers", {
   voucherCode: text("voucher_code").notNull().unique(),
   isVerified: boolean("is_verified").default(false),
   registrationSource: text("registration_source").default("regular"), // 'regular' or 'acer'
+  claimValueSlabId: integer("claim_value_slab_id"), // Reference to active slab when registered
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Claim Value Slabs table for managing depreciation percentages
+export const claimValueSlabs = pgTable("claim_value_slabs", {
+  id: serial("id").primaryKey(),
+  minMonths: integer("min_months").notNull(),
+  maxMonths: integer("max_months").notNull(),
+  percentage: integer("percentage").notNull(), // Percentage value (0-100)
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const claims = pgTable("claims", {
@@ -256,6 +268,13 @@ export const insertDeviceModelSchema = createInsertSchema(deviceModels).omit({
   createdAt: true,
 });
 
+export const insertClaimValueSlabSchema = createInsertSchema(claimValueSlabs).omit({
+  id: true,
+  isActive: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type UserRole = typeof userRoles.$inferSelect;
 export type Distributor = typeof distributors.$inferSelect;
 export type Customer = typeof customers.$inferSelect;
@@ -279,3 +298,7 @@ export type InsertPendingPayment = z.infer<typeof insertPendingPaymentSchema>;
 export type InsertBrand = z.infer<typeof insertBrandSchema>;
 export type InsertDeviceModel = z.infer<typeof insertDeviceModelSchema>;
 export type InsertCartAbandonment = typeof cartAbandonments.$inferInsert;
+
+// Claim Value Slabs types
+export type InsertClaimValueSlab = z.infer<typeof insertClaimValueSlabSchema>;
+export type ClaimValueSlab = typeof claimValueSlabs.$inferSelect;

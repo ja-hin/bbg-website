@@ -3337,7 +3337,7 @@ Required: GUPSHUP_API_KEY environment variable
       if (result.recordset.length === 0) {
         return res.json({
           valid: false,
-          message: "IMEI not found in Acer database. Please verify the serial number."
+          message: "IMEI Not Found"
         });
       }
 

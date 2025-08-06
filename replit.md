@@ -75,6 +75,7 @@ Preferred communication style: Simple, everyday language.
   - IMPLEMENTED: Proper database column mapping (`serial_number` vs `serialNumber`) 
   - ENHANCED: Acer IMEI admin panel with 5-second auto-refresh and manual refresh button
   - FIXED: Cache-control headers to prevent stale IMEI data in admin interface
+  - UPDATED: Simplified error message from "IMEI not found in acer database" to "IMEI Not Found"
   - CONFIRMED: Complete IMEI validation flow now working - uploaded IMEIs appear valid in Acer registration form
 
 - **July 30, 2025**: ✅ Fixed template creation unique constraint violations

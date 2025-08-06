@@ -52,9 +52,7 @@ const acerRegistrationSchema = z.object({
   phone: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
   email: z.string().email("Invalid email address"),
   alternatePhone: z.string().optional(),
-  // Address Details
-  addressLine1: z.string().min(5, "Address line 1 is required"),
-  addressLine2: z.string().optional(),
+
   // File upload
   invoiceFile: z.instanceof(File).optional(),
 }).refine((data) => {
@@ -589,55 +587,7 @@ export default function AcerBBG() {
                   </div>
                 </div>
 
-                {/* Address Details Section */}
-                <div className="space-y-4">
-                  <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
-                    <MapPin className="h-4 w-4 mr-2" />
-                    Address Details
-                  </h3>
-                  
-                  <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="addressLine1"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <MapPin className="h-4 w-4 mr-2" />
-                            Address Line 1 *
-                          </FormLabel>
-                          <FormControl>
-                            <ValidatedField
-                              value={field.value}
-                              onChange={field.onChange}
-                              onBlur={field.onBlur}
-                              placeholder="Enter your address"
-                              validationType="address"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
 
-                    <FormField
-                      control={form.control}
-                      name="addressLine2"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <MapPin className="h-4 w-4 mr-2" />
-                            Address Line 2
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Apartment, suite, etc. (optional)" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
 
                 {/* Submit Button */}
                 <div className="flex justify-center pt-6">

@@ -3539,13 +3539,11 @@ Required: GUPSHUP_API_KEY environment variable
         phone,
         purchasePrice,
         alternatePhone,
-        purchaseDate,
-        addressLine1,
-        addressLine2
+        purchaseDate
       } = req.body;
 
-      // Validate required fields
-      if (!deviceType || !imeiSerial || !brand || !name || !model || !email || !phone || !purchasePrice || !purchaseDate || !addressLine1) {
+      // Validate required fields (address no longer required)
+      if (!deviceType || !imeiSerial || !brand || !name || !model || !email || !phone || !purchasePrice || !purchaseDate) {
         return res.status(400).json({
           success: false,
           message: "All required fields must be provided"
@@ -3580,9 +3578,58 @@ Required: GUPSHUP_API_KEY environment variable
         }
       }
 
-      // Extract pincode from address (try to get 6-digit pincode from address)
-      const pincodeMatch = (addressLine1 + ' ' + (addressLine2 || '')).match(/\b\d{6}\b/);
-      const pincode = pincodeMatch ? pincodeMatch[0] : '000000'; // Default if no pincode found
+      // Default pincode for Acer registrations (address will be captured during claim)
+      const pincode = '000000'; // Default pincode - address captured during claim process
+
+      // Validate IMEI against Acer database
+      try {
+        await db.connectDB();
+        const imeiRequest = db.pool.request();
+        imeiRequest.input('imei', sql.VarChar, imeiSerial);
+        
+        const imeiResult = await imeiRequest.query(`
+          SELECT id, imei, status FROM acer_imei_validation 
+          WHERE imei = @imei
+        `);
+        
+        if (imeiResult.recordset.length === 0) {
+          return res.status(400).json({
+            success: false,
+            message: "IMEI/Serial number not found in Acer database. Please verify your device IMEI."
+          });
+        }
+        
+        const imeiRecord = imeiResult.recordset[0];
+        if (imeiRecord.status === 'used') {
+          return res.status(400).json({
+            success: false,
+            message: "This IMEI/Serial number has already been registered for BBG."
+          });
+        }
+        
+        // Check if IMEI is already registered in customers table
+        const customerImeiRequest = db.pool.request();
+        customerImeiRequest.input('serialNumber', sql.VarChar, imeiSerial);
+        
+        const customerImeiResult = await customerImeiRequest.query(`
+          SELECT id FROM customers WHERE serial_number = @serialNumber
+        `);
+        
+        if (customerImeiResult.recordset.length > 0) {
+          return res.status(400).json({
+            success: false,
+            message: "This device has already been registered. Each device can only be registered once."
+          });
+        }
+        
+        console.log('✅ IMEI validation passed for:', imeiSerial);
+      } catch (imeiError) {
+        console.error('IMEI validation error:', imeiError);
+        return res.status(500).json({
+          success: false,
+          message: "Unable to validate IMEI. Please try again later."
+        });
+      }
 
       // Handle custom models - create new model if needed
       let finalModelName = model;
@@ -3641,6 +3688,26 @@ Required: GUPSHUP_API_KEY environment variable
       const customer = await storage.createCustomer(customerData);
 
       console.log('Acer BBG customer created successfully with voucher code:', customer.voucherCode);
+
+      // Mark IMEI as used in Acer database
+      try {
+        const updateImeiRequest = db.pool.request();
+        updateImeiRequest.input('imei', sql.VarChar, imeiSerial);
+        updateImeiRequest.input('customerId', sql.Int, customer.id);
+        
+        await updateImeiRequest.query(`
+          UPDATE acer_imei_validation 
+          SET status = 'used', 
+              customer_id = @customerId,
+              used_at = GETDATE()
+          WHERE imei = @imei
+        `);
+        
+        console.log('✅ IMEI marked as used in Acer database:', imeiSerial);
+      } catch (updateError) {
+        console.error('Warning: Failed to update IMEI status:', updateError);
+        // Don't fail registration if IMEI update fails
+      }
 
       // Send welcome notification using unified voucher code
       try {
@@ -3778,6 +3845,164 @@ Required: GUPSHUP_API_KEY environment variable
     } catch (error) {
       console.error('Error fetching customer registrations:', error);
       res.status(500).json({ message: "Failed to fetch registrations" });
+    }
+  });
+
+  // ===== ADMIN EXPORT ROUTES =====
+
+  // Export customers data with all details including BBG voucher codes
+  app.get("/api/admin/export/customers", isAdminAuthenticated, async (req, res) => {
+    try {
+      await db.connectDB();
+      const request = db.pool.request();
+      
+      const result = await request.query(`
+        SELECT 
+          c.id,
+          c.voucher_code as 'BBG Voucher Code',
+          c.name as 'Customer Name',
+          c.contact as 'Phone Number',
+          c.email as 'Email',
+          c.pincode as 'Pincode',
+          c.device_type as 'Device Type',
+          c.serial_number as 'IMEI/Serial Number',
+          c.brand as 'Brand',
+          c.model_name as 'Model',
+          c.invoice_value as 'Purchase Price',
+          c.date_of_purchase as 'Purchase Date',
+          c.registration_date as 'Registration Date',
+          c.seller_code as 'Referral Code',
+          c.registration_source as 'Registration Source',
+          c.is_verified as 'Verified',
+          c.payment_intent_id as 'Payment Reference',
+          d.company_name as 'Referral Partner Company',
+          d.contact_person as 'Referral Partner Contact'
+        FROM customers c
+        LEFT JOIN distributors d ON c.seller_code = d.distributor_code
+        ORDER BY c.registration_date DESC
+      `);
+      
+      // Set headers for CSV download
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="customers_export.csv"');
+      
+      // Convert to CSV
+      const customers = result.recordset;
+      if (customers.length === 0) {
+        return res.send('No customer data available');
+      }
+      
+      const headers = Object.keys(customers[0]).filter(key => key !== 'id');
+      const csvContent = [
+        headers.join(','),
+        ...customers.map(customer => 
+          headers.map(header => {
+            const value = customer[header];
+            // Handle null/undefined values and escape commas
+            if (value === null || value === undefined) return '';
+            const stringValue = String(value);
+            // Escape quotes and wrap in quotes if contains comma
+            if (stringValue.includes(',') || stringValue.includes('"')) {
+              return '"' + stringValue.replace(/"/g, '""') + '"';
+            }
+            return stringValue;
+          }).join(',')
+        )
+      ].join('\n');
+      
+      res.send(csvContent);
+    } catch (error: any) {
+      console.error('Customer export error:', error);
+      res.status(500).json({ message: "Failed to export customer data" });
+    }
+  });
+
+  // Export referral partners data with all details including commissions and payouts
+  app.get("/api/admin/export/referral-partners", isAdminAuthenticated, async (req, res) => {
+    try {
+      await db.connectDB();
+      const request = db.pool.request();
+      
+      const result = await request.query(`
+        SELECT 
+          d.id,
+          d.distributor_code as 'Referral Code',
+          d.company_name as 'Company Name',
+          d.contact_person as 'Contact Person',
+          d.email as 'Email',
+          d.phone as 'Phone',
+          d.business_type as 'Business Type',
+          d.commission_rate as 'Commission Rate (%)',
+          d.address as 'Address',
+          d.city as 'City',
+          d.state as 'State',
+          d.pincode as 'Pincode',
+          d.gst_number as 'GST Number',
+          d.pan_number as 'PAN Number',
+          d.bank_name as 'Bank Name',
+          d.bank_account_number as 'Account Number',
+          d.bank_ifsc as 'IFSC Code',
+          d.bank_account_holder_name as 'Account Holder Name',
+          d.registration_date as 'Registration Date',
+          d.is_verified as 'Verified',
+          d.is_active as 'Active',
+          COALESCE(customer_stats.total_customers, 0) as 'Total Referrals',
+          COALESCE(customer_stats.total_commission, 0) as 'Total Commission Earned',
+          COALESCE(payout_stats.paid_amount, 0) as 'Total Paid Amount',
+          COALESCE(payout_stats.pending_amount, 0) as 'Pending Payout'
+        FROM distributors d
+        LEFT JOIN (
+          SELECT 
+            seller_code,
+            COUNT(*) as total_customers,
+            SUM(CASE WHEN device_type = 'laptop' THEN 125 * 0.05 ELSE 99 * 0.05 END) as total_commission
+          FROM customers 
+          WHERE seller_code IS NOT NULL AND seller_code != ''
+          GROUP BY seller_code
+        ) customer_stats ON d.distributor_code = customer_stats.seller_code
+        LEFT JOIN (
+          SELECT 
+            distributor_id,
+            SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as paid_amount,
+            SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) as pending_amount
+          FROM commission_payouts
+          GROUP BY distributor_id
+        ) payout_stats ON d.id = payout_stats.distributor_id
+        ORDER BY d.registration_date DESC
+      `);
+      
+      // Set headers for CSV download
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="referral_partners_export.csv"');
+      
+      // Convert to CSV
+      const partners = result.recordset;
+      if (partners.length === 0) {
+        return res.send('No referral partner data available');
+      }
+      
+      const headers = Object.keys(partners[0]).filter(key => key !== 'id');
+      const csvContent = [
+        headers.join(','),
+        ...partners.map(partner => 
+          headers.map(header => {
+            const value = partner[header];
+            // Handle null/undefined values and escape commas
+            if (value === null || value === undefined) return '';
+            const stringValue = String(value);
+            // Escape quotes and wrap in quotes if contains comma
+            if (stringValue.includes(',') || stringValue.includes('"')) {
+              return '"' + stringValue.replace(/"/g, '""') + '"';
+            }
+            return stringValue;
+          }).join(',')
+        )
+      ].join('\n');
+      
+      res.send(csvContent);
+    } catch (error: any) {
+      console.error('Referral partner export error:', error);
+      res.status(500).json({ message: "Failed to export referral partner data" });
     }
   });
 

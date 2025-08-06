@@ -25,7 +25,8 @@ import {
   Clock,
   Mail,
   MapPin,
-  Filter
+  Filter,
+  Download
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -486,6 +487,15 @@ export default function AdminDashboard() {
                       className="pl-10 w-64"
                     />
                   </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open('/api/admin/export/customers', '_blank')}
+                    className="flex items-center gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Export CSV
+                  </Button>
                 </div>
               </div>
             </CardHeader>
@@ -717,6 +727,15 @@ export default function AdminDashboard() {
                   Distributor Management
                 </CardTitle>
                 <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open('/api/admin/export/referral-partners', '_blank')}
+                    className="flex items-center gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Export CSV
+                  </Button>
                   <div className="relative">
                     <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <Input

@@ -124,6 +124,20 @@ export class SqlServerStorage implements IStorage {
     this.initializeDatabase();
   }
 
+  // Force refresh SQL connection to clear schema cache
+  async refreshConnection(): Promise<void> {
+    try {
+      if (db.pool && db.pool.connected) {
+        await db.pool.close();
+        console.log('Closed existing SQL Server connection for refresh');
+      }
+      await db.connectDB();
+      console.log('Refreshed SQL Server connection');
+    } catch (error) {
+      console.error('Error refreshing SQL connection:', error);
+    }
+  }
+
   private async initializeDatabase() {
     try {
       await db.connectDB();
@@ -2186,29 +2200,64 @@ export class SqlServerStorage implements IStorage {
 
   async getAllClaimValueSlabs(): Promise<ClaimValueSlab[]> {
     await db.connectDB();
-    const query = `SELECT * FROM claim_value_slabs ORDER BY device_type, min_months ASC`;
     
-    const result = await db.pool.request().query(query);
-    return result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+    try {
+      const query = `SELECT * FROM claim_value_slabs ORDER BY device_type, min_months ASC`;
+      const result = await db.pool.request().query(query);
+      return result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+    } catch (error: any) {
+      console.log('Modern query failed, using fallback without device_type:', error.message);
+      
+      // Fallback query
+      const fallbackQuery = `SELECT *, 'mobile' as device_type FROM claim_value_slabs ORDER BY min_months ASC`;
+      const fallbackResult = await db.pool.request().query(fallbackQuery);
+      return fallbackResult.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+    }
   }
 
   async getActiveClaimValueSlabs(): Promise<ClaimValueSlab[]> {
     await db.connectDB();
-    const query = `SELECT * FROM claim_value_slabs WHERE is_active = 1 ORDER BY device_type, min_months ASC`;
     
-    const result = await db.pool.request().query(query);
-    return result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+    // First try the modern query with device_type column
+    try {
+      const query = `SELECT * FROM claim_value_slabs WHERE is_active = 1 ORDER BY device_type, min_months ASC`;
+      const result = await db.pool.request().query(query);
+      return result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+    } catch (error: any) {
+      console.log('Modern query failed, attempting fallback without device_type:', error.message);
+      
+      // Fallback to basic query without device_type if column doesn't exist yet
+      try {
+        const fallbackQuery = `SELECT *, 'mobile' as device_type FROM claim_value_slabs WHERE is_active = 1 ORDER BY min_months ASC`;
+        const fallbackResult = await db.pool.request().query(fallbackQuery);
+        return fallbackResult.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+      } catch (fallbackError: any) {
+        console.error('Both queries failed:', fallbackError.message);
+        throw fallbackError;
+      }
+    }
   }
 
   async getActiveClaimValueSlabsByDeviceType(deviceType: string): Promise<ClaimValueSlab[]> {
     await db.connectDB();
-    const query = `SELECT * FROM claim_value_slabs WHERE is_active = 1 AND device_type = @deviceType ORDER BY min_months ASC`;
     
-    const request = db.pool.request();
-    request.input('deviceType', sql.NVarChar, deviceType);
-    
-    const result = await request.query(query);
-    return result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+    try {
+      const query = `SELECT * FROM claim_value_slabs WHERE is_active = 1 AND device_type = @deviceType ORDER BY min_months ASC`;
+      const request = db.pool.request();
+      request.input('deviceType', sql.NVarChar, deviceType);
+      const result = await request.query(query);
+      return result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+    } catch (error: any) {
+      console.log(`Device-specific query failed for ${deviceType}, using fallback:`, error.message);
+      
+      // Fallback to basic query and filter by device type
+      const fallbackQuery = `SELECT *, 'mobile' as device_type FROM claim_value_slabs WHERE is_active = 1 ORDER BY min_months ASC`;
+      const fallbackResult = await db.pool.request().query(fallbackQuery);
+      const allSlabs = fallbackResult.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+      
+      // Filter by device type if needed (for compatibility)
+      return deviceType === 'mobile' ? allSlabs : [];
+    }
   }
 
   async updateClaimValueSlab(id: number, updates: Partial<InsertClaimValueSlab>): Promise<void> {

@@ -70,6 +70,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- **August 6, 2025**: ✅ Fixed critical Acer IMEI validation system synchronization issue
+  - RESOLVED: Missing `/api/check-device-registration` endpoint causing IMEI validation failures
+  - IMPLEMENTED: Proper database column mapping (`serial_number` vs `serialNumber`) 
+  - ENHANCED: Acer IMEI admin panel with 5-second auto-refresh and manual refresh button
+  - FIXED: Cache-control headers to prevent stale IMEI data in admin interface
+  - CONFIRMED: Complete IMEI validation flow now working - uploaded IMEIs appear valid in Acer registration form
+
 - **July 30, 2025**: ✅ Fixed template creation unique constraint violations
   - RESOLVED: Database template creation errors causing server startup warnings
   - IMPLEMENTED: Smart template existence checking before insertion

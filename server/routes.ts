@@ -3288,6 +3288,33 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // API endpoint to check if device is already registered
+  app.post('/api/check-device-registration', async (req, res) => {
+    try {
+      const { serialNumber } = req.body;
+      
+      if (!serialNumber) {
+        return res.status(400).json({ message: "Serial number is required" });
+      }
+
+      await db.connectDB();
+      const request = db.pool.request();
+      request.input('serialNumber', sql.VarChar, serialNumber);
+      
+      const result = await request.query(`
+        SELECT COUNT(*) as count 
+        FROM customers 
+        WHERE serial_number = @serialNumber
+      `);
+
+      const exists = result.recordset[0].count > 0;
+      res.json({ exists });
+    } catch (error: any) {
+      console.error("Device registration check error:", error);
+      res.status(500).json({ message: "Failed to check device registration" });
+    }
+  });
+
   // API endpoint to validate IMEI for Acer registrations
   app.post('/api/validate-acer-imei', async (req, res) => {
     try {

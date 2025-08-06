@@ -573,10 +573,12 @@ export default function ClaimBBG() {
                 {/* Mobile Device Slabs */}
                 {mobileSlabs && mobileSlabs.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Mobile Device Claim Values</h3>
-                    <div className="overflow-x-auto">
+                    <h3 className="text-lg font-semibold text-blue-700 mb-3 flex items-center">
+                      📱 Mobile Device Claim Values
+                    </h3>
+                    <div className="overflow-x-auto border rounded-lg">
                       <table className="w-full">
-                        <thead>
+                        <thead className="bg-blue-50">
                           <tr className="border-b">
                             <th className="text-left py-3 px-4 font-semibold text-gray-900">Device Age</th>
                             <th className="text-left py-3 px-4 font-semibold text-gray-900">Claim Percentage</th>
@@ -584,20 +586,23 @@ export default function ClaimBBG() {
                           </tr>
                         </thead>
                         <tbody>
-                          {mobileSlabs.filter((slab: any) => slab.isActive).map((slab: any, index: number) => {
-                            let colorClass = "text-green-600";
-                            if (slab.percentage < 30) colorClass = "text-red-600";
-                            else if (slab.percentage < 50) colorClass = "text-orange-600";
-                            else if (slab.percentage < 70) colorClass = "text-yellow-600";
+                          {mobileSlabs
+                            .filter((slab: any) => slab.isActive)
+                            .sort((a: any, b: any) => a.minMonths - b.minMonths)
+                            .map((slab: any, index: number) => {
+                              let colorClass = "text-green-600";
+                              if (slab.percentage < 30) colorClass = "text-red-600";
+                              else if (slab.percentage < 50) colorClass = "text-orange-600";
+                              else if (slab.percentage < 70) colorClass = "text-yellow-600";
 
-                            return (
-                              <tr key={slab.id} className={index < (mobileSlabs?.filter((s: any) => s.isActive).length || 0) - 1 ? "border-b" : ""}>
-                                <td className="py-3 px-4">{slab.minMonths}-{slab.maxMonths} months</td>
-                                <td className={`py-3 px-4 font-semibold ${colorClass}`}>{slab.percentage}% of invoice value</td>
-                                <td className="py-3 px-4">Functional and fair condition</td>
-                              </tr>
-                            );
-                          })}
+                              return (
+                                <tr key={`mobile-${slab.id}`} className={index < (mobileSlabs?.filter((s: any) => s.isActive).length || 0) - 1 ? "border-b" : ""}>
+                                  <td className="py-3 px-4">{slab.minMonths}-{slab.maxMonths} months</td>
+                                  <td className={`py-3 px-4 font-semibold ${colorClass}`}>{slab.percentage}% of invoice value</td>
+                                  <td className="py-3 px-4">Functional and fair condition</td>
+                                </tr>
+                              );
+                            })}
                         </tbody>
                       </table>
                     </div>
@@ -607,10 +612,12 @@ export default function ClaimBBG() {
                 {/* Laptop Device Slabs */}
                 {laptopSlabs && laptopSlabs.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Laptop Device Claim Values</h3>
-                    <div className="overflow-x-auto">
+                    <h3 className="text-lg font-semibold text-purple-700 mb-3 flex items-center">
+                      💻 Laptop Device Claim Values
+                    </h3>
+                    <div className="overflow-x-auto border rounded-lg">
                       <table className="w-full">
-                        <thead>
+                        <thead className="bg-purple-50">
                           <tr className="border-b">
                             <th className="text-left py-3 px-4 font-semibold text-gray-900">Device Age</th>
                             <th className="text-left py-3 px-4 font-semibold text-gray-900">Claim Percentage</th>
@@ -618,20 +625,23 @@ export default function ClaimBBG() {
                           </tr>
                         </thead>
                         <tbody>
-                          {laptopSlabs.filter((slab: any) => slab.isActive).map((slab: any, index: number) => {
-                            let colorClass = "text-green-600";
-                            if (slab.percentage < 30) colorClass = "text-red-600";
-                            else if (slab.percentage < 50) colorClass = "text-orange-600";
-                            else if (slab.percentage < 70) colorClass = "text-yellow-600";
+                          {laptopSlabs
+                            .filter((slab: any) => slab.isActive)
+                            .sort((a: any, b: any) => a.minMonths - b.minMonths)
+                            .map((slab: any, index: number) => {
+                              let colorClass = "text-green-600";
+                              if (slab.percentage < 30) colorClass = "text-red-600";
+                              else if (slab.percentage < 50) colorClass = "text-orange-600";
+                              else if (slab.percentage < 70) colorClass = "text-yellow-600";
 
-                            return (
-                              <tr key={slab.id} className={index < (laptopSlabs?.filter((s: any) => s.isActive).length || 0) - 1 ? "border-b" : ""}>
-                                <td className="py-3 px-4">{slab.minMonths}-{slab.maxMonths} months</td>
-                                <td className={`py-3 px-4 font-semibold ${colorClass}`}>{slab.percentage}% of invoice value</td>
-                                <td className="py-3 px-4">Functional and fair condition</td>
-                              </tr>
-                            );
-                          })}
+                              return (
+                                <tr key={`laptop-${slab.id}`} className={index < (laptopSlabs?.filter((s: any) => s.isActive).length || 0) - 1 ? "border-b" : ""}>
+                                  <td className="py-3 px-4">{slab.minMonths}-{slab.maxMonths} months</td>
+                                  <td className={`py-3 px-4 font-semibold ${colorClass}`}>{slab.percentage}% of invoice value</td>
+                                  <td className="py-3 px-4">Functional and fair condition</td>
+                                </tr>
+                              );
+                            })}
                         </tbody>
                       </table>
                     </div>

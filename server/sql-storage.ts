@@ -2205,7 +2205,7 @@ export class SqlServerStorage implements IStorage {
       // Fallback to basic insert without device_type column
       const fallbackQuery = `
         INSERT INTO claim_value_slabs (min_months, max_months, percentage, is_active)
-        OUTPUT INSERTED.*, 'mobile' as device_type
+        OUTPUT INSERTED.*
         VALUES (@minMonths, @maxMonths, @percentage, @isActive)
       `;
 
@@ -2216,7 +2216,10 @@ export class SqlServerStorage implements IStorage {
       fallbackRequest.input('isActive', sql.Bit, slab.isActive ?? true);
 
       const fallbackResult = await fallbackRequest.query(fallbackQuery);
-      return this.mapClaimValueSlabFromDb(fallbackResult.recordset[0]);
+      const mappedResult = this.mapClaimValueSlabFromDb(fallbackResult.recordset[0]);
+      // Preserve the original device type from the request
+      mappedResult.deviceType = slab.deviceType || 'mobile';
+      return mappedResult;
     }
   }
 

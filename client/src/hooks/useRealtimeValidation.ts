@@ -254,19 +254,35 @@ export const customValidations = {
       console.log('🔎 Validating against Acer IMEI database...');
       const response = await fetch('/api/validate-acer-imei', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({ imei })
       });
       
       console.log('🔎 Acer validation response status:', response.status);
+      console.log('🔎 Acer validation response headers:', response.headers.get('content-type'));
       
       if (!response.ok) {
         console.error('❌ Acer IMEI validation failed with status:', response.status);
+        const errorText = await response.text();
+        console.error('❌ Error response:', errorText);
         return "Unable to validate IMEI at this time";
       }
       
-      const data = await response.json();
-      console.log('🔎 Acer validation data:', data);
+      const responseText = await response.text();
+      console.log('🔎 Raw response text:', responseText);
+      
+      let data;
+      try {
+        data = JSON.parse(responseText);
+        console.log('🔎 Parsed Acer validation data:', data);
+      } catch (parseError) {
+        console.error('❌ JSON parse error:', parseError);
+        console.error('❌ Response was:', responseText);
+        return "Unable to validate IMEI. Server returned invalid response.";
+      }
       
       if (!data.valid) {
         console.log('❌ IMEI not valid in Acer database');

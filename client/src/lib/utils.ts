@@ -60,7 +60,10 @@ export function getDeviceAge(purchaseDate: Date): number {
   return monthsDiff;
 }
 
+// Note: This function is now deprecated - use the API endpoint /api/claims/calculate-percentage instead
+// which fetches dynamic claim value slabs from the database
 export function calculateClaimPercentage(deviceAge: number): number {
+  // Fallback hardcoded values - should not be used in production
   if (deviceAge >= 6 && deviceAge <= 12) return 70;
   if (deviceAge >= 13 && deviceAge <= 18) return 60;
   if (deviceAge >= 19 && deviceAge <= 24) return 50;

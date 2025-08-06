@@ -79,15 +79,13 @@ type CustomerFormData = z.infer<typeof customerSchema>;
 
 // Depreciation Slabs Component
 function DepreciationSlabs() {
-  const slabs = [
-    { period: "6-12 months", percentage: "70%" },
-    { period: "13-18 months", percentage: "60%" },
-    { period: "19-24 months", percentage: "50%" },
-    { period: "25-30 months", percentage: "40%" },
-    { period: "31-36 months", percentage: "30%" },
-    { period: "37-48 months", percentage: "20%" },
-    { period: "49-60 months", percentage: "10%" }
-  ];
+  // Fetch dynamic claim value slabs
+  const { data: claimSlabs, isLoading: isSlabsLoading } = useQuery({
+    queryKey: ['/api/claim-value-slabs/active'],
+    retry: false,
+  });
+
+  const activeSlabs = claimSlabs?.filter((slab: any) => slab.isActive) || [];
 
   return (
     <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6 mb-6">
@@ -95,14 +93,20 @@ function DepreciationSlabs() {
         <Info className="h-5 w-5 mr-2 text-blue-600" />
         BuyBack Guarantee - Depreciation Slabs
       </h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
-        {slabs.map((slab, index) => (
-          <div key={index} className="bg-white rounded-lg p-3 text-center border border-gray-200">
-            <div className="text-sm font-medium text-gray-600">{slab.period}</div>
-            <div className="text-lg font-bold text-green-600">{slab.percentage}</div>
-          </div>
-        ))}
-      </div>
+      {isSlabsLoading ? (
+        <div className="flex justify-center py-4">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
+          {activeSlabs.map((slab: any, index: number) => (
+            <div key={slab.id} className="bg-white rounded-lg p-3 text-center border border-gray-200">
+              <div className="text-sm font-medium text-gray-600">{slab.minMonths}-{slab.maxMonths} months</div>
+              <div className="text-lg font-bold text-green-600">{slab.percentage}%</div>
+            </div>
+          ))}
+        </div>
+      )}
       <p className="text-xs text-gray-600 mt-3">
         * Percentage of original invoice value you'll receive when claiming BBG
       </p>

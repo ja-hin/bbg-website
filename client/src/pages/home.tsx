@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
 import { 
   Smartphone, 
   Laptop, 
@@ -9,10 +10,20 @@ import {
   Users, 
   Award,
   ArrowRight,
-  CheckCircle
+  CheckCircle,
+  Loader2
 } from "lucide-react";
 
 export default function Home() {
+  // Fetch dynamic claim value slabs
+  const { data: claimSlabs, isLoading: isSlabsLoading } = useQuery({
+    queryKey: ['/api/claim-value-slabs/active'],
+    retry: false,
+  });
+
+  const activeSlabs = claimSlabs?.filter((slab: any) => slab.isActive) || [];
+  const maxPercentage = activeSlabs.length > 0 ? Math.max(...activeSlabs.map((slab: any) => slab.percentage)) : 70;
+
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
 
@@ -57,7 +68,7 @@ export default function Home() {
                 <ul className="text-left space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Up to 70% buyback value
+                    Up to {maxPercentage}% buyback value
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
@@ -83,7 +94,7 @@ export default function Home() {
                 <ul className="text-left space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Up to 70% buyback value
+                    Up to {maxPercentage}% buyback value
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
@@ -229,75 +240,45 @@ export default function Home() {
           </div>
 
           <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-4xl mx-auto">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-red-600 text-white">
-                  <tr>
-                    <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Device Age</th>
-                    <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Claim Percentage</th>
-                    <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Condition Required</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  <tr className="hover:bg-gray-50">
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">6-12 months</td>
-                    <td className="py-4 px-4 sm:px-6">
-                      <span className="text-lg sm:text-xl font-bold text-green-600">70%</span>
-                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
-                    </td>
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50">
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">13-18 months</td>
-                    <td className="py-4 px-4 sm:px-6">
-                      <span className="text-lg sm:text-xl font-bold text-green-600">60%</span>
-                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
-                    </td>
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50">
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">19-24 months</td>
-                    <td className="py-4 px-4 sm:px-6">
-                      <span className="text-lg sm:text-xl font-bold text-yellow-600">50%</span>
-                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
-                    </td>
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50">
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">25-30 months</td>
-                    <td className="py-4 px-4 sm:px-6">
-                      <span className="text-lg sm:text-xl font-bold text-yellow-600">40%</span>
-                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
-                    </td>
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50">
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">31-36 months</td>
-                    <td className="py-4 px-4 sm:px-6">
-                      <span className="text-lg sm:text-xl font-bold text-orange-600">30%</span>
-                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
-                    </td>
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50">
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">37-48 months</td>
-                    <td className="py-4 px-4 sm:px-6">
-                      <span className="text-lg sm:text-xl font-bold text-orange-600">20%</span>
-                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
-                    </td>
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50">
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">49-60 months</td>
-                    <td className="py-4 px-4 sm:px-6">
-                      <span className="text-lg sm:text-xl font-bold text-red-600">10%</span>
-                      <span className="text-sm text-gray-500 ml-2">of invoice value</span>
-                    </td>
-                    <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            {isSlabsLoading ? (
+              <div className="flex justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-red-600" />
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-red-600 text-white">
+                    <tr>
+                      <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Device Age</th>
+                      <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Claim Percentage</th>
+                      <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Condition Required</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {activeSlabs.map((slab: any, index: number) => {
+                      // Determine color based on percentage
+                      let colorClass = "text-green-600";
+                      if (slab.percentage < 30) colorClass = "text-red-600";
+                      else if (slab.percentage < 50) colorClass = "text-orange-600";
+                      else if (slab.percentage < 70) colorClass = "text-yellow-600";
+
+                      return (
+                        <tr key={slab.id} className="hover:bg-gray-50">
+                          <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">
+                            {slab.minMonths}-{slab.maxMonths} months
+                          </td>
+                          <td className="py-4 px-4 sm:px-6">
+                            <span className={`text-lg sm:text-xl font-bold ${colorClass}`}>{slab.percentage}%</span>
+                            <span className="text-sm text-gray-500 ml-2">of invoice value</span>
+                          </td>
+                          <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
             
             <div className="bg-gray-50 px-4 sm:px-6 py-4 border-t">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">

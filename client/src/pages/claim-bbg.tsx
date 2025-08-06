@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -57,6 +57,12 @@ export default function ClaimBBG() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [otp, setOtp] = useState("");
   const [eligibilityError, setEligibilityError] = useState<ClaimError | null>(null);
+
+  // Fetch dynamic claim value slabs
+  const { data: claimSlabs, isLoading: isSlabsLoading } = useQuery({
+    queryKey: ['/api/claim-value-slabs/active'],
+    retry: false,
+  });
 
   const form = useForm<ClaimFormData>({
     resolver: zodResolver(claimSchema),
@@ -553,54 +559,40 @@ export default function ClaimBBG() {
             <CardTitle className="text-2xl">Claim Value Slabs</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-semibold text-gray-900">Device Age</th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-900">Claim Percentage</th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-900">Condition</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b">
-                    <td className="py-3 px-4">6-12 months</td>
-                    <td className="py-3 px-4 text-green-600 font-semibold">70% of invoice value</td>
-                    <td className="py-3 px-4">Functional and fair condition</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-3 px-4">13-18 months</td>
-                    <td className="py-3 px-4 text-green-600 font-semibold">60% of invoice value</td>
-                    <td className="py-3 px-4">Functional and fair condition</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-3 px-4">19-24 months</td>
-                    <td className="py-3 px-4 text-yellow-600 font-semibold">50% of invoice value</td>
-                    <td className="py-3 px-4">Functional and fair condition</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-3 px-4">25-30 months</td>
-                    <td className="py-3 px-4 text-yellow-600 font-semibold">40% of invoice value</td>
-                    <td className="py-3 px-4">Functional and fair condition</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-3 px-4">31-36 months</td>
-                    <td className="py-3 px-4 text-orange-600 font-semibold">30% of invoice value</td>
-                    <td className="py-3 px-4">Functional and fair condition</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-3 px-4">37-48 months</td>
-                    <td className="py-3 px-4 text-orange-600 font-semibold">20% of invoice value</td>
-                    <td className="py-3 px-4">Functional and fair condition</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4">49-60 months</td>
-                    <td className="py-3 px-4 text-red-600 font-semibold">10% of invoice value</td>
-                    <td className="py-3 px-4">Functional and fair condition</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            {isSlabsLoading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="w-6 h-6 animate-spin" />
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 px-4 font-semibold text-gray-900">Device Age</th>
+                      <th className="text-left py-3 px-4 font-semibold text-gray-900">Claim Percentage</th>
+                      <th className="text-left py-3 px-4 font-semibold text-gray-900">Condition</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {claimSlabs?.filter((slab: any) => slab.isActive).map((slab: any, index: number) => {
+                      // Determine color based on percentage
+                      let colorClass = "text-green-600";
+                      if (slab.percentage < 30) colorClass = "text-red-600";
+                      else if (slab.percentage < 50) colorClass = "text-orange-600";
+                      else if (slab.percentage < 70) colorClass = "text-yellow-600";
+
+                      return (
+                        <tr key={slab.id} className={index < (claimSlabs?.filter((s: any) => s.isActive).length || 0) - 1 ? "border-b" : ""}>
+                          <td className="py-3 px-4">{slab.minMonths}-{slab.maxMonths} months</td>
+                          <td className={`py-3 px-4 font-semibold ${colorClass}`}>{slab.percentage}% of invoice value</td>
+                          <td className="py-3 px-4">Functional and fair condition</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
             <div className="mt-4 p-4 bg-gray-50 rounded-lg">
               <p className="text-sm text-gray-600">
                 <strong>Note:</strong> All claim percentages are calculated based on the original invoice value. 

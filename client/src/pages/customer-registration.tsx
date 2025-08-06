@@ -159,6 +159,27 @@ function PayUPaymentForm({
       });
 
       document.body.appendChild(form);
+      
+      // Track payment initiation before submitting to PayU
+      try {
+        await apiRequest("/api/cart-abandonment", {
+          method: "POST",
+          body: {
+            name: customerData.name,
+            contact: customerData.contact,
+            email: customerData.email,
+            deviceType: customerData.deviceType,
+            stage: 'payment_initiated',
+            metadata: {
+              amount: amount,
+              paymentMethod: 'payu'
+            }
+          }
+        });
+      } catch (trackingError) {
+        console.warn('Failed to track payment initiation:', trackingError);
+      }
+      
       form.submit();
       
     } catch (error: any) {
@@ -516,22 +537,26 @@ function BuyBBGContent() {
     return () => subscription.unsubscribe();
   }, [form]);
 
-  // Registration mutation
+  // Registration mutation - Note: PayU payments are handled by backend redirects
   const mutation = useMutation({
     mutationFn: async (data: CustomerFormData & { paymentIntentId: string }) => {
       return await apiRequest("/api/customers/register", { method: "POST", body: data });
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['/api/customers'] });
-      setShowConfetti(true);
-      toast({
-        title: "Registration Successful!",
-        description: `Your BBG voucher code is: ${data.voucherCode}`,
-      });
-      // Delay navigation to allow confetti to show
-      setTimeout(() => {
-        setLocation("/thank-you");
-      }, 2000);
+      // Only show confetti and navigate for non-PayU payments (direct registrations without payment)
+      // PayU payments are handled by backend redirects after payment completion
+      if (!data.paymentIntentId || !data.paymentIntentId.startsWith('payu_')) {
+        setShowConfetti(true);
+        toast({
+          title: "Registration Successful!",
+          description: `Your BBG voucher code is: ${data.voucherCode}`,
+        });
+        // Delay navigation to allow confetti to show
+        setTimeout(() => {
+          setLocation("/thank-you");
+        }, 2000);
+      }
     },
     onError: (error: any) => {
       toast({

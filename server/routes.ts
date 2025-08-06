@@ -668,6 +668,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         const customer = await storage.createCustomer(submitData);
         
+        // Track successful payment completion for cart abandonment analysis
+        try {
+          await db.connectDB();
+          const cartRequest = db.pool.request();
+          cartRequest.input('name', sql.VarChar, customer.name);
+          cartRequest.input('contact', sql.VarChar, customer.contact);
+          cartRequest.input('email', sql.VarChar, customer.email);
+          cartRequest.input('device_type', sql.VarChar, customer.deviceType);
+          cartRequest.input('stage', sql.VarChar, 'payment_completed');
+          cartRequest.input('metadata', sql.NVarChar, JSON.stringify({
+            amount: amount,
+            paymentMethod: 'payu',
+            transactionId: txnid,
+            voucherCode: customer.voucherCode
+          }));
+          
+          await cartRequest.query(`
+            INSERT INTO cart_abandonments (name, contact, email, device_type, stage, metadata, created_at)
+            VALUES (@name, @contact, @email, @device_type, @stage, @metadata, GETDATE())
+          `);
+          
+          console.log('✅ Cart abandonment completion tracked for:', customer.contact);
+        } catch (trackingError) {
+          console.warn('❌ Failed to track payment completion:', trackingError);
+          // Don't fail the registration if tracking fails
+        }
+        
         // Send welcome notifications
         try {
           console.log('🔔 Starting PayU customer registration notifications...');

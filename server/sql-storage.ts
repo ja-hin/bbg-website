@@ -112,6 +112,7 @@ export interface IStorage {
   createClaimValueSlab(slab: InsertClaimValueSlab): Promise<ClaimValueSlab>;
   getAllClaimValueSlabs(): Promise<ClaimValueSlab[]>;
   getActiveClaimValueSlabs(): Promise<ClaimValueSlab[]>;
+  getActiveClaimValueSlabsByDeviceType(deviceType: string): Promise<ClaimValueSlab[]>;
   updateClaimValueSlab(id: number, updates: Partial<InsertClaimValueSlab>): Promise<void>;
   deleteClaimValueSlab(id: number): Promise<void>;
   getClaimValueSlabById(id: number): Promise<ClaimValueSlab | undefined>;
@@ -290,6 +291,7 @@ export class SqlServerStorage implements IStorage {
       BEGIN
         CREATE TABLE claim_value_slabs (
           id INT IDENTITY(1,1) PRIMARY KEY,
+          device_type NVARCHAR(50) NOT NULL,
           min_months INT NOT NULL,
           max_months INT NOT NULL,
           percentage INT NOT NULL,
@@ -298,15 +300,42 @@ export class SqlServerStorage implements IStorage {
           updated_at DATETIME2 DEFAULT GETDATE()
         );
         
-        -- Insert default claim value slabs
-        INSERT INTO claim_value_slabs (min_months, max_months, percentage, is_active) VALUES
-        (6, 12, 70, 1),
-        (13, 18, 60, 1),
-        (19, 24, 50, 1),
-        (25, 30, 40, 1),
-        (31, 36, 30, 1),
-        (37, 48, 20, 1),
-        (49, 60, 10, 1);
+        -- Insert default claim value slabs for mobile
+        INSERT INTO claim_value_slabs (device_type, min_months, max_months, percentage, is_active) VALUES
+        ('mobile', 6, 12, 70, 1),
+        ('mobile', 13, 18, 60, 1),
+        ('mobile', 19, 24, 50, 1),
+        ('mobile', 25, 30, 40, 1),
+        ('mobile', 31, 36, 30, 1),
+        ('mobile', 37, 48, 20, 1),
+        ('mobile', 49, 60, 10, 1);
+        
+        -- Insert default claim value slabs for laptop
+        INSERT INTO claim_value_slabs (device_type, min_months, max_months, percentage, is_active) VALUES
+        ('laptop', 6, 12, 75, 1),
+        ('laptop', 13, 18, 65, 1),
+        ('laptop', 19, 24, 55, 1),
+        ('laptop', 25, 30, 45, 1),
+        ('laptop', 31, 36, 35, 1),
+        ('laptop', 37, 48, 25, 1),
+        ('laptop', 49, 60, 15, 1);
+      END
+      
+      -- Add device_type column to existing claim_value_slabs table if it doesn't exist
+      IF EXISTS (SELECT * FROM sys.tables WHERE name = 'claim_value_slabs')
+      BEGIN
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('claim_value_slabs') AND name = 'device_type')
+        BEGIN
+          ALTER TABLE claim_value_slabs ADD device_type NVARCHAR(50) DEFAULT 'mobile';
+          -- Update existing records to have device types
+          UPDATE claim_value_slabs SET device_type = 'mobile' WHERE device_type IS NULL OR device_type = '';
+          
+          -- Insert laptop versions with slightly higher percentages
+          INSERT INTO claim_value_slabs (device_type, min_months, max_months, percentage, is_active, created_at, updated_at) 
+          SELECT 'laptop', min_months, max_months, percentage + 5, is_active, GETDATE(), GETDATE()
+          FROM claim_value_slabs 
+          WHERE device_type = 'mobile' AND is_active = 1;
+        END
       END
 
       -- Create otp_verifications table
@@ -2139,12 +2168,13 @@ export class SqlServerStorage implements IStorage {
   async createClaimValueSlab(slab: InsertClaimValueSlab): Promise<ClaimValueSlab> {
     await db.connectDB();
     const query = `
-      INSERT INTO claim_value_slabs (min_months, max_months, percentage, is_active)
+      INSERT INTO claim_value_slabs (device_type, min_months, max_months, percentage, is_active)
       OUTPUT INSERTED.*
-      VALUES (@minMonths, @maxMonths, @percentage, @isActive)
+      VALUES (@deviceType, @minMonths, @maxMonths, @percentage, @isActive)
     `;
 
     const request = db.pool.request();
+    request.input('deviceType', sql.NVarChar, slab.deviceType || 'mobile');
     request.input('minMonths', sql.Int, slab.minMonths);
     request.input('maxMonths', sql.Int, slab.maxMonths);
     request.input('percentage', sql.Int, slab.percentage);
@@ -2156,7 +2186,7 @@ export class SqlServerStorage implements IStorage {
 
   async getAllClaimValueSlabs(): Promise<ClaimValueSlab[]> {
     await db.connectDB();
-    const query = `SELECT * FROM claim_value_slabs ORDER BY min_months ASC`;
+    const query = `SELECT * FROM claim_value_slabs ORDER BY device_type, min_months ASC`;
     
     const result = await db.pool.request().query(query);
     return result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
@@ -2164,9 +2194,20 @@ export class SqlServerStorage implements IStorage {
 
   async getActiveClaimValueSlabs(): Promise<ClaimValueSlab[]> {
     await db.connectDB();
-    const query = `SELECT * FROM claim_value_slabs WHERE is_active = 1 ORDER BY min_months ASC`;
+    const query = `SELECT * FROM claim_value_slabs WHERE is_active = 1 ORDER BY device_type, min_months ASC`;
     
     const result = await db.pool.request().query(query);
+    return result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+  }
+
+  async getActiveClaimValueSlabsByDeviceType(deviceType: string): Promise<ClaimValueSlab[]> {
+    await db.connectDB();
+    const query = `SELECT * FROM claim_value_slabs WHERE is_active = 1 AND device_type = @deviceType ORDER BY min_months ASC`;
+    
+    const request = db.pool.request();
+    request.input('deviceType', sql.NVarChar, deviceType);
+    
+    const result = await request.query(query);
     return result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
   }
 
@@ -2176,6 +2217,10 @@ export class SqlServerStorage implements IStorage {
     const request = db.pool.request();
     request.input('id', sql.Int, id);
 
+    if (updates.deviceType !== undefined) {
+      setParts.push('device_type = @deviceType');
+      request.input('deviceType', sql.NVarChar, updates.deviceType);
+    }
     if (updates.minMonths !== undefined) {
       setParts.push('min_months = @minMonths');
       request.input('minMonths', sql.Int, updates.minMonths);
@@ -2225,6 +2270,7 @@ export class SqlServerStorage implements IStorage {
   private mapClaimValueSlabFromDb(row: any): ClaimValueSlab {
     return {
       id: row.id,
+      deviceType: row.device_type || 'mobile',
       minMonths: row.min_months,
       maxMonths: row.max_months,
       percentage: row.percentage,

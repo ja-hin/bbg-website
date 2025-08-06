@@ -4193,14 +4193,37 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // Get active claim value slabs by device type (for tabbed interface)
+  app.get('/api/claim-value-slabs/active/:deviceType', async (req, res) => {
+    try {
+      const { deviceType } = req.params;
+      
+      // Validate device type
+      if (!['mobile', 'laptop'].includes(deviceType)) {
+        return res.status(400).json({ message: "Invalid device type. Must be 'mobile' or 'laptop'" });
+      }
+      
+      const slabs = await storage.getActiveClaimValueSlabsByDeviceType(deviceType);
+      res.json(slabs);
+    } catch (error: any) {
+      console.error('Error fetching active claim value slabs by device type:', error);
+      res.status(500).json({ message: "Failed to fetch active claim value slabs", error: error.message });
+    }
+  });
+
   // Create new claim value slab
   app.post('/api/admin/claim-value-slabs', isAdminAuthenticated, async (req, res) => {
     try {
-      const { minMonths, maxMonths, percentage, isActive } = req.body;
+      const { deviceType, minMonths, maxMonths, percentage, isActive } = req.body;
 
       // Validate required fields
-      if (!minMonths || !maxMonths || !percentage) {
-        return res.status(400).json({ message: "Missing required fields: minMonths, maxMonths, percentage" });
+      if (!deviceType || !minMonths || !maxMonths || !percentage) {
+        return res.status(400).json({ message: "Missing required fields: deviceType, minMonths, maxMonths, percentage" });
+      }
+
+      // Validate device type
+      if (!['mobile', 'laptop'].includes(deviceType)) {
+        return res.status(400).json({ message: "Invalid device type. Must be 'mobile' or 'laptop'" });
       }
 
       // Validate ranges
@@ -4213,6 +4236,7 @@ Required: GUPSHUP_API_KEY environment variable
       }
 
       const slab = await storage.createClaimValueSlab({
+        deviceType,
         minMonths: parseInt(minMonths),
         maxMonths: parseInt(maxMonths),
         percentage: parseInt(percentage),
@@ -4230,9 +4254,16 @@ Required: GUPSHUP_API_KEY environment variable
   app.put('/api/admin/claim-value-slabs/:id', isAdminAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const { minMonths, maxMonths, percentage, isActive } = req.body;
+      const { deviceType, minMonths, maxMonths, percentage, isActive } = req.body;
 
       const updates: any = {};
+      
+      if (deviceType !== undefined) {
+        if (!['mobile', 'laptop'].includes(deviceType)) {
+          return res.status(400).json({ message: "Invalid device type. Must be 'mobile' or 'laptop'" });
+        }
+        updates.deviceType = deviceType;
+      }
       if (minMonths !== undefined) updates.minMonths = parseInt(minMonths);
       if (maxMonths !== undefined) updates.maxMonths = parseInt(maxMonths);
       if (percentage !== undefined) {

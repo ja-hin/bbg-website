@@ -8,10 +8,12 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AdminLayout } from "@/components/admin-layout";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Edit, Trash2, TrendingUp, Calculator } from "lucide-react";
+import { Loader2, Plus, Edit, Trash2, TrendingUp, Calculator, Smartphone, Laptop } from "lucide-react";
 import { ClaimValueSlab } from "@shared/schema";
 
 export default function AdminClaimSlabs() {
@@ -20,7 +22,9 @@ export default function AdminClaimSlabs() {
   
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editingSlab, setEditingSlab] = useState<ClaimValueSlab | null>(null);
+  const [activeTab, setActiveTab] = useState<'mobile' | 'laptop'>('mobile');
   const [formData, setFormData] = useState({
+    deviceType: 'mobile',
     minMonths: '',
     maxMonths: '',
     percentage: '',
@@ -44,7 +48,7 @@ export default function AdminClaimSlabs() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/claim-value-slabs'] });
       setCreateDialogOpen(false);
-      setFormData({ minMonths: '', maxMonths: '', percentage: '', isActive: true });
+      setFormData({ deviceType: 'mobile', minMonths: '', maxMonths: '', percentage: '', isActive: true });
       toast({
         title: "Success",
         description: "Claim value slab created successfully",
@@ -62,8 +66,6 @@ export default function AdminClaimSlabs() {
   // Update claim value slab mutation
   const updateSlabMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: any }) => {
-      console.log('Updating slab with data:', data);
-      
       await apiRequest(`/api/admin/claim-value-slabs/${id}`, {
         method: 'PUT',
         body: data
@@ -72,7 +74,7 @@ export default function AdminClaimSlabs() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/claim-value-slabs'] });
       setEditingSlab(null);
-      setFormData({ minMonths: '', maxMonths: '', percentage: '', isActive: true });
+      setFormData({ deviceType: 'mobile', minMonths: '', maxMonths: '', percentage: '', isActive: true });
       toast({
         title: "Success",
         description: "Claim value slab updated successfully",
@@ -156,13 +158,12 @@ export default function AdminClaimSlabs() {
     }
     
     const data = {
+      deviceType: formData.deviceType,
       minMonths,
       maxMonths,
       percentage,
       isActive: formData.isActive
     };
-
-    console.log('Form data to submit:', data);
 
     if (editingSlab) {
       updateSlabMutation.mutate({ id: editingSlab.id, data });
@@ -174,6 +175,7 @@ export default function AdminClaimSlabs() {
   const handleEdit = (slab: ClaimValueSlab) => {
     setEditingSlab(slab);
     setFormData({
+      deviceType: slab.deviceType || 'mobile',
       minMonths: slab.minMonths.toString(),
       maxMonths: slab.maxMonths.toString(),
       percentage: slab.percentage.toString(),
@@ -182,12 +184,14 @@ export default function AdminClaimSlabs() {
   };
 
   const resetForm = () => {
-    setFormData({ minMonths: '', maxMonths: '', percentage: '', isActive: true });
+    setFormData({ deviceType: 'mobile', minMonths: '', maxMonths: '', percentage: '', isActive: true });
     setEditingSlab(null);
   };
 
+  // Filter slabs by device type and active status
+  const mobileSlabs = slabs?.filter((slab: ClaimValueSlab) => slab.deviceType === 'mobile') || [];
+  const laptopSlabs = slabs?.filter((slab: ClaimValueSlab) => slab.deviceType === 'laptop') || [];
   const activeSlabs = slabs?.filter((slab: ClaimValueSlab) => slab.isActive) || [];
-  const inactiveSlabs = slabs?.filter((slab: ClaimValueSlab) => !slab.isActive) || [];
 
   return (
     <AdminLayout>
@@ -196,7 +200,7 @@ export default function AdminClaimSlabs() {
           <div>
             <h1 className="text-3xl font-bold">Claim Value Slabs</h1>
             <p className="text-muted-foreground">
-              Manage dynamic claim percentages based on device age
+              Manage dynamic claim percentages based on device age and type
             </p>
           </div>
           
@@ -218,6 +222,22 @@ export default function AdminClaimSlabs() {
               </DialogHeader>
               
               <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="deviceType">Device Type</Label>
+                  <Select 
+                    value={formData.deviceType} 
+                    onValueChange={(value) => setFormData({ ...formData, deviceType: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select device type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="mobile">📱 Mobile</SelectItem>
+                      <SelectItem value="laptop">💻 Laptop</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="minMonths">Min Months</Label>
@@ -328,154 +348,161 @@ export default function AdminClaimSlabs() {
           </Card>
         </div>
 
-        {/* Active Slabs Table */}
+        {/* Tabbed Claim Value Slabs */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
               <Calculator className="w-5 h-5 mr-2" />
-              Active Claim Value Slabs
+              Claim Value Slabs by Device Type
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="w-6 h-6 animate-spin" />
-              </div>
-            ) : activeSlabs.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Age Range (Months)</TableHead>
-                    <TableHead>Claim Percentage</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {activeSlabs.map((slab: ClaimValueSlab) => (
-                    <TableRow key={slab.id}>
-                      <TableCell className="font-medium">
-                        {slab.minMonths} - {slab.maxMonths} months
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary" className="bg-green-100 text-green-800">
-                          {slab.percentage}%
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={slab.isActive ? "default" : "secondary"}>
-                          {slab.isActive ? "Active" : "Inactive"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {new Date(slab.createdAt).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleEdit(slab)}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => deleteSlabMutation.mutate(slab.id)}
-                            disabled={deleteSlabMutation.isPending}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                No active claim value slabs found. Create your first slab to get started.
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Inactive Slabs Table */}
-        {inactiveSlabs.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-muted-foreground">Inactive Claim Value Slabs</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Age Range (Months)</TableHead>
-                    <TableHead>Claim Percentage</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {inactiveSlabs.map((slab: ClaimValueSlab) => (
-                    <TableRow key={slab.id} className="opacity-60">
-                      <TableCell className="font-medium">
-                        {slab.minMonths} - {slab.maxMonths} months
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary" className="bg-gray-100 text-gray-600">
-                          {slab.percentage}%
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">Inactive</Badge>
-                      </TableCell>
-                      <TableCell>
-                        {new Date(slab.createdAt).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleEdit(slab)}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => deleteSlabMutation.mutate(slab.id)}
-                            disabled={deleteSlabMutation.isPending}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Help Section */}
-        <Card className="bg-blue-50 border-blue-200">
-          <CardHeader>
-            <CardTitle className="text-blue-800">How Claim Value Slabs Work</CardTitle>
-          </CardHeader>
-          <CardContent className="text-blue-700">
-            <ul className="space-y-2">
-              <li>• <strong>Age Range:</strong> Device age in months from purchase date</li>
-              <li>• <strong>Claim Percentage:</strong> Percentage of original invoice value eligible for claim</li>
-              <li>• <strong>Active Status:</strong> Only active slabs are used for new customer registrations</li>
-              <li>• <strong>Historical Tracking:</strong> Each customer registration saves the active slab at time of registration</li>
-              <li>• <strong>Overlap Prevention:</strong> Ensure age ranges don't overlap between active slabs</li>
-            </ul>
+            <Tabs defaultValue="mobile" value={activeTab} onValueChange={(value) => setActiveTab(value as 'mobile' | 'laptop')}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="mobile" className="flex items-center">
+                  <Smartphone className="w-4 h-4 mr-2" />
+                  Mobile ({mobileSlabs.length})
+                </TabsTrigger>
+                <TabsTrigger value="laptop" className="flex items-center">
+                  <Laptop className="w-4 h-4 mr-2" />
+                  Laptop ({laptopSlabs.length})
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="mobile" className="mt-6">
+                {isLoading ? (
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  </div>
+                ) : mobileSlabs.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Age Range (Months)</TableHead>
+                        <TableHead>Claim Percentage</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {mobileSlabs.map((slab: ClaimValueSlab) => (
+                        <TableRow key={slab.id}>
+                          <TableCell className="font-medium">
+                            {slab.minMonths} - {slab.maxMonths} months
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                              {slab.percentage}%
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={slab.isActive ? "default" : "secondary"}>
+                              {slab.isActive ? "Active" : "Inactive"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {new Date(slab.createdAt).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleEdit(slab)}
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => deleteSlabMutation.mutate(slab.id)}
+                                disabled={deleteSlabMutation.isPending}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Smartphone className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
+                    <p>No mobile claim value slabs found.</p>
+                    <p className="text-sm">Create your first mobile slab to get started.</p>
+                  </div>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="laptop" className="mt-6">
+                {isLoading ? (
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  </div>
+                ) : laptopSlabs.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Age Range (Months)</TableHead>
+                        <TableHead>Claim Percentage</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {laptopSlabs.map((slab: ClaimValueSlab) => (
+                        <TableRow key={slab.id}>
+                          <TableCell className="font-medium">
+                            {slab.minMonths} - {slab.maxMonths} months
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                              {slab.percentage}%
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={slab.isActive ? "default" : "secondary"}>
+                              {slab.isActive ? "Active" : "Inactive"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {new Date(slab.createdAt).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleEdit(slab)}
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => deleteSlabMutation.mutate(slab.id)}
+                                disabled={deleteSlabMutation.isPending}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Laptop className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
+                    <p>No laptop claim value slabs found.</p>
+                    <p className="text-sm">Create your first laptop slab to get started.</p>
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>

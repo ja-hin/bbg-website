@@ -70,6 +70,7 @@ export const customers = pgTable("customers", {
 // Claim Value Slabs table for managing depreciation percentages
 export const claimValueSlabs = pgTable("claim_value_slabs", {
   id: serial("id").primaryKey(),
+  deviceType: text("device_type").notNull(), // 'mobile' or 'laptop'
   minMonths: integer("min_months").notNull(),
   maxMonths: integer("max_months").notNull(),
   percentage: integer("percentage").notNull(), // Percentage value (0-100)

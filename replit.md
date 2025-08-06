@@ -70,6 +70,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- **August 6, 2025**: ✅ Comprehensive UI/UX improvements and text updates across Acer registration journey
+  - UPDATED: Header navigation changed "Register BBG" to "Register Acer BBG"
+  - ENHANCED: IMEI validation increased from minimum 5 to 7 characters across all forms
+  - FIXED: GST text corrections - changed from "without GST" to "inclusive of GST" throughout
+  - REMOVED: All Acer logos from registration journey per requirements
+  - UPDATED: Thank you page text changed "registration ID" references to "BBG Voucher Code"
+  - IMPROVED: Consistent validation messages and user-friendly form labels
+  - CONFIRMED: All text updates align with business requirements for cleaner registration experience
+
 - **August 6, 2025**: ✅ Fixed critical Acer IMEI validation system synchronization issue
   - RESOLVED: Missing `/api/check-device-registration` endpoint causing IMEI validation failures
   - IMPLEMENTED: Proper database column mapping (`serial_number` vs `serialNumber`) 

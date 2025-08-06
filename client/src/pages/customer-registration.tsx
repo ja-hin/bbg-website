@@ -58,7 +58,7 @@ const customerSchema = z.object({
   deviceType: z.enum(["mobile", "laptop"], {
     required_error: "Please select device type"
   }),
-  serialNumber: z.string().min(5, "Serial number/IMEI must be at least 5 characters"),
+  serialNumber: z.string().min(7, "Serial number/IMEI must be at least 7 characters"),
   brand: z.string().min(2, "Brand is required"),
   modelName: z.string().min(2, "Model name is required"),
   invoiceValue: z.string().min(1, "Device purchase price (inclusive of GST) is required"),

@@ -11,7 +11,7 @@ export default function Header() {
   const navigationItems = [
     { href: "/", label: "Home", icon: Home },
     { href: "/customer-registration", label: "Buy BBG", icon: ShoppingBag },
-    { href: "/acer", label: "Register BBG", icon: Smartphone },
+    { href: "/acer", label: "Register Acer BBG", icon: Smartphone },
     { href: "/claim-bbg", label: "Claim BBG", icon: FileText },
   ];
 

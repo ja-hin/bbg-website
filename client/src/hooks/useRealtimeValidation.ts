@@ -163,7 +163,7 @@ export function useRealtimeValidation(
 export const validationSchemas = {
   phone: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
   email: z.string().email("Invalid email address"),
-  imei: z.string().min(5, "IMEI/Serial must be at least 5 characters"),
+  imei: z.string().min(7, "IMEI/Serial must be at least 7 characters"),
   name: z.string().min(2, "Name must be at least 2 characters"),
   price: z.string().min(1, "Price is required").regex(/^\d+$/, "Price must be a number"),
   address: z.string().min(5, "Address must be at least 5 characters"),
@@ -173,7 +173,7 @@ export const validationSchemas = {
 // Custom validation functions
 export const customValidations = {
   acerImeiValidation: async (imei: string): Promise<string | null> => {
-    if (!imei || imei.length < 5) {
+    if (!imei || imei.length < 7) {
       return null; // Let the schema handle basic validation
     }
 

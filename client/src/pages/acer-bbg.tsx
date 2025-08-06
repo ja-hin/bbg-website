@@ -40,12 +40,12 @@ const acerRegistrationSchema = z.object({
   deviceType: z.literal("laptop", {
     required_error: "Device type must be laptop"
   }),
-  imeiSerial: z.string().min(5, "Serial number must be at least 5 characters"),
+  imeiSerial: z.string().min(7, "Serial number must be at least 7 characters"),
   brand: z.string().min(1, "Brand is required"),
   model: z.string().min(1, "Model is required"),
   isCustomModel: z.boolean().optional(),
   customModelName: z.string().optional(),
-  purchasePrice: z.string().min(1, "Device purchase price (without GST) is required"),
+  purchasePrice: z.string().min(1, "Device purchase price (inclusive of GST) is required"),
   purchaseDate: z.string().min(1, "Device purchase date is required"),
   // Customer Details  
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -388,20 +388,20 @@ export default function AcerBBG() {
                         <FormItem className="h-full">
                           <FormLabel className="flex items-center h-6 mb-2">
                             <IndianRupee className="h-4 w-4 mr-2" />
-                            Device Purchase Price (Without GST) *
+                            Device Purchase Price (Inclusive of GST) *
                           </FormLabel>
                           <FormControl>
                             <ValidatedField
                               value={field.value}
                               onChange={field.onChange}
                               onBlur={field.onBlur}
-                              placeholder="Enter purchase amount (excluding GST)"
+                              placeholder="Enter purchase amount (inclusive of GST)"
                               validationType="price"
                               type="number"
                             />
                           </FormControl>
                           <div className="text-xs text-blue-600 mt-1">
-                            💡 Payout amount will be calculated based on this GST-excluded price
+                            💡 Payout amount will be calculated based on this GST-inclusive price
                           </div>
                           <FormMessage />
                         </FormItem>

@@ -88,12 +88,7 @@ export default function AcerThankYou() {
         <Card className="shadow-xl mb-8">
           <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
             <CardTitle className="text-2xl flex items-center justify-center">
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Acer_2011.svg/1200px-Acer_2011.svg.png" 
-                alt="Acer Logo" 
-                className="h-8 mr-3"
-              />
-              Acer BBG Protection Activated
+              BBG Protection Activated
             </CardTitle>
           </CardHeader>
           <CardContent className="p-8">
@@ -233,7 +228,7 @@ export default function AcerThankYou() {
               <div>
                 <h4 className="font-semibold text-gray-900 mb-2">BBG Process</h4>
                 <ul className="space-y-1">
-                  <li>• Submit claim online with registration ID</li>
+                  <li>• Submit claim online with BBG voucher code</li>
                   <li>• Free home pickup within 24-48 hours</li>
                   <li>• Device evaluation within 7 business days</li>
                   <li>• Payment within 7 days of approval</li>
@@ -247,7 +242,7 @@ export default function AcerThankYou() {
         <div className="text-center mt-8">
           <p className="text-sm text-gray-500">
             Thank you for choosing Xtracover BBG protection for your Acer device. 
-            Save your registration ID for future reference.
+            Save your BBG Voucher Code for future reference.
           </p>
         </div>
       </div>

@@ -47,8 +47,8 @@ export default function Footer() {
                   {/* Gradient Definition for Footer */}
                   <defs>
                     <linearGradient id="redGradientFooter" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#DC2626" />
-                      <stop offset="100%" stopColor="#B91C1C" />
+                      <stop offset="0%" stopColor="var(--xtra-primary)" />
+                      <stop offset="100%" stopColor="var(--xtra-primary)" />
                     </linearGradient>
                   </defs>
                 </svg>
@@ -56,7 +56,7 @@ export default function Footer() {
               
               {/* Brand Name for Footer */}
               <div className="flex flex-col">
-                <div className="text-2xl font-bold text-red-600 hover:text-red-500 transition-colors leading-tight tracking-tight">
+                <div className="text-2xl font-bold text-xtra-primary hover:text-xtra-primary/90 transition-colors leading-tight tracking-tight">
                   XTRACOVER
                 </div>
                 <span className="text-xs text-gray-400 uppercase tracking-wide font-medium -mt-1 opacity-80">

@@ -242,12 +242,12 @@ export default function Home() {
           <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-4xl mx-auto">
             {isSlabsLoading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-red-600" />
+                <Loader2 className="w-8 h-8 animate-spin text-xtra-primary" />
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-red-600 text-white">
+                  <thead className="bg-xtra-primary text-white">
                     <tr>
                       <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Device Age</th>
                       <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Claim Percentage</th>
@@ -258,7 +258,7 @@ export default function Home() {
                     {activeSlabs.map((slab: any, index: number) => {
                       // Determine color based on percentage
                       let colorClass = "text-green-600";
-                      if (slab.percentage < 30) colorClass = "text-red-600";
+                      if (slab.percentage < 30) colorClass = "text-xtra-primary";
                       else if (slab.percentage < 50) colorClass = "text-orange-600";
                       else if (slab.percentage < 70) colorClass = "text-yellow-600";
 
@@ -287,12 +287,12 @@ export default function Home() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Link href="/customer-registration">
-                    <Button size="sm" className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white">
+                    <Button size="sm" className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white">
                       Register Now
                     </Button>
                   </Link>
                   <Link href="/claim-bbg">
-                    <Button size="sm" variant="outline" className="w-full sm:w-auto border-red-600 text-red-600 hover:bg-red-50">
+                    <Button size="sm" variant="outline" className="w-full sm:w-auto border-xtra-primary text-xtra-primary hover:bg-xtra-primary/5">
                       Claim BBG
                     </Button>
                   </Link>
@@ -305,7 +305,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12">
             <Card className="p-4 sm:p-6 text-center">
               <CardContent className="p-0">
-                <div className="text-2xl sm:text-3xl font-bold text-red-600 mb-2">6-60</div>
+                <div className="text-2xl sm:text-3xl font-bold text-xtra-primary mb-2">6-60</div>
                 <p className="text-sm sm:text-base text-gray-600">Months coverage period</p>
               </CardContent>
             </Card>
@@ -328,7 +328,7 @@ export default function Home() {
       </section>
 
       {/* Distributor CTA Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-r from-red-600 to-blue-600 text-white">
+      <section className="py-12 sm:py-16 lg:py-20 xtra-gradient text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Award className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 sm:mb-6" />
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">Join Our Referral Program</h2>
@@ -337,7 +337,7 @@ export default function Home() {
             Easy setup, dedicated support, and regular payouts.
           </p>
           <Link href="/referral-partner-registration" className="inline-block w-full sm:w-auto">
-            <Button size="lg" variant="secondary" className="w-full sm:w-auto bg-white text-red-600 hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
+            <Button size="lg" variant="secondary" className="w-full sm:w-auto bg-white text-xtra-primary hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
               Join Referral Program <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
           </Link>

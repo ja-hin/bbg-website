@@ -26,7 +26,9 @@
   
   /* Xtracover brand colors */
   --xtra-primary: hsl(214, 54%, 37%); /* #254696 */
-  --xtra-blue: hsl(214, 54%, 37%); /* Updated to match primary */
+  --xtra-secondary: hsl(346, 77%, 49%); /* #E72829 */
+  --xtra-blue: hsl(214, 54%, 37%); /* Primary blue */
+  --xtra-red: hsl(346, 77%, 49%); /* Secondary red */
   --xtra-gray: hsl(210, 40%, 98%);
 }
 
@@ -64,10 +66,38 @@
 
 @layer components {
   .xtra-gradient {
-    background: linear-gradient(135deg, var(--xtra-primary) 0%, hsl(214, 54%, 50%) 100%);
+    background: linear-gradient(135deg, var(--xtra-primary) 0%, var(--xtra-secondary) 100%);
   }
   
   .xtra-gradient-light {
-    background: linear-gradient(135deg, hsl(214, 54%, 95%) 0%, hsl(214, 54%, 90%) 100%);
+    background: linear-gradient(135deg, hsl(214, 54%, 95%) 0%, hsl(346, 77%, 95%) 100%);
+  }
+  
+  .xtra-gradient-reverse {
+    background: linear-gradient(135deg, var(--xtra-secondary) 0%, var(--xtra-primary) 100%);
+  }
+  
+  .text-xtra-primary {
+    color: var(--xtra-primary);
+  }
+  
+  .text-xtra-secondary {
+    color: var(--xtra-secondary);
+  }
+  
+  .bg-xtra-primary {
+    background-color: var(--xtra-primary);
+  }
+  
+  .bg-xtra-secondary {
+    background-color: var(--xtra-secondary);
+  }
+  
+  .border-xtra-primary {
+    border-color: var(--xtra-primary);
+  }
+  
+  .border-xtra-secondary {
+    border-color: var(--xtra-secondary);
   }
 }

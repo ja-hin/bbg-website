@@ -124,7 +124,7 @@ export default function Header() {
                   <defs>
                     <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                       <stop offset="0%" stopColor="#254696" />
-                      <stop offset="100%" stopColor="#1e3a8a" />
+                      <stop offset="100%" stopColor="#E72829" />
                     </linearGradient>
                   </defs>
                 </svg>

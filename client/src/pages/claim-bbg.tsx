@@ -538,7 +538,7 @@ export default function ClaimBBG() {
                     {otpVerified && (
                       <Button
                         type="submit"
-                        className="w-full bg-primary hover:bg-primary/90"
+                        className="w-full bg-xtra-secondary hover:bg-xtra-secondary/90"
                         disabled={submitClaimMutation.isPending}
                       >
                         {submitClaimMutation.isPending ? (
@@ -573,12 +573,12 @@ export default function ClaimBBG() {
                 {/* Mobile Device Slabs */}
                 {mobileSlabs && mobileSlabs.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-semibold text-blue-700 mb-3 flex items-center">
+                    <h3 className="text-lg font-semibold text-xtra-secondary mb-3 flex items-center">
                       📱 Mobile Device Claim Values
                     </h3>
                     <div className="overflow-x-auto border rounded-lg">
                       <table className="w-full">
-                        <thead className="bg-blue-50">
+                        <thead className="bg-xtra-secondary/5">
                           <tr className="border-b">
                             <th className="text-left py-3 px-4 font-semibold text-gray-900">Device Age</th>
                             <th className="text-left py-3 px-4 font-semibold text-gray-900">Claim Percentage</th>
@@ -612,12 +612,12 @@ export default function ClaimBBG() {
                 {/* Laptop Device Slabs */}
                 {laptopSlabs && laptopSlabs.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-semibold text-purple-700 mb-3 flex items-center">
+                    <h3 className="text-lg font-semibold text-xtra-primary mb-3 flex items-center">
                       💻 Laptop Device Claim Values
                     </h3>
                     <div className="overflow-x-auto border rounded-lg">
                       <table className="w-full">
-                        <thead className="bg-purple-50">
+                        <thead className="bg-xtra-primary/5">
                           <tr className="border-b">
                             <th className="text-left py-3 px-4 font-semibold text-gray-900">Device Age</th>
                             <th className="text-left py-3 px-4 font-semibold text-gray-900">Claim Percentage</th>

@@ -209,7 +209,7 @@ export default function AdminClaimSlabs() {
             if (!open) resetForm();
           }}>
             <DialogTrigger asChild>
-              <Button onClick={() => setCreateDialogOpen(true)}>
+              <Button className="bg-xtra-secondary hover:bg-xtra-secondary/90 text-white" onClick={() => setCreateDialogOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 Add New Slab
               </Button>

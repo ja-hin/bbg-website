@@ -98,7 +98,7 @@ export default function Header() {
                     cx="20" 
                     cy="20" 
                     r="18" 
-                    fill="url(#redGradient)" 
+                    fill="url(#primaryGradient)" 
                     className="drop-shadow-sm"
                   />
                   
@@ -122,9 +122,9 @@ export default function Header() {
                   
                   {/* Gradient Definition */}
                   <defs>
-                    <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#DC2626" />
-                      <stop offset="100%" stopColor="#B91C1C" />
+                    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#254696" />
+                      <stop offset="100%" stopColor="#1e3a8a" />
                     </linearGradient>
                   </defs>
                 </svg>
@@ -132,7 +132,7 @@ export default function Header() {
               
               {/* Brand Name */}
               <div className="flex flex-col">
-                <div className="text-xl sm:text-2xl font-bold text-red-600 group-hover:text-red-700 transition-colors leading-tight tracking-tight">
+                <div className="text-xl sm:text-2xl font-bold text-primary group-hover:text-primary/90 transition-colors leading-tight tracking-tight">
                   XTRACOVER
                 </div>
                 <span className="text-xs text-gray-600 uppercase tracking-wide font-medium -mt-1 opacity-80 hidden sm:block">

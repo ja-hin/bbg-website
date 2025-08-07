@@ -13,7 +13,7 @@
   --card-foreground: hsl(240, 10%, 9%);
   --border: hsl(240, 6%, 90%);
   --input: hsl(240, 6%, 90%);
-  --primary: hsl(346, 77%, 49%);
+  --primary: hsl(214, 54%, 37%);
   --primary-foreground: hsl(0, 0%, 98%);
   --secondary: hsl(240, 5%, 96%);
   --secondary-foreground: hsl(240, 6%, 10%);
@@ -21,12 +21,12 @@
   --accent-foreground: hsl(240, 6%, 10%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(346, 77%, 49%);
+  --ring: hsl(214, 54%, 37%);
   --radius: 0.75rem;
   
   /* Xtracover brand colors */
-  --xtra-red: hsl(346, 77%, 49%);
-  --xtra-blue: hsl(223, 84%, 39%);
+  --xtra-primary: hsl(214, 54%, 37%); /* #254696 */
+  --xtra-blue: hsl(214, 54%, 37%); /* Updated to match primary */
   --xtra-gray: hsl(210, 40%, 98%);
 }
 
@@ -41,7 +41,7 @@
   --card-foreground: hsl(0, 0%, 98%);
   --border: hsl(240, 4%, 16%);
   --input: hsl(240, 4%, 16%);
-  --primary: hsl(346, 77%, 49%);
+  --primary: hsl(214, 54%, 37%);
   --primary-foreground: hsl(0, 0%, 98%);
   --secondary: hsl(240, 4%, 16%);
   --secondary-foreground: hsl(0, 0%, 98%);
@@ -49,7 +49,7 @@
   --accent-foreground: hsl(0, 0%, 98%);
   --destructive: hsl(0, 63%, 31%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(346, 77%, 49%);
+  --ring: hsl(214, 54%, 37%);
 }
 
 @layer base {
@@ -64,10 +64,10 @@
 
 @layer components {
   .xtra-gradient {
-    background: linear-gradient(135deg, var(--xtra-red) 0%, var(--xtra-blue) 100%);
+    background: linear-gradient(135deg, var(--xtra-primary) 0%, hsl(214, 54%, 50%) 100%);
   }
   
   .xtra-gradient-light {
-    background: linear-gradient(135deg, hsl(346, 77%, 95%) 0%, hsl(223, 84%, 95%) 100%);
+    background: linear-gradient(135deg, hsl(214, 54%, 95%) 0%, hsl(214, 54%, 90%) 100%);
   }
 }

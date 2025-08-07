@@ -538,7 +538,7 @@ export default function ClaimBBG() {
                     {otpVerified && (
                       <Button
                         type="submit"
-                        className="w-full bg-red-600 hover:bg-red-700"
+                        className="w-full bg-primary hover:bg-primary/90"
                         disabled={submitClaimMutation.isPending}
                       >
                         {submitClaimMutation.isPending ? (

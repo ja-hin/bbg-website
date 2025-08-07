@@ -147,10 +147,45 @@ export class SqlServerStorage implements IStorage {
   private async initializeDatabase() {
     try {
       await db.connectDB();
+      
+      // HIGHEST PRIORITY: Create theme_settings table FIRST
+      await this.createThemeSettingsTableAtAnyCost();
+      
       await this.createTablesIfNotExist();
       console.log('SQL Server database initialized successfully');
     } catch (error) {
       console.error('Failed to initialize SQL Server database:', error);
+    }
+  }
+  
+  private async createThemeSettingsTableAtAnyCost() {
+    try {
+      console.log('🔥 ENSURING THEME_SETTINGS TABLE EXISTS IN DATABASE...');
+      const themeTableQuery = `
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'theme_settings')
+        BEGIN
+          CREATE TABLE theme_settings (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            primary_color NVARCHAR(7) NOT NULL DEFAULT '#254696',
+            created_at DATETIME2 DEFAULT GETDATE(),
+            updated_at DATETIME2 DEFAULT GETDATE()
+          );
+          
+          INSERT INTO theme_settings (primary_color) VALUES ('#254696');
+          PRINT 'Theme settings table created with default color';
+        END
+        ELSE
+        BEGIN
+          PRINT 'Theme settings table already exists, preserving current data';
+        END
+      `;
+      
+      const themeRequest = db.pool.request();
+      await themeRequest.query(themeTableQuery);
+      console.log('✅ THEME_SETTINGS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+    } catch (themeError) {
+      console.error('❌ THEME TABLE CREATION FAILED:', themeError);
+      throw themeError;
     }
   }
 
@@ -2428,7 +2463,19 @@ export class SqlServerStorage implements IStorage {
 
   // Theme Settings operations
   async getCurrentThemeSettings(): Promise<ThemeSettings | undefined> {
-    // Return from in-memory storage
+    try {
+      await db.connectDB();
+      const query = `SELECT TOP 1 * FROM theme_settings ORDER BY created_at DESC`;
+      const result = await db.pool.request().query(query);
+      
+      if (result.recordset.length > 0) {
+        return this.mapThemeSettingsFromDb(result.recordset[0]);
+      }
+    } catch (error) {
+      console.log('Database theme settings failed, using in-memory fallback');
+    }
+    
+    // Fallback to in-memory storage
     return {
       id: 1,
       primaryColor: this.themeStorage.primaryColor,
@@ -2437,29 +2484,55 @@ export class SqlServerStorage implements IStorage {
     };
   }
 
-  // Simple in-memory theme storage for now
+  // Fallback in-memory theme storage
   private themeStorage: { primaryColor: string } = { primaryColor: '#254696' };
 
   async updateThemeSettings(settings: InsertThemeSettings): Promise<ThemeSettings> {
+    console.log('Updating theme settings to:', settings.primaryColor);
+    
     try {
-      console.log('Updating theme settings to:', settings.primaryColor);
+      await db.connectDB();
       
-      // Update in-memory storage
-      this.themeStorage.primaryColor = settings.primaryColor;
+      // Check if we have existing settings
+      const existing = await this.getCurrentThemeSettings();
       
-      // Also try to persist to file but don't fail if it doesn't work
-      try {
-        const fs = await import('fs');
-        const themeFilePath = './theme-settings.json';
-        const themeData = {
-          primaryColor: settings.primaryColor,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-        fs.writeFileSync(themeFilePath, JSON.stringify(themeData, null, 2));
-      } catch (fileError) {
-        console.log('File persistence failed, using in-memory storage');
+      if (existing && existing.id && existing.id > 0) {
+        // Update existing record
+        const query = `
+          UPDATE theme_settings 
+          SET primary_color = @primaryColor, updated_at = GETDATE()
+          OUTPUT INSERTED.*
+          WHERE id = @id
+        `;
+        
+        const request = db.pool.request();
+        request.input('id', sql.Int, existing.id);
+        request.input('primaryColor', sql.NVarChar, settings.primaryColor);
+        
+        const result = await request.query(query);
+        console.log('Database theme updated successfully');
+        return this.mapThemeSettingsFromDb(result.recordset[0]);
+      } else {
+        // Insert new record
+        const query = `
+          INSERT INTO theme_settings (primary_color)
+          OUTPUT INSERTED.*
+          VALUES (@primaryColor)
+        `;
+        
+        const request = db.pool.request();
+        request.input('primaryColor', sql.NVarChar, settings.primaryColor);
+        
+        const result = await request.query(query);
+        console.log('Database theme inserted successfully');
+        return this.mapThemeSettingsFromDb(result.recordset[0]);
       }
+    } catch (error) {
+      console.error('Database theme update failed:', error);
+      
+      // Update in-memory storage as fallback
+      this.themeStorage.primaryColor = settings.primaryColor;
+      console.log('Using in-memory fallback storage');
       
       return {
         id: 1,
@@ -2467,9 +2540,6 @@ export class SqlServerStorage implements IStorage {
         createdAt: new Date(),
         updatedAt: new Date()
       };
-    } catch (error) {
-      console.error('Failed to update theme settings:', error);
-      throw new Error('Failed to update theme settings');
     }
   }
 

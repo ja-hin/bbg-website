@@ -300,6 +300,24 @@ export type InsertBrand = z.infer<typeof insertBrandSchema>;
 export type InsertDeviceModel = z.infer<typeof insertDeviceModelSchema>;
 export type InsertCartAbandonment = typeof cartAbandonments.$inferInsert;
 
+// Theme settings table for admin theme management
+export const themeSettings = pgTable("theme_settings", {
+  id: serial("id").primaryKey(),
+  primaryColor: text("primary_color").notNull().default("#254696"), // hex color code
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertThemeSettingsSchema = createInsertSchema(themeSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Claim Value Slabs types
 export type InsertClaimValueSlab = z.infer<typeof insertClaimValueSlabSchema>;
 export type ClaimValueSlab = typeof claimValueSlabs.$inferSelect;
+
+// Theme Settings types
+export type ThemeSettings = typeof themeSettings.$inferSelect;
+export type InsertThemeSettings = z.infer<typeof insertThemeSettingsSchema>;

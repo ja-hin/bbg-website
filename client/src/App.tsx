@@ -31,11 +31,13 @@ import AdminStorage from "@/pages/admin-storage";
 import AdminAcerRegistrations from "@/pages/admin-acer-registrations";
 import AdminAcerImei from "@/pages/admin-acer-imei";
 import AdminClaimSlabs from "@/pages/admin-claim-slabs";
+import AdminThemeSettings from "@/pages/admin-theme-settings";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { ScrollToTopButton } from "@/components/scroll-to-top-button";
+import { ThemeLoader } from "@/components/theme-loader";
 
 function AdminRoot() {
   const { isLoading, isAuthenticated } = useAuth();
@@ -83,6 +85,7 @@ function Router() {
         </Suspense>
       </Route>
       <Route path="/admin/claim-slabs" component={AdminClaimSlabs} />
+      <Route path="/admin/theme-settings" component={AdminThemeSettings} />
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />
@@ -119,6 +122,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <ThemeLoader />
         <Toaster />
         <Router />
       </TooltipProvider>

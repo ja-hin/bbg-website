@@ -1947,6 +1947,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===== THEME MANAGEMENT ROUTES =====
+  
+  // Get current theme settings (public endpoint)
+  app.get("/api/theme/current", async (req, res) => {
+    try {
+      const themeSettings = await storage.getCurrentThemeSettings();
+      if (themeSettings) {
+        res.json(themeSettings);
+      } else {
+        // Return default theme if none found
+        res.json({ primaryColor: '#254696' });
+      }
+    } catch (error: any) {
+      console.error('Failed to get theme settings:', error);
+      res.json({ primaryColor: '#254696' }); // Default fallback
+    }
+  });
+
+  // Get current theme settings (admin endpoint)
+  app.get("/api/admin/theme/current", isAdminAuthenticated, async (req, res) => {
+    try {
+      const themeSettings = await storage.getCurrentThemeSettings();
+      if (themeSettings) {
+        res.json(themeSettings);
+      } else {
+        // Return default theme if none found
+        res.json({ primaryColor: '#254696' });
+      }
+    } catch (error: any) {
+      console.error('Failed to get theme settings:', error);
+      res.status(500).json({ message: "Failed to get theme settings" });
+    }
+  });
+
+  // Update theme settings (admin only)
+  app.post("/api/admin/theme/update", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { primaryColor } = req.body;
+      
+      if (!primaryColor || !/^#[0-9A-F]{6}$/i.test(primaryColor)) {
+        return res.status(400).json({ message: "Valid hex color code required" });
+      }
+
+      const updatedTheme = await storage.updateThemeSettings({ primaryColor });
+      res.json({
+        message: "Theme updated successfully",
+        theme: updatedTheme
+      });
+    } catch (error: any) {
+      console.error('Failed to update theme settings:', error);
+      res.status(500).json({ message: "Failed to update theme settings" });
+    }
+  });
+
   // ===== MASTER MANAGEMENT ROUTES =====
 
   // User Roles Master Management

@@ -98,6 +98,12 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       active: location === "/admin/claim-slabs"
     },
     {
+      label: "Theme Settings",
+      href: "/admin/theme-settings",
+      icon: Settings,
+      active: location === "/admin/theme-settings"
+    },
+    {
       label: "Communication",
       href: "/admin/templates",
       icon: Mail,

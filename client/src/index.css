@@ -13,7 +13,7 @@
   --card-foreground: hsl(240, 10%, 9%);
   --border: hsl(240, 6%, 90%);
   --input: hsl(240, 6%, 90%);
-  --primary: hsl(214, 54%, 37%);
+  --primary: var(--xtra-primary);
   --primary-foreground: hsl(0, 0%, 98%);
   --secondary: hsl(240, 5%, 96%);
   --secondary-foreground: hsl(240, 6%, 10%);
@@ -21,15 +21,11 @@
   --accent-foreground: hsl(240, 6%, 10%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(214, 54%, 37%);
+  --ring: var(--xtra-primary);
   --radius: 0.75rem;
   
-  /* Xtracover brand colors */
-  --xtra-primary: hsl(214, 54%, 37%); /* #254696 */
-  --xtra-secondary: hsl(346, 77%, 49%); /* #E72829 */
-  --xtra-blue: hsl(214, 54%, 37%); /* Primary blue */
-  --xtra-red: hsl(346, 77%, 49%); /* Secondary red */
-  --xtra-gray: hsl(210, 40%, 98%);
+  /* Xtracover primary brand color - Dynamic (Updated by ThemeLoader) */
+  --xtra-primary: hsl(214, 54%, 37%); /* #254696 - default */
 }
 
 .dark {
@@ -43,7 +39,7 @@
   --card-foreground: hsl(0, 0%, 98%);
   --border: hsl(240, 4%, 16%);
   --input: hsl(240, 4%, 16%);
-  --primary: hsl(214, 54%, 37%);
+  --primary: var(--xtra-primary);
   --primary-foreground: hsl(0, 0%, 98%);
   --secondary: hsl(240, 4%, 16%);
   --secondary-foreground: hsl(0, 0%, 98%);
@@ -51,7 +47,9 @@
   --accent-foreground: hsl(0, 0%, 98%);
   --destructive: hsl(0, 63%, 31%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(214, 54%, 37%);
+  --ring: var(--xtra-primary);
+  
+  /* Keep same --xtra-primary for dark mode - will be updated by ThemeLoader */
 }
 
 @layer base {
@@ -66,38 +64,39 @@
 
 @layer components {
   .xtra-gradient {
-    background: linear-gradient(135deg, var(--xtra-primary) 0%, var(--xtra-secondary) 100%);
+    background: linear-gradient(135deg, var(--xtra-primary) 0%, color-mix(in srgb, var(--xtra-primary) 80%, transparent) 100%);
   }
   
   .xtra-gradient-light {
-    background: linear-gradient(135deg, hsl(214, 54%, 95%) 0%, hsl(346, 77%, 95%) 100%);
-  }
-  
-  .xtra-gradient-reverse {
-    background: linear-gradient(135deg, var(--xtra-secondary) 0%, var(--xtra-primary) 100%);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--xtra-primary) 10%, transparent) 0%, color-mix(in srgb, var(--xtra-primary) 5%, transparent) 100%);
   }
   
   .text-xtra-primary {
     color: var(--xtra-primary);
   }
   
-  .text-xtra-secondary {
-    color: var(--xtra-secondary);
-  }
-  
   .bg-xtra-primary {
     background-color: var(--xtra-primary);
-  }
-  
-  .bg-xtra-secondary {
-    background-color: var(--xtra-secondary);
   }
   
   .border-xtra-primary {
     border-color: var(--xtra-primary);
   }
   
-  .border-xtra-secondary {
-    border-color: var(--xtra-secondary);
+  /* Dynamic color utilities */
+  .bg-xtra-primary\/10 {
+    background-color: color-mix(in srgb, var(--xtra-primary) 10%, transparent);
+  }
+  
+  .bg-xtra-primary\/5 {
+    background-color: color-mix(in srgb, var(--xtra-primary) 5%, transparent);
+  }
+  
+  .bg-xtra-primary\/90 {
+    background-color: color-mix(in srgb, var(--xtra-primary) 90%, transparent);
+  }
+  
+  .hover\:bg-xtra-primary\/90:hover {
+    background-color: color-mix(in srgb, var(--xtra-primary) 90%, transparent);
   }
 }

@@ -23,7 +23,7 @@ export default function AdminThemeSettings() {
   const [previewColor, setPreviewColor] = useState("#254696");
 
   // Fetch current theme settings
-  const { data: currentTheme, isLoading } = useQuery({
+  const { data: currentTheme, isLoading } = useQuery<ThemeSettings>({
     queryKey: ["/api/admin/theme/current"],
     retry: false,
   });
@@ -31,7 +31,21 @@ export default function AdminThemeSettings() {
   // Update theme mutation
   const updateThemeMutation = useMutation({
     mutationFn: async (primaryColor: string) => {
-      return await apiRequest("/api/admin/theme/update", "POST", { primaryColor });
+      const response = await fetch("/api/admin/theme/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ primaryColor }),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to update theme");
+      }
+      
+      return await response.json();
     },
     onSuccess: (data) => {
       toast({

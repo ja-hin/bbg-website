@@ -33,7 +33,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
             Protect Your Investment with 
-            <span className="text-xtra-secondary block sm:inline"> BuyBack Guarantee</span>
+            <span className="text-xtra-primary block sm:inline"> BuyBack Guarantee</span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-12 px-4 sm:px-0">
             Get assured returns on your laptops and mobiles. Join thousands of satisfied customers 
@@ -43,8 +43,8 @@ export default function Home() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 sm:mb-16 px-4 sm:px-0">
             <Link href="/customer-registration" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto bg-xtra-secondary hover:bg-xtra-secondary/90 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
-                Buy BBG <ArrowRight className="ml-2 h-4 h-5 sm:w-5" />
+              <Button size="lg" className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
+                Buy BBG <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </Link>
             <Link href="/claim-bbg" className="w-full sm:w-auto">
@@ -62,7 +62,7 @@ export default function Home() {
                   <Laptop className="h-8 w-8 sm:h-10 sm:w-10 text-xtra-primary" />
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Laptop BBG</h3>
-                <div className="text-3xl sm:text-4xl font-bold text-xtra-secondary mb-2">₹125</div>
+                <div className="text-3xl sm:text-4xl font-bold text-xtra-primary mb-2">₹125</div>
                 <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">(inclusive of GST)</p>
                 <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Complete protection for your laptop investment</p>
                 <ul className="text-left space-y-2 text-sm text-gray-600">
@@ -82,13 +82,13 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="p-6 sm:p-8 border-2 border-xtra-secondary/20 hover:border-xtra-secondary/40 transition-colors">
+            <Card className="p-6 sm:p-8 border-2 border-xtra-primary/20 hover:border-xtra-primary/40 transition-colors">
               <CardContent className="text-center p-0">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-xtra-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <Smartphone className="h-8 w-8 sm:h-10 sm:w-10 text-xtra-secondary" />
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-xtra-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <Smartphone className="h-8 w-8 sm:h-10 sm:w-10 text-xtra-primary" />
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Mobile BBG</h3>
-                <div className="text-3xl sm:text-4xl font-bold text-xtra-secondary mb-2">₹99</div>
+                <div className="text-3xl sm:text-4xl font-bold text-xtra-primary mb-2">₹99</div>
                 <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">(inclusive of GST)</p>
                 <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Complete protection for your mobile device</p>
                 <ul className="text-left space-y-2 text-sm text-gray-600">

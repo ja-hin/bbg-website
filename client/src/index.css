@@ -83,6 +83,18 @@
     border-color: var(--xtra-primary);
   }
   
+  .hover\:bg-xtra-primary\/90:hover {
+    background-color: color-mix(in srgb, var(--xtra-primary) 90%, transparent);
+  }
+  
+  .bg-xtra-primary {
+    background-color: var(--xtra-primary);
+  }
+  
+  .border-xtra-primary {
+    border-color: var(--xtra-primary);
+  }
+  
   /* Dynamic color utilities */
   .bg-xtra-primary\/10 {
     background-color: color-mix(in srgb, var(--xtra-primary) 10%, transparent);

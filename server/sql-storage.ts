@@ -595,6 +595,14 @@ export class SqlServerStorage implements IStorage {
 
     const request = db.pool.request();
     await request.query(createTablesScript);
+    
+    // Force create theme_settings table
+    try {
+      await this.createThemeSettingsTable();
+      console.log("Theme settings table created/verified");
+    } catch (error) {
+      console.log("Theme settings table creation skipped:", error.message);
+    }
   }
 
   // Distributor operations

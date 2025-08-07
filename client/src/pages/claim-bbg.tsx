@@ -251,7 +251,7 @@ export default function ClaimBBG() {
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <Card className="text-center p-6">
             <CardContent className="p-0">
-              <div className="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+              <div className="w-16 h-16 bg-xtra-primary text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 1
               </div>
               <h3 className="text-lg font-semibold mb-2">Enter Voucher Code</h3>
@@ -261,7 +261,7 @@ export default function ClaimBBG() {
 
           <Card className="text-center p-6">
             <CardContent className="p-0">
-              <div className="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+              <div className="w-16 h-16 bg-xtra-primary text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 2
               </div>
               <h3 className="text-lg font-semibold mb-2">Check Claim Value</h3>
@@ -271,7 +271,7 @@ export default function ClaimBBG() {
 
           <Card className="text-center p-6">
             <CardContent className="p-0">
-              <div className="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+              <div className="w-16 h-16 bg-xtra-primary text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 3
               </div>
               <h3 className="text-lg font-semibold mb-2">Process Claim</h3>
@@ -321,7 +321,7 @@ export default function ClaimBBG() {
                 {checkClaimMutation.isError && !eligibilityError && (
                   <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                     <div className="flex items-start">
-                      <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 mr-3 flex-shrink-0" />
+                      <AlertCircle className="h-5 w-5 text-xtra-primary mt-0.5 mr-3 flex-shrink-0" />
                       <div>
                         <h4 className="font-semibold text-red-900 mb-1">Invalid BBG Voucher Code</h4>
                         <p className="text-sm text-red-800">
@@ -591,7 +591,7 @@ export default function ClaimBBG() {
                             .sort((a: any, b: any) => a.minMonths - b.minMonths)
                             .map((slab: any, index: number) => {
                               let colorClass = "text-green-600";
-                              if (slab.percentage < 30) colorClass = "text-red-600";
+                              if (slab.percentage < 30) colorClass = "text-xtra-primary";
                               else if (slab.percentage < 50) colorClass = "text-orange-600";
                               else if (slab.percentage < 70) colorClass = "text-yellow-600";
 
@@ -630,7 +630,7 @@ export default function ClaimBBG() {
                             .sort((a: any, b: any) => a.minMonths - b.minMonths)
                             .map((slab: any, index: number) => {
                               let colorClass = "text-green-600";
-                              if (slab.percentage < 30) colorClass = "text-red-600";
+                              if (slab.percentage < 30) colorClass = "text-xtra-primary";
                               else if (slab.percentage < 50) colorClass = "text-orange-600";
                               else if (slab.percentage < 70) colorClass = "text-yellow-600";
 

@@ -38,8 +38,8 @@ export default function Header() {
                 : 'flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors'
               }
               ${isActive 
-                ? 'text-red-600 bg-red-50' 
-                : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
+                ? 'text-xtra-primary bg-xtra-primary/10' 
+                : 'text-gray-700 hover:text-xtra-primary hover:bg-gray-50'
               }
             `}
           >
@@ -52,7 +52,7 @@ export default function Header() {
         <Button 
           className={`
             ${mobile ? 'w-full justify-start space-x-3' : ''}
-            bg-red-600 hover:bg-red-700 text-white
+            bg-xtra-primary hover:bg-xtra-primary/90 text-white
           `}
           size={mobile ? "default" : "sm"}
         >
@@ -67,7 +67,7 @@ export default function Header() {
           variant="outline"
           className={`
             ${mobile ? 'w-full justify-start space-x-3' : ''}
-            border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700
+            border-xtra-primary/20 text-xtra-primary hover:bg-xtra-primary/5 hover:text-xtra-primary
           `}
           size={mobile ? "default" : "sm"}
         >
@@ -123,8 +123,8 @@ export default function Header() {
                   {/* Gradient Definition */}
                   <defs>
                     <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#254696" />
-                      <stop offset="100%" stopColor="#E72829" />
+                      <stop offset="0%" stopColor="var(--xtra-primary)" />
+                      <stop offset="100%" stopColor="var(--xtra-primary)" />
                     </linearGradient>
                   </defs>
                 </svg>
@@ -132,7 +132,7 @@ export default function Header() {
               
               {/* Brand Name */}
               <div className="flex flex-col">
-                <div className="text-xl sm:text-2xl font-bold text-primary group-hover:text-primary/90 transition-colors leading-tight tracking-tight">
+                <div className="text-xl sm:text-2xl font-bold text-xtra-primary group-hover:text-xtra-primary/90 transition-colors leading-tight tracking-tight">
                   XTRACOVER
                 </div>
                 <span className="text-xs text-gray-600 uppercase tracking-wide font-medium -mt-1 opacity-80 hidden sm:block">

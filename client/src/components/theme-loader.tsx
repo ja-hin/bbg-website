@@ -1,8 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
+interface ThemeSettings {
+  id: number;
+  primaryColor: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export function ThemeLoader() {
-  const { data: themeSettings } = useQuery({
+  const { data: themeSettings } = useQuery<ThemeSettings>({
     queryKey: ["/api/theme/current"],
     retry: false,
     staleTime: 10 * 60 * 1000, // 10 minutes

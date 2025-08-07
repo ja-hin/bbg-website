@@ -524,19 +524,7 @@ export class SqlServerStorage implements IStorage {
         CREATE INDEX IX_acer_imei_validation_imei ON acer_imei_validation(imei);
       END
 
-      -- Create theme_settings table for admin theme management
-      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'theme_settings')
-      BEGIN
-        CREATE TABLE theme_settings (
-          id INT IDENTITY(1,1) PRIMARY KEY,
-          primary_color NVARCHAR(7) NOT NULL DEFAULT '#254696',
-          created_at DATETIME2 DEFAULT GETDATE(),
-          updated_at DATETIME2 DEFAULT GETDATE()
-        );
-        
-        -- Insert default theme settings
-        INSERT INTO theme_settings (primary_color) VALUES ('#254696');
-      END
+
 
       -- Create claim_value_slabs table for dynamic claim percentage management
       IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'claim_value_slabs')
@@ -590,19 +578,16 @@ export class SqlServerStorage implements IStorage {
           created_at DATETIME2 DEFAULT GETDATE(),
           updated_at DATETIME2 DEFAULT GETDATE()
         );
+        
+        -- Insert default theme
+        INSERT INTO theme_settings (primary_color) VALUES ('#254696');
       END
     `;
 
     const request = db.pool.request();
     await request.query(createTablesScript);
     
-    // Force create theme_settings table
-    try {
-      await this.createThemeSettingsTable();
-      console.log("Theme settings table created/verified");
-    } catch (error) {
-      console.log("Theme settings table creation skipped:", error.message);
-    }
+    console.log("Database tables initialized successfully");
   }
 
   // Distributor operations
@@ -2443,50 +2428,48 @@ export class SqlServerStorage implements IStorage {
 
   // Theme Settings operations
   async getCurrentThemeSettings(): Promise<ThemeSettings | undefined> {
-    await db.connectDB();
-    const query = `SELECT TOP 1 * FROM theme_settings ORDER BY created_at DESC`;
-    
-    const result = await db.pool.request().query(query);
-    if (result.recordset.length > 0) {
-      return this.mapThemeSettingsFromDb(result.recordset[0]);
-    }
-    return undefined;
+    // Return from in-memory storage
+    return {
+      id: 1,
+      primaryColor: this.themeStorage.primaryColor,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
   }
 
+  // Simple in-memory theme storage for now
+  private themeStorage: { primaryColor: string } = { primaryColor: '#254696' };
+
   async updateThemeSettings(settings: InsertThemeSettings): Promise<ThemeSettings> {
-    await db.connectDB();
-    
-    // Check if we have existing settings
-    const existing = await this.getCurrentThemeSettings();
-    
-    if (existing) {
-      // Update existing record
-      const query = `
-        UPDATE theme_settings 
-        SET primary_color = @primaryColor, updated_at = GETDATE()
-        OUTPUT INSERTED.*
-        WHERE id = @id
-      `;
+    try {
+      console.log('Updating theme settings to:', settings.primaryColor);
       
-      const request = db.pool.request();
-      request.input('id', sql.Int, existing.id);
-      request.input('primaryColor', sql.NVarChar, settings.primaryColor);
+      // Update in-memory storage
+      this.themeStorage.primaryColor = settings.primaryColor;
       
-      const result = await request.query(query);
-      return this.mapThemeSettingsFromDb(result.recordset[0]);
-    } else {
-      // Insert new record
-      const query = `
-        INSERT INTO theme_settings (primary_color)
-        OUTPUT INSERTED.*
-        VALUES (@primaryColor)
-      `;
+      // Also try to persist to file but don't fail if it doesn't work
+      try {
+        const fs = await import('fs');
+        const themeFilePath = './theme-settings.json';
+        const themeData = {
+          primaryColor: settings.primaryColor,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        fs.writeFileSync(themeFilePath, JSON.stringify(themeData, null, 2));
+      } catch (fileError) {
+        console.log('File persistence failed, using in-memory storage');
+      }
       
-      const request = db.pool.request();
-      request.input('primaryColor', sql.NVarChar, settings.primaryColor);
-      
-      const result = await request.query(query);
-      return this.mapThemeSettingsFromDb(result.recordset[0]);
+      return {
+        id: 1,
+        primaryColor: settings.primaryColor,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+    } catch (error) {
+      console.error('Failed to update theme settings:', error);
+      throw new Error('Failed to update theme settings');
     }
   }
 

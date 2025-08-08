@@ -142,7 +142,7 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
   ];
 
   return (
-    <div className={cn("flex h-screen w-64 flex-col bg-xtra-primary text-white", className)}>
+    <div className={cn("flex h-screen w-64 flex-col bg-xtra-primary text-white overflow-hidden", className)}>
       {/* Header */}
       <div className="flex h-16 items-center border-b border-white/20 px-6">
         <Shield className="h-8 w-8 text-white mr-3" />
@@ -166,7 +166,7 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
         {menuItems.map((item) => {
           const Icon = item.icon;
           return (

@@ -39,7 +39,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     <div className="flex h-screen bg-gray-50">
       <AdminSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto scrollbar-hide">
           <div className="p-6">
             {children}
           </div>

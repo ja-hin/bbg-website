@@ -6,8 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-import { AdminHeader } from '@/components/admin-header';
-import { useRequireAuth } from '@/hooks/useAuth';
+import { AdminLayout } from '@/components/admin-layout';
 import { Eye, EyeOff, Mail } from 'lucide-react';
 
 interface SmtpSettings {
@@ -23,7 +22,6 @@ interface SmtpSettings {
 }
 
 export default function AdminSmtpSettings() {
-  useRequireAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
@@ -179,7 +177,7 @@ export default function AdminSmtpSettings() {
 
   if (isLoading) {
     return (
-      <div className="p-6">
+      <AdminLayout>
         <div className="animate-pulse">
           <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
           <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
@@ -189,23 +187,21 @@ export default function AdminSmtpSettings() {
             <div className="h-20 bg-gray-200 rounded"></div>
           </div>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <AdminHeader />
-      <div className="p-6">
-        <div className="mb-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Mail className="h-8 w-8 text-xtra-primary" />
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">SMTP Email Settings</h1>
-          </div>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Configure SMTP settings for sending emails through AWS SES or other email providers
-          </p>
+    <AdminLayout>
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Mail className="h-8 w-8 text-xtra-primary" />
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">SMTP Email Settings</h1>
         </div>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">
+          Configure SMTP settings for sending emails through AWS SES or other email providers
+        </p>
+      </div>
 
       <Card className="max-w-2xl">
         <CardHeader>
@@ -402,7 +398,6 @@ export default function AdminSmtpSettings() {
           </div>
         </CardContent>
       </Card>
-      </div>
-    </div>
+    </AdminLayout>
   );
 }

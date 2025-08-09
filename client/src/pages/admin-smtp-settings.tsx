@@ -57,7 +57,7 @@ export default function AdminSmtpSettings() {
       console.log('Sending SMTP settings:', settings);
       return await apiRequest('/api/admin/smtp/update', {
         method: 'POST',
-        body: JSON.stringify(settings)
+        body: settings
       });
     },
     onSuccess: () => {

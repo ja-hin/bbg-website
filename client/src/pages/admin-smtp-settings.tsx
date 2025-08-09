@@ -32,6 +32,9 @@ export default function AdminSmtpSettings() {
     fromAddress: ''
   });
 
+  const [testEmail, setTestEmail] = useState('');
+  const [showTestSection, setShowTestSection] = useState(false);
+
   // Get current SMTP settings
   const { data: smtpSettings, isLoading } = useQuery<SmtpSettings | null>({
     queryKey: ['/api/admin/smtp/current'],
@@ -77,6 +80,31 @@ export default function AdminSmtpSettings() {
     },
   });
 
+  // Test SMTP settings mutation
+  const testSmtpMutation = useMutation({
+    mutationFn: async (email: string) => {
+      return await apiRequest('/api/admin/smtp/test', {
+        method: 'POST',
+        body: { testEmail: email }
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Test email sent successfully! Check your inbox.",
+        variant: "default",
+      });
+      setTestEmail('');
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send test email",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -112,6 +140,31 @@ export default function AdminSmtpSettings() {
     }
 
     updateSmtpMutation.mutate(formData);
+  };
+
+  const handleTestEmail = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!testEmail) {
+      toast({
+        title: "Error",
+        description: "Please enter an email address to test",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(testEmail)) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    testSmtpMutation.mutate(testEmail);
   };
 
   const handleInputChange = (field: keyof typeof formData, value: string | number) => {
@@ -248,13 +301,22 @@ export default function AdminSmtpSettings() {
               </div>
             )}
 
-            <div className="flex gap-3 pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
               <Button 
                 type="submit" 
                 disabled={updateSmtpMutation.isPending}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="flex-1 sm:flex-none bg-gradient-to-r from-xtra-primary to-xtra-secondary hover:opacity-90 text-white"
               >
                 {updateSmtpMutation.isPending ? 'Updating...' : (smtpSettings ? 'Update Settings' : 'Save Settings')}
+              </Button>
+              
+              <Button 
+                type="button"
+                variant="outline" 
+                onClick={() => setShowTestSection(!showTestSection)}
+                className="flex-1 sm:flex-none border-xtra-primary text-xtra-primary hover:bg-xtra-primary hover:text-white"
+              >
+                {showTestSection ? "Hide Test" : "Test SMTP"}
               </Button>
               
               {smtpSettings && (
@@ -272,6 +334,36 @@ export default function AdminSmtpSettings() {
               )}
             </div>
           </form>
+
+          {/* Test Section */}
+          {showTestSection && (
+            <div className="mt-6 p-6 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+              <h3 className="text-lg font-semibold text-xtra-primary mb-4">Test SMTP Configuration</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Send a test email to verify your SMTP settings are working correctly.
+              </p>
+              
+              <form onSubmit={handleTestEmail} className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <input
+                    type="email"
+                    value={testEmail}
+                    onChange={(e) => setTestEmail(e.target.value)}
+                    placeholder="Enter email address to test"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-xtra-primary focus:border-transparent transition-all duration-200"
+                    required
+                  />
+                </div>
+                <Button 
+                  type="submit" 
+                  disabled={testSmtpMutation.isPending || !testEmail}
+                  className="px-6 py-2 bg-gradient-to-r from-xtra-secondary to-xtra-primary hover:opacity-90 text-white transition-all duration-200"
+                >
+                  {testSmtpMutation.isPending ? "Sending..." : "Send Test Email"}
+                </Button>
+              </form>
+            </div>
+          )}
         </CardContent>
       </Card>
 

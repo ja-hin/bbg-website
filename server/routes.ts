@@ -2055,6 +2055,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test SMTP settings (admin only)
+  app.post("/api/admin/smtp/test", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { testEmail } = req.body;
+      
+      if (!testEmail) {
+        return res.status(400).json({ message: "Test email address is required" });
+      }
+
+      // Get current SMTP settings
+      const smtpSettings = await storage.getSmtpSettings();
+      if (!smtpSettings) {
+        return res.status(400).json({ message: "SMTP settings not configured" });
+      }
+
+      // Create test email content
+      const testSubject = "SMTP Configuration Test - Xtracover BBG";
+      const testHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #6b46c1; margin-bottom: 20px;">SMTP Test Successful! 🎉</h2>
+          <p>This is a test email from your Xtracover BBG application to verify SMTP configuration.</p>
+          <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #333; margin-top: 0;">Configuration Details:</h3>
+            <ul style="color: #666; line-height: 1.6;">
+              <li><strong>SMTP Host:</strong> ${smtpSettings.smtpHost}</li>
+              <li><strong>Port:</strong> ${smtpSettings.smtpPort}</li>
+              <li><strong>From Address:</strong> ${smtpSettings.fromAddress}</li>
+              <li><strong>Test Date:</strong> ${new Date().toLocaleString()}</li>
+            </ul>
+          </div>
+          <p style="color: #666;">If you received this email, your SMTP configuration is working correctly!</p>
+          <hr style="border: none; border-top: 1px solid #e9ecef; margin: 30px 0;">
+          <p style="color: #999; font-size: 12px;">
+            This email was sent from the Xtracover BBG Admin Panel as part of SMTP configuration testing.
+          </p>
+        </div>
+      `;
+
+      // Use communication service to send test email
+      const result = await communicationService.sendEmailWithSmtpSettings(
+        testEmail,
+        testSubject,
+        testHtml,
+        smtpSettings
+      );
+
+      if (result.success) {
+        res.json({
+          message: "Test email sent successfully",
+          messageId: result.messageId
+        });
+      } else {
+        res.status(500).json({
+          message: "Failed to send test email",
+          error: result.error
+        });
+      }
+    } catch (error: any) {
+      console.error('Failed to send test email:', error);
+      res.status(500).json({ 
+        message: "Failed to send test email", 
+        error: error.message 
+      });
+    }
+  });
+
   // ===== MASTER MANAGEMENT ROUTES =====
 
   // User Roles Master Management

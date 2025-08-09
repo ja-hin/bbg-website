@@ -5,14 +5,22 @@ import { gupshupService } from './gupshup-service';
 
 // Email Service using SMTP
 export class EmailService {
-  private createTransporter() {
-    return nodemailer.createTransport({
+  private createTransporter(smtpSettings?: any) {
+    const settings = smtpSettings || {
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
       port: parseInt(process.env.SMTP_PORT || '587'),
+      user: process.env.SMTP_USER,
+      password: process.env.SMTP_PASSWORD,
+      fromAddress: process.env.SMTP_USER
+    };
+
+    return nodemailer.createTransport({
+      host: settings.host || settings.smtpHost,
+      port: settings.port || settings.smtpPort || 587,
       secure: false, // true for 465, false for other ports
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
+        user: settings.user || settings.smtpUsername,
+        pass: settings.password || settings.smtpPassword,
       },
     });
   }
@@ -39,6 +47,32 @@ export class EmailService {
       return { success: true, messageId: result.messageId };
     } catch (error: any) {
       console.error('Email sending failed:', error.message);
+      return { success: false, error: error.message };
+    }
+  }
+
+  async sendEmailWithSmtpSettings(to: string, subject: string, html: string, smtpSettings: any, text?: string) {
+    try {
+      if (!smtpSettings || !smtpSettings.smtpHost || !smtpSettings.smtpUsername || !smtpSettings.smtpPassword) {
+        console.log('SMTP settings incomplete, email not sent');
+        return { success: false, message: 'SMTP settings incomplete' };
+      }
+
+      const transporter = this.createTransporter(smtpSettings);
+
+      const mailOptions = {
+        from: `"Xtracover BBG" <${smtpSettings.fromAddress}>`,
+        to,
+        subject,
+        text: text || '',
+        html,
+      };
+
+      const result = await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully with custom SMTP:', result.messageId);
+      return { success: true, messageId: result.messageId };
+    } catch (error: any) {
+      console.error('Email sending failed with custom SMTP:', error.message);
       return { success: false, error: error.message };
     }
   }
@@ -386,6 +420,11 @@ export class CommunicationService {
         account: '2000203988'
       }
     };
+  }
+
+  // Expose the SMTP test method
+  async sendEmailWithSmtpSettings(to: string, subject: string, html: string, smtpSettings: any, text?: string) {
+    return await this.emailService.sendEmailWithSmtpSettings(to, subject, html, smtpSettings, text);
   }
 }
 

@@ -9,6 +9,7 @@ import {
   Mail, 
   Activity, 
   MessageCircle, 
+  MessageSquare,
   ShoppingCart,
   BarChart3,
   Settings,
@@ -104,9 +105,15 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       active: location === "/admin/theme-settings"
     },
     {
+      label: "SMTP Settings",
+      href: "/admin/smtp-settings",
+      icon: Mail,
+      active: location === "/admin/smtp-settings"
+    },
+    {
       label: "Communication",
       href: "/admin/templates",
-      icon: Mail,
+      icon: MessageSquare,
       active: location === "/admin/templates"
     },
     {

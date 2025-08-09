@@ -20,7 +20,9 @@ import {
   type InsertClaimValueSlab,
   type ClaimValueSlab,
   type ThemeSettings,
-  type InsertThemeSettings
+  type InsertThemeSettings,
+  type SmtpSettings,
+  type InsertSmtpSettings
 } from "@shared/schema";
 import { db } from "./db";
 import sql from 'mssql';
@@ -122,6 +124,10 @@ export interface IStorage {
   // Theme Settings operations
   getCurrentThemeSettings(): Promise<ThemeSettings | undefined>;
   updateThemeSettings(settings: InsertThemeSettings): Promise<ThemeSettings>;
+  
+  // SMTP Settings operations
+  getSmtpSettings(): Promise<SmtpSettings | undefined>;
+  updateSmtpSettings(settings: InsertSmtpSettings): Promise<SmtpSettings>;
 }
 
 export class SqlServerStorage implements IStorage {
@@ -183,8 +189,36 @@ export class SqlServerStorage implements IStorage {
       const themeRequest = db.pool.request();
       await themeRequest.query(themeTableQuery);
       console.log('✅ THEME_SETTINGS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+      
+      // Create SMTP settings table as well
+      console.log('🔥 ENSURING SMTP_SETTINGS TABLE EXISTS IN DATABASE...');
+      const smtpTableQuery = `
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'smtp_settings')
+        BEGIN
+          CREATE TABLE smtp_settings (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            smtp_host NVARCHAR(255) NOT NULL,
+            smtp_port INT NOT NULL DEFAULT 587,
+            smtp_username NVARCHAR(255) NOT NULL,
+            smtp_password NVARCHAR(500) NOT NULL,
+            from_address NVARCHAR(255) NOT NULL,
+            is_active BIT DEFAULT 1,
+            created_at DATETIME2 DEFAULT GETDATE(),
+            updated_at DATETIME2 DEFAULT GETDATE()
+          );
+          PRINT 'SMTP settings table created';
+        END
+        ELSE
+        BEGIN
+          PRINT 'SMTP settings table already exists, preserving current data';
+        END
+      `;
+      
+      const smtpRequest = db.pool.request();
+      await smtpRequest.query(smtpTableQuery);
+      console.log('✅ SMTP_SETTINGS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
     } catch (themeError) {
-      console.error('❌ THEME TABLE CREATION FAILED:', themeError);
+      console.error('❌ TABLE CREATION FAILED:', themeError);
       throw themeError;
     }
   }
@@ -2569,6 +2603,69 @@ export class SqlServerStorage implements IStorage {
     `;
     
     await db.pool.request().query(createTableQuery);
+  }
+
+  // SMTP Settings operations
+  async getSmtpSettings(): Promise<SmtpSettings | undefined> {
+    await db.connectDB();
+    
+    const query = `SELECT TOP 1 * FROM smtp_settings WHERE is_active = 1 ORDER BY id DESC`;
+    const request = db.pool.request();
+    const result = await request.query(query);
+    
+    if (result.recordset.length === 0) {
+      return undefined;
+    }
+    
+    const row = result.recordset[0];
+    return {
+      id: row.id,
+      smtpHost: row.smtp_host,
+      smtpPort: row.smtp_port,
+      smtpUsername: row.smtp_username,
+      smtpPassword: row.smtp_password,
+      fromAddress: row.from_address,
+      isActive: row.is_active,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  async updateSmtpSettings(settings: InsertSmtpSettings): Promise<SmtpSettings> {
+    await db.connectDB();
+    
+    // First, deactivate any existing settings
+    const deactivateQuery = `UPDATE smtp_settings SET is_active = 0`;
+    await db.pool.request().query(deactivateQuery);
+    
+    // Insert new settings
+    const insertQuery = `
+      INSERT INTO smtp_settings (smtp_host, smtp_port, smtp_username, smtp_password, from_address, is_active)
+      OUTPUT INSERTED.*
+      VALUES (@smtpHost, @smtpPort, @smtpUsername, @smtpPassword, @fromAddress, 1)
+    `;
+    
+    const request = db.pool.request();
+    request.input('smtpHost', sql.NVarChar, settings.smtpHost);
+    request.input('smtpPort', sql.Int, settings.smtpPort || 587);
+    request.input('smtpUsername', sql.NVarChar, settings.smtpUsername);
+    request.input('smtpPassword', sql.NVarChar, settings.smtpPassword);
+    request.input('fromAddress', sql.NVarChar, settings.fromAddress);
+    
+    const result = await request.query(insertQuery);
+    const row = result.recordset[0];
+    
+    return {
+      id: row.id,
+      smtpHost: row.smtp_host,
+      smtpPort: row.smtp_port,
+      smtpUsername: row.smtp_username,
+      smtpPassword: row.smtp_password,
+      fromAddress: row.from_address,
+      isActive: row.is_active,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
   }
 }
 

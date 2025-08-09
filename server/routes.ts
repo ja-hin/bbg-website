@@ -2001,6 +2001,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get current SMTP settings (admin endpoint)
+  app.get("/api/admin/smtp/current", isAdminAuthenticated, async (req, res) => {
+    try {
+      const smtpSettings = await storage.getSmtpSettings();
+      if (smtpSettings) {
+        // Don't return the password in the response for security
+        const { smtpPassword, ...safeSettings } = smtpSettings;
+        res.json({ ...safeSettings, hasPassword: !!smtpPassword });
+      } else {
+        res.json(null);
+      }
+    } catch (error: any) {
+      console.error('Failed to get SMTP settings:', error);
+      res.status(500).json({ message: "Failed to get SMTP settings" });
+    }
+  });
+
+  // Update SMTP settings (admin only)
+  app.post("/api/admin/smtp/update", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { smtpHost, smtpPort, smtpUsername, smtpPassword, fromAddress } = req.body;
+      
+      if (!smtpHost || !smtpUsername || !smtpPassword || !fromAddress) {
+        return res.status(400).json({ message: "All SMTP fields are required" });
+      }
+
+      const updatedSmtp = await storage.updateSmtpSettings({
+        smtpHost,
+        smtpPort: smtpPort || 587,
+        smtpUsername,
+        smtpPassword,
+        fromAddress
+      });
+      
+      // Don't return the password in the response
+      const { smtpPassword: _, ...safeSettings } = updatedSmtp;
+      res.json({
+        message: "SMTP settings updated successfully",
+        smtp: { ...safeSettings, hasPassword: true }
+      });
+    } catch (error: any) {
+      console.error('Failed to update SMTP settings:', error);
+      res.status(500).json({ message: "Failed to update SMTP settings" });
+    }
+  });
+
   // ===== MASTER MANAGEMENT ROUTES =====
 
   // User Roles Master Management

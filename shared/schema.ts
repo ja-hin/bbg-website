@@ -321,3 +321,26 @@ export type ClaimValueSlab = typeof claimValueSlabs.$inferSelect;
 // Theme Settings types
 export type ThemeSettings = typeof themeSettings.$inferSelect;
 export type InsertThemeSettings = z.infer<typeof insertThemeSettingsSchema>;
+
+// SMTP Settings table
+export const smtpSettings = pgTable("smtp_settings", {
+  id: serial("id").primaryKey(),
+  smtpHost: text("smtp_host").notNull(),
+  smtpPort: integer("smtp_port").notNull().default(587),
+  smtpUsername: text("smtp_username").notNull(),
+  smtpPassword: text("smtp_password").notNull(),
+  fromAddress: text("from_address").notNull(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertSmtpSettingsSchema = createInsertSchema(smtpSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// SMTP Settings types
+export type SmtpSettings = typeof smtpSettings.$inferSelect;
+export type InsertSmtpSettings = z.infer<typeof insertSmtpSettingsSchema>;

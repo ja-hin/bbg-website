@@ -32,6 +32,7 @@ import AdminAcerRegistrations from "@/pages/admin-acer-registrations";
 import AdminAcerImei from "@/pages/admin-acer-imei";
 import AdminClaimSlabs from "@/pages/admin-claim-slabs";
 import AdminThemeSettings from "@/pages/admin-theme-settings";
+import AdminSmtpSettings from "@/pages/admin-smtp-settings";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import { useAuth } from "@/hooks/useAuth";
@@ -86,6 +87,7 @@ function Router() {
       </Route>
       <Route path="/admin/claim-slabs" component={AdminClaimSlabs} />
       <Route path="/admin/theme-settings" component={AdminThemeSettings} />
+      <Route path="/admin/smtp-settings" component={AdminSmtpSettings} />
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />

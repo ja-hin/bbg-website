@@ -2021,7 +2021,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update SMTP settings (admin only)
   app.post("/api/admin/smtp/update", isAdminAuthenticated, async (req, res) => {
     try {
+      console.log('Raw request body:', req.body);
+      console.log('Request body type:', typeof req.body);
+      console.log('Request headers:', req.headers);
+      
       const { smtpHost, smtpPort, smtpUsername, smtpPassword, fromAddress } = req.body;
+      
+      console.log('Parsed SMTP data:', { smtpHost, smtpPort, smtpUsername, fromAddress, hasPassword: !!smtpPassword });
       
       if (!smtpHost || !smtpUsername || !smtpPassword || !fromAddress) {
         return res.status(400).json({ message: "All SMTP fields are required" });
@@ -2035,6 +2041,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         fromAddress
       });
       
+      console.log('SMTP settings updated successfully');
+      
       // Don't return the password in the response
       const { smtpPassword: _, ...safeSettings } = updatedSmtp;
       res.json({
@@ -2043,7 +2051,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error: any) {
       console.error('Failed to update SMTP settings:', error);
-      res.status(500).json({ message: "Failed to update SMTP settings" });
+      res.status(500).json({ message: "Failed to update SMTP settings", error: error.message });
     }
   });
 

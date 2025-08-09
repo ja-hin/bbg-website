@@ -54,10 +54,10 @@ export default function AdminSmtpSettings() {
   // Update SMTP settings mutation
   const updateSmtpMutation = useMutation({
     mutationFn: async (settings: typeof formData) => {
+      console.log('Sending SMTP settings:', settings);
       return await apiRequest('/api/admin/smtp/update', {
         method: 'POST',
-        body: JSON.stringify(settings),
-        headers: { 'Content-Type': 'application/json' }
+        body: JSON.stringify(settings)
       });
     },
     onSuccess: () => {

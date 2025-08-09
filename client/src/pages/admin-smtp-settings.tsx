@@ -6,7 +6,9 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-import { Eye, EyeOff } from 'lucide-react';
+import { AdminHeader } from '@/components/admin-header';
+import { useRequireAuth } from '@/hooks/useAuth';
+import { Eye, EyeOff, Mail } from 'lucide-react';
 
 interface SmtpSettings {
   id: number;
@@ -21,6 +23,7 @@ interface SmtpSettings {
 }
 
 export default function AdminSmtpSettings() {
+  useRequireAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
@@ -191,13 +194,18 @@ export default function AdminSmtpSettings() {
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">SMTP Email Settings</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
-          Configure SMTP settings for sending emails through AWS SES or other email providers
-        </p>
-      </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <AdminHeader />
+      <div className="p-6">
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Mail className="h-8 w-8 text-xtra-primary" />
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">SMTP Email Settings</h1>
+          </div>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            Configure SMTP settings for sending emails through AWS SES or other email providers
+          </p>
+        </div>
 
       <Card className="max-w-2xl">
         <CardHeader>
@@ -394,6 +402,7 @@ export default function AdminSmtpSettings() {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

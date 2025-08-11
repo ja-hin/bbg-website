@@ -241,7 +241,7 @@ export default function AcerThankYou() {
         {/* Footer Note */}
         <div className="text-center mt-8">
           <p className="text-sm text-gray-500">
-            Thank you for choosing Xtracover BBG protection for your Acer device. 
+            Thank you for choosing XtraCover BBG protection for your Acer device. 
             Save your BBG Voucher Code for future reference.
           </p>
         </div>

@@ -1,4 +1,4 @@
-# AWS Deployment Guide for Xtracover BBG Application
+# AWS Deployment Guide for XtraCover BBG Application
 
 ## Recommended AWS Architecture
 

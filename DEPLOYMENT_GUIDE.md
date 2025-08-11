@@ -1,7 +1,7 @@
 # BBG Project Deployment Guide
 
 ## Project Overview
-This document provides complete deployment instructions for the Xtracover BBG (Buy Back Guarantee) system.
+This document provides complete deployment instructions for the XtraCover BBG (Buy Back Guarantee) system.
 
 ## Current Project Structure
 ```

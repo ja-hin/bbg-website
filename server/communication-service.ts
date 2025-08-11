@@ -35,7 +35,7 @@ export class EmailService {
       const transporter = this.createTransporter();
 
       const mailOptions = {
-        from: `"Xtracover BBG" <${process.env.SMTP_USER}>`,
+        from: `"XtraCover BBG" <${process.env.SMTP_USER}>`,
         to,
         subject,
         text: text || '',
@@ -61,7 +61,7 @@ export class EmailService {
       const transporter = this.createTransporter(smtpSettings);
 
       const mailOptions = {
-        from: `"Xtracover BBG" <${smtpSettings.fromAddress}>`,
+        from: `"XtraCover BBG" <${smtpSettings.fromAddress}>`,
         to,
         subject,
         text: text || '',

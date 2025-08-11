@@ -37,7 +37,7 @@ export default function Home() {
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-12 px-4 sm:px-0">
             Get assured returns on your laptops and mobiles. Join thousands of satisfied customers 
-            who trust Xtracover for comprehensive device protection.
+            who trust XtraCover for comprehensive device protection.
           </p>
           
           {/* CTA Buttons */}

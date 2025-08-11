@@ -161,7 +161,7 @@ export default function AdminWhatsAppSettings() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900">WhatsApp Configuration</h1>
           <p className="text-gray-600 mt-2">
-            Configure WhatsApp API settings and test message delivery
+            Configure WhatsApp API settings and test message delivery for XtraCover
           </p>
         </div>
         <Badge variant={config?.isEnabled ? "default" : "secondary"}>

@@ -1324,14 +1324,17 @@ export class SqlServerStorage implements IStorage {
   async createClaim(insertClaim: InsertClaim): Promise<Claim> {
     await db.connectDB();
     
+    // First, add address column to claims table if it doesn't exist
+    await this.addAddressColumnToClaimsTable();
+    
     const query = `
       INSERT INTO claims (
-        customer_id, voucher_code, contact, email, serial_number, pickup_date, 
+        customer_id, voucher_code, contact, email, serial_number, address, pickup_date, 
         pickup_time_slot, device_age_months, claim_percentage, claim_amount
       ) 
       OUTPUT INSERTED.*
       VALUES (
-        @customerId, @voucherCode, @contact, @email, @serialNumber, @pickupDate, 
+        @customerId, @voucherCode, @contact, @email, @serialNumber, @address, @pickupDate, 
         @pickupTimeSlot, @deviceAgeMonths, @claimPercentage, @claimAmount
       )
     `;
@@ -1342,6 +1345,7 @@ export class SqlServerStorage implements IStorage {
     request.input('contact', sql.NVarChar, insertClaim.contact);
     request.input('email', sql.NVarChar, insertClaim.email);
     request.input('serialNumber', sql.NVarChar, insertClaim.serialNumber);
+    request.input('address', sql.NVarChar, insertClaim.address || '');
     request.input('pickupDate', sql.NVarChar, insertClaim.pickupDate);
     request.input('pickupTimeSlot', sql.NVarChar, insertClaim.pickupTimeSlot);
     request.input('deviceAgeMonths', sql.Int, insertClaim.deviceAgeMonths);
@@ -1585,6 +1589,10 @@ export class SqlServerStorage implements IStorage {
       voucherCode: row.voucher_code,
       contact: row.contact,
       email: row.email,
+      serialNumber: row.serial_number,
+      address: row.address || '',
+      pickupDate: row.pickup_date,
+      pickupTimeSlot: row.pickup_time_slot,
       deviceAgeMonths: row.device_age_months,
       claimPercentage: parseFloat(row.claim_percentage),
       claimAmount: parseFloat(row.claim_amount),
@@ -2795,6 +2803,34 @@ export class SqlServerStorage implements IStorage {
       }
     } catch (error) {
       console.error('Error creating WhatsApp config table:', error);
+    }
+  }
+
+  private async addAddressColumnToClaimsTable(): Promise<void> {
+    try {
+      await db.connectDB();
+      
+      // Check if address column exists
+      const checkColumnQuery = `
+        SELECT COUNT(*) as count 
+        FROM INFORMATION_SCHEMA.COLUMNS 
+        WHERE TABLE_NAME = 'claims' AND COLUMN_NAME = 'address'
+      `;
+      
+      const checkResult = await db.pool.request().query(checkColumnQuery);
+      
+      if (checkResult.recordset[0].count === 0) {
+        // Add address column to claims table
+        const addColumnQuery = `
+          ALTER TABLE claims 
+          ADD address NVARCHAR(500) NULL
+        `;
+        
+        await db.pool.request().query(addColumnQuery);
+        console.log('Added address column to claims table');
+      }
+    } catch (error) {
+      console.error('Error adding address column to claims table:', error);
     }
   }
 }

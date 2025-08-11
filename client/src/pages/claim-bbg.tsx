@@ -19,6 +19,7 @@ const claimSchema = z.object({
   contact: z.string().regex(/^\d{10}$/, "Contact must be exactly 10 digits"),
   email: z.string().email("Invalid email address"),
   serialNumber: z.string().min(10, "Serial Number/IMEI must be at least 10 characters"),
+  address: z.string().min(10, "Please provide a complete pickup address"),
   pickupDate: z.string().min(1, "Pickup date is required"),
   pickupTimeSlot: z.string().min(1, "Pickup time slot is required")
 });
@@ -76,6 +77,7 @@ export default function ClaimBBG() {
       contact: "",
       email: "",
       serialNumber: "",
+      address: "",
       pickupDate: "",
       pickupTimeSlot: ""
     }
@@ -417,6 +419,27 @@ export default function ClaimBBG() {
                         )}
                       />
                     </div>
+
+                    {/* Pickup Address */}
+                    <FormField
+                      control={form.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Pickup Address *</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter complete address where device should be picked up" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                          <p className="text-sm text-gray-500 mt-1">
+                            Please provide a complete address including building/house details and landmarks
+                          </p>
+                        </FormItem>
+                      )}
+                    />
 
                     {/* Device Serial Number - Read Only */}
                     <FormField

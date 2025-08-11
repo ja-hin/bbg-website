@@ -86,6 +86,7 @@ export const claims = pgTable("claims", {
   contact: text("contact").notNull(),
   email: text("email").notNull(),
   serialNumber: text("serial_number").notNull(),
+  address: text("address").notNull(),
   pickupDate: text("pickup_date").notNull(),
   pickupTimeSlot: text("pickup_time_slot").notNull(),
   deviceAgeMonths: integer("device_age_months").notNull(),

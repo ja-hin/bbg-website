@@ -479,7 +479,6 @@ export default function ClaimBBG() {
                                   <SelectItem value="09:00-12:00">9:00 AM - 12:00 PM</SelectItem>
                                   <SelectItem value="12:00-15:00">12:00 PM - 3:00 PM</SelectItem>
                                   <SelectItem value="15:00-18:00">3:00 PM - 6:00 PM</SelectItem>
-                                  <SelectItem value="18:00-21:00">6:00 PM - 9:00 PM</SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormMessage />

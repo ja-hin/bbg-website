@@ -305,7 +305,6 @@ export type InsertCartAbandonment = typeof cartAbandonments.$inferInsert;
 export const themeSettings = pgTable("theme_settings", {
   id: serial("id").primaryKey(),
   primaryColor: text("primary_color").notNull().default("#254696"), // hex color code
-  darkMode: boolean("dark_mode").default(false), // light/dark mode toggle
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

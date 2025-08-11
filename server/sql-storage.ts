@@ -2526,22 +2526,19 @@ export class SqlServerStorage implements IStorage {
     return {
       id: 1,
       primaryColor: this.themeStorage.primaryColor,
-      darkMode: this.themeStorage.darkMode,
       createdAt: new Date(),
       updatedAt: new Date()
     };
   }
 
   // Fallback in-memory theme storage
-  private themeStorage: { primaryColor: string; darkMode: boolean } = { 
-    primaryColor: '#254696', 
-    darkMode: false 
+  private themeStorage: { primaryColor: string } = { 
+    primaryColor: '#254696' 
   };
 
   async updateThemeSettings(settings: InsertThemeSettings): Promise<ThemeSettings> {
     console.log('Updating theme settings:', { 
-      primaryColor: settings.primaryColor, 
-      darkMode: settings.darkMode 
+      primaryColor: settings.primaryColor
     });
     
     try {
@@ -2561,11 +2558,6 @@ export class SqlServerStorage implements IStorage {
           request.input('primaryColor', sql.NVarChar, settings.primaryColor);
         }
         
-        if (settings.darkMode !== undefined) {
-          setParts.push('dark_mode = @darkMode');
-          request.input('darkMode', sql.Bit, settings.darkMode);
-        }
-        
         setParts.push('updated_at = GETDATE()');
         
         const query = `
@@ -2581,14 +2573,13 @@ export class SqlServerStorage implements IStorage {
       } else {
         // Insert new record
         const query = `
-          INSERT INTO theme_settings (primary_color, dark_mode)
+          INSERT INTO theme_settings (primary_color)
           OUTPUT INSERTED.*
-          VALUES (@primaryColor, @darkMode)
+          VALUES (@primaryColor)
         `;
         
         const request = db.pool.request();
         request.input('primaryColor', sql.NVarChar, settings.primaryColor || '#254696');
-        request.input('darkMode', sql.Bit, settings.darkMode || false);
         
         const result = await request.query(query);
         console.log('Database theme inserted successfully');
@@ -2601,15 +2592,11 @@ export class SqlServerStorage implements IStorage {
       if (settings.primaryColor !== undefined) {
         this.themeStorage.primaryColor = settings.primaryColor;
       }
-      if (settings.darkMode !== undefined) {
-        this.themeStorage.darkMode = settings.darkMode;
-      }
       console.log('Using in-memory fallback storage');
       
       return {
         id: 1,
         primaryColor: this.themeStorage.primaryColor,
-        darkMode: this.themeStorage.darkMode,
         createdAt: new Date(),
         updatedAt: new Date()
       };
@@ -2620,7 +2607,6 @@ export class SqlServerStorage implements IStorage {
     return {
       id: row.id,
       primaryColor: row.primary_color,
-      darkMode: row.dark_mode || false,
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };

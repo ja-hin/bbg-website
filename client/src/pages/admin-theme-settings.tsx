@@ -5,15 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+
 import { useToast } from "@/hooks/use-toast";
-import { Palette, RefreshCw, Eye, Wand2, Moon, Sun } from "lucide-react";
+import { Palette, RefreshCw, Eye, Wand2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
 interface ThemeSettings {
   id?: number;
   primaryColor: string;
-  darkMode?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -23,8 +22,6 @@ export default function AdminThemeSettings() {
   const queryClient = useQueryClient();
   const [colorInput, setColorInput] = useState("#254696");
   const [previewColor, setPreviewColor] = useState("#254696");
-  const [darkMode, setDarkMode] = useState(false);
-
   // Fetch current theme settings
   const { data: currentTheme, isLoading } = useQuery<ThemeSettings>({
     queryKey: ["/api/admin/theme/current"],
@@ -33,7 +30,7 @@ export default function AdminThemeSettings() {
 
   // Update theme mutation
   const updateThemeMutation = useMutation({
-    mutationFn: async (settings: { primaryColor?: string; darkMode?: boolean }) => {
+    mutationFn: async (settings: { primaryColor?: string }) => {
       const response = await fetch("/api/admin/theme/update", {
         method: "POST",
         headers: {
@@ -63,9 +60,6 @@ export default function AdminThemeSettings() {
       if (data.theme.primaryColor) {
         applyThemeColor(data.theme.primaryColor);
       }
-      if (data.theme.darkMode !== undefined) {
-        applyDarkMode(data.theme.darkMode);
-      }
     },
     onError: (error: Error) => {
       toast({
@@ -80,10 +74,6 @@ export default function AdminThemeSettings() {
     if (currentTheme?.primaryColor) {
       setColorInput(currentTheme.primaryColor);
       setPreviewColor(currentTheme.primaryColor);
-    }
-    if (currentTheme?.darkMode !== undefined) {
-      setDarkMode(currentTheme.darkMode);
-      applyDarkMode(currentTheme.darkMode);
     }
   }, [currentTheme]);
 
@@ -122,15 +112,7 @@ export default function AdminThemeSettings() {
     document.documentElement.style.setProperty('--xtra-primary', `hsl(${hslValue})`);
   };
 
-  const applyDarkMode = (isDark: boolean) => {
-    console.log('Applying dark mode:', isDark);
-    
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
+
 
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newColor = e.target.value;
@@ -167,15 +149,7 @@ export default function AdminThemeSettings() {
     const defaultColor = "#254696";
     setColorInput(defaultColor);
     setPreviewColor(defaultColor);
-    setDarkMode(false);
     applyThemeColor(defaultColor);
-    applyDarkMode(false);
-  };
-
-  const handleDarkModeToggle = (checked: boolean) => {
-    setDarkMode(checked);
-    applyDarkMode(checked);
-    updateThemeMutation.mutate({ darkMode: checked });
   };
 
   const predefinedColors = [
@@ -294,49 +268,6 @@ export default function AdminThemeSettings() {
             </CardContent>
           </Card>
 
-          {/* Dark Mode Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                {darkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-                Dark Mode
-              </CardTitle>
-              <CardDescription>
-                Toggle between light and dark theme
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label className="text-base">Dark Mode</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Enable dark theme for the entire website
-                  </p>
-                </div>
-                <Switch
-                  checked={darkMode}
-                  onCheckedChange={handleDarkModeToggle}
-                  disabled={updateThemeMutation.isPending}
-                />
-              </div>
-              
-              <div className="p-4 rounded-lg border bg-muted/50">
-                <p className="text-sm text-muted-foreground">
-                  {darkMode ? (
-                    <span className="flex items-center gap-2">
-                      <Moon className="h-4 w-4" />
-                      Dark mode is currently active
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      <Sun className="h-4 w-4" />
-                      Light mode is currently active
-                    </span>
-                  )}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         <div className="grid grid-cols-1 gap-6">
@@ -401,30 +332,14 @@ export default function AdminThemeSettings() {
                 </div>
               </div>
               
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  {currentTheme?.darkMode ? (
-                    <>
-                      <Moon className="h-4 w-4" />
-                      <span className="text-sm">Dark</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sun className="h-4 w-4" />
-                      <span className="text-sm">Light</span>
-                    </>
-                  )}
+              {currentTheme?.updatedAt && (
+                <div className="text-right">
+                  <p className="text-sm text-muted-foreground">Last Updated</p>
+                  <p className="text-sm">
+                    {new Date(currentTheme.updatedAt).toLocaleDateString()}
+                  </p>
                 </div>
-                
-                {currentTheme?.updatedAt && (
-                  <div className="text-right">
-                    <p className="text-sm text-muted-foreground">Last Updated</p>
-                    <p className="text-sm">
-                      {new Date(currentTheme.updatedAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
 
             {/* Sample UI Elements Preview */}

@@ -68,6 +68,16 @@ Preferred communication style: Simple, everyday language.
     - Zod (schema validation)
     - XLSX (Excel/CSV parsing for bulk uploads)
 
+## Deployment Strategy
+
+**Target Platform**: AWS Cloud Infrastructure
+- **Decision**: User has chosen AWS deployment over Replit native deployment
+- **Architecture**: Auto-scaling EC2 instances with Application Load Balancer
+- **Database**: Continue using existing Microsoft SQL Server (103.205.66.184:2499)
+- **Storage**: Maintain current AWS S3 integration
+- **Estimated Cost**: $280-620/month depending on traffic and performance requirements
+- **Timeline**: 2-3 weeks for complete migration and setup
+
 ## Recent Changes
 
 - **August 6, 2025**: ✅ Completed comprehensive dynamic claim value slabs system

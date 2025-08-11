@@ -395,11 +395,10 @@ export default function Home() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <HelpCircle className="h-12 w-12 sm:h-16 sm:w-16 text-xtra-primary mx-auto mb-4 sm:mb-6" />
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
+      <section className="py-8 sm:py-12 lg:py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
               Frequently Asked Questions
             </h2>
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto">
@@ -407,119 +406,149 @@ export default function Home() {
             </p>
           </div>
 
-          <Accordion type="single" collapsible className="space-y-4">
-            <AccordionItem value="item-1" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-xtra-primary">
-                What is the BuyBack Guarantee (BBG)?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2 pb-4">
-                BBG gives you a fixed, assured resale value for your mobile or laptop when you claim within the coverage period.
-              </AccordionContent>
-            </AccordionItem>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left Column */}
+            <div className="space-y-4">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-1" className="border border-gray-200 rounded-lg px-6">
+                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
+                    What is the BuyBack Guarantee (BBG)?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
+                    BBG gives you a fixed, assured resale value for your mobile or laptop when you claim within the coverage period.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
 
-            <AccordionItem value="item-2" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-xtra-primary">
-                Who can buy BBG?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2 pb-4">
-                Only customers who purchased a new device from an authorized brand sales channel. Refurbished, open-box, second-hand, or grey-market devices are not eligible.
-              </AccordionContent>
-            </AccordionItem>
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-2" className="border border-gray-200 rounded-lg px-6">
+                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
+                    Who can buy BBG?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
+                    Only customers who purchased a new device from an authorized brand sales channel. Refurbished, open-box, second-hand, or grey-market devices are not eligible.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
 
-            <AccordionItem value="item-3" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-xtra-primary">
-                How long after my device purchase can I buy BBG?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2 pb-4">
-                You can buy and register BBG within 6 months from your device purchase date.
-              </AccordionContent>
-            </AccordionItem>
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-3" className="border border-gray-200 rounded-lg px-6">
+                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
+                    How long after my device purchase can I buy BBG?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
+                    You can buy and register BBG within 6 months from your device purchase date.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
 
-            <AccordionItem value="item-4" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-xtra-primary">
-                What's the catch?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2 pb-4">
-                There isn't one. Just buy BBG for your new mobile or laptop, and when it's time, we'll buy the device back at the assured value shown when you registered.
-              </AccordionContent>
-            </AccordionItem>
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-4" className="border border-gray-200 rounded-lg px-6">
+                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
+                    What's the catch?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
+                    There isn't one. Just buy BBG for your new mobile or laptop, and when it's time, we'll buy the device back at the assured value shown when you registered.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
 
-            <AccordionItem value="item-5" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-xtra-primary">
-                When can I claim BBG?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2 pb-4">
-                You can claim BBG anytime after 3 months from your BBG purchase date, provided your claim period has begun as per your device's age in the depreciation slabs.
-              </AccordionContent>
-            </AccordionItem>
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-5" className="border border-gray-200 rounded-lg px-6">
+                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
+                    When can I claim BBG?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
+                    You can claim BBG anytime after 3 months from your BBG purchase date, provided your claim period has begun as per your device's age in the depreciation slabs.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
 
-            <AccordionItem value="item-6" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-xtra-primary">
-                What condition does my device need to be in?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2 pb-4">
-                Your device must be fully functional, with no major cracks, damage, missing parts, or screen issues. The screen and body should be intact, and all buttons should work.
-              </AccordionContent>
-            </AccordionItem>
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-6" className="border border-gray-200 rounded-lg px-6">
+                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
+                    What condition does my device need to be in?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
+                    Your device must be fully functional, with no major cracks, damage, missing parts, or screen issues. The screen and body should be intact, and all buttons should work.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
 
-            <AccordionItem value="item-7" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-xtra-primary">
-                Do I need to worry about normal wear & tear?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2 pb-4">
-                No. Minor cosmetic wear is okay. The QC team just checks that it's still in good working order.
-              </AccordionContent>
-            </AccordionItem>
+            {/* Right Column */}
+            <div className="space-y-4">
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-7" className="border border-gray-200 rounded-lg px-6">
+                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
+                    Do I need to worry about normal wear & tear?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
+                    No. Minor cosmetic wear is okay. The QC team just checks that it's still in good working order.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
 
-            <AccordionItem value="item-8" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-xtra-primary">
-                What if I've damaged my device?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2 pb-4">
-                If there's major damage or it fails QC, your BBG value may be void and you'll get a market-based offer instead.
-              </AccordionContent>
-            </AccordionItem>
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-8" className="border border-gray-200 rounded-lg px-6">
+                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
+                    What if I've damaged my device?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
+                    If there's major damage or it fails QC, your BBG value may be void and you'll get a market-based offer instead.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
 
-            <AccordionItem value="item-9" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-xtra-primary">
-                What do I need at the time of claim?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2 pb-4">
-                <ul className="list-disc pl-5 space-y-1">
-                  <li>Original GST invoice of the device</li>
-                  <li>Valid Government ID in your name</li>
-                  <li>Original box, charger, and accessories in working condition</li>
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-9" className="border border-gray-200 rounded-lg px-6">
+                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
+                    What do I need at the time of claim?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
+                    <ul className="list-disc pl-5 space-y-1">
+                      <li>Original GST invoice of the device</li>
+                      <li>Valid Government ID in your name</li>
+                      <li>Original box, charger, and accessories in working condition</li>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
 
-            <AccordionItem value="item-10" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-xtra-primary">
-                What if my device fails QC?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2 pb-4">
-                If your device fails the quality check, BBG becomes void. You may still receive a re-evaluated device price based on market standards.
-              </AccordionContent>
-            </AccordionItem>
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-10" className="border border-gray-200 rounded-lg px-6">
+                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
+                    What if my device fails QC?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
+                    If your device fails the quality check, BBG becomes void. You may still receive a re-evaluated device price based on market standards.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
 
-            <AccordionItem value="item-11" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-xtra-primary">
-                What if I want to keep my device?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2 pb-4">
-                That's fine. BBG is optional to claim — you can keep your device and skip the claim process.
-              </AccordionContent>
-            </AccordionItem>
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-11" className="border border-gray-200 rounded-lg px-6">
+                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
+                    What if I want to keep my device?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
+                    That's fine. BBG is optional to claim — you can keep your device and skip the claim process.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
 
-            <AccordionItem value="item-12" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-xtra-primary">
-                How will I receive payment?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pt-2 pb-4">
-                Once QC is passed, payment will be made instantly after device handover.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-12" className="border border-gray-200 rounded-lg px-6">
+                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
+                    How will I receive payment?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
+                    Once QC is passed, payment will be made instantly after device handover.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          </div>
         </div>
       </section>
 

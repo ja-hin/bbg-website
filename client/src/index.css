@@ -82,7 +82,7 @@
   }
   
   .xtra-gradient-br {
-    background: linear-gradient(to bottom right, var(--xtra-primary) 0%, color-mix(in srgb, var(--xtra-primary) 90%, transparent) 50%, color-mix(in srgb, var(--xtra-primary) 80%, transparent) 100%);
+    background: linear-gradient(135deg, var(--xtra-primary), #1e3a8a);
   }
   
   .text-xtra-primary {

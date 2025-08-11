@@ -4,6 +4,7 @@ import { useEffect } from "react";
 interface ThemeSettings {
   id: number;
   primaryColor: string;
+  darkMode: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -11,8 +12,9 @@ interface ThemeSettings {
 export function ThemeLoader() {
   const { data: themeSettings } = useQuery<ThemeSettings>({
     queryKey: ["/api/theme/current"],
-    retry: false,
-    staleTime: 10 * 60 * 1000, // 10 minutes
+    retry: 3,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
@@ -49,10 +51,17 @@ export function ThemeLoader() {
 
       const hslValue = hexToHsl(themeSettings.primaryColor);
       document.documentElement.style.setProperty('--xtra-primary', `hsl(${hslValue})`);
-      document.documentElement.style.setProperty('--primary', `hsl(${hslValue})`);
-      document.documentElement.style.setProperty('--ring', `hsl(${hslValue})`);
     }
-  }, [themeSettings?.primaryColor]);
+    
+    if (themeSettings?.darkMode !== undefined) {
+      if (themeSettings.darkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  }, [themeSettings]);
 
-  return null; // This component doesn't render anything visual
+  // This component doesn't render anything visible
+  return null;
 }

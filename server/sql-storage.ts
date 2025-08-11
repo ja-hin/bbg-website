@@ -2526,16 +2526,23 @@ export class SqlServerStorage implements IStorage {
     return {
       id: 1,
       primaryColor: this.themeStorage.primaryColor,
+      darkMode: this.themeStorage.darkMode,
       createdAt: new Date(),
       updatedAt: new Date()
     };
   }
 
   // Fallback in-memory theme storage
-  private themeStorage: { primaryColor: string } = { primaryColor: '#254696' };
+  private themeStorage: { primaryColor: string; darkMode: boolean } = { 
+    primaryColor: '#254696', 
+    darkMode: false 
+  };
 
   async updateThemeSettings(settings: InsertThemeSettings): Promise<ThemeSettings> {
-    console.log('Updating theme settings to:', settings.primaryColor);
+    console.log('Updating theme settings:', { 
+      primaryColor: settings.primaryColor, 
+      darkMode: settings.darkMode 
+    });
     
     try {
       await db.connectDB();
@@ -2545,16 +2552,28 @@ export class SqlServerStorage implements IStorage {
       
       if (existing && existing.id && existing.id > 0) {
         // Update existing record
+        const setParts = [];
+        const request = db.pool.request();
+        request.input('id', sql.Int, existing.id);
+        
+        if (settings.primaryColor !== undefined) {
+          setParts.push('primary_color = @primaryColor');
+          request.input('primaryColor', sql.NVarChar, settings.primaryColor);
+        }
+        
+        if (settings.darkMode !== undefined) {
+          setParts.push('dark_mode = @darkMode');
+          request.input('darkMode', sql.Bit, settings.darkMode);
+        }
+        
+        setParts.push('updated_at = GETDATE()');
+        
         const query = `
           UPDATE theme_settings 
-          SET primary_color = @primaryColor, updated_at = GETDATE()
+          SET ${setParts.join(', ')}
           OUTPUT INSERTED.*
           WHERE id = @id
         `;
-        
-        const request = db.pool.request();
-        request.input('id', sql.Int, existing.id);
-        request.input('primaryColor', sql.NVarChar, settings.primaryColor);
         
         const result = await request.query(query);
         console.log('Database theme updated successfully');
@@ -2562,13 +2581,14 @@ export class SqlServerStorage implements IStorage {
       } else {
         // Insert new record
         const query = `
-          INSERT INTO theme_settings (primary_color)
+          INSERT INTO theme_settings (primary_color, dark_mode)
           OUTPUT INSERTED.*
-          VALUES (@primaryColor)
+          VALUES (@primaryColor, @darkMode)
         `;
         
         const request = db.pool.request();
-        request.input('primaryColor', sql.NVarChar, settings.primaryColor);
+        request.input('primaryColor', sql.NVarChar, settings.primaryColor || '#254696');
+        request.input('darkMode', sql.Bit, settings.darkMode || false);
         
         const result = await request.query(query);
         console.log('Database theme inserted successfully');
@@ -2578,12 +2598,18 @@ export class SqlServerStorage implements IStorage {
       console.error('Database theme update failed:', error);
       
       // Update in-memory storage as fallback
-      this.themeStorage.primaryColor = settings.primaryColor;
+      if (settings.primaryColor !== undefined) {
+        this.themeStorage.primaryColor = settings.primaryColor;
+      }
+      if (settings.darkMode !== undefined) {
+        this.themeStorage.darkMode = settings.darkMode;
+      }
       console.log('Using in-memory fallback storage');
       
       return {
         id: 1,
-        primaryColor: settings.primaryColor,
+        primaryColor: this.themeStorage.primaryColor,
+        darkMode: this.themeStorage.darkMode,
         createdAt: new Date(),
         updatedAt: new Date()
       };
@@ -2594,6 +2620,7 @@ export class SqlServerStorage implements IStorage {
     return {
       id: row.id,
       primaryColor: row.primary_color,
+      darkMode: row.dark_mode || false,
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };

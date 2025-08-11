@@ -44,8 +44,7 @@ const distributorSchema = z.object({
   // Declarations
   infoDeclaration: z.boolean().refine(val => val === true, "You must declare the information is correct"),
   tdsUnderstanding: z.boolean().refine(val => val === true, "You must understand TDS compliance"),
-  gstInvoiceAgreement: z.boolean().refine(val => val === true, "You must agree to GST invoice terms"),
-  termsAgreement: z.boolean().refine(val => val === true, "You must agree to terms and conditions")
+  gstInvoiceAgreement: z.boolean().refine(val => val === true, "You must agree to GST invoice terms")
 }).refine((data) => data.bankAccount === data.bankAccountConfirm, {
   message: "Bank account numbers must match",
   path: ["bankAccountConfirm"]
@@ -95,8 +94,7 @@ export default function DistributorRegistration() {
       // Declarations
       infoDeclaration: false,
       tdsUnderstanding: false,
-      gstInvoiceAgreement: false,
-      termsAgreement: false
+      gstInvoiceAgreement: false
     }
   });
 
@@ -822,33 +820,7 @@ export default function DistributorRegistration() {
                       )}
                     />
 
-                    <FormField
-                      control={form.control}
-                      name="termsAgreement"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox 
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm font-normal leading-relaxed">
-                            I agree to the{" "}
-                            <a 
-                              href="/terms-and-conditions" 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 underline inline-flex items-center"
-                            >
-                              terms and conditions
-                              <ExternalLink className="h-3 w-3 ml-1" />
-                            </a>
-                            {" "}of the XtraCover Referral Program
-                          </FormLabel>
-                        </FormItem>
-                      )}
-                    />
+
                   </div>
                 </div>
 

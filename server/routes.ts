@@ -3864,8 +3864,6 @@ Required: GUPSHUP_API_KEY environment variable
         brand,
         name,
         model,
-        isCustomModel,
-        customModelName,
         email,
         phone,
         pincode,

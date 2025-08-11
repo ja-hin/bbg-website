@@ -128,6 +128,11 @@ export interface IStorage {
   // SMTP Settings operations
   getSmtpSettings(): Promise<SmtpSettings | undefined>;
   updateSmtpSettings(settings: InsertSmtpSettings): Promise<SmtpSettings>;
+  
+  // WhatsApp Configuration operations
+  getWhatsAppConfig(): Promise<any>;
+  updateWhatsAppConfig(config: { userId: string; password: string; baseUrl: string; isEnabled: boolean }): Promise<any>;
+  getWhatsAppTemplates(): Promise<any[]>;
 }
 
 export class SqlServerStorage implements IStorage {
@@ -2666,6 +2671,131 @@ export class SqlServerStorage implements IStorage {
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };
+  }
+
+  // WhatsApp Configuration implementations
+  async getWhatsAppConfig(): Promise<any> {
+    try {
+      await db.connectDB();
+      const query = `SELECT * FROM whatsapp_config WHERE is_active = 1 ORDER BY created_at DESC`;
+      const result = await db.pool.request().query(query);
+      
+      if (result.recordset.length === 0) {
+        return null;
+      }
+      
+      const row = result.recordset[0];
+      return {
+        id: row.id,
+        userId: row.user_id,
+        password: row.password,
+        baseUrl: row.base_url,
+        isEnabled: row.is_enabled,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      };
+    } catch (error) {
+      console.error('Error getting WhatsApp config:', error);
+      return null;
+    }
+  }
+
+  async updateWhatsAppConfig(config: { userId: string; password: string; baseUrl: string; isEnabled: boolean }): Promise<any> {
+    try {
+      await db.connectDB();
+      
+      // First, create table if it doesn't exist
+      await this.createWhatsAppConfigTableIfNotExists();
+      
+      // Deactivate existing configs
+      const deactivateQuery = `UPDATE whatsapp_config SET is_active = 0`;
+      await db.pool.request().query(deactivateQuery);
+      
+      // Insert new config
+      const insertQuery = `
+        INSERT INTO whatsapp_config (user_id, password, base_url, is_enabled, is_active)
+        OUTPUT INSERTED.*
+        VALUES (@userId, @password, @baseUrl, @isEnabled, 1)
+      `;
+      
+      const request = db.pool.request();
+      request.input('userId', sql.NVarChar, config.userId);
+      request.input('password', sql.NVarChar, config.password);
+      request.input('baseUrl', sql.NVarChar, config.baseUrl);
+      request.input('isEnabled', sql.Bit, config.isEnabled);
+      
+      const result = await request.query(insertQuery);
+      const row = result.recordset[0];
+      
+      return {
+        id: row.id,
+        userId: row.user_id,
+        password: row.password,
+        baseUrl: row.base_url,
+        isEnabled: row.is_enabled,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      };
+    } catch (error) {
+      console.error('Error updating WhatsApp config:', error);
+      throw error;
+    }
+  }
+
+  async getWhatsAppTemplates(): Promise<any[]> {
+    try {
+      await db.connectDB();
+      const query = `SELECT * FROM message_templates WHERE channel = 'whatsapp' ORDER BY template_name`;
+      const result = await db.pool.request().query(query);
+      
+      return result.recordset.map(row => ({
+        id: row.id,
+        templateName: row.template_name,
+        subject: row.subject,
+        content: row.content,
+        variables: row.variables ? JSON.parse(row.variables) : [],
+        channel: row.channel,
+        isActive: row.is_active,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      }));
+    } catch (error) {
+      console.error('Error getting WhatsApp templates:', error);
+      return [];
+    }
+  }
+
+  private async createWhatsAppConfigTableIfNotExists(): Promise<void> {
+    try {
+      await db.connectDB();
+      const checkTableQuery = `
+        SELECT COUNT(*) as count 
+        FROM INFORMATION_SCHEMA.TABLES 
+        WHERE TABLE_NAME = 'whatsapp_config'
+      `;
+      
+      const checkResult = await db.pool.request().query(checkTableQuery);
+      
+      if (checkResult.recordset[0].count === 0) {
+        const createTableQuery = `
+          CREATE TABLE whatsapp_config (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            user_id NVARCHAR(255) NOT NULL,
+            password NVARCHAR(255) NOT NULL,
+            base_url NVARCHAR(500) NOT NULL,
+            is_enabled BIT DEFAULT 1,
+            is_active BIT DEFAULT 1,
+            created_at DATETIME DEFAULT GETDATE(),
+            updated_at DATETIME DEFAULT GETDATE()
+          )
+        `;
+        
+        await db.pool.request().query(createTableQuery);
+        console.log('WhatsApp config table created successfully');
+      }
+    } catch (error) {
+      console.error('Error creating WhatsApp config table:', error);
+    }
   }
 }
 

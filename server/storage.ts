@@ -7,6 +7,7 @@ import { db } from "./db";
 import { eq, and } from "drizzle-orm";
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import sql from 'mssql';
 
 export interface IStorage {
   // User Role operations (Master)
@@ -98,6 +99,11 @@ export interface IStorage {
   getAllCartAbandonments(): Promise<CartAbandonment[]>;
   deleteCartAbandonment(id: number): Promise<void>;
   cleanupOldCartAbandonments(daysOld: number): Promise<void>;
+
+  // WhatsApp Configuration operations
+  getWhatsAppConfig(): Promise<any>;
+  updateWhatsAppConfig(config: { userId: string; password: string; baseUrl: string; isEnabled: boolean }): Promise<any>;
+  getWhatsAppTemplates(): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -531,6 +537,139 @@ export class DatabaseStorage implements IStorage {
 
   async deleteDeviceModel(id: number): Promise<void> {
     await db.update(deviceModels).set({ isActive: false }).where(eq(deviceModels.id, id));
+  }
+
+  // WhatsApp Configuration operations
+  async getWhatsAppConfig(): Promise<any> {
+    try {
+      const pool = await sql.connect();
+      const result = await pool.request().query(`
+        SELECT userId, password, baseUrl, isEnabled, createdAt, updatedAt
+        FROM whatsapp_config 
+        WHERE id = 1
+      `);
+      return result.recordset[0] || null;
+    } catch (error: any) {
+      if (error.message.includes("Invalid object name 'whatsapp_config'")) {
+        // Create table if it doesn't exist
+        await this.createWhatsAppConfigTable();
+        return null;
+      }
+      throw error;
+    }
+  }
+
+  async updateWhatsAppConfig(config: { userId: string; password: string; baseUrl: string; isEnabled: boolean }): Promise<any> {
+    try {
+      const pool = await sql.connect();
+      
+      // Check if record exists
+      const checkResult = await pool.request().query(`
+        SELECT id FROM whatsapp_config WHERE id = 1
+      `);
+
+      if (checkResult.recordset.length > 0) {
+        // Update existing record
+        await pool.request()
+          .input('userId', sql.VarChar, config.userId)
+          .input('password', sql.VarChar, config.password)
+          .input('baseUrl', sql.VarChar, config.baseUrl)
+          .input('isEnabled', sql.Bit, config.isEnabled)
+          .query(`
+            UPDATE whatsapp_config 
+            SET userId = @userId, password = @password, baseUrl = @baseUrl, 
+                isEnabled = @isEnabled, updatedAt = GETDATE()
+            WHERE id = 1
+          `);
+      } else {
+        // Insert new record
+        await pool.request()
+          .input('userId', sql.VarChar, config.userId)
+          .input('password', sql.VarChar, config.password)
+          .input('baseUrl', sql.VarChar, config.baseUrl)
+          .input('isEnabled', sql.Bit, config.isEnabled)
+          .query(`
+            INSERT INTO whatsapp_config (id, userId, password, baseUrl, isEnabled, createdAt, updatedAt)
+            VALUES (1, @userId, @password, @baseUrl, @isEnabled, GETDATE(), GETDATE())
+          `);
+      }
+
+      // Return the updated config
+      const result = await pool.request().query(`
+        SELECT userId, password, baseUrl, isEnabled, createdAt, updatedAt
+        FROM whatsapp_config WHERE id = 1
+      `);
+      return result.recordset[0];
+    } catch (error: any) {
+      if (error.message.includes("Invalid object name 'whatsapp_config'")) {
+        // Create table if it doesn't exist
+        await this.createWhatsAppConfigTable();
+        return await this.updateWhatsAppConfig(config);
+      }
+      throw error;
+    }
+  }
+
+  async getWhatsAppTemplates(): Promise<any[]> {
+    try {
+      const pool = await sql.connect();
+      const result = await pool.request().query(`
+        SELECT id, name, message, isTemplate, isActive, createdAt, updatedAt
+        FROM whatsapp_templates 
+        WHERE isActive = 1
+        ORDER BY name
+      `);
+      return result.recordset || [];
+    } catch (error: any) {
+      if (error.message.includes("Invalid object name 'whatsapp_templates'")) {
+        // Create table if it doesn't exist
+        await this.createWhatsAppTemplatesTable();
+        return [];
+      }
+      throw error;
+    }
+  }
+
+  private async createWhatsAppConfigTable(): Promise<void> {
+    try {
+      const pool = await sql.connect();
+      await pool.request().query(`
+        CREATE TABLE whatsapp_config (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          userId NVARCHAR(100) NOT NULL,
+          password NVARCHAR(255) NOT NULL,
+          baseUrl NVARCHAR(500) NOT NULL DEFAULT 'https://mediaapi.smsgupshup.com/GatewayAPI/rest',
+          isEnabled BIT NOT NULL DEFAULT 0,
+          createdAt DATETIME2 DEFAULT GETDATE(),
+          updatedAt DATETIME2 DEFAULT GETDATE()
+        )
+      `);
+      console.log('Created whatsapp_config table');
+    } catch (error: any) {
+      console.error('Failed to create whatsapp_config table:', error);
+      throw error;
+    }
+  }
+
+  private async createWhatsAppTemplatesTable(): Promise<void> {
+    try {
+      const pool = await sql.connect();
+      await pool.request().query(`
+        CREATE TABLE whatsapp_templates (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          name NVARCHAR(100) NOT NULL,
+          message NTEXT NOT NULL,
+          isTemplate BIT NOT NULL DEFAULT 1,
+          isActive BIT NOT NULL DEFAULT 1,
+          createdAt DATETIME2 DEFAULT GETDATE(),
+          updatedAt DATETIME2 DEFAULT GETDATE()
+        )
+      `);
+      console.log('Created whatsapp_templates table');
+    } catch (error: any) {
+      console.error('Failed to create whatsapp_templates table:', error);
+      throw error;
+    }
   }
 }
 

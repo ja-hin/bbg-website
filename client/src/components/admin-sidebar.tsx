@@ -111,6 +111,12 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       active: location === "/admin/smtp-settings"
     },
     {
+      label: "WhatsApp Settings",
+      href: "/admin/whatsapp-settings",
+      icon: MessageCircle,
+      active: location === "/admin/whatsapp-settings"
+    },
+    {
       label: "Communication",
       href: "/admin/templates",
       icon: MessageSquare,

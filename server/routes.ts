@@ -2121,6 +2121,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===== WHATSAPP CONFIGURATION ROUTES =====
+
+  // Get WhatsApp configuration (admin endpoint)
+  app.get("/api/admin/whatsapp/config", isAdminAuthenticated, async (req, res) => {
+    try {
+      const whatsappConfig = await storage.getWhatsAppConfig();
+      if (whatsappConfig) {
+        // Don't return the password in the response for security
+        const { password, ...safeConfig } = whatsappConfig;
+        res.json({ ...safeConfig, hasPassword: !!password });
+      } else {
+        res.json({
+          userId: "",
+          baseUrl: "https://mediaapi.smsgupshup.com/GatewayAPI/rest",
+          isEnabled: false,
+          hasPassword: false
+        });
+      }
+    } catch (error: any) {
+      console.error('Failed to get WhatsApp config:', error);
+      res.status(500).json({ message: "Failed to get WhatsApp configuration" });
+    }
+  });
+
+  // Update WhatsApp configuration (admin only)
+  app.post("/api/admin/whatsapp/config", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { userId, password, baseUrl, isEnabled } = req.body;
+      
+      if (!userId || !password || !baseUrl) {
+        return res.status(400).json({ message: "User ID, password, and base URL are required" });
+      }
+
+      const updatedConfig = await storage.updateWhatsAppConfig({
+        userId,
+        password,
+        baseUrl,
+        isEnabled: !!isEnabled
+      });
+      
+      // Don't return the password in the response
+      const { password: _, ...safeConfig } = updatedConfig;
+      res.json({
+        message: "WhatsApp configuration updated successfully",
+        config: { ...safeConfig, hasPassword: true }
+      });
+    } catch (error: any) {
+      console.error('Failed to update WhatsApp config:', error);
+      res.status(500).json({ message: "Failed to update WhatsApp configuration" });
+    }
+  });
+
+  // Test WhatsApp message (admin only)
+  app.post("/api/admin/whatsapp/test", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { phone, message } = req.body;
+      
+      if (!phone || !message) {
+        return res.status(400).json({ message: "Phone number and message are required" });
+      }
+
+      // Get current WhatsApp configuration
+      const whatsappConfig = await storage.getWhatsAppConfig();
+      if (!whatsappConfig || !whatsappConfig.isEnabled) {
+        return res.status(400).json({ message: "WhatsApp is not configured or disabled" });
+      }
+
+      // Prepare the API call using the same format as your working example
+      const encodedMessage = encodeURIComponent(message);
+      const apiUrl = `${whatsappConfig.baseUrl}?userid=${whatsappConfig.userId}&password=${whatsappConfig.password}&send_to=${phone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=${encodedMessage}&isTemplate=true`;
+
+      console.log('Testing WhatsApp API with URL:', apiUrl);
+
+      // Make the API call
+      const response = await fetch(apiUrl);
+      const result = await response.json();
+      
+      console.log('WhatsApp test response:', result);
+
+      if (result.status === 'success' || result.status === 'OK') {
+        res.json({
+          message: "Test message sent successfully",
+          status: result.status,
+          response: result
+        });
+      } else {
+        res.status(500).json({
+          message: "Failed to send test message",
+          error: result.details || result.message || 'Unknown error',
+          response: result
+        });
+      }
+    } catch (error: any) {
+      console.error('Failed to send test WhatsApp message:', error);
+      res.status(500).json({ 
+        message: "Failed to send test message", 
+        error: error.message 
+      });
+    }
+  });
+
+  // Get WhatsApp message templates (admin endpoint)
+  app.get("/api/admin/whatsapp/templates", isAdminAuthenticated, async (req, res) => {
+    try {
+      const templates = await storage.getWhatsAppTemplates();
+      res.json(templates || []);
+    } catch (error: any) {
+      console.error('Failed to get WhatsApp templates:', error);
+      res.status(500).json({ message: "Failed to get WhatsApp templates" });
+    }
+  });
+
   // ===== MASTER MANAGEMENT ROUTES =====
 
   // User Roles Master Management

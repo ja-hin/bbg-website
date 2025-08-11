@@ -563,8 +563,7 @@ export default function ClaimBBG() {
                     {claimDetails && (
                       <Button
                         type="submit"
-                        style={{ backgroundColor: '#E72829', borderColor: '#E72829', color: 'white' }}
-                        className="w-full hover:opacity-90 font-semibold py-3 text-lg border-2 shadow-lg transition-all duration-200 hover:shadow-xl"
+                        className="w-full bg-xtra-primary hover:bg-xtra-primary/90 text-white font-semibold py-3 text-lg border-2 border-xtra-primary shadow-lg transition-all duration-200 hover:shadow-xl"
                         disabled={submitClaimMutation.isPending}
                       >
                         {submitClaimMutation.isPending ? (

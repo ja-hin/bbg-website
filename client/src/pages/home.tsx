@@ -553,7 +553,7 @@ export default function Home() {
       </section>
 
       {/* Distributor CTA Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-xtra-primary via-xtra-primary/90 to-xtra-primary/80 text-white">
+      <section className="py-12 sm:py-16 lg:py-20 xtra-gradient-br text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Award className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 sm:mb-6" />
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">Join Our Referral Program</h2>

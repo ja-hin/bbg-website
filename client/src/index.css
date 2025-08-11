@@ -81,6 +81,10 @@
     background: linear-gradient(135deg, color-mix(in srgb, var(--xtra-primary) 10%, transparent) 0%, color-mix(in srgb, var(--xtra-primary) 5%, transparent) 100%);
   }
   
+  .xtra-gradient-br {
+    background: linear-gradient(to bottom right, var(--xtra-primary) 0%, color-mix(in srgb, var(--xtra-primary) 90%, transparent) 50%, color-mix(in srgb, var(--xtra-primary) 80%, transparent) 100%);
+  }
+  
   .text-xtra-primary {
     color: var(--xtra-primary);
   }
@@ -97,14 +101,6 @@
     background-color: color-mix(in srgb, var(--xtra-primary) 90%, transparent);
   }
   
-  .bg-xtra-primary {
-    background-color: var(--xtra-primary);
-  }
-  
-  .border-xtra-primary {
-    border-color: var(--xtra-primary);
-  }
-  
   /* Dynamic color utilities */
   .bg-xtra-primary\/10 {
     background-color: color-mix(in srgb, var(--xtra-primary) 10%, transparent);
@@ -118,7 +114,22 @@
     background-color: color-mix(in srgb, var(--xtra-primary) 90%, transparent);
   }
   
-  .hover\:bg-xtra-primary\/90:hover {
-    background-color: color-mix(in srgb, var(--xtra-primary) 90%, transparent);
+  .bg-xtra-primary\/80 {
+    background-color: color-mix(in srgb, var(--xtra-primary) 80%, transparent);
+  }
+  
+  .from-xtra-primary {
+    --tw-gradient-from: var(--xtra-primary) var(--tw-gradient-from-position);
+    --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  }
+  
+  .via-xtra-primary\/90 {
+    --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from), color-mix(in srgb, var(--xtra-primary) 90%, transparent) var(--tw-gradient-via-position), var(--tw-gradient-to);
+  }
+  
+  .to-xtra-primary\/80 {
+    --tw-gradient-to: color-mix(in srgb, var(--xtra-primary) 80%, transparent) var(--tw-gradient-to-position);
   }
 }

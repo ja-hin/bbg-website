@@ -563,7 +563,7 @@ export default function ClaimBBG() {
                     {claimDetails && (
                       <Button
                         type="submit"
-                        className="w-full bg-xtra-secondary hover:bg-xtra-secondary/90"
+                        className="w-full bg-xtra-secondary hover:bg-xtra-secondary/90 text-white font-semibold py-3 text-lg border-2 border-xtra-secondary shadow-lg transition-all duration-200 hover:shadow-xl"
                         disabled={submitClaimMutation.isPending}
                       >
                         {submitClaimMutation.isPending ? (

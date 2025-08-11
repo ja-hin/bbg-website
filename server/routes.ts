@@ -3870,7 +3870,6 @@ Required: GUPSHUP_API_KEY environment variable
         phone,
         pincode,
         purchasePrice,
-        alternatePhone,
         purchaseDate
       } = req.body;
 

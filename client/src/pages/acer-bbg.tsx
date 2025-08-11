@@ -52,7 +52,6 @@ const acerRegistrationSchema = z.object({
   phone: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
   email: z.string().email("Invalid email address"),
   pincode: z.string().regex(/^[1-9][0-9]{5}$/, "Pincode must be 6 digits and cannot start with 0"),
-  alternatePhone: z.string().optional(),
 
   // File upload
   invoiceFile: z.instanceof(File).optional(),
@@ -593,22 +592,7 @@ export default function AcerBBG() {
                       )}
                     />
 
-                    <FormField
-                      control={form.control}
-                      name="alternatePhone"
-                      render={({ field }) => (
-                        <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <Phone className="h-4 w-4 mr-2" />
-                            Alternate Phone
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Alternate contact (optional)" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+
                   </div>
                 </div>
 

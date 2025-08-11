@@ -51,6 +51,7 @@ const acerRegistrationSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   phone: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
   email: z.string().email("Invalid email address"),
+  pincode: z.string().regex(/^[1-9][0-9]{5}$/, "Pincode must be 6 digits and cannot start with 0"),
   alternatePhone: z.string().optional(),
 
   // File upload
@@ -561,6 +562,30 @@ export default function AcerBBG() {
                               validationType="email"
                               customValidation="emailExists"
                               type="email"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="pincode"
+                      render={({ field }) => (
+                        <FormItem className="h-full">
+                          <FormLabel className="flex items-center h-6 mb-2">
+                            <MapPin className="h-4 w-4 mr-2" />
+                            Pincode *
+                          </FormLabel>
+                          <FormControl>
+                            <ValidatedField
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                              placeholder="Enter 6-digit pincode"
+                              validationType="pincode"
+                              type="tel"
                             />
                           </FormControl>
                           <FormMessage />

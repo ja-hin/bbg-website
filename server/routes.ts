@@ -3868,13 +3868,14 @@ Required: GUPSHUP_API_KEY environment variable
         customModelName,
         email,
         phone,
+        pincode,
         purchasePrice,
         alternatePhone,
         purchaseDate
       } = req.body;
 
       // Validate required fields (address no longer required)
-      if (!deviceType || !imeiSerial || !brand || !name || !model || !email || !phone || !purchasePrice || !purchaseDate) {
+      if (!deviceType || !imeiSerial || !brand || !name || !model || !email || !phone || !pincode || !purchasePrice || !purchaseDate) {
         return res.status(400).json({
           success: false,
           message: "All required fields must be provided"
@@ -3899,6 +3900,15 @@ Required: GUPSHUP_API_KEY environment variable
         });
       }
 
+      // Validate pincode format
+      const pincodeRegex = /^[1-9][0-9]{5}$/;
+      if (!pincodeRegex.test(pincode)) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide a valid 6-digit pincode that cannot start with 0"
+        });
+      }
+
       // Handle file upload path
       let invoiceFilePath = null;
       if (req.file) {
@@ -3909,8 +3919,7 @@ Required: GUPSHUP_API_KEY environment variable
         }
       }
 
-      // Default pincode for Acer registrations (address will be captured during claim)
-      const pincode = '000000'; // Default pincode - address captured during claim process
+
 
       // Validate IMEI against Acer database
       try {

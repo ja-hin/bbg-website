@@ -167,7 +167,8 @@ export const validationSchemas = {
   name: z.string().min(2, "Name must be at least 2 characters"),
   price: z.string().min(1, "Price is required").regex(/^\d+$/, "Price must be a number"),
   address: z.string().min(5, "Address must be at least 5 characters"),
-  model: z.string().min(1, "Model is required")
+  model: z.string().min(1, "Model is required"),
+  pincode: z.string().regex(/^[1-9][0-9]{5}$/, "Pincode must be 6 digits and cannot start with 0")
 };
 
 // Custom validation functions

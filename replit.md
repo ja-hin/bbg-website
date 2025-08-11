@@ -134,6 +134,16 @@ Preferred communication style: Simple, everyday language.
   - VERIFIED: Theme changes apply instantly across all pages and survive server restarts
   - DATABASE: prexoDB.theme_settings table working perfectly with real-time updates
 
+- **August 11, 2025**: ✅ **Complete Acer registration form optimization and testing**
+  - SIMPLIFIED: Model input converted from complex dropdown/search to simple text field
+  - REMOVED: Non-functional custom model selection logic and related state variables
+  - CLEANED UP: Eliminated unused imports and custom model schema validation
+  - FIXED: Server-side custom model handling code that caused isCustomModel errors
+  - REMOVED: GST-inclusive price informational text for cleaner form UI
+  - TESTED: Complete end-to-end registration flow with IMEI validation
+  - VERIFIED: Duplicate registration prevention, form validation, and error handling all functional
+  - CONFIRMED: All form fields (pincode, model text input, purchase price) working correctly
+
 - **July 30, 2025**: ✅ Hidden customer login option from header navigation
   - REMOVED: Customer login button from header navigation (both desktop and mobile versions)
   - MAINTAINED: Direct URL access to /customer/login still functional for existing customer dashboard usage

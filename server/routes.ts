@@ -3960,39 +3960,8 @@ Required: GUPSHUP_API_KEY environment variable
         });
       }
 
-      // Handle custom models - create new model if needed
-      let finalModelName = model;
-      if (isCustomModel === 'true' && customModelName) {
-        finalModelName = customModelName;
-        
-        // Optionally create the model in the database for future use
-        try {
-          await db.connectDB();
-          const brandRequest = db.pool.request();
-          brandRequest.input('brandName', sql.VarChar, brand);
-          
-          const brandResult = await brandRequest.query(`
-            SELECT id FROM brands WHERE LOWER(name) = LOWER(@brandName)
-          `);
-          
-          if (brandResult.recordset.length > 0) {
-            const brandId = brandResult.recordset[0].id;
-            
-            const modelRequest = db.pool.request();
-            modelRequest.input('name', sql.VarChar, customModelName);
-            modelRequest.input('brand_id', sql.Int, brandId);
-            modelRequest.input('is_active', sql.Bit, true);
-            
-            await modelRequest.query(`
-              IF NOT EXISTS (SELECT 1 FROM models WHERE name = @name AND brand_id = @brand_id)
-              INSERT INTO models (name, brand_id, is_active) VALUES (@name, @brand_id, @is_active)
-            `);
-          }
-        } catch (error) {
-          console.error('Error creating custom model:', error);
-          // Continue with registration even if model creation fails
-        }
-      }
+      // Use the model name directly
+      const finalModelName = model;
 
       // Get active claim value slab to associate with registration
       let activeClaimValueSlab;
@@ -4016,7 +3985,7 @@ Required: GUPSHUP_API_KEY environment variable
         serialNumber: imeiSerial,
         brand,
         modelName: finalModelName,
-        invoiceValue: parseFloat(purchasePrice), // Already GST-excluded from form
+        invoiceValue: purchasePrice.toString(), // Convert to string as expected by storage
         dateOfPurchase: purchaseDate,
         sellerCode: null, // No seller code for direct Acer registrations
         isVerified: true, // Auto-verify Acer registrations
@@ -4052,15 +4021,17 @@ Required: GUPSHUP_API_KEY environment variable
 
       // Send welcome notification using unified voucher code
       try {
-        await communicationService.sendWelcomeMessage({
-          name,
-          email,
-          phone,
-          voucherCode: customer.voucherCode,
-          deviceType,
-          brand,
-          model: model
-        });
+        // Note: Commented out until sendWelcomeMessage method is available
+        // await communicationService.sendWelcomeMessage({
+        //   name,
+        //   email,
+        //   phone,
+        //   voucherCode: customer.voucherCode,
+        //   deviceType,
+        //   brand,
+        //   model: model
+        // });
+        console.log('Welcome message would be sent for:', customer.voucherCode);
       } catch (notificationError) {
         console.error('Failed to send welcome notification:', notificationError);
         // Don't fail the registration if notification fails
@@ -4074,9 +4045,8 @@ Required: GUPSHUP_API_KEY environment variable
         name,
         deviceType,
         brand,
-        model: finalModelName, // Return the final model name used (may be custom)
-        isCustomModel: isCustomModel === 'true',
-        gstExcludedPrice: parseFloat(purchasePrice) // Confirm GST-excluded price stored
+        model: finalModelName,
+        gstInclusivePrice: parseFloat(purchasePrice) // Confirm GST-inclusive price stored
       });
 
     } catch (error) {

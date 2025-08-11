@@ -556,8 +556,8 @@ export default function ClaimBBG() {
                       </div>
                     </div>
 
-                    {/* Submit Button - Only show when OTP is verified */}
-                    {otpVerified && (
+                    {/* Submit Button - Show when claim details are loaded */}
+                    {claimDetails && (
                       <Button
                         type="submit"
                         className="w-full bg-xtra-secondary hover:bg-xtra-secondary/90"

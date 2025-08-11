@@ -8,10 +8,11 @@
 **Recommended Instance Types:**
 
 **Production Environment:**
-- **Primary**: `t3.large` (2 vCPUs, 8GB RAM)
-  - Cost: ~$60-70/month per instance
+- **Primary**: `t3.medium` (2 vCPUs, 4GB RAM)
+  - Cost: ~$30-35/month per instance
   - Perfect for Node.js applications with moderate traffic
   - Burstable performance for traffic spikes
+  - Cost-effective for BBG application workload
 
 **High Traffic/Enterprise:**
 - **Upgrade**: `c5.xlarge` (4 vCPUs, 8GB RAM) 
@@ -119,7 +120,7 @@ Deploy: CodeDeploy
 
 #### **Production Setup (Medium Traffic)**
 ```
-EC2 Instances (2x t3.large):        $140
+EC2 Instances (2x t3.medium):       $70
 Application Load Balancer:           $25
 CloudWatch & Monitoring:             $15
 S3 & CloudFront:                     $20
@@ -128,7 +129,7 @@ CodePipeline (if used):              $10
 NAT Gateway:                         $45
 Data Transfer:                       $20
 ─────────────────────────────────────
-Total Estimated:                    $280/month
+Total Estimated:                    $210/month
 ```
 
 #### **High Performance Setup**

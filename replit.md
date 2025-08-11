@@ -75,7 +75,7 @@ Preferred communication style: Simple, everyday language.
 - **Architecture**: Auto-scaling EC2 instances with Application Load Balancer
 - **Database**: Continue using existing Microsoft SQL Server (103.205.66.184:2499)
 - **Storage**: Maintain current AWS S3 integration
-- **Estimated Cost**: $280-620/month depending on traffic and performance requirements
+- **Estimated Cost**: $210-620/month depending on traffic and performance requirements
 - **Timeline**: 2-3 weeks for complete migration and setup
 
 ## Recent Changes

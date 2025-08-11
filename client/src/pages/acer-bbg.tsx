@@ -294,9 +294,6 @@ export default function AcerBBG() {
                               type="number"
                             />
                           </FormControl>
-                          <div className="text-xs text-blue-600 mt-1">
-                            💡 Payout amount will be calculated based on this GST-inclusive price
-                          </div>
                           <FormMessage />
                         </FormItem>
                       )}

@@ -1985,13 +1985,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update theme settings (admin only)
   app.post("/api/admin/theme/update", isAdminAuthenticated, async (req, res) => {
     try {
-      const { primaryColor } = req.body;
+      const { primaryColor, darkMode } = req.body;
       
-      if (!primaryColor || !/^#[0-9A-F]{6}$/i.test(primaryColor)) {
+      // Validate primaryColor if provided
+      if (primaryColor !== undefined && (typeof primaryColor !== 'string' || !/^#[0-9A-F]{6}$/i.test(primaryColor))) {
         return res.status(400).json({ message: "Valid hex color code required" });
       }
 
-      const updatedTheme = await storage.updateThemeSettings({ primaryColor });
+      // Validate darkMode if provided
+      if (darkMode !== undefined && typeof darkMode !== 'boolean') {
+        return res.status(400).json({ message: "Dark mode must be a boolean value" });
+      }
+
+      // Ensure at least one field is provided
+      if (primaryColor === undefined && darkMode === undefined) {
+        return res.status(400).json({ message: "At least one setting (primaryColor or darkMode) is required" });
+      }
+
+      const updateData: any = {};
+      if (primaryColor) updateData.primaryColor = primaryColor;
+      if (darkMode !== undefined) updateData.darkMode = darkMode;
+
+      const updatedTheme = await storage.updateThemeSettings(updateData);
       res.json({
         message: "Theme updated successfully",
         theme: updatedTheme

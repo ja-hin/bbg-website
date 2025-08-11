@@ -258,7 +258,7 @@ export default function Home() {
               
               {/* Mobile Devices Table */}
               <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="bg-xtra-secondary text-white px-6 py-4">
+                <div className="bg-xtra-primary text-white px-6 py-4">
                   <h3 className="text-xl font-bold flex items-center">
                     <Smartphone className="w-6 h-6 mr-2" />
                     Mobile Devices

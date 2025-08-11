@@ -144,6 +144,13 @@ Preferred communication style: Simple, everyday language.
   - VERIFIED: Duplicate registration prevention, form validation, and error handling all functional
   - CONFIRMED: All form fields (pincode, model text input, purchase price) working correctly
 
+- **August 11, 2025**: ✅ **Claim journey and referral partner terminology updates**
+  - UPDATED: Removed 6PM - 9PM pickup time slot from claim journey, leaving only daytime slots
+  - RENAMED: "Seller Code" changed to "Referral Code" throughout referral partner thank you page
+  - UPDATED: "Distributor Registration Successful" → "Referral Partner Registration Successful"
+  - REVISED: All "distributor" references changed to "referral partner" in thank you page messaging
+  - IMPROVED: Consistent referral partner terminology across registration success flow
+
 - **July 30, 2025**: ✅ Hidden customer login option from header navigation
   - REMOVED: Customer login button from header navigation (both desktop and mobile versions)
   - MAINTAINED: Direct URL access to /customer/login still functional for existing customer dashboard usage

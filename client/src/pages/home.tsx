@@ -15,14 +15,24 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-  // Fetch dynamic claim value slabs
-  const { data: claimSlabs, isLoading: isSlabsLoading } = useQuery({
-    queryKey: ['/api/claim-value-slabs/active'],
+  // Fetch dynamic claim value slabs for mobile
+  const { data: mobileSlabs, isLoading: isMobileLoading } = useQuery({
+    queryKey: ['/api/claim-value-slabs/active/mobile'],
     retry: false,
   });
 
-  const activeSlabs = Array.isArray(claimSlabs) ? claimSlabs.filter((slab: any) => slab.isActive) : [];
-  const maxPercentage = activeSlabs.length > 0 ? Math.max(...activeSlabs.map((slab: any) => slab.percentage)) : 70;
+  // Fetch dynamic claim value slabs for laptop
+  const { data: laptopSlabs, isLoading: isLaptopLoading } = useQuery({
+    queryKey: ['/api/claim-value-slabs/active/laptop'],
+    retry: false,
+  });
+
+  const activeMobileSlabs = Array.isArray(mobileSlabs) ? mobileSlabs.filter((slab: any) => slab.isActive) : [];
+  const activeLaptopSlabs = Array.isArray(laptopSlabs) ? laptopSlabs.filter((slab: any) => slab.isActive) : [];
+  const isSlabsLoading = isMobileLoading || isLaptopLoading;
+  
+  const allSlabs = [...activeMobileSlabs, ...activeLaptopSlabs];
+  const maxPercentage = allSlabs.length > 0 ? Math.max(...allSlabs.map((slab: any) => slab.percentage)) : 70;
 
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
@@ -263,7 +273,7 @@ export default function Home() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                      {activeSlabs.filter((slab: any) => slab.deviceType === 'mobile').map((slab: any) => {
+                      {activeMobileSlabs.map((slab: any) => {
                         // Determine color based on percentage
                         let colorClass = "text-green-600";
                         if (slab.percentage < 30) colorClass = "text-xtra-primary";
@@ -303,7 +313,7 @@ export default function Home() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                      {activeSlabs.filter((slab: any) => slab.deviceType === 'laptop').map((slab: any) => {
+                      {activeLaptopSlabs.map((slab: any) => {
                         // Determine color based on percentage
                         let colorClass = "text-green-600";
                         if (slab.percentage < 30) colorClass = "text-xtra-primary";

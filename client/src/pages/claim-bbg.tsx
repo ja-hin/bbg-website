@@ -70,6 +70,9 @@ export default function ClaimBBG() {
     retry: false,
   });
 
+  const mobileSlabsArray = Array.isArray(mobileSlabs) ? mobileSlabs : [];
+  const laptopSlabsArray = Array.isArray(laptopSlabs) ? laptopSlabs : [];
+
   const form = useForm<ClaimFormData>({
     resolver: zodResolver(claimSchema),
     defaultValues: {
@@ -593,7 +596,7 @@ export default function ClaimBBG() {
             ) : (
               <div className="space-y-6">
                 {/* Mobile Device Slabs */}
-                {mobileSlabs && mobileSlabs.length > 0 && (
+                {mobileSlabsArray.length > 0 && (
                   <div>
                     <h3 className="text-lg font-semibold text-xtra-secondary mb-3 flex items-center">
                       📱 Mobile Device Claim Values
@@ -608,7 +611,7 @@ export default function ClaimBBG() {
                           </tr>
                         </thead>
                         <tbody>
-                          {mobileSlabs
+                          {mobileSlabsArray
                             .filter((slab: any) => slab.isActive)
                             .sort((a: any, b: any) => a.minMonths - b.minMonths)
                             .map((slab: any, index: number) => {
@@ -618,7 +621,7 @@ export default function ClaimBBG() {
                               else if (slab.percentage < 70) colorClass = "text-yellow-600";
 
                               return (
-                                <tr key={`mobile-${slab.id}`} className={index < (mobileSlabs?.filter((s: any) => s.isActive).length || 0) - 1 ? "border-b" : ""}>
+                                <tr key={`mobile-${slab.id}`} className={index < mobileSlabsArray.filter((s: any) => s.isActive).length - 1 ? "border-b" : ""}>
                                   <td className="py-3 px-4">{slab.minMonths}-{slab.maxMonths} months</td>
                                   <td className={`py-3 px-4 font-semibold ${colorClass}`}>{slab.percentage}% of invoice value</td>
                                   <td className="py-3 px-4">Functional and fair condition</td>
@@ -632,7 +635,7 @@ export default function ClaimBBG() {
                 )}
 
                 {/* Laptop Device Slabs */}
-                {laptopSlabs && laptopSlabs.length > 0 && (
+                {laptopSlabsArray.length > 0 && (
                   <div>
                     <h3 className="text-lg font-semibold text-xtra-primary mb-3 flex items-center">
                       💻 Laptop Device Claim Values
@@ -647,7 +650,7 @@ export default function ClaimBBG() {
                           </tr>
                         </thead>
                         <tbody>
-                          {laptopSlabs
+                          {laptopSlabsArray
                             .filter((slab: any) => slab.isActive)
                             .sort((a: any, b: any) => a.minMonths - b.minMonths)
                             .map((slab: any, index: number) => {
@@ -657,7 +660,7 @@ export default function ClaimBBG() {
                               else if (slab.percentage < 70) colorClass = "text-yellow-600";
 
                               return (
-                                <tr key={`laptop-${slab.id}`} className={index < (laptopSlabs?.filter((s: any) => s.isActive).length || 0) - 1 ? "border-b" : ""}>
+                                <tr key={`laptop-${slab.id}`} className={index < laptopSlabsArray.filter((s: any) => s.isActive).length - 1 ? "border-b" : ""}>
                                   <td className="py-3 px-4">{slab.minMonths}-{slab.maxMonths} months</td>
                                   <td className={`py-3 px-4 font-semibold ${colorClass}`}>{slab.percentage}% of invoice value</td>
                                   <td className="py-3 px-4">Functional and fair condition</td>

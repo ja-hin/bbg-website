@@ -21,7 +21,7 @@ export default function Home() {
     retry: false,
   });
 
-  const activeSlabs = claimSlabs?.filter((slab: any) => slab.isActive) || [];
+  const activeSlabs = Array.isArray(claimSlabs) ? claimSlabs.filter((slab: any) => slab.isActive) : [];
   const maxPercentage = activeSlabs.length > 0 ? Math.max(...activeSlabs.map((slab: any) => slab.percentage)) : 70;
 
   return (
@@ -239,51 +239,101 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-4xl mx-auto">
-            {isSlabsLoading ? (
-              <div className="flex justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-xtra-primary" />
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-xtra-primary text-white">
-                    <tr>
-                      <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Device Age</th>
-                      <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Claim Percentage</th>
-                      <th className="py-4 px-4 sm:px-6 text-left font-semibold text-sm sm:text-base">Condition Required</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {activeSlabs.map((slab: any, index: number) => {
-                      // Determine color based on percentage
-                      let colorClass = "text-green-600";
-                      if (slab.percentage < 30) colorClass = "text-xtra-primary";
-                      else if (slab.percentage < 50) colorClass = "text-orange-600";
-                      else if (slab.percentage < 70) colorClass = "text-yellow-600";
+          {isSlabsLoading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-xtra-primary" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
+              
+              {/* Mobile Devices Table */}
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div className="bg-xtra-secondary text-white px-6 py-4">
+                  <h3 className="text-xl font-bold flex items-center">
+                    <Smartphone className="w-6 h-6 mr-2" />
+                    Mobile Devices
+                  </h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-100">
+                      <tr>
+                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
+                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Claim %</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {activeSlabs.filter((slab: any) => slab.deviceType === 'mobile').map((slab: any) => {
+                        // Determine color based on percentage
+                        let colorClass = "text-green-600";
+                        if (slab.percentage < 30) colorClass = "text-xtra-primary";
+                        else if (slab.percentage < 50) colorClass = "text-orange-600";
+                        else if (slab.percentage < 70) colorClass = "text-yellow-600";
 
-                      return (
-                        <tr key={slab.id} className="hover:bg-gray-50">
-                          <td className="py-4 px-4 sm:px-6 text-sm sm:text-base font-medium text-gray-900">
-                            {slab.minMonths}-{slab.maxMonths} months
-                          </td>
-                          <td className="py-4 px-4 sm:px-6">
-                            <span className={`text-lg sm:text-xl font-bold ${colorClass}`}>{slab.percentage}%</span>
-                            <span className="text-sm text-gray-500 ml-2">of invoice value</span>
-                          </td>
-                          <td className="py-4 px-4 sm:px-6 text-sm sm:text-base text-gray-600">Functional and fair condition</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                        return (
+                          <tr key={slab.id} className="hover:bg-gray-50">
+                            <td className="py-3 px-4 text-sm font-medium text-gray-900">
+                              {slab.minMonths}-{slab.maxMonths} months
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className={`text-lg font-bold ${colorClass}`}>{slab.percentage}%</span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            )}
-            
-            <div className="bg-gray-50 px-4 sm:px-6 py-4 border-t">
+
+              {/* Laptop Devices Table */}
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div className="bg-xtra-primary text-white px-6 py-4">
+                  <h3 className="text-xl font-bold flex items-center">
+                    <Laptop className="w-6 h-6 mr-2" />
+                    Laptop Devices
+                  </h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-100">
+                      <tr>
+                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
+                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Claim %</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {activeSlabs.filter((slab: any) => slab.deviceType === 'laptop').map((slab: any) => {
+                        // Determine color based on percentage
+                        let colorClass = "text-green-600";
+                        if (slab.percentage < 30) colorClass = "text-xtra-primary";
+                        else if (slab.percentage < 50) colorClass = "text-orange-600";
+                        else if (slab.percentage < 70) colorClass = "text-yellow-600";
+
+                        return (
+                          <tr key={slab.id} className="hover:bg-gray-50">
+                            <td className="py-3 px-4 text-sm font-medium text-gray-900">
+                              {slab.minMonths}-{slab.maxMonths} months
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className={`text-lg font-bold ${colorClass}`}>{slab.percentage}%</span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* General Information */}
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-4xl mx-auto mt-6">
+            <div className="bg-gray-50 px-4 sm:px-6 py-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <p className="text-xs sm:text-sm text-gray-600">
-                  <strong>Note:</strong> BBG Pricing & Depreciation slabs are subject to monthly review. However, slabs are locked as per your purchase date/time and mapped to your unique BBG Voucher.
+                  <strong>Note:</strong> BBG Pricing & Depreciation slabs are subject to monthly review. However, slabs are locked as per your purchase date/time and mapped to your unique BBG Voucher. All percentages are of invoice value for devices in functional and fair condition.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Link href="/customer-registration">

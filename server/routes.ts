@@ -5496,23 +5496,64 @@ Required: GUPSHUP_API_KEY environment variable
       // Backfill existing customers with their slab values
       console.log('📋 Backfilling existing customers with their slab values...');
       
-      // First, let's see what customers we have
-      const customersResult = await db.pool.request().query(`
-        SELECT id, name, voucher_code, claim_value_slab_id, registration_slab_percentage, registration_slab_range
+      // First, let's see what customers we have (all customers)
+      const allCustomersResult = await db.pool.request().query(`
+        SELECT id, name, voucher_code, device_type, brand, date_of_purchase, claim_value_slab_id, registration_slab_percentage, registration_slab_range
         FROM customers 
-        WHERE claim_value_slab_id IS NOT NULL
+        ORDER BY created_at DESC
       `);
       
-      console.log('Customers with claim_value_slab_id:', customersResult.recordset.length);
-      customersResult.recordset.forEach(customer => {
-        console.log({
-          id: customer.id,
-          name: customer.name,
-          claimValueSlabId: customer.claim_value_slab_id,
-          registrationSlabPercentage: customer.registration_slab_percentage,
-          registrationSlabRange: customer.registration_slab_range
-        });
-      });
+      console.log('All customers:', allCustomersResult.recordset.length);
+      
+      // Check which customers have slab IDs
+      const customersWithSlabId = allCustomersResult.recordset.filter(c => c.claim_value_slab_id);
+      console.log('Customers with claim_value_slab_id:', customersWithSlabId.length);
+      
+      // For customers without slab IDs, let's try to find and assign the appropriate slab
+      for (const customer of allCustomersResult.recordset) {
+        if (!customer.claim_value_slab_id && customer.device_type && customer.brand && customer.date_of_purchase) {
+          try {
+            // Calculate device age at time of purchase
+            const purchaseDate = new Date(customer.date_of_purchase);
+            const currentDate = new Date();
+            let monthsDiff = (currentDate.getFullYear() - purchaseDate.getFullYear()) * 12;
+            monthsDiff += currentDate.getMonth() - purchaseDate.getMonth();
+            if (currentDate.getDate() < purchaseDate.getDate()) {
+              monthsDiff--;
+            }
+            
+            // Find appropriate slab
+            const slabResult = await db.pool.request().query(`
+              SELECT id, percentage, min_months, max_months 
+              FROM claim_value_slabs 
+              WHERE device_type = '${customer.device_type}' 
+                AND brand = '${customer.brand}' 
+                AND is_active = 1
+                AND ${monthsDiff} >= min_months 
+                AND ${monthsDiff} <= max_months
+              ORDER BY min_months ASC
+            `);
+            
+            if (slabResult.recordset.length > 0) {
+              const slab = slabResult.recordset[0];
+              
+              // Update customer with slab data
+              await db.pool.request().query(`
+                UPDATE customers 
+                SET 
+                  claim_value_slab_id = ${slab.id},
+                  registration_slab_percentage = ${slab.percentage},
+                  registration_slab_range = '${slab.min_months}-${slab.max_months} months'
+                WHERE id = ${customer.id}
+              `);
+              
+              console.log(`Updated customer ${customer.name} (${customer.device_type} ${customer.brand}) with slab ID ${slab.id}, ${slab.percentage}%`);
+            }
+          } catch (error) {
+            console.log(`Could not update customer ${customer.name}:`, error.message);
+          }
+        }
+      }
       
       const backfillResult = await db.pool.request().query(`
         UPDATE customers 

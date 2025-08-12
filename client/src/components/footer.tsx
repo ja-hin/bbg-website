@@ -89,9 +89,8 @@ export default function Footer() {
 
         </div>
       </footer>
-      
       {/* Copyright Section - Separate from footer */}
-      <div className="bg-white py-4">
+      <div className="bg-white py-4 pt-[10px] pb-[10px]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-black font-normal text-sm">Copyright © 2025 XtraCover All rights reserved</p>
         </div>

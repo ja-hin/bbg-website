@@ -6,7 +6,6 @@ export default function TermsAndConditions() {
       <div className="w-full px-8 py-8">
         <div className="mb-8">
           <h1 className="flex items-center gap-2 text-2xl font-bold">
-            <FileText className="h-7 w-7" />
             Buyback Guarantee Terms and Conditions
           </h1>
         </div>

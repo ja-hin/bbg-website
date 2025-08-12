@@ -103,16 +103,16 @@ export default function Header() {
                     <span className="sr-only">Toggle menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-80 text-white border-none" style={{ backgroundColor: (theme as any)?.primaryColor || '#254696' }}>
+                <SheetContent side="right" className="w-80 text-gray-800 border-none bg-white">
                   <div className="flex flex-col space-y-6 mt-8">
                     {/* Mobile Logo */}
-                    <div className="flex items-center space-x-3 pb-4 border-b border-white/20">
+                    <div className="flex items-center space-x-3 pb-4 border-b border-gray-200">
                       <img 
                         src="https://images.xtracover.com/StaticImages/mobile_img/newui/logo.svg" 
                         alt="XTRACOVER Logo" 
                         className="h-10 w-auto"
                       />
-                      <span className="text-white/90 text-xl font-bold">| BBG</span>
+                      <span className="text-gray-800 text-xl font-bold">| BBG</span>
                     </div>
                     
                     {/* Mobile Navigation */}

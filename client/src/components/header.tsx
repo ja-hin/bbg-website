@@ -34,16 +34,7 @@ export default function Header() {
             key={item.href}
             href={item.href}
             onClick={onItemClick}
-            className={`
-              ${mobile 
-                ? 'block px-4 py-3 text-base font-medium text-white hover:bg-white/10 transition-colors rounded-lg' 
-                : `px-4 py-2 text-sm font-medium transition-colors rounded-full ${
-                    isActive 
-                      ? 'text-white' 
-                      : 'bg-white text-black hover:bg-white/90'
-                  }`
-              }
-            `}
+            className="px-4 py-2 text-sm transition-colors rounded-full bg-white text-black hover:bg-white/90 font-normal"
           >
             {item.label}
           </Link>

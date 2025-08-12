@@ -791,12 +791,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Get active claim value slab to associate with registration
+      // Find the appropriate claim value slab based on device age at purchase
       let activeClaimValueSlab;
       try {
+        const purchaseDate = new Date(customerData.dateOfPurchase);
+        const monthsDiff = Math.floor((Date.now() - purchaseDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
+        
+        console.log('Finding claim value slab for registration:', {
+          deviceType: customerData.deviceType,
+          brand: customerData.brand,
+          purchaseDate: purchaseDate.toISOString(),
+          currentAge: monthsDiff
+        });
+
         const activeSlabs = await storage.getActiveClaimValueSlabs();
-        // For now, get the first active slab (you can add more logic here)
-        activeClaimValueSlab = activeSlabs.length > 0 ? activeSlabs[0] : null;
+        
+        // Find brand-specific slab first
+        activeClaimValueSlab = activeSlabs.find(slab => 
+          slab.deviceType === customerData.deviceType &&
+          slab.brand === customerData.brand &&
+          monthsDiff >= slab.minMonths && 
+          monthsDiff <= slab.maxMonths
+        );
+        
+        // If no brand-specific slab, try generic slab
+        if (!activeClaimValueSlab) {
+          activeClaimValueSlab = activeSlabs.find(slab => 
+            slab.deviceType === customerData.deviceType &&
+            !slab.brand &&
+            monthsDiff >= slab.minMonths && 
+            monthsDiff <= slab.maxMonths
+          );
+        }
+        
+        console.log('Selected claim value slab for registration:', activeClaimValueSlab);
       } catch (error) {
         console.log('Warning: Could not fetch active claim value slab:', error);
         activeClaimValueSlab = null;
@@ -902,45 +930,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
         monthsDiff
       });
       
-      // Get brand-aware claim percentage from database
+      // Use the claim value slab that was stored at time of registration (not current slabs)
       let claimPercentage = 0;
       let applicableSlab = null;
       
       try {
-        // Get dynamic claim value slabs from database with brand support
-        const activeSlabs = await storage.getActiveClaimValueSlabs();
-        console.log(`Found ${activeSlabs.length} active claim value slabs`);
-        
-        // First try to find brand-specific slab
-        let targetSlab = null;
-        if (customer.brandName && customer.deviceType === 'laptop') {
-          // Look for brand-specific slab first
-          targetSlab = activeSlabs.find(slab => 
-            slab.deviceType === customer.deviceType &&
-            slab.brand === customer.brandName &&
-            monthsDiff >= slab.minMonths && 
-            monthsDiff <= slab.maxMonths
-          );
-          console.log(`Brand-specific slab search for ${customer.brandName}:`, targetSlab ? 'Found' : 'Not found');
-        }
-        
-        // If no brand-specific slab found, fall back to generic slab
-        if (!targetSlab) {
-          targetSlab = activeSlabs.find(slab => 
-            slab.deviceType === customer.deviceType &&
-            !slab.brand && // Generic slab (no brand)
-            monthsDiff >= slab.minMonths && 
-            monthsDiff <= slab.maxMonths
-          );
-          console.log(`Generic slab search for ${customer.deviceType}:`, targetSlab ? 'Found' : 'Not found');
-        }
-        
-        if (targetSlab) {
-          claimPercentage = targetSlab.percentage;
-          applicableSlab = targetSlab;
-          console.log(`Using slab: ${targetSlab.brand || 'Generic'} ${targetSlab.deviceType} ${targetSlab.minMonths}-${targetSlab.maxMonths} months: ${targetSlab.percentage}%`);
+        if (customer.claimValueSlabId) {
+          // Use the slab that was active when customer registered
+          applicableSlab = await storage.getClaimValueSlabById(customer.claimValueSlabId);
+          if (applicableSlab) {
+            // Check if current device age falls within the slab's range
+            if (monthsDiff >= applicableSlab.minMonths && monthsDiff <= applicableSlab.maxMonths) {
+              claimPercentage = applicableSlab.percentage;
+              console.log('Using stored claim slab (from time of purchase):', {
+                id: applicableSlab.id,
+                deviceType: applicableSlab.deviceType,
+                brand: applicableSlab.brand || 'Generic',
+                range: `${applicableSlab.minMonths}-${applicableSlab.maxMonths} months`,
+                percentage: applicableSlab.percentage
+              });
+            } else {
+              console.log('Device age no longer within original slab range:', {
+                currentAge: monthsDiff,
+                slabRange: `${applicableSlab.minMonths}-${applicableSlab.maxMonths}`,
+                originalPercentage: applicableSlab.percentage
+              });
+            }
+          } else {
+            console.log('Claim value slab not found by ID:', customer.claimValueSlabId);
+          }
         } else {
-          console.log(`No applicable slab found for ${customer.deviceType} device, ${monthsDiff} months old, brand: ${customer.brandName || 'N/A'}`);
+          console.log('No claim value slab ID stored for customer:', customer.id);
         }
       } catch (slabError) {
         console.error('Error fetching claim value slabs:', slabError);
@@ -1032,7 +1052,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         monthsDiff
       });
 
-      // Try to use the claim value slab that was active when customer registered
+      // Use the claim value slab that was stored at time of registration
       let claimPercentage = 0;
       let applicableSlab = null;
       
@@ -1040,37 +1060,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (customer.claimValueSlabId) {
           // Use the slab that was active when customer registered
           applicableSlab = await storage.getClaimValueSlabById(customer.claimValueSlabId);
-          if (applicableSlab && applicableSlab.isActive && 
-              monthsDiff >= applicableSlab.minMonths && monthsDiff <= applicableSlab.maxMonths) {
-            claimPercentage = applicableSlab.percentage;
-            console.log('Using registered claim slab:', applicableSlab);
-          }
-        }
-        
-        // If no registered slab or it doesn't match current age, use current active slabs
-        if (claimPercentage === 0) {
-          const activeSlabs = await storage.getActiveClaimValueSlabs();
-          applicableSlab = activeSlabs.find(slab => 
-            monthsDiff >= slab.minMonths && monthsDiff <= slab.maxMonths
-          );
-          
           if (applicableSlab) {
-            claimPercentage = applicableSlab.percentage;
-            console.log('Using current active slab:', applicableSlab);
+            // Check if current device age falls within the slab's range
+            if (monthsDiff >= applicableSlab.minMonths && monthsDiff <= applicableSlab.maxMonths) {
+              claimPercentage = applicableSlab.percentage;
+              console.log('Using registered claim slab (time of purchase):', applicableSlab);
+            } else {
+              console.log('Device age no longer within original slab range:', {
+                currentAge: monthsDiff,
+                slabRange: `${applicableSlab.minMonths}-${applicableSlab.maxMonths}`,
+                originalPercentage: applicableSlab.percentage
+              });
+            }
           }
+        } else {
+          console.log('No claim value slab ID stored for customer:', customer.id);
+          return res.status(400).json({ 
+            message: "Claim value information not found. This might be an older registration that needs to be updated.",
+            deviceAgeMonths: monthsDiff,
+            eligibilityNote: "Please contact support for assistance."
+          });
         }
       } catch (slabError) {
-        console.error('Error fetching claim value slabs:', slabError);
-        // Fallback to hardcoded values if database fails
-        if (monthsDiff >= 6 && monthsDiff <= 12) claimPercentage = 70;
-        else if (monthsDiff >= 13 && monthsDiff <= 18) claimPercentage = 60;
-        else if (monthsDiff >= 19 && monthsDiff <= 24) claimPercentage = 50;
-        else if (monthsDiff >= 25 && monthsDiff <= 30) claimPercentage = 40;
-        else if (monthsDiff >= 31 && monthsDiff <= 36) claimPercentage = 30;
-        else if (monthsDiff >= 37 && monthsDiff <= 48) claimPercentage = 20;
-        else if (monthsDiff >= 49 && monthsDiff <= 60) claimPercentage = 10;
-        
-        console.log('Using fallback hardcoded percentage:', claimPercentage);
+        console.error('Error fetching claim value slab:', slabError);
+        return res.status(500).json({ 
+          message: "Unable to retrieve claim information",
+          error: "Database error while fetching claim slab"
+        });
       }
 
       if (claimPercentage === 0) {

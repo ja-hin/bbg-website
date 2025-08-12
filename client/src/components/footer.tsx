@@ -1,36 +1,40 @@
 import { FaFacebookF, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { Link } from "wouter";
+import { useTheme } from "@/hooks/useTheme";
 
 export default function Footer() {
+  const { theme } = useTheme();
+  
   return (
-    <footer className="bg-[#4A67C1] text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
-          {/* Follow Us Section */}
-          <div className="md:col-span-2">
-            <h3 className="text-xl font-semibold mb-6">FOLLOW US</h3>
-            <div className="flex gap-3 mb-6">
-              <a href="#" className="w-8 h-8 bg-white text-[#4A67C1] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity">
-                <FaFacebookF className="text-sm" />
-              </a>
-              <a href="#" className="w-8 h-8 bg-white text-[#4A67C1] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity">
-                <FaXTwitter className="text-sm" />
-              </a>
-              <a href="#" className="w-8 h-8 bg-white text-[#4A67C1] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity">
-                <FaInstagram className="text-sm" />
-              </a>
-              <a href="#" className="w-8 h-8 bg-white text-[#4A67C1] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity">
-                <FaLinkedin className="text-sm" />
-              </a>
-              <a href="#" className="w-8 h-8 bg-white text-[#4A67C1] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity">
-                <FaYoutube className="text-sm" />
-              </a>
+    <>
+      <footer className="text-white" style={{ backgroundColor: (theme as any)?.primaryColor || '#254696' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+            {/* Follow Us Section */}
+            <div>
+              <h3 className="text-2xl font-semibold mb-8">FOLLOW US</h3>
+              <div className="flex gap-4 mb-8">
+                <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                  <FaFacebookF className="text-lg" />
+                </a>
+                <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                  <FaXTwitter className="text-lg" />
+                </a>
+                <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                  <FaInstagram className="text-lg" />
+                </a>
+                <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                  <FaLinkedin className="text-lg" />
+                </a>
+                <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                  <FaYoutube className="text-lg" />
+                </a>
+              </div>
+              <button className="bg-white px-6 py-3 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                Ask A Question
+              </button>
             </div>
-            <button className="bg-white text-[#4A67C1] px-4 py-2 rounded font-medium hover:opacity-90 transition-opacity">
-              Ask A Question
-            </button>
-          </div>
 
           {/* Services Section */}
           <div>
@@ -83,13 +87,15 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Copyright Section */}
-        <div className="border-t border-white/20 mt-12 pt-2">
-          <div className="bg-white py-3 px-4 text-center">
-            <p className="text-black font-normal text-sm">Copyright © 2025 XtraCover All rights reserved</p>
-          </div>
+        </div>
+      </footer>
+      
+      {/* Copyright Section - Separate from footer */}
+      <div className="bg-white py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-black font-normal text-sm">Copyright © 2025 XtraCover All rights reserved</p>
         </div>
       </div>
-    </footer>
+    </>
   );
 }

@@ -44,21 +44,7 @@ export default function TermsAndConditions() {
           </CardContent>
         </Card>
 
-        {/* Contact Information */}
-        <div className="mt-12 text-center">
-          <Card className="max-w-md mx-auto">
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold mb-2">Questions about our Terms?</h3>
-              <p className="text-gray-600 text-sm mb-4">
-                If you have any questions about these terms and conditions, please contact us.
-              </p>
-              <div className="space-y-2 text-sm">
-                <p><strong>Email:</strong> support@xtracover.com</p>
-                <p><strong>Phone:</strong> +91-XXXXXXXXXX</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+
       </div>
     </div>
   );

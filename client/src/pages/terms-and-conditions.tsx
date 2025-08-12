@@ -1,18 +1,16 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText } from "lucide-react";
 
 export default function TermsAndConditions() {
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <Card className="shadow-lg">
-          <CardHeader className="bg-white border-b">
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <FileText className="h-6 w-6" />
-              XtraCover Buyback Guarantee Terms and Conditions
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-8 prose prose-gray max-w-none">
+    <div className="min-h-screen bg-white">
+      <div className="w-full px-8 py-8">
+        <div className="mb-8">
+          <h1 className="flex items-center gap-2 text-2xl font-bold">
+            <FileText className="h-7 w-7" />
+            XtraCover Buyback Guarantee Terms and Conditions
+          </h1>
+        </div>
+        <div className="prose prose-gray max-w-none">
             <div className="space-y-6">
               <p className="text-base leading-relaxed">
                 The following are the terms and conditions for the XtraCover Buyback Guarantee Assurance (hereinafter referred to as 'Buyback Guarantee').
@@ -253,8 +251,7 @@ export default function TermsAndConditions() {
                 </section>
               </div>
             </div>
-          </CardContent>
-        </Card>
+        </div>
       </div>
     </div>
   );

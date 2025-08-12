@@ -94,25 +94,7 @@ function AdminMastersPage() {
             </CardContent>
           </Card>
 
-          {/* Theme Settings */}
-          <Card className="hover:shadow-lg transition-shadow flex flex-col h-full">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Theme Settings</CardTitle>
-              <Settings className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent className="flex flex-col flex-grow">
-              <div className="text-2xl font-bold mb-2">Themes</div>
-              <p className="text-xs text-muted-foreground mb-4 flex-grow">
-                Configure application theme colors and appearance
-              </p>
-              <Link href="/admin/theme-settings">
-                <Button className="w-full">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Manage Themes
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+
 
           {/* SMTP Settings */}
           <Card className="hover:shadow-lg transition-shadow flex flex-col h-full">

@@ -16,9 +16,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { ExcelUpload } from '@/components/excel-upload';
 
-// Brand constants
-const LAPTOP_BRANDS = ['HP', 'Lenovo', 'Dell', 'Acer', 'Asus'];
-const MOBILE_BRANDS = ['Samsung', 'Apple', 'OnePlus', 'Xiaomi', 'Realme'];
+// Dynamic brand detection will be done from the slabs data
 
 interface ClaimValueSlab {
   id: number;
@@ -154,10 +152,17 @@ export default function AdminClaimValueSlabs() {
     }
   };
 
+  // Get unique brands dynamically from the slabs data
+  const getBrandsForDevice = (deviceType: string): string[] => {
+    const deviceSlabs = slabs.filter(slab => slab.deviceType === deviceType && slab.brand);
+    const uniqueBrands = Array.from(new Set(deviceSlabs.map(slab => slab.brand))).filter((brand): brand is string => Boolean(brand));
+    return uniqueBrands.sort(); // Sort alphabetically
+  };
+
   // Organize slabs for comparative table display
   const organizeSlatData = (deviceType: string) => {
     const deviceSlabs = slabs.filter(slab => slab.deviceType === deviceType);
-    const brands = deviceType === 'laptop' ? LAPTOP_BRANDS : MOBILE_BRANDS;
+    const brands = getBrandsForDevice(deviceType);
     
     // Define age ranges
     const ageRanges = [
@@ -208,6 +213,8 @@ export default function AdminClaimValueSlabs() {
 
   const laptopData = organizeSlatData('laptop');
   const mobileData = organizeSlatData('mobile');
+  const laptopBrands = getBrandsForDevice('laptop');
+  const mobileBrands = getBrandsForDevice('mobile');
 
   return (
     <AdminLayout>
@@ -253,26 +260,47 @@ export default function AdminClaimValueSlabs() {
 
                   <div>
                     <Label htmlFor="brand">Brand</Label>
-                    <Select value={formData.brand} onValueChange={(value) => setFormData({ ...formData, brand: value })}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select brand (optional for generic)" />
-                      </SelectTrigger>
+                    {formData.brand === "__new_brand__" ? (
+                      <div className="space-y-2">
+                        <Input
+                          placeholder="Enter new brand name"
+                          value=""
+                          onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                          autoFocus
+                        />
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setFormData({ ...formData, brand: '' })}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    ) : (
+                      <Select value={formData.brand} onValueChange={(value) => setFormData({ ...formData, brand: value })}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select brand (optional for generic)" />
+                        </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="">Generic (No Brand)</SelectItem>
                         {formData.deviceType === 'laptop' 
-                          ? LAPTOP_BRANDS.map((brand) => (
+                          ? laptopBrands.map((brand) => (
                               <SelectItem key={brand} value={brand}>
                                 {brand}
                               </SelectItem>
                             ))
-                          : MOBILE_BRANDS.map((brand) => (
+                          : mobileBrands.map((brand) => (
                               <SelectItem key={brand} value={brand}>
                                 {brand}
                               </SelectItem>
                             ))
                         }
+                        {/* Option to add new brand */}
+                        <SelectItem value="__new_brand__">+ Add New Brand</SelectItem>
                       </SelectContent>
-                    </Select>
+                      </Select>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -357,7 +385,7 @@ export default function AdminClaimValueSlabs() {
                       <TableHeader>
                         <TableRow>
                           <TableHead className="w-32">Age Range</TableHead>
-                          {LAPTOP_BRANDS.map(brand => (
+                          {laptopBrands.map(brand => (
                             <TableHead key={brand} className="text-center min-w-24">{brand}</TableHead>
                           ))}
                           <TableHead className="text-center min-w-24">Generic</TableHead>
@@ -367,7 +395,7 @@ export default function AdminClaimValueSlabs() {
                         {laptopData.map((ageData) => (
                           <TableRow key={ageData.range}>
                             <TableCell className="font-medium">{ageData.range}</TableCell>
-                            {LAPTOP_BRANDS.map(brand => (
+                            {laptopBrands.map(brand => (
                               <TableCell key={brand} className="text-center">
                                 <div className="flex flex-col items-center space-y-1">
                                   {ageData.brands[brand] ? (
@@ -462,7 +490,7 @@ export default function AdminClaimValueSlabs() {
                       <TableHeader>
                         <TableRow>
                           <TableHead className="w-32">Age Range</TableHead>
-                          {MOBILE_BRANDS.map(brand => (
+                          {mobileBrands.map(brand => (
                             <TableHead key={brand} className="text-center min-w-24">{brand}</TableHead>
                           ))}
                           <TableHead className="text-center min-w-24">Generic</TableHead>
@@ -472,7 +500,7 @@ export default function AdminClaimValueSlabs() {
                         {mobileData.map((ageData) => (
                           <TableRow key={ageData.range}>
                             <TableCell className="font-medium">{ageData.range}</TableCell>
-                            {MOBILE_BRANDS.map(brand => (
+                            {mobileBrands.map(brand => (
                               <TableCell key={brand} className="text-center">
                                 <div className="flex flex-col items-center space-y-1">
                                   {ageData.brands[brand] ? (

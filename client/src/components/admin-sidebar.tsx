@@ -94,9 +94,9 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
     },
     {
       label: "Claim Value Slabs",
-      href: "/admin/claim-slabs",
+      href: "/admin/claim-value-slabs",
       icon: Calculator,
-      active: location === "/admin/claim-slabs"
+      active: location === "/admin/claim-value-slabs"
     },
     {
       label: "Theme Settings",

@@ -82,7 +82,7 @@ export default function Header() {
                   alt="XTRACOVER Logo" 
                   className="h-12 w-auto"
                 />
-                <span className="text-gray-600 text-2xl font-bold">| BBG</span>
+                <span className="text-2xl font-bold" style={{ color: (theme as any)?.primaryColor || '#254696' }}>| BBG</span>
               </div>
             </Link>
 

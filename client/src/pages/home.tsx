@@ -272,36 +272,78 @@ export default function Home() {
                   </h3>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-100">
-                      <tr>
-                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
-                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">All Brands</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {activeMobileSlabs
-                        .filter((slab: any) => !slab.brand) // Only show generic slabs for mobile
-                        .map((slab: any) => {
-                          // Determine color based on percentage
-                          let colorClass = "text-green-600";
-                          if (slab.percentage < 30) colorClass = "text-xtra-primary";
-                          else if (slab.percentage < 50) colorClass = "text-orange-600";
-                          else if (slab.percentage < 70) colorClass = "text-yellow-600";
+                  {(() => {
+                    // Group mobile slabs by age range for brand comparison
+                    const ageRanges: { [key: string]: any } = {};
+                    const mobileBrands = ['Samsung', 'Apple', 'OnePlus', 'Xiaomi', 'Realme'];
+                    
+                    // First, get all unique age ranges
+                    activeMobileSlabs.forEach((slab: any) => {
+                      const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
+                      if (!ageRanges[ageKey]) {
+                        ageRanges[ageKey] = {
+                          minMonths: slab.minMonths,
+                          maxMonths: slab.maxMonths,
+                          brands: {}
+                        };
+                      }
+                      
+                      // Add brand-specific percentage or fallback to generic
+                      if (slab.brand) {
+                        ageRanges[ageKey].brands[slab.brand] = slab.percentage;
+                      } else {
+                        // This is a generic slab - use as fallback for missing brands
+                        mobileBrands.forEach(brand => {
+                          if (!ageRanges[ageKey].brands[brand]) {
+                            ageRanges[ageKey].brands[brand] = slab.percentage;
+                          }
+                        });
+                      }
+                    });
 
-                          return (
-                            <tr key={slab.id} className="hover:bg-gray-50">
+                    // Sort age ranges by minMonths
+                    const sortedAgeRanges = Object.entries(ageRanges).sort(
+                      ([, a], [, b]) => a.minMonths - b.minMonths
+                    );
+
+                    return (
+                      <table className="w-full">
+                        <thead className="bg-gray-100">
+                          <tr>
+                            <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
+                            {mobileBrands.map(brand => (
+                              <th key={brand} className="py-3 px-4 text-center font-semibold text-sm text-gray-700">{brand}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {sortedAgeRanges.map(([ageKey, ageData]) => (
+                            <tr key={ageKey} className="hover:bg-gray-50">
                               <td className="py-3 px-4 text-sm font-medium text-gray-900">
-                                {slab.minMonths}-{slab.maxMonths} months
+                                {ageData.minMonths}-{ageData.maxMonths} months
                               </td>
-                              <td className="py-3 px-4">
-                                <span className={`text-lg font-bold ${colorClass}`}>{slab.percentage}%</span>
-                              </td>
+                              {mobileBrands.map(brand => {
+                                const percentage = ageData.brands[brand];
+                                if (!percentage) return <td key={brand} className="py-3 px-4 text-center text-gray-400">-</td>;
+                                
+                                // Determine color based on percentage
+                                let colorClass = "text-green-600";
+                                if (percentage < 30) colorClass = "text-xtra-primary";
+                                else if (percentage < 50) colorClass = "text-orange-600";
+                                else if (percentage < 70) colorClass = "text-yellow-600";
+                                
+                                return (
+                                  <td key={brand} className="py-3 px-4 text-center">
+                                    <span className={`text-lg font-bold ${colorClass}`}>{percentage}%</span>
+                                  </td>
+                                );
+                              })}
                             </tr>
-                          );
-                        })}
-                    </tbody>
-                  </table>
+                          ))}
+                        </tbody>
+                      </table>
+                    );
+                  })()}
                 </div>
               </div>
 

@@ -80,6 +80,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- **August 12, 2025**: ✅ **Brand-comparison table layout implemented for complete user experience**
+  - UPDATED: Homepage claim value tables redesigned with brand columns instead of rows
+  - CREATED: Mobile devices table with Samsung, Apple, OnePlus, Xiaomi, Realme brand columns
+  - CREATED: Laptop devices table with HP, Lenovo, Dell, Acer, Asus brand columns
+  - ENHANCED: Smart data processing that groups slabs by age ranges for easy brand comparison
+  - IMPLEMENTED: Format shows "Device Age | Brand1% | Brand2% | Brand3%" across columns
+  - IMPROVED: Color-coded percentages and center-aligned brand columns for better readability
+  - COMPLETED: Both mobile and laptop tables now display the requested brand-comparison format
+
 - **August 11, 2025**: ✅ **Brand-specific claim value slabs system completed**
   - IMPLEMENTED: Complete Microsoft SQL Server schema enhancement with brand and device_type columns
   - CREATED: Advanced admin interface with brand-specific configurations for laptops (HP, Dell, Lenovo, Acer, Asus, Macbook, Others)

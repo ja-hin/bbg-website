@@ -133,7 +133,7 @@ export default function Header() {
       {/* Navigation Section - Theme Color Background */}
       <div className="hidden lg:block" style={{ backgroundColor: (theme as any)?.primaryColor || '#254696' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex items-center justify-center space-x-2 py-3">
+          <nav className="flex items-center justify-center py-3" style={{ gap: '23px' }}>
             <NavLinks />
           </nav>
         </div>

@@ -5509,11 +5509,12 @@ Required: GUPSHUP_API_KEY environment variable
       const customersWithSlabId = allCustomersResult.recordset.filter(c => c.claim_value_slab_id);
       console.log('Customers with claim_value_slab_id:', customersWithSlabId.length);
       
-      // For customers without slab IDs, let's try to find and assign the appropriate slab
+      // For ALL customers, validate their slab assignment and fix any incorrect ones
+      let fixedCustomers = 0;
       for (const customer of allCustomersResult.recordset) {
-        if (!customer.claim_value_slab_id && customer.device_type && customer.brand && customer.date_of_purchase) {
+        if (customer.device_type && customer.brand && customer.date_of_purchase) {
           try {
-            // Calculate device age at time of purchase
+            // Calculate device age at registration time (not current time)
             const purchaseDate = new Date(customer.date_of_purchase);
             const currentDate = new Date();
             let monthsDiff = (currentDate.getFullYear() - purchaseDate.getFullYear()) * 12;
@@ -5522,9 +5523,9 @@ Required: GUPSHUP_API_KEY environment variable
               monthsDiff--;
             }
             
-            // Find appropriate slab
-            const slabResult = await db.pool.request().query(`
-              SELECT id, percentage, min_months, max_months 
+            // Find what the correct slab should be for this customer
+            const correctSlabResult = await db.pool.request().query(`
+              SELECT id, percentage, min_months, max_months, device_type, brand
               FROM claim_value_slabs 
               WHERE device_type = '${customer.device_type}' 
                 AND brand = '${customer.brand}' 
@@ -5534,26 +5535,69 @@ Required: GUPSHUP_API_KEY environment variable
               ORDER BY min_months ASC
             `);
             
-            if (slabResult.recordset.length > 0) {
-              const slab = slabResult.recordset[0];
+            if (correctSlabResult.recordset.length > 0) {
+              const correctSlab = correctSlabResult.recordset[0];
               
-              // Update customer with slab data
-              await db.pool.request().query(`
-                UPDATE customers 
-                SET 
-                  claim_value_slab_id = ${slab.id},
-                  registration_slab_percentage = ${slab.percentage},
-                  registration_slab_range = '${slab.min_months}-${slab.max_months} months'
-                WHERE id = ${customer.id}
-              `);
+              // Check if current slab assignment is wrong
+              let needsUpdate = false;
+              let updateReason = '';
               
-              console.log(`Updated customer ${customer.name} (${customer.device_type} ${customer.brand}) with slab ID ${slab.id}, ${slab.percentage}%`);
+              if (!customer.claim_value_slab_id) {
+                needsUpdate = true;
+                updateReason = 'no slab assigned';
+              } else if (customer.claim_value_slab_id !== correctSlab.id) {
+                // Verify the current slab exists and matches device type
+                const currentSlabResult = await db.pool.request().query(`
+                  SELECT device_type, brand FROM claim_value_slabs WHERE id = ${customer.claim_value_slab_id}
+                `);
+                
+                if (currentSlabResult.recordset.length === 0) {
+                  needsUpdate = true;
+                  updateReason = 'assigned slab does not exist';
+                } else {
+                  const currentSlab = currentSlabResult.recordset[0];
+                  if (currentSlab.device_type !== customer.device_type || currentSlab.brand !== customer.brand) {
+                    needsUpdate = true;
+                    updateReason = `wrong device/brand assignment (assigned: ${currentSlab.device_type} ${currentSlab.brand}, should be: ${customer.device_type} ${customer.brand})`;
+                  }
+                }
+              }
+              
+              if (needsUpdate) {
+                // Update customer with correct slab data
+                await db.pool.request().query(`
+                  UPDATE customers 
+                  SET 
+                    claim_value_slab_id = ${correctSlab.id},
+                    registration_slab_percentage = ${correctSlab.percentage},
+                    registration_slab_range = '${correctSlab.min_months}-${correctSlab.max_months} months'
+                  WHERE id = ${customer.id}
+                `);
+                
+                console.log(`🔧 FIXED customer ${customer.name} (${customer.device_type} ${customer.brand}): ${updateReason} → slab ID ${correctSlab.id}, ${correctSlab.percentage}%`);
+                fixedCustomers++;
+              } else if (!customer.registration_slab_percentage) {
+                // Just need to populate the registration values
+                await db.pool.request().query(`
+                  UPDATE customers 
+                  SET 
+                    registration_slab_percentage = ${correctSlab.percentage},
+                    registration_slab_range = '${correctSlab.min_months}-${correctSlab.max_months} months'
+                  WHERE id = ${customer.id}
+                `);
+                
+                console.log(`📝 Updated registration values for ${customer.name}: ${correctSlab.percentage}%`);
+              }
+            } else {
+              console.log(`⚠️ No matching slab found for customer ${customer.name} (${customer.device_type} ${customer.brand}, ${monthsDiff} months old)`);
             }
           } catch (error) {
-            console.log(`Could not update customer ${customer.name}:`, error.message);
+            console.log(`❌ Could not process customer ${customer.name}:`, error.message);
           }
         }
       }
+      
+      console.log(`✅ Fixed ${fixedCustomers} customers with incorrect slab assignments`);
       
       const backfillResult = await db.pool.request().query(`
         UPDATE customers 

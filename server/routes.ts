@@ -5496,6 +5496,24 @@ Required: GUPSHUP_API_KEY environment variable
       // Backfill existing customers with their slab values
       console.log('📋 Backfilling existing customers with their slab values...');
       
+      // First, let's see what customers we have
+      const customersResult = await db.pool.request().query(`
+        SELECT id, name, voucher_code, claim_value_slab_id, registration_slab_percentage, registration_slab_range
+        FROM customers 
+        WHERE claim_value_slab_id IS NOT NULL
+      `);
+      
+      console.log('Customers with claim_value_slab_id:', customersResult.recordset.length);
+      customersResult.recordset.forEach(customer => {
+        console.log({
+          id: customer.id,
+          name: customer.name,
+          claimValueSlabId: customer.claim_value_slab_id,
+          registrationSlabPercentage: customer.registration_slab_percentage,
+          registrationSlabRange: customer.registration_slab_range
+        });
+      });
+      
       const backfillResult = await db.pool.request().query(`
         UPDATE customers 
         SET 

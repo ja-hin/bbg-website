@@ -32,7 +32,7 @@ import AdminAcerRegistrations from "@/pages/admin-acer-registrations";
 import AdminAcerImei from "@/pages/admin-acer-imei";
 import AdminClaimSlabs from "@/pages/admin-claim-slabs";
 import AdminClaimValueSlabs from "@/pages/admin-claim-value-slabs";
-import AdminThemeSettings from "@/pages/admin-theme-settings";
+
 import AdminSmtpSettings from "@/pages/admin-smtp-settings";
 import AdminWhatsAppSettings from "@/pages/admin-whatsapp-settings";
 import AdminAdminUsers from "@/pages/admin-admin-users";
@@ -90,7 +90,7 @@ function Router() {
       </Route>
       <Route path="/admin/claim-slabs" component={AdminClaimSlabs} />
       <Route path="/admin/claim-value-slabs" component={AdminClaimValueSlabs} />
-      <Route path="/admin/theme-settings" component={AdminThemeSettings} />
+
       <Route path="/admin/smtp-settings" component={AdminSmtpSettings} />
       <Route path="/admin/whatsapp-settings" component={AdminWhatsAppSettings} />
       <Route path="/admin/admin-users" component={AdminAdminUsers} />

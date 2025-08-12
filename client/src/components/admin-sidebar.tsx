@@ -98,12 +98,7 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       icon: Calculator,
       active: location === "/admin/claim-value-slabs"
     },
-    {
-      label: "Theme Settings",
-      href: "/admin/theme-settings",
-      icon: Settings,
-      active: location === "/admin/theme-settings"
-    },
+
     {
       label: "SMTP Settings",
       href: "/admin/smtp-settings",

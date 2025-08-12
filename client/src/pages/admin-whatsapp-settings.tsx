@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { AdminSidebar } from "@/components/admin-sidebar";
 import { 
   MessageSquare, 
   Send, 
@@ -114,8 +115,9 @@ export default function AdminWhatsAppSettings() {
       return;
     }
 
+    const configData = config as WhatsAppConfig;
     const encodedMessage = encodeURIComponent(testMessage);
-    const url = `${config.baseUrl}?userid=${config.userId}&password=${config.password}&send_to=${testPhone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=${encodedMessage}&isTemplate=true`;
+    const url = `${configData.baseUrl}?userid=${configData.userId}&password=${configData.password}&send_to=${testPhone}&v=1.1&format=json&msg_type=TEXT&method=SENDMESSAGE&msg=${encodedMessage}&isTemplate=true`;
     setGeneratedUrl(url);
   };
 
@@ -143,12 +145,17 @@ export default function AdminWhatsAppSettings() {
 
   if (configLoading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
-          <div className="space-y-4">
-            <div className="h-32 bg-gray-200 rounded"></div>
-            <div className="h-32 bg-gray-200 rounded"></div>
+      <div className="flex min-h-screen bg-gray-100">
+        <AdminSidebar />
+        <div className="flex-1">
+          <div className="container mx-auto p-6">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+              <div className="space-y-4">
+                <div className="h-32 bg-gray-200 rounded"></div>
+                <div className="h-32 bg-gray-200 rounded"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -156,7 +163,10 @@ export default function AdminWhatsAppSettings() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="flex min-h-screen bg-gray-100">
+      <AdminSidebar />
+      <div className="flex-1">
+        <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">WhatsApp Configuration</h1>
@@ -164,8 +174,8 @@ export default function AdminWhatsAppSettings() {
             Configure WhatsApp API settings and test message delivery for XtraCover
           </p>
         </div>
-        <Badge variant={config?.isEnabled ? "default" : "secondary"}>
-          {config?.isEnabled ? "Enabled" : "Disabled"}
+        <Badge variant={(config as WhatsAppConfig)?.isEnabled ? "default" : "secondary"}>
+          {(config as WhatsAppConfig)?.isEnabled ? "Enabled" : "Disabled"}
         </Badge>
       </div>
 
@@ -205,7 +215,7 @@ export default function AdminWhatsAppSettings() {
                       id="userId"
                       name="userId"
                       placeholder="2000203988"
-                      defaultValue={config?.userId || ""}
+                      defaultValue={(config as WhatsAppConfig)?.userId || ""}
                       required
                     />
                   </div>
@@ -216,7 +226,7 @@ export default function AdminWhatsAppSettings() {
                       name="password"
                       type="password"
                       placeholder="API Password"
-                      defaultValue={config?.password || ""}
+                      defaultValue={(config as WhatsAppConfig)?.password || ""}
                       required
                     />
                   </div>
@@ -228,7 +238,7 @@ export default function AdminWhatsAppSettings() {
                     id="baseUrl"
                     name="baseUrl"
                     placeholder="https://mediaapi.smsgupshup.com/GatewayAPI/rest"
-                    defaultValue={config?.baseUrl || "https://mediaapi.smsgupshup.com/GatewayAPI/rest"}
+                    defaultValue={(config as WhatsAppConfig)?.baseUrl || "https://mediaapi.smsgupshup.com/GatewayAPI/rest"}
                     required
                   />
                 </div>
@@ -237,7 +247,7 @@ export default function AdminWhatsAppSettings() {
                   <Switch
                     id="isEnabled"
                     name="isEnabled"
-                    defaultChecked={config?.isEnabled || false}
+                    defaultChecked={(config as WhatsAppConfig)?.isEnabled || false}
                   />
                   <Label htmlFor="isEnabled">Enable WhatsApp API</Label>
                 </div>
@@ -415,6 +425,8 @@ Team XtraCover"
           </Card>
         </TabsContent>
       </Tabs>
+        </div>
+      </div>
     </div>
   );
 }

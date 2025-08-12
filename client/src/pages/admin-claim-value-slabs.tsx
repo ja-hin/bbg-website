@@ -448,7 +448,13 @@ export default function AdminClaimValueSlabsPage() {
                                 <div className="flex flex-col space-y-1">
                                   {laptopBrands.map(brand => {
                                     const brandData = ageData.brands[brand];
-                                    if (!brandData?.slab?.brand) return null; // Only show edit buttons for brand-specific slabs
+                                    if (!brandData?.slab) return null; // Show edit buttons for any slab (brand-specific or generic)
+                                    
+                                    // Only show button if this is specifically a brand slab (not generic fallback)
+                                    const isBrandSpecific = brandData.slab.brand === brand;
+                                    if (!isBrandSpecific && ageData.genericSlab && brandData.slab.id === ageData.genericSlab.id) {
+                                      return null; // Don't show duplicate generic slab buttons
+                                    }
                                     
                                     return (
                                       <div key={brand} className="flex items-center space-x-1">
@@ -473,6 +479,30 @@ export default function AdminClaimValueSlabsPage() {
                                       </div>
                                     );
                                   })}
+                                  
+                                  {/* Show generic slab edit button if exists and no brand-specific overrides */}
+                                  {ageData.genericSlab && (
+                                    <div className="flex items-center space-x-1">
+                                      <span className="text-xs text-gray-500 w-12">All:</span>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="h-6 px-2 text-xs"
+                                        onClick={() => startEdit(ageData.genericSlab)}
+                                      >
+                                        <Edit className="h-3 w-3 mr-1" />
+                                        Edit Generic
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="destructive"
+                                        className="h-6 px-2 text-xs"
+                                        onClick={() => deleteMutation.mutate(ageData.genericSlab.id)}
+                                      >
+                                        <Trash2 className="h-3 w-3" />
+                                      </Button>
+                                    </div>
+                                  )}
                                 </div>
                               </TableCell>
                             </TableRow>
@@ -512,7 +542,7 @@ export default function AdminClaimValueSlabsPage() {
                         minMonths: slab.minMonths,
                         maxMonths: slab.maxMonths,
                         brands: {},
-                        actions: slab // Store one slab for editing generic values
+                        genericSlab: null // Store generic slab for editing
                       };
                     }
                     
@@ -520,7 +550,8 @@ export default function AdminClaimValueSlabsPage() {
                     if (slab.brand) {
                       ageRanges[ageKey].brands[slab.brand] = { percentage: slab.percentage, slab };
                     } else {
-                      // This is a generic slab - use as fallback for missing brands
+                      // This is a generic slab - store it and use as fallback for missing brands
+                      ageRanges[ageKey].genericSlab = slab;
                       mobileBrands.forEach(brand => {
                         if (!ageRanges[ageKey].brands[brand]) {
                           ageRanges[ageKey].brands[brand] = { percentage: slab.percentage, slab };
@@ -571,7 +602,13 @@ export default function AdminClaimValueSlabsPage() {
                                 <div className="flex flex-col space-y-1">
                                   {mobileBrands.map(brand => {
                                     const brandData = ageData.brands[brand];
-                                    if (!brandData?.slab?.brand) return null; // Only show edit buttons for brand-specific slabs
+                                    if (!brandData?.slab) return null; // Show edit buttons for any slab (brand-specific or generic)
+                                    
+                                    // Only show button if this is specifically a brand slab (not generic fallback)
+                                    const isBrandSpecific = brandData.slab.brand === brand;
+                                    if (!isBrandSpecific && ageData.genericSlab && brandData.slab.id === ageData.genericSlab.id) {
+                                      return null; // Don't show duplicate generic slab buttons
+                                    }
                                     
                                     return (
                                       <div key={brand} className="flex items-center space-x-1">
@@ -596,6 +633,30 @@ export default function AdminClaimValueSlabsPage() {
                                       </div>
                                     );
                                   })}
+                                  
+                                  {/* Show generic slab edit button if exists and no brand-specific overrides */}
+                                  {ageData.genericSlab && (
+                                    <div className="flex items-center space-x-1">
+                                      <span className="text-xs text-gray-500 w-16">All:</span>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="h-6 px-2 text-xs"
+                                        onClick={() => startEdit(ageData.genericSlab)}
+                                      >
+                                        <Edit className="h-3 w-3 mr-1" />
+                                        Edit Generic
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="destructive"
+                                        className="h-6 px-2 text-xs"
+                                        onClick={() => deleteMutation.mutate(ageData.genericSlab.id)}
+                                      >
+                                        <Trash2 className="h-3 w-3" />
+                                      </Button>
+                                    </div>
+                                  )}
                                 </div>
                               </TableCell>
                             </TableRow>

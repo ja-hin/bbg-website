@@ -63,7 +63,10 @@ export const customers = pgTable("customers", {
   voucherCode: text("voucher_code").notNull().unique(),
   isVerified: boolean("is_verified").default(false),
   registrationSource: text("registration_source").default("regular"), // 'regular' or 'acer'
-  claimValueSlabId: integer("claim_value_slab_id"), // Reference to active slab when registered
+  claimValueSlabId: integer("claim_value_slab_id"), // Reference to active slab when registered (legacy)
+  // Store actual slab values at registration time (preserves rates even if master slabs change)
+  registrationSlabPercentage: integer("registration_slab_percentage"), // Percentage at time of registration
+  registrationSlabRange: text("registration_slab_range"), // Range description (e.g., "6-12 months")
   createdAt: timestamp("created_at").defaultNow(),
 });
 

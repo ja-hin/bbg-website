@@ -663,10 +663,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Create customer registration with PayU transaction ID
         // Clean up file data for SQL insertion - PayU payments don't include files
         const {invoiceFile, ...cleanCustomerData} = customerData;
+        
+        // Get active claim value slab at time of registration
+        let activeClaimValueSlab = null;
+        try {
+          const purchaseDate = new Date(cleanCustomerData.dateOfPurchase + 'T00:00:00.000Z');
+          const currentDate = new Date();
+          const monthsDiff = (currentDate.getFullYear() - purchaseDate.getFullYear()) * 12 + (currentDate.getMonth() - purchaseDate.getMonth());
+          
+          console.log('PayU Registration: Date calculation:', {
+            currentDate: currentDate.toISOString(),
+            purchaseDate: purchaseDate.toISOString(),
+            monthsDiff
+          });
+
+          const activeSlabs = await storage.getActiveClaimValueSlabs();
+          
+          // Find brand-specific slab first
+          activeClaimValueSlab = activeSlabs.find(slab => 
+            slab.deviceType === cleanCustomerData.deviceType &&
+            slab.brand === cleanCustomerData.brand &&
+            monthsDiff >= slab.minMonths && 
+            monthsDiff <= slab.maxMonths
+          );
+          
+          // If no brand-specific slab, try generic slab
+          if (!activeClaimValueSlab) {
+            activeClaimValueSlab = activeSlabs.find(slab => 
+              slab.deviceType === cleanCustomerData.deviceType &&
+              !slab.brand &&
+              monthsDiff >= slab.minMonths && 
+              monthsDiff <= slab.maxMonths
+            );
+          }
+          
+          console.log('PayU Registration: Selected claim value slab:', activeClaimValueSlab);
+        } catch (error) {
+          console.log('Warning: Could not fetch active claim value slab for PayU:', error);
+          activeClaimValueSlab = null;
+        }
+        
         const submitData = {
           ...cleanCustomerData,
           paymentIntentId: `payu_${txnid}`,
-          isVerified: true
+          isVerified: true,
+          claimValueSlabId: activeClaimValueSlab?.id || null,
+          // Store actual slab values at registration time (preserves rates if master slab changes later)
+          registrationSlabPercentage: activeClaimValueSlab?.percentage || null,
+          registrationSlabRange: activeClaimValueSlab ? `${activeClaimValueSlab.minMonths}-${activeClaimValueSlab.maxMonths} months` : null
           // Remove invoiceFile completely for PayU payments
         };
 
@@ -832,7 +876,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const validatedData = insertCustomerSchema.parse({
         ...customerData,
-        claimValueSlabId: activeClaimValueSlab?.id || null
+        claimValueSlabId: activeClaimValueSlab?.id || null,
+        // Store actual slab values at registration time (preserves rates if master slab changes later)
+        registrationSlabPercentage: activeClaimValueSlab?.percentage || null,
+        registrationSlabRange: activeClaimValueSlab ? `${activeClaimValueSlab.minMonths}-${activeClaimValueSlab.maxMonths} months` : null
       });
       const customer = await storage.createCustomer(validatedData);
       console.log("Customer created with voucher code:", customer.voucherCode, "and claim slab ID:", activeClaimValueSlab?.id);
@@ -935,14 +982,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let applicableSlab = null;
       
       try {
-        if (customer.claimValueSlabId) {
+        // First try to use the stored slab values from registration time (new approach)
+        if (customer.registrationSlabPercentage && customer.registrationSlabRange) {
+          claimPercentage = customer.registrationSlabPercentage;
+          applicableSlab = {
+            percentage: customer.registrationSlabPercentage,
+            range: customer.registrationSlabRange
+          };
+          
+          console.log('Using stored claim slab (from time of purchase):', {
+            id: customer.claimValueSlabId || 'N/A',
+            deviceType: customer.deviceType,
+            brand: customer.brand,
+            range: customer.registrationSlabRange,
+            percentage: customer.registrationSlabPercentage
+          });
+        }
+        // Fallback to legacy approach for older customers who don't have stored slab values
+        else if (customer.claimValueSlabId) {
           // Use the slab that was active when customer registered
           applicableSlab = await storage.getClaimValueSlabById(customer.claimValueSlabId);
           if (applicableSlab) {
             // Check if current device age falls within the slab's range
             if (monthsDiff >= applicableSlab.minMonths && monthsDiff <= applicableSlab.maxMonths) {
               claimPercentage = applicableSlab.percentage;
-              console.log('Using stored claim slab (from time of purchase):', {
+              console.log('Using legacy claim slab lookup (from time of purchase):', {
                 id: applicableSlab.id,
                 deviceType: applicableSlab.deviceType,
                 brand: applicableSlab.brand || 'Generic',
@@ -960,7 +1024,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             console.log('Claim value slab not found by ID:', customer.claimValueSlabId);
           }
         } else {
-          console.log('No claim value slab ID stored for customer:', customer.id);
+          console.log('No claim value slab data stored for customer:', customer.id);
         }
       } catch (slabError) {
         console.error('Error fetching claim value slabs:', slabError);
@@ -1057,14 +1121,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let applicableSlab = null;
       
       try {
-        if (customer.claimValueSlabId) {
+        // First try to use the stored slab values from registration time (new approach)
+        if (customer.registrationSlabPercentage && customer.registrationSlabRange) {
+          claimPercentage = customer.registrationSlabPercentage;
+          applicableSlab = {
+            percentage: customer.registrationSlabPercentage,
+            range: customer.registrationSlabRange
+          };
+          
+          console.log('Using stored claim slab for submission (from time of purchase):', {
+            deviceType: customer.deviceType,
+            brand: customer.brand,
+            range: customer.registrationSlabRange,
+            percentage: customer.registrationSlabPercentage
+          });
+        }
+        // Fallback to legacy approach for older customers who don't have stored slab values
+        else if (customer.claimValueSlabId) {
           // Use the slab that was active when customer registered
           applicableSlab = await storage.getClaimValueSlabById(customer.claimValueSlabId);
           if (applicableSlab) {
             // Check if current device age falls within the slab's range
             if (monthsDiff >= applicableSlab.minMonths && monthsDiff <= applicableSlab.maxMonths) {
               claimPercentage = applicableSlab.percentage;
-              console.log('Using registered claim slab (time of purchase):', applicableSlab);
+              console.log('Using legacy claim slab lookup for submission (time of purchase):', applicableSlab);
             } else {
               console.log('Device age no longer within original slab range:', {
                 currentAge: monthsDiff,
@@ -1074,7 +1154,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
           }
         } else {
-          console.log('No claim value slab ID stored for customer:', customer.id);
+          console.log('No claim value slab data stored for customer:', customer.id);
           return res.status(400).json({ 
             message: "Claim value information not found. This might be an older registration that needs to be updated.",
             deviceAgeMonths: monthsDiff,
@@ -4214,7 +4294,10 @@ Required: GUPSHUP_API_KEY environment variable
         isVerified: true, // Auto-verify Acer registrations
         invoiceFile: invoiceFilePath,
         registrationSource: 'acer', // Track registration source
-        claimValueSlabId: activeClaimValueSlab?.id || null // Track which slab was active during registration
+        claimValueSlabId: activeClaimValueSlab?.id || null, // Track which slab was active during registration
+        // Store actual slab values at registration time (preserves rates if master slab changes later)
+        registrationSlabPercentage: activeClaimValueSlab?.percentage || null,
+        registrationSlabRange: activeClaimValueSlab ? `${activeClaimValueSlab.minMonths}-${activeClaimValueSlab.maxMonths} months` : null
       };
 
       // Use existing storage system to create customer with unified voucher code
@@ -5370,6 +5453,74 @@ Required: GUPSHUP_API_KEY environment variable
     } catch (error: any) {
       console.error('Error calculating claim percentage:', error);
       res.status(500).json({ message: "Failed to calculate claim percentage", error: error.message });
+    }
+  });
+
+  // Add registration slab columns to customers table
+  app.post("/api/admin/add-registration-slab-columns", isAdminAuthenticated, async (req, res) => {
+    try {
+      await db.connectDB();
+      
+      // Check and add registration_slab_percentage column
+      const checkPercentageResult = await db.pool.request().query(`
+        SELECT COLUMN_NAME 
+        FROM INFORMATION_SCHEMA.COLUMNS 
+        WHERE TABLE_NAME = 'customers' AND COLUMN_NAME = 'registration_slab_percentage'
+      `);
+      
+      if (checkPercentageResult.recordset.length === 0) {
+        await db.pool.request().query(`
+          ALTER TABLE customers ADD registration_slab_percentage INT NULL
+        `);
+        console.log('✅ Added registration_slab_percentage column');
+      } else {
+        console.log('ℹ️ registration_slab_percentage column already exists');
+      }
+      
+      // Check and add registration_slab_range column
+      const checkRangeResult = await db.pool.request().query(`
+        SELECT COLUMN_SCHEMA 
+        FROM INFORMATION_SCHEMA.COLUMNS 
+        WHERE TABLE_NAME = 'customers' AND COLUMN_NAME = 'registration_slab_range'
+      `);
+      
+      if (checkRangeResult.recordset.length === 0) {
+        await db.pool.request().query(`
+          ALTER TABLE customers ADD registration_slab_range NVARCHAR(50) NULL
+        `);
+        console.log('✅ Added registration_slab_range column');
+      } else {
+        console.log('ℹ️ registration_slab_range column already exists');
+      }
+
+      // Backfill existing customers with their slab values
+      console.log('📋 Backfilling existing customers with their slab values...');
+      
+      const backfillResult = await db.pool.request().query(`
+        UPDATE customers 
+        SET 
+          registration_slab_percentage = claim_value_slabs.percentage,
+          registration_slab_range = CONCAT(claim_value_slabs.min_months, '-', claim_value_slabs.max_months, ' months')
+        FROM customers 
+        INNER JOIN claim_value_slabs ON customers.claim_value_slab_id = claim_value_slabs.id
+        WHERE customers.claim_value_slab_id IS NOT NULL 
+          AND (customers.registration_slab_percentage IS NULL OR customers.registration_slab_range IS NULL)
+      `);
+
+      console.log(`✅ Backfilled ${backfillResult.rowsAffected[0]} customers with slab values`);
+
+      res.json({
+        success: true,
+        message: "Registration slab columns added and backfilled successfully",
+        backfilledCustomers: backfillResult.rowsAffected[0]
+      });
+    } catch (error: any) {
+      console.error('Error adding registration slab columns:', error);
+      res.status(500).json({ 
+        success: false,
+        message: "Failed to add registration slab columns", 
+        error: error.message 
+      });
     }
   });
 

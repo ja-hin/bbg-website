@@ -63,6 +63,26 @@ export default function AdminClaimValueSlabs() {
     queryFn: () => apiRequest('/api/brands'),
   });
 
+  // Add registration slab columns mutation
+  const addRegistrationSlabColumnsMutation = useMutation({
+    mutationFn: () => apiRequest('/api/admin/add-registration-slab-columns', {
+      method: 'POST',
+    }),
+    onSuccess: (data) => {
+      toast({ 
+        title: "Success", 
+        description: `Registration slab columns added and ${data.backfilledCustomers} customers backfilled`
+      });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to add registration slab columns",
+        variant: "destructive" 
+      });
+    },
+  });
+
   // Create brand mutation
   const createBrandMutation = useMutation({
     mutationFn: (data: { name: string; deviceType: string }) => apiRequest('/api/admin/brands', {
@@ -326,6 +346,24 @@ export default function AdminClaimValueSlabs() {
             </p>
           </div>
           <div className="flex space-x-2">
+            <Button
+              onClick={() => addRegistrationSlabColumnsMutation.mutate()}
+              disabled={addRegistrationSlabColumnsMutation.isPending}
+              variant="outline"
+              className="text-orange-600 border-orange-600 hover:bg-orange-50"
+            >
+              {addRegistrationSlabColumnsMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Updating Schema...
+                </>
+              ) : (
+                <>
+                  🔧 Add Slab Columns
+                </>
+              )}
+            </Button>
+            
             <ExcelUpload onUploadComplete={() => {
               queryClient.invalidateQueries({ queryKey: ['/api/admin/claim-value-slabs'] });
             }} />

@@ -15,19 +15,19 @@ export default function Footer() {
             <div>
               <h3 className="text-2xl font-semibold mb-8">FOLLOW US</h3>
               <div className="flex gap-4 mb-8">
-                <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                <a href="#" className="w-12 h-12 min-w-[3rem] bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
                   <FaFacebookF className="text-lg" />
                 </a>
-                <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                <a href="#" className="w-12 h-12 min-w-[3rem] bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
                   <FaXTwitter className="text-lg" />
                 </a>
-                <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                <a href="#" className="w-12 h-12 min-w-[3rem] bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
                   <FaInstagram className="text-lg" />
                 </a>
-                <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                <a href="#" className="w-12 h-12 min-w-[3rem] bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
                   <FaLinkedin className="text-lg" />
                 </a>
-                <a href="#" className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                <a href="#" className="w-12 h-12 min-w-[3rem] bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
                   <FaYoutube className="text-lg" />
                 </a>
               </div>

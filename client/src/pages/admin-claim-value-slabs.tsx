@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Edit, Trash2, Save, X } from "lucide-react";
+import { Plus, Edit, Trash2, Save, X, Calculator, Smartphone, Laptop, Loader2 } from "lucide-react";
 import { AdminLayout } from "@/components/admin-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -163,7 +163,7 @@ export default function AdminClaimValueSlabsPage() {
     e.preventDefault();
     const submitData = {
       ...formData,
-      brand: formData.deviceType === "laptop" ? formData.brand : null,
+      brand: formData.deviceType === "laptop" ? formData.brand || undefined : undefined,
     };
     
     if (editingId) {
@@ -207,7 +207,7 @@ export default function AdminClaimValueSlabsPage() {
     ];
 
     return ageRanges.map((range) => {
-      const rowData = { ageRange: range.label };
+      const rowData: { [key: string]: string } = { ageRange: range.label };
       LAPTOP_BRANDS.forEach((brand) => {
         const slab = laptopSlabs.find(
           (s) => s.brand === brand && s.minMonths === range.min && s.maxMonths === range.max
@@ -399,57 +399,111 @@ export default function AdminClaimValueSlabsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Laptop Claim Value Slabs</CardTitle>
+                <p className="text-sm text-gray-600">
+                  Brand-comparison view for laptop device claim percentages
+                </p>
               </CardHeader>
               <CardContent>
                 {isLoading ? (
-                  <div>Loading...</div>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Brand</TableHead>
-                        <TableHead>Age Range</TableHead>
-                        <TableHead>Percentage</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {laptopSlabs.map((slab) => (
-                        <TableRow key={slab.id}>
-                          <TableCell>{slab.brand || "Generic"}</TableCell>
-                          <TableCell>
-                            {slab.minMonths}-{slab.maxMonths} months
-                          </TableCell>
-                          <TableCell>{slab.percentage}%</TableCell>
-                          <TableCell>
-                            <Badge variant={slab.isActive ? "default" : "secondary"}>
-                              {slab.isActive ? "Active" : "Inactive"}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex space-x-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => startEdit(slab)}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => deleteMutation.mutate(slab.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  </div>
+                ) : (() => {
+                  // Group laptop slabs by age range for brand comparison
+                  const ageRanges: { [key: string]: any } = {};
+                  const laptopBrands = ['HP', 'Lenovo', 'Dell', 'Acer', 'Asus'];
+                  
+                  // First, get all unique age ranges
+                  laptopSlabs.forEach((slab: any) => {
+                    const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
+                    if (!ageRanges[ageKey]) {
+                      ageRanges[ageKey] = {
+                        minMonths: slab.minMonths,
+                        maxMonths: slab.maxMonths,
+                        brands: {},
+                        genericSlab: null // Store generic slab for editing
+                      };
+                    }
+                    
+                    // Add brand-specific percentage or fallback to generic
+                    if (slab.brand) {
+                      ageRanges[ageKey].brands[slab.brand] = { percentage: slab.percentage, slab };
+                    } else {
+                      // This is a generic slab - store it and use as fallback for missing brands
+                      ageRanges[ageKey].genericSlab = slab;
+                      laptopBrands.forEach(brand => {
+                        if (!ageRanges[ageKey].brands[brand]) {
+                          ageRanges[ageKey].brands[brand] = { percentage: slab.percentage, slab };
+                        }
+                      });
+                    }
+                  });
+
+                  // Sort age ranges by minMonths
+                  const sortedAgeRanges = Object.entries(ageRanges).sort(
+                    ([, a], [, b]) => a.minMonths - b.minMonths
+                  );
+
+                  return (
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Device Age</TableHead>
+                            {laptopBrands.map(brand => (
+                              <TableHead key={brand} className="text-center">{brand}</TableHead>
+                            ))}
+                            <TableHead>Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {sortedAgeRanges.map(([ageKey, ageData]) => (
+                            <TableRow key={ageKey}>
+                              <TableCell className="font-medium">
+                                {ageData.minMonths}-{ageData.maxMonths} months
+                              </TableCell>
+                              {laptopBrands.map(brand => {
+                                const brandData = ageData.brands[brand];
+                                if (!brandData) return <TableCell key={brand} className="text-center text-gray-400">-</TableCell>;
+                                
+                                const isBrandSpecific = brandData.slab?.brand === brand;
+                                
+                                return (
+                                  <TableCell key={brand} className="text-center">
+                                    <Badge variant={isBrandSpecific ? "default" : "secondary"} 
+                                           className={isBrandSpecific ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                                      {brandData.percentage}%
+                                    </Badge>
+                                  </TableCell>
+                                );
+                              })}
+                              <TableCell>
+                                <div className="flex space-x-2">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => startEdit(ageData.genericSlab || Object.values(ageData.brands)[0]?.slab)}
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  {ageData.genericSlab && (
+                                    <Button
+                                      size="sm"
+                                      variant="destructive"
+                                      onClick={() => deleteMutation.mutate(ageData.genericSlab.id)}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  )}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
           </TabsContent>
@@ -458,55 +512,105 @@ export default function AdminClaimValueSlabsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Mobile Claim Value Slabs</CardTitle>
+                <p className="text-sm text-gray-600">
+                  Brand-comparison view for mobile device claim percentages
+                </p>
               </CardHeader>
               <CardContent>
                 {isLoading ? (
-                  <div>Loading...</div>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Age Range</TableHead>
-                        <TableHead>Percentage</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {mobileSlabs.map((slab) => (
-                        <TableRow key={slab.id}>
-                          <TableCell>
-                            {slab.minMonths}-{slab.maxMonths} months
-                          </TableCell>
-                          <TableCell>{slab.percentage}%</TableCell>
-                          <TableCell>
-                            <Badge variant={slab.isActive ? "default" : "secondary"}>
-                              {slab.isActive ? "Active" : "Inactive"}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex space-x-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => startEdit(slab)}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => deleteMutation.mutate(slab.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  </div>
+                ) : (() => {
+                  // Group mobile slabs by age range for brand comparison
+                  const ageRanges: { [key: string]: any } = {};
+                  const mobileBrands = ['Samsung', 'Apple', 'OnePlus', 'Xiaomi', 'Realme'];
+                  
+                  // First, get all unique age ranges
+                  mobileSlabs.forEach((slab: any) => {
+                    const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
+                    if (!ageRanges[ageKey]) {
+                      ageRanges[ageKey] = {
+                        minMonths: slab.minMonths,
+                        maxMonths: slab.maxMonths,
+                        brands: {},
+                        actions: slab // Store one slab for editing generic values
+                      };
+                    }
+                    
+                    // Add brand-specific percentage or fallback to generic
+                    if (slab.brand) {
+                      ageRanges[ageKey].brands[slab.brand] = { percentage: slab.percentage, slab };
+                    } else {
+                      // This is a generic slab - use as fallback for missing brands
+                      mobileBrands.forEach(brand => {
+                        if (!ageRanges[ageKey].brands[brand]) {
+                          ageRanges[ageKey].brands[brand] = { percentage: slab.percentage, slab };
+                        }
+                      });
+                    }
+                  });
+
+                  // Sort age ranges by minMonths
+                  const sortedAgeRanges = Object.entries(ageRanges).sort(
+                    ([, a], [, b]) => a.minMonths - b.minMonths
+                  );
+
+                  return (
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Device Age</TableHead>
+                            {mobileBrands.map(brand => (
+                              <TableHead key={brand} className="text-center">{brand}</TableHead>
+                            ))}
+                            <TableHead>Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {sortedAgeRanges.map(([ageKey, ageData]) => (
+                            <TableRow key={ageKey}>
+                              <TableCell className="font-medium">
+                                {ageData.minMonths}-{ageData.maxMonths} months
+                              </TableCell>
+                              {mobileBrands.map(brand => {
+                                const brandData = ageData.brands[brand];
+                                if (!brandData) return <TableCell key={brand} className="text-center text-gray-400">-</TableCell>;
+                                
+                                return (
+                                  <TableCell key={brand} className="text-center">
+                                    <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                                      {brandData.percentage}%
+                                    </Badge>
+                                  </TableCell>
+                                );
+                              })}
+                              <TableCell>
+                                <div className="flex space-x-2">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => startEdit(ageData.actions)}
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    onClick={() => deleteMutation.mutate(ageData.actions.id)}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
           </TabsContent>

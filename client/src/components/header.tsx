@@ -35,7 +35,7 @@ export default function Header() {
             href={item.href}
             onClick={onItemClick}
             className={`
-              px-4 py-2 text-sm font-medium transition-colors rounded-full
+              px-4 py-2 text-sm font-normal transition-colors rounded-full
               ${mobile 
                 ? 'block text-base text-white hover:bg-white/10' 
                 : isActive 
@@ -80,7 +80,7 @@ export default function Header() {
                 <img 
                   src="https://images.xtracover.com/StaticImages/mobile_img/newui/logo.svg" 
                   alt="XTRACOVER Logo" 
-                  className="h-8 w-auto"
+                  className="h-12 w-auto"
                 />
                 <span className="text-gray-600 text-lg font-medium">| BBG</span>
               </div>
@@ -110,7 +110,7 @@ export default function Header() {
                       <img 
                         src="https://images.xtracover.com/StaticImages/mobile_img/newui/logo.svg" 
                         alt="XTRACOVER Logo" 
-                        className="h-8 w-auto"
+                        className="h-10 w-auto"
                       />
                       <span className="text-white/90 text-lg font-medium">| BBG</span>
                     </div>

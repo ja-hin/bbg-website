@@ -82,7 +82,7 @@ export default function Header() {
                   alt="XTRACOVER Logo" 
                   className="h-12 w-auto"
                 />
-                <span className="text-gray-600 text-xl font-medium">| BBG</span>
+                <span className="text-gray-600 text-2xl font-bold">| BBG</span>
               </div>
             </Link>
 
@@ -112,7 +112,7 @@ export default function Header() {
                         alt="XTRACOVER Logo" 
                         className="h-10 w-auto"
                       />
-                      <span className="text-white/90 text-xl font-medium">| BBG</span>
+                      <span className="text-white/90 text-xl font-bold">| BBG</span>
                     </div>
                     
                     {/* Mobile Navigation */}

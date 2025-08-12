@@ -604,9 +604,20 @@ export default function ClaimBBG() {
                     </tr>
                   </thead>
                   <tbody>
-                    {claimDetails.registrationSlabData.slabs
-                      .sort((a, b) => a.minMonths - b.minMonths)
-                      .map((slab, index) => {
+                    {(() => {
+                      // Remove duplicates by age range, keeping the most recent one
+                      const uniqueSlabs = claimDetails.registrationSlabData.slabs.reduce((acc, slab) => {
+                        const rangeKey = `${slab.minMonths}-${slab.maxMonths}`;
+                        const existing = acc[rangeKey];
+                        if (!existing || new Date(slab.updatedAt) > new Date(existing.updatedAt)) {
+                          acc[rangeKey] = slab;
+                        }
+                        return acc;
+                      }, {} as Record<string, any>);
+                      
+                      return Object.values(uniqueSlabs)
+                        .sort((a, b) => a.minMonths - b.minMonths)
+                        .map((slab, index) => {
                         const isCurrentRange = claimDetails.deviceAge >= slab.minMonths && claimDetails.deviceAge <= slab.maxMonths;
                         const claimAmount = (parseFloat(claimDetails.customer.invoiceValue) * slab.percentage / 100).toFixed(2);
                         
@@ -642,7 +653,8 @@ export default function ClaimBBG() {
                             </td>
                           </tr>
                         );
-                      })}
+                      });
+                    })()}
                   </tbody>
                 </table>
               </div>

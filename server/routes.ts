@@ -4500,12 +4500,36 @@ Required: GUPSHUP_API_KEY environment variable
   // CLAIM VALUE SLABS ENDPOINTS
   // ==============================
 
-  // Get all claim value slabs (for admin) - Using SQL Server connection
+  // Get all claim value slabs (for admin) - Using direct SQL Server connection
   app.get('/api/admin/claim-value-slabs', isAdminAuthenticated, async (req, res) => {
+    const { default: sql } = await import('mssql');
+    
+    // Use the same direct connection as other working endpoints
+    const config = {
+      server: '103.205.66.184',
+      port: 2499,
+      database: 'prexoDB',
+      user: 'qo8yhe',
+      password: 'tFbs89!0Ryyx1^90',
+      options: {
+        encrypt: false,
+        trustServerCertificate: true,
+      },
+      pool: {
+        max: 10,
+        min: 0,
+        idleTimeoutMillis: 30000
+      }
+    };
+
+    let pool: any = null;
+    
     try {
-      console.log('=== Fetching claim value slabs from SQL Server ===');
+      console.log('=== Fetching claim value slabs from SQL Server (Direct Connection) ===');
       
-      await db.connectDB();
+      pool = new sql.ConnectionPool(config);
+      await pool.connect();
+      
       const query = `
         SELECT 
           id, 
@@ -4522,8 +4546,7 @@ Required: GUPSHUP_API_KEY environment variable
         ORDER BY device_type, ISNULL(brand, ''), min_months ASC
       `;
       
-      const request = db.pool.request();
-      const result = await request.query(query);
+      const result = await pool.request().query(query);
       console.log(`Query successful: ${result.recordset.length} records found`);
       
       // Map the data to match expected format
@@ -4562,6 +4585,15 @@ Required: GUPSHUP_API_KEY environment variable
         error: error.message,
         details: "SQL Server database query failed"
       });
+    } finally {
+      if (pool) {
+        try {
+          await pool.close();
+          console.log('Database connection closed');
+        } catch (closeError) {
+          console.error('Error closing database connection:', closeError);
+        }
+      }
     }
   });
 

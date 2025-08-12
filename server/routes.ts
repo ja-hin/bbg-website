@@ -5479,7 +5479,7 @@ Required: GUPSHUP_API_KEY environment variable
       
       // Check and add registration_slab_range column
       const checkRangeResult = await db.pool.request().query(`
-        SELECT COLUMN_SCHEMA 
+        SELECT COLUMN_NAME 
         FROM INFORMATION_SCHEMA.COLUMNS 
         WHERE TABLE_NAME = 'customers' AND COLUMN_NAME = 'registration_slab_range'
       `);

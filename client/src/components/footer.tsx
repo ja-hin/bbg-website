@@ -12,23 +12,23 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
             {/* Follow Us Section */}
-            <div>
+            <div className="overflow-hidden">
               <h3 className="text-2xl font-semibold mb-8">FOLLOW US</h3>
-              <div className="flex flex-wrap gap-3 mb-8">
-                <a href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
-                  <FaFacebookF className="text-base" />
+              <div className="flex gap-2 mb-8 overflow-x-auto">
+                <a href="#" className="w-9 h-9 bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                  <FaFacebookF className="text-sm" />
                 </a>
-                <a href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
-                  <FaXTwitter className="text-base" />
+                <a href="#" className="w-9 h-9 bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                  <FaXTwitter className="text-sm" />
                 </a>
-                <a href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
-                  <FaInstagram className="text-base" />
+                <a href="#" className="w-9 h-9 bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                  <FaInstagram className="text-sm" />
                 </a>
-                <a href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
-                  <FaLinkedin className="text-base" />
+                <a href="#" className="w-9 h-9 bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                  <FaLinkedin className="text-sm" />
                 </a>
-                <a href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
-                  <FaYoutube className="text-base" />
+                <a href="#" className="w-9 h-9 bg-white rounded-full flex items-center justify-center flex-shrink-0 hover:opacity-80 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>
+                  <FaYoutube className="text-sm" />
                 </a>
               </div>
               <button className="bg-white px-6 py-3 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity" style={{ color: (theme as any)?.primaryColor || '#254696' }}>

@@ -592,108 +592,59 @@ export default function ClaimBBG() {
         {/* Customer's Preserved Claim Value Slabs - Only shown after BBG code check */}
         {claimDetails && claimDetails.registrationSlabData && (
           <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">Your Guaranteed Claim Rates</CardTitle>
-              <p className="text-sm text-gray-600 mt-2">
-                These are your guaranteed rates from registration time, preserved regardless of current market changes.
-              </p>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {/* Customer Device Info */}
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                    {claimDetails.registrationSlabData.deviceType === 'mobile' ? '📱' : '💻'} 
-                    {' '}{claimDetails.registrationSlabData.brand} {claimDetails.customer.modelName}
-                  </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                    <div>
-                      <span className="text-gray-600">Registered:</span>
-                      <div className="font-semibold">
-                        {new Date(claimDetails.registrationSlabData.registrationDate).toLocaleDateString()}
-                      </div>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Registration Age:</span>
-                      <div className="font-semibold">{claimDetails.registrationSlabData.registrationAge} months</div>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Current Age:</span>
-                      <div className="font-semibold">{claimDetails.deviceAge} months</div>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Current Rate:</span>
-                      <div className="font-semibold text-green-600">{claimDetails.claimPercentage}%</div>
-                    </div>
-                  </div>
-                </div>
+            <CardContent className="pt-6">
+              <div className="overflow-x-auto border rounded-lg">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr className="border-b">
+                      <th className="text-left py-3 px-4 font-semibold text-gray-900">Age Range</th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-900">Claim Percentage</th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-900">Your Claim Amount</th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-900">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {claimDetails.registrationSlabData.slabs
+                      .sort((a, b) => a.minMonths - b.minMonths)
+                      .map((slab, index) => {
+                        const isCurrentRange = claimDetails.deviceAge >= slab.minMonths && claimDetails.deviceAge <= slab.maxMonths;
+                        const claimAmount = (parseFloat(claimDetails.customer.invoiceValue) * slab.percentage / 100).toFixed(2);
+                        
+                        // Determine color based on percentage
+                        let colorClass = "text-green-600";
+                        if (slab.percentage < 30) colorClass = "text-red-600";
+                        else if (slab.percentage < 50) colorClass = "text-orange-600";
+                        else if (slab.percentage < 70) colorClass = "text-yellow-600";
 
-                {/* Preserved Slab Structure */}
-                <div>
-                  <h4 className="text-lg font-semibold mb-3">Complete Age-Range Structure (Preserved from Registration)</h4>
-                  <div className="overflow-x-auto border rounded-lg">
-                    <table className="w-full">
-                      <thead className="bg-gray-50">
-                        <tr className="border-b">
-                          <th className="text-left py-3 px-4 font-semibold text-gray-900">Age Range</th>
-                          <th className="text-center py-3 px-4 font-semibold text-gray-900">Claim Percentage</th>
-                          <th className="text-center py-3 px-4 font-semibold text-gray-900">Your Claim Amount</th>
-                          <th className="text-center py-3 px-4 font-semibold text-gray-900">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {claimDetails.registrationSlabData.slabs
-                          .sort((a, b) => a.minMonths - b.minMonths)
-                          .map((slab, index) => {
-                            const isCurrentRange = claimDetails.deviceAge >= slab.minMonths && claimDetails.deviceAge <= slab.maxMonths;
-                            const claimAmount = (parseFloat(claimDetails.customer.invoiceValue) * slab.percentage / 100).toFixed(2);
-                            
-                            // Determine color based on percentage
-                            let colorClass = "text-green-600";
-                            if (slab.percentage < 30) colorClass = "text-red-600";
-                            else if (slab.percentage < 50) colorClass = "text-orange-600";
-                            else if (slab.percentage < 70) colorClass = "text-yellow-600";
-
-                            return (
-                              <tr 
-                                key={slab.id} 
-                                className={`${index < claimDetails.registrationSlabData.slabs.length - 1 ? "border-b" : ""} ${isCurrentRange ? "bg-green-50 border-green-200" : ""}`}
-                              >
-                                <td className="py-3 px-4 font-medium">
-                                  {slab.minMonths}-{slab.maxMonths} months
-                                  {isCurrentRange && <span className="ml-2 text-xs bg-green-600 text-white px-2 py-1 rounded">Current</span>}
-                                </td>
-                                <td className="py-3 px-4 text-center">
-                                  <span className={`font-semibold ${colorClass}`}>{slab.percentage}%</span>
-                                </td>
-                                <td className="py-3 px-4 text-center font-semibold">
-                                  ₹{parseFloat(claimAmount).toLocaleString()}
-                                </td>
-                                <td className="py-3 px-4 text-center">
-                                  {isCurrentRange ? (
-                                    <span className="text-green-600 font-semibold">Active</span>
-                                  ) : claimDetails.deviceAge < slab.minMonths ? (
-                                    <span className="text-gray-400">Future</span>
-                                  ) : (
-                                    <span className="text-gray-400">Past</span>
-                                  )}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Guarantee Information */}
-                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                  <h4 className="text-sm font-semibold text-green-800 mb-2">Guarantee Protection</h4>
-                  <p className="text-sm text-green-700">
-                    These rates are permanently preserved from your registration date and will never change, 
-                    even if market rates are updated. This ensures your buyback guarantee remains consistent.
-                  </p>
-                </div>
+                        return (
+                          <tr 
+                            key={slab.id} 
+                            className={`${index < claimDetails.registrationSlabData.slabs.length - 1 ? "border-b" : ""} ${isCurrentRange ? "bg-green-50 border-green-200" : ""}`}
+                          >
+                            <td className="py-3 px-4 font-medium">
+                              {slab.minMonths}-{slab.maxMonths} months
+                              {isCurrentRange && <span className="ml-2 text-xs bg-green-600 text-white px-2 py-1 rounded">Current</span>}
+                            </td>
+                            <td className="py-3 px-4 text-center">
+                              <span className={`font-semibold ${colorClass}`}>{slab.percentage}%</span>
+                            </td>
+                            <td className="py-3 px-4 text-center font-semibold">
+                              ₹{parseFloat(claimAmount).toLocaleString()}
+                            </td>
+                            <td className="py-3 px-4 text-center">
+                              {isCurrentRange ? (
+                                <span className="text-green-600 font-semibold">Active</span>
+                              ) : claimDetails.deviceAge < slab.minMonths ? (
+                                <span className="text-gray-400">Future</span>
+                              ) : (
+                                <span className="text-gray-400">Past</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
               </div>
             </CardContent>
           </Card>

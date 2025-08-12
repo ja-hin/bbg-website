@@ -4560,6 +4560,24 @@ Required: GUPSHUP_API_KEY environment variable
   // Admin can view all Acer registrations through the main customer endpoint
   // Filter by registrationSource: 'acer' to identify Acer-specific registrations
 
+  // Document serving routes
+  app.get('/api/documents/terms-and-conditions.pdf', (req, res) => {
+    try {
+      const filePath = path.join(process.cwd(), 'public', 'documents', 'terms-and-conditions.pdf');
+      
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ message: 'Terms and conditions document not found' });
+      }
+      
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'inline; filename="XtraCover-Terms-and-Conditions.pdf"');
+      res.sendFile(filePath);
+    } catch (error) {
+      console.error('Error serving terms and conditions PDF:', error);
+      res.status(500).json({ message: 'Error serving document' });
+    }
+  });
+
   // Customer Dashboard Routes
   app.get('/api/customer/registrations/:phone', async (req, res) => {
     try {

@@ -38,6 +38,7 @@ import AdminWhatsAppSettings from "@/pages/admin-whatsapp-settings";
 import AdminAdminUsers from "@/pages/admin-admin-users";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
+import TermsAndConditions from "@/pages/terms-and-conditions";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { ScrollToTopButton } from "@/components/scroll-to-top-button";
@@ -115,6 +116,7 @@ function Router() {
               <Route path="/acer-thank-you" component={AcerThankYou} />
               <Route path="/customer/login" component={CustomerLogin} />
               <Route path="/customer-dashboard" component={CustomerDashboard} />
+              <Route path="/terms-and-conditions" component={TermsAndConditions} />
               <Route component={NotFound} />
             </Switch>
           </main>

@@ -168,6 +168,7 @@ export default function AdminClaimValueSlabs() {
       { label: "31-36 Months", min: 31, max: 36 },
       { label: "37-48 Months", min: 37, max: 48 },
       { label: "49-60 Months", min: 49, max: 60 },
+      { label: "60-120 Months", min: 60, max: 120 },
     ];
 
     return ageRanges.map(range => {

@@ -72,14 +72,13 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <div className="flex items-center space-x-2">
-              {/* Logo Icon */}
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                <span className="text-[#254696] font-bold text-sm">X</span>
-              </div>
-              
-              {/* Brand Name */}
-              <span className="text-white font-bold text-xl">XTRACOVER</span>
+            <div className="flex items-center space-x-3">
+              {/* XTRACOVER Logo */}
+              <img 
+                src="https://images.xtracover.com/StaticImages/mobile_img/newui/logo.svg" 
+                alt="XTRACOVER Logo" 
+                className="h-8 w-auto"
+              />
               <span className="text-white/90 text-lg font-medium">| BBG</span>
             </div>
           </Link>
@@ -110,13 +109,12 @@ export default function Header() {
                 <div className="flex flex-col space-y-6 mt-8">
                   {/* Mobile Logo */}
                   <div className="flex items-center space-x-3 pb-4 border-b border-white/20">
-                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                      <span className="text-[#254696] font-bold text-sm">X</span>
-                    </div>
-                    <div>
-                      <div className="text-white font-bold text-lg">XTRACOVER</div>
-                      <div className="text-white/80 text-sm">BBG</div>
-                    </div>
+                    <img 
+                      src="https://images.xtracover.com/StaticImages/mobile_img/newui/logo.svg" 
+                      alt="XTRACOVER Logo" 
+                      className="h-8 w-auto"
+                    />
+                    <span className="text-white/90 text-lg font-medium">| BBG</span>
                   </div>
                   
                   {/* Mobile Navigation */}

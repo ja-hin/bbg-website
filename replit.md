@@ -5,11 +5,12 @@ This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) sys
 
 ## Recent Critical Updates
 **Date: August 12, 2025**
-- **FIXED CRITICAL BUSINESS LOGIC FLAW**: Claims now use purchase-time slab rates instead of current active rates
-- Verified complete Excel workflow functionality (template download, bulk upload, error handling)
-- Updated customer registration to store correct `claimValueSlabId` based on device type, brand, and age at purchase time
-- Modified claim check and submission endpoints to use stored slab rates for consistent pricing
-- Test verification: Customer claims now show correct percentages (e.g., 62% vs previous 0%)
+- **COMPLETE SLAB SYSTEM REDESIGN**: Fixed fundamental flaw in single-value storage approach
+- **NEW**: `registrationSlabData` JSON column stores complete age-range structures from registration time
+- **FIXED**: Apple iPhone customer incorrectly assigned Lenovo laptop slab ID (critical data integrity bug)
+- **ENHANCED**: Claims now use complete slab structure allowing device aging without losing rate table
+- **BUSINESS RULE**: Device aging changes over time - customers need access to full age ranges from registration
+- **MIGRATION**: Comprehensive validation and correction of all customer slab assignments
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.

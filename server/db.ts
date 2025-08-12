@@ -4,7 +4,7 @@ import sql from 'mssql';
 const config: sql.config = {
   server: process.env.SQL_SERVER_HOST || '103.205.66.184',
   port: parseInt(process.env.SQL_SERVER_PORT || '2499'),
-  database: process.env.SQL_SERVER_DATABASE || 'prexoDB',
+  database: process.env.SQL_SERVER_DATABASE || 'bbgdb',
   user: process.env.SQL_SERVER_USER || 'qo8yhe',
   password: process.env.SQL_SERVER_PASSWORD || 'tFbs89!0Ryyx1^90',
   options: {

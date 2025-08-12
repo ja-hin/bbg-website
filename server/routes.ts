@@ -4504,11 +4504,11 @@ Required: GUPSHUP_API_KEY environment variable
   app.get('/api/admin/claim-value-slabs', isAdminAuthenticated, async (req, res) => {
     const { default: sql } = await import('mssql');
     
-    // Use the same direct connection as other working endpoints
+    // Use bbgdb database consistently
     const config = {
       server: '103.205.66.184',
       port: 2499,
-      database: 'prexoDB',
+      database: 'bbgdb',
       user: 'qo8yhe',
       password: 'tFbs89!0Ryyx1^90',
       options: {
@@ -4612,11 +4612,11 @@ Required: GUPSHUP_API_KEY environment variable
   app.get('/api/claim-value-slabs/active/:deviceType', async (req, res) => {
     const { default: sql } = await import('mssql');
     
-    // Direct database connection with credentials
+    // Direct database connection with credentials - using bbgdb
     const config = {
       server: '103.205.66.184',
       port: 2499,
-      database: 'prexoDB',
+      database: 'bbgdb',
       user: 'qo8yhe',
       password: 'tFbs89!0Ryyx1^90',
       options: {

@@ -37,7 +37,7 @@ export default function Header() {
             className={`
               px-4 py-2 text-sm transition-colors rounded-full
               ${mobile 
-                ? 'block text-base text-white hover:bg-white/10 font-normal' 
+                ? 'block text-base text-gray-800 hover:bg-gray-100 font-normal' 
                 : isActive 
                   ? 'text-white bg-transparent font-bold' 
                   : 'bg-white text-black hover:bg-white/90 font-normal'

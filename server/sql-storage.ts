@@ -1840,6 +1840,15 @@ export class SqlServerStorage implements IStorage {
     await request.query(query);
   }
 
+  async toggleAdminUserStatus(id: number, isActive: boolean): Promise<void> {
+    await db.connectDB();
+    const query = `UPDATE admin_users SET is_active = @isActive WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    request.input('isActive', sql.Bit, isActive);
+    await request.query(query);
+  }
+
   // Pending Payment operations
   async createPendingPayment(insertPayment: InsertPendingPayment): Promise<PendingPayment> {
     await db.connectDB();

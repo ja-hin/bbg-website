@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Database, Users, Smartphone, FileText, Settings } from "lucide-react";
+import { Database, Users, Smartphone, FileText, Settings, DollarSign, MessageSquare, Shield } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AdminLayout } from "@/components/admin-layout";
@@ -34,75 +34,123 @@ function AdminMastersPage() {
             </CardContent>
           </Card>
 
-          {/* User Roles Management */}
+          {/* Admin Users Management */}
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">User Roles</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Admin Users</CardTitle>
+              <Shield className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold mb-2">Admin Roles</div>
+              <div className="text-2xl font-bold mb-2">Admin Users</div>
               <p className="text-xs text-muted-foreground mb-4">
-                Configure admin user roles and permissions
+                Manage admin users and their access permissions
               </p>
-              <Button className="w-full" variant="outline" disabled>
-                <Users className="h-4 w-4 mr-2" />
-                Coming Soon
-              </Button>
+              <Link href="/admin/admin-users">
+                <Button className="w-full">
+                  <Shield className="h-4 w-4 mr-2" />
+                  Manage Admin Users
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
-          {/* Device Categories */}
+          {/* Claim Value Slabs */}
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Device Categories</CardTitle>
-              <Smartphone className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Claim Value Slabs</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold mb-2">Categories</div>
+              <div className="text-2xl font-bold mb-2">Value Slabs</div>
               <p className="text-xs text-muted-foreground mb-4">
-                Manage device types and their configurations
+                Configure claim value percentage slabs for different device ages
               </p>
-              <Button className="w-full" variant="outline" disabled>
-                <Smartphone className="h-4 w-4 mr-2" />
-                Coming Soon
-              </Button>
+              <Link href="/admin/claim-value-slabs">
+                <Button className="w-full">
+                  <DollarSign className="h-4 w-4 mr-2" />
+                  Manage Value Slabs
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
-          {/* Claim Templates */}
+          {/* Communication Templates */}
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Claim Templates</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Communication Templates</CardTitle>
+              <MessageSquare className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold mb-2">Templates</div>
               <p className="text-xs text-muted-foreground mb-4">
-                Configure claim processing templates and rules
+                Manage email, SMS and WhatsApp message templates
               </p>
-              <Button className="w-full" variant="outline" disabled>
-                <FileText className="h-4 w-4 mr-2" />
-                Coming Soon
-              </Button>
+              <Link href="/admin/templates">
+                <Button className="w-full">
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Manage Templates
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
-          {/* System Settings */}
+          {/* Theme Settings */}
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">System Settings</CardTitle>
+              <CardTitle className="text-sm font-medium">Theme Settings</CardTitle>
               <Settings className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold mb-2">Settings</div>
+              <div className="text-2xl font-bold mb-2">Themes</div>
               <p className="text-xs text-muted-foreground mb-4">
-                Configure system-wide settings and parameters
+                Configure application theme colors and appearance
               </p>
-              <Button className="w-full" variant="outline" disabled>
-                <Settings className="h-4 w-4 mr-2" />
-                Coming Soon
-              </Button>
+              <Link href="/admin/theme-settings">
+                <Button className="w-full">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Manage Themes
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          {/* SMTP Settings */}
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">SMTP Settings</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold mb-2">Email Config</div>
+              <p className="text-xs text-muted-foreground mb-4">
+                Configure SMTP settings for email communications
+              </p>
+              <Link href="/admin/smtp-settings">
+                <Button className="w-full">
+                  <FileText className="h-4 w-4 mr-2" />
+                  Manage SMTP
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          {/* WhatsApp Settings */}
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">WhatsApp Settings</CardTitle>
+              <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold mb-2">WhatsApp API</div>
+              <p className="text-xs text-muted-foreground mb-4">
+                Configure WhatsApp Business API for messaging
+              </p>
+              <Link href="/admin/whatsapp-settings">
+                <Button className="w-full">
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Manage WhatsApp
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 

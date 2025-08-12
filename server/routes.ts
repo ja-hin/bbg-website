@@ -2366,6 +2366,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/admin/admins/:id/toggle", isAdminAuthenticated, async (req, res) => {
+    try {
+      const adminId = parseInt(req.params.id);
+      const { isActive } = req.body;
+      
+      await storage.toggleAdminUserStatus(adminId, isActive);
+      res.json({ message: "Admin user status updated successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to update admin user status" });
+    }
+  });
+
   // Get all distributors for admin
   app.get("/api/admin/distributors", isAdminAuthenticated, async (req, res) => {
     try {

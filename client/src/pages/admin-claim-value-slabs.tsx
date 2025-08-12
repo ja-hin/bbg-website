@@ -28,12 +28,21 @@ interface ClaimValueSlab {
   isActive: boolean;
 }
 
+interface Brand {
+  id: number;
+  name: string;
+  deviceType: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
 export default function AdminClaimValueSlabs() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [newBrandName, setNewBrandName] = useState('');
   const [formData, setFormData] = useState({
     deviceType: 'laptop',
-    brand: '',
+    brand: '__generic__',
     minMonths: 6,
     maxMonths: 12,
     percentage: 50,
@@ -46,6 +55,31 @@ export default function AdminClaimValueSlabs() {
   const { data: slabs = [], isLoading } = useQuery<ClaimValueSlab[]>({
     queryKey: ['/api/admin/claim-value-slabs'],
     queryFn: () => apiRequest('/api/admin/claim-value-slabs'),
+  });
+
+  // Fetch brands from brand master
+  const { data: allBrands = [] } = useQuery<Brand[]>({
+    queryKey: ['/api/brands'],
+    queryFn: () => apiRequest('/api/brands'),
+  });
+
+  // Create brand mutation
+  const createBrandMutation = useMutation({
+    mutationFn: (data: { name: string; deviceType: string }) => apiRequest('/api/admin/brands', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/brands'] });
+      toast({ title: "Success", description: "Brand created successfully" });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to create brand",
+        variant: "destructive" 
+      });
+    },
   });
 
   // Create slab mutation
@@ -118,6 +152,7 @@ export default function AdminClaimValueSlabs() {
       percentage: 50,
     });
     setEditingId(null);
+    setNewBrandName(''); // Clear new brand name
   };
 
   const startEdit = (slab: ClaimValueSlab) => {
@@ -137,8 +172,59 @@ export default function AdminClaimValueSlabs() {
     resetForm();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form
+    if (!formData.deviceType || formData.minMonths < 0 || formData.maxMonths <= formData.minMonths || formData.percentage <= 0 || formData.percentage > 100) {
+      toast({ 
+        title: "Validation Error", 
+        description: "Please check all fields are valid",
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    // Handle new brand creation
+    if (formData.brand === '__new_brand__') {
+      if (!newBrandName.trim()) {
+        toast({ 
+          title: "Validation Error", 
+          description: "Please enter a brand name",
+          variant: "destructive" 
+        });
+        return;
+      }
+      
+      try {
+        // Create the brand first using brand master API
+        await createBrandMutation.mutateAsync({
+          name: newBrandName.trim(),
+          deviceType: formData.deviceType
+        });
+        
+        // Then create the slab with the new brand
+        const submitData = {
+          deviceType: formData.deviceType,
+          brand: newBrandName.trim(),
+          minMonths: formData.minMonths,
+          maxMonths: formData.maxMonths,
+          percentage: formData.percentage,
+          isActive: true
+        };
+        
+        if (editingId) {
+          updateMutation.mutate({ id: editingId, data: submitData });
+        } else {
+          createMutation.mutate(submitData);
+        }
+        setNewBrandName(''); // Reset new brand name
+      } catch (error) {
+        console.error('Failed to create brand:', error);
+        return;
+      }
+      return;
+    }
     
     const submitData = {
       ...formData,
@@ -157,6 +243,19 @@ export default function AdminClaimValueSlabs() {
     const deviceSlabs = slabs.filter(slab => slab.deviceType === deviceType && slab.brand);
     const uniqueBrands = Array.from(new Set(deviceSlabs.map(slab => slab.brand))).filter((brand): brand is string => Boolean(brand));
     return uniqueBrands.sort(); // Sort alphabetically
+  };
+
+  // Get all brands from brand master
+  const getAllBrands = (): string[] => {
+    return allBrands.map(brand => brand.name).sort();
+  };
+
+  // Get brands for specific device type from brand master
+  const getBrandsForDeviceFromMaster = (deviceType: string): string[] => {
+    return allBrands
+      .filter(brand => brand.deviceType === deviceType || brand.deviceType === 'both')
+      .map(brand => brand.name)
+      .sort();
   };
 
   // Organize slabs for comparative table display
@@ -213,8 +312,8 @@ export default function AdminClaimValueSlabs() {
 
   const laptopData = organizeSlatData('laptop');
   const mobileData = organizeSlatData('mobile');
-  const laptopBrands = getBrandsForDevice('laptop');
-  const mobileBrands = getBrandsForDevice('mobile');
+  const laptopBrands = getBrandsForDeviceFromMaster('laptop');
+  const mobileBrands = getBrandsForDeviceFromMaster('mobile');
 
   return (
     <AdminLayout>
@@ -264,18 +363,35 @@ export default function AdminClaimValueSlabs() {
                       <div className="space-y-2">
                         <Input
                           placeholder="Enter new brand name"
-                          value=""
-                          onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                          value={newBrandName}
+                          onChange={(e) => setNewBrandName(e.target.value)}
                           autoFocus
                         />
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setFormData({ ...formData, brand: '' })}
-                        >
-                          Cancel
-                        </Button>
+                        <div className="flex space-x-2">
+                          <Button 
+                            type="button" 
+                            size="sm"
+                            onClick={() => {
+                              if (newBrandName.trim()) {
+                                setFormData({ ...formData, brand: newBrandName.trim() });
+                                setNewBrandName('');
+                              }
+                            }}
+                          >
+                            Use Brand
+                          </Button>
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              setFormData({ ...formData, brand: '__generic__' });
+                              setNewBrandName('');
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
                       </div>
                     ) : (
                       <Select value={formData.brand} onValueChange={(value) => setFormData({ ...formData, brand: value })}>
@@ -284,18 +400,39 @@ export default function AdminClaimValueSlabs() {
                         </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="__generic__">Generic (No Brand)</SelectItem>
-                        {formData.deviceType === 'laptop' 
-                          ? laptopBrands.map((brand) => (
+                        
+                        {/* Show device-specific brands first */}
+                        {(formData.deviceType === 'laptop' ? laptopBrands : mobileBrands).length > 0 && (
+                          <>
+                            <div className="px-2 py-1.5 text-sm font-medium text-gray-500">
+                              {formData.deviceType === 'laptop' ? 'Laptop' : 'Mobile'} Brands
+                            </div>
+                            {(formData.deviceType === 'laptop' ? laptopBrands : mobileBrands).map((brand) => (
                               <SelectItem key={brand} value={brand}>
                                 {brand}
                               </SelectItem>
-                            ))
-                          : mobileBrands.map((brand) => (
+                            ))}
+                          </>
+                        )}
+                        
+                        {/* Show other brands from different device types */}
+                        {getAllBrands().filter(brand => 
+                          !(formData.deviceType === 'laptop' ? laptopBrands : mobileBrands).includes(brand)
+                        ).length > 0 && (
+                          <>
+                            <div className="px-2 py-1.5 text-sm font-medium text-gray-500">
+                              Other Brands
+                            </div>
+                            {getAllBrands().filter(brand => 
+                              !(formData.deviceType === 'laptop' ? laptopBrands : mobileBrands).includes(brand)
+                            ).map((brand) => (
                               <SelectItem key={brand} value={brand}>
                                 {brand}
                               </SelectItem>
-                            ))
-                        }
+                            ))}
+                          </>
+                        )}
+                        
                         {/* Option to add new brand */}
                         <SelectItem value="__new_brand__">+ Add New Brand</SelectItem>
                       </SelectContent>

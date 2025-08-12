@@ -4446,10 +4446,42 @@ Required: GUPSHUP_API_KEY environment variable
   // CLAIM VALUE SLABS ENDPOINTS
   // ==============================
 
-  // Get all claim value slabs (for admin)
+  // Get all claim value slabs (for admin) - Direct SQL Server query
   app.get('/api/admin/claim-value-slabs', isAdminAuthenticated, async (req, res) => {
     try {
-      const slabs = await storage.getAllClaimValueSlabs();
+      // Direct SQL Server query to ensure we get brand data
+      await db.connectDB();
+      const query = `
+        SELECT 
+          id, 
+          device_type, 
+          brand, 
+          min_months, 
+          max_months, 
+          percentage, 
+          is_active, 
+          created_at, 
+          updated_at
+        FROM claim_value_slabs 
+        ORDER BY device_type, brand, min_months ASC
+      `;
+      
+      const result = await db.pool.request().query(query);
+      
+      // Map the data to match expected format
+      const slabs = result.recordset.map((row: any) => ({
+        id: row.id,
+        deviceType: row.device_type || 'mobile',
+        brand: row.brand || null,
+        minMonths: row.min_months,
+        maxMonths: row.max_months,
+        percentage: row.percentage,
+        isActive: row.is_active,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at || row.created_at
+      }));
+      
+      console.log(`Successfully fetched ${slabs.length} claim value slabs with brand data`);
       res.json(slabs);
     } catch (error: any) {
       console.error('Error fetching claim value slabs:', error);
@@ -4468,7 +4500,7 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
-  // Get active claim value slabs by device type (for tabbed interface)
+  // Get active claim value slabs by device type (for tabbed interface) - Direct SQL query
   app.get('/api/claim-value-slabs/active/:deviceType', async (req, res) => {
     try {
       const { deviceType } = req.params;
@@ -4478,7 +4510,42 @@ Required: GUPSHUP_API_KEY environment variable
         return res.status(400).json({ message: "Invalid device type. Must be 'mobile' or 'laptop'" });
       }
       
-      const slabs = await storage.getActiveClaimValueSlabsByDeviceType(deviceType);
+      // Direct SQL Server query to ensure we get brand data
+      await db.connectDB();
+      const query = `
+        SELECT 
+          id, 
+          device_type, 
+          brand, 
+          min_months, 
+          max_months, 
+          percentage, 
+          is_active, 
+          created_at, 
+          updated_at
+        FROM claim_value_slabs 
+        WHERE device_type = @deviceType AND is_active = 1
+        ORDER BY brand, min_months ASC
+      `;
+      
+      const request = db.pool.request();
+      request.input('deviceType', sql.NVarChar, deviceType);
+      const result = await request.query(query);
+      
+      // Map the data to match expected format
+      const slabs = result.recordset.map((row: any) => ({
+        id: row.id,
+        deviceType: row.device_type || deviceType,
+        brand: row.brand || null,
+        minMonths: row.min_months,
+        maxMonths: row.max_months,
+        percentage: row.percentage,
+        isActive: row.is_active,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at || row.created_at
+      }));
+      
+      console.log(`Successfully fetched ${slabs.length} ${deviceType} claim value slabs with brand data`);
       res.json(slabs);
     } catch (error: any) {
       console.error('Error fetching active claim value slabs by device type:', error);

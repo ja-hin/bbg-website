@@ -34,11 +34,29 @@ interface ClaimDetails {
     invoiceValue: string;
     contact: string;
     serialNumber: string;
+    brand?: string;
   };
   claimPercentage: number;
   claimAmount: string;
   deviceAge: number;
   eligible: boolean;
+  registrationSlabData?: {
+    deviceType: string;
+    brand: string;
+    registrationAge: number;
+    registrationDate: string;
+    slabs: Array<{
+      id: number;
+      deviceType: string;
+      brand: string;
+      minMonths: number;
+      maxMonths: number;
+      percentage: number;
+      isActive: boolean;
+      createdAt: string;
+      updatedAt: string;
+    }>;
+  };
 }
 
 interface ClaimError {
@@ -59,19 +77,7 @@ export default function ClaimBBG() {
   const [otp, setOtp] = useState("");
   const [eligibilityError, setEligibilityError] = useState<ClaimError | null>(null);
 
-  // Fetch dynamic claim value slabs for both mobile and laptop
-  const { data: mobileSlabs, isLoading: isMobileSlabsLoading } = useQuery({
-    queryKey: ['/api/claim-value-slabs/active/mobile'],
-    retry: false,
-  });
-
-  const { data: laptopSlabs, isLoading: isLaptopSlabsLoading } = useQuery({
-    queryKey: ['/api/claim-value-slabs/active/laptop'],
-    retry: false,
-  });
-
-  const mobileSlabsArray = Array.isArray(mobileSlabs) ? mobileSlabs : [];
-  const laptopSlabsArray = Array.isArray(laptopSlabs) ? laptopSlabs : [];
+  // No need to fetch all slabs - we'll use the customer's preserved slab data
 
   const form = useForm<ClaimFormData>({
     resolver: zodResolver(claimSchema),
@@ -583,193 +589,115 @@ export default function ClaimBBG() {
           </CardContent>
         </Card>
 
-        {/* Claim Value Slabs */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Claim Value Slabs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {(isMobileSlabsLoading || isLaptopSlabsLoading) ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="w-6 h-6 animate-spin" />
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {/* Mobile Device Slabs */}
-                {mobileSlabsArray.length > 0 && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-xtra-secondary mb-3 flex items-center">
-                      📱 Mobile Device Claim Values
-                    </h3>
-                    <div className="overflow-x-auto border rounded-lg">
-                      {(() => {
-                        // Group mobile slabs by age range for brand comparison
-                        const ageRanges: { [key: string]: any } = {};
-                        const mobileBrands = ['Samsung', 'Apple', 'OnePlus', 'Xiaomi', 'Realme'];
-                        
-                        // First, get all unique age ranges
-                        mobileSlabsArray
-                          .filter((slab: any) => slab.isActive)
-                          .forEach((slab: any) => {
-                            const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
-                            if (!ageRanges[ageKey]) {
-                              ageRanges[ageKey] = {
-                                minMonths: slab.minMonths,
-                                maxMonths: slab.maxMonths,
-                                brands: {}
-                              };
-                            }
-                            
-                            // Add brand-specific percentage or fallback to generic
-                            if (slab.brand) {
-                              ageRanges[ageKey].brands[slab.brand] = slab.percentage;
-                            } else {
-                              // This is a generic slab - use as fallback for missing brands
-                              mobileBrands.forEach(brand => {
-                                if (!ageRanges[ageKey].brands[brand]) {
-                                  ageRanges[ageKey].brands[brand] = slab.percentage;
-                                }
-                              });
-                            }
-                          });
-
-                        // Sort age ranges by minMonths
-                        const sortedAgeRanges = Object.entries(ageRanges).sort(
-                          ([, a], [, b]) => a.minMonths - b.minMonths
-                        );
-
-                        return (
-                          <table className="w-full">
-                            <thead className="bg-xtra-secondary/5">
-                              <tr className="border-b">
-                                <th className="text-left py-3 px-4 font-semibold text-gray-900">Device Age</th>
-                                {mobileBrands.map(brand => (
-                                  <th key={brand} className="text-center py-3 px-4 font-semibold text-gray-900">{brand}</th>
-                                ))}
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {sortedAgeRanges.map(([ageKey, ageData], index) => (
-                                <tr key={ageKey} className={index < sortedAgeRanges.length - 1 ? "border-b" : ""}>
-                                  <td className="py-3 px-4 font-medium">{ageData.minMonths}-{ageData.maxMonths} months</td>
-                                  {mobileBrands.map(brand => {
-                                    const percentage = ageData.brands[brand];
-                                    if (!percentage) return <td key={brand} className="py-3 px-4 text-center text-gray-400">-</td>;
-                                    
-                                    // Determine color based on percentage
-                                    let colorClass = "text-green-600";
-                                    if (percentage < 30) colorClass = "text-xtra-primary";
-                                    else if (percentage < 50) colorClass = "text-orange-600";
-                                    else if (percentage < 70) colorClass = "text-yellow-600";
-                                    
-                                    return (
-                                      <td key={brand} className="py-3 px-4 text-center">
-                                        <span className={`font-semibold ${colorClass}`}>{percentage}%</span>
-                                      </td>
-                                    );
-                                  })}
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        );
-                      })()}
-                    </div>
-                  </div>
-                )}
-
-                {/* Laptop Device Slabs */}
-                {laptopSlabsArray.length > 0 && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-xtra-primary mb-3 flex items-center">
-                      💻 Laptop Device Claim Values
-                    </h3>
-                    <div className="overflow-x-auto border rounded-lg">
-                      {(() => {
-                        // Group laptop slabs by age range for brand comparison
-                        const ageRanges: { [key: string]: any } = {};
-                        const laptopBrands = ['HP', 'Lenovo', 'Dell', 'Acer', 'Asus'];
-                        
-                        // First, get all unique age ranges
-                        laptopSlabsArray
-                          .filter((slab: any) => slab.isActive)
-                          .forEach((slab: any) => {
-                            const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
-                            if (!ageRanges[ageKey]) {
-                              ageRanges[ageKey] = {
-                                minMonths: slab.minMonths,
-                                maxMonths: slab.maxMonths,
-                                brands: {}
-                              };
-                            }
-                            
-                            // Add brand-specific percentage or fallback to generic
-                            if (slab.brand) {
-                              ageRanges[ageKey].brands[slab.brand] = slab.percentage;
-                            } else {
-                              // This is a generic slab - use as fallback for missing brands
-                              laptopBrands.forEach(brand => {
-                                if (!ageRanges[ageKey].brands[brand]) {
-                                  ageRanges[ageKey].brands[brand] = slab.percentage;
-                                }
-                              });
-                            }
-                          });
-
-                        // Sort age ranges by minMonths
-                        const sortedAgeRanges = Object.entries(ageRanges).sort(
-                          ([, a], [, b]) => a.minMonths - b.minMonths
-                        );
-
-                        return (
-                          <table className="w-full">
-                            <thead className="bg-xtra-primary/5">
-                              <tr className="border-b">
-                                <th className="text-left py-3 px-4 font-semibold text-gray-900">Device Age</th>
-                                {laptopBrands.map(brand => (
-                                  <th key={brand} className="text-center py-3 px-4 font-semibold text-gray-900">{brand}</th>
-                                ))}
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {sortedAgeRanges.map(([ageKey, ageData], index) => (
-                                <tr key={ageKey} className={index < sortedAgeRanges.length - 1 ? "border-b" : ""}>
-                                  <td className="py-3 px-4 font-medium">{ageData.minMonths}-{ageData.maxMonths} months</td>
-                                  {laptopBrands.map(brand => {
-                                    const percentage = ageData.brands[brand];
-                                    if (!percentage) return <td key={brand} className="py-3 px-4 text-center text-gray-400">-</td>;
-                                    
-                                    // Determine color based on percentage
-                                    let colorClass = "text-green-600";
-                                    if (percentage < 30) colorClass = "text-xtra-primary";
-                                    else if (percentage < 50) colorClass = "text-orange-600";
-                                    else if (percentage < 70) colorClass = "text-yellow-600";
-                                    
-                                    return (
-                                      <td key={brand} className="py-3 px-4 text-center">
-                                        <span className={`font-semibold ${colorClass}`}>{percentage}%</span>
-                                      </td>
-                                    );
-                                  })}
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        );
-                      })()}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-600">
-                <strong>Note:</strong> All claim percentages are calculated based on the original invoice value. 
-                Final claim amount is subject to device verification and condition assessment.
+        {/* Customer's Preserved Claim Value Slabs - Only shown after BBG code check */}
+        {claimDetails && claimDetails.registrationSlabData && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl">Your Guaranteed Claim Rates</CardTitle>
+              <p className="text-sm text-gray-600 mt-2">
+                These are your guaranteed rates from registration time, preserved regardless of current market changes.
               </p>
-            </div>
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {/* Customer Device Info */}
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                  <h3 className="text-lg font-semibold text-blue-900 mb-2">
+                    {claimDetails.registrationSlabData.deviceType === 'mobile' ? '📱' : '💻'} 
+                    {' '}{claimDetails.registrationSlabData.brand} {claimDetails.customer.modelName}
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-600">Registered:</span>
+                      <div className="font-semibold">
+                        {new Date(claimDetails.registrationSlabData.registrationDate).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Registration Age:</span>
+                      <div className="font-semibold">{claimDetails.registrationSlabData.registrationAge} months</div>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Current Age:</span>
+                      <div className="font-semibold">{claimDetails.deviceAge} months</div>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Current Rate:</span>
+                      <div className="font-semibold text-green-600">{claimDetails.claimPercentage}%</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Preserved Slab Structure */}
+                <div>
+                  <h4 className="text-lg font-semibold mb-3">Complete Age-Range Structure (Preserved from Registration)</h4>
+                  <div className="overflow-x-auto border rounded-lg">
+                    <table className="w-full">
+                      <thead className="bg-gray-50">
+                        <tr className="border-b">
+                          <th className="text-left py-3 px-4 font-semibold text-gray-900">Age Range</th>
+                          <th className="text-center py-3 px-4 font-semibold text-gray-900">Claim Percentage</th>
+                          <th className="text-center py-3 px-4 font-semibold text-gray-900">Your Claim Amount</th>
+                          <th className="text-center py-3 px-4 font-semibold text-gray-900">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {claimDetails.registrationSlabData.slabs
+                          .sort((a, b) => a.minMonths - b.minMonths)
+                          .map((slab, index) => {
+                            const isCurrentRange = claimDetails.deviceAge >= slab.minMonths && claimDetails.deviceAge <= slab.maxMonths;
+                            const claimAmount = (parseFloat(claimDetails.customer.invoiceValue) * slab.percentage / 100).toFixed(2);
+                            
+                            // Determine color based on percentage
+                            let colorClass = "text-green-600";
+                            if (slab.percentage < 30) colorClass = "text-red-600";
+                            else if (slab.percentage < 50) colorClass = "text-orange-600";
+                            else if (slab.percentage < 70) colorClass = "text-yellow-600";
+
+                            return (
+                              <tr 
+                                key={slab.id} 
+                                className={`${index < claimDetails.registrationSlabData.slabs.length - 1 ? "border-b" : ""} ${isCurrentRange ? "bg-green-50 border-green-200" : ""}`}
+                              >
+                                <td className="py-3 px-4 font-medium">
+                                  {slab.minMonths}-{slab.maxMonths} months
+                                  {isCurrentRange && <span className="ml-2 text-xs bg-green-600 text-white px-2 py-1 rounded">Current</span>}
+                                </td>
+                                <td className="py-3 px-4 text-center">
+                                  <span className={`font-semibold ${colorClass}`}>{slab.percentage}%</span>
+                                </td>
+                                <td className="py-3 px-4 text-center font-semibold">
+                                  ₹{parseFloat(claimAmount).toLocaleString()}
+                                </td>
+                                <td className="py-3 px-4 text-center">
+                                  {isCurrentRange ? (
+                                    <span className="text-green-600 font-semibold">Active</span>
+                                  ) : claimDetails.deviceAge < slab.minMonths ? (
+                                    <span className="text-gray-400">Future</span>
+                                  ) : (
+                                    <span className="text-gray-400">Past</span>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Guarantee Information */}
+                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                  <h4 className="text-sm font-semibold text-green-800 mb-2">Guarantee Protection</h4>
+                  <p className="text-sm text-green-700">
+                    These rates are permanently preserved from your registration date and will never change, 
+                    even if market rates are updated. This ensures your buyback guarantee remains consistent.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Success Confetti */}
         {showConfetti && (

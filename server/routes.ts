@@ -1103,6 +1103,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const claimAmount = (parseFloat(customer.invoiceValue) * claimPercentage) / 100;
 
+      // Prepare registration slab data for frontend display
+      let registrationSlabDataForResponse = null;
+      if (customer.registrationSlabData) {
+        try {
+          const slabData = JSON.parse(customer.registrationSlabData);
+          registrationSlabDataForResponse = {
+            deviceType: slabData.deviceType,
+            brand: slabData.brand,
+            registrationAge: slabData.registrationAge,
+            registrationDate: slabData.registrationDate,
+            slabs: slabData.slabs || []
+          };
+        } catch (parseError) {
+          console.error('Error parsing registrationSlabData for response:', parseError);
+        }
+      }
+
       res.json({
         customer: {
           name: customer.name,
@@ -1110,12 +1127,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           modelName: customer.modelName,
           invoiceValue: customer.invoiceValue,
           contact: customer.contact,
-          serialNumber: customer.serialNumber
+          serialNumber: customer.serialNumber,
+          brand: customer.brand
         },
         claimPercentage,
         claimAmount: claimAmount.toFixed(2),
         deviceAge: monthsDiff,
-        eligible: true
+        eligible: true,
+        registrationSlabData: registrationSlabDataForResponse
       });
     } catch (error: any) {
       res.status(500).json({ message: "Failed to check claim value" });

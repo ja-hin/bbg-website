@@ -77,6 +77,7 @@ export const claimValueSlabs = pgTable("claim_value_slabs", {
   minMonths: integer("min_months").notNull(),
   maxMonths: integer("max_months").notNull(),
   percentage: integer("percentage").notNull(), // Percentage value (0-100)
+  registrationSource: text("registration_source").default("regular"), // 'regular' or 'acer_bbg' to distinguish between standard and Acer BBG slabs
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

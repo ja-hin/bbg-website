@@ -117,6 +117,7 @@ export interface IStorage {
   getAllClaimValueSlabs(): Promise<ClaimValueSlab[]>;
   getActiveClaimValueSlabs(): Promise<ClaimValueSlab[]>;
   getActiveClaimValueSlabsByDeviceType(deviceType: string): Promise<ClaimValueSlab[]>;
+  getActiveClaimValueSlabsByDeviceTypeAndSource(deviceType: string, registrationSource: string): Promise<ClaimValueSlab[]>;
   updateClaimValueSlab(id: number, updates: Partial<InsertClaimValueSlab>): Promise<void>;
   deleteClaimValueSlab(id: number): Promise<void>;
   getClaimValueSlabById(id: number): Promise<ClaimValueSlab | undefined>;
@@ -2509,6 +2510,58 @@ export class SqlServerStorage implements IStorage {
     }
   }
 
+  async getActiveClaimValueSlabsByDeviceTypeAndSource(deviceType: string, registrationSource: string): Promise<ClaimValueSlab[]> {
+    await db.connectDB();
+    
+    try {
+      // First try with registration_source column
+      const query = `
+        SELECT 
+          id, 
+          device_type, 
+          brand, 
+          min_months, 
+          max_months, 
+          percentage, 
+          is_active, 
+          created_at, 
+          updated_at,
+          registration_source
+        FROM claim_value_slabs 
+        WHERE device_type = @deviceType 
+        AND is_active = 1 
+        AND registration_source = @registrationSource
+        ORDER BY brand, min_months ASC
+      `;
+      
+      const request = db.pool.request();
+      request.input('deviceType', sql.NVarChar, deviceType);
+      request.input('registrationSource', sql.NVarChar, registrationSource);
+      
+      const result = await request.query(query);
+      const slabs = result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+      
+      console.log(`✅ Found ${slabs.length} ${registrationSource} ${deviceType} slabs with registration_source filter`);
+      return slabs;
+      
+    } catch (error: any) {
+      console.log(`Registration source query failed for ${deviceType}/${registrationSource}, using fallback:`, error.message);
+      
+      // Fallback to regular device type filtering if registration_source column doesn't exist
+      const fallbackSlabs = await this.getActiveClaimValueSlabsByDeviceType(deviceType);
+      
+      // If asking for 'acer_bbg' but column doesn't exist, return empty array
+      // since there won't be separate Acer BBG slabs without the column
+      if (registrationSource === 'acer_bbg') {
+        console.log(`⚠️  No separate Acer BBG slabs available without registration_source column`);
+        return [];
+      }
+      
+      // For 'regular' source, return all slabs
+      return fallbackSlabs;
+    }
+  }
+
   async getActiveClaimValueSlabsByDeviceBrand(deviceType: string, brand: string | null): Promise<ClaimValueSlab[]> {
     await db.connectDB();
     
@@ -2689,6 +2742,7 @@ export class SqlServerStorage implements IStorage {
       maxMonths: row.max_months,
       percentage: row.percentage,
       isActive: row.is_active,
+      registrationSource: row.registration_source || 'regular', // Add support for registration_source
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };

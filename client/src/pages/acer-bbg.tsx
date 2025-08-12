@@ -521,7 +521,7 @@ export default function AcerBBG() {
             <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center">Your Acer BBG Benefits</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
-                <div className="text-2xl font-bold text-green-600 mb-1">Up to 70%</div>
+                <div className="text-2xl font-bold text-green-600 mb-1">Up to 80%</div>
                 <div className="text-sm text-green-700">Maximum buyback value</div>
               </div>
               <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">

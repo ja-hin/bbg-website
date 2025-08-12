@@ -4324,31 +4324,37 @@ Required: GUPSHUP_API_KEY environment variable
         const purchaseDateObj = new Date(purchaseDate);
         const monthsDiff = Math.floor((Date.now() - purchaseDateObj.getTime()) / (1000 * 60 * 60 * 24 * 30));
         
-        console.log('Finding claim value slab for Acer registration:', {
+        console.log('Finding claim value slab for Acer BBG registration:', {
           deviceType: deviceType.toLowerCase(),
           brand,
           purchaseDate: purchaseDateObj.toISOString(),
-          currentAge: monthsDiff
+          currentAge: monthsDiff,
+          registrationSource: 'acer_bbg'
         });
 
-        const activeSlabs = await storage.getActiveClaimValueSlabs();
+        // 🎯 CRITICAL: Use Acer BBG-specific slabs instead of regular slabs
+        const activeSlabs = await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(deviceType.toLowerCase(), 'acer_bbg');
         
-        // Find brand-specific slab first
+        // 🎯 Find Acer BBG-specific slab based on device age
+        // Note: activeSlabs already contains only Acer BBG slabs from the new query above
         activeClaimValueSlab = activeSlabs.find(slab => 
           slab.deviceType === deviceType.toLowerCase() &&
           slab.brand === brand &&
+          slab.registrationSource === 'acer_bbg' &&
           monthsDiff >= slab.minMonths && 
           monthsDiff <= slab.maxMonths
         );
         
-        // If no brand-specific slab, try generic slab
-        if (!activeClaimValueSlab) {
-          activeClaimValueSlab = activeSlabs.find(slab => 
-            slab.deviceType === deviceType.toLowerCase() &&
-            !slab.brand &&
-            monthsDiff >= slab.minMonths && 
-            monthsDiff <= slab.maxMonths
-          );
+        // Log the result for debugging
+        if (activeClaimValueSlab) {
+          console.log('✅ Found matching Acer BBG slab:', {
+            id: activeClaimValueSlab.id,
+            percentage: activeClaimValueSlab.percentage,
+            ageRange: `${activeClaimValueSlab.minMonths}-${activeClaimValueSlab.maxMonths} months`,
+            registrationSource: activeClaimValueSlab.registrationSource
+          });
+        } else {
+          console.log('⚠️ No matching Acer BBG slab found for device age:', monthsDiff, 'months');
         }
         
         console.log('Selected claim value slab for Acer registration:', activeClaimValueSlab);
@@ -4373,13 +4379,15 @@ Required: GUPSHUP_API_KEY environment variable
         sellerCode: null, // No seller code for direct Acer registrations
         isVerified: true, // Auto-verify Acer registrations
         invoiceFile: invoiceFilePath,
-        registrationSource: 'acer', // Track registration source
+        registrationSource: 'acer_bbg', // 🎯 CRITICAL: Mark as Acer BBG registration
         claimValueSlabId: activeClaimValueSlab?.id || null, // Track which slab was active during registration
         // Store complete slab structure from registration time (preserves entire rate structure)
         registrationSlabData: activeClaimValueSlab ? JSON.stringify({
           deviceType: activeClaimValueSlab.deviceType,
           brand: activeClaimValueSlab.brand,
-          slabs: await storage.getActiveClaimValueSlabsByDeviceBrand(activeClaimValueSlab.deviceType, activeClaimValueSlab.brand || null)
+          registrationSource: 'acer_bbg',
+          // 🎯 CRITICAL: Store complete Acer BBG slab structure (higher rates than regular)
+          slabs: await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(activeClaimValueSlab.deviceType, 'acer_bbg')
         }) : null
       };
 
@@ -4443,6 +4451,98 @@ Required: GUPSHUP_API_KEY environment variable
       res.status(500).json({
         success: false,
         message: "Registration failed. Please try again.",
+        error: error.message
+      });
+    }
+  });
+
+  // Database Migration: Add registration_source column and create Acer BBG slabs
+  app.post('/api/admin/setup-acer-bbg-slabs', async (req, res) => {
+    try {
+      await db.connectDB();
+      
+      // First, add registration_source column if it doesn't exist
+      const checkColumnQuery = `
+        SELECT COLUMN_NAME 
+        FROM INFORMATION_SCHEMA.COLUMNS 
+        WHERE TABLE_NAME = 'claim_value_slabs' 
+        AND COLUMN_NAME = 'registration_source'
+      `;
+      
+      const columnCheck = await db.pool.request().query(checkColumnQuery);
+      
+      if (columnCheck.recordset.length === 0) {
+        const alterQuery = `
+          ALTER TABLE claim_value_slabs 
+          ADD registration_source NVARCHAR(50) DEFAULT 'regular'
+        `;
+        
+        await db.pool.request().query(alterQuery);
+        console.log('✅ registration_source column added to claim_value_slabs');
+      }
+      
+      // Update all existing slabs to have 'regular' as registration_source
+      const updateExistingQuery = `
+        UPDATE claim_value_slabs 
+        SET registration_source = 'regular'
+        WHERE registration_source IS NULL
+      `;
+      
+      await db.pool.request().query(updateExistingQuery);
+      
+      // Check if Acer BBG slabs already exist
+      const checkAcerBBGQuery = `
+        SELECT COUNT(*) as count 
+        FROM claim_value_slabs 
+        WHERE brand = 'Acer' AND registration_source = 'acer_bbg'
+      `;
+      
+      const acerBBGCheck = await db.pool.request().query(checkAcerBBGQuery);
+      
+      if (acerBBGCheck.recordset[0].count === 0) {
+        // Create Acer BBG-specific laptop slabs with different rates
+        const acerBBGSlabs = [
+          { minMonths: 6, maxMonths: 12, percentage: 80 },   // Higher than regular Acer (70%)
+          { minMonths: 13, maxMonths: 18, percentage: 68 },  // Higher than regular Acer (58%)
+          { minMonths: 19, maxMonths: 24, percentage: 58 },  // Higher than regular Acer (48%)
+          { minMonths: 25, maxMonths: 30, percentage: 48 },  // Higher than regular Acer (38%)
+          { minMonths: 31, maxMonths: 36, percentage: 38 },  // Higher than regular Acer (28%)
+          { minMonths: 37, maxMonths: 48, percentage: 33 },  // Higher than regular Acer (23%)
+          { minMonths: 49, maxMonths: 60, percentage: 28 }   // Higher than regular Acer (18%)
+        ];
+        
+        for (const slab of acerBBGSlabs) {
+          const insertQuery = `
+            INSERT INTO claim_value_slabs 
+            (device_type, brand, min_months, max_months, percentage, registration_source, is_active)
+            VALUES ('laptop', 'Acer', @minMonths, @maxMonths, @percentage, 'acer_bbg', 1)
+          `;
+          
+          const request = db.pool.request();
+          request.input('minMonths', sql.Int, slab.minMonths);
+          request.input('maxMonths', sql.Int, slab.maxMonths);
+          request.input('percentage', sql.Int, slab.percentage);
+          
+          await request.query(insertQuery);
+        }
+        
+        console.log('✅ Created 7 Acer BBG-specific laptop claim value slabs');
+      }
+      
+      res.json({
+        success: true,
+        message: 'Acer BBG slab system setup completed',
+        details: {
+          columnAdded: columnCheck.recordset.length === 0,
+          acerBBGSlabsCreated: acerBBGCheck.recordset[0].count === 0
+        }
+      });
+      
+    } catch (error) {
+      console.error('Error setting up Acer BBG slabs:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to setup Acer BBG slab system',
         error: error.message
       });
     }
@@ -4815,6 +4915,36 @@ Required: GUPSHUP_API_KEY environment variable
     } catch (error: any) {
       console.error('Error fetching active claim value slabs:', error);
       res.status(500).json({ message: "Failed to fetch active claim value slabs", error: error.message });
+    }
+  });
+
+  // Get active claim value slabs by device type and registration source (for Acer BBG flow)
+  // NOTE: This route MUST come before the deviceType-only route to avoid route conflicts
+  app.get('/api/claim-value-slabs/active/:deviceType/:registrationSource', async (req, res) => {
+    try {
+      const { deviceType, registrationSource } = req.params;
+      
+      // Validate device type
+      if (!['mobile', 'laptop'].includes(deviceType)) {
+        return res.status(400).json({ message: "Invalid device type. Must be 'mobile' or 'laptop'" });
+      }
+      
+      // Validate registration source
+      if (!['regular', 'acer_bbg'].includes(registrationSource)) {
+        return res.status(400).json({ message: "Invalid registration source. Must be 'regular' or 'acer_bbg'" });
+      }
+      
+      console.log(`🎯 Fetching ${registrationSource} ${deviceType} claim value slabs`);
+      const slabs = await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(deviceType, registrationSource);
+      
+      res.json(slabs);
+      
+    } catch (error: any) {
+      console.error(`❌ Error fetching ${req.params.registrationSource} ${req.params.deviceType} claim value slabs:`, error.message);
+      res.status(500).json({ 
+        message: "Failed to fetch claim value slabs", 
+        error: error.message 
+      });
     }
   });
 

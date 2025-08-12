@@ -150,8 +150,8 @@ export default function AcerThankYou() {
                   <div className="space-y-4">
                     <div className="p-4 border-2 border-green-200 rounded-lg bg-green-50">
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-green-600 mb-1">Up to 70%</div>
-                        <div className="text-sm text-green-700">Maximum buyback value</div>
+                        <div className="text-3xl font-bold text-green-600 mb-1">Up to 80%</div>
+                        <div className="text-sm text-green-700">Maximum buyback value (Acer BBG)</div>
                       </div>
                     </div>
                     <div className="p-4 border-2 border-blue-200 rounded-lg bg-blue-50">

@@ -5,12 +5,12 @@ This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) sys
 
 ## Recent Critical Updates
 **Date: August 12, 2025**
-- **✅ REGISTRATION SLAB DATA SAVING FIXED**: PayU payment success handler now properly saves complete slab structures during registration
-- **✅ BRAND-SPECIFIC UI IMPLEMENTED**: Customer registration and thank-you pages show only selected brand's claim values in clean grid layout
-- **✅ PAYU HANDLER ENHANCED**: Added missing registrationAge, registrationDate, and applicableSlabId fields to match registration endpoint
-- **✅ END-TO-END VERIFIED**: New customer registrations now save complete slab data structure to `registrationSlabData` field
-- **✅ BUSINESS LOGIC CONFIRMED**: Claims use preserved registration-time rates with complete historical slab configurations
-- **✅ BULLETPROOF GUARANTEES**: Customers retain original claim percentages regardless of admin rate changes or device age calculations
+- **✅ ACER BBG SLAB SYSTEM FULLY IMPLEMENTED**: Complete Acer BBG flow now uses dedicated 80% slabs instead of regular 70% Acer rates
+- **✅ BACKEND API ENHANCED**: New `/api/claim-value-slabs/active/:deviceType/:registrationSource` endpoint serves Acer BBG-specific slabs
+- **✅ REGISTRATION SOURCE TRACKING**: Acer BBG registrations properly marked with `registrationSource: 'acer_bbg'` for database integrity
+- **✅ FRONTEND UPDATES COMPLETED**: Acer BBG registration and thank you pages show correct "Up to 80%" maximum claim rate
+- **✅ COMPLETE SLAB PRESERVATION**: Acer BBG customers' `registrationSlabData` stores higher-rate slab structure from registration time
+- **✅ CLAIM SYSTEM VERIFIED**: Claims process correctly uses preserved Acer BBG rates, protecting customers against future rate changes
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.

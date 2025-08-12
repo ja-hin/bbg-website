@@ -6,10 +6,10 @@ export default function Footer() {
   return (
     <footer className="bg-[#4A67C1] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
           {/* Follow Us Section */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">FOLLOW US</h3>
+          <div className="md:col-span-2">
+            <h3 className="text-xl font-semibold mb-6">FOLLOW US</h3>
             <div className="flex gap-3 mb-6">
               <a href="#" className="w-8 h-8 bg-white text-[#4A67C1] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity">
                 <FaFacebookF className="text-sm" />
@@ -34,7 +34,7 @@ export default function Footer() {
 
           {/* Services Section */}
           <div>
-            <h3 className="text-lg font-semibold mb-6">SERVICES</h3>
+            <h3 className="text-xl font-semibold mb-6">SERVICES</h3>
             <ul className="space-y-3">
               <li><Link href="#" className="text-white hover:opacity-80 transition-opacity">Sell Phone</Link></li>
               <li><Link href="#" className="text-white hover:opacity-80 transition-opacity">Sell Apple iPhones</Link></li>
@@ -46,7 +46,7 @@ export default function Footer() {
 
           {/* Links Section */}
           <div>
-            <h3 className="text-lg font-semibold mb-6">LINKS</h3>
+            <h3 className="text-xl font-semibold mb-6">LINKS</h3>
             <ul className="space-y-3">
               <li><Link href="#" className="text-white hover:opacity-80 transition-opacity">Budget Picks Under 5000</Link></li>
               <li><Link href="#" className="text-white hover:opacity-80 transition-opacity">Best Value Under 8000</Link></li>
@@ -61,7 +61,7 @@ export default function Footer() {
 
           {/* Help & Support Section */}
           <div>
-            <h3 className="text-lg font-semibold mb-6">HELP & SUPPORT</h3>
+            <h3 className="text-xl font-semibold mb-6">HELP & SUPPORT</h3>
             <ul className="space-y-3">
               <li><Link href="#" className="text-white hover:opacity-80 transition-opacity">About Us</Link></li>
               <li><Link href="#" className="text-white hover:opacity-80 transition-opacity">FAQ</Link></li>
@@ -71,7 +71,7 @@ export default function Footer() {
 
           {/* Policy Section */}
           <div>
-            <h3 className="text-lg font-semibold mb-6">POLICY</h3>
+            <h3 className="text-xl font-semibold mb-6">POLICY</h3>
             <ul className="space-y-3">
               <li><Link href="#" className="text-white hover:opacity-80 transition-opacity">Privacy Policy</Link></li>
               <li><Link href="#" className="text-white hover:opacity-80 transition-opacity">Warranty Policy</Link></li>
@@ -84,9 +84,9 @@ export default function Footer() {
         </div>
 
         {/* Copyright Section */}
-        <div className="border-t border-white/20 mt-12 pt-6">
-          <div className="text-center">
-            <p className="text-white/80">Copyright © 2025 XtraCover All rights reserved</p>
+        <div className="border-t border-white/20 mt-12 pt-2">
+          <div className="bg-white py-3 px-4 text-center">
+            <p className="text-black font-normal text-sm">Copyright © 2025 XtraCover All rights reserved</p>
           </div>
         </div>
       </div>

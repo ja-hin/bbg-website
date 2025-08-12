@@ -8,20 +8,13 @@ export default function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Company Info */}
           <div className="md:col-span-2">
-            <div className="flex items-center space-x-3 mb-4">
+            <div className="flex items-center mb-4">
               {/* Official XTRACOVER Logo for Footer */}
               <img 
                 src="https://images.xtracover.com/StaticImages/mobile_img/newui/logo.svg" 
                 alt="XTRACOVER Logo" 
                 className="h-10 w-auto hover:scale-105 transition-transform duration-200"
               />
-              
-              {/* Brand Name for Footer */}
-              <div className="flex flex-col">
-                <span className="text-xs text-gray-400 uppercase tracking-wide font-medium opacity-80">
-                  BuyBack Guarantee
-                </span>
-              </div>
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
               Your trusted partner for device protection and buyback solutions. We provide comprehensive coverage for your valuable electronics.

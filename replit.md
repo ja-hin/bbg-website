@@ -1,11 +1,9 @@
 # XtraCover BBG Application
 
 ## Overview
-
-This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) system. It enables distributors (referred to as "referral partners") to register and earn commissions, customers to register their devices for BBG protection, and users to claim their buyback guarantees. The project aims to streamline the BBG process, enhance user experience with real-time feedback, and provide robust administrative tools for managing partners, customers, claims, and communications.
+This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) system. Its primary purpose is to enable distributors (referral partners) to register and earn commissions, customers to register their devices for BBG protection, and users to claim their buyback guarantees. The project streamlines the BBG process, offers a user-friendly experience with real-time feedback, and provides robust administrative tools for managing all aspects of the system.
 
 ## User Preferences
-
 Preferred communication style: Simple, everyday language.
 
 ## System Architecture
@@ -17,188 +15,39 @@ Preferred communication style: Simple, everyday language.
 - **Styling**: Tailwind CSS with shadcn/ui components
 - **Form Handling**: React Hook Form with Zod validation
 - **Build Tool**: Vite
-- **UI/UX Decisions**: Focus on a streamlined, single-page customer registration flow. Features include real-time validation feedback bubbles, smart focus-based display of validation messages, and smooth animations. The design aims for a professional, consistent look across all interfaces (customer, partner, admin).
+- **UI/UX Decisions**: Focus on a streamlined, single-page customer registration flow with real-time validation, smart focus-based message display, and smooth animations. The design aims for a professional, consistent look across customer, partner, and admin interfaces, incorporating a dual-color theme with primary (#254696) and secondary (#E72829) colors. A dynamic theme system allows for real-time color customization.
 
 ### Backend
 - **Runtime**: Node.js with Express.js
 - **Language**: TypeScript with ES modules
-- **Database ORM**: Drizzle ORM (for potential future use, currently using raw SQL)
+- **Database ORM**: Drizzle ORM (for potential future use, currently raw SQL)
 - **File Handling**: Multer for file uploads, integrated with AWS S3 for cloud storage with local fallback.
-- **Admin Panel**: Secure session-based authentication with bcrypt hashing. Features include comprehensive management of referral partners, customers, claims, communication templates, and IMEI data.
+- **Admin Panel**: Secure session-based authentication with bcrypt hashing. Provides comprehensive management of referral partners, customers, claims, communication templates, and IMEI data.
 
 ### Database Design
-- **Primary Database**: Microsoft SQL Server (103.205.66.184:2499, database: prexoDB).
-- **Core Tables**: `distributors` (now `referral_partners`), `customers`, `claims`, `otp_verifications`, `admin_users`, `message_templates`, `acer_imei_validation`.
+- **Primary Database**: Microsoft SQL Server.
+- **Core Tables**: `referral_partners`, `customers`, `claims`, `otp_verifications`, `admin_users`, `message_templates`, `acer_imei_validation`.
 - **Key Technical Implementations**:
-    - **Authentication**: OTP-based verification for customer and referral partner registration. Admin authentication is session-based with secure password hashing.
-    - **Business Logic**: Includes dynamic commission calculation for referral partners, device age-based claim eligibility, and BBG voucher code generation.
-    - **File Management**: Secure file uploads (invoices, payment proofs) to AWS S3 with signed URLs for access. Supports image (JPEG, PNG) and PDF files up to 5MB.
+    - **Authentication**: OTP-based verification for customer and referral partner registration; session-based with secure password hashing for admin.
+    - **Business Logic**: Dynamic commission calculation, device age-based claim eligibility, and BBG voucher code generation. Includes brand-specific claim value slab configurations.
+    - **File Management**: Secure uploads (invoices, payment proofs) to AWS S3 with signed URLs. Supports image (JPEG, PNG) and PDF files up to 5MB.
     - **Data Validation**: Comprehensive Zod schemas for all data, including Indian phone numbers, pincodes, and bank details.
-    - **Communication System**: Multi-channel notifications via Email (SMTP), SMS (Kaleyra), and WhatsApp (Gupshup). Features a Template Management System allowing admin CRUD operations for communication templates with dynamic variables and live previews.
-    - **Acer IMEI Validation**: Dedicated system for uploading and validating Acer IMEI data against a database, preventing duplicate device registrations.
+    - **Communication System**: Multi-channel notifications via Email (SMTP), SMS (Kaleyra), and WhatsApp (Gupshup). Features a Template Management System for admin CRUD operations with dynamic variables and live previews.
+    - **Acer IMEI Validation**: System for uploading and validating Acer IMEI data to prevent duplicate device registrations.
+
+### Deployment Strategy
+- **Target Platform**: AWS Cloud Infrastructure
+- **Architecture**: Auto-scaling EC2 instances with Application Load Balancer.
+- **Database**: Continues using existing Microsoft SQL Server.
+- **Storage**: Maintains AWS S3 integration.
 
 ## External Dependencies
 
-- **Database**:
-    - Microsoft SQL Server
-    - Neon Database (for Drizzle ORM, though currently raw SQL is used for MS SQL)
-- **UI Components**:
-    - shadcn/ui (component library based on Radix UI)
-    - Radix UI (accessible component primitives)
-    - Tailwind CSS (utility-first CSS framework)
-    - Lucide Icons (icon library)
-- **Payment Gateway**:
-    - PayU
-- **SMS Service**:
-    - Kaleyra.io SMS API
-- **WhatsApp Business API**:
-    - Gupshup WhatsApp Business API
-- **Cloud Storage**:
-    - AWS S3
-- **Email Service**:
-    - Nodemailer (for SMTP-based email)
-- **Development Tools**:
-    - TypeScript
-    - ESLint
-    - Vite
-    - tsx
-- **Utilities**:
-    - Multer (file uploads)
-    - bcryptjs (password hashing)
-    - Zod (schema validation)
-    - XLSX (Excel/CSV parsing for bulk uploads)
-
-## Deployment Strategy
-
-**Target Platform**: AWS Cloud Infrastructure
-- **Decision**: User has chosen AWS deployment over Replit native deployment
-- **Architecture**: Auto-scaling EC2 instances with Application Load Balancer
-- **Database**: Continue using existing Microsoft SQL Server (103.205.66.184:2499)
-- **Storage**: Maintain current AWS S3 integration
-- **Estimated Cost**: $210-620/month depending on traffic and performance requirements
-- **Timeline**: 2-3 weeks for complete migration and setup
-
-## Recent Changes
-
-- **August 12, 2025**: ✅ **Brand-comparison table layout implemented for complete user experience**
-  - UPDATED: Homepage claim value tables redesigned with brand columns instead of rows
-  - CREATED: Mobile devices table with Samsung, Apple, OnePlus, Xiaomi, Realme brand columns
-  - CREATED: Laptop devices table with HP, Lenovo, Dell, Acer, Asus brand columns
-  - ENHANCED: Smart data processing that groups slabs by age ranges for easy brand comparison
-  - IMPLEMENTED: Format shows "Device Age | Brand1% | Brand2% | Brand3%" across columns
-  - IMPROVED: Color-coded percentages and center-aligned brand columns for better readability
-  - COMPLETED: Both mobile and laptop tables now display the requested brand-comparison format
-
-- **August 11, 2025**: ✅ **Brand-specific claim value slabs system completed**
-  - IMPLEMENTED: Complete Microsoft SQL Server schema enhancement with brand and device_type columns
-  - CREATED: Advanced admin interface with brand-specific configurations for laptops (HP, Dell, Lenovo, Acer, Asus, Macbook, Others)
-  - BUILT: Professional tabbed display showing brand overview, laptop slabs, and mobile slabs separately
-  - ENHANCED: CRUD operations supporting brand-specific claim percentages with comprehensive API endpoints
-  - UPDATED: Database mapping functions with proper brand field handling and fallback mechanisms
-  - ADDED: Brand overview table displaying all claim percentages organized by age ranges and brands
-  - CONFIRMED: Using only Microsoft SQL Server database (103.205.66.184:2499) - no PostgreSQL dependency
-  - DEPLOYED: Production-ready brand-specific claim value system accessible via /admin/claim-value-slabs
-
-- **August 6, 2025**: ✅ Completed comprehensive dynamic claim value slabs system
-  - IMPLEMENTED: Full CRUD operations for claim value slabs with mobile/laptop device type support
-  - CREATED: Robust SQL Server database schema with comprehensive fallback query mechanisms
-  - BUILT: Advanced admin interface with tabbed display for separate mobile/laptop slab management
-  - SOLVED: Critical database connection pooling and schema caching issues with automated fallback queries
-  - TESTED: Complete system functionality - CREATE, READ, UPDATE, DELETE operations all working correctly
-  - VERIFIED: Admin authentication, API endpoints, and public claim value slab access all functional
-  - DEPLOYED: Production-ready claim value slabs system with error handling and connection resilience
-
-- **August 6, 2025**: ✅ Comprehensive UI/UX improvements and text updates across Acer registration journey
-  - UPDATED: Header navigation changed "Register BBG" to "Register Acer BBG"
-  - ENHANCED: IMEI validation increased from minimum 5 to 7 characters across all forms
-  - FIXED: GST text corrections - changed from "without GST" to "inclusive of GST" throughout
-  - REMOVED: All Acer logos from registration journey per requirements
-  - UPDATED: Thank you page text changed "registration ID" references to "BBG Voucher Code"
-  - IMPROVED: Consistent validation messages and user-friendly form labels
-  - CONFIRMED: All text updates align with business requirements for cleaner registration experience
-
-- **August 6, 2025**: ✅ Fixed critical Acer IMEI validation system synchronization issue
-  - RESOLVED: Missing `/api/check-device-registration` endpoint causing IMEI validation failures
-  - IMPLEMENTED: Proper database column mapping (`serial_number` vs `serialNumber`) 
-  - ENHANCED: Acer IMEI admin panel with 5-second auto-refresh and manual refresh button
-  - FIXED: Cache-control headers to prevent stale IMEI data in admin interface
-  - UPDATED: Simplified validation messages to "Valid IMEI" and "IMEI Not Found"
-  - CONFIRMED: Complete IMEI validation flow now working - uploaded IMEIs appear valid in Acer registration form
-  - FIXED: Added missing `registration_source` column to customers table for proper Acer registration tracking
-
-- **July 30, 2025**: ✅ Fixed template creation unique constraint violations
-  - RESOLVED: Database template creation errors causing server startup warnings
-  - IMPLEMENTED: Smart template existence checking before insertion
-  - IMPROVED: Clean server startup without SQL constraint violation errors
-  - ENHANCED: Proper error handling for duplicate template prevention
-
-- **August 7, 2025**: ✅ **Comprehensive dual-color theme implementation (#254696 & #E72829)**
-  - IMPLEMENTED: Complete CSS variables system with both primary (#254696) and secondary (#E72829) colors
-  - CREATED: Custom utility classes (.text-xtra-primary, .bg-xtra-secondary, etc.) for consistent theming
-  - ENHANCED: Gradient backgrounds using both brand colors across key sections
-  - UPDATED: All components now use strategic color assignment:
-    * Primary (#254696): Laptop devices, trust/security elements, admin interfaces
-    * Secondary (#E72829): Mobile devices, CTA buttons, pricing, highlights
-  - MODERNIZED: Logo and branding with blue-to-red gradient for visual appeal
-  - CONSISTENT: Header, home page, claim forms, admin panels all use the dual-color system
-  - IMPROVED: Better visual hierarchy and brand recognition with modern color palette
-
-- **August 8, 2025**: ✅ **COMPLETE THEME SYSTEM SUCCESS: 100% dynamic theming across entire application**
-  - FIXED: Footer logo and brand text now use dynamic theme colors (--xtra-primary)
-  - UPDATED: Scroll-to-top button uses theme colors instead of hardcoded red
-  - CORRECTED: Home page components - table headers, buttons, loading spinners, gradient sections
-  - RESOLVED: Claim page step indicators, error messages, and device slab tables
-  - IMPLEMENTED: Admin panel sidebar with full dynamic theme integration
-  - COMPLETED: All UI components (header, footer, home, claims, admin) use CSS variables
-  - VERIFIED: Theme changes apply instantly across all pages and survive server restarts
-  - DATABASE: prexoDB.theme_settings table working perfectly with real-time updates
-
-- **August 11, 2025**: ✅ **Complete Acer registration form optimization and testing**
-  - SIMPLIFIED: Model input converted from complex dropdown/search to simple text field
-  - REMOVED: Non-functional custom model selection logic and related state variables
-  - CLEANED UP: Eliminated unused imports and custom model schema validation
-  - FIXED: Server-side custom model handling code that caused isCustomModel errors
-  - REMOVED: GST-inclusive price informational text for cleaner form UI
-  - TESTED: Complete end-to-end registration flow with IMEI validation
-  - VERIFIED: Duplicate registration prevention, form validation, and error handling all functional
-  - CONFIRMED: All form fields (pincode, model text input, purchase price) working correctly
-
-- **August 11, 2025**: ✅ **Comprehensive branding update from "Xtracover" to "XtraCover"**
-  - UPDATED: Home page descriptive text changed from "Xtracover" to "XtraCover" for brand consistency
-  - UPDATED: Email communication service now shows "XtraCover BBG" as sender name instead of "Xtracover BBG"
-  - UPDATED: Acer thank you page messaging changed to reference "XtraCover BBG protection"
-  - UPDATED: WhatsApp admin settings page description updated with XtraCover branding
-  - UPDATED: All project documentation files (replit.md, AWS_DEPLOYMENT_GUIDE.md, DEPLOYMENT_GUIDE.md) updated with XtraCover branding
-  - UPDATED: Environment template files (.env.example, ENVIRONMENT_TEMPLATE.env) updated with XtraCover naming
-  - MAINTAINED: Configuration identifiers (bucket names, app names) kept in lowercase for technical consistency
-  - COMPLETED: Comprehensive brand consistency across entire application codebase
-
-- **August 11, 2025**: ✅ **Claim journey and referral partner terminology updates**
-  - UPDATED: Removed 6PM - 9PM pickup time slot from claim journey, leaving only daytime slots
-  - RENAMED: "Seller Code" changed to "Referral Code" throughout referral partner thank you page
-  - UPDATED: "Distributor Registration Successful" → "Referral Partner Registration Successful"
-  - REVISED: All "distributor" references changed to "referral partner" in thank you page messaging
-  - IMPROVED: Consistent referral partner terminology across registration success flow
-
-- **August 11, 2025**: ✅ **Dynamic theme integration and expandable FAQ section implementation**
-  - FIXED: Submit Claim button now uses dynamic theme colors instead of hardcoded red
-  - UPDATED: Mobile Devices section header changed from red (bg-xtra-secondary) to dynamic theme (bg-xtra-primary)
-  - CREATED: Comprehensive expandable FAQ section with 12 frequently asked questions
-  - IMPLEMENTED: Accordion-based FAQ with hover effects using dynamic theme colors
-  - ENHANCED: FAQ section features HelpCircle icon, structured questions covering BBG eligibility, claims process, device requirements, and payment procedures
-  - VERIFIED: All FAQ content matches business requirements and provides clear customer guidance
-  - CONFIRMED: Theme color changes now apply consistently across entire application including FAQ hover states
-
-- **August 11, 2025**: ✅ **COMPLETE DARK MODE REMOVAL: Clean theme system implementation**
-  - REMOVED: All dark mode functionality completely per user feedback to avoid partial implementation
-  - CLEANED: Removed dark_mode references from database schema, backend routes, and frontend components
-  - SIMPLIFIED: Theme system now focuses purely on dynamic color customization with database persistence
-  - MAINTAINED: Real-time theme color switching functionality across entire application
-  - UPDATED: Admin theme settings page streamlined to show only color picker without dark mode controls
-  - PRESERVED: Robust color theming system with fallback storage and instant visual updates
-
-- **July 30, 2025**: ✅ Hidden customer login option from header navigation
-  - REMOVED: Customer login button from header navigation (both desktop and mobile versions)
-  - MAINTAINED: Direct URL access to /customer/login still functional for existing customer dashboard usage
-  - STREAMLINED: Header navigation now only shows referral partner login, reducing user confusion
-  - IMPROVED: Cleaner navigation experience focusing on main BBG registration and claim flows
+- **Database**: Microsoft SQL Server
+- **UI Components**: shadcn/ui, Radix UI, Tailwind CSS, Lucide Icons
+- **Payment Gateway**: PayU
+- **SMS Service**: Kaleyra.io SMS API
+- **WhatsApp Business API**: Gupshup WhatsApp Business API
+- **Cloud Storage**: AWS S3
+- **Email Service**: Nodemailer
+- **Utilities**: Multer, bcryptjs, Zod, XLSX

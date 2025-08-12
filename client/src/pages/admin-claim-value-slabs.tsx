@@ -198,6 +198,11 @@ export default function AdminClaimValueSlabs() {
       ageData.genericSlab = genericSlab || null;
 
       return ageData;
+    }).filter(ageData => {
+      // Only include age ranges that have at least one slab (brand-specific or generic)
+      const hasBrandSlabs = Object.values(ageData.brands).some(slab => slab !== null);
+      const hasGenericSlab = ageData.genericSlab !== null;
+      return hasBrandSlabs || hasGenericSlab;
     });
   };
 

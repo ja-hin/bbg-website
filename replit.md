@@ -26,7 +26,7 @@ Preferred communication style: Simple, everyday language.
 
 ### Database Design
 - **Primary Database**: Microsoft SQL Server.
-- **Core Tables**: `referral_partners`, `customers`, `claims`, `otp_verifications`, `admin_users`, `message_templates`, `acer_imei_validation`.
+- **Core Tables**: `referral_partners`, `customers`, `claims`, `otp_verifications`, `admin_users`, `message_templates`, `acer_imei_validation`, `claim_value_slabs`.
 - **Key Technical Implementations**:
     - **Authentication**: OTP-based verification for customer and referral partner registration; session-based with secure password hashing for admin.
     - **Business Logic**: Dynamic commission calculation, device age-based claim eligibility, and BBG voucher code generation. Includes brand-specific claim value slab configurations.

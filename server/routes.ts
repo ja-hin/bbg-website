@@ -5058,6 +5058,213 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // Fix existing customers with incorrect claimValueSlabId
+  app.post('/api/admin/fix-customer-slabs', isAdminAuthenticated, async (req, res) => {
+    const { default: sql } = await import('mssql');
+    
+    try {
+      const config = {
+        server: '103.205.66.184',
+        port: 1433,
+        database: 'bbgdb',
+        user: 'bbg_user',
+        password: 'Bbg@2024',
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+        pool: {
+          max: 10,
+          min: 0,
+          idleTimeoutMillis: 30000
+        },
+        requestTimeout: 30000,
+        connectionTimeout: 30000
+      };
+
+      const pool = new sql.ConnectionPool(config);
+      await pool.connect();
+      
+      // Get all customers with invalid slab IDs or missing slab IDs
+      const customersRequest = pool.request();
+      const customersResult = await customersRequest.query(`
+        SELECT 
+          c.id, c.device_type, c.brand, c.date_of_purchase, c.claim_value_slab_id, c.voucher_code
+        FROM customers c
+        LEFT JOIN claim_value_slabs cvs ON c.claim_value_slab_id = cvs.id
+        WHERE c.claim_value_slab_id IS NULL OR cvs.id IS NULL
+      `);
+      
+      const customers = customersResult.recordset;
+      console.log(`Found ${customers.length} customers with missing/invalid slab IDs`);
+      
+      // Get all active claim value slabs
+      const slabsRequest = pool.request();
+      const slabsResult = await slabsRequest.query(`
+        SELECT id, device_type, brand, min_months, max_months, percentage
+        FROM claim_value_slabs 
+        WHERE is_active = 1
+        ORDER BY brand, min_months ASC
+      `);
+      
+      const activeSlabs = slabsResult.recordset;
+      const updatedCustomers = [];
+      const failedUpdates = [];
+      
+      for (const customer of customers) {
+        try {
+          const purchaseDate = new Date(customer.date_of_purchase);
+          const monthsDiff = Math.floor((Date.now() - purchaseDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
+          
+          // Find brand-specific slab first
+          let matchingSlab = activeSlabs.find(slab => 
+            slab.device_type === customer.device_type &&
+            slab.brand === customer.brand &&
+            monthsDiff >= slab.min_months && 
+            monthsDiff <= slab.max_months
+          );
+          
+          // If no brand-specific slab, try generic slab
+          if (!matchingSlab) {
+            matchingSlab = activeSlabs.find(slab => 
+              slab.device_type === customer.device_type &&
+              !slab.brand &&
+              monthsDiff >= slab.min_months && 
+              monthsDiff <= slab.max_months
+            );
+          }
+          
+          if (matchingSlab) {
+            // Update customer with correct slab ID
+            const updateRequest = pool.request();
+            updateRequest.input('slabId', sql.Int, matchingSlab.id);
+            updateRequest.input('customerId', sql.Int, customer.id);
+            
+            await updateRequest.query(`
+              UPDATE customers 
+              SET claim_value_slab_id = @slabId, updated_at = GETDATE()
+              WHERE id = @customerId
+            `);
+            
+            updatedCustomers.push({
+              customerId: customer.id,
+              voucherCode: customer.voucher_code,
+              brand: customer.brand,
+              deviceType: customer.device_type,
+              monthsOld: monthsDiff,
+              oldSlabId: customer.claim_value_slab_id,
+              newSlabId: matchingSlab.id,
+              percentage: matchingSlab.percentage
+            });
+            
+            console.log(`✅ Updated customer ${customer.voucher_code} (${customer.brand} ${customer.device_type}, ${monthsDiff}mo) with slab ID ${matchingSlab.id} (${matchingSlab.percentage}%)`);
+          } else {
+            failedUpdates.push({
+              customerId: customer.id,
+              voucherCode: customer.voucher_code,
+              brand: customer.brand,
+              deviceType: customer.device_type,
+              monthsOld: monthsDiff,
+              reason: 'No matching slab found'
+            });
+            
+            console.log(`❌ No matching slab found for customer ${customer.voucher_code} (${customer.brand} ${customer.device_type}, ${monthsDiff}mo)`);
+          }
+        } catch (customerError) {
+          console.error(`Error processing customer ${customer.id}:`, customerError);
+          failedUpdates.push({
+            customerId: customer.id,
+            voucherCode: customer.voucher_code,
+            reason: customerError.message
+          });
+        }
+      }
+      
+      await pool.close();
+      
+      res.json({
+        success: true,
+        message: `Customer slab IDs updated successfully`,
+        summary: {
+          totalCustomers: customers.length,
+          updated: updatedCustomers.length,
+          failed: failedUpdates.length
+        },
+        updatedCustomers,
+        failedUpdates
+      });
+      
+    } catch (error: any) {
+      console.error('Error fixing customer slabs:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to fix customer slabs", 
+        error: error.message 
+      });
+    }
+  });
+
+  // Quick utility to update a specific customer's slab ID (for testing)
+  app.post('/api/admin/update-customer-slab', isAdminAuthenticated, async (req, res) => {
+    const { default: sql } = await import('mssql');
+    
+    try {
+      const { customerId, newSlabId } = req.body;
+      
+      if (!customerId || !newSlabId) {
+        return res.status(400).json({ message: "customerId and newSlabId are required" });
+      }
+      
+      const config = {
+        server: '103.205.66.184',
+        port: 1433,
+        database: 'bbgdb',
+        user: 'bbg_user',
+        password: 'Bbg@2024',
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+        pool: {
+          max: 10,
+          min: 0,
+          idleTimeoutMillis: 30000
+        },
+        requestTimeout: 30000,
+        connectionTimeout: 30000
+      };
+
+      const pool = new sql.ConnectionPool(config);
+      await pool.connect();
+      
+      // Update the customer's slab ID
+      const updateRequest = pool.request();
+      updateRequest.input('slabId', sql.Int, newSlabId);
+      updateRequest.input('customerId', sql.Int, customerId);
+      
+      await updateRequest.query(`
+        UPDATE customers 
+        SET claim_value_slab_id = @slabId, updated_at = GETDATE()
+        WHERE id = @customerId
+      `);
+      
+      await pool.close();
+      
+      res.json({
+        success: true,
+        message: `Customer ${customerId} updated with slab ID ${newSlabId}`
+      });
+      
+    } catch (error: any) {
+      console.error('Error updating customer slab:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to update customer slab", 
+        error: error.message 
+      });
+    }
+  });
+
   // Get claim percentage for specific device age or date of purchase
   app.post('/api/claims/calculate-percentage', async (req, res) => {
     try {

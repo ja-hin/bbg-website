@@ -4446,11 +4446,35 @@ Required: GUPSHUP_API_KEY environment variable
   // CLAIM VALUE SLABS ENDPOINTS
   // ==============================
 
-  // Get all claim value slabs (for admin) - Direct SQL Server query
+  // Get all claim value slabs (for admin) - Standalone SQL Server connection
   app.get('/api/admin/claim-value-slabs', isAdminAuthenticated, async (req, res) => {
+    const { default: sql } = await import('mssql');
+    
+    // Direct database connection with credentials
+    const config = {
+      server: '103.205.66.184',
+      port: 2499,
+      database: 'prexoDB',
+      user: 'qo8yhe',
+      password: 'tFbs89!0Ryyx1^90',
+      options: {
+        encrypt: false,
+        trustServerCertificate: true,
+      },
+      pool: {
+        max: 10,
+        min: 0,
+        idleTimeoutMillis: 30000
+      }
+    };
+
+    let pool: any = null;
+    
     try {
-      // Direct SQL Server query to ensure we get brand data
-      await db.connectDB();
+      console.log('=== Connecting directly to SQL Server for claim value slabs ===');
+      pool = new sql.ConnectionPool(config);
+      await pool.connect();
+      
       const query = `
         SELECT 
           id, 
@@ -4463,10 +4487,13 @@ Required: GUPSHUP_API_KEY environment variable
           created_at, 
           updated_at
         FROM claim_value_slabs 
+        WHERE is_active = 1
         ORDER BY device_type, brand, min_months ASC
       `;
       
-      const result = await db.pool.request().query(query);
+      console.log('Executing query:', query);
+      const result = await pool.request().query(query);
+      console.log(`Query successful: ${result.recordset.length} records found`);
       
       // Map the data to match expected format
       const slabs = result.recordset.map((row: any) => ({
@@ -4481,11 +4508,38 @@ Required: GUPSHUP_API_KEY environment variable
         updatedAt: row.updated_at || row.created_at
       }));
       
-      console.log(`Successfully fetched ${slabs.length} claim value slabs with brand data`);
+      // Log summary for debugging
+      const brandedSlabs = slabs.filter(s => s.brand);
+      const mobileSlabs = slabs.filter(s => s.deviceType === 'mobile');
+      const laptopSlabs = slabs.filter(s => s.deviceType === 'laptop');
+      
+      console.log(`✅ Successfully fetched ${slabs.length} claim value slabs:`);
+      console.log(`   - ${mobileSlabs.length} mobile slabs`);
+      console.log(`   - ${laptopSlabs.length} laptop slabs (${brandedSlabs.length} brand-specific)`);
+      
+      if (brandedSlabs.length > 0) {
+        const brands = [...new Set(brandedSlabs.map(s => s.brand))];
+        console.log(`   - Brands: ${brands.join(', ')}`);
+      }
+      
       res.json(slabs);
+      
     } catch (error: any) {
-      console.error('Error fetching claim value slabs:', error);
-      res.status(500).json({ message: "Failed to fetch claim value slabs", error: error.message });
+      console.error('❌ Direct SQL Server connection failed:', error.message);
+      res.status(500).json({ 
+        message: "Failed to fetch claim value slabs", 
+        error: error.message,
+        details: "Direct SQL Server connection failed"
+      });
+    } finally {
+      if (pool) {
+        try {
+          await pool.close();
+          console.log('Database connection closed');
+        } catch (closeError) {
+          console.error('Error closing database connection:', closeError);
+        }
+      }
     }
   });
 

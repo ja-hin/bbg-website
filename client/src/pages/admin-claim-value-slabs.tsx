@@ -54,8 +54,9 @@ interface ClaimValueSlabForm {
   isActive: boolean;
 }
 
-// Brand options for laptops based on your requirements
+// Brand options based on your requirements
 const LAPTOP_BRANDS = ["HP", "Dell", "Lenovo", "Acer", "Asus", "Macbook", "Others"];
+const MOBILE_BRANDS = ["Samsung", "Apple", "OnePlus", "Xiaomi", "Realme", "Others"];
 
 export default function AdminClaimValueSlabsPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);

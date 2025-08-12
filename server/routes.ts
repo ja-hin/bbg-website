@@ -22,8 +22,19 @@ import {
   insertDistributorSchema, 
   insertCustomerSchema, 
   insertClaimSchema, 
-  insertOtpSchema 
+  insertOtpSchema,
+  claimValueSlabs
 } from "@shared/schema";
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import { eq, asc } from "drizzle-orm";
+import ws from "ws";
+import * as schema from "@shared/schema";
+
+// PostgreSQL connection setup for Drizzle
+neonConfig.webSocketConstructor = ws;
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pgDb = drizzle({ client: pool, schema });
 
 // Configure multer for file uploads (fallback to local storage if S3 not configured)
 const uploadDir = path.join(process.cwd(), 'uploads');
@@ -4499,74 +4510,38 @@ Required: GUPSHUP_API_KEY environment variable
   // CLAIM VALUE SLABS ENDPOINTS
   // ==============================
 
-  // Get all claim value slabs (for admin) - Standalone SQL Server connection
+  // Get all claim value slabs (for admin) - Using PostgreSQL connection
   app.get('/api/admin/claim-value-slabs', isAdminAuthenticated, async (req, res) => {
-    const { default: sql } = await import('mssql');
-    
-    // Direct database connection with credentials
-    const config = {
-      server: '103.205.66.184',
-      port: 2499,
-      database: 'prexoDB',
-      user: 'qo8yhe',
-      password: 'tFbs89!0Ryyx1^90',
-      options: {
-        encrypt: false,
-        trustServerCertificate: true,
-      },
-      pool: {
-        max: 10,
-        min: 0,
-        idleTimeoutMillis: 30000
-      }
-    };
-
-    let pool: any = null;
-    
     try {
-      console.log('=== Connecting directly to SQL Server for claim value slabs ===');
-      pool = new sql.ConnectionPool(config);
-      await pool.connect();
+      console.log('=== Fetching claim value slabs from PostgreSQL ===');
       
-      const query = `
-        SELECT 
-          id, 
-          device_type, 
-          brand, 
-          min_months, 
-          max_months, 
-          percentage, 
-          is_active, 
-          created_at, 
-          updated_at
-        FROM claim_value_slabs 
-        WHERE is_active = 1
-        ORDER BY device_type, brand, min_months ASC
-      `;
+      const result = await pgDb.select({
+        id: claimValueSlabs.id,
+        deviceType: claimValueSlabs.deviceType,
+        brand: claimValueSlabs.brand,
+        minMonths: claimValueSlabs.minMonths,
+        maxMonths: claimValueSlabs.maxMonths,
+        percentage: claimValueSlabs.percentage,
+        isActive: claimValueSlabs.isActive,
+        createdAt: claimValueSlabs.createdAt,
+        updatedAt: claimValueSlabs.updatedAt,
+      })
+      .from(claimValueSlabs)
+      .where(eq(claimValueSlabs.isActive, true))
+      .orderBy(
+        asc(claimValueSlabs.deviceType), 
+        asc(claimValueSlabs.brand), 
+        asc(claimValueSlabs.minMonths)
+      );
       
-      console.log('Executing query:', query);
-      const result = await pool.request().query(query);
-      console.log(`Query successful: ${result.recordset.length} records found`);
-      
-      // Map the data to match expected format
-      const slabs = result.recordset.map((row: any) => ({
-        id: row.id,
-        deviceType: row.device_type || 'mobile',
-        brand: row.brand || null,
-        minMonths: row.min_months,
-        maxMonths: row.max_months,
-        percentage: row.percentage,
-        isActive: row.is_active,
-        createdAt: row.created_at,
-        updatedAt: row.updated_at || row.created_at
-      }));
+      console.log(`Query successful: ${result.length} records found`);
       
       // Log summary for debugging
-      const brandedSlabs = slabs.filter(s => s.brand);
-      const mobileSlabs = slabs.filter(s => s.deviceType === 'mobile');
-      const laptopSlabs = slabs.filter(s => s.deviceType === 'laptop');
+      const brandedSlabs = result.filter(s => s.brand);
+      const mobileSlabs = result.filter(s => s.deviceType === 'mobile');
+      const laptopSlabs = result.filter(s => s.deviceType === 'laptop');
       
-      console.log(`✅ Successfully fetched ${slabs.length} claim value slabs:`);
+      console.log(`✅ Successfully fetched ${result.length} claim value slabs:`);
       console.log(`   - ${mobileSlabs.length} mobile slabs`);
       console.log(`   - ${laptopSlabs.length} laptop slabs (${brandedSlabs.length} brand-specific)`);
       
@@ -4575,24 +4550,15 @@ Required: GUPSHUP_API_KEY environment variable
         console.log(`   - Brands: ${brands.join(', ')}`);
       }
       
-      res.json(slabs);
+      res.json(result);
       
     } catch (error: any) {
-      console.error('❌ Direct SQL Server connection failed:', error.message);
+      console.error('❌ PostgreSQL query failed:', error.message);
       res.status(500).json({ 
         message: "Failed to fetch claim value slabs", 
         error: error.message,
-        details: "Direct SQL Server connection failed"
+        details: "PostgreSQL database query failed"
       });
-    } finally {
-      if (pool) {
-        try {
-          await pool.close();
-          console.log('Database connection closed');
-        } catch (closeError) {
-          console.error('Error closing database connection:', closeError);
-        }
-      }
     }
   });
 

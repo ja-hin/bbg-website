@@ -88,6 +88,7 @@ function Router() {
         </Suspense>
       </Route>
       <Route path="/admin/claim-slabs" component={AdminClaimSlabs} />
+      <Route path="/admin/claim-value-slabs" component={lazy(() => import("./pages/admin-claim-value-slabs"))} />
       <Route path="/admin/theme-settings" component={AdminThemeSettings} />
       <Route path="/admin/smtp-settings" component={AdminSmtpSettings} />
       <Route path="/admin/whatsapp-settings" component={AdminWhatsAppSettings} />

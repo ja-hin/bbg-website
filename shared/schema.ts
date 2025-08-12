@@ -71,6 +71,7 @@ export const customers = pgTable("customers", {
 export const claimValueSlabs = pgTable("claim_value_slabs", {
   id: serial("id").primaryKey(),
   deviceType: text("device_type").notNull(), // 'mobile' or 'laptop'
+  brand: text("brand"), // Brand name (HP, Dell, Lenovo, etc.) - optional for mobile
   minMonths: integer("min_months").notNull(),
   maxMonths: integer("max_months").notNull(),
   percentage: integer("percentage").notNull(), // Percentage value (0-100)

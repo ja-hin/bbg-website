@@ -386,6 +386,7 @@ export class SqlServerStorage implements IStorage {
         CREATE TABLE claim_value_slabs (
           id INT IDENTITY(1,1) PRIMARY KEY,
           device_type NVARCHAR(50) NOT NULL,
+          brand NVARCHAR(100),
           min_months INT NOT NULL,
           max_months INT NOT NULL,
           percentage INT NOT NULL,
@@ -415,7 +416,7 @@ export class SqlServerStorage implements IStorage {
         ('laptop', 49, 60, 15, 1);
       END
       
-      -- Add device_type column to existing claim_value_slabs table if it doesn't exist
+      -- Add device_type and brand columns to existing claim_value_slabs table if they don't exist
       IF EXISTS (SELECT * FROM sys.tables WHERE name = 'claim_value_slabs')
       BEGIN
         IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('claim_value_slabs') AND name = 'device_type')
@@ -423,12 +424,70 @@ export class SqlServerStorage implements IStorage {
           ALTER TABLE claim_value_slabs ADD device_type NVARCHAR(50) DEFAULT 'mobile';
           -- Update existing records to have device types
           UPDATE claim_value_slabs SET device_type = 'mobile' WHERE device_type IS NULL OR device_type = '';
+        END
+
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('claim_value_slabs') AND name = 'brand')
+        BEGIN
+          ALTER TABLE claim_value_slabs ADD brand NVARCHAR(100);
           
-          -- Insert laptop versions with slightly higher percentages
-          INSERT INTO claim_value_slabs (device_type, min_months, max_months, percentage, is_active, created_at, updated_at) 
-          SELECT 'laptop', min_months, max_months, percentage + 5, is_active, GETDATE(), GETDATE()
-          FROM claim_value_slabs 
-          WHERE device_type = 'mobile' AND is_active = 1;
+          -- Clear existing data to prepare for brand-specific slabs
+          DELETE FROM claim_value_slabs;
+          
+          -- Insert brand-specific laptop claim value slabs based on your requirements
+          INSERT INTO claim_value_slabs (device_type, brand, min_months, max_months, percentage, is_active, created_at, updated_at) VALUES
+          -- 6 to 12 Months
+          ('laptop', 'HP', 6, 12, 60, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Dell', 6, 12, 60, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Lenovo', 6, 12, 60, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Acer', 6, 12, 60, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Asus', 6, 12, 55, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Macbook', 6, 12, 65, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Others', 6, 12, 50, 1, GETDATE(), GETDATE()),
+          
+          -- 13 to 18 Months
+          ('laptop', 'HP', 13, 18, 50, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Dell', 13, 18, 50, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Lenovo', 13, 18, 50, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Acer', 13, 18, 50, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Asus', 13, 18, 45, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Macbook', 13, 18, 55, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Others', 13, 18, 40, 1, GETDATE(), GETDATE()),
+          
+          -- 19 to 24 Months
+          ('laptop', 'HP', 19, 24, 40, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Dell', 19, 24, 40, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Lenovo', 19, 24, 40, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Acer', 19, 24, 40, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Asus', 19, 24, 35, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Macbook', 19, 24, 45, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Others', 19, 24, 30, 1, GETDATE(), GETDATE()),
+          
+          -- 25 to 30 Months
+          ('laptop', 'HP', 25, 30, 30, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Dell', 25, 30, 30, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Lenovo', 25, 30, 30, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Acer', 25, 30, 30, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Asus', 25, 30, 25, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Macbook', 25, 30, 35, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Others', 25, 30, 20, 1, GETDATE(), GETDATE()),
+          
+          -- 31 to 36 Months
+          ('laptop', 'HP', 31, 36, 20, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Dell', 31, 36, 20, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Lenovo', 31, 36, 20, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Acer', 31, 36, 20, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Asus', 31, 36, 15, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Macbook', 31, 36, 25, 1, GETDATE(), GETDATE()),
+          ('laptop', 'Others', 31, 36, 10, 1, GETDATE(), GETDATE()),
+          
+          -- Add mobile device slabs (generic for all brands for now)
+          ('mobile', NULL, 6, 12, 70, 1, GETDATE(), GETDATE()),
+          ('mobile', NULL, 13, 18, 60, 1, GETDATE(), GETDATE()),
+          ('mobile', NULL, 19, 24, 50, 1, GETDATE(), GETDATE()),
+          ('mobile', NULL, 25, 30, 40, 1, GETDATE(), GETDATE()),
+          ('mobile', NULL, 31, 36, 30, 1, GETDATE(), GETDATE()),
+          ('mobile', NULL, 37, 48, 20, 1, GETDATE(), GETDATE()),
+          ('mobile', NULL, 49, 60, 10, 1, GETDATE(), GETDATE());
         END
       END
 
@@ -2297,16 +2356,17 @@ export class SqlServerStorage implements IStorage {
   async createClaimValueSlab(slab: InsertClaimValueSlab): Promise<ClaimValueSlab> {
     await db.connectDB();
     
-    // Try modern query with device_type column first
+    // Try modern query with device_type and brand columns
     try {
       const query = `
-        INSERT INTO claim_value_slabs (device_type, min_months, max_months, percentage, is_active)
+        INSERT INTO claim_value_slabs (device_type, brand, min_months, max_months, percentage, is_active)
         OUTPUT INSERTED.*
-        VALUES (@deviceType, @minMonths, @maxMonths, @percentage, @isActive)
+        VALUES (@deviceType, @brand, @minMonths, @maxMonths, @percentage, @isActive)
       `;
 
       const request = db.pool.request();
       request.input('deviceType', sql.NVarChar, slab.deviceType || 'mobile');
+      request.input('brand', sql.NVarChar, slab.brand || null);
       request.input('minMonths', sql.Int, slab.minMonths);
       request.input('maxMonths', sql.Int, slab.maxMonths);
       request.input('percentage', sql.Int, slab.percentage);
@@ -2315,26 +2375,48 @@ export class SqlServerStorage implements IStorage {
       const result = await request.query(query);
       return this.mapClaimValueSlabFromDb(result.recordset[0]);
     } catch (error: any) {
-      console.log('Modern insert failed, attempting fallback without device_type:', error.message);
+      console.log('Modern insert failed, attempting fallback without brand:', error.message);
       
-      // Fallback to basic insert without device_type column
-      const fallbackQuery = `
-        INSERT INTO claim_value_slabs (min_months, max_months, percentage, is_active)
-        OUTPUT INSERTED.*
-        VALUES (@minMonths, @maxMonths, @percentage, @isActive)
-      `;
+      // Fallback to insert without brand column
+      try {
+        const fallbackQuery = `
+          INSERT INTO claim_value_slabs (device_type, min_months, max_months, percentage, is_active)
+          OUTPUT INSERTED.*
+          VALUES (@deviceType, @minMonths, @maxMonths, @percentage, @isActive)
+        `;
 
-      const fallbackRequest = db.pool.request();
-      fallbackRequest.input('minMonths', sql.Int, slab.minMonths);
-      fallbackRequest.input('maxMonths', sql.Int, slab.maxMonths);
-      fallbackRequest.input('percentage', sql.Int, slab.percentage);
-      fallbackRequest.input('isActive', sql.Bit, slab.isActive ?? true);
+        const fallbackRequest = db.pool.request();
+        fallbackRequest.input('deviceType', sql.NVarChar, slab.deviceType || 'mobile');
+        fallbackRequest.input('minMonths', sql.Int, slab.minMonths);
+        fallbackRequest.input('maxMonths', sql.Int, slab.maxMonths);
+        fallbackRequest.input('percentage', sql.Int, slab.percentage);
+        fallbackRequest.input('isActive', sql.Bit, slab.isActive ?? true);
 
-      const fallbackResult = await fallbackRequest.query(fallbackQuery);
-      const mappedResult = this.mapClaimValueSlabFromDb(fallbackResult.recordset[0]);
-      // Preserve the original device type from the request
-      mappedResult.deviceType = slab.deviceType || 'mobile';
-      return mappedResult;
+        const fallbackResult = await fallbackRequest.query(fallbackQuery);
+        return this.mapClaimValueSlabFromDb(fallbackResult.recordset[0]);
+      } catch (fallbackError: any) {
+        console.log('Fallback failed, using basic insert:', fallbackError.message);
+        
+        // Final fallback without device_type column
+        const basicQuery = `
+          INSERT INTO claim_value_slabs (min_months, max_months, percentage, is_active)
+          OUTPUT INSERTED.*
+          VALUES (@minMonths, @maxMonths, @percentage, @isActive)
+        `;
+
+        const basicRequest = db.pool.request();
+        basicRequest.input('minMonths', sql.Int, slab.minMonths);
+        basicRequest.input('maxMonths', sql.Int, slab.maxMonths);
+        basicRequest.input('percentage', sql.Int, slab.percentage);
+        basicRequest.input('isActive', sql.Bit, slab.isActive ?? true);
+
+        const basicResult = await basicRequest.query(basicQuery);
+        const mappedResult = this.mapClaimValueSlabFromDb(basicResult.recordset[0]);
+        // Preserve the original values from the request
+        mappedResult.deviceType = slab.deviceType || 'mobile';
+        mappedResult.brand = slab.brand || null;
+        return mappedResult;
+      }
     }
   }
 
@@ -2342,16 +2424,25 @@ export class SqlServerStorage implements IStorage {
     await db.connectDB();
     
     try {
-      const query = `SELECT * FROM claim_value_slabs ORDER BY device_type, min_months ASC`;
+      const query = `SELECT * FROM claim_value_slabs ORDER BY device_type, brand, min_months ASC`;
       const result = await db.pool.request().query(query);
       return result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
     } catch (error: any) {
-      console.log('Modern query failed, using fallback without device_type:', error.message);
+      console.log('Modern query failed, using fallback without brand ordering:', error.message);
       
-      // Fallback query
-      const fallbackQuery = `SELECT *, 'mobile' as device_type FROM claim_value_slabs ORDER BY min_months ASC`;
-      const fallbackResult = await db.pool.request().query(fallbackQuery);
-      return fallbackResult.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+      try {
+        // Fallback query without brand ordering
+        const fallbackQuery = `SELECT * FROM claim_value_slabs ORDER BY device_type, min_months ASC`;
+        const fallbackResult = await db.pool.request().query(fallbackQuery);
+        return fallbackResult.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+      } catch (fallbackError: any) {
+        console.log('Fallback failed, using basic query:', fallbackError.message);
+        
+        // Final fallback without device_type ordering
+        const basicQuery = `SELECT *, 'mobile' as device_type FROM claim_value_slabs ORDER BY min_months ASC`;
+        const basicResult = await db.pool.request().query(basicQuery);
+        return basicResult.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+      }
     }
   }
 
@@ -2416,7 +2507,7 @@ export class SqlServerStorage implements IStorage {
     }
   }
 
-  async updateClaimValueSlab(id: number, updates: Partial<InsertClaimValueSlab>): Promise<void> {
+  async updateClaimValueSlab(id: number, updates: Partial<InsertClaimValueSlab>): Promise<ClaimValueSlab | undefined> {
     await db.connectDB();
     const setParts = [];
     const request = db.pool.request();
@@ -2425,6 +2516,10 @@ export class SqlServerStorage implements IStorage {
     if (updates.deviceType !== undefined) {
       setParts.push('device_type = @deviceType');
       request.input('deviceType', sql.NVarChar, updates.deviceType);
+    }
+    if (updates.brand !== undefined) {
+      setParts.push('brand = @brand');
+      request.input('brand', sql.NVarChar, updates.brand);
     }
     if (updates.minMonths !== undefined) {
       setParts.push('min_months = @minMonths');
@@ -2446,16 +2541,23 @@ export class SqlServerStorage implements IStorage {
     if (setParts.length > 0) {
       try {
         setParts.push('updated_at = GETDATE()');
-        const query = `UPDATE claim_value_slabs SET ${setParts.join(', ')} WHERE id = @id`;
-        await request.query(query);
+        const query = `UPDATE claim_value_slabs SET ${setParts.join(', ')} OUTPUT INSERTED.* WHERE id = @id`;
+        const result = await request.query(query);
+        if (result.recordset.length > 0) {
+          return this.mapClaimValueSlabFromDb(result.recordset[0]);
+        }
       } catch (error: any) {
-        console.log('Modern update failed, attempting fallback without device_type:', error.message);
+        console.log('Modern update failed, attempting fallback without brand:', error.message);
         
-        // Fallback update without device_type column
+        // Fallback update without brand column
         const fallbackParts = [];
         const fallbackRequest = db.pool.request();
         fallbackRequest.input('id', sql.Int, id);
 
+        if (updates.deviceType !== undefined) {
+          fallbackParts.push('device_type = @deviceType');
+          fallbackRequest.input('deviceType', sql.NVarChar, updates.deviceType);
+        }
         if (updates.minMonths !== undefined) {
           fallbackParts.push('min_months = @minMonths');
           fallbackRequest.input('minMonths', sql.Int, updates.minMonths);
@@ -2474,20 +2576,65 @@ export class SqlServerStorage implements IStorage {
         }
 
         if (fallbackParts.length > 0) {
-          fallbackParts.push('updated_at = GETDATE()');
-          const fallbackQuery = `UPDATE claim_value_slabs SET ${fallbackParts.join(', ')} WHERE id = @id`;
-          await fallbackRequest.query(fallbackQuery);
+          try {
+            fallbackParts.push('updated_at = GETDATE()');
+            const fallbackQuery = `UPDATE claim_value_slabs SET ${fallbackParts.join(', ')} OUTPUT INSERTED.* WHERE id = @id`;
+            const fallbackResult = await fallbackRequest.query(fallbackQuery);
+            if (fallbackResult.recordset.length > 0) {
+              return this.mapClaimValueSlabFromDb(fallbackResult.recordset[0]);
+            }
+          } catch (fallbackError: any) {
+            console.log('Fallback failed, using basic update:', fallbackError.message);
+            
+            // Final fallback - basic update without OUTPUT
+            const basicParts = [];
+            const basicRequest = db.pool.request();
+            basicRequest.input('id', sql.Int, id);
+
+            if (updates.minMonths !== undefined) {
+              basicParts.push('min_months = @minMonths');
+              basicRequest.input('minMonths', sql.Int, updates.minMonths);
+            }
+            if (updates.maxMonths !== undefined) {
+              basicParts.push('max_months = @maxMonths');
+              basicRequest.input('maxMonths', sql.Int, updates.maxMonths);
+            }
+            if (updates.percentage !== undefined) {
+              basicParts.push('percentage = @percentage');
+              basicRequest.input('percentage', sql.Int, updates.percentage);
+            }
+            if (updates.isActive !== undefined) {
+              basicParts.push('is_active = @isActive');
+              basicRequest.input('isActive', sql.Bit, updates.isActive);
+            }
+
+            if (basicParts.length > 0) {
+              const basicQuery = `UPDATE claim_value_slabs SET ${basicParts.join(', ')} WHERE id = @id`;
+              await basicRequest.query(basicQuery);
+              // Return the updated record by querying again
+              return await this.getClaimValueSlabById(id);
+            }
+          }
         }
       }
     }
+    return undefined;
   }
 
-  async deleteClaimValueSlab(id: number): Promise<void> {
+  async deleteClaimValueSlab(id: number): Promise<boolean> {
     await db.connectDB();
-    const query = `UPDATE claim_value_slabs SET is_active = 0 WHERE id = @id`;
-    const request = db.pool.request();
-    request.input('id', sql.Int, id);
-    await request.query(query);
+    
+    try {
+      const query = `DELETE FROM claim_value_slabs WHERE id = @id`;
+      const request = db.pool.request();
+      request.input('id', sql.Int, id);
+      const result = await request.query(query);
+      
+      return result.rowsAffected[0] > 0;
+    } catch (error: any) {
+      console.error('Error deleting claim value slab:', error);
+      return false;
+    }
   }
 
   async getClaimValueSlabById(id: number): Promise<ClaimValueSlab | undefined> {
@@ -2508,6 +2655,7 @@ export class SqlServerStorage implements IStorage {
     return {
       id: row.id,
       deviceType: row.device_type || row.deviceType || 'mobile', // Preserve existing deviceType from memory
+      brand: row.brand || null,
       minMonths: row.min_months,
       maxMonths: row.max_months,
       percentage: row.percentage,

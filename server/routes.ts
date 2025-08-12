@@ -4489,7 +4489,7 @@ Required: GUPSHUP_API_KEY environment variable
   // Create new claim value slab
   app.post('/api/admin/claim-value-slabs', isAdminAuthenticated, async (req, res) => {
     try {
-      const { deviceType, minMonths, maxMonths, percentage, isActive } = req.body;
+      const { deviceType, brand, minMonths, maxMonths, percentage, isActive } = req.body;
 
       // Validate required fields
       if (!deviceType || !minMonths || !maxMonths || !percentage) {
@@ -4512,13 +4512,14 @@ Required: GUPSHUP_API_KEY environment variable
 
       const slab = await storage.createClaimValueSlab({
         deviceType,
+        brand: deviceType === 'laptop' ? brand : null,
         minMonths: parseInt(minMonths),
         maxMonths: parseInt(maxMonths),
         percentage: parseInt(percentage),
         isActive: isActive !== false // Default to true if not specified
       });
 
-      res.json({ success: true, slab });
+      res.json(slab);
     } catch (error: any) {
       console.error('Error creating claim value slab:', error);
       res.status(500).json({ message: "Failed to create claim value slab", error: error.message });
@@ -4526,10 +4527,10 @@ Required: GUPSHUP_API_KEY environment variable
   });
 
   // Update claim value slab
-  app.put('/api/admin/claim-value-slabs/:id', isAdminAuthenticated, async (req, res) => {
+  app.patch('/api/admin/claim-value-slabs/:id', isAdminAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const { deviceType, minMonths, maxMonths, percentage, isActive } = req.body;
+      const { deviceType, brand, minMonths, maxMonths, percentage, isActive } = req.body;
 
       const updates: any = {};
       
@@ -4538,6 +4539,9 @@ Required: GUPSHUP_API_KEY environment variable
           return res.status(400).json({ message: "Invalid device type. Must be 'mobile' or 'laptop'" });
         }
         updates.deviceType = deviceType;
+      }
+      if (brand !== undefined) {
+        updates.brand = deviceType === 'laptop' ? brand : null;
       }
       if (minMonths !== undefined) updates.minMonths = parseInt(minMonths);
       if (maxMonths !== undefined) updates.maxMonths = parseInt(maxMonths);
@@ -4554,8 +4558,11 @@ Required: GUPSHUP_API_KEY environment variable
         return res.status(400).json({ message: "minMonths must be less than maxMonths" });
       }
 
-      await storage.updateClaimValueSlab(id, updates);
-      res.json({ success: true, message: "Claim value slab updated successfully" });
+      const updatedSlab = await storage.updateClaimValueSlab(id, updates);
+      if (!updatedSlab) {
+        return res.status(404).json({ message: 'Claim value slab not found' });
+      }
+      res.json(updatedSlab);
     } catch (error: any) {
       console.error('Error updating claim value slab:', error);
       res.status(500).json({ message: "Failed to update claim value slab", error: error.message });
@@ -4566,8 +4573,11 @@ Required: GUPSHUP_API_KEY environment variable
   app.delete('/api/admin/claim-value-slabs/:id', isAdminAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      await storage.deleteClaimValueSlab(id);
-      res.json({ success: true, message: "Claim value slab deleted successfully" });
+      const deleted = await storage.deleteClaimValueSlab(id);
+      if (!deleted) {
+        return res.status(404).json({ message: 'Claim value slab not found' });
+      }
+      res.json({ message: 'Claim value slab deleted successfully' });
     } catch (error: any) {
       console.error('Error deleting claim value slab:', error);
       res.status(500).json({ message: "Failed to delete claim value slab", error: error.message });

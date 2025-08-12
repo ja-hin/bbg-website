@@ -1180,8 +1180,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const thankYouData = req.session.thankYouData;
       if (thankYouData) {
-        // Clear the session data after reading it
-        delete req.session.thankYouData;
+        // Don't clear session data immediately - let it expire naturally
+        // This allows the thank you page to work on refresh
         res.json(thankYouData);
       } else {
         res.status(404).json({ message: "No thank you data found" });

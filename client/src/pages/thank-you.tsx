@@ -69,17 +69,51 @@ export default function ThankYou() {
   useEffect(() => {
     if (thankYouData) {
       setSessionData(thankYouData);
+      // Store in localStorage for persistence across page refreshes
+      localStorage.setItem('thankYouData', JSON.stringify(thankYouData));
+      // Also store timestamp to handle expiry (24 hours)
+      localStorage.setItem('thankYouDataTimestamp', Date.now().toString());
     } else {
-      // Check session storage as fallback
-      const storedData = sessionStorage.getItem('thankYouData');
-      if (storedData) {
-        try {
-          const parsedData = JSON.parse(storedData);
-          setSessionData(parsedData);
-          // Clear session storage after reading
-          sessionStorage.removeItem('thankYouData');
-        } catch (error) {
-          console.error('Error parsing session storage data:', error);
+      // Check localStorage first (persists across refreshes)
+      const storedData = localStorage.getItem('thankYouData');
+      const storedTimestamp = localStorage.getItem('thankYouDataTimestamp');
+      
+      if (storedData && storedTimestamp) {
+        const timestamp = parseInt(storedTimestamp);
+        const now = Date.now();
+        const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        
+        // Check if data is still valid (less than 24 hours old)
+        if (now - timestamp < twentyFourHours) {
+          try {
+            const parsedData = JSON.parse(storedData);
+            setSessionData(parsedData);
+          } catch (error) {
+            console.error('Error parsing localStorage data:', error);
+            // Clear invalid data
+            localStorage.removeItem('thankYouData');
+            localStorage.removeItem('thankYouDataTimestamp');
+          }
+        } else {
+          // Data is expired, clear it
+          localStorage.removeItem('thankYouData');
+          localStorage.removeItem('thankYouDataTimestamp');
+        }
+      } else {
+        // Fallback to sessionStorage (for backward compatibility)
+        const sessionStoredData = sessionStorage.getItem('thankYouData');
+        if (sessionStoredData) {
+          try {
+            const parsedData = JSON.parse(sessionStoredData);
+            setSessionData(parsedData);
+            // Move to localStorage for persistence
+            localStorage.setItem('thankYouData', sessionStoredData);
+            localStorage.setItem('thankYouDataTimestamp', Date.now().toString());
+            // Clear session storage after moving to localStorage
+            sessionStorage.removeItem('thankYouData');
+          } catch (error) {
+            console.error('Error parsing session storage data:', error);
+          }
         }
       }
     }

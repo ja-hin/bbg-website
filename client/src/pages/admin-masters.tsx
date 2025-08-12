@@ -15,14 +15,14 @@ function AdminMastersPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Brands Management */}
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow flex flex-col h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Brand & Model Management</CardTitle>
               <Database className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col flex-grow">
               <div className="text-2xl font-bold mb-2">Brands & Models</div>
-              <p className="text-xs text-muted-foreground mb-4">
+              <p className="text-xs text-muted-foreground mb-4 flex-grow">
                 Manage device brands and their models for customer registration
               </p>
               <Link href="/admin/brands">
@@ -35,14 +35,14 @@ function AdminMastersPage() {
           </Card>
 
           {/* Admin Users Management */}
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow flex flex-col h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Admin Users</CardTitle>
               <Shield className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col flex-grow">
               <div className="text-2xl font-bold mb-2">Admin Users</div>
-              <p className="text-xs text-muted-foreground mb-4">
+              <p className="text-xs text-muted-foreground mb-4 flex-grow">
                 Manage admin users and their access permissions
               </p>
               <Link href="/admin/admin-users">
@@ -55,14 +55,14 @@ function AdminMastersPage() {
           </Card>
 
           {/* Claim Value Slabs */}
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow flex flex-col h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Claim Value Slabs</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col flex-grow">
               <div className="text-2xl font-bold mb-2">Value Slabs</div>
-              <p className="text-xs text-muted-foreground mb-4">
+              <p className="text-xs text-muted-foreground mb-4 flex-grow">
                 Configure claim value percentage slabs for different device ages
               </p>
               <Link href="/admin/claim-value-slabs">
@@ -75,14 +75,14 @@ function AdminMastersPage() {
           </Card>
 
           {/* Communication Templates */}
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow flex flex-col h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Communication Templates</CardTitle>
               <MessageSquare className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col flex-grow">
               <div className="text-2xl font-bold mb-2">Templates</div>
-              <p className="text-xs text-muted-foreground mb-4">
+              <p className="text-xs text-muted-foreground mb-4 flex-grow">
                 Manage email, SMS and WhatsApp message templates
               </p>
               <Link href="/admin/templates">
@@ -95,14 +95,14 @@ function AdminMastersPage() {
           </Card>
 
           {/* Theme Settings */}
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow flex flex-col h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Theme Settings</CardTitle>
               <Settings className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col flex-grow">
               <div className="text-2xl font-bold mb-2">Themes</div>
-              <p className="text-xs text-muted-foreground mb-4">
+              <p className="text-xs text-muted-foreground mb-4 flex-grow">
                 Configure application theme colors and appearance
               </p>
               <Link href="/admin/theme-settings">
@@ -115,14 +115,14 @@ function AdminMastersPage() {
           </Card>
 
           {/* SMTP Settings */}
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow flex flex-col h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">SMTP Settings</CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col flex-grow">
               <div className="text-2xl font-bold mb-2">Email Config</div>
-              <p className="text-xs text-muted-foreground mb-4">
+              <p className="text-xs text-muted-foreground mb-4 flex-grow">
                 Configure SMTP settings for email communications
               </p>
               <Link href="/admin/smtp-settings">
@@ -135,14 +135,14 @@ function AdminMastersPage() {
           </Card>
 
           {/* WhatsApp Settings */}
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow flex flex-col h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">WhatsApp Settings</CardTitle>
               <MessageSquare className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col flex-grow">
               <div className="text-2xl font-bold mb-2">WhatsApp API</div>
-              <p className="text-xs text-muted-foreground mb-4">
+              <p className="text-xs text-muted-foreground mb-4 flex-grow">
                 Configure WhatsApp Business API for messaging
               </p>
               <Link href="/admin/whatsapp-settings">

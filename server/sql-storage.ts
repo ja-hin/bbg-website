@@ -1270,13 +1270,13 @@ export class SqlServerStorage implements IStorage {
       INSERT INTO customers (
         name, contact, email, pincode, device_type, serial_number, 
         brand, model_name, invoice_value, date_of_purchase, seller_code, voucher_code, payment_intent_id, is_verified,
-        registration_source, invoice_file, claim_value_slab_id
+        registration_source, invoice_file, claim_value_slab_id, registration_slab_data
       ) 
       OUTPUT INSERTED.*
       VALUES (
         @name, @contact, @email, @pincode, @deviceType, @serialNumber, 
         @brand, @modelName, @invoiceValue, @dateOfPurchase, @sellerCode, @voucherCode, @paymentIntentId, @isVerified,
-        @registrationSource, @invoiceFile, @claimValueSlabId
+        @registrationSource, @invoiceFile, @claimValueSlabId, @registrationSlabData
       )
     `;
 
@@ -1301,6 +1301,7 @@ export class SqlServerStorage implements IStorage {
     const validInvoiceFile = (invoiceFileValue && typeof invoiceFileValue === 'string') ? invoiceFileValue : null;
     request.input('invoiceFile', sql.NVarChar, validInvoiceFile);
     request.input('claimValueSlabId', sql.Int, claimValueSlabId);
+    request.input('registrationSlabData', sql.NVarChar, insertCustomer.registrationSlabData || null);
 
     const result = await request.query(query);
 

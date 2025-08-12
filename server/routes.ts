@@ -840,9 +840,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Find the appropriate claim value slab based on device age at purchase
       let activeClaimValueSlab;
+      const purchaseDate = new Date(customerData.dateOfPurchase);
+      const monthsDiff = Math.floor((Date.now() - purchaseDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
+      
       try {
-        const purchaseDate = new Date(customerData.dateOfPurchase);
-        const monthsDiff = Math.floor((Date.now() - purchaseDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
         
         console.log('Finding claim value slab for registration:', {
           deviceType: customerData.deviceType,
@@ -885,7 +886,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           completeSlabData = JSON.stringify({
             deviceType: activeClaimValueSlab.deviceType,
             brand: activeClaimValueSlab.brand,
-            registrationAge: Math.floor((Date.now() - new Date(customerData.dateOfPurchase).getTime()) / (1000 * 60 * 60 * 24 * 30)),
+            registrationAge: monthsDiff,
             registrationDate: new Date().toISOString(),
             slabs: brandSpecificSlabs
           });
@@ -894,7 +895,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             deviceType: activeClaimValueSlab.deviceType,
             brand: activeClaimValueSlab.brand,
             totalSlabs: brandSpecificSlabs.length,
-            registrationAge: Math.floor((Date.now() - new Date(customerData.dateOfPurchase).getTime()) / (1000 * 60 * 60 * 24 * 30))
+            registrationAge: monthsDiff
           });
         } catch (slabError) {
           console.error('❌ Error building complete slab structure for registration:', slabError);

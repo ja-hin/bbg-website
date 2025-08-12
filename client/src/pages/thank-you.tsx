@@ -6,34 +6,51 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Users, Smartphone, Home, Download, Info } from "lucide-react";
 
-// Depreciation Slabs Component
-function DepreciationSlabs() {
-  const slabs = [
-    { period: "6-12 months", percentage: "70%" },
-    { period: "13-18 months", percentage: "60%" },
-    { period: "19-24 months", percentage: "50%" },
-    { period: "25-30 months", percentage: "40%" },
-    { period: "31-36 months", percentage: "30%" },
-    { period: "37-48 months", percentage: "20%" },
-    { period: "49-60 months", percentage: "10%" }
-  ];
+// Brand-Specific Claim Values Component
+function BrandClaimValues({ sessionData }: { sessionData: any }) {
+  if (!sessionData?.registrationSlabData?.slabs || sessionData.registrationSlabData.slabs.length === 0) {
+    return null;
+  }
+
+  // Extract and deduplicate slabs by age range, keeping the most recent entry for each range
+  const uniqueSlabs = sessionData.registrationSlabData.slabs.reduce((acc: any, slab: any) => {
+    const key = `${slab.minMonths}-${slab.maxMonths}`;
+    if (!acc[key] || new Date(slab.updatedAt) > new Date(acc[key].updatedAt)) {
+      acc[key] = slab;
+    }
+    return acc;
+  }, {} as Record<string, any>);
+
+  const slabs = Object.values(uniqueSlabs).sort((a: any, b: any) => a.minMonths - b.minMonths);
 
   return (
     <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6 mb-8">
       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
         <Info className="h-5 w-5 mr-2 text-blue-600" />
-        Your BuyBack Guarantee - Depreciation Slabs
+        Your {sessionData.brand} {sessionData.deviceType} - BuyBack Guarantee Values
       </h3>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {slabs.map((slab, index) => (
-          <div key={index} className="bg-white rounded-lg p-3 text-center border border-gray-200">
-            <div className="text-sm font-medium text-gray-600">{slab.period}</div>
-            <div className="text-lg font-bold text-green-600">{slab.percentage}</div>
-          </div>
-        ))}
+        {slabs.map((slab: any, index: number) => {
+          // Determine color based on percentage
+          let colorClass = "text-green-600";
+          if (slab.percentage < 30) colorClass = "text-red-600";
+          else if (slab.percentage < 50) colorClass = "text-orange-600";
+          else if (slab.percentage < 70) colorClass = "text-yellow-600";
+
+          return (
+            <div key={index} className="bg-white rounded-lg p-3 text-center border border-gray-200">
+              <div className="text-sm font-medium text-gray-600">
+                {slab.minMonths}-{slab.maxMonths} months
+              </div>
+              <div className={`text-lg font-bold ${colorClass}`}>
+                {slab.percentage}%
+              </div>
+            </div>
+          );
+        })}
       </div>
       <p className="text-xs text-gray-600 mt-3">
-        * Percentage of original invoice value you'll receive when claiming BBG
+        * Percentage of original invoice value you'll receive when claiming BBG for your {sessionData.brand} device
       </p>
     </div>
   );
@@ -238,8 +255,8 @@ Contact: support@xtracover.com
               </div>
             )}
 
-            {/* Show Depreciation Slabs for Customer Registrations */}
-            {type === 'customer' && <DepreciationSlabs />}
+            {/* Show Brand-Specific Claim Values for Customer Registrations */}
+            {type === 'customer' && <BrandClaimValues sessionData={sessionData} />}
 
             {/* Details List */}
             {content.details.length > 0 && (

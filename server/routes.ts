@@ -786,7 +786,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           voucherCode: customer.voucherCode,
           paymentMethod: 'payu',
           customerName: customer.name,
-          deviceType: customer.deviceType
+          deviceType: customer.deviceType,
+          brand: customer.brand,
+          modelName: customer.modelName,
+          registrationSlabData: customer.registrationSlabData
         };
         
         // Redirect to success page without query parameters
@@ -948,7 +951,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         voucherCode: customer.voucherCode,
         paymentMethod: 'direct',
         customerName: customer.name,
-        deviceType: customer.deviceType
+        deviceType: customer.deviceType,
+        brand: customer.brand,
+        modelName: customer.modelName,
+        registrationSlabData: customer.registrationSlabData
       };
 
       res.status(201).json({

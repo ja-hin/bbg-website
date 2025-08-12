@@ -7,7 +7,7 @@ export default function TermsAndConditions() {
         <div className="mb-8">
           <h1 className="flex items-center gap-2 text-2xl font-bold">
             <FileText className="h-7 w-7" />
-            XtraCover Buyback Guarantee Terms and Conditions
+            Buyback Guarantee Terms and Conditions
           </h1>
         </div>
         <div className="prose prose-gray max-w-none">

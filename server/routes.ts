@@ -4158,12 +4158,40 @@ Required: GUPSHUP_API_KEY environment variable
       // Use the model name directly
       const finalModelName = model;
 
-      // Get active claim value slab to associate with registration
+      // Find the appropriate claim value slab based on device age at purchase
       let activeClaimValueSlab;
       try {
+        const purchaseDateObj = new Date(purchaseDate);
+        const monthsDiff = Math.floor((Date.now() - purchaseDateObj.getTime()) / (1000 * 60 * 60 * 24 * 30));
+        
+        console.log('Finding claim value slab for Acer registration:', {
+          deviceType: deviceType.toLowerCase(),
+          brand,
+          purchaseDate: purchaseDateObj.toISOString(),
+          currentAge: monthsDiff
+        });
+
         const activeSlabs = await storage.getActiveClaimValueSlabs();
-        // For now, get the first active slab (you can add more logic here)
-        activeClaimValueSlab = activeSlabs.length > 0 ? activeSlabs[0] : null;
+        
+        // Find brand-specific slab first
+        activeClaimValueSlab = activeSlabs.find(slab => 
+          slab.deviceType === deviceType.toLowerCase() &&
+          slab.brand === brand &&
+          monthsDiff >= slab.minMonths && 
+          monthsDiff <= slab.maxMonths
+        );
+        
+        // If no brand-specific slab, try generic slab
+        if (!activeClaimValueSlab) {
+          activeClaimValueSlab = activeSlabs.find(slab => 
+            slab.deviceType === deviceType.toLowerCase() &&
+            !slab.brand &&
+            monthsDiff >= slab.minMonths && 
+            monthsDiff <= slab.maxMonths
+          );
+        }
+        
+        console.log('Selected claim value slab for Acer registration:', activeClaimValueSlab);
       } catch (error) {
         console.log('Warning: Could not fetch active claim value slab:', error);
         activeClaimValueSlab = null;

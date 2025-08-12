@@ -4792,7 +4792,6 @@ Required: GUPSHUP_API_KEY environment variable
   // Excel Template Download
   app.get('/api/admin/claim-value-slabs/excel-template', isAdminAuthenticated, async (req, res) => {
     try {
-      const XLSX = require('xlsx');
       
       // Get all current slabs for the template
       const slabs = await storage.getAllClaimValueSlabs();
@@ -4855,13 +4854,10 @@ Required: GUPSHUP_API_KEY environment variable
   // Excel Upload and Process
   app.post('/api/admin/claim-value-slabs/excel-upload', isAdminAuthenticated, async (req, res) => {
     try {
-      const multer = require('multer');
-      const upload = multer({ dest: 'uploads/' });
-      const XLSX = require('xlsx');
-      const fs = require('fs');
+      const excelUpload = multer({ dest: 'uploads/' });
       
       // Handle file upload
-      upload.single('excel')(req, res, async (err: any) => {
+      excelUpload.single('excel')(req, res, async (err: any) => {
         if (err) {
           return res.status(400).json({ message: "File upload failed", error: err.message });
         }

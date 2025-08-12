@@ -35,12 +35,12 @@ export default function Header() {
             href={item.href}
             onClick={onItemClick}
             className={`
-              px-4 py-2 text-sm font-normal transition-colors rounded-full
+              px-4 py-2 text-sm transition-colors rounded-full
               ${mobile 
-                ? 'block text-base text-white hover:bg-white/10' 
+                ? 'block text-base text-white hover:bg-white/10 font-normal' 
                 : isActive 
-                  ? 'text-white bg-transparent' 
-                  : 'bg-white text-black hover:bg-white/90'
+                  ? 'text-white bg-transparent font-bold' 
+                  : 'bg-white text-black hover:bg-white/90 font-normal'
               }
             `}
           >
@@ -82,7 +82,7 @@ export default function Header() {
                   alt="XTRACOVER Logo" 
                   className="h-12 w-auto"
                 />
-                <span className="text-gray-600 text-lg font-medium">| BBG</span>
+                <span className="text-gray-600 text-xl font-medium">| BBG</span>
               </div>
             </Link>
 
@@ -112,7 +112,7 @@ export default function Header() {
                         alt="XTRACOVER Logo" 
                         className="h-10 w-auto"
                       />
-                      <span className="text-white/90 text-lg font-medium">| BBG</span>
+                      <span className="text-white/90 text-xl font-medium">| BBG</span>
                     </div>
                     
                     {/* Mobile Navigation */}

@@ -275,39 +275,31 @@ export default function Home() {
                   <table className="w-full">
                     <thead className="bg-gray-100">
                       <tr>
-                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Brand</th>
                         <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
-                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Claim %</th>
+                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">All Brands</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                      {activeMobileSlabs.map((slab: any) => {
-                        // Determine color based on percentage
-                        let colorClass = "text-green-600";
-                        if (slab.percentage < 30) colorClass = "text-xtra-primary";
-                        else if (slab.percentage < 50) colorClass = "text-orange-600";
-                        else if (slab.percentage < 70) colorClass = "text-yellow-600";
+                      {activeMobileSlabs
+                        .filter((slab: any) => !slab.brand) // Only show generic slabs for mobile
+                        .map((slab: any) => {
+                          // Determine color based on percentage
+                          let colorClass = "text-green-600";
+                          if (slab.percentage < 30) colorClass = "text-xtra-primary";
+                          else if (slab.percentage < 50) colorClass = "text-orange-600";
+                          else if (slab.percentage < 70) colorClass = "text-yellow-600";
 
-                        return (
-                          <tr key={slab.id} className="hover:bg-gray-50">
-                            <td className="py-3 px-4 text-sm font-medium text-gray-600">
-                              {slab.brand ? (
-                                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                                  {slab.brand}
-                                </span>
-                              ) : (
-                                <span className="text-gray-400 italic text-xs">All Brands</span>
-                              )}
-                            </td>
-                            <td className="py-3 px-4 text-sm font-medium text-gray-900">
-                              {slab.minMonths}-{slab.maxMonths} months
-                            </td>
-                            <td className="py-3 px-4">
-                              <span className={`text-lg font-bold ${colorClass}`}>{slab.percentage}%</span>
-                            </td>
-                          </tr>
-                        );
-                      })}
+                          return (
+                            <tr key={slab.id} className="hover:bg-gray-50">
+                              <td className="py-3 px-4 text-sm font-medium text-gray-900">
+                                {slab.minMonths}-{slab.maxMonths} months
+                              </td>
+                              <td className="py-3 px-4">
+                                <span className={`text-lg font-bold ${colorClass}`}>{slab.percentage}%</span>
+                              </td>
+                            </tr>
+                          );
+                        })}
                     </tbody>
                   </table>
                 </div>
@@ -322,44 +314,78 @@ export default function Home() {
                   </h3>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-100">
-                      <tr>
-                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Brand</th>
-                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
-                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Claim %</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {activeLaptopSlabs.map((slab: any) => {
-                        // Determine color based on percentage
-                        let colorClass = "text-green-600";
-                        if (slab.percentage < 30) colorClass = "text-xtra-primary";
-                        else if (slab.percentage < 50) colorClass = "text-orange-600";
-                        else if (slab.percentage < 70) colorClass = "text-yellow-600";
+                  {(() => {
+                    // Group laptop slabs by age range for brand comparison
+                    const ageRanges: { [key: string]: any } = {};
+                    const brands = ['HP', 'Lenovo', 'Dell', 'Acer', 'Asus'];
+                    
+                    // First, get all unique age ranges
+                    activeLaptopSlabs.forEach((slab: any) => {
+                      const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
+                      if (!ageRanges[ageKey]) {
+                        ageRanges[ageKey] = {
+                          minMonths: slab.minMonths,
+                          maxMonths: slab.maxMonths,
+                          brands: {}
+                        };
+                      }
+                      
+                      // Add brand-specific percentage or fallback to generic
+                      if (slab.brand) {
+                        ageRanges[ageKey].brands[slab.brand] = slab.percentage;
+                      } else {
+                        // This is a generic slab - use as fallback for missing brands
+                        brands.forEach(brand => {
+                          if (!ageRanges[ageKey].brands[brand]) {
+                            ageRanges[ageKey].brands[brand] = slab.percentage;
+                          }
+                        });
+                      }
+                    });
 
-                        return (
-                          <tr key={slab.id} className="hover:bg-gray-50">
-                            <td className="py-3 px-4 text-sm font-medium text-gray-600">
-                              {slab.brand ? (
-                                <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                                  {slab.brand}
-                                </span>
-                              ) : (
-                                <span className="text-gray-400 italic text-xs">All Brands</span>
-                              )}
-                            </td>
-                            <td className="py-3 px-4 text-sm font-medium text-gray-900">
-                              {slab.minMonths}-{slab.maxMonths} months
-                            </td>
-                            <td className="py-3 px-4">
-                              <span className={`text-lg font-bold ${colorClass}`}>{slab.percentage}%</span>
-                            </td>
+                    // Sort age ranges by minMonths
+                    const sortedAgeRanges = Object.entries(ageRanges).sort(
+                      ([, a], [, b]) => a.minMonths - b.minMonths
+                    );
+
+                    return (
+                      <table className="w-full">
+                        <thead className="bg-gray-100">
+                          <tr>
+                            <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
+                            {brands.map(brand => (
+                              <th key={brand} className="py-3 px-4 text-center font-semibold text-sm text-gray-700">{brand}</th>
+                            ))}
                           </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {sortedAgeRanges.map(([ageKey, ageData]) => (
+                            <tr key={ageKey} className="hover:bg-gray-50">
+                              <td className="py-3 px-4 text-sm font-medium text-gray-900">
+                                {ageData.minMonths}-{ageData.maxMonths} months
+                              </td>
+                              {brands.map(brand => {
+                                const percentage = ageData.brands[brand];
+                                if (!percentage) return <td key={brand} className="py-3 px-4 text-center text-gray-400">-</td>;
+                                
+                                // Determine color based on percentage
+                                let colorClass = "text-green-600";
+                                if (percentage < 30) colorClass = "text-xtra-primary";
+                                else if (percentage < 50) colorClass = "text-orange-600";
+                                else if (percentage < 70) colorClass = "text-yellow-600";
+                                
+                                return (
+                                  <td key={brand} className="py-3 px-4 text-center">
+                                    <span className={`text-lg font-bold ${colorClass}`}>{percentage}%</span>
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    );
+                  })()}
                 </div>
               </div>
             </div>

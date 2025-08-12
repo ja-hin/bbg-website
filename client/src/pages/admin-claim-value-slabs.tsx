@@ -263,28 +263,33 @@ export default function AdminClaimValueSlabsPage() {
                   </Select>
                 </div>
 
-                {formData.deviceType === "laptop" && (
-                  <div>
-                    <Label htmlFor="brand">Brand</Label>
-                    <Select
-                      value={formData.brand}
-                      onValueChange={(value) =>
-                        setFormData({ ...formData, brand: value })
-                      }
-                    >
-                      <SelectTrigger>
+                <div>
+                  <Label htmlFor="brand">Brand</Label>
+                  <Select
+                    value={formData.brand}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, brand: value })
+                    }
+                  >
+                    <SelectTrigger>
                         <SelectValue placeholder="Select brand" />
                       </SelectTrigger>
                       <SelectContent>
-                        {LAPTOP_BRANDS.map((brand) => (
-                          <SelectItem key={brand} value={brand}>
-                            {brand}
-                          </SelectItem>
-                        ))}
+                        {formData.deviceType === "laptop" 
+                          ? LAPTOP_BRANDS.map((brand) => (
+                              <SelectItem key={brand} value={brand}>
+                                {brand}
+                              </SelectItem>
+                            ))
+                          : MOBILE_BRANDS.map((brand) => (
+                              <SelectItem key={brand} value={brand}>
+                                {brand}
+                              </SelectItem>
+                            ))
+                        }
                       </SelectContent>
                     </Select>
                   </div>
-                )}
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -348,53 +353,11 @@ export default function AdminClaimValueSlabsPage() {
           </Dialog>
         </div>
 
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="overview">Brand Overview</TabsTrigger>
+        <Tabs defaultValue="laptop" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="laptop">Laptop Slabs</TabsTrigger>
             <TabsTrigger value="mobile">Mobile Slabs</TabsTrigger>
           </TabsList>
-
-          <TabsContent value="overview">
-            <Card>
-              <CardHeader>
-                <CardTitle>Laptop Brand Claim Value Overview</CardTitle>
-                <p className="text-sm text-gray-600">
-                  Percentage values based on device age and brand
-                </p>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="font-semibold">Age of the Laptop</TableHead>
-                        {LAPTOP_BRANDS.map((brand) => (
-                          <TableHead key={brand} className="text-center font-semibold">
-                            {brand}
-                          </TableHead>
-                        ))}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {brandTableData.map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="font-medium">{row.ageRange}</TableCell>
-                          {LAPTOP_BRANDS.map((brand) => (
-                            <TableCell key={brand} className="text-center">
-                              <Badge variant={row[brand] === "N/A" ? "secondary" : "default"}>
-                                {row[brand]}
-                              </Badge>
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           <TabsContent value="laptop">
             <Card>
@@ -479,23 +442,34 @@ export default function AdminClaimValueSlabsPage() {
                                 );
                               })}
                               <TableCell>
-                                <div className="flex space-x-2">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => startEdit(ageData.genericSlab || Object.values(ageData.brands)[0]?.slab)}
-                                  >
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                  {ageData.genericSlab && (
-                                    <Button
-                                      size="sm"
-                                      variant="destructive"
-                                      onClick={() => deleteMutation.mutate(ageData.genericSlab.id)}
-                                    >
-                                      <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                  )}
+                                <div className="flex flex-col space-y-1">
+                                  {laptopBrands.map(brand => {
+                                    const brandData = ageData.brands[brand];
+                                    if (!brandData?.slab?.brand) return null; // Only show edit buttons for brand-specific slabs
+                                    
+                                    return (
+                                      <div key={brand} className="flex items-center space-x-1">
+                                        <span className="text-xs text-gray-500 w-12">{brand}:</span>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          className="h-6 px-2 text-xs"
+                                          onClick={() => startEdit(brandData.slab)}
+                                        >
+                                          <Edit className="h-3 w-3 mr-1" />
+                                          Edit
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="destructive"
+                                          className="h-6 px-2 text-xs"
+                                          onClick={() => deleteMutation.mutate(brandData.slab.id)}
+                                        >
+                                          <Trash2 className="h-3 w-3" />
+                                        </Button>
+                                      </div>
+                                    );
+                                  })}
                                 </div>
                               </TableCell>
                             </TableRow>
@@ -579,30 +553,46 @@ export default function AdminClaimValueSlabsPage() {
                                 const brandData = ageData.brands[brand];
                                 if (!brandData) return <TableCell key={brand} className="text-center text-gray-400">-</TableCell>;
                                 
+                                const isBrandSpecific = brandData.slab?.brand === brand;
+                                
                                 return (
                                   <TableCell key={brand} className="text-center">
-                                    <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                                    <Badge variant={isBrandSpecific ? "default" : "secondary"} 
+                                           className={isBrandSpecific ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"}>
                                       {brandData.percentage}%
                                     </Badge>
                                   </TableCell>
                                 );
                               })}
                               <TableCell>
-                                <div className="flex space-x-2">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => startEdit(ageData.actions)}
-                                  >
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    variant="destructive"
-                                    onClick={() => deleteMutation.mutate(ageData.actions.id)}
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
+                                <div className="flex flex-col space-y-1">
+                                  {mobileBrands.map(brand => {
+                                    const brandData = ageData.brands[brand];
+                                    if (!brandData?.slab?.brand) return null; // Only show edit buttons for brand-specific slabs
+                                    
+                                    return (
+                                      <div key={brand} className="flex items-center space-x-1">
+                                        <span className="text-xs text-gray-500 w-16">{brand}:</span>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          className="h-6 px-2 text-xs"
+                                          onClick={() => startEdit(brandData.slab)}
+                                        >
+                                          <Edit className="h-3 w-3 mr-1" />
+                                          Edit
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="destructive"
+                                          className="h-6 px-2 text-xs"
+                                          onClick={() => deleteMutation.mutate(brandData.slab.id)}
+                                        >
+                                          <Trash2 className="h-3 w-3" />
+                                        </Button>
+                                      </div>
+                                    );
+                                  })}
                                 </div>
                               </TableCell>
                             </TableRow>

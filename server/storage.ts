@@ -104,6 +104,14 @@ export interface IStorage {
   getWhatsAppConfig(): Promise<any>;
   updateWhatsAppConfig(config: { userId: string; password: string; baseUrl: string; isEnabled: boolean }): Promise<any>;
   getWhatsAppTemplates(): Promise<any[]>;
+
+  // Claim Value Slab operations
+  getAllClaimValueSlabs(): Promise<any[]>;
+  getActiveClaimValueSlabs(): Promise<any[]>;
+  getClaimValueSlabById(id: number): Promise<any | undefined>;
+  createClaimValueSlab(slab: any): Promise<any>;
+  updateClaimValueSlab(id: number, updates: any): Promise<any | undefined>;
+  deleteClaimValueSlab(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -668,6 +676,359 @@ export class DatabaseStorage implements IStorage {
       console.log('Created whatsapp_templates table');
     } catch (error: any) {
       console.error('Failed to create whatsapp_templates table:', error);
+      throw error;
+    }
+  }
+
+  // Claim Value Slab operations
+  async getAllClaimValueSlabs(): Promise<any[]> {
+    try {
+      const config = {
+        server: '103.205.66.184',
+        port: 1433,
+        database: 'bbgdb',
+        user: 'bbg_user',
+        password: 'Bbg@2024',
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+        pool: {
+          max: 10,
+          min: 0,
+          idleTimeoutMillis: 30000
+        },
+        requestTimeout: 30000,
+        connectionTimeout: 30000
+      };
+
+      const pool = new sql.ConnectionPool(config);
+      await pool.connect();
+      
+      const result = await pool.request().query(`
+        SELECT 
+          id, 
+          device_type, 
+          brand, 
+          min_months, 
+          max_months, 
+          percentage, 
+          is_active, 
+          created_at, 
+          updated_at
+        FROM claim_value_slabs 
+        ORDER BY device_type, ISNULL(brand, ''), min_months ASC
+      `);
+      
+      await pool.close();
+      
+      return result.recordset.map((row: any) => ({
+        id: row.id,
+        deviceType: row.device_type,
+        brand: row.brand,
+        minMonths: row.min_months,
+        maxMonths: row.max_months,
+        percentage: row.percentage,
+        isActive: row.is_active,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      }));
+    } catch (error: any) {
+      console.error('Error fetching all claim value slabs:', error);
+      throw error;
+    }
+  }
+
+  async getActiveClaimValueSlabs(): Promise<any[]> {
+    try {
+      const allSlabs = await this.getAllClaimValueSlabs();
+      return allSlabs.filter(slab => slab.isActive);
+    } catch (error: any) {
+      console.error('Error fetching active claim value slabs:', error);
+      throw error;
+    }
+  }
+
+  async getClaimValueSlabById(id: number): Promise<any | undefined> {
+    try {
+      const config = {
+        server: '103.205.66.184',
+        port: 1433,
+        database: 'bbgdb',
+        user: 'bbg_user',
+        password: 'Bbg@2024',
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+        pool: {
+          max: 10,
+          min: 0,
+          idleTimeoutMillis: 30000
+        },
+        requestTimeout: 30000,
+        connectionTimeout: 30000
+      };
+
+      const pool = new sql.ConnectionPool(config);
+      await pool.connect();
+      
+      const request = pool.request();
+      request.input('id', sql.Int, id);
+      
+      const result = await request.query(`
+        SELECT 
+          id, 
+          device_type, 
+          brand, 
+          min_months, 
+          max_months, 
+          percentage, 
+          is_active, 
+          created_at, 
+          updated_at
+        FROM claim_value_slabs 
+        WHERE id = @id
+      `);
+      
+      await pool.close();
+      
+      if (result.recordset.length === 0) {
+        return undefined;
+      }
+      
+      const row = result.recordset[0];
+      return {
+        id: row.id,
+        deviceType: row.device_type,
+        brand: row.brand,
+        minMonths: row.min_months,
+        maxMonths: row.max_months,
+        percentage: row.percentage,
+        isActive: row.is_active,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      };
+    } catch (error: any) {
+      console.error('Error fetching claim value slab by ID:', error);
+      throw error;
+    }
+  }
+
+  async createClaimValueSlab(slab: any): Promise<any> {
+    try {
+      const config = {
+        server: '103.205.66.184',
+        port: 1433,
+        database: 'bbgdb',
+        user: 'bbg_user',
+        password: 'Bbg@2024',
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+        pool: {
+          max: 10,
+          min: 0,
+          idleTimeoutMillis: 30000
+        },
+        requestTimeout: 30000,
+        connectionTimeout: 30000
+      };
+
+      const pool = new sql.ConnectionPool(config);
+      await pool.connect();
+      
+      const request = pool.request();
+      request.input('deviceType', sql.NVarChar, slab.deviceType);
+      request.input('brand', sql.NVarChar, slab.brand || null);
+      request.input('minMonths', sql.Int, slab.minMonths);
+      request.input('maxMonths', sql.Int, slab.maxMonths);
+      request.input('percentage', sql.Int, slab.percentage);
+      request.input('isActive', sql.Bit, slab.isActive !== false);
+      
+      const result = await request.query(`
+        INSERT INTO claim_value_slabs (device_type, brand, min_months, max_months, percentage, is_active, created_at, updated_at)
+        OUTPUT INSERTED.*
+        VALUES (@deviceType, @brand, @minMonths, @maxMonths, @percentage, @isActive, GETDATE(), GETDATE())
+      `);
+      
+      await pool.close();
+      
+      const row = result.recordset[0];
+      return {
+        id: row.id,
+        deviceType: row.device_type,
+        brand: row.brand,
+        minMonths: row.min_months,
+        maxMonths: row.max_months,
+        percentage: row.percentage,
+        isActive: row.is_active,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      };
+    } catch (error: any) {
+      console.error('Error creating claim value slab:', error);
+      throw error;
+    }
+  }
+
+  async updateClaimValueSlab(id: number, updates: any): Promise<any | undefined> {
+    try {
+      const config = {
+        server: '103.205.66.184',
+        port: 1433,
+        database: 'bbgdb',
+        user: 'bbg_user',
+        password: 'Bbg@2024',
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+        pool: {
+          max: 10,
+          min: 0,
+          idleTimeoutMillis: 30000
+        },
+        requestTimeout: 30000,
+        connectionTimeout: 30000
+      };
+
+      const pool = new sql.ConnectionPool(config);
+      await pool.connect();
+      
+      // First check if the record exists
+      const checkRequest = pool.request();
+      checkRequest.input('id', sql.Int, id);
+      
+      const checkResult = await checkRequest.query(`
+        SELECT id FROM claim_value_slabs WHERE id = @id
+      `);
+      
+      if (checkResult.recordset.length === 0) {
+        await pool.close();
+        return undefined;
+      }
+      
+      // Build update query dynamically
+      const updateParts = [];
+      const request = pool.request();
+      request.input('id', sql.Int, id);
+      
+      if (updates.deviceType !== undefined) {
+        updateParts.push('device_type = @deviceType');
+        request.input('deviceType', sql.NVarChar, updates.deviceType);
+      }
+      if (updates.brand !== undefined) {
+        updateParts.push('brand = @brand');
+        request.input('brand', sql.NVarChar, updates.brand);
+      }
+      if (updates.minMonths !== undefined) {
+        updateParts.push('min_months = @minMonths');
+        request.input('minMonths', sql.Int, updates.minMonths);
+      }
+      if (updates.maxMonths !== undefined) {
+        updateParts.push('max_months = @maxMonths');
+        request.input('maxMonths', sql.Int, updates.maxMonths);
+      }
+      if (updates.percentage !== undefined) {
+        updateParts.push('percentage = @percentage');
+        request.input('percentage', sql.Int, updates.percentage);
+      }
+      if (updates.isActive !== undefined) {
+        updateParts.push('is_active = @isActive');
+        request.input('isActive', sql.Bit, updates.isActive);
+      }
+      
+      // Always update the updated_at field
+      updateParts.push('updated_at = GETDATE()');
+      
+      if (updateParts.length === 1) { // Only updated_at, no actual updates
+        await pool.close();
+        return await this.getClaimValueSlabById(id);
+      }
+      
+      const updateQuery = `
+        UPDATE claim_value_slabs 
+        SET ${updateParts.join(', ')}
+        WHERE id = @id
+      `;
+      
+      await request.query(updateQuery);
+      
+      // Fetch and return the updated record
+      const fetchRequest = pool.request();
+      fetchRequest.input('id', sql.Int, id);
+      
+      const fetchResult = await fetchRequest.query(`
+        SELECT 
+          id, 
+          device_type, 
+          brand, 
+          min_months, 
+          max_months, 
+          percentage, 
+          is_active, 
+          created_at, 
+          updated_at
+        FROM claim_value_slabs 
+        WHERE id = @id
+      `);
+      
+      await pool.close();
+      
+      const row = fetchResult.recordset[0];
+      return {
+        id: row.id,
+        deviceType: row.device_type,
+        brand: row.brand,
+        minMonths: row.min_months,
+        maxMonths: row.max_months,
+        percentage: row.percentage,
+        isActive: row.is_active,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      };
+    } catch (error: any) {
+      console.error('Error updating claim value slab:', error);
+      throw error;
+    }
+  }
+
+  async deleteClaimValueSlab(id: number): Promise<void> {
+    try {
+      const config = {
+        server: '103.205.66.184',
+        port: 1433,
+        database: 'bbgdb',
+        user: 'bbg_user',
+        password: 'Bbg@2024',
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+        pool: {
+          max: 10,
+          min: 0,
+          idleTimeoutMillis: 30000
+        },
+        requestTimeout: 30000,
+        connectionTimeout: 30000
+      };
+
+      const pool = new sql.ConnectionPool(config);
+      await pool.connect();
+      
+      const request = pool.request();
+      request.input('id', sql.Int, id);
+      
+      await request.query(`
+        DELETE FROM claim_value_slabs WHERE id = @id
+      `);
+      
+      await pool.close();
+    } catch (error: any) {
+      console.error('Error deleting claim value slab:', error);
       throw error;
     }
   }

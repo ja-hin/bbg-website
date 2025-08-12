@@ -4833,6 +4833,55 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // Update claim value slab (PUT method for frontend compatibility)
+  app.put('/api/admin/claim-value-slabs/:id', isAdminAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      console.log(`=== PUT request to update claim value slab ID: ${id} ===`);
+      console.log('Request body:', req.body);
+
+      const { deviceType, brand, minMonths, maxMonths, percentage, isActive } = req.body;
+
+      const updates: any = {};
+      
+      if (deviceType !== undefined) {
+        if (!['mobile', 'laptop'].includes(deviceType)) {
+          return res.status(400).json({ message: "Invalid device type. Must be 'mobile' or 'laptop'" });
+        }
+        updates.deviceType = deviceType;
+      }
+      if (brand !== undefined) {
+        updates.brand = brand || null;
+      }
+      if (minMonths !== undefined) updates.minMonths = parseInt(minMonths);
+      if (maxMonths !== undefined) updates.maxMonths = parseInt(maxMonths);
+      if (percentage !== undefined) {
+        if (percentage < 0 || percentage > 100) {
+          return res.status(400).json({ message: "Percentage must be between 0 and 100" });
+        }
+        updates.percentage = parseInt(percentage);
+      }
+      if (isActive !== undefined) updates.isActive = isActive;
+
+      // Validate ranges if both are being updated
+      if (updates.minMonths && updates.maxMonths && updates.minMonths >= updates.maxMonths) {
+        return res.status(400).json({ message: "minMonths must be less than maxMonths" });
+      }
+
+      console.log('Updates to apply:', updates);
+      const updatedSlab = await storage.updateClaimValueSlab(id, updates);
+      if (!updatedSlab) {
+        return res.status(404).json({ message: 'Claim value slab not found' });
+      }
+      
+      console.log('✅ Successfully updated claim value slab:', updatedSlab);
+      res.json(updatedSlab);
+    } catch (error: any) {
+      console.error('❌ Error updating claim value slab:', error);
+      res.status(500).json({ message: "Failed to update claim value slab", error: error.message });
+    }
+  });
+
   // Excel Template Download
   app.get('/api/admin/claim-value-slabs/excel-template', isAdminAuthenticated, async (req, res) => {
     try {

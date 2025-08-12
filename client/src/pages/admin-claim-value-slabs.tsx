@@ -112,7 +112,7 @@ export default function AdminClaimValueSlabs() {
   const resetForm = () => {
     setFormData({
       deviceType: 'laptop',
-      brand: '',
+      brand: '__generic__',
       minMonths: 6,
       maxMonths: 12,
       percentage: 50,
@@ -123,7 +123,7 @@ export default function AdminClaimValueSlabs() {
   const startEdit = (slab: ClaimValueSlab) => {
     setFormData({
       deviceType: slab.deviceType,
-      brand: slab.brand || '',
+      brand: slab.brand || '__generic__',
       minMonths: slab.minMonths,
       maxMonths: slab.maxMonths,
       percentage: slab.percentage,
@@ -142,7 +142,7 @@ export default function AdminClaimValueSlabs() {
     
     const submitData = {
       ...formData,
-      brand: formData.brand.trim() || null,
+      brand: formData.brand === '__generic__' ? null : (formData.brand.trim() || null),
     };
 
     if (editingId) {
@@ -247,7 +247,7 @@ export default function AdminClaimValueSlabs() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <Label htmlFor="deviceType">Device Type</Label>
-                    <Select value={formData.deviceType} onValueChange={(value) => setFormData({ ...formData, deviceType: value, brand: '' })}>
+                    <Select value={formData.deviceType} onValueChange={(value) => setFormData({ ...formData, deviceType: value, brand: '__generic__' })}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select device type" />
                       </SelectTrigger>
@@ -283,7 +283,7 @@ export default function AdminClaimValueSlabs() {
                           <SelectValue placeholder="Select brand (optional for generic)" />
                         </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Generic (No Brand)</SelectItem>
+                        <SelectItem value="__generic__">Generic (No Brand)</SelectItem>
                         {formData.deviceType === 'laptop' 
                           ? laptopBrands.map((brand) => (
                               <SelectItem key={brand} value={brand}>

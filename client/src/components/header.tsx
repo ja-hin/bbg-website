@@ -34,8 +34,12 @@ export default function Header() {
             onClick={onItemClick}
             className={`
               ${mobile 
-                ? 'block px-4 py-3 text-base font-medium text-white hover:bg-white/10 transition-colors' 
-                : `px-4 py-2 text-sm font-medium text-white hover:bg-white/10 transition-colors rounded ${isActive ? 'bg-white/20' : ''}`
+                ? 'block px-4 py-3 text-base font-medium text-white hover:bg-white/10 transition-colors rounded-lg' 
+                : `px-4 py-2 text-sm font-medium transition-colors rounded-full ${
+                    isActive 
+                      ? 'text-white' 
+                      : 'bg-white text-black hover:bg-white/90'
+                  }`
               }
             `}
           >
@@ -49,7 +53,7 @@ export default function Header() {
         <Button 
           className={`
             ${mobile ? 'w-full mt-2' : ''}
-            bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded transition-colors
+            bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded-full transition-colors
           `}
           size="sm"
         >
@@ -61,10 +65,13 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-[#254696] shadow-md">
+      {/* Red line at top */}
+      <div className="h-px bg-red-500"></div>
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
+          <Link href="/" className="flex items-center">
             <div className="flex items-center space-x-2">
               {/* Logo Icon */}
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
@@ -72,15 +79,13 @@ export default function Header() {
               </div>
               
               {/* Brand Name */}
-              <div className="text-white font-bold text-xl">
-                XTRACOVER
-              </div>
-              <span className="text-white/80 text-sm">| BBG</span>
+              <span className="text-white font-bold text-xl">XTRACOVER</span>
+              <span className="text-white/90 text-lg font-medium">| BBG</span>
             </div>
           </Link>
           
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1">
+          <nav className="hidden lg:flex items-center space-x-2">
             <NavLinks />
           </nav>
 

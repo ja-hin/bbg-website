@@ -703,17 +703,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
           activeClaimValueSlab = null;
         }
         
+        // Build complete slab data structure for PayU customer registration  
+        let completeSlabData = null;
+        if (activeClaimValueSlab) {
+          try {
+            const brandSpecificSlabs = await storage.getActiveClaimValueSlabsByDeviceBrand(activeClaimValueSlab.deviceType, activeClaimValueSlab.brand || null);
+            completeSlabData = JSON.stringify({
+              deviceType: activeClaimValueSlab.deviceType,
+              brand: activeClaimValueSlab.brand,
+              registrationAge: monthsDiff,
+              registrationDate: new Date().toISOString(),
+              slabs: brandSpecificSlabs,
+              applicableSlabId: activeClaimValueSlab.id
+            });
+            
+            console.log('✅ PayU Complete slab data structure created for customer registration:', {
+              deviceType: activeClaimValueSlab.deviceType,
+              brand: activeClaimValueSlab.brand,
+              totalSlabs: brandSpecificSlabs.length,
+              registrationAge: monthsDiff
+            });
+          } catch (slabError) {
+            console.error('❌ PayU Error building complete slab structure for registration:', slabError);
+            completeSlabData = null;
+          }
+        }
+
         const submitData = {
           ...cleanCustomerData,
           paymentIntentId: `payu_${txnid}`,
           isVerified: true,
           claimValueSlabId: activeClaimValueSlab?.id || null,
           // Store complete slab structure from registration time (preserves entire rate structure)
-          registrationSlabData: activeClaimValueSlab ? JSON.stringify({
-            deviceType: activeClaimValueSlab.deviceType,
-            brand: activeClaimValueSlab.brand,
-            slabs: await storage.getActiveClaimValueSlabsByDeviceBrand(activeClaimValueSlab.deviceType, activeClaimValueSlab.brand || null)
-          }) : null
+          registrationSlabData: completeSlabData
           // Remove invoiceFile completely for PayU payments
         };
 

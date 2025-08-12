@@ -4519,7 +4519,7 @@ Required: GUPSHUP_API_KEY environment variable
           updated_at
         FROM claim_value_slabs 
         WHERE is_active = 1
-        ORDER BY device_type, brand, min_months ASC
+        ORDER BY device_type, ISNULL(brand, ''), min_months ASC
       `;
       
       const request = db.pool.request();

@@ -78,27 +78,30 @@ type CustomerFormData = z.infer<typeof customerSchema>;
 // Stripe PaymentForm component removed - using PayU only
 
 // Depreciation Slabs Component
-function DepreciationSlabs() {
-  // Fetch dynamic claim value slabs for both mobile and laptop
-  const { data: mobileSlabs, isLoading: isMobileSlabsLoading } = useQuery({
-    queryKey: ['/api/claim-value-slabs/active/mobile'],
+function DepreciationSlabs({ customerData }: { customerData?: CustomerFormData }) {
+  // If no customer data provided, don't show anything
+  if (!customerData?.brand || !customerData?.deviceType) {
+    return null;
+  }
+
+  // Fetch claim value slabs for the specific device type
+  const { data: slabs, isLoading } = useQuery({
+    queryKey: [`/api/claim-value-slabs/active/${customerData.deviceType}`],
     retry: false,
   });
 
-  const { data: laptopSlabs, isLoading: isLaptopSlabsLoading } = useQuery({
-    queryKey: ['/api/claim-value-slabs/active/laptop'],
-    retry: false,
-  });
-
-  const mobileSlabsArray = Array.isArray(mobileSlabs) ? mobileSlabs : [];
-  const laptopSlabsArray = Array.isArray(laptopSlabs) ? laptopSlabs : [];
-  const isLoading = isMobileSlabsLoading || isLaptopSlabsLoading;
+  const slabsArray = Array.isArray(slabs) ? slabs : [];
+  
+  // Filter slabs for the selected brand only
+  const brandSlabs = slabsArray.filter((slab: any) => 
+    slab.brand?.toLowerCase() === customerData.brand?.toLowerCase()
+  );
 
   return (
     <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6 mb-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
         <Info className="h-5 w-5 mr-2 text-blue-600" />
-        BuyBack Guarantee - Depreciation Slabs
+        Your {customerData.brand} {customerData.deviceType} - BuyBack Guarantee Values
       </h3>
       <p className="text-xs text-gray-600 mb-4">
         * Percentage of original invoice value you'll receive when claiming BBG
@@ -108,161 +111,32 @@ function DepreciationSlabs() {
         <div className="flex justify-center py-4">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
         </div>
+      ) : brandSlabs.length === 0 ? (
+        <div className="text-center py-4 text-gray-600">
+          No claim values available for {customerData.brand} {customerData.deviceType}
+        </div>
       ) : (
-        <div className="space-y-6">
-          {/* Mobile Device Slabs */}
-          {mobileSlabsArray.length > 0 && (
-            <div>
-              <h4 className="text-md font-semibold text-gray-800 mb-3 flex items-center">
-                📱 Mobile Devices
-              </h4>
-              <div className="overflow-x-auto border rounded-lg bg-white">
-                {(() => {
-                  // Group mobile slabs by age range for brand comparison
-                  const ageRanges: { [key: string]: any } = {};
-                  const mobileBrands = ['Samsung', 'Apple', 'OnePlus', 'Xiaomi', 'Realme'];
-                  
-                  // First, get all unique age ranges
-                  mobileSlabsArray
-                    .filter((slab: any) => slab.isActive)
-                    .forEach((slab: any) => {
-                      const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
-                      if (!ageRanges[ageKey]) {
-                        ageRanges[ageKey] = {
-                          minMonths: slab.minMonths,
-                          maxMonths: slab.maxMonths,
-                          brands: {}
-                        };
-                      }
-                      
-                      // Add brand-specific percentage or fallback to generic
-                      if (slab.brand) {
-                        ageRanges[ageKey].brands[slab.brand] = slab.percentage;
-                      } else {
-                        // This is a generic slab - use as fallback for missing brands
-                        mobileBrands.forEach(brand => {
-                          if (!ageRanges[ageKey].brands[brand]) {
-                            ageRanges[ageKey].brands[brand] = slab.percentage;
-                          }
-                        });
-                      }
-                    });
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {brandSlabs
+            .sort((a: any, b: any) => a.minMonths - b.minMonths)
+            .map((slab: any, index: number) => {
+              // Determine color based on percentage
+              let colorClass = "text-green-600";
+              if (slab.percentage < 30) colorClass = "text-red-600";
+              else if (slab.percentage < 50) colorClass = "text-orange-600";
+              else if (slab.percentage < 70) colorClass = "text-yellow-600";
 
-                  // Sort age ranges by minMonths
-                  const sortedAgeRanges = Object.entries(ageRanges).sort(
-                    ([, a], [, b]) => a.minMonths - b.minMonths
-                  );
-
-                  return (
-                    <table className="w-full">
-                      <thead className="bg-gray-50">
-                        <tr className="border-b">
-                          <th className="text-left py-2 px-3 font-semibold text-gray-700 text-sm">Device Age</th>
-                          {mobileBrands.map(brand => (
-                            <th key={brand} className="text-center py-2 px-3 font-semibold text-gray-700 text-sm">{brand}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {sortedAgeRanges.map(([ageKey, ageData], index) => (
-                          <tr key={ageKey} className={index < sortedAgeRanges.length - 1 ? "border-b" : ""}>
-                            <td className="py-2 px-3 font-medium text-sm">{ageData.minMonths}-{ageData.maxMonths} months</td>
-                            {mobileBrands.map(brand => {
-                              const percentage = ageData.brands[brand];
-                              if (!percentage) return <td key={brand} className="py-2 px-3 text-center text-gray-400 text-sm">-</td>;
-                              
-                              return (
-                                <td key={brand} className="py-2 px-3 text-center">
-                                  <span className="font-semibold text-green-600 text-sm">{percentage}%</span>
-                                </td>
-                              );
-                            })}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  );
-                })()}
-              </div>
-            </div>
-          )}
-
-          {/* Laptop Device Slabs */}
-          {laptopSlabsArray.length > 0 && (
-            <div>
-              <h4 className="text-md font-semibold text-gray-800 mb-3 flex items-center">
-                💻 Laptop Devices
-              </h4>
-              <div className="overflow-x-auto border rounded-lg bg-white">
-                {(() => {
-                  // Group laptop slabs by age range for brand comparison
-                  const ageRanges: { [key: string]: any } = {};
-                  const laptopBrands = ['HP', 'Lenovo', 'Dell', 'Acer', 'Asus'];
-                  
-                  // First, get all unique age ranges
-                  laptopSlabsArray
-                    .filter((slab: any) => slab.isActive)
-                    .forEach((slab: any) => {
-                      const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
-                      if (!ageRanges[ageKey]) {
-                        ageRanges[ageKey] = {
-                          minMonths: slab.minMonths,
-                          maxMonths: slab.maxMonths,
-                          brands: {}
-                        };
-                      }
-                      
-                      // Add brand-specific percentage or fallback to generic
-                      if (slab.brand) {
-                        ageRanges[ageKey].brands[slab.brand] = slab.percentage;
-                      } else {
-                        // This is a generic slab - use as fallback for missing brands
-                        laptopBrands.forEach(brand => {
-                          if (!ageRanges[ageKey].brands[brand]) {
-                            ageRanges[ageKey].brands[brand] = slab.percentage;
-                          }
-                        });
-                      }
-                    });
-
-                  // Sort age ranges by minMonths
-                  const sortedAgeRanges = Object.entries(ageRanges).sort(
-                    ([, a], [, b]) => a.minMonths - b.minMonths
-                  );
-
-                  return (
-                    <table className="w-full">
-                      <thead className="bg-gray-50">
-                        <tr className="border-b">
-                          <th className="text-left py-2 px-3 font-semibold text-gray-700 text-sm">Device Age</th>
-                          {laptopBrands.map(brand => (
-                            <th key={brand} className="text-center py-2 px-3 font-semibold text-gray-700 text-sm">{brand}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {sortedAgeRanges.map(([ageKey, ageData], index) => (
-                          <tr key={ageKey} className={index < sortedAgeRanges.length - 1 ? "border-b" : ""}>
-                            <td className="py-2 px-3 font-medium text-sm">{ageData.minMonths}-{ageData.maxMonths} months</td>
-                            {laptopBrands.map(brand => {
-                              const percentage = ageData.brands[brand];
-                              if (!percentage) return <td key={brand} className="py-2 px-3 text-center text-gray-400 text-sm">-</td>;
-                              
-                              return (
-                                <td key={brand} className="py-2 px-3 text-center">
-                                  <span className="font-semibold text-green-600 text-sm">{percentage}%</span>
-                                </td>
-                              );
-                            })}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  );
-                })()}
-              </div>
-            </div>
-          )}
+              return (
+                <div key={index} className="bg-white rounded-lg p-3 text-center border border-gray-200">
+                  <div className="text-sm font-medium text-gray-600">
+                    {slab.minMonths}-{slab.maxMonths} months
+                  </div>
+                  <div className={`text-lg font-bold ${colorClass}`}>
+                    {slab.percentage}%
+                  </div>
+                </div>
+              );
+            })}
         </div>
       )}
     </div>
@@ -407,8 +281,8 @@ function PayUPaymentForm({
 
   return (
     <div className="space-y-6">
-      {/* Show Depreciation Slabs during checkout */}
-      <DepreciationSlabs />
+      {/* Show Brand-Specific Claim Values during checkout */}
+      <DepreciationSlabs customerData={customerData} />
       
       <div className="bg-gray-50 rounded-lg p-4">
         <div className="flex items-center justify-between mb-4">

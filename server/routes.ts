@@ -870,60 +870,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       try {
         
-        console.log('Finding claim value slab for registration:', {
+        console.log('Finding claim value slab for REGULAR registration:', {
           deviceType: customerData.deviceType,
           brand: customerData.brand,
           purchaseDate: purchaseDate.toISOString(),
           currentAge: monthsDiff
         });
 
-        const activeSlabs = await storage.getActiveClaimValueSlabs();
+        // Get only REGULAR slabs for regular customer registration
+        const activeSlabs = await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(customerData.deviceType, 'regular');
         
-        // Find brand-specific slab first
+        // Find brand-specific slab first (from regular slabs only)
         activeClaimValueSlab = activeSlabs.find(slab => 
-          slab.deviceType === customerData.deviceType &&
           slab.brand === customerData.brand &&
           monthsDiff >= slab.minMonths && 
           monthsDiff <= slab.maxMonths
         );
         
-        // If no brand-specific slab, try generic slab
+        // If no brand-specific slab, try generic slab (from regular slabs only)
         if (!activeClaimValueSlab) {
           activeClaimValueSlab = activeSlabs.find(slab => 
-            slab.deviceType === customerData.deviceType &&
             !slab.brand &&
             monthsDiff >= slab.minMonths && 
             monthsDiff <= slab.maxMonths
           );
         }
         
-        console.log('Selected claim value slab for registration:', activeClaimValueSlab);
+        console.log('Selected REGULAR claim value slab for registration:', activeClaimValueSlab);
       } catch (error) {
         console.log('Warning: Could not fetch active claim value slab:', error);
         activeClaimValueSlab = null;
       }
 
-      // Build complete slab data structure for customer registration  
+      // Build complete slab data structure for REGULAR customer registration  
       let completeSlabData = null;
       if (activeClaimValueSlab) {
         try {
-          const brandSpecificSlabs = await storage.getActiveClaimValueSlabsByDeviceBrand(activeClaimValueSlab.deviceType, activeClaimValueSlab.brand || null);
+          // Get only REGULAR slabs for the device type to preserve in registrationSlabData
+          const regularSlabsForDevice = await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(activeClaimValueSlab.deviceType, 'regular');
+          
+          // Filter to brand-specific slabs if applicable
+          const brandSpecificSlabs = activeClaimValueSlab.brand 
+            ? regularSlabsForDevice.filter(slab => slab.brand === activeClaimValueSlab.brand)
+            : regularSlabsForDevice.filter(slab => !slab.brand);
+            
           completeSlabData = JSON.stringify({
             deviceType: activeClaimValueSlab.deviceType,
             brand: activeClaimValueSlab.brand,
             registrationAge: monthsDiff,
             registrationDate: new Date().toISOString(),
+            registrationSource: 'regular',
             slabs: brandSpecificSlabs
           });
           
-          console.log('✅ Complete slab data structure created for customer registration:', {
+          console.log('✅ Complete REGULAR slab data structure created for customer registration:', {
             deviceType: activeClaimValueSlab.deviceType,
             brand: activeClaimValueSlab.brand,
+            registrationSource: 'regular',
             totalSlabs: brandSpecificSlabs.length,
             registrationAge: monthsDiff
           });
         } catch (slabError) {
-          console.error('❌ Error building complete slab structure for registration:', slabError);
+          console.error('❌ Error building complete REGULAR slab structure for registration:', slabError);
           completeSlabData = null;
         }
       }

@@ -877,15 +877,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         activeClaimValueSlab = null;
       }
 
+      // Build complete slab data structure for customer registration  
+      let completeSlabData = null;
+      if (activeClaimValueSlab) {
+        try {
+          const brandSpecificSlabs = await storage.getActiveClaimValueSlabsByDeviceBrand(activeClaimValueSlab.deviceType, activeClaimValueSlab.brand || null);
+          completeSlabData = JSON.stringify({
+            deviceType: activeClaimValueSlab.deviceType,
+            brand: activeClaimValueSlab.brand,
+            registrationAge: monthsDiff,
+            registrationDate: new Date().toISOString(),
+            slabs: brandSpecificSlabs
+          });
+          
+          console.log('✅ Complete slab data structure created for customer registration:', {
+            deviceType: activeClaimValueSlab.deviceType,
+            brand: activeClaimValueSlab.brand,
+            totalSlabs: brandSpecificSlabs.length,
+            registrationAge: monthsDiff
+          });
+        } catch (slabError) {
+          console.error('❌ Error building complete slab structure for registration:', slabError);
+          completeSlabData = null;
+        }
+      }
+
       const validatedData = insertCustomerSchema.parse({
         ...customerData,
         claimValueSlabId: activeClaimValueSlab?.id || null,
         // Store complete slab structure from registration time (preserves entire rate structure)
-        registrationSlabData: activeClaimValueSlab ? JSON.stringify({
-          deviceType: activeClaimValueSlab.deviceType,
-          brand: activeClaimValueSlab.brand,
-          slabs: await storage.getActiveClaimValueSlabsByDeviceBrand(activeClaimValueSlab.deviceType, activeClaimValueSlab.brand || null)
-        }) : null
+        registrationSlabData: completeSlabData
       });
       const customer = await storage.createCustomer(validatedData);
       console.log("Customer created with voucher code:", customer.voucherCode, "and claim slab ID:", activeClaimValueSlab?.id);

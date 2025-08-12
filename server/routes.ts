@@ -885,7 +885,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           completeSlabData = JSON.stringify({
             deviceType: activeClaimValueSlab.deviceType,
             brand: activeClaimValueSlab.brand,
-            registrationAge: monthsDiff,
+            registrationAge: Math.floor((Date.now() - new Date(customerData.dateOfPurchase).getTime()) / (1000 * 60 * 60 * 24 * 30)),
             registrationDate: new Date().toISOString(),
             slabs: brandSpecificSlabs
           });
@@ -894,7 +894,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             deviceType: activeClaimValueSlab.deviceType,
             brand: activeClaimValueSlab.brand,
             totalSlabs: brandSpecificSlabs.length,
-            registrationAge: monthsDiff
+            registrationAge: Math.floor((Date.now() - new Date(customerData.dateOfPurchase).getTime()) / (1000 * 60 * 60 * 24 * 30))
           });
         } catch (slabError) {
           console.error('❌ Error building complete slab structure for registration:', slabError);
@@ -1009,7 +1009,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let applicableSlab = null;
       
       try {
-        // NEW APPROACH: Use complete slab data structure from registration time
+        // PRIORITY 1: Use complete slab data structure from registration time
+        console.log('Customer registrationSlabData field:', customer.registrationSlabData ? 'EXISTS' : 'MISSING');
         if (customer.registrationSlabData) {
           const slabData = JSON.parse(customer.registrationSlabData);
           console.log('Using complete slab data from registration time:', {
@@ -5574,7 +5575,7 @@ Required: GUPSHUP_API_KEY environment variable
                   maxMonths: slab.maxMonths, 
                   percentage: slab.percentage
                 })),
-                registrationAge: monthsDiff, // Age at time of registration
+                registrationAge: Math.floor((Date.now() - new Date(customer.date_of_purchase).getTime()) / (1000 * 60 * 60 * 24 * 30)), // Age at time of registration
                 applicableSlabId: correctSlab.id // Which slab applied at registration
               };
               

@@ -1637,6 +1637,7 @@ export class SqlServerStorage implements IStorage {
       paymentIntentId: row.payment_intent_id,
       isVerified: Boolean(row.is_verified),
       claimValueSlabId: row.claim_value_slab_id || null,
+      registrationSlabData: row.registration_slab_data || null,
       createdAt: row.created_at
     };
   }

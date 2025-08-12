@@ -108,6 +108,7 @@ export interface IStorage {
   // Claim Value Slab operations
   getAllClaimValueSlabs(): Promise<any[]>;
   getActiveClaimValueSlabs(): Promise<any[]>;
+  getActiveClaimValueSlabsByDeviceBrand(deviceType: string, brand: string | null): Promise<any[]>;
   getClaimValueSlabById(id: number): Promise<any | undefined>;
   createClaimValueSlab(slab: any): Promise<any>;
   updateClaimValueSlab(id: number, updates: any): Promise<any | undefined>;

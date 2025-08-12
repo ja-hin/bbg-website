@@ -2507,6 +2507,33 @@ export class SqlServerStorage implements IStorage {
     }
   }
 
+  async getActiveClaimValueSlabsByDeviceBrand(deviceType: string, brand: string | null): Promise<ClaimValueSlab[]> {
+    await db.connectDB();
+    
+    try {
+      const query = brand
+        ? `SELECT * FROM claim_value_slabs WHERE is_active = 1 AND device_type = @deviceType AND brand = @brand ORDER BY min_months`
+        : `SELECT * FROM claim_value_slabs WHERE is_active = 1 AND device_type = @deviceType AND (brand IS NULL OR brand = '') ORDER BY min_months`;
+      
+      const request = db.pool.request();
+      request.input('deviceType', sql.NVarChar, deviceType);
+      if (brand) {
+        request.input('brand', sql.NVarChar, brand);
+      }
+      
+      const result = await request.query(query);
+      return result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+    } catch (error: any) {
+      console.log(`Device+brand query failed for ${deviceType}/${brand}, using fallback:`, error.message);
+      
+      // Fallback: get all slabs and filter in memory
+      const allSlabs = await this.getActiveClaimValueSlabsByDeviceType(deviceType);
+      return allSlabs.filter(slab => 
+        brand ? slab.brand === brand : (!slab.brand || slab.brand === '')
+      );
+    }
+  }
+
   async updateClaimValueSlab(id: number, updates: Partial<InsertClaimValueSlab>): Promise<ClaimValueSlab | undefined> {
     await db.connectDB();
     const setParts = [];

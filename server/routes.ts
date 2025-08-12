@@ -708,9 +708,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           paymentIntentId: `payu_${txnid}`,
           isVerified: true,
           claimValueSlabId: activeClaimValueSlab?.id || null,
-          // Store actual slab values at registration time (preserves rates if master slab changes later)
-          registrationSlabPercentage: activeClaimValueSlab?.percentage || null,
-          registrationSlabRange: activeClaimValueSlab ? `${activeClaimValueSlab.minMonths}-${activeClaimValueSlab.maxMonths} months` : null
+          // Store complete slab structure from registration time (preserves entire rate structure)
+          registrationSlabData: activeClaimValueSlab ? JSON.stringify({
+            deviceType: activeClaimValueSlab.deviceType,
+            brand: activeClaimValueSlab.brand,
+            slabs: await storage.getActiveClaimValueSlabsByDeviceBrand(activeClaimValueSlab.deviceType, activeClaimValueSlab.brand || null)
+          }) : null
           // Remove invoiceFile completely for PayU payments
         };
 
@@ -877,9 +880,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertCustomerSchema.parse({
         ...customerData,
         claimValueSlabId: activeClaimValueSlab?.id || null,
-        // Store actual slab values at registration time (preserves rates if master slab changes later)
-        registrationSlabPercentage: activeClaimValueSlab?.percentage || null,
-        registrationSlabRange: activeClaimValueSlab ? `${activeClaimValueSlab.minMonths}-${activeClaimValueSlab.maxMonths} months` : null
+        // Store complete slab structure from registration time (preserves entire rate structure)
+        registrationSlabData: activeClaimValueSlab ? JSON.stringify({
+          deviceType: activeClaimValueSlab.deviceType,
+          brand: activeClaimValueSlab.brand,
+          slabs: await storage.getActiveClaimValueSlabsByDeviceBrand(activeClaimValueSlab.deviceType, activeClaimValueSlab.brand || null)
+        }) : null
       });
       const customer = await storage.createCustomer(validatedData);
       console.log("Customer created with voucher code:", customer.voucherCode, "and claim slab ID:", activeClaimValueSlab?.id);
@@ -977,51 +983,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
         monthsDiff
       });
       
-      // Use the claim value slab that was stored at time of registration (not current slabs)
+      // Use the complete slab structure stored at time of registration (preserves entire rate table)
       let claimPercentage = 0;
       let applicableSlab = null;
       
       try {
-        // First try to use the stored slab values from registration time (new approach)
-        if (customer.registrationSlabPercentage && customer.registrationSlabRange) {
-          claimPercentage = customer.registrationSlabPercentage;
-          applicableSlab = {
-            percentage: customer.registrationSlabPercentage,
-            range: customer.registrationSlabRange
-          };
-          
-          console.log('Using stored claim slab (from time of purchase):', {
-            id: customer.claimValueSlabId || 'N/A',
-            deviceType: customer.deviceType,
-            brand: customer.brand,
-            range: customer.registrationSlabRange,
-            percentage: customer.registrationSlabPercentage
+        // NEW APPROACH: Use complete slab data structure from registration time
+        if (customer.registrationSlabData) {
+          const slabData = JSON.parse(customer.registrationSlabData);
+          console.log('Using complete slab data from registration time:', {
+            deviceType: slabData.deviceType,
+            brand: slabData.brand,
+            totalSlabs: slabData.slabs?.length,
+            registrationAge: slabData.registrationAge,
+            currentAge: monthsDiff
           });
-        }
-        // Fallback to legacy approach for older customers who don't have stored slab values
-        else if (customer.claimValueSlabId) {
-          // Use the slab that was active when customer registered
-          applicableSlab = await storage.getClaimValueSlabById(customer.claimValueSlabId);
-          if (applicableSlab) {
-            // Check if current device age falls within the slab's range
-            if (monthsDiff >= applicableSlab.minMonths && monthsDiff <= applicableSlab.maxMonths) {
-              claimPercentage = applicableSlab.percentage;
-              console.log('Using legacy claim slab lookup (from time of purchase):', {
-                id: applicableSlab.id,
-                deviceType: applicableSlab.deviceType,
-                brand: applicableSlab.brand || 'Generic',
-                range: `${applicableSlab.minMonths}-${applicableSlab.maxMonths} months`,
-                percentage: applicableSlab.percentage
-              });
-            } else {
-              console.log('Device age no longer within original slab range:', {
-                currentAge: monthsDiff,
-                slabRange: `${applicableSlab.minMonths}-${applicableSlab.maxMonths}`,
-                originalPercentage: applicableSlab.percentage
-              });
-            }
+          
+          // Find the appropriate slab for current device age using registration-time rates
+          const currentApplicableSlab = slabData.slabs?.find(slab => 
+            monthsDiff >= slab.minMonths && monthsDiff <= slab.maxMonths
+          );
+          
+          if (currentApplicableSlab) {
+            claimPercentage = currentApplicableSlab.percentage;
+            applicableSlab = {
+              percentage: currentApplicableSlab.percentage,
+              range: `${currentApplicableSlab.minMonths}-${currentApplicableSlab.maxMonths}`,
+              registrationTimeRates: true
+            };
+            
+            console.log('✅ Using registration-time slab rates for current age:', {
+              currentAge: monthsDiff,
+              applicableRange: `${currentApplicableSlab.minMonths}-${currentApplicableSlab.maxMonths}`,
+              percentage: currentApplicableSlab.percentage,
+              slabId: currentApplicableSlab.id
+            });
           } else {
-            console.log('Claim value slab not found by ID:', customer.claimValueSlabId);
+            console.log('⚠️ No slab found in registration data for current age:', monthsDiff);
+          }
+        }
+        // FALLBACK: Legacy approach for customers without complete slab data
+        else if (customer.claimValueSlabId) {
+          applicableSlab = await storage.getClaimValueSlabById(customer.claimValueSlabId);
+          if (applicableSlab && monthsDiff >= applicableSlab.minMonths && monthsDiff <= applicableSlab.maxMonths) {
+            claimPercentage = applicableSlab.percentage;
+            console.log('Using legacy single slab lookup:', {
+              id: applicableSlab.id,
+              range: `${applicableSlab.minMonths}-${applicableSlab.maxMonths}`,
+              percentage: applicableSlab.percentage
+            });
           }
         } else {
           console.log('No claim value slab data stored for customer:', customer.id);
@@ -4295,9 +4305,12 @@ Required: GUPSHUP_API_KEY environment variable
         invoiceFile: invoiceFilePath,
         registrationSource: 'acer', // Track registration source
         claimValueSlabId: activeClaimValueSlab?.id || null, // Track which slab was active during registration
-        // Store actual slab values at registration time (preserves rates if master slab changes later)
-        registrationSlabPercentage: activeClaimValueSlab?.percentage || null,
-        registrationSlabRange: activeClaimValueSlab ? `${activeClaimValueSlab.minMonths}-${activeClaimValueSlab.maxMonths} months` : null
+        // Store complete slab structure from registration time (preserves entire rate structure)
+        registrationSlabData: activeClaimValueSlab ? JSON.stringify({
+          deviceType: activeClaimValueSlab.deviceType,
+          brand: activeClaimValueSlab.brand,
+          slabs: await storage.getActiveClaimValueSlabsByDeviceBrand(activeClaimValueSlab.deviceType, activeClaimValueSlab.brand || null)
+        }) : null
       };
 
       // Use existing storage system to create customer with unified voucher code
@@ -5461,36 +5474,20 @@ Required: GUPSHUP_API_KEY environment variable
     try {
       await db.connectDB();
       
-      // Check and add registration_slab_percentage column
-      const checkPercentageResult = await db.pool.request().query(`
+      // Check and add registration_slab_data column (new approach - complete slab structure)
+      const checkSlabDataResult = await db.pool.request().query(`
         SELECT COLUMN_NAME 
         FROM INFORMATION_SCHEMA.COLUMNS 
-        WHERE TABLE_NAME = 'customers' AND COLUMN_NAME = 'registration_slab_percentage'
+        WHERE TABLE_NAME = 'customers' AND COLUMN_NAME = 'registration_slab_data'
       `);
       
-      if (checkPercentageResult.recordset.length === 0) {
+      if (checkSlabDataResult.recordset.length === 0) {
         await db.pool.request().query(`
-          ALTER TABLE customers ADD registration_slab_percentage INT NULL
+          ALTER TABLE customers ADD registration_slab_data NVARCHAR(MAX) NULL
         `);
-        console.log('✅ Added registration_slab_percentage column');
+        console.log('✅ Added registration_slab_data column');
       } else {
-        console.log('ℹ️ registration_slab_percentage column already exists');
-      }
-      
-      // Check and add registration_slab_range column
-      const checkRangeResult = await db.pool.request().query(`
-        SELECT COLUMN_NAME 
-        FROM INFORMATION_SCHEMA.COLUMNS 
-        WHERE TABLE_NAME = 'customers' AND COLUMN_NAME = 'registration_slab_range'
-      `);
-      
-      if (checkRangeResult.recordset.length === 0) {
-        await db.pool.request().query(`
-          ALTER TABLE customers ADD registration_slab_range NVARCHAR(50) NULL
-        `);
-        console.log('✅ Added registration_slab_range column');
-      } else {
-        console.log('ℹ️ registration_slab_range column already exists');
+        console.log('ℹ️ registration_slab_data column already exists');
       }
 
       // Backfill existing customers with their slab values
@@ -5498,7 +5495,7 @@ Required: GUPSHUP_API_KEY environment variable
       
       // First, let's see what customers we have (all customers)
       const allCustomersResult = await db.pool.request().query(`
-        SELECT id, name, voucher_code, device_type, brand, date_of_purchase, claim_value_slab_id, registration_slab_percentage, registration_slab_range
+        SELECT id, name, voucher_code, device_type, brand, date_of_purchase, claim_value_slab_id, registration_slab_data
         FROM customers 
         ORDER BY created_at DESC
       `);
@@ -5509,8 +5506,10 @@ Required: GUPSHUP_API_KEY environment variable
       const customersWithSlabId = allCustomersResult.recordset.filter(c => c.claim_value_slab_id);
       console.log('Customers with claim_value_slab_id:', customersWithSlabId.length);
       
-      // For ALL customers, validate their slab assignment and fix any incorrect ones
-      let fixedCustomers = 0;
+      // For ALL customers, create complete slab data structure from registration time
+      let processedCustomers = 0;
+      const sqlStorage = new SqlServerStorage();
+      
       for (const customer of allCustomersResult.recordset) {
         if (customer.device_type && customer.brand && customer.date_of_purchase) {
           try {
@@ -5538,7 +5537,27 @@ Required: GUPSHUP_API_KEY environment variable
             if (correctSlabResult.recordset.length > 0) {
               const correctSlab = correctSlabResult.recordset[0];
               
-              // Check if current slab assignment is wrong
+              // Get ALL slab structures for this device type and brand (complete structure)
+              const allSlabsForDevice = await sqlStorage.getActiveClaimValueSlabsByDeviceBrand(
+                customer.device_type, 
+                customer.brand
+              );
+              
+              // Create complete slab structure that preserves the entire age range system
+              const completeSlabData = {
+                deviceType: customer.device_type,
+                brand: customer.brand,
+                slabs: allSlabsForDevice.map(slab => ({
+                  id: slab.id,
+                  minMonths: slab.minMonths,
+                  maxMonths: slab.maxMonths, 
+                  percentage: slab.percentage
+                })),
+                registrationAge: monthsDiff, // Age at time of registration
+                applicableSlabId: correctSlab.id // Which slab applied at registration
+              };
+              
+              // Check if customer needs correction or complete slab data
               let needsUpdate = false;
               let updateReason = '';
               
@@ -5546,7 +5565,7 @@ Required: GUPSHUP_API_KEY environment variable
                 needsUpdate = true;
                 updateReason = 'no slab assigned';
               } else if (customer.claim_value_slab_id !== correctSlab.id) {
-                // Verify the current slab exists and matches device type
+                // Verify current assignment is wrong
                 const currentSlabResult = await db.pool.request().query(`
                   SELECT device_type, brand FROM claim_value_slabs WHERE id = ${customer.claim_value_slab_id}
                 `);
@@ -5561,32 +5580,28 @@ Required: GUPSHUP_API_KEY environment variable
                     updateReason = `wrong device/brand assignment (assigned: ${currentSlab.device_type} ${currentSlab.brand}, should be: ${customer.device_type} ${customer.brand})`;
                   }
                 }
+              } else if (!customer.registration_slab_data) {
+                needsUpdate = true;
+                updateReason = 'missing complete slab data structure';
               }
               
               if (needsUpdate) {
-                // Update customer with correct slab data
-                await db.pool.request().query(`
+                // Update customer with complete slab data structure
+                const updateRequest = db.pool.request();
+                updateRequest.input('slabData', sql.NVarChar, JSON.stringify(completeSlabData));
+                updateRequest.input('customerId', sql.Int, customer.id);
+                updateRequest.input('slabId', sql.Int, correctSlab.id);
+                
+                await updateRequest.query(`
                   UPDATE customers 
                   SET 
-                    claim_value_slab_id = ${correctSlab.id},
-                    registration_slab_percentage = ${correctSlab.percentage},
-                    registration_slab_range = '${correctSlab.min_months}-${correctSlab.max_months} months'
-                  WHERE id = ${customer.id}
+                    claim_value_slab_id = @slabId,
+                    registration_slab_data = @slabData
+                  WHERE id = @customerId
                 `);
                 
-                console.log(`🔧 FIXED customer ${customer.name} (${customer.device_type} ${customer.brand}): ${updateReason} → slab ID ${correctSlab.id}, ${correctSlab.percentage}%`);
-                fixedCustomers++;
-              } else if (!customer.registration_slab_percentage) {
-                // Just need to populate the registration values
-                await db.pool.request().query(`
-                  UPDATE customers 
-                  SET 
-                    registration_slab_percentage = ${correctSlab.percentage},
-                    registration_slab_range = '${correctSlab.min_months}-${correctSlab.max_months} months'
-                  WHERE id = ${customer.id}
-                `);
-                
-                console.log(`📝 Updated registration values for ${customer.name}: ${correctSlab.percentage}%`);
+                console.log(`🔧 FIXED customer ${customer.name} (${customer.device_type} ${customer.brand}): ${updateReason} → complete slab structure with ${allSlabsForDevice.length} age ranges`);
+                processedCustomers++;
               }
             } else {
               console.log(`⚠️ No matching slab found for customer ${customer.name} (${customer.device_type} ${customer.brand}, ${monthsDiff} months old)`);
@@ -5597,7 +5612,7 @@ Required: GUPSHUP_API_KEY environment variable
         }
       }
       
-      console.log(`✅ Fixed ${fixedCustomers} customers with incorrect slab assignments`);
+      console.log(`✅ Processed ${processedCustomers} customers with complete slab data structures`);
       
       const backfillResult = await db.pool.request().query(`
         UPDATE customers 

@@ -4746,7 +4746,7 @@ Required: GUPSHUP_API_KEY environment variable
 
       const slab = await storage.createClaimValueSlab({
         deviceType,
-        brand: deviceType === 'laptop' ? brand : null,
+        brand: brand || null,
         minMonths: parseInt(minMonths),
         maxMonths: parseInt(maxMonths),
         percentage: parseInt(percentage),
@@ -4777,7 +4777,7 @@ Required: GUPSHUP_API_KEY environment variable
         updates.deviceType = deviceType;
       }
       if (brand !== undefined) {
-        updates.brand = deviceType === 'laptop' ? brand : null;
+        updates.brand = brand || null;
       }
       if (minMonths !== undefined) updates.minMonths = parseInt(minMonths);
       if (maxMonths !== undefined) updates.maxMonths = parseInt(maxMonths);

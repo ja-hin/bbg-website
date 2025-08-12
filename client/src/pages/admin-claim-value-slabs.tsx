@@ -67,7 +67,7 @@ export default function AdminClaimValueSlabs() {
   const createBrandMutation = useMutation({
     mutationFn: (data: { name: string; deviceType: string }) => apiRequest('/api/admin/brands', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: data,
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/brands'] });
@@ -86,7 +86,7 @@ export default function AdminClaimValueSlabs() {
   const createMutation = useMutation({
     mutationFn: (data: any) => apiRequest('/api/admin/claim-value-slabs', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: data,
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/claim-value-slabs'] });
@@ -108,7 +108,7 @@ export default function AdminClaimValueSlabs() {
     mutationFn: ({ id, data }: { id: number; data: any }) => 
       apiRequest(`/api/admin/claim-value-slabs/${id}`, {
         method: 'PUT',
-        body: JSON.stringify(data),
+        body: data,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/claim-value-slabs'] });

@@ -79,7 +79,7 @@ export default function AdminClaimValueSlabsPage() {
 
   const createMutation = useMutation({
     mutationFn: async (data: ClaimValueSlabForm) => {
-      console.log('Frontend: Sending create data:', data);
+
       await apiRequest("/api/admin/claim-value-slabs", {
         method: "POST",
         body: data,  // Remove JSON.stringify - apiRequest handles this
@@ -105,7 +105,7 @@ export default function AdminClaimValueSlabsPage() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: ClaimValueSlabForm }) => {
-      console.log('Frontend: Sending update data:', data);
+
       await apiRequest(`/api/admin/claim-value-slabs/${id}`, {
         method: "PATCH",
         body: data,  // Remove JSON.stringify - apiRequest handles this
@@ -114,6 +114,7 @@ export default function AdminClaimValueSlabsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/claim-value-slabs"] });
       setEditingId(null);
+      setIsCreateDialogOpen(false);  // Close the modal
       resetForm();
       toast({
         title: "Success",

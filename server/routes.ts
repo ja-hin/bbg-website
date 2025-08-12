@@ -4748,10 +4748,7 @@ Required: GUPSHUP_API_KEY environment variable
   app.patch('/api/admin/claim-value-slabs/:id', isAdminAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      console.log('=== PATCH Request Debug ===');
-      console.log('Raw body:', req.body);
-      console.log('Body type:', typeof req.body);
-      console.log('Body string:', JSON.stringify(req.body));
+
       
       const { deviceType, brand, minMonths, maxMonths, percentage, isActive } = req.body;
 

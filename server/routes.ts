@@ -901,15 +901,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
         monthsDiff
       });
       
+      // Get brand-aware claim percentage from database
       let claimPercentage = 0;
+      let applicableSlab = null;
       
-      if (monthsDiff >= 6 && monthsDiff <= 12) claimPercentage = 70;
-      else if (monthsDiff >= 13 && monthsDiff <= 18) claimPercentage = 60;
-      else if (monthsDiff >= 19 && monthsDiff <= 24) claimPercentage = 50;
-      else if (monthsDiff >= 25 && monthsDiff <= 30) claimPercentage = 40;
-      else if (monthsDiff >= 31 && monthsDiff <= 36) claimPercentage = 30;
-      else if (monthsDiff >= 37 && monthsDiff <= 48) claimPercentage = 25;
-      else if (monthsDiff >= 49 && monthsDiff <= 60) claimPercentage = 20;
+      try {
+        // Get dynamic claim value slabs from database with brand support
+        const activeSlabs = await storage.getActiveClaimValueSlabs();
+        console.log(`Found ${activeSlabs.length} active claim value slabs`);
+        
+        // First try to find brand-specific slab
+        let targetSlab = null;
+        if (customer.brandName && customer.deviceType === 'laptop') {
+          // Look for brand-specific slab first
+          targetSlab = activeSlabs.find(slab => 
+            slab.deviceType === customer.deviceType &&
+            slab.brand === customer.brandName &&
+            monthsDiff >= slab.minMonths && 
+            monthsDiff <= slab.maxMonths
+          );
+          console.log(`Brand-specific slab search for ${customer.brandName}:`, targetSlab ? 'Found' : 'Not found');
+        }
+        
+        // If no brand-specific slab found, fall back to generic slab
+        if (!targetSlab) {
+          targetSlab = activeSlabs.find(slab => 
+            slab.deviceType === customer.deviceType &&
+            !slab.brand && // Generic slab (no brand)
+            monthsDiff >= slab.minMonths && 
+            monthsDiff <= slab.maxMonths
+          );
+          console.log(`Generic slab search for ${customer.deviceType}:`, targetSlab ? 'Found' : 'Not found');
+        }
+        
+        if (targetSlab) {
+          claimPercentage = targetSlab.percentage;
+          applicableSlab = targetSlab;
+          console.log(`Using slab: ${targetSlab.brand || 'Generic'} ${targetSlab.deviceType} ${targetSlab.minMonths}-${targetSlab.maxMonths} months: ${targetSlab.percentage}%`);
+        } else {
+          console.log(`No applicable slab found for ${customer.deviceType} device, ${monthsDiff} months old, brand: ${customer.brandName || 'N/A'}`);
+        }
+      } catch (slabError) {
+        console.error('Error fetching claim value slabs:', slabError);
+        // Fallback to hardcoded values for mobile devices
+        if (customer.deviceType === 'mobile') {
+          if (monthsDiff >= 6 && monthsDiff <= 12) claimPercentage = 70;
+          else if (monthsDiff >= 13 && monthsDiff <= 18) claimPercentage = 60;
+          else if (monthsDiff >= 19 && monthsDiff <= 24) claimPercentage = 50;
+          else if (monthsDiff >= 25 && monthsDiff <= 30) claimPercentage = 40;
+          else if (monthsDiff >= 31 && monthsDiff <= 36) claimPercentage = 30;
+          else if (monthsDiff >= 37 && monthsDiff <= 48) claimPercentage = 20;
+          else if (monthsDiff >= 49 && monthsDiff <= 60) claimPercentage = 10;
+        } else if (customer.deviceType === 'laptop') {
+          // Fallback values for laptops
+          if (monthsDiff >= 6 && monthsDiff <= 12) claimPercentage = 75;
+          else if (monthsDiff >= 13 && monthsDiff <= 18) claimPercentage = 65;
+          else if (monthsDiff >= 19 && monthsDiff <= 24) claimPercentage = 55;
+          else if (monthsDiff >= 25 && monthsDiff <= 30) claimPercentage = 45;
+          else if (monthsDiff >= 31 && monthsDiff <= 36) claimPercentage = 35;
+          else if (monthsDiff >= 37 && monthsDiff <= 48) claimPercentage = 25;
+          else if (monthsDiff >= 49 && monthsDiff <= 60) claimPercentage = 15;
+        }
+      }
 
       // Check if device is eligible for claim
       if (claimPercentage === 0) {
@@ -4554,8 +4607,30 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
-  // Get active claim value slabs by device type (for tabbed interface) - Direct SQL query
+  // Get active claim value slabs by device type (for tabbed interface) - Direct SQL query with brand data
   app.get('/api/claim-value-slabs/active/:deviceType', async (req, res) => {
+    const { default: sql } = await import('mssql');
+    
+    // Direct database connection with credentials
+    const config = {
+      server: '103.205.66.184',
+      port: 2499,
+      database: 'prexoDB',
+      user: 'qo8yhe',
+      password: 'tFbs89!0Ryyx1^90',
+      options: {
+        encrypt: false,
+        trustServerCertificate: true,
+      },
+      pool: {
+        max: 10,
+        min: 0,
+        idleTimeoutMillis: 30000
+      }
+    };
+
+    let pool: any = null;
+    
     try {
       const { deviceType } = req.params;
       
@@ -4564,8 +4639,10 @@ Required: GUPSHUP_API_KEY environment variable
         return res.status(400).json({ message: "Invalid device type. Must be 'mobile' or 'laptop'" });
       }
       
-      // Direct SQL Server query to ensure we get brand data
-      await db.connectDB();
+      console.log(`=== Connecting to SQL Server for ${deviceType} claim value slabs ===`);
+      pool = new sql.ConnectionPool(config);
+      await pool.connect();
+      
       const query = `
         SELECT 
           id, 
@@ -4582,9 +4659,11 @@ Required: GUPSHUP_API_KEY environment variable
         ORDER BY brand, min_months ASC
       `;
       
-      const request = db.pool.request();
+      console.log(`Executing ${deviceType} query:`, query);
+      const request = pool.request();
       request.input('deviceType', sql.NVarChar, deviceType);
       const result = await request.query(query);
+      console.log(`Query successful: ${result.recordset.length} ${deviceType} records found`);
       
       // Map the data to match expected format
       const slabs = result.recordset.map((row: any) => ({
@@ -4599,11 +4678,28 @@ Required: GUPSHUP_API_KEY environment variable
         updatedAt: row.updated_at || row.created_at
       }));
       
-      console.log(`Successfully fetched ${slabs.length} ${deviceType} claim value slabs with brand data`);
+      // Log summary for debugging
+      const brandedSlabs = slabs.filter(s => s.brand);
+      console.log(`✅ Successfully fetched ${slabs.length} ${deviceType} claim value slabs (${brandedSlabs.length} brand-specific)`);
+      
+      if (brandedSlabs.length > 0) {
+        const brands = [...new Set(brandedSlabs.map(s => s.brand))];
+        console.log(`   - Brands: ${brands.join(', ')}`);
+      }
+      
       res.json(slabs);
+      
     } catch (error: any) {
-      console.error('Error fetching active claim value slabs by device type:', error);
+      console.error(`❌ Error fetching ${req.params.deviceType} claim value slabs:`, error.message);
       res.status(500).json({ message: "Failed to fetch active claim value slabs", error: error.message });
+    } finally {
+      if (pool) {
+        try {
+          await pool.close();
+        } catch (closeError) {
+          console.error('Error closing database connection:', closeError);
+        }
+      }
     }
   });
 
@@ -4708,7 +4804,7 @@ Required: GUPSHUP_API_KEY environment variable
   // Get claim percentage for specific device age or date of purchase
   app.post('/api/claims/calculate-percentage', async (req, res) => {
     try {
-      let { deviceAgeMonths, dateOfPurchase } = req.body;
+      let { deviceAgeMonths, dateOfPurchase, deviceType = 'mobile', brandName = null } = req.body;
 
       // If dateOfPurchase is provided but deviceAgeMonths is not, calculate age
       if (dateOfPurchase && !deviceAgeMonths) {
@@ -4721,10 +4817,29 @@ Required: GUPSHUP_API_KEY environment variable
         return res.status(400).json({ message: "Invalid device age or date of purchase" });
       }
 
+      // Get brand-aware claim percentage from database
       const activeSlabs = await storage.getActiveClaimValueSlabs();
-      const applicableSlab = activeSlabs.find(slab => 
-        deviceAgeMonths >= slab.minMonths && deviceAgeMonths <= slab.maxMonths
-      );
+      let applicableSlab = null;
+      
+      // First try to find brand-specific slab for laptops
+      if (brandName && deviceType === 'laptop') {
+        applicableSlab = activeSlabs.find(slab => 
+          slab.deviceType === deviceType &&
+          slab.brand === brandName &&
+          deviceAgeMonths >= slab.minMonths && 
+          deviceAgeMonths <= slab.maxMonths
+        );
+      }
+      
+      // If no brand-specific slab found, fall back to generic slab
+      if (!applicableSlab) {
+        applicableSlab = activeSlabs.find(slab => 
+          slab.deviceType === deviceType &&
+          !slab.brand && // Generic slab (no brand)
+          deviceAgeMonths >= slab.minMonths && 
+          deviceAgeMonths <= slab.maxMonths
+        );
+      }
 
       if (!applicableSlab) {
         return res.status(400).json({ 
@@ -4736,7 +4851,8 @@ Required: GUPSHUP_API_KEY environment variable
       res.json({
         deviceAgeMonths,
         percentage: applicableSlab.percentage,
-        slab: applicableSlab
+        slab: applicableSlab,
+        usedBrandSpecific: !!applicableSlab.brand
       });
     } catch (error: any) {
       console.error('Error calculating claim percentage:', error);

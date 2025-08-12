@@ -275,6 +275,7 @@ export default function Home() {
                   <table className="w-full">
                     <thead className="bg-gray-100">
                       <tr>
+                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Brand</th>
                         <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
                         <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Claim %</th>
                       </tr>
@@ -289,6 +290,15 @@ export default function Home() {
 
                         return (
                           <tr key={slab.id} className="hover:bg-gray-50">
+                            <td className="py-3 px-4 text-sm font-medium text-gray-600">
+                              {slab.brand ? (
+                                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                                  {slab.brand}
+                                </span>
+                              ) : (
+                                <span className="text-gray-400 italic text-xs">All Brands</span>
+                              )}
+                            </td>
                             <td className="py-3 px-4 text-sm font-medium text-gray-900">
                               {slab.minMonths}-{slab.maxMonths} months
                             </td>
@@ -315,6 +325,7 @@ export default function Home() {
                   <table className="w-full">
                     <thead className="bg-gray-100">
                       <tr>
+                        <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Brand</th>
                         <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
                         <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Claim %</th>
                       </tr>
@@ -329,6 +340,15 @@ export default function Home() {
 
                         return (
                           <tr key={slab.id} className="hover:bg-gray-50">
+                            <td className="py-3 px-4 text-sm font-medium text-gray-600">
+                              {slab.brand ? (
+                                <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                                  {slab.brand}
+                                </span>
+                              ) : (
+                                <span className="text-gray-400 italic text-xs">All Brands</span>
+                              )}
+                            </td>
                             <td className="py-3 px-4 text-sm font-medium text-gray-900">
                               {slab.minMonths}-{slab.maxMonths} months
                             </td>

@@ -4789,6 +4789,220 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // Excel Template Download
+  app.get('/api/admin/claim-value-slabs/excel-template', isAdminAuthenticated, async (req, res) => {
+    try {
+      const XLSX = require('xlsx');
+      
+      // Get all current slabs for the template
+      const slabs = await storage.getAllClaimValueSlabs();
+      
+      // Create worksheet data with proper headers
+      const worksheetData = [
+        ['ID', 'Device Type', 'Brand', 'Min Months', 'Max Months', 'Percentage', 'Is Active', 'Instructions'],
+        ['', '', '', '', '', '', '', 'Leave ID empty for new records. Existing records (with ID) will be updated.'],
+        ['', 'laptop', 'HP', '6', '12', '60', 'TRUE', ''],
+        ['', 'laptop', 'Lenovo', '6', '12', '65', 'TRUE', ''],
+        ['', 'mobile', 'Samsung', '6', '12', '70', 'TRUE', ''],
+        ['', 'mobile', '', '6', '12', '50', 'TRUE', 'Generic slab (no brand specified)']
+      ];
+      
+      // Add existing data to template
+      slabs.forEach(slab => {
+        worksheetData.push([
+          slab.id.toString(),
+          slab.deviceType,
+          slab.brand || '',
+          slab.minMonths.toString(),
+          slab.maxMonths.toString(),
+          slab.percentage.toString(),
+          slab.isActive ? 'TRUE' : 'FALSE',
+          'Existing record'
+        ]);
+      });
+
+      // Create workbook and worksheet
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+      
+      // Set column widths
+      worksheet['!cols'] = [
+        { wch: 8 },  // ID
+        { wch: 12 }, // Device Type
+        { wch: 12 }, // Brand
+        { wch: 12 }, // Min Months
+        { wch: 12 }, // Max Months
+        { wch: 12 }, // Percentage
+        { wch: 10 }, // Is Active
+        { wch: 25 }  // Instructions
+      ];
+      
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Claim Value Slabs');
+      
+      // Generate buffer
+      const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+      
+      res.setHeader('Content-Disposition', 'attachment; filename="claim-value-slabs-template.xlsx"');
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.send(buffer);
+      
+    } catch (error: any) {
+      console.error('Error generating Excel template:', error);
+      res.status(500).json({ message: "Failed to generate Excel template", error: error.message });
+    }
+  });
+
+  // Excel Upload and Process
+  app.post('/api/admin/claim-value-slabs/excel-upload', isAdminAuthenticated, async (req, res) => {
+    try {
+      const multer = require('multer');
+      const upload = multer({ dest: 'uploads/' });
+      const XLSX = require('xlsx');
+      const fs = require('fs');
+      
+      // Handle file upload
+      upload.single('excel')(req, res, async (err: any) => {
+        if (err) {
+          return res.status(400).json({ message: "File upload failed", error: err.message });
+        }
+
+        if (!req.file) {
+          return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        try {
+          // Read the Excel file
+          const workbook = XLSX.readFile(req.file.path);
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          
+          // Convert to JSON (skip first 2 rows as they are headers and examples)
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, range: 2 });
+          
+          let totalProcessed = 0;
+          let created = 0;
+          let updated = 0;
+          let errors = 0;
+          let skipped = 0;
+          const errorMessages: string[] = [];
+
+          // Process each row
+          for (let i = 0; i < jsonData.length; i++) {
+            const row = jsonData[i] as any[];
+            if (!row || row.length < 5) {
+              skipped++;
+              continue;
+            }
+
+            const [id, deviceType, brand, minMonths, maxMonths, percentage, isActive] = row;
+            
+            // Skip empty rows
+            if (!deviceType || !minMonths || !maxMonths || !percentage) {
+              skipped++;
+              continue;
+            }
+
+            try {
+              // Validate data
+              if (!['laptop', 'mobile'].includes(deviceType?.toLowerCase())) {
+                errors++;
+                errorMessages.push(`Row ${i + 3}: Invalid device type '${deviceType}'. Must be 'laptop' or 'mobile'.`);
+                continue;
+              }
+
+              const minMonthsNum = parseInt(minMonths);
+              const maxMonthsNum = parseInt(maxMonths);
+              const percentageNum = parseInt(percentage);
+
+              if (isNaN(minMonthsNum) || isNaN(maxMonthsNum) || isNaN(percentageNum)) {
+                errors++;
+                errorMessages.push(`Row ${i + 3}: Invalid numeric values for months or percentage.`);
+                continue;
+              }
+
+              if (minMonthsNum >= maxMonthsNum) {
+                errors++;
+                errorMessages.push(`Row ${i + 3}: Min months must be less than max months.`);
+                continue;
+              }
+
+              if (percentageNum < 0 || percentageNum > 100) {
+                errors++;
+                errorMessages.push(`Row ${i + 3}: Percentage must be between 0 and 100.`);
+                continue;
+              }
+
+              const slabData = {
+                deviceType: deviceType.toLowerCase(),
+                brand: brand?.trim() || null,
+                minMonths: minMonthsNum,
+                maxMonths: maxMonthsNum,
+                percentage: percentageNum,
+                isActive: isActive?.toString().toUpperCase() === 'TRUE'
+              };
+
+              // Check if this is an update (has ID) or create (no ID)
+              if (id && !isNaN(parseInt(id))) {
+                // Update existing record
+                const existingSlab = await storage.getClaimValueSlabById(parseInt(id));
+                if (existingSlab) {
+                  await storage.updateClaimValueSlab(parseInt(id), slabData);
+                  updated++;
+                } else {
+                  // ID provided but record doesn't exist - create new
+                  await storage.createClaimValueSlab(slabData);
+                  created++;
+                }
+              } else {
+                // Create new record
+                await storage.createClaimValueSlab(slabData);
+                created++;
+              }
+
+              totalProcessed++;
+
+            } catch (rowError: any) {
+              errors++;
+              errorMessages.push(`Row ${i + 3}: ${rowError.message}`);
+            }
+          }
+
+          // Clean up uploaded file
+          fs.unlinkSync(req.file.path);
+
+          res.json({
+            totalProcessed,
+            created,
+            updated,
+            errors,
+            skipped,
+            errorMessages: errorMessages.slice(0, 10) // Limit to first 10 errors
+          });
+
+        } catch (fileError: any) {
+          // Clean up file on error
+          if (req.file?.path) {
+            try {
+              fs.unlinkSync(req.file.path);
+            } catch (cleanupError) {
+              console.error('Error cleaning up file:', cleanupError);
+            }
+          }
+          
+          console.error('Error processing Excel file:', fileError);
+          res.status(400).json({ 
+            message: "Failed to process Excel file", 
+            error: fileError.message 
+          });
+        }
+      });
+
+    } catch (error: any) {
+      console.error('Error in Excel upload endpoint:', error);
+      res.status(500).json({ message: "Excel upload failed", error: error.message });
+    }
+  });
+
   // Delete claim value slab (soft delete - set isActive to false)
   app.delete('/api/admin/claim-value-slabs/:id', isAdminAuthenticated, async (req, res) => {
     try {

@@ -1,37 +1,24 @@
-import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Edit, Trash2, Save, X, Calculator, Smartphone, Laptop, Loader2 } from "lucide-react";
-import { AdminLayout } from "@/components/admin-layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AdminLayout } from '@/components/admin-layout';
+import { 
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger 
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, Edit, Trash2, X, Save, Loader2 } from 'lucide-react';
+import { apiRequest } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
+import { ExcelUpload } from '@/components/excel-upload';
+
+// Brand constants
+const LAPTOP_BRANDS = ['HP', 'Lenovo', 'Dell', 'Acer', 'Asus'];
+const MOBILE_BRANDS = ['Samsung', 'Apple', 'OnePlus', 'Xiaomi', 'Realme'];
 
 interface ClaimValueSlab {
   id: number;
@@ -41,135 +28,125 @@ interface ClaimValueSlab {
   maxMonths: number;
   percentage: number;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
 }
 
-interface ClaimValueSlabForm {
-  deviceType: string;
-  brand?: string;
-  minMonths: number;
-  maxMonths: number;
-  percentage: number;
-  isActive: boolean;
-}
-
-// Brand options based on your requirements
-const LAPTOP_BRANDS = ["HP", "Dell", "Lenovo", "Acer", "Asus", "Macbook", "Others"];
-const MOBILE_BRANDS = ["Samsung", "Apple", "OnePlus", "Xiaomi", "Realme", "Others"];
-
-export default function AdminClaimValueSlabsPage() {
+export default function AdminClaimValueSlabs() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [formData, setFormData] = useState<ClaimValueSlabForm>({
-    deviceType: "laptop",
-    brand: "",
+  const [formData, setFormData] = useState({
+    deviceType: 'laptop',
+    brand: '',
     minMonths: 6,
     maxMonths: 12,
-    percentage: 60,
-    isActive: true,
+    percentage: 50,
   });
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Fetch all claim value slabs
   const { data: slabs = [], isLoading } = useQuery<ClaimValueSlab[]>({
-    queryKey: ["/api/admin/claim-value-slabs"],
+    queryKey: ['/api/admin/claim-value-slabs'],
+    queryFn: () => apiRequest('/api/admin/claim-value-slabs'),
   });
 
+  // Create slab mutation
   const createMutation = useMutation({
-    mutationFn: async (data: ClaimValueSlabForm) => {
-
-      await apiRequest("/api/admin/claim-value-slabs", {
-        method: "POST",
-        body: data,  // Remove JSON.stringify - apiRequest handles this
-      });
-    },
+    mutationFn: (data: any) => apiRequest('/api/admin/claim-value-slabs', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/claim-value-slabs"] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/claim-value-slabs'] });
       setIsCreateDialogOpen(false);
       resetForm();
-      toast({
-        title: "Success",
-        description: "Claim value slab created successfully",
-      });
+      toast({ title: "Success", description: "Claim value slab created successfully" });
     },
     onError: (error: any) => {
-      toast({
-        title: "Error",
+      toast({ 
+        title: "Error", 
         description: error.message || "Failed to create claim value slab",
-        variant: "destructive",
+        variant: "destructive" 
       });
     },
   });
 
+  // Update slab mutation
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: ClaimValueSlabForm }) => {
-
-      await apiRequest(`/api/admin/claim-value-slabs/${id}`, {
-        method: "PATCH",
-        body: data,  // Remove JSON.stringify - apiRequest handles this
-      });
-    },
+    mutationFn: ({ id, data }: { id: number; data: any }) => 
+      apiRequest(`/api/admin/claim-value-slabs/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/claim-value-slabs"] });
-      setEditingId(null);
-      setIsCreateDialogOpen(false);  // Close the modal
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/claim-value-slabs'] });
+      setIsCreateDialogOpen(false);
       resetForm();
-      toast({
-        title: "Success",
-        description: "Claim value slab updated successfully",
-      });
+      toast({ title: "Success", description: "Claim value slab updated successfully" });
     },
     onError: (error: any) => {
-      toast({
-        title: "Error",
+      toast({ 
+        title: "Error", 
         description: error.message || "Failed to update claim value slab",
-        variant: "destructive",
+        variant: "destructive" 
       });
     },
   });
 
+  // Delete slab mutation
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await apiRequest(`/api/admin/claim-value-slabs/${id}`, {
-        method: "DELETE",
-      });
-    },
+    mutationFn: (id: number) => apiRequest(`/api/admin/claim-value-slabs/${id}`, {
+      method: 'DELETE',
+    }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/claim-value-slabs"] });
-      toast({
-        title: "Success",
-        description: "Claim value slab deleted successfully",
-      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/claim-value-slabs'] });
+      toast({ title: "Success", description: "Claim value slab deleted successfully" });
     },
     onError: (error: any) => {
-      toast({
-        title: "Error",
+      toast({ 
+        title: "Error", 
         description: error.message || "Failed to delete claim value slab",
-        variant: "destructive",
+        variant: "destructive" 
       });
     },
   });
 
   const resetForm = () => {
     setFormData({
-      deviceType: "laptop",
-      brand: "",
+      deviceType: 'laptop',
+      brand: '',
       minMonths: 6,
       maxMonths: 12,
-      percentage: 60,
-      isActive: true,
+      percentage: 50,
     });
+    setEditingId(null);
+  };
+
+  const startEdit = (slab: ClaimValueSlab) => {
+    setFormData({
+      deviceType: slab.deviceType,
+      brand: slab.brand || '',
+      minMonths: slab.minMonths,
+      maxMonths: slab.maxMonths,
+      percentage: slab.percentage,
+    });
+    setEditingId(slab.id);
+    setIsCreateDialogOpen(true);
+  };
+
+  const cancelEdit = () => {
+    setIsCreateDialogOpen(false);
+    resetForm();
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
     const submitData = {
       ...formData,
-      brand: formData.deviceType === "laptop" ? formData.brand || undefined : undefined,
+      brand: formData.brand.trim() || null,
     };
-    
+
     if (editingId) {
       updateMutation.mutate({ id: editingId, data: submitData });
     } else {
@@ -177,52 +154,54 @@ export default function AdminClaimValueSlabsPage() {
     }
   };
 
-  const startEdit = (slab: ClaimValueSlab) => {
-    setFormData({
-      deviceType: slab.deviceType,
-      brand: slab.brand || "",
-      minMonths: slab.minMonths,
-      maxMonths: slab.maxMonths,
-      percentage: slab.percentage,
-      isActive: slab.isActive,
-    });
-    setEditingId(slab.id);
-    setIsCreateDialogOpen(true);
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    resetForm();
-    setIsCreateDialogOpen(false);
-  };
-
-  // Group slabs by device type and brand for better display
-  const laptopSlabs = slabs.filter((slab) => slab.deviceType === "laptop");
-  const mobileSlabs = slabs.filter((slab) => slab.deviceType === "mobile");
-
-  // Create brand-organized table data for laptops
-  const getBrandTable = () => {
+  // Organize slabs for comparative table display
+  const organizeSlatData = (deviceType: string) => {
+    const deviceSlabs = slabs.filter(slab => slab.deviceType === deviceType);
+    const brands = deviceType === 'laptop' ? LAPTOP_BRANDS : MOBILE_BRANDS;
+    
+    // Define age ranges
     const ageRanges = [
-      { label: "6 to 12 Months", min: 6, max: 12 },
-      { label: "13 to 18 Months", min: 13, max: 18 },
-      { label: "19 to 24 Months", min: 19, max: 24 },
-      { label: "25 to 30 Months", min: 25, max: 30 },
-      { label: "31 to 36 Months", min: 31, max: 36 },
+      { label: "6-12 Months", min: 6, max: 12 },
+      { label: "13-18 Months", min: 13, max: 18 },
+      { label: "19-24 Months", min: 19, max: 24 },
+      { label: "25-30 Months", min: 25, max: 30 },
+      { label: "31-36 Months", min: 31, max: 36 },
+      { label: "37-48 Months", min: 37, max: 48 },
+      { label: "49-60 Months", min: 49, max: 60 },
     ];
 
-    return ageRanges.map((range) => {
-      const rowData: { [key: string]: string } = { ageRange: range.label };
-      LAPTOP_BRANDS.forEach((brand) => {
-        const slab = laptopSlabs.find(
-          (s) => s.brand === brand && s.minMonths === range.min && s.maxMonths === range.max
+    return ageRanges.map(range => {
+      const ageData: any = { 
+        range: range.label, 
+        minMonths: range.min, 
+        maxMonths: range.max,
+        brands: {}
+      };
+
+      // Find brand-specific slabs for this range
+      brands.forEach(brand => {
+        const slab = deviceSlabs.find(s => 
+          s.brand === brand && 
+          s.minMonths === range.min && 
+          s.maxMonths === range.max
         );
-        rowData[brand] = slab ? `${slab.percentage}%` : "N/A";
+        ageData.brands[brand] = slab || null;
       });
-      return rowData;
+
+      // Find generic slab for this range
+      const genericSlab = deviceSlabs.find(s => 
+        !s.brand && 
+        s.minMonths === range.min && 
+        s.maxMonths === range.max
+      );
+      ageData.genericSlab = genericSlab || null;
+
+      return ageData;
     });
   };
 
-  const brandTableData = getBrandTable();
+  const laptopData = organizeSlatData('laptop');
+  const mobileData = organizeSlatData('mobile');
 
   return (
     <AdminLayout>
@@ -234,51 +213,47 @@ export default function AdminClaimValueSlabsPage() {
               Manage brand-specific claim value percentages based on device age
             </p>
           </div>
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={resetForm}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add New Slab
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>
-                  {editingId ? "Edit Claim Value Slab" : "Create New Claim Value Slab"}
-                </DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="deviceType">Device Type</Label>
-                  <Select
-                    value={formData.deviceType}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, deviceType: value, brand: "" })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="laptop">Laptop</SelectItem>
-                      <SelectItem value="mobile">Mobile</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="brand">Brand</Label>
-                  <Select
-                    value={formData.brand}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, brand: value })
-                    }
-                  >
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select brand" />
+          <div className="flex space-x-2">
+            <ExcelUpload onUploadComplete={() => {
+              queryClient.invalidateQueries({ queryKey: ['/api/admin/claim-value-slabs'] });
+            }} />
+            
+            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={resetForm}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add New Slab
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>
+                    {editingId ? "Edit Claim Value Slab" : "Create New Claim Value Slab"}
+                  </DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <Label htmlFor="deviceType">Device Type</Label>
+                    <Select value={formData.deviceType} onValueChange={(value) => setFormData({ ...formData, deviceType: value, brand: '' })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select device type" />
                       </SelectTrigger>
                       <SelectContent>
-                        {formData.deviceType === "laptop" 
+                        <SelectItem value="laptop">Laptop</SelectItem>
+                        <SelectItem value="mobile">Mobile</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="brand">Brand</Label>
+                    <Select value={formData.brand} onValueChange={(value) => setFormData({ ...formData, brand: value })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select brand (optional for generic)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Generic (No Brand)</SelectItem>
+                        {formData.deviceType === 'laptop' 
                           ? LAPTOP_BRANDS.map((brand) => (
                               <SelectItem key={brand} value={brand}>
                                 {brand}
@@ -294,66 +269,61 @@ export default function AdminClaimValueSlabsPage() {
                     </Select>
                   </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="minMonths">Min Months</Label>
+                      <Input
+                        id="minMonths"
+                        type="number"
+                        value={formData.minMonths}
+                        onChange={(e) => setFormData({ ...formData, minMonths: parseInt(e.target.value) })}
+                        min={1}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="maxMonths">Max Months</Label>
+                      <Input
+                        id="maxMonths"
+                        type="number"
+                        value={formData.maxMonths}
+                        onChange={(e) => setFormData({ ...formData, maxMonths: parseInt(e.target.value) })}
+                        min={1}
+                        required
+                      />
+                    </div>
+                  </div>
+
                   <div>
-                    <Label htmlFor="minMonths">Min Months</Label>
+                    <Label htmlFor="percentage">Percentage</Label>
                     <Input
-                      id="minMonths"
+                      id="percentage"
                       type="number"
-                      value={formData.minMonths}
-                      onChange={(e) =>
-                        setFormData({ ...formData, minMonths: parseInt(e.target.value) })
-                      }
-                      min={1}
+                      value={formData.percentage}
+                      onChange={(e) => setFormData({ ...formData, percentage: parseInt(e.target.value) })}
+                      min={0}
+                      max={100}
                       required
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="maxMonths">Max Months</Label>
-                    <Input
-                      id="maxMonths"
-                      type="number"
-                      value={formData.maxMonths}
-                      onChange={(e) =>
-                        setFormData({ ...formData, maxMonths: parseInt(e.target.value) })
-                      }
-                      min={1}
-                      required
-                    />
+
+                  <div className="flex justify-end space-x-2">
+                    <Button type="button" variant="outline" onClick={cancelEdit}>
+                      <X className="h-4 w-4 mr-2" />
+                      Cancel
+                    </Button>
+                    <Button 
+                      type="submit" 
+                      disabled={createMutation.isPending || updateMutation.isPending}
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      {editingId ? "Update" : "Create"}
+                    </Button>
                   </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="percentage">Percentage</Label>
-                  <Input
-                    id="percentage"
-                    type="number"
-                    value={formData.percentage}
-                    onChange={(e) =>
-                      setFormData({ ...formData, percentage: parseInt(e.target.value) })
-                    }
-                    min={0}
-                    max={100}
-                    required
-                  />
-                </div>
-
-                <div className="flex justify-end space-x-2">
-                  <Button type="button" variant="outline" onClick={cancelEdit}>
-                    <X className="h-4 w-4 mr-2" />
-                    Cancel
-                  </Button>
-                  <Button 
-                    type="submit" 
-                    disabled={createMutation.isPending || updateMutation.isPending}
-                  >
-                    <Save className="h-4 w-4 mr-2" />
-                    {editingId ? "Update" : "Create"}
-                  </Button>
-                </div>
-              </form>
-            </DialogContent>
-          </Dialog>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
         <Tabs defaultValue="laptop" className="w-full">
@@ -367,7 +337,7 @@ export default function AdminClaimValueSlabsPage() {
               <CardHeader>
                 <CardTitle>Laptop Claim Value Slabs</CardTitle>
                 <p className="text-sm text-gray-600">
-                  Brand-comparison view for laptop device claim percentages
+                  Brand comparison view for laptop device claim percentages
                 </p>
               </CardHeader>
               <CardContent>
@@ -375,95 +345,36 @@ export default function AdminClaimValueSlabsPage() {
                   <div className="flex justify-center py-8">
                     <Loader2 className="w-6 h-6 animate-spin" />
                   </div>
-                ) : (() => {
-                  // Group laptop slabs by age range for brand comparison
-                  const ageRanges: { [key: string]: any } = {};
-                  const laptopBrands = ['HP', 'Lenovo', 'Dell', 'Acer', 'Asus'];
-                  
-                  // First, get all unique age ranges
-                  laptopSlabs.forEach((slab: any) => {
-                    const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
-                    if (!ageRanges[ageKey]) {
-                      ageRanges[ageKey] = {
-                        minMonths: slab.minMonths,
-                        maxMonths: slab.maxMonths,
-                        brands: {},
-                        genericSlab: null // Store generic slab for editing
-                      };
-                    }
-                    
-                    // Add brand-specific percentage or fallback to generic
-                    if (slab.brand) {
-                      ageRanges[ageKey].brands[slab.brand] = { percentage: slab.percentage, slab };
-                    } else {
-                      // This is a generic slab - store it and use as fallback for missing brands
-                      ageRanges[ageKey].genericSlab = slab;
-                      laptopBrands.forEach(brand => {
-                        if (!ageRanges[ageKey].brands[brand]) {
-                          ageRanges[ageKey].brands[brand] = { percentage: slab.percentage, slab };
-                        }
-                      });
-                    }
-                  });
-
-                  // Sort age ranges by minMonths
-                  const sortedAgeRanges = Object.entries(ageRanges).sort(
-                    ([, a], [, b]) => a.minMonths - b.minMonths
-                  );
-
-                  return (
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Device Age</TableHead>
-                            {laptopBrands.map(brand => (
-                              <TableHead key={brand} className="text-center">{brand}</TableHead>
-                            ))}
-                            <TableHead>Actions</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {sortedAgeRanges.map(([ageKey, ageData]) => (
-                            <TableRow key={ageKey}>
-                              <TableCell className="font-medium">
-                                {ageData.minMonths}-{ageData.maxMonths} months
-                              </TableCell>
-                              {laptopBrands.map(brand => {
-                                const brandData = ageData.brands[brand];
-                                if (!brandData) return <TableCell key={brand} className="text-center text-gray-400">-</TableCell>;
-                                
-                                const isBrandSpecific = brandData.slab?.brand === brand;
-                                
-                                return (
-                                  <TableCell key={brand} className="text-center">
-                                    <Badge variant={isBrandSpecific ? "default" : "secondary"} 
-                                           className={isBrandSpecific ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
-                                      {brandData.percentage}%
-                                    </Badge>
-                                  </TableCell>
-                                );
-                              })}
-                              <TableCell>
-                                <div className="flex flex-col space-y-1">
-                                  {laptopBrands.map(brand => {
-                                    const brandData = ageData.brands[brand];
-                                    if (!brandData?.slab) return null; // Show edit buttons for any slab (brand-specific or generic)
-                                    
-                                    // Only show button if this is specifically a brand slab (not generic fallback)
-                                    const isBrandSpecific = brandData.slab.brand === brand;
-                                    if (!isBrandSpecific && ageData.genericSlab && brandData.slab.id === ageData.genericSlab.id) {
-                                      return null; // Don't show duplicate generic slab buttons
-                                    }
-                                    
-                                    return (
-                                      <div key={brand} className="flex items-center space-x-1">
-                                        <span className="text-xs text-gray-500 w-12">{brand}:</span>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-32">Age Range</TableHead>
+                          {LAPTOP_BRANDS.map(brand => (
+                            <TableHead key={brand} className="text-center min-w-24">{brand}</TableHead>
+                          ))}
+                          <TableHead className="text-center min-w-24">Generic</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {laptopData.map((ageData) => (
+                          <TableRow key={ageData.range}>
+                            <TableCell className="font-medium">{ageData.range}</TableCell>
+                            {LAPTOP_BRANDS.map(brand => (
+                              <TableCell key={brand} className="text-center">
+                                <div className="flex flex-col items-center space-y-1">
+                                  {ageData.brands[brand] ? (
+                                    <>
+                                      <span className="font-semibold text-blue-600">
+                                        {ageData.brands[brand].percentage}%
+                                      </span>
+                                      <div className="flex space-x-1">
                                         <Button
                                           size="sm"
                                           variant="outline"
                                           className="h-6 px-2 text-xs"
-                                          onClick={() => startEdit(brandData.slab)}
+                                          onClick={() => startEdit(ageData.brands[brand])}
                                         >
                                           <Edit className="h-3 w-3 mr-1" />
                                           Edit
@@ -472,18 +383,26 @@ export default function AdminClaimValueSlabsPage() {
                                           size="sm"
                                           variant="destructive"
                                           className="h-6 px-2 text-xs"
-                                          onClick={() => deleteMutation.mutate(brandData.slab.id)}
+                                          onClick={() => deleteMutation.mutate(ageData.brands[brand].id)}
                                         >
                                           <Trash2 className="h-3 w-3" />
                                         </Button>
                                       </div>
-                                    );
-                                  })}
-                                  
-                                  {/* Show generic slab edit button if exists and no brand-specific overrides */}
-                                  {ageData.genericSlab && (
-                                    <div className="flex items-center space-x-1">
-                                      <span className="text-xs text-gray-500 w-12">All:</span>
+                                    </>
+                                  ) : (
+                                    <span className="text-gray-400 text-sm">Not Set</span>
+                                  )}
+                                </div>
+                              </TableCell>
+                            ))}
+                            <TableCell className="text-center">
+                              <div className="flex flex-col items-center space-y-1">
+                                {ageData.genericSlab ? (
+                                  <>
+                                    <span className="font-semibold text-green-600">
+                                      {ageData.genericSlab.percentage}%
+                                    </span>
+                                    <div className="flex space-x-1">
                                       <Button
                                         size="sm"
                                         variant="outline"
@@ -502,16 +421,18 @@ export default function AdminClaimValueSlabsPage() {
                                         <Trash2 className="h-3 w-3" />
                                       </Button>
                                     </div>
-                                  )}
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  );
-                })()}
+                                  </>
+                                ) : (
+                                  <span className="text-gray-400 text-sm">Not Set</span>
+                                )}
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -521,7 +442,7 @@ export default function AdminClaimValueSlabsPage() {
               <CardHeader>
                 <CardTitle>Mobile Claim Value Slabs</CardTitle>
                 <p className="text-sm text-gray-600">
-                  Brand-comparison view for mobile device claim percentages
+                  Brand comparison view for mobile device claim percentages
                 </p>
               </CardHeader>
               <CardContent>
@@ -529,95 +450,36 @@ export default function AdminClaimValueSlabsPage() {
                   <div className="flex justify-center py-8">
                     <Loader2 className="w-6 h-6 animate-spin" />
                   </div>
-                ) : (() => {
-                  // Group mobile slabs by age range for brand comparison
-                  const ageRanges: { [key: string]: any } = {};
-                  const mobileBrands = ['Samsung', 'Apple', 'OnePlus', 'Xiaomi', 'Realme'];
-                  
-                  // First, get all unique age ranges
-                  mobileSlabs.forEach((slab: any) => {
-                    const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
-                    if (!ageRanges[ageKey]) {
-                      ageRanges[ageKey] = {
-                        minMonths: slab.minMonths,
-                        maxMonths: slab.maxMonths,
-                        brands: {},
-                        genericSlab: null // Store generic slab for editing
-                      };
-                    }
-                    
-                    // Add brand-specific percentage or fallback to generic
-                    if (slab.brand) {
-                      ageRanges[ageKey].brands[slab.brand] = { percentage: slab.percentage, slab };
-                    } else {
-                      // This is a generic slab - store it and use as fallback for missing brands
-                      ageRanges[ageKey].genericSlab = slab;
-                      mobileBrands.forEach(brand => {
-                        if (!ageRanges[ageKey].brands[brand]) {
-                          ageRanges[ageKey].brands[brand] = { percentage: slab.percentage, slab };
-                        }
-                      });
-                    }
-                  });
-
-                  // Sort age ranges by minMonths
-                  const sortedAgeRanges = Object.entries(ageRanges).sort(
-                    ([, a], [, b]) => a.minMonths - b.minMonths
-                  );
-
-                  return (
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Device Age</TableHead>
-                            {mobileBrands.map(brand => (
-                              <TableHead key={brand} className="text-center">{brand}</TableHead>
-                            ))}
-                            <TableHead>Actions</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {sortedAgeRanges.map(([ageKey, ageData]) => (
-                            <TableRow key={ageKey}>
-                              <TableCell className="font-medium">
-                                {ageData.minMonths}-{ageData.maxMonths} months
-                              </TableCell>
-                              {mobileBrands.map(brand => {
-                                const brandData = ageData.brands[brand];
-                                if (!brandData) return <TableCell key={brand} className="text-center text-gray-400">-</TableCell>;
-                                
-                                const isBrandSpecific = brandData.slab?.brand === brand;
-                                
-                                return (
-                                  <TableCell key={brand} className="text-center">
-                                    <Badge variant={isBrandSpecific ? "default" : "secondary"} 
-                                           className={isBrandSpecific ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"}>
-                                      {brandData.percentage}%
-                                    </Badge>
-                                  </TableCell>
-                                );
-                              })}
-                              <TableCell>
-                                <div className="flex flex-col space-y-1">
-                                  {mobileBrands.map(brand => {
-                                    const brandData = ageData.brands[brand];
-                                    if (!brandData?.slab) return null; // Show edit buttons for any slab (brand-specific or generic)
-                                    
-                                    // Only show button if this is specifically a brand slab (not generic fallback)
-                                    const isBrandSpecific = brandData.slab.brand === brand;
-                                    if (!isBrandSpecific && ageData.genericSlab && brandData.slab.id === ageData.genericSlab.id) {
-                                      return null; // Don't show duplicate generic slab buttons
-                                    }
-                                    
-                                    return (
-                                      <div key={brand} className="flex items-center space-x-1">
-                                        <span className="text-xs text-gray-500 w-16">{brand}:</span>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-32">Age Range</TableHead>
+                          {MOBILE_BRANDS.map(brand => (
+                            <TableHead key={brand} className="text-center min-w-24">{brand}</TableHead>
+                          ))}
+                          <TableHead className="text-center min-w-24">Generic</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {mobileData.map((ageData) => (
+                          <TableRow key={ageData.range}>
+                            <TableCell className="font-medium">{ageData.range}</TableCell>
+                            {MOBILE_BRANDS.map(brand => (
+                              <TableCell key={brand} className="text-center">
+                                <div className="flex flex-col items-center space-y-1">
+                                  {ageData.brands[brand] ? (
+                                    <>
+                                      <span className="font-semibold text-blue-600">
+                                        {ageData.brands[brand].percentage}%
+                                      </span>
+                                      <div className="flex space-x-1">
                                         <Button
                                           size="sm"
                                           variant="outline"
                                           className="h-6 px-2 text-xs"
-                                          onClick={() => startEdit(brandData.slab)}
+                                          onClick={() => startEdit(ageData.brands[brand])}
                                         >
                                           <Edit className="h-3 w-3 mr-1" />
                                           Edit
@@ -626,18 +488,26 @@ export default function AdminClaimValueSlabsPage() {
                                           size="sm"
                                           variant="destructive"
                                           className="h-6 px-2 text-xs"
-                                          onClick={() => deleteMutation.mutate(brandData.slab.id)}
+                                          onClick={() => deleteMutation.mutate(ageData.brands[brand].id)}
                                         >
                                           <Trash2 className="h-3 w-3" />
                                         </Button>
                                       </div>
-                                    );
-                                  })}
-                                  
-                                  {/* Show generic slab edit button if exists and no brand-specific overrides */}
-                                  {ageData.genericSlab && (
-                                    <div className="flex items-center space-x-1">
-                                      <span className="text-xs text-gray-500 w-16">All:</span>
+                                    </>
+                                  ) : (
+                                    <span className="text-gray-400 text-sm">Not Set</span>
+                                  )}
+                                </div>
+                              </TableCell>
+                            ))}
+                            <TableCell className="text-center">
+                              <div className="flex flex-col items-center space-y-1">
+                                {ageData.genericSlab ? (
+                                  <>
+                                    <span className="font-semibold text-green-600">
+                                      {ageData.genericSlab.percentage}%
+                                    </span>
+                                    <div className="flex space-x-1">
                                       <Button
                                         size="sm"
                                         variant="outline"
@@ -656,16 +526,18 @@ export default function AdminClaimValueSlabsPage() {
                                         <Trash2 className="h-3 w-3" />
                                       </Button>
                                     </div>
-                                  )}
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  );
-                })()}
+                                  </>
+                                ) : (
+                                  <span className="text-gray-400 text-sm">Not Set</span>
+                                )}
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

@@ -1249,23 +1249,9 @@ export class SqlServerStorage implements IStorage {
     await db.connectDB();
     const voucherCode = this.generateVoucherCode();
     
-    // Calculate device age and determine appropriate claim value slab
-    let claimValueSlabId = null;
-    if (insertCustomer.dateOfPurchase) {
-      const purchaseDate = new Date(insertCustomer.dateOfPurchase);
-      const currentDate = new Date();
-      const ageInMonths = Math.floor((currentDate.getTime() - purchaseDate.getTime()) / (1000 * 60 * 60 * 24 * 30.44));
-      
-      // Find the appropriate claim value slab for this device age
-      const activeSlabs = await this.getActiveClaimValueSlabs();
-      const applicableSlab = activeSlabs.find(slab => 
-        ageInMonths >= slab.minMonths && ageInMonths <= slab.maxMonths
-      );
-      
-      if (applicableSlab) {
-        claimValueSlabId = applicableSlab.id;
-      }
-    }
+    // Use the claim value slab ID passed from the registration route
+    // This preserves the correct slab for both regular and Acer BBG registrations
+    const claimValueSlabId = (insertCustomer as any).claimValueSlabId || null;
     
     const query = `
       INSERT INTO customers (

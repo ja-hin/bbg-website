@@ -327,11 +327,8 @@ export default function Home() {
                                 const percentage = ageData.brands[brand];
                                 if (!percentage) return <td key={brand} className="py-3 px-4 text-center text-gray-400">-</td>;
                                 
-                                // Determine color based on percentage
-                                let colorClass = "text-green-600";
-                                if (percentage < 30) colorClass = "text-xtra-primary";
-                                else if (percentage < 50) colorClass = "text-orange-600";
-                                else if (percentage < 70) colorClass = "text-yellow-600";
+                                // Use black color for all percentages
+                                const colorClass = "text-black";
                                 
                                 return (
                                   <td key={brand} className="py-3 px-4 text-center">
@@ -411,11 +408,8 @@ export default function Home() {
                                 const percentage = ageData.brands[brand];
                                 if (!percentage) return <td key={brand} className="py-3 px-4 text-center text-gray-400">-</td>;
                                 
-                                // Determine color based on percentage
-                                let colorClass = "text-green-600";
-                                if (percentage < 30) colorClass = "text-xtra-primary";
-                                else if (percentage < 50) colorClass = "text-orange-600";
-                                else if (percentage < 70) colorClass = "text-yellow-600";
+                                // Use black color for all percentages
+                                const colorClass = "text-black";
                                 
                                 return (
                                   <td key={brand} className="py-3 px-4 text-center">

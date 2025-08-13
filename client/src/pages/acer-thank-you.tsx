@@ -44,9 +44,9 @@ export default function AcerThankYou() {
 
   const getDeviceIcon = () => {
     if (registrationData?.deviceType === 'mobile') {
-      return <Smartphone className="h-12 w-12 text-blue-600" />;
+      return <Smartphone className="h-12 w-12 text-xtra-primary" />;
     }
-    return <Laptop className="h-12 w-12 text-purple-600" />;
+    return <Laptop className="h-12 w-12 text-xtra-primary" />;
   };
 
   const getDevicePrice = () => {
@@ -55,7 +55,7 @@ export default function AcerThankYou() {
 
   if (!registrationData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen xtra-gradient-light flex items-center justify-center">
         <Card className="max-w-md mx-auto">
           <CardContent className="text-center p-8">
             <p className="text-gray-600 mb-4">No registration data found.</p>
@@ -69,7 +69,7 @@ export default function AcerThankYou() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen xtra-gradient-light">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Success Header */}
         <div className="text-center mb-8">
@@ -86,7 +86,7 @@ export default function AcerThankYou() {
 
         {/* Registration Details Card */}
         <Card className="shadow-xl mb-8">
-          <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+          <CardHeader className="xtra-gradient text-white">
             <CardTitle className="text-2xl flex items-center justify-center">
               BBG Protection Activated
             </CardTitle>
@@ -199,7 +199,7 @@ export default function AcerThankYou() {
                   </Button>
                 </Link>
                 <Link href="/claim-bbg">
-                  <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+                  <Button className="w-full sm:w-auto xtra-gradient hover:opacity-90">
                     <ArrowRight className="h-4 w-4 mr-2" />
                     Claim BBG (After 6 months)
                   </Button>

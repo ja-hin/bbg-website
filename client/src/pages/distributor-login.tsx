@@ -106,11 +106,11 @@ export default function ReferralPartnerLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen xtra-gradient-light flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-            <Building2 className="h-6 w-6 text-indigo-600" />
+          <div className="mx-auto w-12 h-12 bg-xtra-primary/10 rounded-lg flex items-center justify-center mb-4">
+            <Building2 className="h-6 w-6 text-xtra-primary" />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">Referral Partner Login</CardTitle>
           <CardDescription>

@@ -89,11 +89,15 @@ export default function Home() {
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    60-month coverage period
+                    Coverage for up to 60 months
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Free pickup service
+                    Free doorstep pickup for claims
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Instant payouts at the time of device handover
                   </li>
                 </ul>
               </CardContent>
@@ -115,11 +119,15 @@ export default function Home() {
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    60-month coverage period
+                    Coverage for up to 60 months
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Fast payment in 7 days
+                    Free doorstep pickup for claims
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Instant payouts at the time of device handover
                   </li>
                 </ul>
               </CardContent>

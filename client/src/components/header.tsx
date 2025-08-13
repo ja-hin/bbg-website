@@ -68,7 +68,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 shadow-md">
       {/* 4px Red line at top */}
-      <div className="h-1 bg-red-500"></div>
+      <div className="h-1 bg-xtra-primary"></div>
 
       {/* Logo Section - White Background */}
       <div className="bg-white">

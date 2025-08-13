@@ -24,16 +24,16 @@ function BrandClaimValues({ sessionData }: { sessionData: any }) {
   const slabs = Object.values(uniqueSlabs).sort((a: any, b: any) => a.minMonths - b.minMonths);
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6 mb-8">
+    <div className="bg-gradient-to-r from-gray-50 to-green-50 border border-gray-200 rounded-lg p-6 mb-8">
       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-        <Info className="h-5 w-5 mr-2 text-blue-600" />
+        <Info className="h-5 w-5 mr-2 text-xtra-primary" />
         Your {sessionData.brand} {sessionData.deviceType} - BuyBack Guarantee Values
       </h3>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {slabs.map((slab: any, index: number) => {
           // Determine color based on percentage
           let colorClass = "text-green-600";
-          if (slab.percentage < 30) colorClass = "text-red-600";
+          if (slab.percentage < 30) colorClass = "text-xtra-primary";
           else if (slab.percentage < 50) colorClass = "text-orange-600";
           else if (slab.percentage < 70) colorClass = "text-yellow-600";
 
@@ -246,7 +246,7 @@ Contact: support@xtracover.com
             {content.code && (
               <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-6 mb-8">
                 <p className="text-sm text-gray-600 mb-2">{content.codeLabel}</p>
-                <p className="text-3xl font-bold text-red-600 font-mono tracking-wider">
+                <p className="text-3xl font-bold text-xtra-primary font-mono tracking-wider">
                   {content.code}
                 </p>
                 <p className="text-xs text-gray-500 mt-2">
@@ -280,7 +280,7 @@ Contact: support@xtracover.com
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/">
-                <Button className="bg-red-600 hover:bg-red-700 px-6">
+                <Button className="bg-xtra-primary hover:bg-xtra-primary/90 px-6">
                   <Home className="mr-2 h-4 w-4" />
                   Back to Home
                 </Button>

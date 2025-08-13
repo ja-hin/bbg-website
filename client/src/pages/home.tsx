@@ -27,15 +27,15 @@ export default function Home() {
     queryKey: ['/api/theme/current'],
     retry: false,
   });
-  // Fetch dynamic claim value slabs for mobile
+  // Fetch regular claim value slabs for mobile (exclude Acer BBG special rates)
   const { data: mobileSlabs, isLoading: isMobileLoading } = useQuery({
-    queryKey: ['/api/claim-value-slabs/active/mobile'],
+    queryKey: ['/api/claim-value-slabs/active/mobile/regular'],
     retry: false,
   });
 
-  // Fetch dynamic claim value slabs for laptop
+  // Fetch regular claim value slabs for laptop (exclude Acer BBG special rates)
   const { data: laptopSlabs, isLoading: isLaptopLoading } = useQuery({
-    queryKey: ['/api/claim-value-slabs/active/laptop'],
+    queryKey: ['/api/claim-value-slabs/active/laptop/regular'],
     retry: false,
   });
 

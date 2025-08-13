@@ -350,19 +350,15 @@ export default function AdminClaimValueSlabs() {
   const laptopBrands = getBrandsForDeviceFromMaster('laptop');
   const mobileBrands = getBrandsForDeviceFromMaster('mobile');
   
-  // Debug logging for admin panel
-  console.log('Admin Panel Debug:');
-  console.log('Total slabs loaded:', slabs.length);
-  console.log('Laptop slabs:', slabs.filter(s => s.deviceType === 'laptop').length);
-  console.log('Acer laptop slabs:', slabs.filter(s => s.deviceType === 'laptop' && s.brand === 'Acer').length);
-  console.log('Laptop data processed:', laptopData.length, 'age ranges');
-  console.log('Laptop brands from master:', laptopBrands);
+  // Organize slabs by category for simpler display
+  const regularLaptopSlabs = slabs.filter(s => s.deviceType === 'laptop' && s.registrationSource === 'regular');
+  const regularMobileSlabs = slabs.filter(s => s.deviceType === 'mobile' && s.registrationSource === 'regular');  
+  const acerBbgSlabs = slabs.filter(s => s.registrationSource === 'acer_bbg');
   
-  // Check specific Acer data for 6-12 months
-  const acerDataSample = laptopData.find(d => d.range === '6-12 Months');
-  if (acerDataSample && acerDataSample.brands.Acer) {
-    console.log('Acer 6-12 months data:', JSON.stringify(acerDataSample.brands.Acer, null, 2));
-  }
+  console.log('Admin Panel - Simplified Categories:');
+  console.log('Regular Laptop Slabs:', regularLaptopSlabs.length);
+  console.log('Regular Mobile Slabs:', regularMobileSlabs.length);
+  console.log('Acer BBG Slabs:', acerBbgSlabs.length);
 
   return (
     <AdminLayout>
@@ -565,17 +561,18 @@ export default function AdminClaimValueSlabs() {
         </div>
 
         <Tabs defaultValue="laptop" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="laptop">Laptop Slabs</TabsTrigger>
             <TabsTrigger value="mobile">Mobile Slabs</TabsTrigger>
+            <TabsTrigger value="acer-bbg">Acer BBG Slabs</TabsTrigger>
           </TabsList>
 
           <TabsContent value="laptop">
             <Card>
               <CardHeader>
-                <CardTitle>Laptop Claim Value Slabs</CardTitle>
+                <CardTitle>Regular Laptop Claim Value Slabs</CardTitle>
                 <p className="text-sm text-gray-600">
-                  Brand comparison view for laptop device claim percentages
+                  Regular laptop claim percentages (includes regular Acer rates)
                 </p>
               </CardHeader>
               <CardContent>
@@ -588,132 +585,42 @@ export default function AdminClaimValueSlabs() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-32">Age Range</TableHead>
-                          {laptopBrands.map(brand => (
-                            <TableHead key={brand} className="text-center min-w-24">{brand}</TableHead>
-                          ))}
-                          <TableHead className="text-center min-w-24">Generic</TableHead>
+                          <TableHead>Brand</TableHead>
+                          <TableHead>Age Range</TableHead>
+                          <TableHead>Percentage</TableHead>
+                          <TableHead>Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {laptopData.map((ageData) => (
-                          <TableRow key={ageData.range}>
-                            <TableCell className="font-medium">{ageData.range}</TableCell>
-                            {laptopBrands.map(brand => (
-                              <TableCell key={brand} className="text-center">
-                                <div className="flex flex-col items-center space-y-1">
-                                  {ageData.brands[brand] ? (
-                                    ageData.brands[brand].multiple ? (
-                                      <>
-                                        {/* Show both regular and Acer BBG rates */}
-                                        <div className="space-y-1">
-                                          {ageData.brands[brand].regular && (
-                                            <div className="text-xs">
-                                              <span className="font-semibold text-blue-600">
-                                                {ageData.brands[brand].regular.percentage}%
-                                              </span>
-                                              <span className="text-gray-500 ml-1">(Regular)</span>
-                                            </div>
-                                          )}
-                                          {ageData.brands[brand].acerBbg && (
-                                            <div className="text-xs">
-                                              <span className="font-semibold text-purple-600">
-                                                {ageData.brands[brand].acerBbg.percentage}%
-                                              </span>
-                                              <span className="text-gray-500 ml-1">(Acer BBG)</span>
-                                            </div>
-                                          )}
-                                        </div>
-                                        <div className="flex space-x-1 mt-1">
-                                          {ageData.brands[brand].regular && (
-                                            <Button
-                                              size="sm"
-                                              variant="outline"
-                                              className="h-5 px-1 text-xs"
-                                              onClick={() => startEdit(ageData.brands[brand].regular)}
-                                            >
-                                              <Edit className="h-2 w-2" />
-                                            </Button>
-                                          )}
-                                          {ageData.brands[brand].acerBbg && (
-                                            <Button
-                                              size="sm"
-                                              variant="outline"
-                                              className="h-5 px-1 text-xs bg-purple-50"
-                                              onClick={() => startEdit(ageData.brands[brand].acerBbg)}
-                                            >
-                                              <Edit className="h-2 w-2" />
-                                            </Button>
-                                          )}
-                                        </div>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <div className="space-y-1">
-                                          <span className="font-semibold text-blue-600">
-                                            {ageData.brands[brand].percentage}%
-                                          </span>
-                                          <div className="text-xs text-gray-500">
-                                            ({ageData.brands[brand].registrationSource || 'regular'})
-                                          </div>
-                                        </div>
-                                        <div className="flex space-x-1">
-                                          <Button
-                                            size="sm"
-                                            variant="outline"
-                                            className="h-6 px-2 text-xs"
-                                            onClick={() => startEdit(ageData.brands[brand])}
-                                          >
-                                            <Edit className="h-3 w-3 mr-1" />
-                                            Edit
-                                          </Button>
-                                          <Button
-                                            size="sm"
-                                            variant="destructive"
-                                            className="h-6 px-2 text-xs"
-                                            onClick={() => deleteMutation.mutate(ageData.brands[brand].id)}
-                                          >
-                                            <Trash2 className="h-3 w-3" />
-                                          </Button>
-                                        </div>
-                                      </>
-                                    )
-                                  ) : (
-                                    <span className="text-gray-400 text-sm">Not Set</span>
-                                  )}
-                                </div>
-                              </TableCell>
-                            ))}
-                            <TableCell className="text-center">
-                              <div className="flex flex-col items-center space-y-1">
-                                {ageData.genericSlab ? (
-                                  <>
-                                    <span className="font-semibold text-green-600">
-                                      {ageData.genericSlab.percentage}%
-                                    </span>
-                                    <div className="flex space-x-1">
-                                      <Button
-                                        size="sm"
-                                        variant="outline"
-                                        className="h-6 px-2 text-xs"
-                                        onClick={() => startEdit(ageData.genericSlab)}
-                                      >
-                                        <Edit className="h-3 w-3 mr-1" />
-                                        Edit Generic
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant="destructive"
-                                        className="h-6 px-2 text-xs"
-                                        onClick={() => deleteMutation.mutate(ageData.genericSlab.id)}
-                                      >
-                                        <Trash2 className="h-3 w-3" />
-                                      </Button>
-                                    </div>
-                                  </>
-                                ) : (
-                                  <span className="text-gray-400 text-sm">Not Set</span>
-                                )}
+                        {regularLaptopSlabs.map((slab) => (
+                          <TableRow key={slab.id}>
+                            <TableCell className="font-medium">
+                              {slab.brand || 'Generic'}
+                            </TableCell>
+                            <TableCell>
+                              {slab.minMonths}-{slab.maxMonths} months
+                            </TableCell>
+                            <TableCell>
+                              <span className="font-semibold text-blue-600">
+                                {slab.percentage}%
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex space-x-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => startEdit(slab)}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => deleteMutation.mutate(slab.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
                               </div>
                             </TableCell>
                           </TableRow>
@@ -729,9 +636,9 @@ export default function AdminClaimValueSlabs() {
           <TabsContent value="mobile">
             <Card>
               <CardHeader>
-                <CardTitle>Mobile Claim Value Slabs</CardTitle>
+                <CardTitle>Regular Mobile Claim Value Slabs</CardTitle>
                 <p className="text-sm text-gray-600">
-                  Brand comparison view for mobile device claim percentages
+                  Regular mobile claim percentages
                 </p>
               </CardHeader>
               <CardContent>
@@ -744,81 +651,111 @@ export default function AdminClaimValueSlabs() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-32">Age Range</TableHead>
-                          {mobileBrands.map(brand => (
-                            <TableHead key={brand} className="text-center min-w-24">{brand}</TableHead>
-                          ))}
-                          <TableHead className="text-center min-w-24">Generic</TableHead>
+                          <TableHead>Brand</TableHead>
+                          <TableHead>Age Range</TableHead>
+                          <TableHead>Percentage</TableHead>
+                          <TableHead>Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {mobileData.map((ageData) => (
-                          <TableRow key={ageData.range}>
-                            <TableCell className="font-medium">{ageData.range}</TableCell>
-                            {mobileBrands.map(brand => (
-                              <TableCell key={brand} className="text-center">
-                                <div className="flex flex-col items-center space-y-1">
-                                  {ageData.brands[brand] ? (
-                                    <>
-                                      <span className="font-semibold text-blue-600">
-                                        {ageData.brands[brand].percentage}%
-                                      </span>
-                                      <div className="flex space-x-1">
-                                        <Button
-                                          size="sm"
-                                          variant="outline"
-                                          className="h-6 px-2 text-xs"
-                                          onClick={() => startEdit(ageData.brands[brand])}
-                                        >
-                                          <Edit className="h-3 w-3 mr-1" />
-                                          Edit
-                                        </Button>
-                                        <Button
-                                          size="sm"
-                                          variant="destructive"
-                                          className="h-6 px-2 text-xs"
-                                          onClick={() => deleteMutation.mutate(ageData.brands[brand].id)}
-                                        >
-                                          <Trash2 className="h-3 w-3" />
-                                        </Button>
-                                      </div>
-                                    </>
-                                  ) : (
-                                    <span className="text-gray-400 text-sm">Not Set</span>
-                                  )}
-                                </div>
-                              </TableCell>
-                            ))}
-                            <TableCell className="text-center">
-                              <div className="flex flex-col items-center space-y-1">
-                                {ageData.genericSlab ? (
-                                  <>
-                                    <span className="font-semibold text-green-600">
-                                      {ageData.genericSlab.percentage}%
-                                    </span>
-                                    <div className="flex space-x-1">
-                                      <Button
-                                        size="sm"
-                                        variant="outline"
-                                        className="h-6 px-2 text-xs"
-                                        onClick={() => startEdit(ageData.genericSlab)}
-                                      >
-                                        <Edit className="h-3 w-3 mr-1" />
-                                        Edit Generic
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant="destructive"
-                                        className="h-6 px-2 text-xs"
-                                        onClick={() => deleteMutation.mutate(ageData.genericSlab.id)}
-                                      >
-                                        <Trash2 className="h-3 w-3" />
-                                      </Button>
-                                    </div>
-                                  </>
-                                ) : (
-                                  <span className="text-gray-400 text-sm">Not Set</span>
-                                )}
+                        {regularMobileSlabs.map((slab) => (
+                          <TableRow key={slab.id}>
+                            <TableCell className="font-medium">
+                              {slab.brand || 'Generic'}
+                            </TableCell>
+                            <TableCell>
+                              {slab.minMonths}-{slab.maxMonths} months
+                            </TableCell>
+                            <TableCell>
+                              <span className="font-semibold text-green-600">
+                                {slab.percentage}%
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex space-x-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => startEdit(slab)}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => deleteMutation.mutate(slab.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="acer-bbg">
+            <Card>
+              <CardHeader>
+                <CardTitle>Acer BBG Special Rates</CardTitle>
+                <p className="text-sm text-gray-600">
+                  Higher claim percentages exclusively for Acer BBG customers (68%-80% range)
+                </p>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Brand</TableHead>
+                          <TableHead>Age Range</TableHead>
+                          <TableHead>Percentage</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {acerBbgSlabs.map((slab) => (
+                          <TableRow key={slab.id}>
+                            <TableCell className="font-medium">
+                              <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm">
+                                {slab.brand || 'Generic'}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              {slab.minMonths}-{slab.maxMonths} months
+                            </TableCell>
+                            <TableCell>
+                              <span className="font-semibold text-purple-600">
+                                {slab.percentage}%
+                              </span>
+                              <span className="text-xs text-purple-500 ml-1">(Acer BBG)</span>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex space-x-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => startEdit(slab)}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => deleteMutation.mutate(slab.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
                               </div>
                             </TableCell>
                           </TableRow>

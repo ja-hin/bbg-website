@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,11 @@ import {
   ToggleLeft, 
   ToggleRight,
   Save,
-  X
+  X,
+  Code,
+  Monitor,
+  Smartphone,
+  RefreshCw
 } from "lucide-react";
 
 interface MessageTemplate {
@@ -108,6 +112,9 @@ export default function AdminTemplates() {
     variables: [] as string[]
   });
   const [previewContent, setPreviewContent] = useState('');
+  const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
+  const [htmlEditorMode, setHtmlEditorMode] = useState<'visual' | 'code'>('visual');
+  const [autoPreview, setAutoPreview] = useState(true);
 
   // Fetch templates
   const { data: templates, isLoading } = useQuery({
@@ -251,6 +258,44 @@ export default function AdminTemplates() {
     setPreviewContent('');
   };
 
+  const handlePreview = () => {
+    if (formData.content && formData.event) {
+      const sampleVariables = sampleData[formData.event as keyof typeof sampleData] || {};
+      previewMutation.mutate({ 
+        content: formData.content, 
+        variables: sampleVariables 
+      });
+    }
+  };
+
+  // Auto-preview when content changes and auto-preview is enabled
+  useEffect(() => {
+    if (autoPreview && formData.content && formData.event) {
+      const timeoutId = setTimeout(() => {
+        handlePreview();
+      }, 1000); // Debounce for 1 second
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [formData.content, formData.event, autoPreview]);
+
+  const insertVariable = (variable: string) => {
+    const textarea = document.querySelector('#content-editor') as HTMLTextAreaElement;
+    if (textarea) {
+      const cursorPos = textarea.selectionStart;
+      const textBefore = formData.content.substring(0, cursorPos);
+      const textAfter = formData.content.substring(cursorPos);
+      const newContent = textBefore + `{{${variable}}}` + textAfter;
+      setFormData({ ...formData, content: newContent });
+      
+      // Set cursor position after the inserted variable
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(cursorPos + variable.length + 4, cursorPos + variable.length + 4);
+      }, 0);
+    }
+  };
+
   const handleEdit = (template: MessageTemplate) => {
     setSelectedTemplate(template);
     setFormData({
@@ -282,14 +327,6 @@ export default function AdminTemplates() {
     } else {
       createMutation.mutate(formData);
     }
-  };
-
-  const handlePreview = () => {
-    const sampleVariables = sampleData[formData.event as keyof typeof sampleData] || {};
-    previewMutation.mutate({
-      content: formData.content,
-      variables: sampleVariables
-    });
   };
 
   const getTypeIcon = (type: string) => {
@@ -396,14 +433,131 @@ export default function AdminTemplates() {
                   )}
                   
                   <div>
-                    <Label htmlFor="content">Content</Label>
-                    <Textarea
-                      id="content"
-                      value={formData.content}
-                      onChange={(e) => setFormData({...formData, content: e.target.value})}
-                      placeholder="Template content with {{variables}}"
-                      rows={12}
-                    />
+                    <div className="flex justify-between items-center mb-2">
+                      <Label htmlFor="content">Content</Label>
+                      <div className="flex gap-2">
+                        {formData.type === 'email' && (
+                          <div className="flex rounded-lg border p-1">
+                            <Button
+                              size="sm"
+                              variant={htmlEditorMode === 'visual' ? 'default' : 'ghost'}
+                              onClick={() => setHtmlEditorMode('visual')}
+                              className="px-3 py-1 text-xs"
+                            >
+                              Visual
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant={htmlEditorMode === 'code' ? 'default' : 'ghost'}
+                              onClick={() => setHtmlEditorMode('code')}
+                              className="px-3 py-1 text-xs"
+                            >
+                              <Code className="h-3 w-3 mr-1" />
+                              HTML
+                            </Button>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-2">
+                          <label className="text-xs text-gray-600">Auto Preview:</label>
+                          <Button
+                            size="sm"
+                            variant={autoPreview ? 'default' : 'outline'}
+                            onClick={() => setAutoPreview(!autoPreview)}
+                            className="px-2 py-1 text-xs"
+                          >
+                            {autoPreview ? 'ON' : 'OFF'}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {formData.type === 'email' && htmlEditorMode === 'visual' ? (
+                      <div className="space-y-2">
+                        <div className="text-xs text-gray-500 mb-2">
+                          Tip: Use the toolbar below for common HTML formatting, or switch to HTML mode for advanced editing.
+                        </div>
+                        <div className="flex gap-1 mb-2 p-2 border rounded bg-gray-50">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => insertVariable('name')}
+                            className="text-xs px-2 py-1"
+                          >
+                            Name
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => insertVariable('email')}
+                            className="text-xs px-2 py-1"
+                          >
+                            Email
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => insertVariable('voucherCode')}
+                            className="text-xs px-2 py-1"
+                          >
+                            Voucher
+                          </Button>
+                          <div className="border-l mx-1"></div>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => {
+                              const newContent = formData.content + '\n<h2 style="color: #254696;">Heading</h2>';
+                              setFormData({...formData, content: newContent});
+                            }}
+                            className="text-xs px-2 py-1"
+                          >
+                            H2
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => {
+                              const newContent = formData.content + '\n<p style="margin: 10px 0;">Paragraph text here...</p>';
+                              setFormData({...formData, content: newContent});
+                            }}
+                            className="text-xs px-2 py-1"
+                          >
+                            Para
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => {
+                              const newContent = formData.content + '\n<div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0;">\n  <p>Highlighted content</p>\n</div>';
+                              setFormData({...formData, content: newContent});
+                            }}
+                            className="text-xs px-2 py-1"
+                          >
+                            Box
+                          </Button>
+                        </div>
+                        <Textarea
+                          id="content-editor"
+                          value={formData.content}
+                          onChange={(e) => setFormData({...formData, content: e.target.value})}
+                          placeholder="HTML content with {{variables}} - Use the toolbar above for common elements"
+                          rows={14}
+                          className="font-mono text-sm"
+                        />
+                      </div>
+                    ) : (
+                      <Textarea
+                        id="content-editor"
+                        value={formData.content}
+                        onChange={(e) => setFormData({...formData, content: e.target.value})}
+                        placeholder={formData.type === 'email' ? 
+                          "HTML content with {{variables}}" : 
+                          "Text content with {{variables}}"
+                        }
+                        rows={14}
+                        className={formData.type === 'email' ? 'font-mono text-sm' : ''}
+                      />
+                    )}
                   </div>
                   
                   <div>
@@ -435,19 +589,87 @@ export default function AdminTemplates() {
                 </div>
                 
                 <div>
-                  <Label>Preview</Label>
-                  <div className="mt-2 p-4 border rounded-lg bg-gray-50 min-h-[400px]">
-                    {previewContent ? (
-                      <div 
-                        dangerouslySetInnerHTML={{ __html: previewContent.replace(/\n/g, '<br>') }}
-                        className="whitespace-pre-wrap"
-                      />
-                    ) : (
-                      <div className="text-gray-500 italic">
-                        Click "Preview" to see rendered template with sample data
-                      </div>
-                    )}
+                  <div className="flex justify-between items-center mb-2">
+                    <Label>Live Preview</Label>
+                    <div className="flex gap-1">
+                      <Button
+                        size="sm"
+                        variant={previewMode === 'desktop' ? 'default' : 'outline'}
+                        onClick={() => setPreviewMode('desktop')}
+                        className="px-2 py-1 text-xs"
+                      >
+                        <Monitor className="h-3 w-3 mr-1" />
+                        Desktop
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={previewMode === 'mobile' ? 'default' : 'outline'}
+                        onClick={() => setPreviewMode('mobile')}
+                        className="px-2 py-1 text-xs"
+                      >
+                        <Smartphone className="h-3 w-3 mr-1" />
+                        Mobile
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handlePreview}
+                        disabled={previewMutation.isPending}
+                        className="px-2 py-1 text-xs"
+                      >
+                        <RefreshCw className="h-3 w-3 mr-1" />
+                        Refresh
+                      </Button>
+                    </div>
                   </div>
+                  
+                  <div className={`border rounded-lg bg-white overflow-auto ${
+                    previewMode === 'mobile' ? 'max-w-sm mx-auto' : ''
+                  }`} style={{ minHeight: '400px' }}>
+                    <div className="p-4">
+                      {previewContent ? (
+                        <div>
+                          {formData.type === 'email' ? (
+                            <div 
+                              dangerouslySetInnerHTML={{ __html: previewContent }}
+                              className="email-preview"
+                              style={{
+                                fontFamily: 'Arial, sans-serif',
+                                lineHeight: '1.6',
+                                color: '#333'
+                              }}
+                            />
+                          ) : (
+                            <div 
+                              className="whitespace-pre-wrap text-sm"
+                              style={{ 
+                                fontFamily: previewMode === 'mobile' ? 'system-ui' : 'inherit',
+                                fontSize: previewMode === 'mobile' ? '14px' : '16px'
+                              }}
+                            >
+                              {previewContent}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-gray-500 italic text-center py-20">
+                          {autoPreview ? 
+                            'Type content above to see live preview...' : 
+                            'Click "Preview" to see rendered template with sample data'
+                          }
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {formData.event && (
+                    <div className="mt-2 text-xs text-gray-500">
+                      <strong>Sample data being used:</strong>
+                      <div className="mt-1 p-2 bg-gray-100 rounded text-xs font-mono">
+                        {JSON.stringify(sampleData[formData.event as keyof typeof sampleData] || {}, null, 2)}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </DialogContent>

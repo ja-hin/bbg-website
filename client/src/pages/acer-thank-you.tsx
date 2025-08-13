@@ -179,10 +179,7 @@ export default function AcerThankYou() {
                       </div>
                       <span className="text-xs ml-6 mt-1">between 09:30 to 18:30 IST</span>
                     </div>
-                    <div className="flex items-center text-gray-600">
-                      <MessageSquare className="h-4 w-4 mr-2" />
-                      <span>WhatsApp support available</span>
-                    </div>
+
                   </div>
                 </div>
               </div>
@@ -200,7 +197,7 @@ export default function AcerThankYou() {
                 <Link href="/claim-bbg">
                   <Button className="w-full sm:w-auto xtra-gradient hover:opacity-90">
                     <ArrowRight className="h-4 w-4 mr-2" />
-                    Claim BBG (After 6 months)
+                    Claim BBG
                   </Button>
                 </Link>
               </div>

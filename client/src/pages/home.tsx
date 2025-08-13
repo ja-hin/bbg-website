@@ -152,15 +152,15 @@ export default function Home() {
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                    Same 70% maximum buyback guarantee
+                    70% maximum buyback value
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                    5-year coverage period for all Acer products
+                    5-year coverage period
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                    Direct admin panel integration
+                    Instant settlement upon device handover
                   </li>
                 </ul>
                 <Link href="/acer">
@@ -185,11 +185,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="text-center mt-8">
-            <p className="text-sm text-gray-500">
-              * Acer BBG registrations are processed separately and managed directly in the admin panel
-            </p>
-          </div>
+          
         </div>
       </section>
       {/* Features Section */}

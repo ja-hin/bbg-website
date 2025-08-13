@@ -174,11 +174,14 @@ export default function AcerThankYou() {
                   <div className="space-y-2">
                     <div className="flex items-center text-gray-600">
                       <Mail className="h-4 w-4 mr-2" />
-                      <span>support@xtracover.com</span>
+                      <span>contactus@xtracover.com</span>
                     </div>
-                    <div className="flex items-center text-gray-600">
-                      <Phone className="h-4 w-4 mr-2" />
-                      <span>+91-9953410422</span>
+                    <div className="flex flex-col text-gray-600">
+                      <div className="flex items-center">
+                        <Phone className="h-4 w-4 mr-2" />
+                        <span>886 039 6039</span>
+                      </div>
+                      <span className="text-xs ml-6 mt-1">between 09:30 to 18:30 IST</span>
                     </div>
                     <div className="flex items-center text-gray-600">
                       <MessageSquare className="h-4 w-4 mr-2" />

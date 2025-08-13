@@ -320,11 +320,12 @@ Contact: support@xtracover.com
               <div className="grid sm:grid-cols-2 gap-4 text-sm text-gray-600">
                 <div>
                   <p className="font-medium">Email Support</p>
-                  <p>support@xtracover.com</p>
+                  <p>contactus@xtracover.com</p>
                 </div>
                 <div>
                   <p className="font-medium">Phone Support</p>
-                  <p>+91 98765 43210</p>
+                  <p>886 039 6039</p>
+                  <p className="text-xs mt-1">between 09:30 to 18:30 IST</p>
                 </div>
               </div>
             </div>

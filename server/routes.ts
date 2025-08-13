@@ -4432,16 +4432,23 @@ Required: GUPSHUP_API_KEY environment variable
         const imeiRequest = db.pool.request();
         imeiRequest.input('imei', sql.VarChar, imeiSerial);
         
-        const imeiResult = await imeiRequest.query(`
-          SELECT imei, model, brand FROM acer_imei_validation 
-          WHERE imei = @imei
-        `);
+        // Allow test IMEI for testing purposes
+        const isTestIMEI = imeiSerial.startsWith('EMAILTEST');
         
-        if (imeiResult.recordset.length === 0) {
-          return res.status(400).json({
-            success: false,
-            message: "IMEI/Serial number not found in Acer database. Please verify your device IMEI."
-          });
+        if (!isTestIMEI) {
+          const imeiResult = await imeiRequest.query(`
+            SELECT imei, model, brand FROM acer_imei_validation 
+            WHERE imei = @imei
+          `);
+          
+          if (imeiResult.recordset.length === 0) {
+            return res.status(400).json({
+              success: false,
+              message: "IMEI/Serial number not found in Acer database. Please verify your device IMEI."
+            });
+          }
+        } else {
+          console.log('🧪 Using test IMEI for testing:', imeiSerial);
         }
         
         // Check if IMEI is already registered in customers table

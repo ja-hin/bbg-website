@@ -160,7 +160,7 @@ BBG Voucher Code: ${invoiceData.voucherCode}
 Service: ${invoiceData.service}
 Amount Paid: ${invoiceData.amount}
 
-Thank you for choosing Xtracover BBG!
+Thank you for choosing XtraCover BBG!
 Contact: support@xtracover.com
     `;
 
@@ -181,7 +181,7 @@ Contact: support@xtracover.com
       case 'distributor':
         return {
           icon: <Users className="h-16 w-16 text-blue-600" />,
-          title: "Welcome to Xtracover Network!",
+          title: "Welcome to XtraCover Network!",
           subtitle: "Referral Partner Registration Successful",
           message: "You are now part of our trusted referral partner network. Start promoting BBG and earn ₹25 commission on every successful registration.",
           code: sellerCode,
@@ -198,7 +198,7 @@ Contact: support@xtracover.com
           icon: <Smartphone className="h-16 w-16 text-green-600" />,
           title: "Registration Successful!",
           subtitle: "BBG Registration Complete",
-          message: "Thank you for choosing Xtracover BBG. Your device is now protected with our comprehensive buyback guarantee.",
+          message: "Thank you for choosing XtraCover BBG. Your device is now protected with our comprehensive buyback guarantee.",
           code: voucherCode,
           codeLabel: "Your BBG Voucher Code:",
           details: [

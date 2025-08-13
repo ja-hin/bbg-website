@@ -242,7 +242,7 @@ export class CommunicationService {
       const emailTemplate = await templateService.getTemplate('email', 'distributor_welcome');
       if (emailTemplate) {
         const emailContent = templateService.renderTemplate(emailTemplate.content, partnerData);
-        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'Welcome to Xtracover BBG Partnership', partnerData);
+        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'Welcome to XtraCover BBG Partnership', partnerData);
         results.email = await this.emailService.sendEmail(partnerData.email, emailSubject, emailContent);
       }
 
@@ -376,7 +376,7 @@ export class CommunicationService {
       // Test email
       results.email = await this.emailService.sendEmail(
         testData.email,
-        'Xtracover BBG - Test Email',
+        'XtraCover BBG - Test Email',
         `<h2>Test Email</h2><p>Hello ${testData.name},</p><p>${testData.message}</p>`,
         `Test Email - Hello ${testData.name}, ${testData.message}`
       );

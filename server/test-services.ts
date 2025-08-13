@@ -111,9 +111,9 @@ export function registerTestRoutes(app: Express) {
       });
 
       const mailOptions = {
-        from: `"Xtracover BBG Test" <${process.env.SMTP_USER}>`,
+        from: `"XtraCover BBG Test" <${process.env.SMTP_USER}>`,
         to: email,
-        subject: subject || 'Xtracover BBG - Email Test',
+        subject: subject || 'XtraCover BBG - Email Test',
         html: `<h3>Email Service Test</h3><p>${message}</p><p>If you received this, SMTP is working correctly.</p>`,
         text: message
       };
@@ -152,7 +152,7 @@ export function registerTestRoutes(app: Express) {
       // Test SMS (Kaleyra)
       if (phone) {
         try {
-          const smsResult = await kaleyraSMSService.sendOTP(phone, '123456', message || 'Test SMS from Xtracover BBG system');
+          const smsResult = await kaleyraSMSService.sendOTP(phone, '123456', message || 'Test SMS from XtraCover BBG system');
           results.sms = {
             success: smsResult.success,
             service: 'Kaleyra SMS',
@@ -173,7 +173,7 @@ export function registerTestRoutes(app: Express) {
         try {
           const whatsappResult = await gupshupService.sendMessage({
             to: phone,
-            message: message || 'Test WhatsApp message from Xtracover BBG system',
+            message: message || 'Test WhatsApp message from XtraCover BBG system',
             type: 'TEXT'
           });
           results.whatsapp = {
@@ -205,11 +205,11 @@ export function registerTestRoutes(app: Express) {
             });
 
             const emailResult = await transporter.sendMail({
-              from: `"Xtracover BBG Test" <${process.env.SMTP_USER}>`,
+              from: `"XtraCover BBG Test" <${process.env.SMTP_USER}>`,
               to: email,
-              subject: 'Xtracover BBG - Communication Test',
-              html: `<h3>All Communication Services Test</h3><p>${message || 'Test email from Xtracover BBG system'}</p>`,
-              text: message || 'Test email from Xtracover BBG system'
+              subject: 'XtraCover BBG - Communication Test',
+              html: `<h3>All Communication Services Test</h3><p>${message || 'Test email from XtraCover BBG system'}</p>`,
+              text: message || 'Test email from XtraCover BBG system'
             });
 
             results.email = {

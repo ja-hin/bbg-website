@@ -2310,11 +2310,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Create test email content
-      const testSubject = "SMTP Configuration Test - Xtracover BBG";
+      const testSubject = "SMTP Configuration Test - XtraCover BBG";
       const testHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <h2 style="color: #6b46c1; margin-bottom: 20px;">SMTP Test Successful! 🎉</h2>
-          <p>This is a test email from your Xtracover BBG application to verify SMTP configuration.</p>
+          <p>This is a test email from your XtraCover BBG application to verify SMTP configuration.</p>
           <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #333; margin-top: 0;">Configuration Details:</h3>
             <ul style="color: #666; line-height: 1.6;">
@@ -2327,7 +2327,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           <p style="color: #666;">If you received this email, your SMTP configuration is working correctly!</p>
           <hr style="border: none; border-top: 1px solid #e9ecef; margin: 30px 0;">
           <p style="color: #999; font-size: 12px;">
-            This email was sent from the Xtracover BBG Admin Panel as part of SMTP configuration testing.
+            This email was sent from the XtraCover BBG Admin Panel as part of SMTP configuration testing.
           </p>
         </div>
       `;
@@ -3678,9 +3678,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const testResult = await communicationService.emailService.sendEmail(
           user,
-          'SMTP Configuration Test - Xtracover BBG',
-          '<h2>SMTP Configuration Successful!</h2><p>Your SMTP settings are working correctly. Email notifications are now enabled for Xtracover BBG.</p><p>You will receive automatic notifications for customer registrations, claim updates, and referral partner payouts.</p>',
-          'SMTP Configuration Successful! Your email settings are working correctly. Email notifications are now enabled for Xtracover BBG.'
+          'SMTP Configuration Test - XtraCover BBG',
+          '<h2>SMTP Configuration Successful!</h2><p>Your SMTP settings are working correctly. Email notifications are now enabled for XtraCover BBG.</p><p>You will receive automatic notifications for customer registrations, claim updates, and referral partner payouts.</p>',
+          'SMTP Configuration Successful! Your email settings are working correctly. Email notifications are now enabled for XtraCover BBG.'
         );
         
         if (!testResult.success) {

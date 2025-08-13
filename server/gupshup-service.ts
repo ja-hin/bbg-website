@@ -342,7 +342,7 @@ Team XtraCover`;
   }
 
   async sendWelcomeMessage(name: string, phone: string, referralCode: string): Promise<void> {
-    const message = `Welcome to Xtracover BBG, ${name}! Your referral code: ${referralCode}. Commission: Rs.25 per registration. For support: 8860396039`;
+    const message = `Welcome to XtraCover BBG, ${name}! Your referral code: ${referralCode}. Commission: Rs.25 per registration. For support: 8860396039`;
 
     await this.sendMessage({
       to: phone,
@@ -352,7 +352,7 @@ Team XtraCover`;
   }
 
   async sendCustomerWelcome(name: string, phone: string, voucherCode: string): Promise<void> {
-    const message = `Welcome to Xtracover BBG, ${name}! Your BBG voucher: ${voucherCode}. Device protection active. For support: 8860396039`;
+    const message = `Welcome to XtraCover BBG, ${name}! Your BBG voucher: ${voucherCode}. Device protection active. For support: 8860396039`;
 
     await this.sendMessage({
       to: phone,
@@ -402,7 +402,7 @@ Team XtraCover`;
   }
 
   async sendOTP(phone: string, otp: string): Promise<void> {
-    const message = `Your Xtracover BBG verification code: ${otp}. Valid for 10 minutes. Do not share. Support: 8860396039`;
+    const message = `Your XtraCover BBG verification code: ${otp}. Valid for 10 minutes. Do not share. Support: 8860396039`;
 
     await this.sendMessage({
       to: phone,

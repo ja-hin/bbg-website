@@ -67,11 +67,11 @@ export class TemplateService {
           name: 'Customer Registration Confirmation - Email',
           type: 'email',
           event: 'customer_registration',
-          subject: 'BBG Registration Successful - Xtracover',
+          subject: 'BBG Registration Successful - XtraCover',
           content: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center; margin-bottom: 30px;">
-    <h1 style="color: #dc2626;">Xtracover BBG</h1>
+    <h1 style="color: #dc2626;">XtraCover BBG</h1>
     <h2 style="color: #374151;">Registration Successful!</h2>
   </div>
   
@@ -95,7 +95,7 @@ export class TemplateService {
   </div>
   
   <div style="text-align: center; margin-top: 30px;">
-    <p style="color: #6b7280;">Thank you for choosing Xtracover BBG!</p>
+    <p style="color: #6b7280;">Thank you for choosing XtraCover BBG!</p>
   </div>
 </div>
           `,
@@ -106,7 +106,7 @@ export class TemplateService {
           name: 'Customer Registration Confirmation - SMS',
           type: 'sms',
           event: 'customer_registration',
-          content: 'Hi {{name}}, your BBG registration is successful! Your voucher code: {{voucherCode}}. Keep it safe for claiming your BBG. - Xtracover',
+          content: 'Hi {{name}}, your BBG registration is successful! Your voucher code: {{voucherCode}}. Keep it safe for claiming your BBG. - XtraCover',
           variables: ['name', 'voucherCode']
         },
         // Customer Registration WhatsApp
@@ -114,7 +114,7 @@ export class TemplateService {
           name: 'Customer Registration Confirmation - WhatsApp',
           type: 'whatsapp',
           event: 'customer_registration',
-          content: '🎉 Hi {{name}}!\n\nYour BBG registration is successful!\n\n📱 Device: {{brand}} {{modelName}}\n🎟️ Voucher Code: *{{voucherCode}}*\n\n⚠️ Keep your voucher code safe for claiming BBG.\n\nThank you for choosing Xtracover BBG! 🛡️',
+          content: '🎉 Hi {{name}}!\n\nYour BBG registration is successful!\n\n📱 Device: {{brand}} {{modelName}}\n🎟️ Voucher Code: *{{voucherCode}}*\n\n⚠️ Keep your voucher code safe for claiming BBG.\n\nThank you for choosing XtraCover BBG! 🛡️',
           variables: ['name', 'brand', 'modelName', 'voucherCode']
         },
         // Referral Partner Welcome Email
@@ -122,17 +122,17 @@ export class TemplateService {
           name: 'Referral Partner Welcome - Email',
           type: 'email',
           event: 'referral_partner_welcome',
-          subject: 'Welcome to Xtracover BBG Referral Program!',
+          subject: 'Welcome to XtraCover BBG Referral Program!',
           content: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center; margin-bottom: 30px;">
-    <h1 style="color: #dc2626;">Xtracover BBG</h1>
+    <h1 style="color: #dc2626;">XtraCover BBG</h1>
     <h2 style="color: #374151;">Welcome to Our Referral Program!</h2>
   </div>
   
   <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
     <h3 style="color: #374151; margin-top: 0;">Hi {{name}},</h3>
-    <p>Welcome to the Xtracover BBG Referral Program! You're now part of our partner network.</p>
+    <p>Welcome to the XtraCover BBG Referral Program! You're now part of our partner network.</p>
     
     <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
       <strong>Your Referral Code: {{sellerCode}}</strong>
@@ -157,7 +157,7 @@ export class TemplateService {
           name: 'Referral Partner Welcome - SMS',
           type: 'sms',
           event: 'referral_partner_welcome',
-          content: 'Welcome to Xtracover BBG Referral Program! Your referral code: {{sellerCode}}. Earn ₹25 per successful registration. Start sharing! - Xtracover',
+          content: 'Welcome to XtraCover BBG Referral Program! Your referral code: {{sellerCode}}. Earn ₹25 per successful registration. Start sharing! - XtraCover',
           variables: ['name', 'sellerCode']
         },
         // Referral Partner Welcome WhatsApp
@@ -165,7 +165,7 @@ export class TemplateService {
           name: 'Referral Partner Welcome - WhatsApp',
           type: 'whatsapp',
           event: 'referral_partner_welcome',
-          content: '🎉 Welcome {{name}}!\n\nYou\'re now a Xtracover BBG Referral Partner!\n\n🔑 Your Referral Code: *{{sellerCode}}*\n💰 Earn ₹25 per successful registration\n\n📢 Start sharing your code with customers to earn commissions!\n\nWelcome to the team! 🤝',
+          content: '🎉 Welcome {{name}}!\n\nYou\'re now a XtraCover BBG Referral Partner!\n\n🔑 Your Referral Code: *{{sellerCode}}*\n💰 Earn ₹25 per successful registration\n\n📢 Start sharing your code with customers to earn commissions!\n\nWelcome to the team! 🤝',
           variables: ['name', 'sellerCode', 'businessName']
         },
         // Claim Status Update Email
@@ -173,11 +173,11 @@ export class TemplateService {
           name: 'Claim Status Update - Email',
           type: 'email',
           event: 'claim_status_update',
-          subject: 'BBG Claim Update - {{status}} - Xtracover',
+          subject: 'BBG Claim Update - {{status}} - XtraCover',
           content: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center; margin-bottom: 30px;">
-    <h1 style="color: #dc2626;">Xtracover BBG</h1>
+    <h1 style="color: #dc2626;">XtraCover BBG</h1>
     <h2 style="color: #374151;">Claim Status Update</h2>
   </div>
   
@@ -193,7 +193,7 @@ export class TemplateService {
   </div>
   
   <div style="text-align: center; margin-top: 30px;">
-    <p style="color: #6b7280;">Thank you for choosing Xtracover BBG!</p>
+    <p style="color: #6b7280;">Thank you for choosing XtraCover BBG!</p>
   </div>
 </div>
           `,
@@ -204,11 +204,11 @@ export class TemplateService {
           name: 'Payout Notification - Email',
           type: 'email',
           event: 'payout_notification',
-          subject: 'Payout Update - {{status}} - Xtracover',
+          subject: 'Payout Update - {{status}} - XtraCover',
           content: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
   <div style="text-align: center; margin-bottom: 30px;">
-    <h1 style="color: #dc2626;">Xtracover BBG</h1>
+    <h1 style="color: #dc2626;">XtraCover BBG</h1>
     <h2 style="color: #374151;">Payout Update</h2>
   </div>
   
@@ -235,7 +235,7 @@ export class TemplateService {
           name: 'OTP Verification - SMS',
           type: 'sms',
           event: 'otp_verification',
-          content: 'Your Xtracover BBG OTP is {{otp}}. Valid for 10 minutes. Do not share this code with anyone. - Xtracover',
+          content: 'Your XtraCover BBG OTP is {{otp}}. Valid for 10 minutes. Do not share this code with anyone. - XtraCover',
           variables: ['otp']
         }
       ];

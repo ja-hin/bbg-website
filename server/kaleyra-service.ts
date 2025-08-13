@@ -55,7 +55,7 @@ export class KaleyraSMSService {
       const formattedPhone = this.formatPhoneNumber(phoneNumber);
       
       // Default OTP message template
-      const message = customMessage || `Your OTP is ${otpCode}. Do not share your OTP with anyone. Team Xtracover. - XtraCover`;
+      const message = customMessage || `Your OTP is ${otpCode}. Do not share your OTP with anyone. Team XtraCover. - XtraCover`;
       
       // Use the working Kaleyra API format
       const url = this.baseURL;

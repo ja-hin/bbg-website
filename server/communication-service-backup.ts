@@ -28,7 +28,7 @@ export class EmailService {
       const transporter = this.createTransporter();
 
       const mailOptions = {
-        from: `"Xtracover BBG" <${process.env.SMTP_USER}>`,
+        from: `"XtraCover BBG" <${process.env.SMTP_USER}>`,
         to,
         subject,
         text: text || '',
@@ -371,16 +371,16 @@ export class CommunicationService {
     const results = {
       email: await this.emailService.sendEmail(
         testData.email,
-        'Test Email - Xtracover BBG Communications',
-        `<h2>Hello ${testData.name}!</h2><p>This is a test email from Xtracover BBG communication system. If you received this, email notifications are working correctly!</p>`
+        'Test Email - XtraCover BBG Communications',
+        `<h2>Hello ${testData.name}!</h2><p>This is a test email from XtraCover BBG communication system. If you received this, email notifications are working correctly!</p>`
       ),
       sms: await this.smsService.sendSMS(
         testData.contact,
-        `Hi ${testData.name}! This is a test SMS from Xtracover BBG. If you received this, SMS notifications are working! - Xtracover`
+        `Hi ${testData.name}! This is a test SMS from XtraCover BBG. If you received this, SMS notifications are working! - XtraCover`
       ),
       whatsapp: await this.whatsappService.sendWhatsAppMessage(
         testData.contact,
-        `🧪 Hi ${testData.name}!\n\nThis is a test WhatsApp message from Xtracover BBG.\n\nIf you received this, WhatsApp notifications are working correctly! ✅\n\n- Xtracover Team`
+        `🧪 Hi ${testData.name}!\n\nThis is a test WhatsApp message from XtraCover BBG.\n\nIf you received this, WhatsApp notifications are working correctly! ✅\n\n- XtraCover Team`
       )
     };
 

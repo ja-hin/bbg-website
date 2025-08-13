@@ -79,8 +79,6 @@ export default function Header() {
               {/* XTRACOVER Logo - External Link */}
               <a
                 href="https://www.xtracover.com"
-                target="_blank"
-                rel="noopener noreferrer"
                 className="hover:opacity-80 transition-opacity"
               >
                 <img

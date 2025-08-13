@@ -5100,7 +5100,8 @@ Required: GUPSHUP_API_KEY environment variable
           percentage, 
           is_active, 
           created_at, 
-          updated_at
+          updated_at,
+          ISNULL(registration_source, 'regular') as registration_source
         FROM claim_value_slabs 
         WHERE is_active = 1
         ORDER BY device_type, ISNULL(brand, ''), min_months ASC
@@ -5119,21 +5120,34 @@ Required: GUPSHUP_API_KEY environment variable
         percentage: row.percentage,
         isActive: row.is_active,
         createdAt: row.created_at,
-        updatedAt: row.updated_at || row.created_at
+        updatedAt: row.updated_at || row.created_at,
+        registrationSource: row.registration_source || 'regular'
       }));
       
       // Log summary for debugging
       const brandedSlabs = slabs.filter(s => s.brand);
       const mobileSlabs = slabs.filter(s => s.deviceType === 'mobile');
       const laptopSlabs = slabs.filter(s => s.deviceType === 'laptop');
+      const acerBbgSlabs = slabs.filter(s => s.registrationSource === 'acer_bbg');
+      const regularSlabs = slabs.filter(s => s.registrationSource === 'regular' || !s.registrationSource);
       
       console.log(`✅ Successfully fetched ${slabs.length} claim value slabs:`);
       console.log(`   - ${mobileSlabs.length} mobile slabs`);
       console.log(`   - ${laptopSlabs.length} laptop slabs (${brandedSlabs.length} brand-specific)`);
+      console.log(`   - ${regularSlabs.length} regular slabs`);
+      console.log(`   - ${acerBbgSlabs.length} Acer BBG slabs`);
       
       if (brandedSlabs.length > 0) {
         const brands = [...new Set(brandedSlabs.map(s => s.brand))];
         console.log(`   - Brands: ${brands.join(', ')}`);
+      }
+      
+      // Show registration source breakdown
+      const registrationSources = [...new Set(slabs.map(s => s.registrationSource))];
+      console.log(`   - Registration sources: ${registrationSources.join(', ')}`);
+      
+      if (acerBbgSlabs.length > 0) {
+        console.log(`   - Sample Acer BBG slabs: ${acerBbgSlabs.slice(0, 3).map(s => `${s.brand} ${s.minMonths}-${s.maxMonths}mo ${s.percentage}%`).join(', ')}`);
       }
       
       res.json(slabs);

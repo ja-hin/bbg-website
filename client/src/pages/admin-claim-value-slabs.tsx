@@ -58,7 +58,9 @@ export default function AdminClaimValueSlabs() {
     queryFn: () => apiRequest('/api/admin/claim-value-slabs'),
     retry: 1,
     staleTime: 0,
+    cacheTime: 0,
     refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   // Auto-refetch if we get 401 error
@@ -84,7 +86,11 @@ export default function AdminClaimValueSlabs() {
         title: "Success", 
         description: `${data.created} Acer BBG slabs created successfully!`
       });
+      // Force hard refresh of slabs data
+      queryClient.removeQueries({ queryKey: ['/api/admin/claim-value-slabs'] });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/claim-value-slabs'] });
+      // Force refetch immediately
+      setTimeout(() => refetch(), 500);
     },
     onError: (error: any) => {
       toast({ 

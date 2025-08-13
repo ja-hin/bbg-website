@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Download, Eye, Calendar, User, CreditCard, FileText } from "lucide-react";
+import { Search, Download, Eye, Calendar, User, CreditCard, FileText, ChevronDown, ChevronUp, ExternalLink, X } from "lucide-react";
 import { format } from "date-fns";
 
 interface AcerDevice {
@@ -44,11 +44,31 @@ interface AcerRegistration {
 
 export default function AdminAcerRegistrations() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+  const [detailViewRegistration, setDetailViewRegistration] = useState<AcerRegistration | null>(null);
 
   const { data: registrations = [], isLoading, error } = useQuery({
     queryKey: ['/api/admin/acer-registrations'],
     refetchInterval: 30000, // Refresh every 30 seconds
   });
+
+  const toggleRowExpansion = (registrationId: number) => {
+    const newExpandedRows = new Set(expandedRows);
+    if (newExpandedRows.has(registrationId)) {
+      newExpandedRows.delete(registrationId);
+    } else {
+      newExpandedRows.add(registrationId);
+    }
+    setExpandedRows(newExpandedRows);
+  };
+
+  const openDetailView = (registration: AcerRegistration) => {
+    setDetailViewRegistration(registration);
+  };
+
+  const closeDetailView = () => {
+    setDetailViewRegistration(null);
+  };
 
   const filteredRegistrations = registrations.filter((registration: AcerRegistration) =>
     registration.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -303,10 +323,43 @@ export default function AdminAcerRegistrations() {
                         </TableCell>
                         <TableCell>
                           <div className="space-y-2">
-                            <div className="font-medium text-blue-600">
-                              {registration.registrationCount || registration.devices?.length || 1} Device{(registration.registrationCount > 1 || (registration.devices && registration.devices.length > 1)) ? 's' : ''}
+                            <div className="flex items-center justify-between">
+                              <div className="font-medium text-blue-600">
+                                {registration.registrationCount || registration.devices?.length || 1} Device{(registration.registrationCount > 1 || (registration.devices && registration.devices.length > 1)) ? 's' : ''}
+                              </div>
+                              {registration.devices && registration.devices.length > 2 && (
+                                <div className="flex gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => toggleRowExpansion(registration.id)}
+                                    className="h-6 px-2"
+                                  >
+                                    {expandedRows.has(registration.id) ? (
+                                      <>
+                                        <ChevronUp className="h-3 w-3 mr-1" />
+                                        Hide
+                                      </>
+                                    ) : (
+                                      <>
+                                        <ChevronDown className="h-3 w-3 mr-1" />
+                                        Expand
+                                      </>
+                                    )}
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => openDetailView(registration)}
+                                    className="h-6 px-2"
+                                  >
+                                    <ExternalLink className="h-3 w-3 mr-1" />
+                                    View All
+                                  </Button>
+                                </div>
+                              )}
                             </div>
-                            {registration.devices?.map((device, idx) => (
+                            {registration.devices?.slice(0, expandedRows.has(registration.id) ? registration.devices.length : 2).map((device, idx) => (
                               <div key={idx} className="text-sm border-l-2 border-blue-200 pl-2 mb-2">
                                 <div className="font-medium">{device.brand} {device.modelName}</div>
                                 <Badge variant="outline" className="text-xs mr-1">
@@ -315,6 +368,11 @@ export default function AdminAcerRegistrations() {
                                 <div className="text-xs font-mono text-gray-500">{device.serialNumber}</div>
                               </div>
                             ))}
+                            {registration.devices && registration.devices.length > 2 && !expandedRows.has(registration.id) && (
+                              <div className="text-xs text-gray-500">
+                                +{registration.devices.length - 2} more device{registration.devices.length - 2 > 1 ? 's' : ''}...
+                              </div>
+                            )}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -328,13 +386,54 @@ export default function AdminAcerRegistrations() {
                         </TableCell>
                         <TableCell>
                           <div className="space-y-1">
-                            {registration.allVoucherCodes?.map((code, idx) => (
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="text-xs font-medium text-gray-600">
+                                {registration.allVoucherCodes?.length || 1} Code{(registration.allVoucherCodes && registration.allVoucherCodes.length > 1) ? 's' : ''}
+                              </div>
+                              {registration.allVoucherCodes && registration.allVoucherCodes.length > 2 && (
+                                <div className="flex gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => toggleRowExpansion(registration.id)}
+                                    className="h-6 px-2"
+                                  >
+                                    {expandedRows.has(registration.id) ? (
+                                      <>
+                                        <ChevronUp className="h-3 w-3 mr-1" />
+                                        Hide
+                                      </>
+                                    ) : (
+                                      <>
+                                        <ChevronDown className="h-3 w-3 mr-1" />
+                                        Expand
+                                      </>
+                                    )}
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => openDetailView(registration)}
+                                    className="h-6 px-2"
+                                  >
+                                    <ExternalLink className="h-3 w-3 mr-1" />
+                                    View All
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                            {registration.allVoucherCodes?.slice(0, expandedRows.has(registration.id) ? registration.allVoucherCodes.length : 2).map((code, idx) => (
                               <div key={idx} className="font-mono text-xs bg-blue-50 px-2 py-1 rounded border mb-1">
                                 {code}
                               </div>
                             ))}
+                            {registration.allVoucherCodes && registration.allVoucherCodes.length > 2 && !expandedRows.has(registration.id) && (
+                              <div className="text-xs text-gray-500">
+                                +{registration.allVoucherCodes.length - 2} more code{registration.allVoucherCodes.length - 2 > 1 ? 's' : ''}...
+                              </div>
+                            )}
                             {registration.sellerCode && (
-                              <div className="text-sm text-gray-500">
+                              <div className="text-sm text-gray-500 mt-2">
                                 Seller: {registration.sellerCode}
                               </div>
                             )}
@@ -364,6 +463,136 @@ export default function AdminAcerRegistrations() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Detail View Modal */}
+        {detailViewRegistration && (
+          <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+              <div className="flex justify-between items-center p-6 border-b">
+                <div>
+                  <h2 className="text-2xl font-bold">Complete Device Registration Details</h2>
+                  <p className="text-gray-600">{detailViewRegistration.name} - {detailViewRegistration.devices?.length || 1} Device{(detailViewRegistration.devices && detailViewRegistration.devices.length > 1) ? 's' : ''}</p>
+                </div>
+                <Button variant="ghost" onClick={closeDetailView}>
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+              
+              <div className="p-6 overflow-y-auto max-h-[70vh]">
+                {/* Customer Information */}
+                <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-lg font-semibold mb-3">Customer Information</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Name</label>
+                      <p className="font-medium">{detailViewRegistration.name}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Contact</label>
+                      <p className="font-medium">{detailViewRegistration.contact}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Email</label>
+                      <p className="font-medium">{detailViewRegistration.email}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Pincode</label>
+                      <p className="font-medium">{detailViewRegistration.pincode}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Total Value</label>
+                      <p className="font-medium">{formatCurrency(detailViewRegistration.totalInvoiceValue || detailViewRegistration.invoiceValue)}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Purchase Date</label>
+                      <p className="font-medium">{detailViewRegistration.dateOfPurchase}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Registration Date</label>
+                      <p className="font-medium">{formatDate(detailViewRegistration.createdAt)}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Status</label>
+                      <Badge variant={detailViewRegistration.isVerified ? "default" : "secondary"} className={detailViewRegistration.isVerified ? "bg-green-600" : ""}>
+                        {detailViewRegistration.isVerified ? "Verified" : "Pending"}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Devices Table */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-3">Registered Devices</h3>
+                  <div className="border rounded-lg overflow-hidden">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>#</TableHead>
+                          <TableHead>Device Type</TableHead>
+                          <TableHead>Brand</TableHead>
+                          <TableHead>Model</TableHead>
+                          <TableHead>Serial Number</TableHead>
+                          <TableHead>BBG Voucher Code</TableHead>
+                          <TableHead>Individual Value</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {detailViewRegistration.devices?.map((device, idx) => (
+                          <TableRow key={idx}>
+                            <TableCell>{idx + 1}</TableCell>
+                            <TableCell>
+                              <Badge variant="outline">{device.deviceType}</Badge>
+                            </TableCell>
+                            <TableCell className="font-medium">{device.brand}</TableCell>
+                            <TableCell>{device.modelName}</TableCell>
+                            <TableCell className="font-mono text-sm">{device.serialNumber}</TableCell>
+                            <TableCell>
+                              <div className="font-mono text-xs bg-blue-50 px-2 py-1 rounded border">
+                                {device.voucherCode}
+                              </div>
+                            </TableCell>
+                            <TableCell className="font-medium">
+                              {formatCurrency((detailViewRegistration.totalInvoiceValue || detailViewRegistration.invoiceValue) / (detailViewRegistration.devices?.length || 1))}
+                            </TableCell>
+                          </TableRow>
+                        )) || (
+                          <TableRow>
+                            <TableCell>1</TableCell>
+                            <TableCell>
+                              <Badge variant="outline">{detailViewRegistration.deviceType}</Badge>
+                            </TableCell>
+                            <TableCell className="font-medium">{detailViewRegistration.brand}</TableCell>
+                            <TableCell>{detailViewRegistration.modelName}</TableCell>
+                            <TableCell className="font-mono text-sm">{detailViewRegistration.serialNumber}</TableCell>
+                            <TableCell>
+                              <div className="font-mono text-xs bg-blue-50 px-2 py-1 rounded border">
+                                {detailViewRegistration.voucherCode}
+                              </div>
+                            </TableCell>
+                            <TableCell className="font-medium">
+                              {formatCurrency(detailViewRegistration.invoiceValue)}
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+
+                {/* Additional Information */}
+                {detailViewRegistration.sellerCode && (
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold mb-2">Additional Information</h3>
+                    <div className="p-3 bg-gray-50 rounded">
+                      <label className="text-sm font-medium text-gray-500">Seller Code</label>
+                      <p className="font-medium">{detailViewRegistration.sellerCode}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </AdminLayout>
   );

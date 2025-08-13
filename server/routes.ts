@@ -4571,19 +4571,31 @@ Required: GUPSHUP_API_KEY environment variable
 
       // Send welcome notification using unified voucher code
       try {
-        // Note: Commented out until sendWelcomeMessage method is available
-        // await communicationService.sendWelcomeMessage({
-        //   name,
-        //   email,
-        //   phone,
-        //   voucherCode: customer.voucherCode,
-        //   deviceType,
-        //   brand,
-        //   model: model
-        // });
-        console.log('Welcome message would be sent for:', customer.voucherCode);
+        console.log('🔔 Starting Acer BBG registration notifications...');
+        console.log('📧 Customer contact details:', { 
+          name: customer.name, 
+          email: customer.email, 
+          contact: customer.contact 
+        });
+        
+        const notificationResults = await communicationService.sendRegistrationConfirmation({
+          name: customer.name,
+          email: customer.email,
+          contact: customer.contact,
+          voucherCode: customer.voucherCode,
+          deviceType: customer.deviceType,
+          brand: customer.brand,
+          modelName: customer.modelName
+        });
+        
+        console.log('🔔 Acer BBG registration notifications complete:', {
+          email: notificationResults.email?.success ? '✅ Sent' : `❌ Failed: ${notificationResults.email?.error}`,
+          sms: notificationResults.sms?.success ? '✅ Sent' : `❌ Failed: ${notificationResults.sms?.error}`,
+          whatsapp: notificationResults.whatsapp?.success ? '✅ Sent' : `❌ Failed: ${notificationResults.whatsapp?.error}`
+        });
       } catch (notificationError) {
-        console.error('Failed to send welcome notification:', notificationError);
+        console.error('❌ Failed to send Acer BBG notifications:', notificationError.message);
+        console.error('❌ Acer BBG notification error details:', notificationError);
         // Don't fail the registration if notification fails
       }
 

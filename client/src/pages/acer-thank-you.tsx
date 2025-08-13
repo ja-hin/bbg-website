@@ -88,7 +88,7 @@ export default function AcerThankYou() {
         <Card className="shadow-xl mb-8">
           <CardHeader className="xtra-gradient text-white">
             <CardTitle className="text-2xl flex items-center justify-center">
-              BBG Protection Activated
+              BBG Protection Registered
             </CardTitle>
           </CardHeader>
           <CardContent className="p-8">
@@ -129,15 +129,11 @@ export default function AcerThankYou() {
                     </li>
                     <li className="flex items-center">
                       <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                      You'll receive confirmation via email and SMS
+                      You'll receive confirmation via email
                     </li>
                     <li className="flex items-center">
                       <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                      Your BBG coverage starts immediately
-                    </li>
-                    <li className="flex items-center">
-                      <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                      Use your voucher code to claim BBG after 6 months
+                      Use your voucher code to claim BBG
                     </li>
                   </ul>
                 </div>
@@ -150,7 +146,7 @@ export default function AcerThankYou() {
                   <div className="space-y-4">
                     <div className="p-4 border-2 border-green-200 rounded-lg bg-green-50">
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-green-600 mb-1">Up to 80%</div>
+                        <div className="text-3xl font-bold text-green-600 mb-1">Up to 70%</div>
                         <div className="text-sm text-green-700">Maximum buyback value (Acer BBG)</div>
                       </div>
                     </div>
@@ -207,35 +203,6 @@ export default function AcerThankYou() {
                     Claim BBG (After 6 months)
                   </Button>
                 </Link>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Important Notes */}
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-lg">Important Information</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-600">
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Claim Eligibility</h4>
-                <ul className="space-y-1">
-                  <li>• Minimum 6 months from purchase date</li>
-                  <li>• Device must be in working condition</li>
-                  <li>• Original purchase invoice required</li>
-                  <li>• No physical damage or water damage</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">BBG Process</h4>
-                <ul className="space-y-1">
-                  <li>• Submit claim online with BBG voucher code</li>
-                  <li>• Free home pickup within 24-48 hours</li>
-                  <li>• Device evaluation within 7 business days</li>
-                  <li>• Instant payouts at the time of device handover</li>
-                </ul>
               </div>
             </div>
           </CardContent>

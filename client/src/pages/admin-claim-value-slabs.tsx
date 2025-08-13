@@ -53,9 +53,10 @@ export default function AdminClaimValueSlabs() {
   const queryClient = useQueryClient();
 
   // Fetch all claim value slabs
-  const { data: slabs = [], isLoading } = useQuery<ClaimValueSlab[]>({
+  const { data: slabs = [], isLoading, error } = useQuery<ClaimValueSlab[]>({
     queryKey: ['/api/admin/claim-value-slabs'],
     queryFn: () => apiRequest('/api/admin/claim-value-slabs'),
+    retry: false,
   });
 
   // Fetch brands from brand master
@@ -363,6 +364,8 @@ export default function AdminClaimValueSlabs() {
   console.log('Regular Mobile Slabs:', regularMobileSlabs.length);
   console.log('Acer BBG Slabs:', acerBbgSlabs.length);
   console.log('Loading state:', isLoading);
+  console.log('Error:', error?.message || 'no error');
+  console.log('Query success?', !isLoading && !error);
 
   return (
     <AdminLayout>

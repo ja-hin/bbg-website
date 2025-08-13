@@ -48,8 +48,6 @@ export default function Home() {
 
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
-
-
       {/* Hero Section */}
       <section className="py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -57,10 +55,7 @@ export default function Home() {
             Protect Your Investment with 
             <span className="text-xtra-primary block sm:inline"> BuyBack Guarantee</span>
           </h1>
-          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-12 px-4 sm:px-0">
-            Get assured returns on your laptops and mobiles. Join thousands of satisfied customers 
-            who trust XtraCover for comprehensive device protection.
-          </p>
+          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-12 px-4 sm:px-0">Get assured buyback value for your laptops and mobiles — transparent, fixed at registration, and redeemable when you’re ready to upgrade. Trusted by thousands of XtraCover customers across India.</p>
           
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 sm:mb-16 px-4 sm:px-0">
@@ -132,7 +127,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Acer BBG Section */}
       <section className="py-12 sm:py-16 xtra-gradient-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -198,7 +192,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Features Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -248,7 +241,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* BBG Depreciation Slabs Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -486,7 +478,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* FAQ Section */}
       <section className="py-8 sm:py-12 lg:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -644,7 +635,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Distributor CTA Section */}
       <section className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -672,7 +662,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
     </div>
   );
 }

@@ -156,7 +156,7 @@ export default function Home() {
                 <ul className="space-y-3 text-gray-600 mb-6">
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                    Easy registration process for Acer devices
+                    Easy registration process BBG purchased on Acer Store
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
@@ -438,7 +438,7 @@ export default function Home() {
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Link href="/customer-registration">
                     <Button size="sm" className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white">
-                      Register Now
+                      Buy BBG
                     </Button>
                   </Link>
                   <Link href="/claim-bbg">

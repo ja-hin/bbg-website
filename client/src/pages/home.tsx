@@ -85,7 +85,7 @@ export default function Home() {
                 <ul className="text-left space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Up to {maxPercentage}% buyback value
+                    Up to {maxPercentage}% payout value
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
@@ -115,7 +115,7 @@ export default function Home() {
                 <ul className="text-left space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Up to {maxPercentage}% buyback value
+                    Up to {maxPercentage}% payout value
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
@@ -143,7 +143,7 @@ export default function Home() {
               Acer Device Protection
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Special BBG registration for Acer users. Register your Acer devices and get the same amazing protection with up to 70% buyback value.
+              Special BBG registration for Acer users. Register your Acer devices and get the same amazing protection with up to 70% payout value.
             </p>
           </div>
 
@@ -160,7 +160,7 @@ export default function Home() {
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                    70% maximum buyback value
+                    70% maximum payout value
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />

@@ -433,7 +433,7 @@ export default function Home() {
             <div className="bg-gray-50 px-4 sm:px-6 py-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <p className="text-xs sm:text-sm text-gray-600">
-                  <strong>Note:</strong> BBG Pricing & Depreciation slabs are subject to monthly review. However, slabs are locked as per your purchase date/time and mapped to your unique BBG Voucher. All percentages are of invoice value for devices in functional and fair condition.
+                  <strong>Note:</strong> All percentages are of invoice value for your devices in functional and fair condition. Your slabs are locked as per your purchase date/time and mapped to your unique BBG Voucher. 
                 </p>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Link href="/customer-registration">

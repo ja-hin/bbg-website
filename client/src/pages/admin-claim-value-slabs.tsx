@@ -349,6 +349,20 @@ export default function AdminClaimValueSlabs() {
   const mobileData = organizeSlatData('mobile');
   const laptopBrands = getBrandsForDeviceFromMaster('laptop');
   const mobileBrands = getBrandsForDeviceFromMaster('mobile');
+  
+  // Debug logging for admin panel
+  console.log('Admin Panel Debug:');
+  console.log('Total slabs loaded:', slabs.length);
+  console.log('Laptop slabs:', slabs.filter(s => s.deviceType === 'laptop').length);
+  console.log('Acer laptop slabs:', slabs.filter(s => s.deviceType === 'laptop' && s.brand === 'Acer').length);
+  console.log('Laptop data processed:', laptopData.length, 'age ranges');
+  console.log('Laptop brands from master:', laptopBrands);
+  
+  // Check specific Acer data for 6-12 months
+  const acerDataSample = laptopData.find(d => d.range === '6-12 Months');
+  if (acerDataSample && acerDataSample.brands.Acer) {
+    console.log('Acer 6-12 months data:', JSON.stringify(acerDataSample.brands.Acer, null, 2));
+  }
 
   return (
     <AdminLayout>

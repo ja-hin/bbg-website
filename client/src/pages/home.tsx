@@ -641,19 +641,23 @@ export default function Home() {
       </section>
 
       {/* Distributor CTA Section */}
-      <section className="py-12 sm:py-16 lg:py-20 xtra-gradient-br text-white">
+      <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Award className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 sm:mb-6" />
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">Join Our Referral Program</h2>
-          <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto px-4 sm:px-0">
-            Join our referral partner network and start earning commissions on every successful BBG registration. 
-            Easy setup, dedicated support, and regular payouts.
-          </p>
-          <Link href="/referral-partner-registration" className="inline-block w-full sm:w-auto">
-            <Button size="lg" variant="secondary" className="w-full sm:w-auto bg-white text-xtra-primary hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
-              Join Referral Program <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-            </Button>
-          </Link>
+          <div className="bg-white rounded-2xl shadow-xl p-8 sm:p-12 lg:p-16 border-t-4 border-xtra-primary">
+            <div className="bg-xtra-primary rounded-full w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-6 flex items-center justify-center">
+              <Award className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-gray-900">Join Our Referral Program</h2>
+            <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto px-4 sm:px-0 text-gray-600">
+              Join our referral partner network and start earning commissions on every successful BBG registration. 
+              Easy setup, dedicated support, and regular payouts.
+            </p>
+            <Link href="/referral-partner-registration" className="inline-block w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto bg-xtra-primary text-white hover:bg-xtra-primary/90 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg">
+                Join Referral Program <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 

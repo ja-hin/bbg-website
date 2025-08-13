@@ -295,9 +295,6 @@ export default function AdminAcerRegistrations() {
                               <Calendar className="h-3 w-3 mr-1" />
                               {registration.dateOfPurchase}
                             </div>
-                            <div className="text-xs text-blue-600 font-medium">
-                              Acer BBG Registration
-                            </div>
                           </div>
                         </TableCell>
                         <TableCell>

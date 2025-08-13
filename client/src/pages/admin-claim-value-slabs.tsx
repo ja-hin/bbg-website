@@ -351,14 +351,18 @@ export default function AdminClaimValueSlabs() {
   const mobileBrands = getBrandsForDeviceFromMaster('mobile');
   
   // Organize slabs by category for simpler display
-  const regularLaptopSlabs = slabs.filter(s => s.deviceType === 'laptop' && s.registrationSource === 'regular');
-  const regularMobileSlabs = slabs.filter(s => s.deviceType === 'mobile' && s.registrationSource === 'regular');  
-  const acerBbgSlabs = slabs.filter(s => s.registrationSource === 'acer_bbg');
+  console.log('Raw slabs data:', slabs?.length || 0, 'items');
+  console.log('Raw slabs sample:', slabs?.[0]);
+  
+  const regularLaptopSlabs = Array.isArray(slabs) ? slabs.filter(s => s.deviceType === 'laptop' && s.registrationSource === 'regular') : [];
+  const regularMobileSlabs = Array.isArray(slabs) ? slabs.filter(s => s.deviceType === 'mobile' && s.registrationSource === 'regular') : [];
+  const acerBbgSlabs = Array.isArray(slabs) ? slabs.filter(s => s.registrationSource === 'acer_bbg') : [];
   
   console.log('Admin Panel - Simplified Categories:');
   console.log('Regular Laptop Slabs:', regularLaptopSlabs.length);
   console.log('Regular Mobile Slabs:', regularMobileSlabs.length);
   console.log('Acer BBG Slabs:', acerBbgSlabs.length);
+  console.log('Loading state:', isLoading);
 
   return (
     <AdminLayout>

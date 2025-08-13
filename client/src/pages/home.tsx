@@ -274,35 +274,20 @@ export default function Home() {
                 </div>
                 <div className="overflow-x-auto">
                   {(() => {
-                    const mobileBrands = ['Samsung', 'Apple', 'OnePlus', 'Xiaomi', 'Realme'];
+                    // Get actual brands from the data (from logs: Apple, OnePlus, Realme, Samsung, Xiaomi)
+                    const mobileBrands = Array.from(new Set(activeMobileSlabs.map((slab: any) => slab.brand).filter(Boolean))).sort();
                     
-                    // Define standard age ranges to always show
-                    const standardAgeRanges = [
-                      { minMonths: 6, maxMonths: 12 },
-                      { minMonths: 13, maxMonths: 18 },
-                      { minMonths: 19, maxMonths: 24 },
-                      { minMonths: 25, maxMonths: 30 },
-                      { minMonths: 31, maxMonths: 36 },
-                      { minMonths: 37, maxMonths: 42 },
-                      { minMonths: 43, maxMonths: 48 },
-                      { minMonths: 49, maxMonths: 54 },
-                      { minMonths: 55, maxMonths: 60 },
-                    ];
+                    if (mobileBrands.length === 0) {
+                      return (
+                        <div className="p-8 text-center">
+                          <p className="text-gray-500">No mobile device slabs available</p>
+                        </div>
+                      );
+                    }
 
                     // Group mobile slabs by age range for brand comparison
                     const ageRanges: { [key: string]: any } = {};
                     
-                    // Initialize all standard age ranges
-                    standardAgeRanges.forEach(range => {
-                      const ageKey = `${range.minMonths}-${range.maxMonths}`;
-                      ageRanges[ageKey] = {
-                        minMonths: range.minMonths,
-                        maxMonths: range.maxMonths,
-                        brands: {}
-                      };
-                    });
-
-                    // Add any additional age ranges from actual data
                     activeMobileSlabs.forEach((slab: any) => {
                       const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
                       if (!ageRanges[ageKey]) {
@@ -369,35 +354,20 @@ export default function Home() {
                 </div>
                 <div className="overflow-x-auto">
                   {(() => {
-                    const laptopBrands = ['HP', 'Lenovo', 'Dell', 'Acer', 'Asus'];
+                    // Get actual brands from the data (from logs: Acer, Apple, Asus, Dell, HP, Lenovo)
+                    const laptopBrands = Array.from(new Set(activeLaptopSlabs.map((slab: any) => slab.brand).filter(Boolean))).sort();
                     
-                    // Define standard age ranges to always show
-                    const standardAgeRanges = [
-                      { minMonths: 6, maxMonths: 12 },
-                      { minMonths: 13, maxMonths: 18 },
-                      { minMonths: 19, maxMonths: 24 },
-                      { minMonths: 25, maxMonths: 30 },
-                      { minMonths: 31, maxMonths: 36 },
-                      { minMonths: 37, maxMonths: 42 },
-                      { minMonths: 43, maxMonths: 48 },
-                      { minMonths: 49, maxMonths: 54 },
-                      { minMonths: 55, maxMonths: 60 },
-                    ];
+                    if (laptopBrands.length === 0) {
+                      return (
+                        <div className="p-8 text-center">
+                          <p className="text-gray-500">No laptop device slabs available</p>
+                        </div>
+                      );
+                    }
 
                     // Group laptop slabs by age range for brand comparison
                     const ageRanges: { [key: string]: any } = {};
                     
-                    // Initialize all standard age ranges
-                    standardAgeRanges.forEach(range => {
-                      const ageKey = `${range.minMonths}-${range.maxMonths}`;
-                      ageRanges[ageKey] = {
-                        minMonths: range.minMonths,
-                        maxMonths: range.maxMonths,
-                        brands: {}
-                      };
-                    });
-
-                    // Add any additional age ranges from actual data
                     activeLaptopSlabs.forEach((slab: any) => {
                       const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
                       if (!ageRanges[ageKey]) {

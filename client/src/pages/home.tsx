@@ -156,7 +156,7 @@ export default function Home() {
                 <ul className="space-y-3 text-gray-600 mb-6">
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                    Easy registration process BBG purchased on Acer Store
+                    Register your BBG purchased on Acer Store
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
@@ -274,11 +274,35 @@ export default function Home() {
                 </div>
                 <div className="overflow-x-auto">
                   {(() => {
-                    // Group mobile slabs by age range for brand comparison
-                    const ageRanges: { [key: string]: any } = {};
                     const mobileBrands = ['Samsung', 'Apple', 'OnePlus', 'Xiaomi', 'Realme'];
                     
-                    // First, get all unique age ranges
+                    // Define standard age ranges to always show
+                    const standardAgeRanges = [
+                      { minMonths: 6, maxMonths: 12 },
+                      { minMonths: 13, maxMonths: 18 },
+                      { minMonths: 19, maxMonths: 24 },
+                      { minMonths: 25, maxMonths: 30 },
+                      { minMonths: 31, maxMonths: 36 },
+                      { minMonths: 37, maxMonths: 42 },
+                      { minMonths: 43, maxMonths: 48 },
+                      { minMonths: 49, maxMonths: 54 },
+                      { minMonths: 55, maxMonths: 60 },
+                    ];
+
+                    // Group mobile slabs by age range for brand comparison
+                    const ageRanges: { [key: string]: any } = {};
+                    
+                    // Initialize all standard age ranges
+                    standardAgeRanges.forEach(range => {
+                      const ageKey = `${range.minMonths}-${range.maxMonths}`;
+                      ageRanges[ageKey] = {
+                        minMonths: range.minMonths,
+                        maxMonths: range.maxMonths,
+                        brands: {}
+                      };
+                    });
+
+                    // Add any additional age ranges from actual data
                     activeMobileSlabs.forEach((slab: any) => {
                       const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
                       if (!ageRanges[ageKey]) {
@@ -289,16 +313,9 @@ export default function Home() {
                         };
                       }
                       
-                      // Add brand-specific percentage or fallback to generic
+                      // Add brand-specific percentage
                       if (slab.brand) {
                         ageRanges[ageKey].brands[slab.brand] = slab.percentage;
-                      } else {
-                        // This is a generic slab - use as fallback for missing brands
-                        mobileBrands.forEach(brand => {
-                          if (!ageRanges[ageKey].brands[brand]) {
-                            ageRanges[ageKey].brands[brand] = slab.percentage;
-                          }
-                        });
                       }
                     });
 
@@ -327,12 +344,9 @@ export default function Home() {
                                 const percentage = ageData.brands[brand];
                                 if (!percentage) return <td key={brand} className="py-3 px-4 text-center text-gray-400">-</td>;
                                 
-                                // Use black color for all percentages
-                                const colorClass = "text-black";
-                                
                                 return (
                                   <td key={brand} className="py-3 px-4 text-center">
-                                    <span className={`text-lg font-bold ${colorClass}`}>{percentage}%</span>
+                                    <span className="text-lg font-bold text-black">{percentage}%</span>
                                   </td>
                                 );
                               })}
@@ -355,11 +369,35 @@ export default function Home() {
                 </div>
                 <div className="overflow-x-auto">
                   {(() => {
+                    const laptopBrands = ['HP', 'Lenovo', 'Dell', 'Acer', 'Asus'];
+                    
+                    // Define standard age ranges to always show
+                    const standardAgeRanges = [
+                      { minMonths: 6, maxMonths: 12 },
+                      { minMonths: 13, maxMonths: 18 },
+                      { minMonths: 19, maxMonths: 24 },
+                      { minMonths: 25, maxMonths: 30 },
+                      { minMonths: 31, maxMonths: 36 },
+                      { minMonths: 37, maxMonths: 42 },
+                      { minMonths: 43, maxMonths: 48 },
+                      { minMonths: 49, maxMonths: 54 },
+                      { minMonths: 55, maxMonths: 60 },
+                    ];
+
                     // Group laptop slabs by age range for brand comparison
                     const ageRanges: { [key: string]: any } = {};
-                    const brands = ['HP', 'Lenovo', 'Dell', 'Acer', 'Asus'];
                     
-                    // First, get all unique age ranges
+                    // Initialize all standard age ranges
+                    standardAgeRanges.forEach(range => {
+                      const ageKey = `${range.minMonths}-${range.maxMonths}`;
+                      ageRanges[ageKey] = {
+                        minMonths: range.minMonths,
+                        maxMonths: range.maxMonths,
+                        brands: {}
+                      };
+                    });
+
+                    // Add any additional age ranges from actual data
                     activeLaptopSlabs.forEach((slab: any) => {
                       const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
                       if (!ageRanges[ageKey]) {
@@ -370,16 +408,9 @@ export default function Home() {
                         };
                       }
                       
-                      // Add brand-specific percentage or fallback to generic
+                      // Add brand-specific percentage
                       if (slab.brand) {
                         ageRanges[ageKey].brands[slab.brand] = slab.percentage;
-                      } else {
-                        // This is a generic slab - use as fallback for missing brands
-                        brands.forEach(brand => {
-                          if (!ageRanges[ageKey].brands[brand]) {
-                            ageRanges[ageKey].brands[brand] = slab.percentage;
-                          }
-                        });
                       }
                     });
 
@@ -393,7 +424,7 @@ export default function Home() {
                         <thead className="bg-gray-100">
                           <tr>
                             <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
-                            {brands.map(brand => (
+                            {laptopBrands.map(brand => (
                               <th key={brand} className="py-3 px-4 text-center font-semibold text-sm text-gray-700">{brand}</th>
                             ))}
                           </tr>
@@ -404,16 +435,13 @@ export default function Home() {
                               <td className="py-3 px-4 text-sm font-medium text-gray-900">
                                 {ageData.minMonths}-{ageData.maxMonths} months
                               </td>
-                              {brands.map(brand => {
+                              {laptopBrands.map(brand => {
                                 const percentage = ageData.brands[brand];
                                 if (!percentage) return <td key={brand} className="py-3 px-4 text-center text-gray-400">-</td>;
                                 
-                                // Use black color for all percentages
-                                const colorClass = "text-black";
-                                
                                 return (
                                   <td key={brand} className="py-3 px-4 text-center">
-                                    <span className={`text-lg font-bold ${colorClass}`}>{percentage}%</span>
+                                    <span className="text-lg font-bold text-black">{percentage}%</span>
                                   </td>
                                 );
                               })}

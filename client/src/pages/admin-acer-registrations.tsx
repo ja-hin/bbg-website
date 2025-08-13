@@ -149,11 +149,14 @@ export default function AdminAcerRegistrations() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Registrations</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
               <User className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{registrations.length}</div>
+              <p className="text-xs text-blue-600 font-medium mt-1">
+                {registrations.reduce((sum: number, r: AcerRegistration) => sum + (r.registrationCount || r.devices?.length || 1), 0)} Devices Total
+              </p>
             </CardContent>
           </Card>
           
@@ -166,6 +169,9 @@ export default function AdminAcerRegistrations() {
               <div className="text-2xl font-bold text-green-600">
                 {registrations.filter((r: AcerRegistration) => r.isVerified).length}
               </div>
+              <p className="text-xs text-green-600 font-medium mt-1">
+                {registrations.filter((r: AcerRegistration) => r.isVerified).reduce((sum: number, r: AcerRegistration) => sum + (r.registrationCount || r.devices?.length || 1), 0)} Verified Devices
+              </p>
             </CardContent>
           </Card>
           
@@ -176,20 +182,22 @@ export default function AdminAcerRegistrations() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {formatCurrency(registrations.reduce((sum: number, r: AcerRegistration) => sum + r.invoiceValue, 0))}
+                {formatCurrency(registrations.reduce((sum: number, r: AcerRegistration) => sum + (r.totalInvoiceValue || r.invoiceValue || 0), 0))}
               </div>
+              <p className="text-xs text-blue-600 font-medium mt-1">Higher BBG Rates (68%-80%)</p>
             </CardContent>
           </Card>
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Paid Registrations</CardTitle>
+              <CardTitle className="text-sm font-medium">BBG Codes</CardTitle>
               <CreditCard className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-600">
-                {registrations.filter((r: AcerRegistration) => r.paymentIntentId).length}
+              <div className="text-2xl font-bold text-purple-600">
+                {registrations.reduce((sum: number, r: AcerRegistration) => sum + (r.allVoucherCodes?.length || 1), 0)}
               </div>
+              <p className="text-xs text-purple-600 font-medium mt-1">Voucher Codes Generated</p>
             </CardContent>
           </Card>
         </div>

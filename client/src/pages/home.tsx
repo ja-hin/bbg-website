@@ -30,13 +30,17 @@ export default function Home() {
   // Fetch regular claim value slabs for mobile (exclude Acer BBG special rates)
   const { data: mobileSlabs, isLoading: isMobileLoading } = useQuery({
     queryKey: ['/api/claim-value-slabs/active/mobile/regular'],
-    retry: false,
+    retry: 1,
+    staleTime: 300000, // 5 minutes
+    refetchOnMount: false,
   });
 
-  // Fetch regular claim value slabs for laptop (exclude Acer BBG special rates)
+  // Fetch regular claim value slabs for laptop (exclude Acer BBG special rates) 
   const { data: laptopSlabs, isLoading: isLaptopLoading } = useQuery({
     queryKey: ['/api/claim-value-slabs/active/laptop/regular'],
-    retry: false,
+    retry: 1,
+    staleTime: 300000, // 5 minutes
+    refetchOnMount: false,
   });
 
   const activeMobileSlabs = Array.isArray(mobileSlabs) ? mobileSlabs.filter((slab: any) => slab.isActive) : [];

@@ -52,12 +52,21 @@ export default function AdminClaimValueSlabs() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch all claim value slabs
-  const { data: slabs = [], isLoading, error } = useQuery<ClaimValueSlab[]>({
+  // Fetch all claim value slabs with proper error handling
+  const { data: slabs = [], isLoading, error, refetch } = useQuery<ClaimValueSlab[]>({
     queryKey: ['/api/admin/claim-value-slabs'],
     queryFn: () => apiRequest('/api/admin/claim-value-slabs'),
-    retry: false,
+    retry: 1,
+    staleTime: 0,
+    refetchOnMount: true,
   });
+
+  // Auto-refetch if we get 401 error
+  useEffect(() => {
+    if (error?.message?.includes('401')) {
+      setTimeout(() => refetch(), 1000);
+    }
+  }, [error, refetch]);
 
   // Fetch brands from brand master
   const { data: allBrands = [] } = useQuery<Brand[]>({
@@ -353,19 +362,25 @@ export default function AdminClaimValueSlabs() {
   
   // Organize slabs by category for simpler display
   console.log('Raw slabs data:', slabs?.length || 0, 'items');
-  console.log('Raw slabs sample:', slabs?.[0]);
+  if (slabs && slabs.length > 0) {
+    console.log('First slab sample:', slabs[0]);
+    console.log('Registration sources found:', [...new Set(slabs.map(s => s.registrationSource))]);
+  }
   
-  const regularLaptopSlabs = Array.isArray(slabs) ? slabs.filter(s => s.deviceType === 'laptop' && s.registrationSource === 'regular') : [];
-  const regularMobileSlabs = Array.isArray(slabs) ? slabs.filter(s => s.deviceType === 'mobile' && s.registrationSource === 'regular') : [];
+  const regularLaptopSlabs = Array.isArray(slabs) ? slabs.filter(s => 
+    s.deviceType === 'laptop' && 
+    (s.registrationSource === 'regular' || s.registrationSource === null || s.registrationSource === undefined)
+  ) : [];
+  const regularMobileSlabs = Array.isArray(slabs) ? slabs.filter(s => 
+    s.deviceType === 'mobile' && 
+    (s.registrationSource === 'regular' || s.registrationSource === null || s.registrationSource === undefined)
+  ) : [];
   const acerBbgSlabs = Array.isArray(slabs) ? slabs.filter(s => s.registrationSource === 'acer_bbg') : [];
   
-  console.log('Admin Panel - Simplified Categories:');
+  console.log('After filtering:');
   console.log('Regular Laptop Slabs:', regularLaptopSlabs.length);
   console.log('Regular Mobile Slabs:', regularMobileSlabs.length);
   console.log('Acer BBG Slabs:', acerBbgSlabs.length);
-  console.log('Loading state:', isLoading);
-  console.log('Error:', error?.message || 'no error');
-  console.log('Query success?', !isLoading && !error);
 
   return (
     <AdminLayout>

@@ -4432,8 +4432,8 @@ Required: GUPSHUP_API_KEY environment variable
         const imeiRequest = db.pool.request();
         imeiRequest.input('imei', sql.VarChar, imeiSerial);
         
-        // Allow test IMEI for testing purposes
-        const isTestIMEI = imeiSerial.startsWith('EMAILTEST');
+        // Production: Use actual IMEI validation
+        const isTestIMEI = false;
         
         if (!isTestIMEI) {
           const imeiResult = await imeiRequest.query(`

@@ -4,6 +4,11 @@
 This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) system. Its primary purpose is to enable distributors (referral partners) to register and earn commissions, customers to register their devices for BBG protection, and users to claim their buyback guarantees. The project streamlines the BBG process, offers a user-friendly experience with real-time feedback, and provides robust administrative tools for managing all aspects of the system.
 
 ## Recent Critical Updates
+**Date: August 13, 2025**
+- **✅ EMAIL NOTIFICATION SYSTEM FIXED**: Acer BBG registration now sends email confirmations successfully to both ritwik123tiwary@gmail.com and jatin.singh@xtracover.com
+- **✅ SMTP INTEGRATION RESTORED**: Fixed ES module compatibility and properly integrated database SMTP settings with AWS SES configuration
+- **✅ COMMUNICATION SERVICE ENHANCED**: Resolved import issues and enabled email delivery using stored SMTP credentials from database
+
 **Date: August 12, 2025**
 - **✅ ACER BBG SLAB SYSTEM FULLY IMPLEMENTED**: Complete Acer BBG flow now uses dedicated 80% slabs instead of regular 70% Acer rates
 - **✅ BACKEND API ENHANCED**: New `/api/claim-value-slabs/active/:deviceType/:registrationSource` endpoint serves Acer BBG-specific slabs

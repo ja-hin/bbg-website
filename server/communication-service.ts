@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import axios from 'axios';
 import { templateService } from './template-service';
 import { gupshupService } from './gupshup-service';
+import { storage } from './sql-storage';
 
 // Email Service using SMTP
 export class EmailService {
@@ -54,7 +55,6 @@ export class EmailService {
   async sendEmailWithSmtpSettings(to: string, subject: string, html: string, smtpSettings: any, text?: string) {
     try {
       if (!smtpSettings || !smtpSettings.smtpHost || !smtpSettings.smtpUsername || !smtpSettings.smtpPassword) {
-        console.log('SMTP settings incomplete, email not sent');
         return { success: false, message: 'SMTP settings incomplete' };
       }
 
@@ -176,6 +176,15 @@ export class CommunicationService {
     this.whatsappService = new WhatsAppService();
   }
 
+  private async getSmtpSettings() {
+    try {
+      return await storage.getSmtpSettings();
+    } catch (error) {
+      console.error('Error fetching SMTP settings:', error);
+      return null;
+    }
+  }
+
   async sendRegistrationConfirmation(
     customerData: {
       name: string;
@@ -194,12 +203,19 @@ export class CommunicationService {
     };
 
     try {
-      // Email confirmation using template
+      // Email confirmation using template with SMTP settings from database
       const emailTemplate = await templateService.getTemplate('email', 'customer_registration');
       if (emailTemplate) {
         const emailContent = templateService.renderTemplate(emailTemplate.content, customerData);
         const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'BBG Registration Successful', customerData);
-        results.email = await this.emailService.sendEmail(customerData.email, emailSubject, emailContent);
+        
+        // Fetch SMTP settings from database
+        const smtpSettings = await this.getSmtpSettings();
+        if (smtpSettings) {
+          results.email = await this.emailService.sendEmailWithSmtpSettings(customerData.email, emailSubject, emailContent, smtpSettings);
+        } else {
+          results.email = await this.emailService.sendEmail(customerData.email, emailSubject, emailContent);
+        }
       }
 
       // SMS confirmation using template

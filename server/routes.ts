@@ -13,8 +13,7 @@ import { kaleyraSMSService } from "./kaleyra-service";
 import { communicationService } from "./communication-service";
 import { gupshupService } from "./gupshup-service";
 import { templateService } from "./template-service";
-import { testAllTemplates } from "./template-test";
-import { registerTestRoutes } from "./test-services";
+// Test imports removed during cleanup
 import { s3Service, createS3Upload } from "./s3-service";
 import AWS from 'aws-sdk';
 // Removed nodemailer import - using communicationService instead
@@ -23,7 +22,7 @@ import {
   insertCustomerSchema, 
   insertClaimSchema, 
   insertOtpSchema
-} from "@shared/schema";
+} from "../shared/schema";
 // Using SQL Server for all database operations
 
 // Configure multer for file uploads (fallback to local storage if S3 not configured)
@@ -1988,33 +1987,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Test all templates with real data
-  app.post("/api/test-templates", async (req, res) => {
-    try {
-      const { name, email, contact } = req.body;
-      
-      if (!name || !email || !contact) {
-        return res.status(400).json({ message: "Name, email, and contact number are required" });
-      }
-
-      console.log(`Testing all templates for: ${name} (${email}, ${contact})`);
-
-      const testResults = await testAllTemplates({
-        name,
-        email,
-        phone: contact
-      });
-
-      res.json(testResults);
-    } catch (error: any) {
-      console.error('Template test error:', error);
-      res.status(500).json({ 
-        success: false,
-        message: "Template test failed", 
-        error: error.message 
-      });
-    }
-  });
+  // Test route removed during cleanup
 
   // Create Acer BBG slabs with higher percentages
   app.post('/api/admin/create-acer-bbg-slabs', isAdminAuthenticated, async (req, res) => {
@@ -4350,7 +4323,7 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
-  registerTestRoutes(app);
+  // Test routes removed during cleanup
 
   // Cart Abandonment tracking endpoints
   app.post("/api/cart-abandonment", async (req, res) => {

@@ -1680,6 +1680,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin - Get regular registrations
+  app.get("/api/admin/regular-registrations", isAdminAuthenticated, async (req, res) => {
+    try {
+      const allCustomers = await storage.getCustomersByRegistrationSource('regular');
+      
+      // Group customers by contact number (same logic as above)
+      const groupedCustomers = allCustomers.reduce((groups: any, customer: any) => {
+        const contact = customer.contact;
+        if (!groups[contact]) {
+          groups[contact] = {
+            ...customer,
+            registrationCount: 1,
+            totalInvoiceValue: parseFloat(customer.invoiceValue || 0),
+            allVoucherCodes: [customer.voucherCode],
+            devices: [{ 
+              deviceType: customer.deviceType, 
+              brand: customer.brand, 
+              modelName: customer.modelName,
+              serialNumber: customer.serialNumber,
+              voucherCode: customer.voucherCode,
+              registrationSource: customer.registrationSource
+            }]
+          };
+        } else {
+          groups[contact].registrationCount += 1;
+          groups[contact].totalInvoiceValue += parseFloat(customer.invoiceValue || 0);
+          groups[contact].allVoucherCodes.push(customer.voucherCode);
+          groups[contact].devices.push({ 
+            deviceType: customer.deviceType, 
+            brand: customer.brand, 
+            modelName: customer.modelName,
+            serialNumber: customer.serialNumber,
+            voucherCode: customer.voucherCode,
+            registrationSource: customer.registrationSource
+          });
+        }
+        return groups;
+      }, {});
+      
+      const groupedCustomersArray = Object.values(groupedCustomers);
+      res.json(groupedCustomersArray);
+    } catch (error: any) {
+      console.error('Regular registrations error:', error);
+      res.status(500).json({ message: "Failed to get regular registrations" });
+    }
+  });
+
+  // Admin - Get Acer BBG registrations 
+  app.get("/api/admin/acer-registrations", isAdminAuthenticated, async (req, res) => {
+    try {
+      const acerCustomers = await storage.getCustomersByRegistrationSource('acer_bbg');
+      
+      // Group Acer customers by contact number
+      const groupedCustomers = acerCustomers.reduce((groups: any, customer: any) => {
+        const contact = customer.contact;
+        if (!groups[contact]) {
+          groups[contact] = {
+            ...customer,
+            registrationCount: 1,
+            totalInvoiceValue: parseFloat(customer.invoiceValue || 0),
+            allVoucherCodes: [customer.voucherCode],
+            devices: [{ 
+              deviceType: customer.deviceType, 
+              brand: customer.brand, 
+              modelName: customer.modelName,
+              serialNumber: customer.serialNumber,
+              voucherCode: customer.voucherCode,
+              registrationSource: customer.registrationSource
+            }]
+          };
+        } else {
+          groups[contact].registrationCount += 1;
+          groups[contact].totalInvoiceValue += parseFloat(customer.invoiceValue || 0);
+          groups[contact].allVoucherCodes.push(customer.voucherCode);
+          groups[contact].devices.push({ 
+            deviceType: customer.deviceType, 
+            brand: customer.brand, 
+            modelName: customer.modelName,
+            serialNumber: customer.serialNumber,
+            voucherCode: customer.voucherCode,
+            registrationSource: customer.registrationSource
+          });
+        }
+        return groups;
+      }, {});
+      
+      const groupedCustomersArray = Object.values(groupedCustomers);
+      res.json(groupedCustomersArray);
+    } catch (error: any) {
+      console.error('Acer registrations error:', error);
+      res.status(500).json({ message: "Failed to get Acer registrations" });
+    }
+  });
+
   // Admin - Get all claims
   app.get("/api/admin/claims", isAdminAuthenticated, async (req, res) => {
     try {
@@ -1917,6 +2011,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ 
         success: false,
         message: "Template test failed", 
+        error: error.message 
+      });
+    }
+  });
+
+  // Fix Acer registration sources (one-time admin utility)
+  app.post("/api/admin/fix-acer-registration-sources", isAdminAuthenticated, async (req, res) => {
+    try {
+      await db.connectDB();
+      
+      // First check current state
+      console.log('Checking current Acer customer records...');
+      const checkQuery = `
+        SELECT id, name, brand, registration_source, registration_slab_data 
+        FROM customers 
+        WHERE brand = 'Acer' OR registration_slab_data LIKE '%acer_bbg%'
+        ORDER BY id DESC
+      `;
+      
+      const checkResult = await db.query(checkQuery);
+      console.log('Found records before fix:', checkResult.recordset);
+      
+      // Update customers where brand is 'Acer' and registration_slab_data contains 'acer_bbg'
+      const updateQuery = `
+        UPDATE customers 
+        SET registration_source = 'acer_bbg' 
+        WHERE (brand = 'Acer' AND registration_slab_data LIKE '%acer_bbg%') 
+           OR (registration_slab_data LIKE '%"registrationSource":"acer_bbg"%')
+      `;
+      
+      console.log('Updating Acer customer registration sources...');
+      const updateResult = await db.query(updateQuery);
+      console.log(`Updated ${updateResult.rowsAffected[0]} records`);
+      
+      // Verify the update
+      const verifyResult = await db.query(checkQuery);
+      console.log('Records after fix:', verifyResult.recordset);
+      
+      res.json({
+        success: true,
+        message: `Fixed ${updateResult.rowsAffected[0]} Acer registration records`,
+        recordsUpdated: updateResult.rowsAffected[0],
+        beforeFix: checkResult.recordset,
+        afterFix: verifyResult.recordset
+      });
+      
+    } catch (error: any) {
+      console.error('Error fixing Acer registration sources:', error);
+      res.status(500).json({ 
+        success: false,
+        message: "Failed to fix Acer registration sources", 
         error: error.message 
       });
     }

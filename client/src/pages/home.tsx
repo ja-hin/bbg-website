@@ -22,6 +22,11 @@ import {
 } from "lucide-react";
 
 export default function Home() {
+  // Fetch theme for dynamic coloring
+  const { data: theme } = useQuery({
+    queryKey: ['/api/theme/current'],
+    retry: false,
+  });
   // Fetch dynamic claim value slabs for mobile
   const { data: mobileSlabs, isLoading: isMobileLoading } = useQuery({
     queryKey: ['/api/claim-value-slabs/active/mobile'],
@@ -641,22 +646,29 @@ export default function Home() {
       </section>
 
       {/* Distributor CTA Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-white rounded-2xl shadow-xl p-8 sm:p-12 lg:p-16 border-t-4 border-xtra-primary">
-            <div className="bg-xtra-primary rounded-full w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-6 flex items-center justify-center">
-              <Award className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
+      <section className="py-8 sm:py-12 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 border-l-4" style={{ borderLeftColor: (theme as any)?.primaryColor || '#254696' }}>
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
+              <div className="flex-shrink-0">
+                <div className="rounded-full w-12 h-12 flex items-center justify-center" style={{ backgroundColor: (theme as any)?.primaryColor || '#254696' }}>
+                  <Award className="h-6 w-6 text-white" />
+                </div>
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <h2 className="text-xl sm:text-2xl font-bold mb-2 text-gray-900">Join Our Referral Program</h2>
+                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-0">
+                  Start earning commissions on every successful BBG registration. Easy setup and regular payouts.
+                </p>
+              </div>
+              <div className="flex-shrink-0">
+                <Link href="/referral-partner-registration">
+                  <Button className="text-white hover:opacity-90 px-6 py-2.5 font-semibold" style={{ backgroundColor: (theme as any)?.primaryColor || '#254696' }}>
+                    Join Program <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
             </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-gray-900">Join Our Referral Program</h2>
-            <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto px-4 sm:px-0 text-gray-600">
-              Join our referral partner network and start earning commissions on every successful BBG registration. 
-              Easy setup, dedicated support, and regular payouts.
-            </p>
-            <Link href="/referral-partner-registration" className="inline-block w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto bg-xtra-primary text-white hover:bg-xtra-primary/90 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg">
-                Join Referral Program <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-              </Button>
-            </Link>
           </div>
         </div>
       </section>

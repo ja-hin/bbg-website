@@ -28,7 +28,7 @@ export default function Header() {
     <>
       {navigationItems.map((item) => {
         const isActive = isActiveLink(item.href);
-        
+
         return (
           <Link
             key={item.href}
@@ -36,11 +36,12 @@ export default function Header() {
             onClick={onItemClick}
             className={`
               px-4 py-2 text-sm transition-colors rounded-full
-              ${mobile 
-                ? 'block text-base text-gray-800 hover:bg-gray-100 font-normal' 
-                : isActive 
-                  ? 'text-white bg-transparent font-bold' 
-                  : 'bg-white text-black hover:bg-white/90 font-normal'
+              ${
+                mobile
+                  ? "block text-base text-gray-800 hover:bg-gray-100 font-normal"
+                  : isActive
+                    ? "text-white bg-transparent font-bold"
+                    : "bg-white text-black hover:bg-white/90 font-normal"
               }
             `}
           >
@@ -48,12 +49,12 @@ export default function Header() {
           </Link>
         );
       })}
-      
+
       {/* Referral Partner Login Button */}
       <Link href="/distributor/login" onClick={onItemClick}>
-        <Button 
+        <Button
           className={`
-            ${mobile ? 'w-full mt-2' : ''}
+            ${mobile ? "w-full mt-2" : ""}
             bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded-full transition-colors
           `}
           size="sm"
@@ -68,30 +69,43 @@ export default function Header() {
     <header className="sticky top-0 z-50 shadow-md">
       {/* 4px Red line at top */}
       <div className="h-1 bg-red-500"></div>
-      
+
       {/* Logo Section - White Background */}
       <div className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center">
-              <div className="flex items-center space-x-3">
-                {/* XTRACOVER Logo */}
-                <img 
-                  src="https://images.xtracover.com/StaticImages/mobile_img/newui/logo.svg" 
-                  alt="XTRACOVER Logo" 
+            <div className="flex items-center space-x-3">
+              {/* XTRACOVER Logo - External Link */}
+              <a
+                href="https://www.xtracover.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-80 transition-opacity"
+              >
+                <img
+                  src="https://images.xtracover.com/StaticImages/mobile_img/newui/logo.svg"
+                  alt="XTRACOVER Logo"
                   className="h-12 w-auto"
                 />
-                <span className="text-2xl font-bold" style={{ color: (theme as any)?.primaryColor || '#254696' }}>| BBG</span>
-              </div>
-            </Link>
+              </a>
+              {/* BBG Text - Internal Link */}
+              <Link href="/" className="hover:opacity-80 transition-opacity">
+                <span
+                  className="text-2xl font-bold"
+                  style={{ color: (theme as any)?.primaryColor || "#254696" }}
+                >
+                  | BBG
+                </span>
+              </Link>
+            </div>
 
             {/* Mobile Navigation Toggle */}
             <div className="lg:hidden">
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetTrigger asChild>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
                     className="h-10 w-10 p-0 text-gray-600 hover:bg-gray-100"
                   >
@@ -103,23 +117,28 @@ export default function Header() {
                     <span className="sr-only">Toggle menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-80 text-gray-800 border-none bg-white">
+                <SheetContent
+                  side="right"
+                  className="w-80 text-gray-800 border-none bg-white"
+                >
                   <div className="flex flex-col space-y-6 mt-8">
                     {/* Mobile Logo */}
                     <div className="flex items-center space-x-3 pb-4 border-b border-gray-200">
-                      <img 
-                        src="https://images.xtracover.com/StaticImages/mobile_img/newui/logo.svg" 
-                        alt="XTRACOVER Logo" 
+                      <img
+                        src="https://images.xtracover.com/StaticImages/mobile_img/newui/logo.svg"
+                        alt="XTRACOVER Logo"
                         className="h-10 w-auto"
                       />
-                      <span className="text-gray-800 text-xl font-bold">| BBG</span>
+                      <span className="text-gray-800 text-xl font-bold">
+                        | BBG
+                      </span>
                     </div>
-                    
+
                     {/* Mobile Navigation */}
                     <nav className="flex flex-col space-y-2">
-                      <NavLinks 
-                        mobile={true} 
-                        onItemClick={() => setIsOpen(false)} 
+                      <NavLinks
+                        mobile={true}
+                        onItemClick={() => setIsOpen(false)}
                       />
                     </nav>
                   </div>
@@ -131,9 +150,15 @@ export default function Header() {
       </div>
 
       {/* Navigation Section - Theme Color Background */}
-      <div className="hidden lg:block" style={{ backgroundColor: (theme as any)?.primaryColor || '#254696' }}>
+      <div
+        className="hidden lg:block"
+        style={{ backgroundColor: (theme as any)?.primaryColor || "#254696" }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex items-center justify-center py-3" style={{ gap: '23px' }}>
+          <nav
+            className="flex items-center justify-center py-3"
+            style={{ gap: "23px" }}
+          >
             <NavLinks />
           </nav>
         </div>

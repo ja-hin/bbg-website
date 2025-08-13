@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { AdminLayout } from "@/components/admin-layout";
+import { useRequireAuth } from "@/hooks/useAuth";
+import { AdminHeader } from "@/components/admin-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -30,12 +31,25 @@ interface AcerRegistration {
 }
 
 export default function AdminAcerRegistrations() {
+  const { isLoading: adminLoading, isAuthenticated } = useRequireAuth();
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: registrations = [], isLoading, error } = useQuery({
     queryKey: ['/api/admin/acer-registrations'],
     refetchInterval: 30000, // Refresh every 30 seconds
+    enabled: isAuthenticated, // Only fetch if authenticated
   });
+
+  if (adminLoading || !isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p>Loading admin panel...</p>
+        </div>
+      </div>
+    );
+  }
 
   const filteredRegistrations = registrations.filter((registration: AcerRegistration) =>
     registration.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -104,8 +118,9 @@ export default function AdminAcerRegistrations() {
 
   if (error) {
     return (
-      <AdminLayout>
-        <div className="p-6">
+      <div className="min-h-screen bg-gray-50">
+        <AdminHeader />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Card>
             <CardContent className="pt-6">
               <div className="text-center text-red-600">
@@ -114,13 +129,14 @@ export default function AdminAcerRegistrations() {
             </CardContent>
           </Card>
         </div>
-      </AdminLayout>
+      </div>
     );
   }
 
   return (
-    <AdminLayout>
-      <div className="p-6 space-y-6">
+    <div className="min-h-screen bg-gray-50">
+      <AdminHeader />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">Acer BBG Registrations</h1>
@@ -310,6 +326,6 @@ export default function AdminAcerRegistrations() {
           </CardContent>
         </Card>
       </div>
-    </AdminLayout>
+    </div>
   );
 }

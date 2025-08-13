@@ -184,7 +184,6 @@ export default function AdminAcerRegistrations() {
               <div className="text-2xl font-bold">
                 {formatCurrency(registrations.reduce((sum: number, r: AcerRegistration) => sum + (r.totalInvoiceValue || r.invoiceValue || 0), 0))}
               </div>
-              <p className="text-xs text-blue-600 font-medium mt-1">Higher BBG Rates (68%-80%)</p>
             </CardContent>
           </Card>
           

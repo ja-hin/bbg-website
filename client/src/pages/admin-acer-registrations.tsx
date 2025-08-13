@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useRequireAuth } from "@/hooks/useAuth";
-import { AdminHeader } from "@/components/admin-header";
+import { AdminLayout } from "@/components/admin-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Download, Eye, Calendar, User, CreditCard, FileText } from "lucide-react";
 import { format } from "date-fns";
+
+interface AcerDevice {
+  deviceType: string;
+  brand: string;
+  modelName: string;
+  serialNumber: string;
+  voucherCode: string;
+}
 
 interface AcerRegistration {
   id: number;
@@ -22,34 +29,26 @@ interface AcerRegistration {
   modelName: string;
   invoiceValue: number;
   dateOfPurchase: string;
-  sellerCode: string;
+  sellerCode: string | null;
   voucherCode: string;
-  paymentIntentId: string;
+  paymentIntentId: string | null;
   isVerified: boolean;
-  registrationSource: string;
+  claimValueSlabId: number;
+  registrationSlabData: string;
   createdAt: string;
+  registrationCount: number;
+  totalInvoiceValue: number;
+  allVoucherCodes: string[];
+  devices: AcerDevice[];
 }
 
 export default function AdminAcerRegistrations() {
-  const { isLoading: adminLoading, isAuthenticated } = useRequireAuth();
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: registrations = [], isLoading, error } = useQuery({
     queryKey: ['/api/admin/acer-registrations'],
     refetchInterval: 30000, // Refresh every 30 seconds
-    enabled: isAuthenticated, // Only fetch if authenticated
   });
-
-  if (adminLoading || !isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p>Loading admin panel...</p>
-        </div>
-      </div>
-    );
-  }
 
   const filteredRegistrations = registrations.filter((registration: AcerRegistration) =>
     registration.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -118,9 +117,8 @@ export default function AdminAcerRegistrations() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <AdminHeader />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <AdminLayout>
+        <div className="p-6">
           <Card>
             <CardContent className="pt-6">
               <div className="text-center text-red-600">
@@ -129,14 +127,13 @@ export default function AdminAcerRegistrations() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <AdminHeader />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <AdminLayout>
+      <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">Acer BBG Registrations</h1>
@@ -232,9 +229,9 @@ export default function AdminAcerRegistrations() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Customer</TableHead>
-                    <TableHead>Device</TableHead>
+                    <TableHead>Devices Registered</TableHead>
                     <TableHead>Purchase Details</TableHead>
-                    <TableHead>BBG Details</TableHead>
+                    <TableHead>BBG Codes</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Registration Date</TableHead>
                   </TableRow>
@@ -260,33 +257,54 @@ export default function AdminAcerRegistrations() {
                             <div className="font-medium">{registration.name}</div>
                             <div className="text-sm text-gray-500">{registration.contact}</div>
                             <div className="text-sm text-gray-500">{registration.email}</div>
+                            <div className="text-sm text-gray-400">PIN: {registration.pincode}</div>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="space-y-1">
-                            <div className="font-medium">{registration.brand} {registration.modelName}</div>
-                            <div className="text-sm text-gray-500">
-                              <Badge variant="outline" className="text-xs">
-                                {registration.deviceType}
-                              </Badge>
+                          <div className="space-y-2">
+                            <div className="font-medium text-blue-600">
+                              {registration.registrationCount || registration.devices?.length || 1} Device{(registration.registrationCount > 1 || (registration.devices && registration.devices.length > 1)) ? 's' : ''}
                             </div>
-                            <div className="text-sm font-mono">{registration.serialNumber}</div>
+                            {registration.devices?.slice(0, 2).map((device, idx) => (
+                              <div key={idx} className="text-sm border-l-2 border-blue-200 pl-2">
+                                <div className="font-medium">{device.brand} {device.modelName}</div>
+                                <Badge variant="outline" className="text-xs mr-1">
+                                  {device.deviceType}
+                                </Badge>
+                                <div className="text-xs font-mono text-gray-500">{device.serialNumber}</div>
+                              </div>
+                            ))}
+                            {registration.devices && registration.devices.length > 2 && (
+                              <div className="text-xs text-gray-500">
+                                +{registration.devices.length - 2} more device{registration.devices.length - 2 > 1 ? 's' : ''}
+                              </div>
+                            )}
                           </div>
                         </TableCell>
                         <TableCell>
                           <div className="space-y-1">
-                            <div className="font-medium">{formatCurrency(registration.invoiceValue)}</div>
+                            <div className="font-medium">{formatCurrency(registration.totalInvoiceValue || registration.invoiceValue)}</div>
                             <div className="text-sm text-gray-500 flex items-center">
                               <Calendar className="h-3 w-3 mr-1" />
                               {registration.dateOfPurchase}
                             </div>
+                            <div className="text-xs text-blue-600 font-medium">
+                              Acer BBG Registration
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div className="space-y-1">
-                            <div className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
-                              {registration.voucherCode}
-                            </div>
+                            {registration.allVoucherCodes?.slice(0, 2).map((code, idx) => (
+                              <div key={idx} className="font-mono text-xs bg-blue-50 px-2 py-1 rounded border">
+                                {code}
+                              </div>
+                            ))}
+                            {registration.allVoucherCodes && registration.allVoucherCodes.length > 2 && (
+                              <div className="text-xs text-gray-500">
+                                +{registration.allVoucherCodes.length - 2} more code{registration.allVoucherCodes.length - 2 > 1 ? 's' : ''}
+                              </div>
+                            )}
                             {registration.sellerCode && (
                               <div className="text-sm text-gray-500">
                                 Seller: {registration.sellerCode}
@@ -300,15 +318,10 @@ export default function AdminAcerRegistrations() {
                               variant={registration.isVerified ? "default" : "secondary"}
                               className={registration.isVerified ? "bg-green-600" : ""}
                             >
-                              {registration.isVerified ? "Verified" : "Unverified"}
+                              {registration.isVerified ? "Verified" : "Pending"}
                             </Badge>
-                            <div>
-                              <Badge 
-                                variant={registration.paymentIntentId ? "default" : "destructive"}
-                                className={registration.paymentIntentId ? "bg-blue-600" : ""}
-                              >
-                                {registration.paymentIntentId ? "Paid" : "Pending"}
-                              </Badge>
+                            <div className="text-xs text-blue-600 font-medium">
+                              Higher BBG Rates (68%-80%)
                             </div>
                           </div>
                         </TableCell>
@@ -326,6 +339,6 @@ export default function AdminAcerRegistrations() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </AdminLayout>
   );
 }

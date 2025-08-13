@@ -74,6 +74,27 @@ export default function AdminClaimValueSlabs() {
     queryFn: () => apiRequest('/api/brands'),
   });
 
+  // Create Acer BBG slabs mutation
+  const createAcerBbgSlabsMutation = useMutation({
+    mutationFn: () => apiRequest('/api/admin/create-acer-bbg-slabs', {
+      method: 'POST',
+    }),
+    onSuccess: (data) => {
+      toast({ 
+        title: "Success", 
+        description: `${data.created} Acer BBG slabs created successfully!`
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/claim-value-slabs'] });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to create Acer BBG slabs",
+        variant: "destructive" 
+      });
+    }
+  });
+
   // Add registration slab columns mutation
   const addRegistrationSlabColumnsMutation = useMutation({
     mutationFn: () => apiRequest('/api/admin/add-registration-slab-columns', {
@@ -407,6 +428,24 @@ export default function AdminClaimValueSlabs() {
               ) : (
                 <>
                   🔧 Add Slab Columns
+                </>
+              )}
+            </Button>
+            
+            <Button
+              onClick={() => createAcerBbgSlabsMutation.mutate()}
+              disabled={createAcerBbgSlabsMutation.isPending}
+              variant="outline"
+              className="text-green-600 border-green-600 hover:bg-green-50"
+            >
+              {createAcerBbgSlabsMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Creating BBG Slabs...
+                </>
+              ) : (
+                <>
+                  🚀 Create Acer BBG Slabs
                 </>
               )}
             </Button>

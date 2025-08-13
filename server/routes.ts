@@ -2016,6 +2016,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create Acer BBG slabs with higher percentages
+  app.post('/api/admin/create-acer-bbg-slabs', isAdminAuthenticated, async (req, res) => {
+    try {
+      console.log('🚀 Creating Acer BBG slabs with higher rates...');
+      
+      // Check if Acer BBG slabs already exist
+      const existingAcerBbgSlabs = await storage.getClaimValueSlabsByRegistrationSource('acer_bbg');
+      
+      if (existingAcerBbgSlabs.length > 0) {
+        return res.json({ 
+          success: true, 
+          message: `Acer BBG slabs already exist (${existingAcerBbgSlabs.length} slabs)`,
+          created: 0,
+          existing: existingAcerBbgSlabs.length 
+        });
+      }
+      
+      // Get all regular Acer laptop slabs
+      const allSlabs = await storage.getAllClaimValueSlabs();
+      const regularAcerSlabs = allSlabs.filter(s => 
+        s.deviceType === 'laptop' && 
+        s.brand === 'Acer' && 
+        (s.registrationSource === 'regular' || s.registrationSource === null || s.registrationSource === undefined)
+      );
+      
+      console.log(`Found ${regularAcerSlabs.length} regular Acer laptop slabs to duplicate`);
+      
+      let createdCount = 0;
+      for (const slab of regularAcerSlabs) {
+        // Create Acer BBG version with higher percentage (add 10% points, cap at 80%)
+        const bbgPercentage = Math.min(slab.percentage + 10, 80);
+        
+        const newSlab = await storage.createClaimValueSlab({
+          deviceType: 'laptop',
+          brand: 'Acer',
+          minMonths: slab.minMonths,
+          maxMonths: slab.maxMonths,
+          percentage: bbgPercentage,
+          isActive: true,
+          registrationSource: 'acer_bbg'
+        });
+        
+        console.log(`✅ Created Acer BBG slab: ${slab.minMonths}-${slab.maxMonths} months, ${bbgPercentage}%`);
+        createdCount++;
+      }
+      
+      console.log(`🎉 Created ${createdCount} Acer BBG slabs successfully!`);
+      
+      res.json({ 
+        success: true, 
+        message: `Successfully created ${createdCount} Acer BBG slabs`,
+        created: createdCount,
+        existing: 0
+      });
+    } catch (error) {
+      console.error('Error creating Acer BBG slabs:', error);
+      res.status(500).json({ error: 'Failed to create Acer BBG slabs' });
+    }
+  });
+
   // Fix Acer registration sources (one-time admin utility)
   app.post("/api/admin/fix-acer-registration-sources", isAdminAuthenticated, async (req, res) => {
     try {

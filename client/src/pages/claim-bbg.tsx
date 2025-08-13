@@ -528,7 +528,7 @@ export default function ClaimBBG() {
                               <li>• Keep your device, original box, and invoice ready</li>
                               <li>• Ensure device is functional and in fair condition</li>
                               <li>• Our pickup executive will verify device condition</li>
-                              <li>• Payment will be processed within 7 days after verification</li>
+                              <li>• Instant payouts at the time of device handover</li>
                             </ul>
                           </div>
                         </div>

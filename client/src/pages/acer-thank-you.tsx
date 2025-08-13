@@ -234,7 +234,7 @@ export default function AcerThankYou() {
                   <li>• Submit claim online with BBG voucher code</li>
                   <li>• Free home pickup within 24-48 hours</li>
                   <li>• Device evaluation within 7 business days</li>
-                  <li>• Payment within 7 days of approval</li>
+                  <li>• Instant payouts at the time of device handover</li>
                 </ul>
               </div>
             </div>

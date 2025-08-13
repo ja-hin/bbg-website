@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Download, Eye, Calendar, User, CreditCard, FileText, ChevronDown, ChevronUp, ExternalLink, X } from "lucide-react";
+import { Search, Download, Eye, Calendar, User, CreditCard, FileText, X } from "lucide-react";
 import { format } from "date-fns";
 
 interface AcerDevice {
@@ -44,23 +44,12 @@ interface AcerRegistration {
 
 export default function AdminAcerRegistrations() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const [detailViewRegistration, setDetailViewRegistration] = useState<AcerRegistration | null>(null);
 
   const { data: registrations = [], isLoading, error } = useQuery({
     queryKey: ['/api/admin/acer-registrations'],
     refetchInterval: 30000, // Refresh every 30 seconds
   });
-
-  const toggleRowExpansion = (registrationId: number) => {
-    const newExpandedRows = new Set(expandedRows);
-    if (newExpandedRows.has(registrationId)) {
-      newExpandedRows.delete(registrationId);
-    } else {
-      newExpandedRows.add(registrationId);
-    }
-    setExpandedRows(newExpandedRows);
-  };
 
   const openDetailView = (registration: AcerRegistration) => {
     setDetailViewRegistration(registration);
@@ -295,18 +284,19 @@ export default function AdminAcerRegistrations() {
                     <TableHead>BBG Codes</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Registration Date</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {isLoading ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8">
+                      <TableCell colSpan={7} className="text-center py-8">
                         Loading registrations...
                       </TableCell>
                     </TableRow>
                   ) : filteredRegistrations.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                      <TableCell colSpan={7} className="text-center py-8 text-gray-500">
                         {searchTerm ? "No registrations match your search" : "No Acer registrations found"}
                       </TableCell>
                     </TableRow>
@@ -322,57 +312,13 @@ export default function AdminAcerRegistrations() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <div className="font-medium text-blue-600">
-                                {registration.registrationCount || registration.devices?.length || 1} Device{(registration.registrationCount > 1 || (registration.devices && registration.devices.length > 1)) ? 's' : ''}
-                              </div>
-                              {registration.devices && registration.devices.length > 2 && (
-                                <div className="flex gap-1">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => toggleRowExpansion(registration.id)}
-                                    className="h-6 px-2"
-                                  >
-                                    {expandedRows.has(registration.id) ? (
-                                      <>
-                                        <ChevronUp className="h-3 w-3 mr-1" />
-                                        Hide
-                                      </>
-                                    ) : (
-                                      <>
-                                        <ChevronDown className="h-3 w-3 mr-1" />
-                                        Expand
-                                      </>
-                                    )}
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => openDetailView(registration)}
-                                    className="h-6 px-2"
-                                  >
-                                    <ExternalLink className="h-3 w-3 mr-1" />
-                                    View All
-                                  </Button>
-                                </div>
-                              )}
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-blue-600">
+                              {registration.registrationCount || registration.devices?.length || 1}
                             </div>
-                            {registration.devices?.slice(0, expandedRows.has(registration.id) ? registration.devices.length : 2).map((device, idx) => (
-                              <div key={idx} className="text-sm border-l-2 border-blue-200 pl-2 mb-2">
-                                <div className="font-medium">{device.brand} {device.modelName}</div>
-                                <Badge variant="outline" className="text-xs mr-1">
-                                  {device.deviceType}
-                                </Badge>
-                                <div className="text-xs font-mono text-gray-500">{device.serialNumber}</div>
-                              </div>
-                            ))}
-                            {registration.devices && registration.devices.length > 2 && !expandedRows.has(registration.id) && (
-                              <div className="text-xs text-gray-500">
-                                +{registration.devices.length - 2} more device{registration.devices.length - 2 > 1 ? 's' : ''}...
-                              </div>
-                            )}
+                            <div className="text-sm text-gray-500">
+                              Device{(registration.registrationCount > 1 || (registration.devices && registration.devices.length > 1)) ? 's' : ''}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell>
@@ -385,58 +331,13 @@ export default function AdminAcerRegistrations() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="space-y-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="text-xs font-medium text-gray-600">
-                                {registration.allVoucherCodes?.length || 1} Code{(registration.allVoucherCodes && registration.allVoucherCodes.length > 1) ? 's' : ''}
-                              </div>
-                              {registration.allVoucherCodes && registration.allVoucherCodes.length > 2 && (
-                                <div className="flex gap-1">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => toggleRowExpansion(registration.id)}
-                                    className="h-6 px-2"
-                                  >
-                                    {expandedRows.has(registration.id) ? (
-                                      <>
-                                        <ChevronUp className="h-3 w-3 mr-1" />
-                                        Hide
-                                      </>
-                                    ) : (
-                                      <>
-                                        <ChevronDown className="h-3 w-3 mr-1" />
-                                        Expand
-                                      </>
-                                    )}
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => openDetailView(registration)}
-                                    className="h-6 px-2"
-                                  >
-                                    <ExternalLink className="h-3 w-3 mr-1" />
-                                    View All
-                                  </Button>
-                                </div>
-                              )}
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-purple-600">
+                              {registration.allVoucherCodes?.length || 1}
                             </div>
-                            {registration.allVoucherCodes?.slice(0, expandedRows.has(registration.id) ? registration.allVoucherCodes.length : 2).map((code, idx) => (
-                              <div key={idx} className="font-mono text-xs bg-blue-50 px-2 py-1 rounded border mb-1">
-                                {code}
-                              </div>
-                            ))}
-                            {registration.allVoucherCodes && registration.allVoucherCodes.length > 2 && !expandedRows.has(registration.id) && (
-                              <div className="text-xs text-gray-500">
-                                +{registration.allVoucherCodes.length - 2} more code{registration.allVoucherCodes.length - 2 > 1 ? 's' : ''}...
-                              </div>
-                            )}
-                            {registration.sellerCode && (
-                              <div className="text-sm text-gray-500 mt-2">
-                                Seller: {registration.sellerCode}
-                              </div>
-                            )}
+                            <div className="text-sm text-gray-500">
+                              Code{(registration.allVoucherCodes && registration.allVoucherCodes.length > 1) ? 's' : ''}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell>
@@ -454,6 +355,17 @@ export default function AdminAcerRegistrations() {
                           <div className="text-sm">
                             {formatDate(registration.createdAt)}
                           </div>
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openDetailView(registration)}
+                            className="h-8 px-3"
+                          >
+                            <Eye className="h-4 w-4 mr-1" />
+                            View Details
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))

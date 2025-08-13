@@ -72,6 +72,12 @@ export function AdminHeader() {
                   Distributors
                 </Button>
               </Link>
+              <Link href="/admin/acer-registrations">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+                  <Smartphone className="h-4 w-4 mr-2" />
+                  Acer BBG
+                </Button>
+              </Link>
               <Link href="/admin/cart-abandonments">
                 <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
                   <ShoppingCart className="h-4 w-4 mr-2" />

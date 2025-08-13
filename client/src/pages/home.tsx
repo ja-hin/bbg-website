@@ -81,7 +81,7 @@ export default function Home() {
                 <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Laptop BBG</h3>
                 <div className="text-3xl sm:text-4xl font-bold text-xtra-primary mb-2">₹125</div>
                 <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">(inclusive of GST)</p>
-                <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Assured buyback value for your laptop</p>
+                <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Assured buyback value for your Laptop</p>
                 <ul className="text-left space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />

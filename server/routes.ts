@@ -5183,11 +5183,12 @@ Required: GUPSHUP_API_KEY environment variable
           max_months, 
           percentage, 
           is_active, 
+          registration_source,
           created_at, 
           updated_at
         FROM claim_value_slabs 
         WHERE device_type = @deviceType AND is_active = 1
-        ORDER BY brand, min_months ASC
+        ORDER BY brand, registration_source, min_months ASC
       `;
       
       console.log(`Executing ${deviceType} query:`, query);
@@ -5205,6 +5206,7 @@ Required: GUPSHUP_API_KEY environment variable
         maxMonths: row.max_months,
         percentage: row.percentage,
         isActive: row.is_active,
+        registrationSource: row.registration_source || 'regular',
         createdAt: row.created_at,
         updatedAt: row.updated_at || row.created_at
       }));

@@ -1,0 +1,33 @@
+OTP sent via Kaleyra to 9953410422: 924189 (Message ID: sent)
+6:56:43 AM [express] POST /api/otp/send 200 in 122ms :: {"message":"OTP sent successfully","messageI…
+PayU Success Verify Hash String: MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDIN3gqQ0IIrmKTaf/RSowf6iFJu/Gbp1oiRbB40HWLuJRMRdrHTRBN/b4TtHP+4biPKy/w77T2JuBO6PX8Pa8UxGuE1vb8jgQdH3T+cuMLtM10P50Ub0wq/yNLz/mV3xHnXTxph844/nfSNEgIruFCqekkD2smTgXaqWGBB313FRrYVtnEfJf4FuqDSm0iQtqUb4uaySeud3ZMcvJzu5eN1JYaDIUKqfEBCny/iQ6RG0ZCSsaCfwaSlVZx4z4BJD43xS8K/QTwetCZqFnOcED3+ndUgV+3G7d4yBpkpR4WpZf+81lG3S9k7zvRmc10YczCQlfMyRDwwAf3NW+wd6jJAgMBAAECggEBAKmWSmNJ2untg7OnijbldPEnaJDC7/BO/UqgSszajWYOrxY36Qr9XH0jG1gndkUDPkeOZionb9k7rq1IJ+tC+ESX5xZ62nOrexKL7ZYFDAmDWK9JnqyLZTHaMDRr8dUfQFP/pkcg7+1YpXdYL1ejgUvtDXwszy5/0feXlu4qwPwWU9RF9mvgHl24n01SHnrHVhLkqJVTSHh9sWCl32g+wQOSS79Pm00Em6Ljap5LVxxbKaSmgfsG2RFVeeQ+CzP+spiIeFpXgX4wgNu5tfaFOgKU9oe8aI/wilyTEMORn6dA3uLCfXrvnb7B/2uqZkXqfYUgFUp21qJLQzFUWhLkBXECgYEA+kVFYgos7UJkBaA7z97BU1arCKQ9pjDxIvZsmDHwWW6KpeA+Pk7Xg2B4MOZJXw2NPmoHFqbtI0WByMrsvRz4xQfkQmtCSp0VdlpWq+MqT7Js+gvsd0oS5CNurDMeDlt8Z8xR3uhr+xUOSculVPgYMWgcX1eD31xYKZIUiYRocq0CgYEAzMzakRtQ13nsCZwzdUWCH7ZSwdknu4/XdIQAlnLHVKwDbI3tFr7+yP8cbZuLYCOD0gI4j4SbnRBnAW4g7dZ/IHrdUYiMC1v8zhsiD3bxNsHNG3T6kRs9rJg3jSTuZjznbMBHAS0WXVTUBvdu/Wu96XBvEsGOcNoCtXkC+y1h7g0CgYEA0IkH1zlDVi8LyORK8lpaHGcK/JheBiyhwNA0jFyQOPSy8qR3ONPZH88yVwyL9ngESQ1v+p/82HcCPZ1YxftuDj8VI4LcKe/aAlQkA/W1O9Mgmvl0f7FpLE+Z2EJ/uNbiQlstnN9tmjlhPnxBtxtCjWiCu67gYy0/COR/2FZL8cECgYEAm3A7z3iJAhIyeRTJ5Y8M9R6/bwtvYacJ4xAxFf8llPk9XA3YTbRG0qz1mac9wIkUCrfOz/bY2PvTAj3g1kM/l5pJEhHuIMz/cjsbvdsLtwCeuOEvMCUZyT56ozDNlGFTULIa8iSTXeD9UBBKeCNnL587XmPzxWliNvQStCs8sZ0CgYBN2Uq7FMZOChCfDVYqY1IRwwp5kW9V5hgPuaGR8Jtqb8ShiREqh/OLpplt9gNVvnwlwsCdunedN0PB7CfOSzspif4vX/vGIvwf7R77PenifjklV6Q5eWd66WNYl0Bfp6pnQxMxAScUTTLRwnjTGZn+1XXwwbQ0r/O2VvA4yOnmww==|success|||||||||||ritwik123tiwary@gmail.com|Ritwik Amod Tiwary|BBG Registration|99.00|BBG_1754463397353_hc68h3l0h|W597jX
+PayU success handler error: RequestError: Validation failed for parameter 'invoiceFile'. Invalid string.
+    at /home/runner/workspace/node_modules/mssql/lib/tedious/request.js:449:19
+    at Array.forEach (<anonymous>)
+    at Request.userCallback (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:446:46)
+    at Request.Request.callback (/home/runner/workspace/node_modules/tedious/src/request.ts:379:14)
+    at <anonymous> (/home/runner/workspace/node_modules/tedious/src/connection.ts:2631:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11) {
+  code: 'EPARAM',
+  originalError: RequestError: Validation failed for parameter 'invoiceFile'. Invalid string.
+      at validateParameters (/home/runner/workspace/node_modules/tedious/src/request.ts:466:15)
+      at execSql (/home/runner/workspace/node_modules/tedious/src/connection.ts:2625:15)
+      ... 2 lines matching cause stack trace ...
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+    code: 'EPARAM',
+    [cause]: TypeError: Invalid string.
+        at Object.validate (/home/runner/workspace/node_modules/tedious/src/data-types/nvarchar.ts:142:13)
+        at validateParameters (/home/runner/workspace/node_modules/tedious/src/request.ts:464:42)
+        at execSql (/home/runner/workspace/node_modules/tedious/src/connection.ts:2625:15)
+        at /home/runner/workspace/node_modules/mssql/lib/tedious/request.js:705:65
+        at /home/runner/workspace/node_modules/mssql/lib/base/connection-pool.js:371:41
+        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+  },
+  number: 'EPARAM',
+  lineNumber: undefined,
+  state: undefined,
+  class: undefined,
+  serverName: undefined,
+  procName: undefined,
+  precedingErrors: []
+}

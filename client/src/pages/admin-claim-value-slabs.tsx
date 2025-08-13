@@ -26,6 +26,7 @@ interface ClaimValueSlab {
   maxMonths: number;
   percentage: number;
   isActive: boolean;
+  registrationSource: string;
 }
 
 interface Brand {
@@ -305,12 +306,26 @@ export default function AdminClaimValueSlabs() {
 
       // Find brand-specific slabs for this range
       brands.forEach(brand => {
-        const slab = deviceSlabs.find(s => 
+        const slabs = deviceSlabs.filter(s => 
           s.brand === brand && 
           s.minMonths === range.min && 
           s.maxMonths === range.max
         );
-        ageData.brands[brand] = slab || null;
+        
+        if (slabs.length === 1) {
+          ageData.brands[brand] = slabs[0];
+        } else if (slabs.length > 1) {
+          // Multiple slabs for same brand/range - group by registration source
+          const regular = slabs.find(s => s.registrationSource === 'regular');
+          const acerBbg = slabs.find(s => s.registrationSource === 'acer_bbg');
+          ageData.brands[brand] = {
+            regular: regular || null,
+            acerBbg: acerBbg || null,
+            multiple: true
+          };
+        } else {
+          ageData.brands[brand] = null;
+        }
       });
 
       // Find generic slab for this range
@@ -574,30 +589,81 @@ export default function AdminClaimValueSlabs() {
                               <TableCell key={brand} className="text-center">
                                 <div className="flex flex-col items-center space-y-1">
                                   {ageData.brands[brand] ? (
-                                    <>
-                                      <span className="font-semibold text-blue-600">
-                                        {ageData.brands[brand].percentage}%
-                                      </span>
-                                      <div className="flex space-x-1">
-                                        <Button
-                                          size="sm"
-                                          variant="outline"
-                                          className="h-6 px-2 text-xs"
-                                          onClick={() => startEdit(ageData.brands[brand])}
-                                        >
-                                          <Edit className="h-3 w-3 mr-1" />
-                                          Edit
-                                        </Button>
-                                        <Button
-                                          size="sm"
-                                          variant="destructive"
-                                          className="h-6 px-2 text-xs"
-                                          onClick={() => deleteMutation.mutate(ageData.brands[brand].id)}
-                                        >
-                                          <Trash2 className="h-3 w-3" />
-                                        </Button>
-                                      </div>
-                                    </>
+                                    ageData.brands[brand].multiple ? (
+                                      <>
+                                        {/* Show both regular and Acer BBG rates */}
+                                        <div className="space-y-1">
+                                          {ageData.brands[brand].regular && (
+                                            <div className="text-xs">
+                                              <span className="font-semibold text-blue-600">
+                                                {ageData.brands[brand].regular.percentage}%
+                                              </span>
+                                              <span className="text-gray-500 ml-1">(Regular)</span>
+                                            </div>
+                                          )}
+                                          {ageData.brands[brand].acerBbg && (
+                                            <div className="text-xs">
+                                              <span className="font-semibold text-purple-600">
+                                                {ageData.brands[brand].acerBbg.percentage}%
+                                              </span>
+                                              <span className="text-gray-500 ml-1">(Acer BBG)</span>
+                                            </div>
+                                          )}
+                                        </div>
+                                        <div className="flex space-x-1 mt-1">
+                                          {ageData.brands[brand].regular && (
+                                            <Button
+                                              size="sm"
+                                              variant="outline"
+                                              className="h-5 px-1 text-xs"
+                                              onClick={() => startEdit(ageData.brands[brand].regular)}
+                                            >
+                                              <Edit className="h-2 w-2" />
+                                            </Button>
+                                          )}
+                                          {ageData.brands[brand].acerBbg && (
+                                            <Button
+                                              size="sm"
+                                              variant="outline"
+                                              className="h-5 px-1 text-xs bg-purple-50"
+                                              onClick={() => startEdit(ageData.brands[brand].acerBbg)}
+                                            >
+                                              <Edit className="h-2 w-2" />
+                                            </Button>
+                                          )}
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <div className="space-y-1">
+                                          <span className="font-semibold text-blue-600">
+                                            {ageData.brands[brand].percentage}%
+                                          </span>
+                                          <div className="text-xs text-gray-500">
+                                            ({ageData.brands[brand].registrationSource || 'regular'})
+                                          </div>
+                                        </div>
+                                        <div className="flex space-x-1">
+                                          <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="h-6 px-2 text-xs"
+                                            onClick={() => startEdit(ageData.brands[brand])}
+                                          >
+                                            <Edit className="h-3 w-3 mr-1" />
+                                            Edit
+                                          </Button>
+                                          <Button
+                                            size="sm"
+                                            variant="destructive"
+                                            className="h-6 px-2 text-xs"
+                                            onClick={() => deleteMutation.mutate(ageData.brands[brand].id)}
+                                          >
+                                            <Trash2 className="h-3 w-3" />
+                                          </Button>
+                                        </div>
+                                      </>
+                                    )
                                   ) : (
                                     <span className="text-gray-400 text-sm">Not Set</span>
                                   )}

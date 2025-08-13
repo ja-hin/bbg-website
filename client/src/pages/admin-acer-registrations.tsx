@@ -77,28 +77,62 @@ export default function AdminAcerRegistrations() {
 
   const exportToCSV = () => {
     const headers = [
-      'ID', 'Name', 'Contact', 'Email', 'Device Type', 'Serial Number',
-      'Brand', 'Model', 'Invoice Value', 'Purchase Date', 'Seller Code',
-      'Voucher Code', 'Payment Status', 'Verified', 'Registration Date'
+      'Customer ID', 'Name', 'Contact', 'Email', 'Pincode', 'Device Type', 'Serial Number',
+      'Brand', 'Model', 'Invoice Value (Individual)', 'Total Invoice Value', 'Purchase Date', 
+      'Seller Code', 'Voucher Code', 'Payment Status', 'Verified', 'Registration Date', 'Registration Source'
     ];
 
-    const csvData = filteredRegistrations.map((reg: AcerRegistration) => [
-      reg.id,
-      reg.name,
-      reg.contact,
-      reg.email,
-      reg.deviceType,
-      reg.serialNumber,
-      reg.brand,
-      reg.modelName,
-      reg.invoiceValue,
-      reg.dateOfPurchase,
-      reg.sellerCode || 'N/A',
-      reg.voucherCode,
-      reg.paymentIntentId ? 'Paid' : 'Pending',
-      reg.isVerified ? 'Yes' : 'No',
-      formatDate(reg.createdAt)
-    ]);
+    const csvData: string[][] = [];
+    
+    filteredRegistrations.forEach((reg: AcerRegistration) => {
+      if (reg.devices && reg.devices.length > 0) {
+        // Create one row per device
+        reg.devices.forEach((device, idx) => {
+          csvData.push([
+            reg.id.toString(),
+            reg.name,
+            reg.contact,
+            reg.email,
+            reg.pincode,
+            device.deviceType,
+            device.serialNumber,
+            device.brand,
+            device.modelName,
+            (reg.totalInvoiceValue / reg.devices!.length).toString(), // Individual device value
+            reg.totalInvoiceValue.toString(), // Total customer value
+            reg.dateOfPurchase,
+            reg.sellerCode || 'N/A',
+            device.voucherCode,
+            reg.paymentIntentId ? 'Paid' : 'Pending',
+            reg.isVerified ? 'Yes' : 'No',
+            formatDate(reg.createdAt),
+            'Acer BBG'
+          ]);
+        });
+      } else {
+        // Fallback for customers without devices array
+        csvData.push([
+          reg.id.toString(),
+          reg.name,
+          reg.contact,
+          reg.email,
+          reg.pincode,
+          reg.deviceType,
+          reg.serialNumber,
+          reg.brand,
+          reg.modelName,
+          reg.invoiceValue.toString(),
+          (reg.totalInvoiceValue || reg.invoiceValue).toString(),
+          reg.dateOfPurchase,
+          reg.sellerCode || 'N/A',
+          reg.voucherCode,
+          reg.paymentIntentId ? 'Paid' : 'Pending',
+          reg.isVerified ? 'Yes' : 'No',
+          formatDate(reg.createdAt),
+          'Acer BBG'
+        ]);
+      }
+    });
 
     const csvContent = [headers, ...csvData]
       .map(row => row.map(cell => `"${cell}"`).join(','))
@@ -108,7 +142,7 @@ export default function AdminAcerRegistrations() {
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    link.setAttribute('download', `acer-registrations-${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `acer-bbg-registrations-${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
@@ -272,8 +306,8 @@ export default function AdminAcerRegistrations() {
                             <div className="font-medium text-blue-600">
                               {registration.registrationCount || registration.devices?.length || 1} Device{(registration.registrationCount > 1 || (registration.devices && registration.devices.length > 1)) ? 's' : ''}
                             </div>
-                            {registration.devices?.slice(0, 2).map((device, idx) => (
-                              <div key={idx} className="text-sm border-l-2 border-blue-200 pl-2">
+                            {registration.devices?.map((device, idx) => (
+                              <div key={idx} className="text-sm border-l-2 border-blue-200 pl-2 mb-2">
                                 <div className="font-medium">{device.brand} {device.modelName}</div>
                                 <Badge variant="outline" className="text-xs mr-1">
                                   {device.deviceType}
@@ -281,11 +315,6 @@ export default function AdminAcerRegistrations() {
                                 <div className="text-xs font-mono text-gray-500">{device.serialNumber}</div>
                               </div>
                             ))}
-                            {registration.devices && registration.devices.length > 2 && (
-                              <div className="text-xs text-gray-500">
-                                +{registration.devices.length - 2} more device{registration.devices.length - 2 > 1 ? 's' : ''}
-                              </div>
-                            )}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -299,16 +328,11 @@ export default function AdminAcerRegistrations() {
                         </TableCell>
                         <TableCell>
                           <div className="space-y-1">
-                            {registration.allVoucherCodes?.slice(0, 2).map((code, idx) => (
-                              <div key={idx} className="font-mono text-xs bg-blue-50 px-2 py-1 rounded border">
+                            {registration.allVoucherCodes?.map((code, idx) => (
+                              <div key={idx} className="font-mono text-xs bg-blue-50 px-2 py-1 rounded border mb-1">
                                 {code}
                               </div>
                             ))}
-                            {registration.allVoucherCodes && registration.allVoucherCodes.length > 2 && (
-                              <div className="text-xs text-gray-500">
-                                +{registration.allVoucherCodes.length - 2} more code{registration.allVoucherCodes.length - 2 > 1 ? 's' : ''}
-                              </div>
-                            )}
                             {registration.sellerCode && (
                               <div className="text-sm text-gray-500">
                                 Seller: {registration.sellerCode}

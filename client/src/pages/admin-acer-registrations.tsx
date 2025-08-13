@@ -327,9 +327,7 @@ export default function AdminAcerRegistrations() {
                             >
                               {registration.isVerified ? "Verified" : "Pending"}
                             </Badge>
-                            <div className="text-xs text-blue-600 font-medium">
-                              Higher BBG Rates (68%-80%)
-                            </div>
+                            
                           </div>
                         </TableCell>
                         <TableCell>

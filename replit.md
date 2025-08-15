@@ -4,6 +4,13 @@
 This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) system. Its primary purpose is to enable distributors (referral partners) to register and earn commissions, customers to register their devices for BBG protection, and users to claim their buyback guarantees. The project streamlines the BBG process, offers a user-friendly experience with real-time feedback, and provides robust administrative tools for managing all aspects of the system.
 
 ## Recent Critical Updates
+**Date: August 15, 2025**
+- **✅ ADMIN MENU CUSTOMIZATION IMPLEMENTED**: Complete menu reordering system with drag-and-drop functionality
+- **✅ DYNAMIC SIDEBAR INTEGRATION**: Admin sidebar now fetches menu order from backend API and updates in real-time
+- **✅ MENU SETTINGS PAGE CREATED**: New admin page allows full customization of menu order with save/reset functionality
+- **✅ BACKEND API ENDPOINTS**: Added `/api/admin/menu-order` GET/POST and `/api/admin/menu-order/reset` for menu management
+- **✅ MASTERS AND BRANDS PRIORITIZED**: Menu now shows Masters and Brands at top of navigation as requested
+
 **Date: August 13, 2025**
 - **✅ EMAIL NOTIFICATION SYSTEM FIXED**: Acer BBG registration now sends email confirmations successfully to both ritwik123tiwary@gmail.com and jatin.singh@xtracover.com
 - **✅ SMTP INTEGRATION RESTORED**: Fixed ES module compatibility and properly integrated database SMTP settings with AWS SES configuration
@@ -36,7 +43,7 @@ Preferred communication style: Simple, everyday language.
 - **Language**: TypeScript with ES modules
 - **Database ORM**: Drizzle ORM (for potential future use, currently raw SQL)
 - **File Handling**: Multer for file uploads, integrated with AWS S3 for cloud storage with local fallback.
-- **Admin Panel**: Secure session-based authentication with bcrypt hashing. Provides comprehensive management of referral partners, customers, claims, communication templates, and IMEI data.
+- **Admin Panel**: Secure session-based authentication with bcrypt hashing. Provides comprehensive management of referral partners, customers, claims, communication templates, and IMEI data. Features customizable menu ordering system with drag-and-drop interface for admin navigation management.
 
 ### Database Design
 - **Primary Database**: Microsoft SQL Server.

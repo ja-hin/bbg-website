@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
 import { 
   Shield, 
@@ -62,92 +62,64 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
     }
   });
 
-  const menuItems = [
-    {
-      label: "Dashboard",
-      href: "/admin/dashboard",
-      icon: BarChart3,
-      active: location === "/admin/dashboard" || location === "/admin"
-    },
-    {
-      label: "Masters",
-      href: "/admin/masters",
-      icon: Database,
-      active: location === "/admin/masters"
-    },
-    {
-      label: "Brands",
-      href: "/admin/brands",
-      icon: Tags,
-      active: location === "/admin/brands"
-    },
-    {
-      label: "Referral Partners",
-      href: "/admin/distributors", 
-      icon: Users,
-      active: location === "/admin/distributors"
-    },
-    {
-      label: "Cart Tracking",
-      href: "/admin/cart-abandonments",
-      icon: ShoppingCart,
-      active: location === "/admin/cart-abandonments"
-    },
-    {
-      label: "Acer Registrations",
-      href: "/admin/acer-registrations",
-      icon: Laptop,
-      active: location === "/admin/acer-registrations"
-    },
-    {
-      label: "Acer IMEI Management",
-      href: "/admin/acer-imei",
-      icon: Shield,
-      active: location === "/admin/acer-imei"
-    },
-    {
-      label: "Claim Value Slabs",
-      href: "/admin/claim-value-slabs",
-      icon: Calculator,
-      active: location === "/admin/claim-value-slabs"
-    },
-    {
-      label: "SMTP Settings",
-      href: "/admin/smtp-settings",
-      icon: Mail,
-      active: location === "/admin/smtp-settings"
-    },
-    {
-      label: "WhatsApp Settings",
-      href: "/admin/whatsapp-settings",
-      icon: MessageCircle,
-      active: location === "/admin/whatsapp-settings"
-    },
-    {
-      label: "Communication",
-      href: "/admin/templates",
-      icon: MessageSquare,
-      active: location === "/admin/templates"
-    },
-    {
-      label: "System Logs",
-      href: "/admin/logs",
-      icon: Activity,
-      active: location === "/admin/logs"
-    },
-    {
-      label: "WhatsApp Test",
-      href: "/admin/whatsapp-test",
-      icon: MessageCircle,
-      active: location === "/admin/whatsapp-test"
-    },
-    {
-      label: "Menu Settings",
-      href: "/admin/menu-settings",
-      icon: Move,
-      active: location === "/admin/menu-settings"
-    }
+  // Icon mapping for menu items
+  const iconMap: Record<string, any> = {
+    BarChart3,
+    Database,
+    Tags,
+    Users,
+    ShoppingCart,
+    Laptop,
+    Shield,
+    Calculator,
+    Mail,
+    MessageCircle,
+    MessageSquare,
+    Activity,
+    Move
+  };
+
+  // Default menu items for fallback
+  const defaultMenuItems = [
+    { id: "dashboard", label: "Dashboard", href: "/admin/dashboard", icon: "BarChart3", order: 1 },
+    { id: "masters", label: "Masters", href: "/admin/masters", icon: "Database", order: 2 },
+    { id: "brands", label: "Brands", href: "/admin/brands", icon: "Tags", order: 3 },
+    { id: "distributors", label: "Referral Partners", href: "/admin/distributors", icon: "Users", order: 4 },
+    { id: "cart", label: "Cart Tracking", href: "/admin/cart-abandonments", icon: "ShoppingCart", order: 5 },
+    { id: "acer-reg", label: "Acer Registrations", href: "/admin/acer-registrations", icon: "Laptop", order: 6 },
+    { id: "acer-imei", label: "Acer IMEI Management", href: "/admin/acer-imei", icon: "Shield", order: 7 },
+    { id: "claim-slabs", label: "Claim Value Slabs", href: "/admin/claim-value-slabs", icon: "Calculator", order: 8 },
+    { id: "smtp", label: "SMTP Settings", href: "/admin/smtp-settings", icon: "Mail", order: 9 },
+    { id: "whatsapp", label: "WhatsApp Settings", href: "/admin/whatsapp-settings", icon: "MessageCircle", order: 10 },
+    { id: "communication", label: "Communication", href: "/admin/templates", icon: "MessageSquare", order: 11 },
+    { id: "logs", label: "System Logs", href: "/admin/logs", icon: "Activity", order: 12 },
+    { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 13 }
   ];
+
+  // Fetch menu order from backend
+  const { data: menuOrderData } = useQuery({
+    queryKey: ["/api/admin/menu-order"],
+    retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Build menu items based on saved order or use default
+  const menuItems = (menuOrderData?.menuItems || defaultMenuItems)
+    .sort((a: any, b: any) => a.order - b.order)
+    .map((item: any) => ({
+      label: item.label,
+      href: item.href,
+      icon: iconMap[item.icon] || BarChart3,
+      active: location === item.href || (item.href === "/admin/dashboard" && location === "/admin")
+    }));
+
+  // Add Menu Settings at the end
+  menuItems.push({
+    label: "Menu Settings",
+    href: "/admin/menu-settings",
+    icon: Move,
+    active: location === "/admin/menu-settings"
+  });
 
   return (
     <div className={cn("flex h-screen w-64 flex-col bg-xtra-primary text-white overflow-hidden", className)}>

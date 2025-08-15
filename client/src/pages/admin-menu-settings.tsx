@@ -59,6 +59,7 @@ function AdminMenuSettingsContent() {
         title: "Menu Order Saved",
         description: "Menu order has been successfully updated"
       });
+      // Invalidate menu order query to update sidebar immediately
       queryClient.invalidateQueries({ queryKey: ["/api/admin/menu-order"] });
     },
     onError: (error: any) => {

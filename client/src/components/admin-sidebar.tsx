@@ -240,9 +240,17 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
         </div>
       </div>
 
-      {/* User Info */}
-      <div className="border-b border-white/20 px-6 py-4">
-        <div className="flex items-center space-x-3">
+
+
+      {/* Navigation */}
+      <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
+        {menuItems.map((item) => renderMenuItem(item))}
+      </nav>
+
+      {/* Footer with User Info and Logout */}
+      <div className="border-t border-white/20 p-4 space-y-3">
+        {/* User Info */}
+        <div className="flex items-center space-x-3 px-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
             <Shield className="h-4 w-4" />
           </div>
@@ -251,15 +259,8 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
             <p className="text-xs text-white/70">Administrator</p>
           </div>
         </div>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
-        {menuItems.map((item) => renderMenuItem(item))}
-      </nav>
-
-      {/* Footer with Logout */}
-      <div className="border-t border-white/20 p-4">
+        
+        {/* Logout Button */}
         <Button
           variant="ghost"
           className="w-full justify-start text-left font-normal text-white/80 hover:bg-white/20 hover:text-white"

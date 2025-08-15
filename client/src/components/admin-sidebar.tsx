@@ -143,16 +143,7 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
     };
   });
 
-  // Add Menu Settings at the end
-  menuItems.push({
-    id: "menu-settings",
-    label: "Menu Settings",
-    href: "/admin/menu-settings",
-    icon: Move,
-    active: location === "/admin/menu-settings",
-    type: "item",
-    children: []
-  });
+
 
   const toggleSubmenu = (itemId: string) => {
     const newExpanded = new Set(expandedMenus);

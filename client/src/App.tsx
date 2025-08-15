@@ -36,6 +36,7 @@ import AdminClaimValueSlabs from "@/pages/admin-claim-value-slabs";
 import AdminSmtpSettings from "@/pages/admin-smtp-settings";
 import AdminWhatsAppSettings from "@/pages/admin-whatsapp-settings";
 import AdminAdminUsers from "@/pages/admin-admin-users";
+import AdminMenuSettings from "@/pages/admin-menu-settings";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import TermsAndConditions from "@/pages/terms-and-conditions";
@@ -95,6 +96,7 @@ function Router() {
       <Route path="/admin/smtp-settings" component={AdminSmtpSettings} />
       <Route path="/admin/whatsapp-settings" component={AdminWhatsAppSettings} />
       <Route path="/admin/admin-users" component={AdminAdminUsers} />
+      <Route path="/admin/menu-settings" component={AdminMenuSettings} />
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />

@@ -16,7 +16,8 @@ import {
   Home,
   Cloud,
   Laptop,
-  Calculator
+  Calculator,
+  Move
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -69,6 +70,18 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       active: location === "/admin/dashboard" || location === "/admin"
     },
     {
+      label: "Masters",
+      href: "/admin/masters",
+      icon: Database,
+      active: location === "/admin/masters"
+    },
+    {
+      label: "Brands",
+      href: "/admin/brands",
+      icon: Tags,
+      active: location === "/admin/brands"
+    },
+    {
       label: "Referral Partners",
       href: "/admin/distributors", 
       icon: Users,
@@ -98,7 +111,6 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       icon: Calculator,
       active: location === "/admin/claim-value-slabs"
     },
-
     {
       label: "SMTP Settings",
       href: "/admin/smtp-settings",
@@ -123,7 +135,6 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       icon: Activity,
       active: location === "/admin/logs"
     },
-
     {
       label: "WhatsApp Test",
       href: "/admin/whatsapp-test",
@@ -131,16 +142,10 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       active: location === "/admin/whatsapp-test"
     },
     {
-      label: "Masters",
-      href: "/admin/masters",
-      icon: Database,
-      active: location === "/admin/masters"
-    },
-    {
-      label: "Brands",
-      href: "/admin/brands",
-      icon: Tags,
-      active: location === "/admin/brands"
+      label: "Menu Settings",
+      href: "/admin/menu-settings",
+      icon: Move,
+      active: location === "/admin/menu-settings"
     }
   ];
 

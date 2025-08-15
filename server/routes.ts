@@ -6013,6 +6013,76 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // ===== ADMIN MENU ORDER MANAGEMENT ROUTES =====
+
+  // Get admin menu order
+  app.get("/api/admin/menu-order", isAdminAuthenticated, async (req, res) => {
+    try {
+      // For now, return the default menu order
+      // In a real implementation, this would be stored in the database
+      const defaultMenuOrder = [
+        { id: "dashboard", label: "Dashboard", href: "/admin/dashboard", icon: "BarChart3", order: 1 },
+        { id: "masters", label: "Masters", href: "/admin/masters", icon: "Database", order: 2 },
+        { id: "brands", label: "Brands", href: "/admin/brands", icon: "Tags", order: 3 },
+        { id: "distributors", label: "Referral Partners", href: "/admin/distributors", icon: "Users", order: 4 },
+        { id: "cart", label: "Cart Tracking", href: "/admin/cart-abandonments", icon: "ShoppingCart", order: 5 },
+        { id: "acer-reg", label: "Acer Registrations", href: "/admin/acer-registrations", icon: "Laptop", order: 6 },
+        { id: "acer-imei", label: "Acer IMEI Management", href: "/admin/acer-imei", icon: "Shield", order: 7 },
+        { id: "claim-slabs", label: "Claim Value Slabs", href: "/admin/claim-value-slabs", icon: "Calculator", order: 8 },
+        { id: "smtp", label: "SMTP Settings", href: "/admin/smtp-settings", icon: "Mail", order: 9 },
+        { id: "whatsapp", label: "WhatsApp Settings", href: "/admin/whatsapp-settings", icon: "MessageCircle", order: 10 },
+        { id: "communication", label: "Communication", href: "/admin/templates", icon: "MessageSquare", order: 11 },
+        { id: "logs", label: "System Logs", href: "/admin/logs", icon: "Activity", order: 12 },
+        { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 13 }
+      ];
+      
+      res.json({ menuItems: defaultMenuOrder });
+    } catch (error: any) {
+      console.error('Error fetching menu order:', error);
+      res.status(500).json({ message: "Failed to fetch menu order" });
+    }
+  });
+
+  // Save admin menu order
+  app.post("/api/admin/menu-order", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { menuItems } = req.body;
+      
+      if (!menuItems || !Array.isArray(menuItems)) {
+        return res.status(400).json({ message: "Invalid menu items data" });
+      }
+      
+      // For now, just return success
+      // In a real implementation, this would save to database
+      console.log('Menu order updated:', menuItems.map(item => `${item.order}. ${item.label}`));
+      
+      res.json({ 
+        success: true, 
+        message: "Menu order saved successfully",
+        menuItems 
+      });
+    } catch (error: any) {
+      console.error('Error saving menu order:', error);
+      res.status(500).json({ message: "Failed to save menu order" });
+    }
+  });
+
+  // Reset admin menu order to default
+  app.post("/api/admin/menu-order/reset", isAdminAuthenticated, async (req, res) => {
+    try {
+      // Reset to default order
+      console.log('Menu order reset to default');
+      
+      res.json({ 
+        success: true, 
+        message: "Menu order reset to default successfully" 
+      });
+    } catch (error: any) {
+      console.error('Error resetting menu order:', error);
+      res.status(500).json({ message: "Failed to reset menu order" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 

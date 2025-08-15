@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { GripVertical, Save, RotateCcw } from "lucide-react";
+import { AdminLayout } from "@/components/admin-layout";
 
 interface MenuItem {
   id: string;
@@ -31,17 +32,27 @@ const defaultMenuItems: MenuItem[] = [
   { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 13 }
 ];
 
-export default function AdminMenuSettings() {
+function AdminMenuSettingsContent() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>(defaultMenuItems);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const saveOrderMutation = useMutation({
     mutationFn: async (items: MenuItem[]) => {
-      return await apiRequest("/api/admin/menu-order", {
+      const response = await fetch("/api/admin/menu-order", {
         method: "POST",
-        body: JSON.stringify({ menuItems: items })
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ menuItems: items }),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
     },
     onSuccess: () => {
       toast({
@@ -61,9 +72,19 @@ export default function AdminMenuSettings() {
 
   const resetOrderMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest("/api/admin/menu-order/reset", {
-        method: "POST"
+      const response = await fetch("/api/admin/menu-order/reset", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
     },
     onSuccess: () => {
       setMenuItems(defaultMenuItems);
@@ -175,5 +196,13 @@ export default function AdminMenuSettings() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function AdminMenuSettings() {
+  return (
+    <AdminLayout>
+      <AdminMenuSettingsContent />
+    </AdminLayout>
   );
 }

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { GripVertical, Save, RotateCcw, ChevronRight, FolderPlus, Minus } from "lucide-react";
+import { GripVertical, Save, RotateCcw, ChevronRight, FolderPlus, Minus, Edit2, Check, X } from "lucide-react";
 import { AdminLayout } from "@/components/admin-layout";
 
 interface MenuItem {
@@ -36,6 +36,8 @@ const defaultMenuItems: MenuItem[] = [
 
 function AdminMenuSettingsContent() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>(defaultMenuItems);
+  const [editingFolder, setEditingFolder] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState<string>("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -171,6 +173,30 @@ function AdminMenuSettingsContent() {
     setMenuItems(reorderedItems);
   };
 
+  const startEditingFolder = (folderId: string, currentName: string) => {
+    setEditingFolder(folderId);
+    setEditingName(currentName);
+  };
+
+  const saveEditingFolder = () => {
+    if (editingFolder && editingName.trim()) {
+      const updatedItems = menuItems.map(item => {
+        if (item.id === editingFolder) {
+          return { ...item, label: editingName.trim() };
+        }
+        return item;
+      });
+      setMenuItems(updatedItems);
+    }
+    setEditingFolder(null);
+    setEditingName("");
+  };
+
+  const cancelEditingFolder = () => {
+    setEditingFolder(null);
+    setEditingName("");
+  };
+
   const reorderMenuItems = (items: MenuItem[]) => {
     const parentItems = items.filter(item => !item.parentId);
     const childItems = items.filter(item => item.parentId);
@@ -291,7 +317,22 @@ function AdminMenuSettingsContent() {
                                       </span>
                                       <span className="font-medium flex items-center">
                                         {isFolder && <ChevronRight className="w-4 h-4 mr-1 text-orange-500" />}
-                                        {item.label}
+                                        {editingFolder === item.id ? (
+                                          <input
+                                            type="text"
+                                            value={editingName}
+                                            onChange={(e) => setEditingName(e.target.value)}
+                                            onKeyDown={(e) => {
+                                              if (e.key === 'Enter') saveEditingFolder();
+                                              if (e.key === 'Escape') cancelEditingFolder();
+                                            }}
+                                            className="px-2 py-1 border rounded text-sm"
+                                            autoFocus
+                                            onBlur={saveEditingFolder}
+                                          />
+                                        ) : (
+                                          item.label
+                                        )}
                                       </span>
                                       {!isFolder && (
                                         <span className="text-sm text-gray-500">{item.href}</span>
@@ -304,14 +345,47 @@ function AdminMenuSettingsContent() {
                                     </div>
                                     <div className="flex space-x-2">
                                       {item.type === "folder" && (
-                                        <Button
-                                          variant="ghost"
-                                          size="sm"
-                                          onClick={() => deleteItem(item.id)}
-                                          className="text-red-600 hover:text-red-700"
-                                        >
-                                          <Minus className="w-4 h-4" />
-                                        </Button>
+                                        <>
+                                          {editingFolder === item.id ? (
+                                            <>
+                                              <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={saveEditingFolder}
+                                                className="text-green-600 hover:text-green-700"
+                                              >
+                                                <Check className="w-4 h-4" />
+                                              </Button>
+                                              <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={cancelEditingFolder}
+                                                className="text-gray-600 hover:text-gray-700"
+                                              >
+                                                <X className="w-4 h-4" />
+                                              </Button>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => startEditingFolder(item.id, item.label)}
+                                                className="text-blue-600 hover:text-blue-700"
+                                              >
+                                                <Edit2 className="w-4 h-4" />
+                                              </Button>
+                                              <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => deleteItem(item.id)}
+                                                className="text-red-600 hover:text-red-700"
+                                              >
+                                                <Minus className="w-4 h-4" />
+                                              </Button>
+                                            </>
+                                          )}
+                                        </>
                                       )}
                                     </div>
                                   </div>

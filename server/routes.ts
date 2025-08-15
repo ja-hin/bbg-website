@@ -6015,11 +6015,13 @@ Required: GUPSHUP_API_KEY environment variable
 
   // ===== ADMIN MENU ORDER MANAGEMENT ROUTES =====
 
+  // In-memory storage for menu order (in production, this would be in database)
+  let savedMenuOrder: any[] | null = null;
+
   // Get admin menu order
   app.get("/api/admin/menu-order", isAdminAuthenticated, async (req, res) => {
     try {
-      // For now, return the default menu order
-      // In a real implementation, this would be stored in the database
+      // Return saved menu order if it exists, otherwise default
       const defaultMenuOrder = [
         { id: "dashboard", label: "Dashboard", href: "/admin/dashboard", icon: "BarChart3", order: 1 },
         { id: "masters", label: "Masters", href: "/admin/masters", icon: "Database", order: 2 },
@@ -6036,7 +6038,10 @@ Required: GUPSHUP_API_KEY environment variable
         { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 13 }
       ];
       
-      res.json({ menuItems: defaultMenuOrder });
+      const menuToReturn = savedMenuOrder || defaultMenuOrder;
+      console.log('Returning menu order:', menuToReturn.map(item => `${item.order}. ${item.label}`));
+      
+      res.json({ menuItems: menuToReturn });
     } catch (error: any) {
       console.error('Error fetching menu order:', error);
       res.status(500).json({ message: "Failed to fetch menu order" });
@@ -6052,8 +6057,8 @@ Required: GUPSHUP_API_KEY environment variable
         return res.status(400).json({ message: "Invalid menu items data" });
       }
       
-      // For now, just return success
-      // In a real implementation, this would save to database
+      // Save to in-memory storage (in production, this would save to database)
+      savedMenuOrder = menuItems;
       console.log('Menu order updated:', menuItems.map(item => `${item.order}. ${item.label}`));
       
       res.json({ 
@@ -6070,7 +6075,8 @@ Required: GUPSHUP_API_KEY environment variable
   // Reset admin menu order to default
   app.post("/api/admin/menu-order/reset", isAdminAuthenticated, async (req, res) => {
     try {
-      // Reset to default order
+      // Reset to default order by clearing saved order
+      savedMenuOrder = null;
       console.log('Menu order reset to default');
       
       res.json({ 

@@ -22,13 +22,21 @@ import {
   ChevronDown,
   ChevronRight,
   Folder,
-  FolderOpen
+  FolderOpen,
+  MoreHorizontal,
+  User
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface AdminSidebarProps {
   className?: string;
@@ -247,30 +255,40 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
         {menuItems.map((item) => renderMenuItem(item))}
       </nav>
 
-      {/* Footer with User Info and Logout */}
-      <div className="border-t border-white/20 p-4 space-y-3">
-        {/* User Info */}
-        <div className="flex items-center space-x-3 px-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
-            <Shield className="h-4 w-4" />
+      {/* Footer with User Info and Actions */}
+      <div className="border-t border-white/20 p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
+              <User className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-sm font-medium">{(user as any)?.username || 'Admin'}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-medium">{(user as any)?.username || 'Admin'}</p>
-            <p className="text-xs text-white/70">Administrator</p>
-          </div>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 text-white/80 hover:bg-white/20 hover:text-white"
+              >
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem
+                onClick={() => logoutMutation.mutate()}
+                disabled={logoutMutation.isPending}
+                className="text-red-600 focus:text-red-600"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                {logoutMutation.isPending ? "Logging out..." : "Logout"}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        
-        {/* Logout Button */}
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-left font-normal text-white/80 hover:bg-white/20 hover:text-white"
-          onClick={() => logoutMutation.mutate()}
-          disabled={logoutMutation.isPending}
-          size="sm"
-        >
-          <LogOut className="mr-3 h-4 w-4" />
-          {logoutMutation.isPending ? "Logging out..." : "Logout"}
-        </Button>
       </div>
     </div>
   );

@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,7 +31,7 @@ export default function ReferralPartnerLogin() {
     mutationFn: async (contact: string) => {
       return apiRequest("/api/send-otp", {
         method: "POST",
-        body: { contact }
+        body: { contact },
       });
     },
     onSuccess: () => {
@@ -40,10 +46,11 @@ export default function ReferralPartnerLogin() {
           return prev - 1;
         });
       }, 1000);
-      
+
       toast({
         title: "OTP Sent",
-        description: "Please check your mobile phone for the verification code.",
+        description:
+          "Please check your mobile phone for the verification code.",
       });
     },
     onError: (error: any) => {
@@ -68,7 +75,8 @@ export default function ReferralPartnerLogin() {
     if (!/^[6-9]\d{9}$/.test(contact)) {
       toast({
         title: "Invalid Contact",
-        description: "Please enter a valid Indian mobile number starting with 6-9",
+        description:
+          "Please enter a valid Indian mobile number starting with 6-9",
         variant: "destructive",
       });
       return;
@@ -79,7 +87,7 @@ export default function ReferralPartnerLogin() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!otp || otp.length !== 6) {
       toast({
         title: "Invalid OTP",
@@ -99,7 +107,8 @@ export default function ReferralPartnerLogin() {
     } catch (error: any) {
       toast({
         title: "Login Failed",
-        description: error.message || "Invalid OTP or referral partner not found",
+        description:
+          error.message || "Invalid OTP or referral partner not found",
         variant: "destructive",
       });
     }
@@ -112,7 +121,9 @@ export default function ReferralPartnerLogin() {
           <div className="mx-auto w-12 h-12 bg-xtra-primary/10 rounded-lg flex items-center justify-center mb-4">
             <Building2 className="h-6 w-6 text-xtra-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold text-gray-900">Referral Partner Login</CardTitle>
+          <CardTitle className="text-2xl font-bold text-gray-900">
+            Referral Partner Login
+          </CardTitle>
           <CardDescription>
             Access your referral dashboard to track referrals and earnings
           </CardDescription>
@@ -136,7 +147,8 @@ export default function ReferralPartnerLogin() {
                 />
               </div>
               <p className="text-xs text-gray-500">
-                Enter the mobile number used during referral partner registration
+                Enter the mobile number used during referral partner
+                registration
               </p>
             </div>
 
@@ -145,7 +157,9 @@ export default function ReferralPartnerLogin() {
               <Button
                 type="button"
                 onClick={handleSendOtp}
-                disabled={!contact || contact.length !== 10 || sendOtpMutation.isPending}
+                disabled={
+                  !contact || contact.length !== 10 || sendOtpMutation.isPending
+                }
                 className="w-full"
               >
                 {sendOtpMutation.isPending ? "Sending OTP..." : "Send OTP"}
@@ -214,7 +228,7 @@ export default function ReferralPartnerLogin() {
                 variant="link"
                 size="sm"
                 className="p-0"
-                onClick={() => navigate("/distributor-registration")}
+                onClick={() => navigate("/referral-partner-registration")}
               >
                 Register here
               </Button>

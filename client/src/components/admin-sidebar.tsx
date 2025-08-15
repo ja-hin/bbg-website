@@ -123,12 +123,7 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
       icon: Activity,
       active: location === "/admin/logs"
     },
-    {
-      label: "Storage",
-      href: "/admin/storage",
-      icon: Cloud,
-      active: location === "/admin/storage"
-    },
+
     {
       label: "WhatsApp Test",
       href: "/admin/whatsapp-test",

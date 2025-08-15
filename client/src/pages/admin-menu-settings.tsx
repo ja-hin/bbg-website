@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { GripVertical, Save, RotateCcw } from "lucide-react";
+import { GripVertical, Save, RotateCcw, ChevronRight, FolderPlus, Minus } from "lucide-react";
 import { AdminLayout } from "@/components/admin-layout";
 
 interface MenuItem {
@@ -14,28 +14,44 @@ interface MenuItem {
   href: string;
   icon: string;
   order: number;
+  type: "item" | "folder";
+  parentId: string | null;
 }
 
 const defaultMenuItems: MenuItem[] = [
-  { id: "dashboard", label: "Dashboard", href: "/admin/dashboard", icon: "BarChart3", order: 1 },
-  { id: "masters", label: "Masters", href: "/admin/masters", icon: "Database", order: 2 },
-  { id: "brands", label: "Brands", href: "/admin/brands", icon: "Tags", order: 3 },
-  { id: "distributors", label: "Referral Partners", href: "/admin/distributors", icon: "Users", order: 4 },
-  { id: "cart", label: "Cart Tracking", href: "/admin/cart-abandonments", icon: "ShoppingCart", order: 5 },
-  { id: "acer-reg", label: "Acer Registrations", href: "/admin/acer-registrations", icon: "Laptop", order: 6 },
-  { id: "acer-imei", label: "Acer IMEI Management", href: "/admin/acer-imei", icon: "Shield", order: 7 },
-  { id: "claim-slabs", label: "Claim Value Slabs", href: "/admin/claim-value-slabs", icon: "Calculator", order: 8 },
-  { id: "smtp", label: "SMTP Settings", href: "/admin/smtp-settings", icon: "Mail", order: 9 },
-  { id: "whatsapp", label: "WhatsApp Settings", href: "/admin/whatsapp-settings", icon: "MessageCircle", order: 10 },
-  { id: "communication", label: "Communication", href: "/admin/templates", icon: "MessageSquare", order: 11 },
-  { id: "logs", label: "System Logs", href: "/admin/logs", icon: "Activity", order: 12 },
-  { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 13 }
+  { id: "dashboard", label: "Dashboard", href: "/admin/dashboard", icon: "BarChart3", order: 1, type: "item", parentId: null },
+  { id: "masters", label: "Masters", href: "/admin/masters", icon: "Database", order: 2, type: "item", parentId: null },
+  { id: "brands", label: "Brands", href: "/admin/brands", icon: "Tags", order: 3, type: "item", parentId: null },
+  { id: "distributors", label: "Referral Partners", href: "/admin/distributors", icon: "Users", order: 4, type: "item", parentId: null },
+  { id: "cart", label: "Cart Tracking", href: "/admin/cart-abandonments", icon: "ShoppingCart", order: 5, type: "item", parentId: null },
+  { id: "acer-reg", label: "Acer Registrations", href: "/admin/acer-registrations", icon: "Laptop", order: 6, type: "item", parentId: null },
+  { id: "acer-imei", label: "Acer IMEI Management", href: "/admin/acer-imei", icon: "Shield", order: 7, type: "item", parentId: null },
+  { id: "claim-slabs", label: "Claim Value Slabs", href: "/admin/claim-value-slabs", icon: "Calculator", order: 8, type: "item", parentId: null },
+  { id: "smtp", label: "SMTP Settings", href: "/admin/smtp-settings", icon: "Mail", order: 9, type: "item", parentId: null },
+  { id: "whatsapp", label: "WhatsApp Settings", href: "/admin/whatsapp-settings", icon: "MessageCircle", order: 10, type: "item", parentId: null },
+  { id: "communication", label: "Communication", href: "/admin/templates", icon: "MessageSquare", order: 11, type: "item", parentId: null },
+  { id: "logs", label: "System Logs", href: "/admin/logs", icon: "Activity", order: 12, type: "item", parentId: null },
+  { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 13, type: "item", parentId: null }
 ];
 
 function AdminMenuSettingsContent() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>(defaultMenuItems);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Fetch current menu order from backend
+  const { data: menuOrderData } = useQuery({
+    queryKey: ["/api/admin/menu-order"],
+    retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Initialize menu items from backend data
+  useEffect(() => {
+    if (menuOrderData?.menuItems) {
+      setMenuItems(menuOrderData.menuItems);
+    }
+  }, [menuOrderData]);
 
   const saveOrderMutation = useMutation({
     mutationFn: async (items: MenuItem[]) => {
@@ -104,20 +120,98 @@ function AdminMenuSettingsContent() {
     }
   });
 
+  const createFolder = () => {
+    const newFolderId = `folder-${Date.now()}`;
+    const newFolder: MenuItem = {
+      id: newFolderId,
+      label: "New Folder",
+      href: "#",
+      icon: "Folder",
+      order: menuItems.length + 1,
+      type: "folder",
+      parentId: null
+    };
+    setMenuItems([...menuItems, newFolder]);
+  };
+
+  const convertToSubmenu = (itemId: string, parentId: string) => {
+    const updatedItems = menuItems.map(item => {
+      if (item.id === itemId) {
+        return { ...item, parentId, type: "item" as const };
+      }
+      return item;
+    });
+    
+    // Reorder items
+    const reorderedItems = reorderMenuItems(updatedItems);
+    setMenuItems(reorderedItems);
+  };
+
+  const removeFromSubmenu = (itemId: string) => {
+    const updatedItems = menuItems.map(item => {
+      if (item.id === itemId) {
+        return { ...item, parentId: null };
+      }
+      return item;
+    });
+    
+    // Reorder items
+    const reorderedItems = reorderMenuItems(updatedItems);
+    setMenuItems(reorderedItems);
+  };
+
+  const deleteItem = (itemId: string) => {
+    // Remove the item and any children
+    const updatedItems = menuItems.filter(item => 
+      item.id !== itemId && item.parentId !== itemId
+    );
+    
+    // Reorder remaining items
+    const reorderedItems = reorderMenuItems(updatedItems);
+    setMenuItems(reorderedItems);
+  };
+
+  const reorderMenuItems = (items: MenuItem[]) => {
+    const parentItems = items.filter(item => !item.parentId);
+    const childItems = items.filter(item => item.parentId);
+    
+    let order = 1;
+    const reorderedItems: MenuItem[] = [];
+    
+    parentItems.forEach(parent => {
+      reorderedItems.push({ ...parent, order: order++ });
+      const children = childItems.filter(child => child.parentId === parent.id);
+      children.forEach(child => {
+        reorderedItems.push({ ...child, order: order++ });
+      });
+    });
+    
+    return reorderedItems;
+  };
+
   const handleDragEnd = (result: any) => {
     if (!result.destination) return;
 
-    const items = Array.from(menuItems);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+    const { source, destination, draggableId } = result;
+    
+    // Handle dropping into different contexts
+    if (destination.droppableId.startsWith('submenu-')) {
+      // Dropped into a submenu
+      const parentId = destination.droppableId.replace('submenu-', '');
+      convertToSubmenu(draggableId, parentId);
+    } else if (source.droppableId.startsWith('submenu-') && destination.droppableId === 'menu-list') {
+      // Moved from submenu to main menu
+      removeFromSubmenu(draggableId);
+    } else {
+      // Regular reordering
+      const items = Array.from(menuItems);
+      const [reorderedItem] = items.splice(source.index, 1);
+      items.splice(destination.index, 0, reorderedItem);
 
-    // Update the order property
-    const updatedItems = items.map((item, index) => ({
-      ...item,
-      order: index + 1
-    }));
-
-    setMenuItems(updatedItems);
+      // Update the order property
+      const updatedItems = reorderMenuItems(items);
+      setMenuItems(updatedItems);
+    }
   };
 
   return (
@@ -128,6 +222,13 @@ function AdminMenuSettingsContent() {
           <p className="text-gray-600">Drag and drop to reorder menu items</p>
         </div>
         <div className="flex space-x-2">
+          <Button
+            variant="outline"
+            onClick={createFolder}
+          >
+            <FolderPlus className="w-4 h-4 mr-2" />
+            Add Folder
+          </Button>
           <Button
             variant="outline"
             onClick={() => resetOrderMutation.mutate()}
@@ -149,39 +250,133 @@ function AdminMenuSettingsContent() {
       <Card>
         <CardHeader>
           <CardTitle>Admin Menu Items</CardTitle>
+          <p className="text-sm text-gray-600">
+            Drag items into folders to create submenus. Drag them out to make them top-level items.
+          </p>
         </CardHeader>
         <CardContent>
           <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="menu-items">
+            <Droppable droppableId="menu-list">
               {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
-                  {menuItems.map((item, index) => (
-                    <Draggable key={item.id} draggableId={item.id} index={index}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className={`
-                            flex items-center p-4 bg-white border rounded-lg shadow-sm
-                            ${snapshot.isDragging ? "shadow-lg border-blue-300" : "hover:shadow-md"}
-                            transition-all duration-200
-                          `}
-                        >
-                          <GripVertical className="w-5 h-5 text-gray-400 mr-3" />
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-3">
-                              <span className="text-sm font-medium text-gray-500">
-                                #{item.order}
-                              </span>
-                              <span className="font-medium">{item.label}</span>
-                              <span className="text-sm text-gray-500">{item.href}</span>
+                <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-3">
+                  {menuItems
+                    .filter(item => !item.parentId)
+                    .sort((a, b) => a.order - b.order)
+                    .map((item, index) => {
+                      const children = menuItems.filter(child => child.parentId === item.id);
+                      const isFolder = item.type === "folder" || children.length > 0;
+                      
+                      return (
+                        <div key={item.id} className="space-y-2">
+                          <Draggable draggableId={item.id} index={index}>
+                            {(provided, snapshot) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                className={`
+                                  flex items-center p-4 border rounded-lg shadow-sm
+                                  ${snapshot.isDragging ? "shadow-lg border-blue-300 bg-blue-50" : "bg-white hover:shadow-md"}
+                                  ${isFolder ? "border-l-4 border-l-orange-400" : ""}
+                                  transition-all duration-200
+                                `}
+                              >
+                                <div {...provided.dragHandleProps}>
+                                  <GripVertical className="w-5 h-5 text-gray-400 mr-3" />
+                                </div>
+                                <div className="flex-1">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center space-x-3">
+                                      <span className="text-sm font-medium text-gray-500">
+                                        #{item.order}
+                                      </span>
+                                      <span className="font-medium flex items-center">
+                                        {isFolder && <ChevronRight className="w-4 h-4 mr-1 text-orange-500" />}
+                                        {item.label}
+                                      </span>
+                                      {!isFolder && (
+                                        <span className="text-sm text-gray-500">{item.href}</span>
+                                      )}
+                                      {isFolder && (
+                                        <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">
+                                          {children.length} item{children.length !== 1 ? 's' : ''}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="flex space-x-2">
+                                      {item.type === "folder" && (
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() => deleteItem(item.id)}
+                                          className="text-red-600 hover:text-red-700"
+                                        >
+                                          <Minus className="w-4 h-4" />
+                                        </Button>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </Draggable>
+                          
+                          {/* Submenu items */}
+                          {isFolder && (
+                            <div className="ml-8 border-l-2 border-gray-200 pl-4">
+                              <Droppable droppableId={`submenu-${item.id}`}>
+                                {(provided, snapshot) => (
+                                  <div
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
+                                    className={`
+                                      space-y-2 min-h-[50px] p-2 rounded border-2 border-dashed
+                                      ${snapshot.isDraggingOver ? "border-blue-400 bg-blue-50" : "border-gray-300"}
+                                      transition-all duration-200
+                                    `}
+                                  >
+                                    {children.length === 0 && (
+                                      <div className="text-center text-gray-400 text-sm py-4">
+                                        Drop items here to create submenu
+                                      </div>
+                                    )}
+                                    {children
+                                      .sort((a, b) => a.order - b.order)
+                                      .map((child, childIndex) => (
+                                        <Draggable key={child.id} draggableId={child.id} index={childIndex}>
+                                          {(provided, snapshot) => (
+                                            <div
+                                              ref={provided.innerRef}
+                                              {...provided.draggableProps}
+                                              {...provided.dragHandleProps}
+                                              className={`
+                                                flex items-center p-3 bg-gray-50 border rounded shadow-sm
+                                                ${snapshot.isDragging ? "shadow-lg border-blue-300 bg-blue-50" : "hover:shadow-md"}
+                                                transition-all duration-200
+                                              `}
+                                            >
+                                              <GripVertical className="w-4 h-4 text-gray-400 mr-2" />
+                                              <div className="flex-1">
+                                                <div className="flex items-center space-x-2">
+                                                  <span className="text-xs font-medium text-gray-500">
+                                                    #{child.order}
+                                                  </span>
+                                                  <span className="text-sm font-medium">{child.label}</span>
+                                                  <span className="text-xs text-gray-500">{child.href}</span>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          )}
+                                        </Draggable>
+                                      ))}
+                                    {provided.placeholder}
+                                  </div>
+                                )}
+                              </Droppable>
                             </div>
-                          </div>
+                          )}
                         </div>
-                      )}
-                    </Draggable>
-                  ))}
+                      );
+                    })}
                   {provided.placeholder}
                 </div>
               )}
@@ -190,11 +385,15 @@ function AdminMenuSettingsContent() {
         </CardContent>
       </Card>
 
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-        <h3 className="font-medium text-yellow-800">Note</h3>
-        <p className="text-sm text-yellow-700 mt-1">
-          Menu order changes will apply immediately after saving. The "Dashboard" item should generally remain at the top for best user experience.
-        </p>
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h3 className="font-medium text-blue-800">How to Use</h3>
+        <ul className="text-sm text-blue-700 mt-2 space-y-1">
+          <li>• <strong>Create folders:</strong> Click "Add Folder" to create new menu groups</li>
+          <li>• <strong>Make submenus:</strong> Drag menu items into folder drop zones</li>
+          <li>• <strong>Remove from submenus:</strong> Drag items back to the main menu area</li>
+          <li>• <strong>Delete folders:</strong> Use the minus button next to empty folders</li>
+          <li>• <strong>Reorder:</strong> Drag items up/down to change their position</li>
+        </ul>
       </div>
     </div>
   );

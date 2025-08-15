@@ -30,8 +30,9 @@ const defaultMenuItems: MenuItem[] = [
   { id: "smtp", label: "SMTP Settings", href: "/admin/smtp-settings", icon: "Mail", order: 9, type: "item", parentId: null },
   { id: "whatsapp", label: "WhatsApp Settings", href: "/admin/whatsapp-settings", icon: "MessageCircle", order: 10, type: "item", parentId: null },
   { id: "communication", label: "Communication", href: "/admin/templates", icon: "MessageSquare", order: 11, type: "item", parentId: null },
-  { id: "logs", label: "System Logs", href: "/admin/logs", icon: "Activity", order: 12, type: "item", parentId: null },
-  { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 13, type: "item", parentId: null }
+  { id: "menu-settings", label: "Menu Settings", href: "/admin/menu-settings", icon: "Settings", order: 12, type: "item", parentId: null },
+  { id: "logs", label: "System Logs", href: "/admin/logs", icon: "Activity", order: 13, type: "item", parentId: null },
+  { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 14, type: "item", parentId: null }
 ];
 
 function AdminMenuSettingsContent() {

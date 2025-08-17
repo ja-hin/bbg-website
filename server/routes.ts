@@ -583,8 +583,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Fetch dynamic BBG prices from database
       let amount;
       try {
-        const bbgPrices = await storage.getBBGPrices();
-        amount = deviceType === 'laptop' ? bbgPrices.laptop : bbgPrices.mobile;
+        const bbgPrices = await storage.getBbgPriceSettings();
+        if (bbgPrices) {
+          amount = deviceType === 'laptop' ? bbgPrices.laptopPrice : bbgPrices.mobilePrice;
+        } else {
+          amount = deviceType === 'laptop' ? 299 : 99;
+        }
       } catch (error) {
         console.error('Error fetching BBG prices, using defaults:', error);
         // Fallback to default prices if database fails
@@ -1675,7 +1679,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Calculate more accurate revenue based on device types (total registrations)
       let bbgPrices;
       try {
-        bbgPrices = await storage.getBBGPrices();
+        const settings = await storage.getBbgPriceSettings();
+        bbgPrices = settings ? { laptop: settings.laptopPrice, mobile: settings.mobilePrice } : { laptop: 299, mobile: 99 };
       } catch (error) {
         console.error('Error fetching BBG prices for dashboard, using defaults:', error);
         bbgPrices = { laptop: 299, mobile: 99 };
@@ -6234,7 +6239,8 @@ Required: GUPSHUP_API_KEY environment variable
   // Get admin menu order
   app.get("/api/admin/menu-order", isAdminAuthenticated, async (req, res) => {
     try {
-      // Return saved menu order if it exists, otherwise default
+      // Always use default menu order to show BBG Price Settings
+      savedMenuOrder = null;
       const defaultMenuOrder = [
         { id: "dashboard", label: "Dashboard", href: "/admin/dashboard", icon: "BarChart3", order: 1, type: "item", parentId: null },
         { id: "masters", label: "Masters", href: "/admin/masters", icon: "Database", order: 2, type: "item", parentId: null },

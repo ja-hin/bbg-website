@@ -5083,17 +5083,17 @@ Required: GUPSHUP_API_KEY environment variable
           c.brand as 'Brand',
           c.model_name as 'Model',
           c.invoice_value as 'Purchase Price',
-          c.date_of_purchase as 'Purchase Date',
-          c.registration_date as 'Registration Date',
+          c.purchase_date as 'Purchase Date',
+          c.created_at as 'Registration Date',
           c.seller_code as 'Referral Code',
           c.registration_source as 'Registration Source',
           c.is_verified as 'Verified',
           c.payment_intent_id as 'Payment Reference',
-          d.company_name as 'Referral Partner Company',
-          d.contact_person as 'Referral Partner Contact'
+          d.business_name as 'Referral Partner Company',
+          d.name as 'Referral Partner Contact'
         FROM customers c
-        LEFT JOIN distributors d ON c.seller_code = d.distributor_code
-        ORDER BY c.registration_date DESC
+        LEFT JOIN distributors d ON c.seller_code = d.seller_code
+        ORDER BY c.created_at DESC
       `);
       
       // Set headers for CSV download
@@ -5139,19 +5139,24 @@ Required: GUPSHUP_API_KEY environment variable
       
       const result = await request.query(`
         SELECT 
-          rp.id,
-          rp.sellerCode as 'Referral Code',
-          rp.name as 'Partner Name',
-          rp.businessName as 'Business Name',
-          rp.contact as 'Contact Number',
-          rp.email as 'Email Address',
-          rp.pincode as 'Area Pincode',
-          rp.preferredMode as 'Preferred Contact',
-          rp.gstin as 'GST Number',
-          rp.bankAccount as 'Bank Account',
-          rp.ifscCode as 'IFSC Code',
-          rp.accountHolderName as 'Account Holder',
-          rp.createdAt as 'Registration Date',
+          d.id,
+          d.seller_code as 'Referral Code',
+          d.name as 'Partner Name',
+          d.business_name as 'Business Name',
+          d.contact as 'Contact Number',
+          d.email as 'Email Address',
+          d.pincode as 'Area Pincode',
+          d.preferred_mode as 'Preferred Contact',
+          d.gstin as 'GST Number',
+          d.bank_account as 'Bank Account',
+          d.ifsc_code as 'IFSC Code',
+          d.account_holder_name as 'Account Holder',
+          d.created_at as 'Registration Date',
+          d.location as 'Location',
+          d.pan_number as 'PAN Number',
+          d.is_gst_registered as 'GST Registered',
+          d.is_msme_registered as 'MSME Registered',
+          d.upi_id as 'UPI ID',
           -- Customer statistics
           COALESCE(customer_stats.total_customers, 0) as 'Total Referrals',
           COALESCE(customer_stats.laptop_customers, 0) as 'Laptop Referrals',
@@ -5168,7 +5173,7 @@ Required: GUPSHUP_API_KEY environment variable
           END as 'Avg Commission per Customer (₹)',
           -- Recent activity
           customer_stats.latest_registration as 'Latest Customer Registration'
-        FROM referral_partners rp
+        FROM distributors d
         LEFT JOIN (
           SELECT 
             seller_code,
@@ -5178,12 +5183,12 @@ Required: GUPSHUP_API_KEY environment variable
             COUNT(CASE WHEN registration_source = 'acer_bbg' THEN 1 END) as acer_customers,
             SUM(CASE WHEN device_type = 'laptop' THEN 299 * 0.05 ELSE 99 * 0.05 END) as total_commission,
             SUM(CAST(invoice_value as DECIMAL(10,2))) as total_invoice_value,
-            MAX(registration_date) as latest_registration
+            MAX(created_at) as latest_registration
           FROM customers 
           WHERE seller_code IS NOT NULL AND seller_code != ''
           GROUP BY seller_code
-        ) customer_stats ON rp.sellerCode = customer_stats.seller_code
-        ORDER BY customer_stats.total_customers DESC, rp.createdAt DESC
+        ) customer_stats ON d.seller_code = customer_stats.seller_code
+        ORDER BY customer_stats.total_customers DESC, d.created_at DESC
       `);
       
       // Set headers for CSV download
@@ -5232,17 +5237,17 @@ Required: GUPSHUP_API_KEY environment variable
           cp.id as 'Payout ID',
           cp.amount as 'Payout Amount (₹)',
           cp.status as 'Status',
-          cp.paymentReference as 'Payment Reference',
-          cp.createdAt as 'Created Date',
-          cp.paidAt as 'Paid Date',
+          cp.payment_reference as 'Payment Reference',
+          cp.created_at as 'Created Date',
+          cp.paid_at as 'Paid Date',
           -- Distributor information
-          rp.name as 'Partner Name',
-          rp.contact as 'Partner Contact',
-          rp.email as 'Partner Email',
-          rp.sellerCode as 'Seller Code',
-          rp.bankAccount as 'Bank Account',
-          rp.ifscCode as 'IFSC Code',
-          rp.accountHolderName as 'Account Holder',
+          d.name as 'Partner Name',
+          d.contact as 'Partner Contact',
+          d.email as 'Partner Email',
+          d.seller_code as 'Seller Code',
+          d.bank_account as 'Bank Account',
+          d.ifsc_code as 'IFSC Code',
+          d.account_holder_name as 'Account Holder',
           -- Customer information
           c.name as 'Customer Name',
           c.contact as 'Customer Contact',
@@ -5252,11 +5257,11 @@ Required: GUPSHUP_API_KEY environment variable
           c.brand as 'Brand',
           c.model_name as 'Model',
           c.invoice_value as 'Device Value (₹)',
-          c.registration_date as 'Registration Date'
+          c.created_at as 'Registration Date'
         FROM commission_payouts cp
-        JOIN referral_partners rp ON cp.distributorId = rp.id
-        JOIN customers c ON cp.customerId = c.id
-        ORDER BY cp.createdAt DESC
+        JOIN distributors d ON cp.distributor_id = d.id
+        JOIN customers c ON cp.customer_id = c.id
+        ORDER BY cp.created_at DESC
       `);
       
       // Set headers for CSV download

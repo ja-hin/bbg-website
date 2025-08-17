@@ -609,6 +609,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       app.locals.tempCustomerData = tempStorage;
       
       // Create basic PayU parameters without UDF fields first
+      // Force HTTPS for PayU redirect URLs to avoid security warnings
+      const host = req.get('host');
+      const baseUrl = process.env.PAYU_REDIRECT_BASE_URL || 
+        (process.env.NODE_ENV === 'production' 
+          ? `https://${host}` 
+          : `https://${host}`);  // Always use HTTPS for PayU redirects
+      
       const payuParams = {
         key: PAYU_CONFIG.merchantKey,
         txnid,
@@ -617,8 +624,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         firstname: customerData.name,
         email: customerData.email,
         phone: customerData.contact,
-        surl: `${req.protocol}://${req.get('host')}/api/payu/success`,
-        furl: `${req.protocol}://${req.get('host')}/api/payu/failure`
+        surl: `${baseUrl}/api/payu/success`,
+        furl: `${baseUrl}/api/payu/failure`
       };
 
       // Generate hash

@@ -4,18 +4,18 @@ async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
     
-    // Try to extract clean error message from JSON response
+    // Try to parse JSON error response and preserve all error data
     try {
       const errorData = JSON.parse(text);
-      if (errorData.message) {
-        throw new Error(errorData.message);
-      }
+      // Create error with full error data available as properties
+      const error = new Error(errorData.message || text || res.statusText || 'An error occurred');
+      // Preserve all error data as properties on the error object
+      Object.assign(error, errorData);
+      throw error;
     } catch (parseError) {
-      // If not JSON or no message field, use the raw text
+      // If not JSON, throw plain error
+      throw new Error(text || res.statusText || 'An error occurred');
     }
-    
-    // Fallback to status text or raw response
-    throw new Error(text || res.statusText || 'An error occurred');
   }
 }
 

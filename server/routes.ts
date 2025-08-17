@@ -1128,13 +1128,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check 3-month waiting period for regular BBG only
       if (!isAcerBBG && monthsSinceRegistration < 3) {
+        const remainingMonths = 3 - monthsSinceRegistration;
+        const eligibleDate = new Date(registrationDate);
+        eligibleDate.setMonth(eligibleDate.getMonth() + 3);
+        
         return res.status(400).json({
-          message: `You must wait 3 months from BBG purchase before filing a claim. You registered on ${registrationDate.toDateString()}. Please wait ${3 - monthsSinceRegistration} more month(s) to become eligible for claims.`,
+          message: `BBG claims require a 3-month waiting period. You purchased BBG coverage on ${registrationDate.toLocaleDateString('en-IN', { 
+            day: 'numeric', 
+            month: 'long', 
+            year: 'numeric' 
+          })}. You can file a claim starting ${eligibleDate.toLocaleDateString('en-IN', { 
+            day: 'numeric', 
+            month: 'long', 
+            year: 'numeric' 
+          })}.`,
           eligible: false,
           registrationDate: registrationDate.toISOString(),
           monthsSinceRegistration: monthsSinceRegistration,
           minimumWaitMonths: 3,
-          registrationSource: registrationSource
+          registrationSource: registrationSource,
+          eligibleDate: eligibleDate.toISOString(),
+          remainingMonths: remainingMonths
         });
       }
 

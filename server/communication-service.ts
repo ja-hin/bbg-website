@@ -464,19 +464,34 @@ export class CommunicationService {
     };
 
     try {
+      console.log('🔔 Attempting to send distributor BBG notification email to:', notificationData.distributorEmail);
+      
       // Email notification using template
       const emailTemplate = await templateService.getTemplate('email', 'distributor_bbg_notification');
       if (emailTemplate) {
+        console.log('✅ Found distributor BBG email template');
         const emailContent = templateService.renderTemplate(emailTemplate.content, notificationData);
         const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'New BBG Purchase Through Your Referral', notificationData);
+        
+        console.log('📧 Email details:', {
+          to: notificationData.distributorEmail,
+          subject: emailSubject,
+          contentPreview: emailContent.substring(0, 100) + '...'
+        });
         
         // Fetch SMTP settings from database
         const smtpSettings = await this.getSmtpSettings();
         if (smtpSettings) {
+          console.log('📧 Using database SMTP settings for distributor notification');
           results.email = await this.emailService.sendEmailWithSmtpSettings(notificationData.distributorEmail, emailSubject, emailContent, smtpSettings);
         } else {
+          console.log('📧 Using default SMTP settings for distributor notification');
           results.email = await this.emailService.sendEmail(notificationData.distributorEmail, emailSubject, emailContent);
         }
+        
+        console.log('📧 Distributor email send result:', results.email);
+      } else {
+        console.log('❌ No distributor BBG email template found');
       }
 
       // SMS notification using template

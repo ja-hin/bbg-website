@@ -822,6 +822,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
             sms: notificationResults.sms?.success ? '✅ Sent' : `❌ Failed: ${notificationResults.sms?.error}`,
             whatsapp: notificationResults.whatsapp?.success ? '✅ Sent' : `❌ Failed: ${notificationResults.whatsapp?.error}`
           });
+
+          // Send notification to distributor if registration was through referral code
+          if (customer.sellerCode) {
+            try {
+              console.log('🔔 Sending BBG purchase notification to distributor with seller code:', customer.sellerCode);
+              const distributor = await storage.getDistributorBySellerCode(customer.sellerCode);
+              
+              if (distributor) {
+                const distributorNotificationResults = await communicationService.sendDistributorBBGNotification({
+                  distributorName: distributor.name,
+                  distributorEmail: distributor.email,
+                  distributorContact: distributor.contact,
+                  customerName: customer.name,
+                  customerContact: customer.contact,
+                  sellerCode: customer.sellerCode,
+                  voucherCode: customer.voucherCode,
+                  deviceType: customer.deviceType,
+                  brand: customer.brand,
+                  modelName: customer.modelName
+                });
+                
+                console.log('🔔 PayU Distributor BBG notification sent:', {
+                  email: distributorNotificationResults.email?.success ? '✅ Sent' : `❌ Failed: ${distributorNotificationResults.email?.error}`,
+                  sms: distributorNotificationResults.sms?.success ? '✅ Sent' : `❌ Failed: ${distributorNotificationResults.sms?.error}`,
+                  whatsapp: distributorNotificationResults.whatsapp?.success ? '✅ Sent' : `❌ Failed: ${distributorNotificationResults.whatsapp?.error}`
+                });
+              } else {
+                console.log('❌ Distributor not found for seller code:', customer.sellerCode);
+              }
+            } catch (distributorNotifyError: any) {
+              console.error('❌ Failed to send PayU distributor notification:', distributorNotifyError.message);
+              // Don't fail the registration if notifications fail
+            }
+          }
         } catch (notifyError: any) {
           console.error('❌ Failed to send PayU notifications:', notifyError.message);
           console.error('❌ PayU notification error details:', notifyError);

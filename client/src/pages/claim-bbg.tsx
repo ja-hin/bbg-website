@@ -382,62 +382,7 @@ export default function ClaimBBG() {
                           BBG claims require a 3-month waiting period. You purchased BBG coverage on 17 August 2025. You can file a claim starting 17 November 2025.
                         </p>
                         
-                        {/* Additional info for 3-month waiting period */}
-                        {eligibilityError.minimumWaitMonths === 3 && eligibilityError.registrationDate && (
-                          <div className="text-sm text-orange-700 bg-orange-100 p-4 rounded-lg mt-3 border-l-4 border-orange-400">
-                            <div className="flex items-start mb-3">
-                              <div className="bg-orange-200 rounded-full p-2 mr-3">
-                                <svg className="w-4 h-4 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                                </svg>
-                              </div>
-                              <div className="flex-1">
-                                <h5 className="font-semibold text-orange-800 mb-2">Waiting Period Details</h5>
-                                <div className="space-y-2">
-                                  <div className="flex justify-between">
-                                    <span>BBG Purchase Date:</span>
-                                    <span className="font-medium">{new Date(eligibilityError.registrationDate).toLocaleDateString('en-IN', { 
-                                      day: 'numeric', 
-                                      month: 'long', 
-                                      year: 'numeric' 
-                                    })}</span>
-                                  </div>
-                                  <div className="flex justify-between">
-                                    <span>Coverage Type:</span>
-                                    <span className="font-medium">{eligibilityError.registrationSource === 'acer_bbg' ? 'Acer BBG' : 'Regular BBG'}</span>
-                                  </div>
-                                  <div className="flex justify-between">
-                                    <span>Months Completed:</span>
-                                    <span className="font-medium">{eligibilityError.monthsSinceRegistration} of 3</span>
-                                  </div>
-                                  {eligibilityError.eligibleDate && (
-                                    <div className="flex justify-between">
-                                      <span>Claim Eligible From:</span>
-                                      <span className="font-bold text-green-700">{new Date(eligibilityError.eligibleDate).toLocaleDateString('en-IN', { 
-                                        day: 'numeric', 
-                                        month: 'long', 
-                                        year: 'numeric' 
-                                      })}</span>
-                                    </div>
-                                  )}
-                                </div>
-                                
-                                {eligibilityError.remainingMonths && eligibilityError.remainingMonths > 0 && (
-                                  <div className="mt-3 p-3 bg-orange-50 rounded border border-orange-200">
-                                    <p className="text-center font-medium text-orange-900">
-                                      ⏱️ {eligibilityError.remainingMonths} month{eligibilityError.remainingMonths > 1 ? 's' : ''} remaining in waiting period
-                                    </p>
-                                  </div>
-                                )}
-                                
-                                <div className="mt-3 text-xs text-orange-600">
-                                  <p><strong>Why 3 months?</strong> This waiting period ensures fair claim processing and prevents misuse of the BBG system.</p>
-                                  <p className="mt-1"><strong>Note:</strong> Acer BBG registrations are exempt from this waiting period.</p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
+                        
                         
                         {/* Additional info for device age eligibility */}
                         {eligibilityError.deviceAge !== undefined && (

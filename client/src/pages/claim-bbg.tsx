@@ -116,7 +116,11 @@ export default function ClaimBBG() {
       setClaimDetails(null);
       
       // Try to detect waiting period errors from message content as fallback
-      const isWaitingPeriodError = error.message && error.message.includes("3-month waiting period");
+      const isWaitingPeriodError = error.message && (
+        error.message.includes("3-month waiting period") || 
+        error.message.includes("10-month waiting period") ||
+        error.message.includes("waiting period")
+      );
       
       // Check if this is an eligibility error (not a voucher validation error)
       // Look for waiting period or device age eligibility issues
@@ -136,9 +140,24 @@ export default function ClaimBBG() {
         });
       } else {
         setEligibilityError(null);
+        // Clean up the error message for toast display
+        const cleanMessage = (() => {
+          const errorMsg = error.message || "Please check your voucher code and try again.";
+          // Check if it's a JSON string being displayed as error
+          if (typeof errorMsg === 'string' && errorMsg.includes('{"message":')) {
+            try {
+              const parsed = JSON.parse(errorMsg);
+              return parsed.message || "Please check your voucher code and try again.";
+            } catch {
+              return "Please check your voucher code and try again.";
+            }
+          }
+          return errorMsg;
+        })();
+        
         toast({
           title: "Invalid BBG Voucher Code",
-          description: error.message || "Please check your voucher code and try again.",
+          description: cleanMessage,
           variant: "destructive",
         });
       }

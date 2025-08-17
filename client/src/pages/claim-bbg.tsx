@@ -18,7 +18,7 @@ const claimSchema = z.object({
   voucherCode: z.string().min(5, "Valid BBG voucher code required"),
   contact: z.string().regex(/^\d{10}$/, "Contact must be exactly 10 digits"),
   email: z.string().email("Invalid email address"),
-  serialNumber: z.string().min(10, "Serial Number/IMEI must be at least 10 characters"),
+  serialNumber: z.string().min(1, "Serial Number/IMEI is required"),
   address: z.string().min(10, "Please provide a complete pickup address"),
   pickupDate: z.string().min(1, "Pickup date is required"),
   pickupTimeSlot: z.string().min(1, "Pickup time slot is required")

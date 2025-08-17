@@ -664,7 +664,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         if (!customerData) {
           console.error('Customer data not found for transaction:', txnid);
-          return res.redirect('/transaction-failed?error=invalid_transaction&message=Customer data not found for this transaction');
+          req.session.thankYouData = {
+            type: 'customer',
+            status: 'failed',
+            paymentMethod: 'payu',
+            txnid: txnid,
+            error: 'invalid_transaction',
+            errorMessage: 'Customer data not found for this transaction'
+          };
+          return res.redirect('/thank-you');
         }
         
         // Create customer registration with PayU transaction ID
@@ -812,23 +820,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Store success data in session for thank you page
         req.session.thankYouData = {
           type: 'customer',
+          status: 'success',
           voucherCode: customer.voucherCode,
           paymentMethod: 'payu',
           customerName: customer.name,
           deviceType: customer.deviceType,
           brand: customer.brand,
           modelName: customer.modelName,
-          registrationSlabData: customer.registrationSlabData
+          registrationSlabData: customer.registrationSlabData,
+          txnid: txnid
         };
         
         // Redirect to success page without query parameters
         res.redirect('/thank-you');
       } else {
-        res.redirect('/transaction-failed?error=payment_failed&message=Payment was not successful');
+        req.session.thankYouData = {
+          type: 'customer',
+          status: 'failed',
+          paymentMethod: 'payu',
+          txnid: txnid,
+          error: 'payment_failed',
+          errorMessage: 'Payment was not successful'
+        };
+        res.redirect('/thank-you');
       }
     } catch (error: any) {
       console.error('PayU success handler error:', error);
-      res.redirect('/transaction-failed?error=processing_error&message=Error processing successful payment');
+      req.session.thankYouData = {
+        type: 'customer',
+        status: 'failed',
+        paymentMethod: 'payu',
+        error: 'processing_error',
+        errorMessage: 'Error processing successful payment'
+      };
+      res.redirect('/thank-you');
     }
   });
 
@@ -842,17 +867,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tempStorage = app.locals.tempCustomerData || new Map();
       tempStorage.delete(txnid);
       
-      // Redirect to dedicated transaction failure page with error details
-      const errorParams = new URLSearchParams({
-        error: 'payment_failed',
+      // Store failure data in session for thank you page
+      req.session.thankYouData = {
+        type: 'customer',
+        status: 'failed',
+        paymentMethod: 'payu',
         txnid: txnid || 'unknown',
-        message: errorMessage || payuError || 'Payment could not be processed'
-      });
+        error: 'payment_failed',
+        errorMessage: errorMessage || payuError || 'Payment could not be processed'
+      };
       
-      res.redirect(`/transaction-failed?${errorParams.toString()}`);
+      res.redirect('/thank-you');
     } catch (error: any) {
       console.error('PayU failure handler error:', error);
-      res.redirect('/transaction-failed?error=processing_error&message=System error occurred during payment processing');
+      req.session.thankYouData = {
+        type: 'customer',
+        status: 'failed',
+        paymentMethod: 'payu',
+        error: 'processing_error',
+        errorMessage: 'System error occurred during payment processing'
+      };
+      res.redirect('/thank-you');
     }
   });
 

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Users, Smartphone, Home, Download, Info } from "lucide-react";
+import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw } from "lucide-react";
 
 // Brand-Specific Claim Values Component
 function BrandClaimValues({ sessionData }: { sessionData: any }) {
@@ -138,9 +138,13 @@ export default function ThankYou() {
 
   // Use session data if available, otherwise fall back to URL parameters
   const type = sessionData?.type || params?.get('type');
+  const status = sessionData?.status || params?.get('status') || 'success'; // Default to success for backward compatibility
   const sellerCode = sessionData?.sellerCode || params?.get('sellerCode');
   const voucherCode = sessionData?.voucherCode || params?.get('voucherCode');
   const paymentMethod = sessionData?.paymentMethod || params?.get('paymentMethod');
+  const txnid = sessionData?.txnid || params?.get('txnid');
+  const error = sessionData?.error || params?.get('error');
+  const errorMessage = sessionData?.errorMessage || params?.get('errorMessage');
 
   const handleDownloadInvoice = () => {
     // Generate and download BBG purchase invoice
@@ -176,7 +180,43 @@ Contact: support@xtracover.com
     window.URL.revokeObjectURL(url);
   };
 
+  const getErrorMessage = (errorType: string) => {
+    switch (errorType) {
+      case 'payment_failed':
+        return 'Your payment could not be processed successfully. Please try again with a different payment method.';
+      case 'processing_error':
+        return 'There was an error processing your transaction. Please contact support if this problem persists.';
+      case 'invalid_transaction':
+        return 'The transaction details are invalid. Please start a new registration process.';
+      case 'timeout':
+        return 'Your payment session has timed out. Please start a new registration process.';
+      default:
+        return errorMessage || 'Unfortunately, your payment could not be completed. Please try again.';
+    }
+  };
+
   const getContent = () => {
+    // Handle failure status for any type
+    if (status === 'failed') {
+      return {
+        icon: <AlertCircle className="h-16 w-16 text-red-600" />,
+        title: type === 'customer' ? "Payment Failed" : "Registration Failed",
+        subtitle: `${type === 'customer' ? 'BBG Registration' : 'Registration'} Could Not Be Completed`,
+        message: getErrorMessage(error || 'payment_failed'),
+        code: null,
+        codeLabel: "",
+        isFailure: true,
+        txnid: txnid,
+        details: [
+          "Try registering again with a different payment method",
+          "Check your bank account or card details",
+          "Contact our support team if the problem continues",
+          "No charges have been made to your account"
+        ]
+      };
+    }
+
+    // Handle success status (original logic)
     switch (type) {
       case 'distributor':
         return {
@@ -186,6 +226,7 @@ Contact: support@xtracover.com
           message: "You are now part of our trusted referral partner network. Start promoting BBG and earn ₹25 commission on every successful registration.",
           code: sellerCode,
           codeLabel: "Your Referral Code:",
+          isFailure: false,
           details: [
             "Share your referral code with customers during registration",
             "Track your commission earnings through our portal",
@@ -201,6 +242,7 @@ Contact: support@xtracover.com
           message: "Thank you for choosing XtraCover BBG. Your device is now protected with our comprehensive buyback guarantee.",
           code: voucherCode,
           codeLabel: "Your BBG Voucher Code:",
+          isFailure: false,
           details: [
             "Confirmation email sent to your registered email address",
             "BBG will be activated within 24-48 hours after verification",
@@ -216,6 +258,7 @@ Contact: support@xtracover.com
           message: "Your request has been processed successfully.",
           code: null,
           codeLabel: "",
+          isFailure: false,
           details: []
         };
     }
@@ -255,21 +298,35 @@ Contact: support@xtracover.com
               </div>
             )}
 
-            {/* Show Brand-Specific Claim Values for Customer Registrations */}
-            {type === 'customer' && <BrandClaimValues sessionData={sessionData} />}
+            {/* Show Brand-Specific Claim Values for Successful Customer Registrations */}
+            {type === 'customer' && status === 'success' && <BrandClaimValues sessionData={sessionData} />}
+
+            {/* Transaction ID for failed payments */}
+            {content.isFailure && txnid && (
+              <div className="bg-gray-50 p-4 rounded-lg mb-8">
+                <p className="text-sm text-gray-600 mb-1">Transaction ID:</p>
+                <p className="font-mono text-xs text-gray-800 break-all">
+                  {txnid}
+                </p>
+              </div>
+            )}
 
             {/* Details List */}
             {content.details.length > 0 && (
               <div className="text-left mb-8">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
-                  What's Next?
+                  {content.isFailure ? "What you can do:" : "What's Next?"}
                 </h3>
-                <div className="bg-blue-50 rounded-lg p-6">
+                <div className={`${content.isFailure ? 'bg-red-50' : 'bg-blue-50'} rounded-lg p-6`}>
                   <ul className="space-y-3">
                     {content.details.map((detail, index) => (
                       <li key={index} className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
-                        <span className="text-blue-800">{detail}</span>
+                        {content.isFailure ? (
+                          <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        ) : (
+                          <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
+                        )}
+                        <span className={content.isFailure ? 'text-red-800' : 'text-blue-800'}>{detail}</span>
                       </li>
                     ))}
                   </ul>
@@ -279,38 +336,57 @@ Contact: support@xtracover.com
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/">
-                <Button className="bg-xtra-primary hover:bg-xtra-primary/90 px-6">
-                  <Home className="mr-2 h-4 w-4" />
-                  Back to Home
-                </Button>
-              </Link>
-              
-              {type === 'customer' && voucherCode && (
-                <Button 
-                  onClick={handleDownloadInvoice}
-                  variant="outline" 
-                  className="border-green-600 text-green-600 hover:bg-green-50 px-6"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Invoice
-                </Button>
-              )}
-              
-              {type === 'distributor' && (
-                <Link href="/customer-registration">
-                  <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-50 px-6">
-                    Help Customers Register
-                  </Button>
-                </Link>
-              )}
-              
-              {type === 'customer' && (
-                <Link href="/claim-bbg">
-                  <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-50 px-6">
-                    Claim BBG
-                  </Button>
-                </Link>
+              {content.isFailure ? (
+                <>
+                  <Link href="/customer-registration">
+                    <Button className="bg-xtra-primary hover:bg-xtra-primary/90 px-6">
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                      Try Again
+                    </Button>
+                  </Link>
+                  <Link href="/">
+                    <Button variant="outline" className="px-6">
+                      <Home className="mr-2 h-4 w-4" />
+                      Go Home
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/">
+                    <Button className="bg-xtra-primary hover:bg-xtra-primary/90 px-6">
+                      <Home className="mr-2 h-4 w-4" />
+                      Back to Home
+                    </Button>
+                  </Link>
+                  
+                  {type === 'customer' && voucherCode && status === 'success' && (
+                    <Button 
+                      onClick={handleDownloadInvoice}
+                      variant="outline" 
+                      className="border-green-600 text-green-600 hover:bg-green-50 px-6"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Download Invoice
+                    </Button>
+                  )}
+                  
+                  {type === 'distributor' && (
+                    <Link href="/customer-registration">
+                      <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-50 px-6">
+                        Help Customers Register
+                      </Button>
+                    </Link>
+                  )}
+                  
+                  {type === 'customer' && status === 'success' && (
+                    <Link href="/claim-bbg">
+                      <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-50 px-6">
+                        Claim BBG
+                      </Button>
+                    </Link>
+                  )}
+                </>
               )}
             </div>
 

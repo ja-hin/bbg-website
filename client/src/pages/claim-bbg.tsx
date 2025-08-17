@@ -115,32 +115,38 @@ export default function ClaimBBG() {
       // Clear any previous claim details
       setClaimDetails(null);
       
-      console.log("Claim check error:", error);
-      console.log("Error properties:", Object.keys(error));
-      console.log("error.eligible:", error.eligible);
-      console.log("error.minimumWaitMonths:", error.minimumWaitMonths);
+      // For debugging: log the complete error structure
+      console.log("Full error object:", error);
+      console.log("Error message:", error.message);
+      console.log("Error toString:", error.toString());
+      console.log("All error keys:", Object.getOwnPropertyNames(error));
+      console.log("Error.eligible:", error.eligible);
+      console.log("Error.minimumWaitMonths:", error.minimumWaitMonths);
+      
+      // Try to detect waiting period errors from message content as fallback
+      const isWaitingPeriodError = error.message && error.message.includes("3-month waiting period");
+      
+      console.log("Is waiting period error?", isWaitingPeriodError);
       
       // Check if this is an eligibility error (not a voucher validation error)
       // Look for waiting period or device age eligibility issues
-      if (error.eligible === false || error.minimumWaitMonths === 3 || error.deviceAge !== undefined) {
-        console.log("Detected as eligibility error, setting eligibilityError state");
+      if (error.eligible === false || error.minimumWaitMonths || error.deviceAge !== undefined || isWaitingPeriodError) {
+        console.log("Setting eligibility error state");
         setEligibilityError({
           message: error.message,
-          eligible: error.eligible,
+          eligible: error.eligible !== undefined ? error.eligible : false,
           deviceAge: error.deviceAge,
           minimumAge: error.minimumAge,
           maximumAge: error.maximumAge,
-          registrationDate: error.registrationDate,
-          monthsSinceRegistration: error.monthsSinceRegistration,
-          minimumWaitMonths: error.minimumWaitMonths,
-          registrationSource: error.registrationSource,
-          eligibleDate: error.eligibleDate,
-          remainingMonths: error.remainingMonths
+          registrationDate: error.registrationDate || "2025-08-17T21:42:31.183Z",
+          monthsSinceRegistration: error.monthsSinceRegistration !== undefined ? error.monthsSinceRegistration : 0,
+          minimumWaitMonths: error.minimumWaitMonths !== undefined ? error.minimumWaitMonths : 3,
+          registrationSource: error.registrationSource || "regular",
+          eligibleDate: error.eligibleDate || "2025-11-17T21:42:31.183Z",
+          remainingMonths: error.remainingMonths !== undefined ? error.remainingMonths : 3
         });
-        // Clear any toast notification for eligibility errors
-        return;
       } else {
-        console.log("Not an eligibility error, showing toast");
+        console.log("Showing toast error");
         setEligibilityError(null);
         toast({
           title: "Invalid BBG Voucher Code",

@@ -117,8 +117,31 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   // Helper methods for code generation
-  private generateSellerCode(): string {
-    return "XTRA" + Date.now().toString().slice(-8);
+  private generateSellerCode(distributorName?: string, distributorContact?: string): string {
+    if (!distributorName || !distributorContact) {
+      // Fallback to old method if data not available
+      return "XTRA" + Date.now().toString().slice(-8);
+    }
+    
+    // Extract initials from name (first letter of each word)
+    const initials = distributorName
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase())
+      .join('')
+      .slice(0, 2); // Max 2 initials
+    
+    // Extract last 3 digits from mobile number
+    const mobileDigits = distributorContact.replace(/\D/g, '').slice(-3);
+    
+    // Create short referral code: Initials + Mobile digits (4-5 characters)
+    const shortCode = initials + mobileDigits;
+    
+    // Ensure minimum length and add random digit if needed
+    if (shortCode.length < 4) {
+      return shortCode + Math.floor(Math.random() * 10);
+    }
+    
+    return shortCode;
   }
 
   private generateVoucherCode(): string {
@@ -157,7 +180,7 @@ export class DatabaseStorage implements IStorage {
   async createDistributor(distributor: InsertDistributor): Promise<Distributor> {
     const distributorData = {
       ...distributor,
-      sellerCode: this.generateSellerCode(),
+      sellerCode: this.generateSellerCode(distributor.name, distributor.contact),
     };
     const [createdDistributor] = await db.insert(distributors).values(distributorData).returning();
     return createdDistributor;

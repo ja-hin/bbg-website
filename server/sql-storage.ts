@@ -729,7 +729,7 @@ export class SqlServerStorage implements IStorage {
   // Distributor operations
   async createDistributor(insertDistributor: InsertDistributor): Promise<Distributor> {
     await db.connectDB();
-    const sellerCode = this.generateSellerCode();
+    const sellerCode = this.generateSellerCode(insertDistributor.name, insertDistributor.contact);
     
     const query = `
       INSERT INTO distributors (
@@ -1672,8 +1672,31 @@ export class SqlServerStorage implements IStorage {
     };
   }
 
-  private generateSellerCode(): string {
-    return 'XTS' + Math.random().toString(36).substring(2, 8).toUpperCase();
+  private generateSellerCode(distributorName?: string, distributorContact?: string): string {
+    if (!distributorName || !distributorContact) {
+      // Fallback to old method if data not available
+      return 'XTS' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+    
+    // Extract initials from name (first letter of each word)
+    const initials = distributorName
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase())
+      .join('')
+      .slice(0, 2); // Max 2 initials
+    
+    // Extract last 3 digits from mobile number
+    const mobileDigits = distributorContact.replace(/\D/g, '').slice(-3);
+    
+    // Create short referral code: Initials + Mobile digits (4-5 characters)
+    const shortCode = initials + mobileDigits;
+    
+    // Ensure minimum length and add random digit if needed
+    if (shortCode.length < 4) {
+      return shortCode + Math.floor(Math.random() * 10);
+    }
+    
+    return shortCode;
   }
 
   private generateVoucherCode(): string {

@@ -4,6 +4,12 @@
 This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) system. Its primary purpose is to enable distributors (referral partners) to register and earn commissions, customers to register their devices for BBG protection, and users to claim their buyback guarantees. The project streamlines the BBG process, offers a user-friendly experience with real-time feedback, and provides robust administrative tools for managing all aspects of the system.
 
 ## Recent Critical Updates
+**Date: August 17, 2025**
+- **✅ SHORTENED REFERRAL CODES**: Updated referral code generation to use 4-5 digit format with distributor initials + mobile digits
+- **✅ DUAL STORAGE SYSTEM UPDATED**: Modified both storage.ts and sql-storage.ts to generate personalized codes (e.g., "JS123" for John Smith with mobile ending in 123)
+- **✅ BACKWARDS COMPATIBILITY**: Maintains fallback to legacy format if distributor data unavailable
+- **✅ PAYU SECURITY FIX**: Forced HTTPS redirect URLs to eliminate browser security warnings during payment flow
+
 **Date: August 15, 2025**
 - **✅ ADMIN MENU CUSTOMIZATION IMPLEMENTED**: Complete menu reordering system with drag-and-drop functionality
 - **✅ DYNAMIC SIDEBAR INTEGRATION**: Admin sidebar now fetches menu order from backend API and updates in real-time

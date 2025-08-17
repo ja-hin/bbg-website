@@ -252,6 +252,36 @@ export class SqlServerStorage implements IStorage {
       const bbgPriceRequest = db.pool.request();
       await bbgPriceRequest.query(bbgPriceTableQuery);
       console.log('✅ BBG_PRICE_SETTINGS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+      
+      // Create WAITING_PERIOD_SETTINGS table as well
+      console.log('🔥 ENSURING WAITING_PERIOD_SETTINGS TABLE EXISTS IN DATABASE...');
+      const waitingPeriodTableQuery = `
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'waiting_period_settings')
+        BEGIN
+          CREATE TABLE waiting_period_settings (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            setting_name NVARCHAR(50) NOT NULL,
+            enabled BIT NOT NULL DEFAULT 1,
+            months INT NOT NULL DEFAULT 3,
+            created_at DATETIME2 DEFAULT GETDATE(),
+            updated_at DATETIME2 DEFAULT GETDATE(),
+            UNIQUE(setting_name)
+          );
+          
+          INSERT INTO waiting_period_settings (setting_name, enabled, months) 
+          VALUES ('claim_waiting_period', 1, 3);
+          PRINT 'Waiting period settings table created with default 3-month setting';
+        END
+        ELSE
+        BEGIN
+          PRINT 'Waiting period settings table already exists, preserving current data';
+        END
+      `;
+      
+      const waitingPeriodRequest = db.pool.request();
+      await waitingPeriodRequest.query(waitingPeriodTableQuery);
+      console.log('✅ WAITING_PERIOD_SETTINGS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+      
     } catch (themeError) {
       console.error('❌ TABLE CREATION FAILED:', themeError);
       throw themeError;
@@ -3224,6 +3254,42 @@ export class SqlServerStorage implements IStorage {
     } catch (error) {
       console.error('Error adding address column to claims table:', error);
     }
+  }
+
+  // Waiting Period Settings Management
+  async getWaitingPeriodSettings(): Promise<{ enabled: boolean; months: number } | null> {
+    await db.connectDB();
+    const query = `SELECT enabled, months FROM waiting_period_settings WHERE setting_name = 'claim_waiting_period'`;
+    
+    const request = db.pool.request();
+    const result = await request.query(query);
+    
+    if (result.recordset.length > 0) {
+      const settings = result.recordset[0];
+      return {
+        enabled: settings.enabled,
+        months: settings.months
+      };
+    }
+    
+    return null;
+  }
+
+  async updateWaitingPeriodSettings(enabled: boolean, months: number): Promise<void> {
+    await db.connectDB();
+    const updateQuery = `
+      UPDATE waiting_period_settings 
+      SET enabled = @enabled, months = @months, updated_at = GETDATE()
+      WHERE setting_name = 'claim_waiting_period'
+    `;
+    
+    const request = db.pool.request();
+    await request
+      .input('enabled', sql.Bit, enabled)
+      .input('months', sql.Int, months)
+      .query(updateQuery);
+      
+    console.log(`✅ Waiting period settings updated - Enabled: ${enabled}, Months: ${months}`);
   }
 }
 

@@ -1109,10 +1109,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Customer registration not yet verified" });
       }
 
-      // NEW BUSINESS RULE: Regular BBG customers must wait 3 months from purchase before claiming
+      // DYNAMIC WAITING PERIOD: Check admin-configurable waiting period settings
       // (Acer BBG registrations are exempt from this restriction)
       const registrationSource = customer.registrationSource || 'regular';
       const isAcerBBG = registrationSource === 'acer_bbg';
+      
+      // Get waiting period settings from database
+      let waitingPeriodEnabled = true;
+      let waitingPeriodMonths = 3;
+      
+      try {
+        const waitingPeriodSettings = await storage.getWaitingPeriodSettings();
+        if (waitingPeriodSettings) {
+          waitingPeriodEnabled = waitingPeriodSettings.enabled;
+          waitingPeriodMonths = waitingPeriodSettings.months;
+        }
+      } catch (error) {
+        console.error('Error fetching waiting period settings, using defaults:', error);
+        // Use defaults if database fails
+        waitingPeriodEnabled = true;
+        waitingPeriodMonths = 3;
+      }
       
       // Calculate time since BBG registration (not device purchase)
       const registrationDate = new Date(customer.createdAt!);
@@ -1126,14 +1143,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         monthsSinceRegistration--;
       }
 
-      // Check 3-month waiting period for regular BBG only
-      if (!isAcerBBG && monthsSinceRegistration < 3) {
-        const remainingMonths = 3 - monthsSinceRegistration;
+      // Check dynamic waiting period for regular BBG only (if enabled)
+      if (!isAcerBBG && waitingPeriodEnabled && monthsSinceRegistration < waitingPeriodMonths) {
+        const remainingMonths = waitingPeriodMonths - monthsSinceRegistration;
         const eligibleDate = new Date(registrationDate);
-        eligibleDate.setMonth(eligibleDate.getMonth() + 3);
+        eligibleDate.setMonth(eligibleDate.getMonth() + waitingPeriodMonths);
         
         return res.status(400).json({
-          message: `BBG claims require a 3-month waiting period. You purchased BBG coverage on ${registrationDate.toLocaleDateString('en-IN', { 
+          message: `BBG claims require a ${waitingPeriodMonths}-month waiting period. You purchased BBG coverage on ${registrationDate.toLocaleDateString('en-IN', { 
             day: 'numeric', 
             month: 'long', 
             year: 'numeric' 
@@ -1145,7 +1162,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           eligible: false,
           registrationDate: registrationDate.toISOString(),
           monthsSinceRegistration: monthsSinceRegistration,
-          minimumWaitMonths: 3,
+          minimumWaitMonths: waitingPeriodMonths,
           registrationSource: registrationSource,
           eligibleDate: eligibleDate.toISOString(),
           remainingMonths: remainingMonths
@@ -2870,6 +2887,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Failed to update BBG price settings:', error);
       res.status(500).json({ message: "Failed to update BBG price settings", error: error.message });
+    }
+  });
+
+  // Waiting Period Settings Routes (admin only)
+  app.get("/api/admin/waiting-period/current", isAdminAuthenticated, async (req, res) => {
+    try {
+      const settings = await storage.getWaitingPeriodSettings();
+      if (settings) {
+        res.json(settings);
+      } else {
+        // Return defaults if none found
+        res.json({ enabled: true, months: 3 });
+      }
+    } catch (error: any) {
+      console.error('Failed to get waiting period settings:', error);
+      res.status(500).json({ message: "Failed to get waiting period settings" });
+    }
+  });
+
+  app.post("/api/admin/waiting-period/update", isAdminAuthenticated, async (req, res) => {
+    try {
+      console.log('Updating waiting period settings:', req.body);
+      
+      const { enabled, months } = req.body;
+      
+      if (typeof enabled !== 'boolean' || !months) {
+        return res.status(400).json({ message: "Enabled (boolean) and months (number) are required" });
+      }
+      
+      const monthsNum = parseInt(months);
+      
+      if (isNaN(monthsNum) || monthsNum < 0 || monthsNum > 12) {
+        return res.status(400).json({ message: "Months must be a number between 0 and 12" });
+      }
+      
+      await storage.updateWaitingPeriodSettings(enabled, monthsNum);
+      
+      console.log('Waiting period settings updated successfully');
+      
+      res.json({ 
+        message: "Waiting period settings updated successfully",
+        settings: { enabled, months: monthsNum }
+      });
+    } catch (error: any) {
+      console.error('Failed to update waiting period settings:', error);
+      res.status(500).json({ message: "Failed to update waiting period settings", error: error.message });
     }
   });
 

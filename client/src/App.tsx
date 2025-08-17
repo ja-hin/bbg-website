@@ -38,6 +38,7 @@ import AdminWhatsAppSettings from "@/pages/admin-whatsapp-settings";
 import AdminAdminUsers from "@/pages/admin-admin-users";
 import AdminMenuSettings from "@/pages/admin-menu-settings";
 import AdminBbgSettings from "@/pages/admin-bbg-settings";
+import AdminWaitingPeriodSettings from "@/pages/admin-waiting-period-settings";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import TermsAndConditions from "@/pages/terms-and-conditions";
@@ -99,6 +100,7 @@ function Router() {
       <Route path="/admin/admin-users" component={AdminAdminUsers} />
       <Route path="/admin/menu-settings" component={AdminMenuSettings} />
       <Route path="/admin/bbg-settings" component={AdminBbgSettings} />
+      <Route path="/admin/waiting-period-settings" component={AdminWaitingPeriodSettings} />
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />

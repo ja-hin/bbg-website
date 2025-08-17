@@ -5070,6 +5070,7 @@ Required: GUPSHUP_API_KEY environment variable
       await db.connectDB();
       const request = db.pool.request();
       
+      // First test with basic columns to isolate the issue
       const result = await request.query(`
         SELECT 
           c.id,
@@ -5087,10 +5088,10 @@ Required: GUPSHUP_API_KEY environment variable
           c.created_at as 'Registration Date',
           c.seller_code as 'Referral Code',
           c.registration_source as 'Registration Source',
-          c.is_verified as 'Verified',
+          CASE WHEN c.is_verified = 1 THEN 'Yes' ELSE 'No' END as 'Verified',
           c.payment_intent_id as 'Payment Reference',
-          d.business_name as 'Referral Partner Company',
-          d.name as 'Referral Partner Contact'
+          ISNULL(d.business_name, 'N/A') as 'Referral Partner Company',
+          ISNULL(d.name, 'N/A') as 'Referral Partner Contact'
         FROM customers c
         LEFT JOIN distributors d ON c.seller_code = d.seller_code
         ORDER BY c.created_at DESC

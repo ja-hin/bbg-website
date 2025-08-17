@@ -47,6 +47,9 @@ export default function AdminBbgSettings() {
     mutationFn: async (data: { laptopPrice: number; mobilePrice: number }) => {
       return await apiRequest('/api/admin/bbg-prices/update', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(data),
       });
     },

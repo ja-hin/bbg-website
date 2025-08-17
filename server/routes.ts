@@ -6244,12 +6244,13 @@ Required: GUPSHUP_API_KEY environment variable
         { id: "acer-reg", label: "Acer Registrations", href: "/admin/acer-registrations", icon: "Laptop", order: 6, type: "item", parentId: null },
         { id: "acer-imei", label: "Acer IMEI Management", href: "/admin/acer-imei", icon: "Shield", order: 7, type: "item", parentId: null },
         { id: "claim-slabs", label: "Claim Value Slabs", href: "/admin/claim-value-slabs", icon: "Calculator", order: 8, type: "item", parentId: null },
-        { id: "smtp", label: "SMTP Settings", href: "/admin/smtp-settings", icon: "Mail", order: 9, type: "item", parentId: null },
-        { id: "whatsapp", label: "WhatsApp Settings", href: "/admin/whatsapp-settings", icon: "MessageCircle", order: 10, type: "item", parentId: null },
-        { id: "communication", label: "Communication", href: "/admin/templates", icon: "MessageSquare", order: 11, type: "item", parentId: null },
-        { id: "menu-settings", label: "Menu Settings", href: "/admin/menu-settings", icon: "Settings", order: 12, type: "item", parentId: null },
-        { id: "logs", label: "System Logs", href: "/admin/logs", icon: "Activity", order: 13, type: "item", parentId: null },
-        { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 14, type: "item", parentId: null }
+        { id: "bbg-settings", label: "BBG Price Settings", href: "/admin/bbg-settings", icon: "Settings", order: 9, type: "item", parentId: null },
+        { id: "smtp", label: "SMTP Settings", href: "/admin/smtp-settings", icon: "Mail", order: 10, type: "item", parentId: null },
+        { id: "whatsapp", label: "WhatsApp Settings", href: "/admin/whatsapp-settings", icon: "MessageCircle", order: 11, type: "item", parentId: null },
+        { id: "communication", label: "Communication", href: "/admin/templates", icon: "MessageSquare", order: 12, type: "item", parentId: null },
+        { id: "menu-settings", label: "Menu Settings", href: "/admin/menu-settings", icon: "Settings", order: 13, type: "item", parentId: null },
+        { id: "logs", label: "System Logs", href: "/admin/logs", icon: "Activity", order: 14, type: "item", parentId: null },
+        { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 15, type: "item", parentId: null }
       ];
       
       const menuToReturn = savedMenuOrder || defaultMenuOrder;

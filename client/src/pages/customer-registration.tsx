@@ -410,6 +410,15 @@ function BuyBBGContent() {
     return newId;
   });
 
+  // Fetch dynamic BBG prices
+  const { data: bbgPrices, isLoading: pricesLoading } = useQuery({
+    queryKey: ["/api/bbg-prices"],
+    queryFn: async () => {
+      const response = await fetch("/api/bbg-prices");
+      if (!response.ok) throw new Error("Failed to fetch BBG prices");
+      return response.json();
+    }
+  });
 
   const form = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema),
@@ -463,9 +472,11 @@ function BuyBBGContent() {
   const handleDeviceTypeChange = (deviceType: string) => {
     form.setValue("brand", "");
     form.setValue("modelName", "");
-    // Auto-calculate price based on device type
-    const price = deviceType === 'laptop' ? 125 : 99;
-    console.log(`Device type changed to ${deviceType}, price: ₹${price}`);
+    // Auto-calculate price based on device type using dynamic prices
+    if (bbgPrices) {
+      const price = deviceType === 'laptop' ? bbgPrices.laptop : bbgPrices.mobile;
+      console.log(`Device type changed to ${deviceType}, price: ₹${price}`);
+    }
   };
 
   // Send OTP mutation
@@ -746,7 +757,7 @@ function BuyBBGContent() {
           </CardHeader>
           <CardContent className="pt-0">
             <PaymentMethodSelector
-              amount={formData.deviceType === 'laptop' ? 125 : 99}
+              amount={formData.deviceType === 'laptop' ? (bbgPrices?.laptop || 299) : (bbgPrices?.mobile || 99)}
               deviceType={formData.deviceType}
               onPaymentSuccess={handlePaymentSuccess}
               customerData={formData}
@@ -792,8 +803,8 @@ function BuyBBGContent() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent side="bottom" align="start">
-                              <SelectItem value="mobile">Mobile (₹99)</SelectItem>
-                              <SelectItem value="laptop">Laptop (₹125)</SelectItem>
+                              <SelectItem value="mobile">Mobile (₹{bbgPrices?.mobile || 99})</SelectItem>
+                              <SelectItem value="laptop">Laptop (₹{bbgPrices?.laptop || 299})</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

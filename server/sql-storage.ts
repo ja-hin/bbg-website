@@ -225,6 +225,33 @@ export class SqlServerStorage implements IStorage {
       const smtpRequest = db.pool.request();
       await smtpRequest.query(smtpTableQuery);
       console.log('✅ SMTP_SETTINGS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+      
+      // Create BBG Price settings table as well
+      console.log('🔥 ENSURING BBG_PRICE_SETTINGS TABLE EXISTS IN DATABASE...');
+      const bbgPriceTableQuery = `
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'bbg_price_settings')
+        BEGIN
+          CREATE TABLE bbg_price_settings (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            laptop_price DECIMAL(10,2) NOT NULL DEFAULT 299.00,
+            mobile_price DECIMAL(10,2) NOT NULL DEFAULT 99.00,
+            is_active BIT DEFAULT 1,
+            created_at DATETIME2 DEFAULT GETDATE(),
+            updated_at DATETIME2 DEFAULT GETDATE()
+          );
+          
+          INSERT INTO bbg_price_settings (laptop_price, mobile_price) VALUES (299.00, 99.00);
+          PRINT 'BBG price settings table created with default prices';
+        END
+        ELSE
+        BEGIN
+          PRINT 'BBG price settings table already exists, preserving current data';
+        END
+      `;
+      
+      const bbgPriceRequest = db.pool.request();
+      await bbgPriceRequest.query(bbgPriceTableQuery);
+      console.log('✅ BBG_PRICE_SETTINGS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
     } catch (themeError) {
       console.error('❌ TABLE CREATION FAILED:', themeError);
       throw themeError;
@@ -2986,6 +3013,60 @@ export class SqlServerStorage implements IStorage {
       smtpUsername: row.smtp_username,
       smtpPassword: row.smtp_password,
       fromAddress: row.from_address,
+      isActive: row.is_active,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  // BBG Price Settings operations
+  async getBbgPriceSettings(): Promise<BbgPriceSettings | undefined> {
+    await db.connectDB();
+    
+    const query = `SELECT TOP 1 * FROM bbg_price_settings WHERE is_active = 1 ORDER BY id DESC`;
+    const request = db.pool.request();
+    const result = await request.query(query);
+    
+    if (result.recordset.length === 0) {
+      return undefined;
+    }
+    
+    const row = result.recordset[0];
+    return {
+      id: row.id,
+      laptopPrice: parseFloat(row.laptop_price),
+      mobilePrice: parseFloat(row.mobile_price),
+      isActive: row.is_active,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  async updateBbgPriceSettings(settings: InsertBbgPriceSettings): Promise<BbgPriceSettings> {
+    await db.connectDB();
+    
+    // First, deactivate any existing settings
+    const deactivateQuery = `UPDATE bbg_price_settings SET is_active = 0`;
+    await db.pool.request().query(deactivateQuery);
+    
+    // Insert new settings
+    const insertQuery = `
+      INSERT INTO bbg_price_settings (laptop_price, mobile_price, is_active)
+      OUTPUT INSERTED.*
+      VALUES (@laptopPrice, @mobilePrice, 1)
+    `;
+    
+    const request = db.pool.request();
+    request.input('laptopPrice', sql.Decimal(10, 2), settings.laptopPrice);
+    request.input('mobilePrice', sql.Decimal(10, 2), settings.mobilePrice);
+    
+    const result = await request.query(insertQuery);
+    const row = result.recordset[0];
+    
+    return {
+      id: row.id,
+      laptopPrice: parseFloat(row.laptop_price),
+      mobilePrice: parseFloat(row.mobile_price),
       isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at

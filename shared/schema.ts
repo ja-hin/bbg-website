@@ -349,3 +349,24 @@ export const insertSmtpSettingsSchema = createInsertSchema(smtpSettings).omit({
 // SMTP Settings types
 export type SmtpSettings = typeof smtpSettings.$inferSelect;
 export type InsertSmtpSettings = z.infer<typeof insertSmtpSettingsSchema>;
+
+// BBG Price Settings table for admin price management
+export const bbgPriceSettings = pgTable("bbg_price_settings", {
+  id: serial("id").primaryKey(),
+  laptopPrice: decimal("laptop_price", { precision: 10, scale: 2 }).notNull().default("299.00"),
+  mobilePrice: decimal("mobile_price", { precision: 10, scale: 2 }).notNull().default("99.00"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertBbgPriceSettingsSchema = createInsertSchema(bbgPriceSettings).omit({
+  id: true,
+  isActive: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// BBG Price Settings types
+export type BbgPriceSettings = typeof bbgPriceSettings.$inferSelect;
+export type InsertBbgPriceSettings = z.infer<typeof insertBbgPriceSettingsSchema>;

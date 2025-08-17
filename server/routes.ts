@@ -2752,6 +2752,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ===== MASTER MANAGEMENT ROUTES =====
 
+  // BBG Price Settings Management API routes
+  // Get current BBG price settings (admin endpoint)
+  app.get("/api/admin/bbg-prices/current", isAdminAuthenticated, async (req, res) => {
+    try {
+      const priceSettings = await storage.getBbgPriceSettings();
+      res.json(priceSettings);
+    } catch (error: any) {
+      console.error('Failed to get BBG price settings:', error);
+      res.status(500).json({ message: "Failed to get BBG price settings" });
+    }
+  });
+
+  // Update BBG price settings (admin only)
+  app.post("/api/admin/bbg-prices/update", isAdminAuthenticated, async (req, res) => {
+    try {
+      console.log('Updating BBG price settings:', req.body);
+      
+      const { laptopPrice, mobilePrice } = req.body;
+      
+      if (!laptopPrice || !mobilePrice) {
+        return res.status(400).json({ message: "Both laptop and mobile prices are required" });
+      }
+
+      // Validate price values
+      const laptopPriceNum = parseFloat(laptopPrice);
+      const mobilePriceNum = parseFloat(mobilePrice);
+      
+      if (isNaN(laptopPriceNum) || isNaN(mobilePriceNum) || laptopPriceNum <= 0 || mobilePriceNum <= 0) {
+        return res.status(400).json({ message: "Invalid price values. Prices must be positive numbers." });
+      }
+
+      const updatedPrices = await storage.updateBbgPriceSettings({
+        laptopPrice: laptopPriceNum,
+        mobilePrice: mobilePriceNum
+      });
+      
+      console.log('BBG price settings updated successfully');
+      
+      res.json({
+        message: "BBG price settings updated successfully",
+        prices: updatedPrices
+      });
+    } catch (error: any) {
+      console.error('Failed to update BBG price settings:', error);
+      res.status(500).json({ message: "Failed to update BBG price settings", error: error.message });
+    }
+  });
+
   // User Roles Master Management
   app.get("/api/admin/user-roles", isAdminAuthenticated, async (req, res) => {
     try {
@@ -6234,6 +6282,55 @@ Required: GUPSHUP_API_KEY environment variable
     } catch (error: any) {
       console.error('Error resetting menu order:', error);
       res.status(500).json({ message: "Failed to reset menu order" });
+    }
+  });
+
+  // ===== PUBLIC API ROUTES =====
+  
+  // Public endpoint for frontend registration form data
+  app.get("/api/data", async (req, res) => {
+    try {
+      const brands = await storage.getAllBrands();
+      const activeBrands = brands.filter(brand => brand.isActive);
+      
+      res.json({
+        brands: activeBrands,
+        message: "Form data loaded successfully"
+      });
+    } catch (error: any) {
+      console.error("Error fetching form data:", error);
+      res.status(500).json({ 
+        message: "Failed to load form data",
+        error: error.message
+      });
+    }
+  });
+
+  // Public endpoint for BBG prices (used in customer registration)
+  app.get("/api/bbg-prices", async (req, res) => {
+    try {
+      const priceSettings = await storage.getBbgPriceSettings();
+      
+      // Return default prices if no settings found
+      const prices = priceSettings || {
+        laptopPrice: 299,
+        mobilePrice: 99
+      };
+      
+      res.json({
+        laptop: prices.laptopPrice,
+        mobile: prices.mobilePrice,
+        success: true
+      });
+    } catch (error: any) {
+      console.error("Error fetching BBG prices:", error);
+      // Return default prices even on error to ensure frontend works
+      res.json({
+        laptop: 299,
+        mobile: 99,
+        success: false,
+        error: "Using default prices"
+      });
     }
   });
 

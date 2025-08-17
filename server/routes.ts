@@ -664,7 +664,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         if (!customerData) {
           console.error('Customer data not found for transaction:', txnid);
-          return res.redirect('/customer-registration?error=data_not_found');
+          return res.redirect('/transaction-failed?error=invalid_transaction&message=Customer data not found for this transaction');
         }
         
         // Create customer registration with PayU transaction ID
@@ -824,23 +824,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Redirect to success page without query parameters
         res.redirect('/thank-you');
       } else {
-        res.redirect('/customer-registration?error=payment_failed');
+        res.redirect('/transaction-failed?error=payment_failed&message=Payment was not successful');
       }
     } catch (error: any) {
       console.error('PayU success handler error:', error);
-      res.redirect('/customer-registration?error=processing_error');
+      res.redirect('/transaction-failed?error=processing_error&message=Error processing successful payment');
     }
   });
 
   // PayU Failure Handler
   app.post("/api/payu/failure", async (req, res) => {
     try {
-      const { txnid, status, error: payuError } = req.body;
+      const { txnid, status, error: payuError, error_Message: errorMessage } = req.body;
       console.log(`PayU payment failed for transaction ${txnid}: ${payuError}`);
-      res.redirect('/customer-registration?error=payment_failed&txnid=' + txnid);
+      
+      // Clean up temporary customer data
+      const tempStorage = app.locals.tempCustomerData || new Map();
+      tempStorage.delete(txnid);
+      
+      // Redirect to dedicated transaction failure page with error details
+      const errorParams = new URLSearchParams({
+        error: 'payment_failed',
+        txnid: txnid || 'unknown',
+        message: errorMessage || payuError || 'Payment could not be processed'
+      });
+      
+      res.redirect(`/transaction-failed?${errorParams.toString()}`);
     } catch (error: any) {
       console.error('PayU failure handler error:', error);
-      res.redirect('/customer-registration?error=processing_error');
+      res.redirect('/transaction-failed?error=processing_error&message=System error occurred during payment processing');
     }
   });
 

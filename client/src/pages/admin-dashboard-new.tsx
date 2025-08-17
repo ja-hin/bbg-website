@@ -17,7 +17,8 @@ import {
   Phone,
   Mail,
   MapPin,
-  X
+  X,
+  Download
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -150,6 +151,15 @@ export default function AdminDashboardNew() {
       toast({ title: "Failed to update claim status", variant: "destructive" });
     }
   });
+
+  // Export customers to CSV function
+  const exportCustomersToCSV = () => {
+    window.open('/api/admin/export/customers', '_blank');
+    toast({
+      title: "Export Started",
+      description: "Customer data export has been initiated. Download will start shortly.",
+    });
+  };
 
   if (adminLoading || !isAuthenticated) {
     return (
@@ -394,14 +404,25 @@ export default function AdminDashboardNew() {
                   <Users className="h-5 w-5 mr-2 text-blue-600" />
                   Customer Management
                 </CardTitle>
-                <div className="relative">
-                  <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <Input
-                    placeholder="Search customers..."
-                    value={customerSearch}
-                    onChange={(e) => setCustomerSearch(e.target.value)}
-                    className="pl-10 w-64"
-                  />
+                <div className="flex items-center gap-4">
+                  <Button
+                    onClick={exportCustomersToCSV}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Export CSV
+                  </Button>
+                  <div className="relative">
+                    <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <Input
+                      placeholder="Search customers..."
+                      value={customerSearch}
+                      onChange={(e) => setCustomerSearch(e.target.value)}
+                      className="pl-10 w-64"
+                    />
+                  </div>
                 </div>
               </div>
             </CardHeader>

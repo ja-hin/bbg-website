@@ -116,7 +116,8 @@ export default function ClaimBBG() {
       setClaimDetails(null);
       
       // Check if this is an eligibility error (not a voucher validation error)
-      if (error.eligible === false) {
+      // Look for waiting period or device age eligibility issues
+      if (error.eligible === false || error.minimumWaitMonths || error.deviceAge !== undefined) {
         setEligibilityError({
           message: error.message,
           eligible: error.eligible,

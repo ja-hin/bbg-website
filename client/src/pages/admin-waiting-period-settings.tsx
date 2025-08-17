@@ -31,18 +31,24 @@ export default function AdminWaitingPeriodSettings() {
 
   // Update settings when data is loaded
   useEffect(() => {
-    if (currentSettings) {
-      setSettings(currentSettings);
+    if (currentSettings && typeof currentSettings === 'object' && 'enabled' in currentSettings && 'months' in currentSettings) {
+      setSettings({
+        enabled: currentSettings.enabled,
+        months: currentSettings.months
+      });
     }
   }, [currentSettings]);
 
   // Update waiting period settings mutation
   const updateSettingsMutation = useMutation({
     mutationFn: async (newSettings: WaitingPeriodSettings) => {
+      console.log('Sending waiting period settings:', newSettings);
       const response = await apiRequest("/api/admin/waiting-period/update", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newSettings)
+        body: {
+          enabled: Boolean(newSettings.enabled),
+          months: Number(newSettings.months)
+        }
       });
       return response;
     },

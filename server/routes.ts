@@ -2908,7 +2908,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/admin/waiting-period/update", isAdminAuthenticated, async (req, res) => {
     try {
-      console.log('Updating waiting period settings:', req.body);
+      console.log('🔥 Raw req.body:', req.body);
+      console.log('🔥 req.body type:', typeof req.body);
+      console.log('🔥 req.headers["content-type"]:', req.headers["content-type"]);
       
       const { enabled, months } = req.body;
       

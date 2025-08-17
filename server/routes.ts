@@ -579,7 +579,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { customerData } = req.body;
       const deviceType = customerData.deviceType;
-      const amount = deviceType === 'laptop' ? 125 : 99;
+      
+      // Fetch dynamic BBG prices from database
+      let amount;
+      try {
+        const bbgPrices = await storage.getBBGPrices();
+        amount = deviceType === 'laptop' ? bbgPrices.laptop : bbgPrices.mobile;
+      } catch (error) {
+        console.error('Error fetching BBG prices, using defaults:', error);
+        // Fallback to default prices if database fails
+        amount = deviceType === 'laptop' ? 299 : 99;
+      }
       
       // Check rate limiting for this IP
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
@@ -1663,8 +1673,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const uniqueCustomersArray = Object.values(uniqueCustomers);
 
       // Calculate more accurate revenue based on device types (total registrations)
+      let bbgPrices;
+      try {
+        bbgPrices = await storage.getBBGPrices();
+      } catch (error) {
+        console.error('Error fetching BBG prices for dashboard, using defaults:', error);
+        bbgPrices = { laptop: 299, mobile: 99 };
+      }
+      
       const totalRevenue = allCustomers.reduce((total, customer) => {
-        const deviceTypeRevenue = customer.deviceType === 'laptop' ? 125 : 99;
+        const deviceTypeRevenue = customer.deviceType === 'laptop' ? bbgPrices.laptop : bbgPrices.mobile;
         return total + deviceTypeRevenue;
       }, 0);
 
@@ -5038,7 +5056,7 @@ Required: GUPSHUP_API_KEY environment variable
             COUNT(CASE WHEN device_type = 'laptop' THEN 1 END) as laptop_customers,
             COUNT(CASE WHEN device_type = 'mobile' THEN 1 END) as mobile_customers,
             COUNT(CASE WHEN registration_source = 'acer_bbg' THEN 1 END) as acer_customers,
-            SUM(CASE WHEN device_type = 'laptop' THEN 125 * 0.05 ELSE 99 * 0.05 END) as total_commission,
+            SUM(CASE WHEN device_type = 'laptop' THEN 299 * 0.05 ELSE 99 * 0.05 END) as total_commission,
             SUM(CAST(invoice_value as DECIMAL(10,2))) as total_invoice_value,
             MAX(registration_date) as latest_registration
           FROM customers 

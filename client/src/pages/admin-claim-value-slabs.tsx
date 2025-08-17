@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Edit, Trash2, X, Save, Loader2 } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Save, Loader2, Grid3X3, List, Eye, Filter } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { ExcelUpload } from '@/components/excel-upload';
@@ -41,6 +41,9 @@ export default function AdminClaimValueSlabs() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newBrandName, setNewBrandName] = useState('');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [selectedBrandFilter, setSelectedBrandFilter] = useState<string>('all');
+  const [selectedPercentageFilter, setSelectedPercentageFilter] = useState<string>('all');
   const [formData, setFormData] = useState({
     deviceType: 'laptop',
     brand: '__generic__',
@@ -409,6 +412,179 @@ export default function AdminClaimValueSlabs() {
   console.log('Regular Mobile Slabs:', regularMobileSlabs.length);
   console.log('Acer BBG Slabs:', acerBbgSlabs.length);
 
+  // Helper functions for filtering and grid display
+  const getUniqueSlabBrands = (slabList: ClaimValueSlab[]) => {
+    const brands = new Set(slabList.map(slab => slab.brand || 'Generic').filter(Boolean));
+    return Array.from(brands).sort();
+  };
+
+  const getUniqueSlabPercentages = (slabList: ClaimValueSlab[]) => {
+    const percentages = new Set(slabList.map(slab => slab.percentage));
+    return Array.from(percentages).sort((a, b) => b - a);
+  };
+
+  const filterSlabs = (slabList: ClaimValueSlab[], brandFilter: string, percentageFilter: string) => {
+    return slabList.filter(slab => {
+      const brandMatch = brandFilter === 'all' || 
+        (brandFilter === 'generic' && !slab.brand) ||
+        (slab.brand && slab.brand === brandFilter);
+      
+      const percentageMatch = percentageFilter === 'all' || 
+        slab.percentage.toString() === percentageFilter;
+      
+      return brandMatch && percentageMatch;
+    });
+  };
+
+  // Grid component for displaying slabs
+  const SlabGridCard = ({ slab, onEdit, onDelete }: { 
+    slab: ClaimValueSlab; 
+    onEdit: (slab: ClaimValueSlab) => void; 
+    onDelete: (id: number) => void; 
+  }) => (
+    <Card key={slab.id} className="group hover:shadow-lg transition-all duration-200 border-l-4 border-l-blue-500">
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <h3 className="font-semibold text-lg text-gray-900">
+                {slab.brand || 'Generic'}
+              </h3>
+              {slab.registrationSource === 'acer_bbg' && (
+                <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">
+                  Acer BBG
+                </span>
+              )}
+            </div>
+            <div className="space-y-1 text-sm text-gray-600">
+              <div className="flex items-center gap-1">
+                <span className="font-medium">Age Range:</span>
+                <span>{slab.minMonths}-{slab.maxMonths} months</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="font-medium">Device:</span>
+                <span className="capitalize">{slab.deviceType}</span>
+              </div>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-2xl font-bold text-blue-600 mb-1">
+              {slab.percentage}%
+            </div>
+            <div className="text-xs text-gray-500">
+              Claim Rate
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex justify-between items-center pt-3 border-t">
+          <div className="text-xs text-gray-500">
+            ID: {slab.id}
+          </div>
+          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => onEdit(slab)}
+              className="h-8 px-2"
+            >
+              <Edit className="h-3 w-3" />
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() => onDelete(slab.id)}
+              className="h-8 px-2"
+            >
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  // Filter and view controls component
+  const ViewControls = ({ 
+    slabList, 
+    brandFilter, 
+    setBrandFilter, 
+    percentageFilter, 
+    setPercentageFilter,
+    title 
+  }: {
+    slabList: ClaimValueSlab[];
+    brandFilter: string;
+    setBrandFilter: (filter: string) => void;
+    percentageFilter: string;
+    setPercentageFilter: (filter: string) => void;
+    title: string;
+  }) => (
+    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-6 p-4 bg-gray-50 rounded-lg">
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Button
+            variant={viewMode === 'grid' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setViewMode('grid')}
+            className="h-8"
+          >
+            <Grid3X3 className="h-4 w-4 mr-1" />
+            Grid
+          </Button>
+          <Button
+            variant={viewMode === 'table' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setViewMode('table')}
+            className="h-8"
+          >
+            <List className="h-4 w-4 mr-1" />
+            Table
+          </Button>
+        </div>
+        
+        <div className="text-sm text-gray-600 flex items-center gap-1">
+          <Eye className="h-4 w-4" />
+          {filterSlabs(slabList, brandFilter, percentageFilter).length} of {slabList.length}
+        </div>
+      </div>
+      
+      <div className="flex gap-3 items-center">
+        <div className="flex items-center gap-2">
+          <Filter className="h-4 w-4 text-gray-500" />
+          <Select value={brandFilter} onValueChange={setBrandFilter}>
+            <SelectTrigger className="w-36 h-8 text-sm">
+              <SelectValue placeholder="Filter by brand" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Brands</SelectItem>
+              <SelectItem value="generic">Generic Only</SelectItem>
+              {getUniqueSlabBrands(slabList).map((brand) => (
+                <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Select value={percentageFilter} onValueChange={setPercentageFilter}>
+            <SelectTrigger className="w-24 h-8 text-sm">
+              <SelectValue placeholder="%" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All %</SelectItem>
+              {getUniqueSlabPercentages(slabList).map((percentage) => (
+                <SelectItem key={percentage} value={percentage.toString()}>
+                  {percentage}%
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -634,7 +810,7 @@ export default function AdminClaimValueSlabs() {
             <TabsTrigger value="acer-bbg">Acer BBG Slabs</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="laptop">
+          <TabsContent value="laptop" className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Regular Laptop Claim Value Slabs</CardTitle>
@@ -648,59 +824,91 @@ export default function AdminClaimValueSlabs() {
                     <Loader2 className="w-6 h-6 animate-spin" />
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Brand</TableHead>
-                          <TableHead>Age Range</TableHead>
-                          <TableHead>Percentage</TableHead>
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {regularLaptopSlabs.map((slab) => (
-                          <TableRow key={slab.id}>
-                            <TableCell className="font-medium">
-                              {slab.brand || 'Generic'}
-                            </TableCell>
-                            <TableCell>
-                              {slab.minMonths}-{slab.maxMonths} months
-                            </TableCell>
-                            <TableCell>
-                              <span className="font-semibold text-blue-600">
-                                {slab.percentage}%
-                              </span>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex space-x-2">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => startEdit(slab)}
-                                >
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="destructive"
-                                  onClick={() => deleteMutation.mutate(slab.id)}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
+                  <div className="space-y-6">
+                    <ViewControls 
+                      slabList={regularLaptopSlabs}
+                      brandFilter={selectedBrandFilter}
+                      setBrandFilter={setSelectedBrandFilter}
+                      percentageFilter={selectedPercentageFilter}
+                      setPercentageFilter={setSelectedPercentageFilter}
+                      title="Laptop Slabs"
+                    />
+                    
+                    {viewMode === 'grid' ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {filterSlabs(regularLaptopSlabs, selectedBrandFilter, selectedPercentageFilter).map((slab) => (
+                          <SlabGridCard
+                            key={slab.id}
+                            slab={slab}
+                            onEdit={startEdit}
+                            onDelete={(id) => deleteMutation.mutate(id)}
+                          />
                         ))}
-                      </TableBody>
-                    </Table>
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Brand</TableHead>
+                              <TableHead>Age Range</TableHead>
+                              <TableHead>Percentage</TableHead>
+                              <TableHead>Actions</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {filterSlabs(regularLaptopSlabs, selectedBrandFilter, selectedPercentageFilter).map((slab) => (
+                              <TableRow key={slab.id}>
+                                <TableCell className="font-medium">
+                                  {slab.brand || 'Generic'}
+                                </TableCell>
+                                <TableCell>
+                                  {slab.minMonths}-{slab.maxMonths} months
+                                </TableCell>
+                                <TableCell>
+                                  <span className="font-semibold text-blue-600">
+                                    {slab.percentage}%
+                                  </span>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex space-x-2">
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => startEdit(slab)}
+                                    >
+                                      <Edit className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="destructive"
+                                      onClick={() => deleteMutation.mutate(slab.id)}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
+                    
+                    {filterSlabs(regularLaptopSlabs, selectedBrandFilter, selectedPercentageFilter).length === 0 && (
+                      <div className="text-center py-8 text-gray-500">
+                        <Grid3X3 className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                        <p>No slabs match the current filters</p>
+                        <p className="text-sm">Try adjusting your filter criteria</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="mobile">
+          <TabsContent value="mobile" className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Regular Mobile Claim Value Slabs</CardTitle>
@@ -714,59 +922,91 @@ export default function AdminClaimValueSlabs() {
                     <Loader2 className="w-6 h-6 animate-spin" />
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Brand</TableHead>
-                          <TableHead>Age Range</TableHead>
-                          <TableHead>Percentage</TableHead>
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {regularMobileSlabs.map((slab) => (
-                          <TableRow key={slab.id}>
-                            <TableCell className="font-medium">
-                              {slab.brand || 'Generic'}
-                            </TableCell>
-                            <TableCell>
-                              {slab.minMonths}-{slab.maxMonths} months
-                            </TableCell>
-                            <TableCell>
-                              <span className="font-semibold text-green-600">
-                                {slab.percentage}%
-                              </span>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex space-x-2">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => startEdit(slab)}
-                                >
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="destructive"
-                                  onClick={() => deleteMutation.mutate(slab.id)}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
+                  <div className="space-y-6">
+                    <ViewControls 
+                      slabList={regularMobileSlabs}
+                      brandFilter={selectedBrandFilter}
+                      setBrandFilter={setSelectedBrandFilter}
+                      percentageFilter={selectedPercentageFilter}
+                      setPercentageFilter={setSelectedPercentageFilter}
+                      title="Mobile Slabs"
+                    />
+                    
+                    {viewMode === 'grid' ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {filterSlabs(regularMobileSlabs, selectedBrandFilter, selectedPercentageFilter).map((slab) => (
+                          <SlabGridCard
+                            key={slab.id}
+                            slab={slab}
+                            onEdit={startEdit}
+                            onDelete={(id) => deleteMutation.mutate(id)}
+                          />
                         ))}
-                      </TableBody>
-                    </Table>
-                  </div>
+                      </div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Brand</TableHead>
+                                <TableHead>Age Range</TableHead>
+                                <TableHead>Percentage</TableHead>
+                                <TableHead>Actions</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {filterSlabs(regularMobileSlabs, selectedBrandFilter, selectedPercentageFilter).map((slab) => (
+                                <TableRow key={slab.id}>
+                                  <TableCell className="font-medium">
+                                    {slab.brand || 'Generic'}
+                                  </TableCell>
+                                  <TableCell>
+                                    {slab.minMonths}-{slab.maxMonths} months
+                                  </TableCell>
+                                  <TableCell>
+                                    <span className="font-semibold text-green-600">
+                                      {slab.percentage}%
+                                    </span>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="flex space-x-2">
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => startEdit(slab)}
+                                      >
+                                        <Edit className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="destructive"
+                                        onClick={() => deleteMutation.mutate(slab.id)}
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      )}
+                      
+                      {filterSlabs(regularMobileSlabs, selectedBrandFilter, selectedPercentageFilter).length === 0 && (
+                        <div className="text-center py-8 text-gray-500">
+                          <Grid3X3 className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                          <p>No slabs match the current filters</p>
+                          <p className="text-sm">Try adjusting your filter criteria</p>
+                        </div>
+                      )}
+                    </div>
                 )}
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="acer-bbg">
+          <TabsContent value="acer-bbg" className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Acer BBG Special Rates</CardTitle>
@@ -780,55 +1020,87 @@ export default function AdminClaimValueSlabs() {
                     <Loader2 className="w-6 h-6 animate-spin" />
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Brand</TableHead>
-                          <TableHead>Age Range</TableHead>
-                          <TableHead>Percentage</TableHead>
-                          <TableHead>Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {acerBbgSlabs.map((slab) => (
-                          <TableRow key={slab.id}>
-                            <TableCell className="font-medium">
-                              <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm">
-                                {slab.brand || 'Generic'}
-                              </span>
-                            </TableCell>
-                            <TableCell>
-                              {slab.minMonths}-{slab.maxMonths} months
-                            </TableCell>
-                            <TableCell>
-                              <span className="font-semibold text-purple-600">
-                                {slab.percentage}%
-                              </span>
-                              <span className="text-xs text-purple-500 ml-1">(Acer BBG)</span>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex space-x-2">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => startEdit(slab)}
-                                >
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="destructive"
-                                  onClick={() => deleteMutation.mutate(slab.id)}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
+                  <div className="space-y-6">
+                    <ViewControls 
+                      slabList={acerBbgSlabs}
+                      brandFilter={selectedBrandFilter}
+                      setBrandFilter={setSelectedBrandFilter}
+                      percentageFilter={selectedPercentageFilter}
+                      setPercentageFilter={setSelectedPercentageFilter}
+                      title="Acer BBG Slabs"
+                    />
+                    
+                    {viewMode === 'grid' ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {filterSlabs(acerBbgSlabs, selectedBrandFilter, selectedPercentageFilter).map((slab) => (
+                          <SlabGridCard
+                            key={slab.id}
+                            slab={slab}
+                            onEdit={startEdit}
+                            onDelete={(id) => deleteMutation.mutate(id)}
+                          />
                         ))}
-                      </TableBody>
-                    </Table>
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Brand</TableHead>
+                              <TableHead>Age Range</TableHead>
+                              <TableHead>Percentage</TableHead>
+                              <TableHead>Actions</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {filterSlabs(acerBbgSlabs, selectedBrandFilter, selectedPercentageFilter).map((slab) => (
+                              <TableRow key={slab.id}>
+                                <TableCell className="font-medium">
+                                  <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm">
+                                    {slab.brand || 'Generic'}
+                                  </span>
+                                </TableCell>
+                                <TableCell>
+                                  {slab.minMonths}-{slab.maxMonths} months
+                                </TableCell>
+                                <TableCell>
+                                  <span className="font-semibold text-purple-600">
+                                    {slab.percentage}%
+                                  </span>
+                                  <span className="text-xs text-purple-500 ml-1">(Acer BBG)</span>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex space-x-2">
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => startEdit(slab)}
+                                    >
+                                      <Edit className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="destructive"
+                                      onClick={() => deleteMutation.mutate(slab.id)}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
+                    
+                    {filterSlabs(acerBbgSlabs, selectedBrandFilter, selectedPercentageFilter).length === 0 && (
+                      <div className="text-center py-8 text-gray-500">
+                        <Grid3X3 className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                        <p>No slabs match the current filters</p>
+                        <p className="text-sm">Try adjusting your filter criteria</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>

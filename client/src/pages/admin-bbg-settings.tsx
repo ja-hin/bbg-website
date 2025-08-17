@@ -7,6 +7,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, Settings, DollarSign } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { AdminLayout } from "@/components/admin-layout";
+import { useRequireAuth } from "@/hooks/useAuth";
 
 interface BbgPriceSettings {
   id: number;
@@ -18,6 +20,7 @@ interface BbgPriceSettings {
 }
 
 export default function AdminBbgSettings() {
+  useRequireAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -106,15 +109,18 @@ export default function AdminBbgSettings() {
 
   if (isLoadingSettings) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin" />
-        <span className="ml-2">Loading BBG price settings...</span>
-      </div>
+      <AdminLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="ml-2">Loading BBG price settings...</span>
+        </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <AdminLayout>
+      <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Settings className="h-6 w-6" />
         <h1 className="text-2xl font-bold">BBG Price Settings</h1>
@@ -230,6 +236,7 @@ export default function AdminBbgSettings() {
           </div>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }

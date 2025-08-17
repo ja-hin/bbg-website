@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import jsPDF from 'jspdf';
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -78,6 +79,12 @@ export default function ThankYou() {
     retry: false
   });
 
+  // Get current BBG pricing for invoice generation
+  const { data: bbgPrices } = useQuery({
+    queryKey: ['/api/bbg-prices'],
+    retry: false
+  });
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.split('?')[1] || '');
     setParams(searchParams);
@@ -147,37 +154,129 @@ export default function ThankYou() {
   const errorMessage = sessionData?.errorMessage || params?.get('errorMessage');
 
   const handleDownloadInvoice = () => {
-    // Generate and download BBG purchase invoice
+    // Get invoice data from session or URL parameters
     const invoiceData = {
       voucherCode,
-      date: new Date().toLocaleDateString(),
-      amount: '₹99', // This should come from actual payment data
-      service: 'BuyBack Guarantee Registration'
+      date: new Date().toLocaleDateString('en-IN'),
+      customerName: sessionData?.customerName || params?.get('customerName') || 'Customer',
+      deviceType: sessionData?.deviceType || params?.get('deviceType') || '',
+      brand: sessionData?.brand || params?.get('brand') || '',
+      modelName: sessionData?.modelName || params?.get('modelName') || '',
+      amount: (() => {
+        const deviceType = sessionData?.deviceType || params?.get('deviceType') || '';
+        if (bbgPrices && deviceType && 'laptop' in bbgPrices && 'mobile' in bbgPrices) {
+          const price = deviceType === 'laptop' ? bbgPrices.laptop : bbgPrices.mobile;
+          return `₹${price}`;
+        }
+        // Fallback to session data or default
+        if (sessionData?.paymentMethod === 'payu') {
+          return sessionData?.deviceType === 'laptop' ? '₹125' : '₹99';
+        }
+        return params?.get('deviceType') === 'laptop' ? '₹125' : '₹99';
+      })(),
+      paymentMethod: sessionData?.paymentMethod || 'Direct Payment',
+      txnid: sessionData?.txnid || params?.get('txnid') || 'N/A'
     };
+
+    // Generate PDF invoice
+    const doc = new jsPDF();
     
-    // Create a simple invoice content
-    const invoiceContent = `
-XTRACOVER BBG INVOICE
-=====================
-Date: ${invoiceData.date}
-BBG Voucher Code: ${invoiceData.voucherCode}
-Service: ${invoiceData.service}
-Amount Paid: ${invoiceData.amount}
-
-Thank you for choosing XtraCover BBG!
-Contact: support@xtracover.com
-    `;
-
-    // Create and download the invoice
-    const blob = new Blob([invoiceContent], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `BBG_Invoice_${voucherCode}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+    // Set colors
+    const primaryBlue = '#254696';
+    const secondaryRed = '#E72829';
+    
+    // Header with company branding
+    doc.setFontSize(20);
+    doc.setTextColor(primaryBlue);
+    doc.text('XTRACOVER', 20, 25);
+    
+    doc.setFontSize(14);
+    doc.setTextColor(secondaryRed);
+    doc.text('BuyBack Guarantee Invoice', 20, 35);
+    
+    // Invoice details
+    doc.setFontSize(10);
+    doc.setTextColor('#666666');
+    doc.text('Date: ' + invoiceData.date, 20, 50);
+    doc.text('Invoice ID: BBG-' + invoiceData.voucherCode, 20, 58);
+    
+    // Customer information section
+    doc.setFontSize(12);
+    doc.setTextColor('#000000');
+    doc.text('BILL TO:', 20, 75);
+    
+    doc.setFontSize(10);
+    doc.setTextColor('#333333');
+    doc.text('Customer Name: ' + invoiceData.customerName, 20, 85);
+    if (invoiceData.deviceType && invoiceData.brand) {
+      doc.text(`Device: ${invoiceData.brand} ${invoiceData.modelName} (${invoiceData.deviceType})`, 20, 93);
+    }
+    
+    // Service details
+    doc.setFontSize(12);
+    doc.setTextColor('#000000');
+    doc.text('SERVICE DETAILS:', 20, 115);
+    
+    // Create table-like structure
+    doc.setFontSize(10);
+    doc.setTextColor('#333333');
+    doc.text('Description', 20, 130);
+    doc.text('BBG Voucher Code', 75, 130);
+    doc.text('Amount', 140, 130);
+    
+    // Draw line under headers
+    doc.setDrawColor('#CCCCCC');
+    doc.line(20, 133, 180, 133);
+    
+    // Service row
+    doc.text('BuyBack Guarantee Registration', 20, 145);
+    doc.text(invoiceData.voucherCode, 75, 145);
+    doc.text(invoiceData.amount, 140, 145);
+    
+    // Draw line above total
+    doc.line(20, 155, 180, 155);
+    
+    // Total section
+    doc.setFontSize(12);
+    doc.setTextColor('#000000');
+    doc.text('TOTAL AMOUNT: ' + invoiceData.amount, 20, 168);
+    
+    // Payment information
+    doc.setFontSize(10);
+    doc.setTextColor('#666666');
+    doc.text('Payment Method: ' + invoiceData.paymentMethod, 20, 180);
+    if (invoiceData.txnid !== 'N/A') {
+      doc.text('Transaction ID: ' + invoiceData.txnid, 20, 188);
+    }
+    doc.text('Payment Status: Completed', 20, 196);
+    
+    // Important notes
+    doc.setFontSize(10);
+    doc.setTextColor(primaryBlue);
+    doc.text('IMPORTANT NOTES:', 20, 215);
+    
+    doc.setFontSize(8);
+    doc.setTextColor('#333333');
+    const notes = [
+      '• Keep this invoice safe for future reference and claims',
+      '• BBG claims can be filed after the waiting period as per terms',
+      '• Visit our website or contact support for claim assistance',
+      '• This is a system-generated invoice and does not require signature'
+    ];
+    
+    notes.forEach((note, index) => {
+      doc.text(note, 20, 225 + (index * 8));
+    });
+    
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor('#999999');
+    doc.text('XtraCover - Protecting Your Investments', 20, 265);
+    doc.text('Email: support@xtracover.com | Website: www.xtracover.com', 20, 272);
+    doc.text('Generated on: ' + new Date().toLocaleString('en-IN'), 20, 279);
+    
+    // Save the PDF
+    doc.save(`BBG_Invoice_${invoiceData.voucherCode}.pdf`);
   };
 
   const getErrorMessage = (errorType: string) => {

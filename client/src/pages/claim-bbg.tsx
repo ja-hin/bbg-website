@@ -364,7 +364,19 @@ export default function ClaimBBG() {
                       <div>
                         <h4 className="font-semibold text-red-900 mb-1">Invalid BBG Voucher Code</h4>
                         <p className="text-sm text-red-800">
-                          {checkClaimMutation.error?.message || "Please check your voucher code and try again."}
+                          {(() => {
+                            const errorMsg = checkClaimMutation.error?.message || "Please check your voucher code and try again.";
+                            // Check if it's a JSON string being displayed as error
+                            if (typeof errorMsg === 'string' && errorMsg.includes('{"message":')) {
+                              try {
+                                const parsed = JSON.parse(errorMsg);
+                                return parsed.message || "Please check your voucher code and try again.";
+                              } catch {
+                                return "Please check your voucher code and try again.";
+                              }
+                            }
+                            return errorMsg;
+                          })()}
                         </p>
                       </div>
                     </div>
@@ -379,7 +391,27 @@ export default function ClaimBBG() {
                       <div>
                         <h4 className="font-semibold text-orange-900 mb-2">Claim Not Eligible</h4>
                         <p className="text-orange-800 mb-2">
-                          BBG claims require a 3-month waiting period. You purchased BBG coverage on 17 August 2025. You can file a claim starting 17 November 2025.
+                          {eligibilityError.minimumWaitMonths ? (
+                            // Waiting period error
+                            (() => {
+                              const regDate = eligibilityError.registrationDate ? new Date(eligibilityError.registrationDate).toLocaleDateString('en-IN', { 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                              }) : '';
+                              const eligibleDate = eligibilityError.eligibleDate ? new Date(eligibilityError.eligibleDate).toLocaleDateString('en-IN', { 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                              }) : '';
+                              const waitingPeriod = eligibilityError.minimumWaitMonths === 10 ? '10-month' : '3-month';
+                              
+                              return `BBG claims require a ${waitingPeriod} waiting period. You purchased BBG coverage on ${regDate}. You can file a claim starting ${eligibleDate}.`;
+                            })()
+                          ) : (
+                            // Device age or other eligibility issues
+                            eligibilityError.message
+                          )}
                         </p>
                         
                         

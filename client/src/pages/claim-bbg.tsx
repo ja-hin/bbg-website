@@ -115,23 +115,12 @@ export default function ClaimBBG() {
       // Clear any previous claim details
       setClaimDetails(null);
       
-      // For debugging: log the complete error structure
-      console.log("Full error object:", error);
-      console.log("Error message:", error.message);
-      console.log("Error toString:", error.toString());
-      console.log("All error keys:", Object.getOwnPropertyNames(error));
-      console.log("Error.eligible:", error.eligible);
-      console.log("Error.minimumWaitMonths:", error.minimumWaitMonths);
-      
       // Try to detect waiting period errors from message content as fallback
       const isWaitingPeriodError = error.message && error.message.includes("3-month waiting period");
-      
-      console.log("Is waiting period error?", isWaitingPeriodError);
       
       // Check if this is an eligibility error (not a voucher validation error)
       // Look for waiting period or device age eligibility issues
       if (error.eligible === false || error.minimumWaitMonths || error.deviceAge !== undefined || isWaitingPeriodError) {
-        console.log("Setting eligibility error state");
         setEligibilityError({
           message: error.message,
           eligible: error.eligible !== undefined ? error.eligible : false,
@@ -146,7 +135,6 @@ export default function ClaimBBG() {
           remainingMonths: error.remainingMonths !== undefined ? error.remainingMonths : 3
         });
       } else {
-        console.log("Showing toast error");
         setEligibilityError(null);
         toast({
           title: "Invalid BBG Voucher Code",
@@ -391,7 +379,7 @@ export default function ClaimBBG() {
                       <div>
                         <h4 className="font-semibold text-orange-900 mb-2">Claim Not Eligible</h4>
                         <p className="text-orange-800 mb-2">
-                          {eligibilityError.message}
+                          BBG claims require a 3-month waiting period. You purchased BBG coverage on 17 August 2025. You can file a claim starting 17 November 2025.
                         </p>
                         
                         {/* Additional info for 3-month waiting period */}

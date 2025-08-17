@@ -442,6 +442,62 @@ export class CommunicationService {
   async sendEmailWithSmtpSettings(to: string, subject: string, html: string, smtpSettings: any, text?: string) {
     return await this.emailService.sendEmailWithSmtpSettings(to, subject, html, smtpSettings, text);
   }
+
+  async sendDistributorBBGNotification(
+    notificationData: {
+      distributorName: string;
+      distributorEmail: string;
+      distributorContact: string;
+      customerName: string;
+      customerContact: string;
+      sellerCode: string;
+      voucherCode: string;
+      deviceType: string;
+      brand: string;
+      modelName: string;
+    }
+  ) {
+    const results = {
+      email: null as any,
+      sms: null as any,
+      whatsapp: null as any
+    };
+
+    try {
+      // Email notification using template
+      const emailTemplate = await templateService.getTemplate('email', 'distributor_bbg_notification');
+      if (emailTemplate) {
+        const emailContent = templateService.renderTemplate(emailTemplate.content, notificationData);
+        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'New BBG Purchase Through Your Referral', notificationData);
+        
+        // Fetch SMTP settings from database
+        const smtpSettings = await this.getSmtpSettings();
+        if (smtpSettings) {
+          results.email = await this.emailService.sendEmailWithSmtpSettings(notificationData.distributorEmail, emailSubject, emailContent, smtpSettings);
+        } else {
+          results.email = await this.emailService.sendEmail(notificationData.distributorEmail, emailSubject, emailContent);
+        }
+      }
+
+      // SMS notification using template
+      const smsTemplate = await templateService.getTemplate('sms', 'distributor_bbg_notification');
+      if (smsTemplate) {
+        const smsMessage = templateService.renderTemplate(smsTemplate.content, notificationData);
+        results.sms = await this.smsService.sendSMS(notificationData.distributorContact, smsMessage);
+      }
+
+      // WhatsApp notification using template
+      const whatsappTemplate = await templateService.getTemplate('whatsapp', 'distributor_bbg_notification');
+      if (whatsappTemplate) {
+        const whatsappMessage = templateService.renderTemplate(whatsappTemplate.content, notificationData);
+        results.whatsapp = await this.whatsappService.sendWhatsAppMessage(notificationData.distributorContact, whatsappMessage);
+      }
+    } catch (error) {
+      console.error('Error sending distributor BBG notification:', error);
+    }
+
+    return results;
+  }
 }
 
 export const communicationService = new CommunicationService();

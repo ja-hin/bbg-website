@@ -17,7 +17,7 @@ export interface MessageTemplate {
 export interface CreateTemplateData {
   name: string;
   type: 'email' | 'sms' | 'whatsapp';
-  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification';
+  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification' | 'distributor_bbg_notification';
   subject?: string;
   content: string;
   variables: string[];
@@ -36,7 +36,7 @@ export class TemplateService {
           id INT IDENTITY(1,1) PRIMARY KEY,
           name NVARCHAR(255) NOT NULL,
           type NVARCHAR(50) NOT NULL CHECK (type IN ('email', 'sms', 'whatsapp')),
-          event NVARCHAR(100) NOT NULL CHECK (event IN ('customer_registration', 'referral_partner_welcome', 'claim_status_update', 'payout_notification', 'otp_verification')),
+          event NVARCHAR(100) NOT NULL CHECK (event IN ('customer_registration', 'referral_partner_welcome', 'claim_status_update', 'payout_notification', 'otp_verification', 'distributor_bbg_notification')),
           subject NVARCHAR(500) NULL,
           content NTEXT NOT NULL,
           variables NTEXT NULL, -- JSON array of variable names
@@ -50,11 +50,50 @@ export class TemplateService {
       await db.pool.request().query(createTableQuery);
       console.log('Message templates table initialized');
       
+      // Update constraint to allow new event types
+      await this.updateEventConstraint();
+      
       // Insert default templates if none exist
       await this.createDefaultTemplates();
     } catch (error) {
       console.error('Error initializing template tables:', error);
       throw error;
+    }
+  }
+
+  // Update event constraint to allow new event types
+  async updateEventConstraint(): Promise<void> {
+    try {
+      // Drop existing constraint if it exists
+      const dropConstraintQuery = `
+        IF EXISTS (SELECT * FROM sys.check_constraints WHERE name LIKE '%event%' AND parent_object_id = OBJECT_ID('message_templates'))
+        BEGIN
+          DECLARE @constraint_name NVARCHAR(255)
+          SELECT @constraint_name = name FROM sys.check_constraints 
+          WHERE name LIKE '%event%' AND parent_object_id = OBJECT_ID('message_templates')
+          
+          IF @constraint_name IS NOT NULL
+          BEGIN
+            DECLARE @sql NVARCHAR(MAX) = 'ALTER TABLE message_templates DROP CONSTRAINT ' + @constraint_name
+            EXEC sp_executesql @sql
+          END
+        END
+      `;
+      
+      await db.pool.request().query(dropConstraintQuery);
+      
+      // Add new constraint with updated event types
+      const addConstraintQuery = `
+        ALTER TABLE message_templates 
+        ADD CONSTRAINT CHK_message_templates_event 
+        CHECK (event IN ('customer_registration', 'referral_partner_welcome', 'claim_status_update', 'payout_notification', 'otp_verification', 'distributor_bbg_notification'))
+      `;
+      
+      await db.pool.request().query(addConstraintQuery);
+      console.log('✅ Updated event constraint to include distributor_bbg_notification');
+    } catch (error) {
+      console.log('⚠️ Event constraint update failed (may already be correct):', error.message);
+      // Don't throw error as this is a migration that might not be needed
     }
   }
 
@@ -237,6 +276,61 @@ export class TemplateService {
           event: 'otp_verification',
           content: 'Your XtraCover BBG OTP is {{otp}}. Valid for 10 minutes. Do not share this code with anyone. - XtraCover',
           variables: ['otp']
+        },
+        // Distributor BBG Notification - Email
+        {
+          name: 'Distributor BBG Notification - Email',
+          type: 'email',
+          event: 'distributor_bbg_notification',
+          subject: 'New BBG Purchase Through Your Referral Code {{sellerCode}} - XtraCover',
+          content: `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #254696;">XtraCover BBG</h1>
+    <h2 style="color: #374151;">New BBG Purchase Notification</h2>
+  </div>
+  
+  <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #374151; margin-top: 0;">Hi {{distributorName}},</h3>
+    <p>Great news! A new BBG has been purchased through your referral code.</p>
+    
+    <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #254696;">
+      <h4 style="color: #254696; margin: 0 0 10px 0;">Purchase Details:</h4>
+      <p style="margin: 5px 0;"><strong>Customer:</strong> {{customerName}}</p>
+      <p style="margin: 5px 0;"><strong>Contact:</strong> {{customerContact}}</p>
+      <p style="margin: 5px 0;"><strong>Device:</strong> {{brand}} {{modelName}} ({{deviceType}})</p>
+      <p style="margin: 5px 0;"><strong>BBG Voucher Code:</strong> {{voucherCode}}</p>
+      <p style="margin: 5px 0;"><strong>Your Referral Code:</strong> {{sellerCode}}</p>
+    </div>
+    
+    <div style="background: #dcfce7; padding: 15px; border-radius: 6px; border-left: 4px solid #16a34a;">
+      <p style="margin: 0; color: #166534;"><strong>Commission Earned:</strong> You'll receive your commission once the customer's BBG registration is verified. Check your dashboard for payout details.</p>
+    </div>
+  </div>
+  
+  <div style="text-align: center; margin-top: 30px;">
+    <p style="color: #6b7280;">Thank you for being our valued partner!</p>
+    <p style="color: #6b7280; font-size: 14px;">XtraCover BBG Team</p>
+  </div>
+</div>
+          `,
+          variables: ['distributorName', 'distributorEmail', 'distributorContact', 'customerName', 'customerContact', 'sellerCode', 'voucherCode', 'deviceType', 'brand', 'modelName']
+        },
+        // Distributor BBG Notification - SMS
+        {
+          name: 'Distributor BBG Notification - SMS',
+          type: 'sms',
+          event: 'distributor_bbg_notification',
+          content: 'New BBG purchased through your code {{sellerCode}}! Customer: {{customerName}} ({{customerContact}}). Device: {{brand}} {{modelName}}. BBG Code: {{voucherCode}}. Commission earned! - XtraCover',
+          variables: ['distributorName', 'customerName', 'customerContact', 'sellerCode', 'voucherCode', 'brand', 'modelName']
+        },
+        // Distributor BBG Notification - WhatsApp
+        {
+          name: 'Distributor BBG Notification - WhatsApp',
+          type: 'whatsapp',
+          event: 'distributor_bbg_notification',
+          content: '🎉 New BBG Purchase Alert!\n\nHi {{distributorName}}, great news!\n\nCustomer: {{customerName}}\nContact: {{customerContact}}\nDevice: {{brand}} {{modelName}}\nBBG Code: {{voucherCode}}\nYour Code: {{sellerCode}}\n\n💰 Commission earned! Check your dashboard for details.\n\nThank you for being our partner!\n- XtraCover BBG',
+          variables: ['distributorName', 'customerName', 'customerContact', 'sellerCode', 'voucherCode', 'brand', 'modelName']
         }
       ];
 

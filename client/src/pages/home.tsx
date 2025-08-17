@@ -27,6 +27,17 @@ export default function Home() {
     queryKey: ['/api/theme/current'],
     retry: false,
   });
+
+  // Fetch dynamic BBG prices
+  const { data: bbgPrices, isLoading: pricesLoading } = useQuery({
+    queryKey: ["/api/bbg-prices"],
+    queryFn: async () => {
+      const response = await fetch("/api/bbg-prices");
+      if (!response.ok) throw new Error("Failed to fetch BBG prices");
+      return response.json();
+    }
+  });
+
   // Fetch regular claim value slabs for mobile (exclude Acer BBG special rates)
   const { data: mobileSlabs, isLoading: isMobileLoading } = useQuery({
     queryKey: ['/api/claim-value-slabs/active/mobile/regular'],
@@ -83,7 +94,9 @@ export default function Home() {
                   <Laptop className="h-8 w-8 sm:h-10 sm:w-10 text-xtra-primary" />
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Laptop BBG</h3>
-                <div className="text-3xl sm:text-4xl font-bold text-xtra-primary mb-2">₹125</div>
+                <div className="text-3xl sm:text-4xl font-bold text-xtra-primary mb-2">
+                  {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 299}`}
+                </div>
                 <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">(inclusive of GST)</p>
                 <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Assured buyback value for your Laptop</p>
                 <ul className="text-left space-y-2 text-sm text-gray-600">
@@ -113,7 +126,9 @@ export default function Home() {
                   <Smartphone className="h-8 w-8 sm:h-10 sm:w-10 text-xtra-primary" />
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Mobile BBG</h3>
-                <div className="text-3xl sm:text-4xl font-bold text-xtra-primary mb-2">₹99</div>
+                <div className="text-3xl sm:text-4xl font-bold text-xtra-primary mb-2">
+                  {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 99}`}
+                </div>
                 <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">(inclusive of GST)</p>
                 <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Assured buyback value for your Mobile</p>
                 <ul className="text-left space-y-2 text-sm text-gray-600">

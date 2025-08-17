@@ -5,6 +5,11 @@ This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) sys
 
 ## Recent Critical Updates
 **Date: August 17, 2025**
+- **✅ DYNAMIC BBG PRICING SYSTEM IMPLEMENTED**: Complete integration of admin-configurable BBG prices with database table structure
+- **✅ ADMIN BBG SETTINGS PAGE**: Created table-format admin interface for managing laptop and mobile BBG pricing
+- **✅ UNIFIED PRICE FETCHING**: All frontend pages (homepage, customer registration, thank-you pages) now use dynamic prices from /api/bbg-prices endpoint
+- **✅ REAL-TIME PRICE UPDATES**: Changes made in admin dashboard immediately reflected across all customer-facing pages
+- **✅ FALLBACK PRICING**: System maintains default prices (laptop: ₹299, mobile: ₹99) if database unavailable
 - **✅ DEVICE AGE VALIDATION ADDED**: Devices older than 1 year from purchase date cannot buy regular BBG coverage (Acer BBG registrations exempt)
 - **✅ DUAL VALIDATION SYSTEM**: Both frontend (Zod schema) and backend (API routes) validate device age with proper error messages
 - **✅ ACER BBG EXEMPTION**: Acer registrations bypass age validation, allowing any device age with valid IMEI

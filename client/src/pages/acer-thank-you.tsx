@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +28,16 @@ interface AcerRegistrationData {
 export default function AcerThankYou() {
   const [registrationData, setRegistrationData] = useState<AcerRegistrationData | null>(null);
 
+  // Fetch dynamic BBG prices
+  const { data: bbgPrices } = useQuery({
+    queryKey: ["/api/bbg-prices"],
+    queryFn: async () => {
+      const response = await fetch("/api/bbg-prices");
+      if (!response.ok) throw new Error("Failed to fetch BBG prices");
+      return response.json();
+    }
+  });
+
   useEffect(() => {
     // Get registration data from session storage
     const data = sessionStorage.getItem('acerRegistrationSuccess');
@@ -50,7 +61,12 @@ export default function AcerThankYou() {
   };
 
   const getDevicePrice = () => {
-    return registrationData?.deviceType === 'mobile' ? '₹99' : '₹125';
+    if (!registrationData) return '';
+    const defaultPrices = { mobile: 99, laptop: 299 };
+    const price = registrationData.deviceType === 'mobile' 
+      ? (bbgPrices?.mobile || defaultPrices.mobile)
+      : (bbgPrices?.laptop || defaultPrices.laptop);
+    return `₹${price}`;
   };
 
   if (!registrationData) {

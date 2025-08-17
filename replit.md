@@ -5,6 +5,11 @@ This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) sys
 
 ## Recent Critical Updates
 **Date: August 17, 2025**
+- **✅ 3-MONTH WAITING PERIOD IMPLEMENTED**: Regular BBG customers must wait 3 months from purchase date before filing claims (Acer BBG registrations exempt)
+- **✅ BACKEND VALIDATION ADDED**: New business rule in /api/claims/check endpoint validates registration date vs current date
+- **✅ FRONTEND ERROR HANDLING**: Enhanced claim form displays detailed waiting period information with countdown and registration details
+- **✅ REGISTRATION SOURCE TRACKING**: System differentiates between 'regular' and 'acer_bbg' registrations for proper validation rules
+- **✅ COMPREHENSIVE USER FEEDBACK**: Clear error messages show registration date, months waited, and exact eligibility date
 - **✅ DYNAMIC BBG PRICING SYSTEM IMPLEMENTED**: Complete integration of admin-configurable BBG prices with database table structure
 - **✅ ADMIN BBG SETTINGS PAGE**: Created table-format admin interface for managing laptop and mobile BBG pricing
 - **✅ UNIFIED PRICE FETCHING**: All frontend pages (homepage, customer registration, thank-you pages) now use dynamic prices from /api/bbg-prices endpoint

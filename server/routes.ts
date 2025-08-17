@@ -1109,8 +1109,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Customer registration not yet verified" });
       }
 
-      // Calculate claim percentage based on device age (using purchase date, not registration date)
+      // NEW BUSINESS RULE: Regular BBG customers must wait 3 months from purchase before claiming
+      // (Acer BBG registrations are exempt from this restriction)
+      const registrationSource = customer.registrationSource || 'regular';
+      const isAcerBBG = registrationSource === 'acer_bbg';
+      
+      // Calculate time since BBG registration (not device purchase)
+      const registrationDate = new Date(customer.createdAt!);
       const currentDate = new Date();
+      
+      let monthsSinceRegistration = (currentDate.getFullYear() - registrationDate.getFullYear()) * 12;
+      monthsSinceRegistration += currentDate.getMonth() - registrationDate.getMonth();
+      
+      // Adjust if current day is before the registration day in the month
+      if (currentDate.getDate() < registrationDate.getDate()) {
+        monthsSinceRegistration--;
+      }
+
+      // Check 3-month waiting period for regular BBG only
+      if (!isAcerBBG && monthsSinceRegistration < 3) {
+        return res.status(400).json({
+          message: `You must wait 3 months from BBG purchase before filing a claim. You registered on ${registrationDate.toDateString()}. Please wait ${3 - monthsSinceRegistration} more month(s) to become eligible for claims.`,
+          eligible: false,
+          registrationDate: registrationDate.toISOString(),
+          monthsSinceRegistration: monthsSinceRegistration,
+          minimumWaitMonths: 3,
+          registrationSource: registrationSource
+        });
+      }
+
+      console.log("BBG Registration eligibility check:", {
+        registrationSource,
+        isAcerBBG,
+        registrationDate: registrationDate.toISOString(),
+        monthsSinceRegistration,
+        eligible: isAcerBBG || monthsSinceRegistration >= 3
+      });
+
+      // Calculate claim percentage based on device age (using purchase date, not registration date)
       const purchaseDate = new Date(customer.dateOfPurchase || customer.createdAt!);
       
       // More accurate month calculation

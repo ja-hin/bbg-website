@@ -62,9 +62,14 @@ interface ClaimDetails {
 interface ClaimError {
   message: string;
   eligible: boolean;
-  deviceAge: number;
+  deviceAge?: number;
   minimumAge?: number;
   maximumAge?: number;
+  // New fields for 3-month waiting period validation
+  registrationDate?: string;
+  monthsSinceRegistration?: number;
+  minimumWaitMonths?: number;
+  registrationSource?: string;
 }
 
 export default function ClaimBBG() {
@@ -107,13 +112,28 @@ export default function ClaimBBG() {
     onError: (error: any) => {
       // Clear any previous claim details
       setClaimDetails(null);
-      setEligibilityError(null);
       
-      toast({
-        title: "Invalid BBG Voucher Code",
-        description: error.message || "Please check your voucher code and try again.",
-        variant: "destructive",
-      });
+      // Check if this is an eligibility error (not a voucher validation error)
+      if (error.eligible === false) {
+        setEligibilityError({
+          message: error.message,
+          eligible: error.eligible,
+          deviceAge: error.deviceAge,
+          minimumAge: error.minimumAge,
+          maximumAge: error.maximumAge,
+          registrationDate: error.registrationDate,
+          monthsSinceRegistration: error.monthsSinceRegistration,
+          minimumWaitMonths: error.minimumWaitMonths,
+          registrationSource: error.registrationSource
+        });
+      } else {
+        setEligibilityError(null);
+        toast({
+          title: "Invalid BBG Voucher Code",
+          description: error.message || "Please check your voucher code and try again.",
+          variant: "destructive",
+        });
+      }
     }
   });
 
@@ -349,9 +369,38 @@ export default function ClaimBBG() {
                     <div className="flex items-start">
                       <AlertCircle className="h-5 w-5 text-orange-600 mt-0.5 mr-3 flex-shrink-0" />
                       <div>
-                        <p className="text-orange-800">
+                        <h4 className="font-semibold text-orange-900 mb-2">Claim Not Eligible</h4>
+                        <p className="text-orange-800 mb-2">
                           {eligibilityError.message}
                         </p>
+                        
+                        {/* Additional info for 3-month waiting period */}
+                        {eligibilityError.minimumWaitMonths === 3 && eligibilityError.registrationDate && (
+                          <div className="text-sm text-orange-700 bg-orange-100 p-3 rounded mt-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              <div><strong>Registration Type:</strong> {eligibilityError.registrationSource === 'acer_bbg' ? 'Acer BBG' : 'Regular BBG'}</div>
+                              <div><strong>Registration Date:</strong> {new Date(eligibilityError.registrationDate).toLocaleDateString()}</div>
+                              <div><strong>Months Since Registration:</strong> {eligibilityError.monthsSinceRegistration}</div>
+                              <div><strong>Minimum Wait Period:</strong> 3 months</div>
+                            </div>
+                            <p className="mt-2 font-medium">
+                              ⏰ You can file a claim after: {new Date(new Date(eligibilityError.registrationDate).getTime() + (3 * 30 * 24 * 60 * 60 * 1000)).toLocaleDateString()}
+                            </p>
+                          </div>
+                        )}
+                        
+                        {/* Additional info for device age eligibility */}
+                        {eligibilityError.deviceAge !== undefined && (
+                          <div className="text-sm text-orange-700 bg-orange-100 p-3 rounded mt-2">
+                            <div><strong>Device Age:</strong> {eligibilityError.deviceAge} months</div>
+                            {eligibilityError.minimumAge && (
+                              <div><strong>Minimum Eligible Age:</strong> {eligibilityError.minimumAge} months</div>
+                            )}
+                            {eligibilityError.maximumAge && (
+                              <div><strong>Maximum Coverage Age:</strong> {eligibilityError.maximumAge} months</div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -590,7 +639,7 @@ export default function ClaimBBG() {
         </Card>
 
         {/* Customer's Preserved Claim Value Slabs - Only shown after BBG code check */}
-        {claimDetails && claimDetails.registrationSlabData && (
+        {claimDetails && claimDetails.registrationSlabData && claimDetails.registrationSlabData.slabs && (
           <Card>
             <CardContent className="pt-6">
               <div className="overflow-x-auto border rounded-lg">

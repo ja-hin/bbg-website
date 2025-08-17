@@ -870,6 +870,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
+      // Validate device age - must be within 1 year for regular BBG (not applicable to Acer BBG)
+      const devicePurchaseDate = new Date(customerData.dateOfPurchase);
+      const currentDate = new Date();
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(currentDate.getFullYear() - 1);
+      
+      // Check if this is NOT an Acer registration and device is older than 1 year
+      const isAcerRegistration = customerData.registrationSource === 'acer_bbg' || 
+                                req.body.registrationSource === 'acer_bbg' ||
+                                req.url.includes('acer');
+      
+      if (!isAcerRegistration && devicePurchaseDate < oneYearAgo) {
+        const daysDifference = Math.floor((currentDate.getTime() - devicePurchaseDate.getTime()) / (1000 * 60 * 60 * 24));
+        return res.status(400).json({ 
+          message: `Device is too old for BBG coverage. Your device was purchased ${daysDifference} days ago, but BBG is only available for devices purchased within the last 365 days.`,
+          errorCode: 'DEVICE_TOO_OLD'
+        });
+      }
+
       // Find the appropriate claim value slab based on device age at purchase
       let activeClaimValueSlab;
       const purchaseDate = new Date(customerData.dateOfPurchase);

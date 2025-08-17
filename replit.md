@@ -5,6 +5,9 @@ This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) sys
 
 ## Recent Critical Updates
 **Date: August 17, 2025**
+- **✅ DEVICE AGE VALIDATION ADDED**: Devices older than 1 year from purchase date cannot buy regular BBG coverage (Acer BBG registrations exempt)
+- **✅ DUAL VALIDATION SYSTEM**: Both frontend (Zod schema) and backend (API routes) validate device age with proper error messages
+- **✅ ACER BBG EXEMPTION**: Acer registrations bypass age validation, allowing any device age with valid IMEI
 - **✅ SHORTENED REFERRAL CODES**: Updated referral code generation to use 4-5 digit format with distributor initials + mobile digits
 - **✅ DUAL STORAGE SYSTEM UPDATED**: Modified both storage.ts and sql-storage.ts to generate personalized codes (e.g., "JS123" for John Smith with mobile ending in 123)
 - **✅ BACKWARDS COMPATIBILITY**: Maintains fallback to legacy format if distributor data unavailable

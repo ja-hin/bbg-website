@@ -8,9 +8,11 @@ async function throwIfResNotOk(res: Response) {
     try {
       const errorData = JSON.parse(text);
       // Create error with full error data available as properties
-      const error = new Error(errorData.message || text || res.statusText || 'An error occurred');
+      const error = new Error(errorData.message || text || res.statusText || 'An error occurred') as any;
       // Preserve all error data as properties on the error object
-      Object.assign(error, errorData);
+      for (const key in errorData) {
+        error[key] = errorData[key];
+      }
       throw error;
     } catch (parseError) {
       // If not JSON, throw plain error

@@ -115,9 +115,15 @@ export default function ClaimBBG() {
       // Clear any previous claim details
       setClaimDetails(null);
       
+      console.log("Claim check error:", error);
+      console.log("Error properties:", Object.keys(error));
+      console.log("error.eligible:", error.eligible);
+      console.log("error.minimumWaitMonths:", error.minimumWaitMonths);
+      
       // Check if this is an eligibility error (not a voucher validation error)
       // Look for waiting period or device age eligibility issues
-      if (error.eligible === false || error.minimumWaitMonths || error.deviceAge !== undefined) {
+      if (error.eligible === false || error.minimumWaitMonths === 3 || error.deviceAge !== undefined) {
+        console.log("Detected as eligibility error, setting eligibilityError state");
         setEligibilityError({
           message: error.message,
           eligible: error.eligible,
@@ -131,7 +137,10 @@ export default function ClaimBBG() {
           eligibleDate: error.eligibleDate,
           remainingMonths: error.remainingMonths
         });
+        // Clear any toast notification for eligibility errors
+        return;
       } else {
+        console.log("Not an eligibility error, showing toast");
         setEligibilityError(null);
         toast({
           title: "Invalid BBG Voucher Code",

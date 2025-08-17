@@ -4906,55 +4906,56 @@ Required: GUPSHUP_API_KEY environment variable
       
       const result = await request.query(`
         SELECT 
-          d.id,
-          d.distributor_code as 'Referral Code',
-          d.company_name as 'Company Name',
-          d.contact_person as 'Contact Person',
-          d.email as 'Email',
-          d.phone as 'Phone',
-          d.business_type as 'Business Type',
-          d.commission_rate as 'Commission Rate (%)',
-          d.address as 'Address',
-          d.city as 'City',
-          d.state as 'State',
-          d.pincode as 'Pincode',
-          d.gst_number as 'GST Number',
-          d.pan_number as 'PAN Number',
-          d.bank_name as 'Bank Name',
-          d.bank_account_number as 'Account Number',
-          d.bank_ifsc as 'IFSC Code',
-          d.bank_account_holder_name as 'Account Holder Name',
-          d.registration_date as 'Registration Date',
-          d.is_verified as 'Verified',
-          d.is_active as 'Active',
+          rp.id,
+          rp.sellerCode as 'Referral Code',
+          rp.name as 'Partner Name',
+          rp.businessName as 'Business Name',
+          rp.contact as 'Contact Number',
+          rp.email as 'Email Address',
+          rp.pincode as 'Area Pincode',
+          rp.preferredMode as 'Preferred Contact',
+          rp.gstin as 'GST Number',
+          rp.bankAccount as 'Bank Account',
+          rp.ifscCode as 'IFSC Code',
+          rp.accountHolderName as 'Account Holder',
+          rp.createdAt as 'Registration Date',
+          -- Customer statistics
           COALESCE(customer_stats.total_customers, 0) as 'Total Referrals',
-          COALESCE(customer_stats.total_commission, 0) as 'Total Commission Earned',
-          COALESCE(payout_stats.paid_amount, 0) as 'Total Paid Amount',
-          COALESCE(payout_stats.pending_amount, 0) as 'Pending Payout'
-        FROM distributors d
+          COALESCE(customer_stats.laptop_customers, 0) as 'Laptop Referrals',
+          COALESCE(customer_stats.mobile_customers, 0) as 'Mobile Referrals',
+          COALESCE(customer_stats.acer_customers, 0) as 'Acer BBG Referrals',
+          -- Financial data
+          COALESCE(customer_stats.total_commission, 0) as 'Total Commission Earned (₹)',
+          COALESCE(customer_stats.total_invoice_value, 0) as 'Total Customer Invoice Value (₹)',
+          -- Performance metrics
+          CASE 
+            WHEN customer_stats.total_customers > 0 
+            THEN ROUND(CAST(customer_stats.total_commission as DECIMAL(10,2)) / customer_stats.total_customers, 2) 
+            ELSE 0 
+          END as 'Avg Commission per Customer (₹)',
+          -- Recent activity
+          customer_stats.latest_registration as 'Latest Customer Registration'
+        FROM referral_partners rp
         LEFT JOIN (
           SELECT 
             seller_code,
             COUNT(*) as total_customers,
-            SUM(CASE WHEN device_type = 'laptop' THEN 125 * 0.05 ELSE 99 * 0.05 END) as total_commission
+            COUNT(CASE WHEN device_type = 'laptop' THEN 1 END) as laptop_customers,
+            COUNT(CASE WHEN device_type = 'mobile' THEN 1 END) as mobile_customers,
+            COUNT(CASE WHEN registration_source = 'acer_bbg' THEN 1 END) as acer_customers,
+            SUM(CASE WHEN device_type = 'laptop' THEN 125 * 0.05 ELSE 99 * 0.05 END) as total_commission,
+            SUM(CAST(invoice_value as DECIMAL(10,2))) as total_invoice_value,
+            MAX(registration_date) as latest_registration
           FROM customers 
           WHERE seller_code IS NOT NULL AND seller_code != ''
           GROUP BY seller_code
-        ) customer_stats ON d.distributor_code = customer_stats.seller_code
-        LEFT JOIN (
-          SELECT 
-            distributor_id,
-            SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as paid_amount,
-            SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) as pending_amount
-          FROM commission_payouts
-          GROUP BY distributor_id
-        ) payout_stats ON d.id = payout_stats.distributor_id
-        ORDER BY d.registration_date DESC
+        ) customer_stats ON rp.sellerCode = customer_stats.seller_code
+        ORDER BY customer_stats.total_customers DESC, rp.createdAt DESC
       `);
       
       // Set headers for CSV download
       res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', 'attachment; filename="referral_partners_export.csv"');
+      res.setHeader('Content-Disposition', 'attachment; filename="referral_partners_comprehensive_export.csv"');
       
       // Convert to CSV
       const partners = result.recordset;
@@ -4984,6 +4985,79 @@ Required: GUPSHUP_API_KEY environment variable
     } catch (error: any) {
       console.error('Referral partner export error:', error);
       res.status(500).json({ message: "Failed to export referral partner data" });
+    }
+  });
+
+  // Export commission payouts with detailed information
+  app.get("/api/admin/export/payouts", isAdminAuthenticated, async (req, res) => {
+    try {
+      await db.connectDB();
+      const request = db.pool.request();
+      
+      const result = await request.query(`
+        SELECT 
+          cp.id as 'Payout ID',
+          cp.amount as 'Payout Amount (₹)',
+          cp.status as 'Status',
+          cp.paymentReference as 'Payment Reference',
+          cp.createdAt as 'Created Date',
+          cp.paidAt as 'Paid Date',
+          -- Distributor information
+          rp.name as 'Partner Name',
+          rp.contact as 'Partner Contact',
+          rp.email as 'Partner Email',
+          rp.sellerCode as 'Seller Code',
+          rp.bankAccount as 'Bank Account',
+          rp.ifscCode as 'IFSC Code',
+          rp.accountHolderName as 'Account Holder',
+          -- Customer information
+          c.name as 'Customer Name',
+          c.contact as 'Customer Contact',
+          c.email as 'Customer Email',
+          c.voucher_code as 'BBG Voucher Code',
+          c.device_type as 'Device Type',
+          c.brand as 'Brand',
+          c.model_name as 'Model',
+          c.invoice_value as 'Device Value (₹)',
+          c.registration_date as 'Registration Date'
+        FROM commission_payouts cp
+        JOIN referral_partners rp ON cp.distributorId = rp.id
+        JOIN customers c ON cp.customerId = c.id
+        ORDER BY cp.createdAt DESC
+      `);
+      
+      // Set headers for CSV download
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="commission_payouts_export.csv"');
+      
+      // Convert to CSV
+      const payouts = result.recordset;
+      if (payouts.length === 0) {
+        return res.send('No payout data available');
+      }
+      
+      const headers = Object.keys(payouts[0]);
+      const csvContent = [
+        headers.join(','),
+        ...payouts.map(payout => 
+          headers.map(header => {
+            const value = payout[header];
+            // Handle null/undefined values and escape commas
+            if (value === null || value === undefined) return '';
+            const stringValue = String(value);
+            // Escape quotes and wrap in quotes if contains comma or quotes
+            if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+              return '"' + stringValue.replace(/"/g, '""') + '"';
+            }
+            return stringValue;
+          }).join(',')
+        )
+      ].join('\n');
+      
+      res.send(csvContent);
+    } catch (error: any) {
+      console.error('Payouts export error:', error);
+      res.status(500).json({ message: "Failed to export payout data" });
     }
   });
 

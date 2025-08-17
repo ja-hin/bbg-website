@@ -27,7 +27,8 @@ import {
   Clock,
   AlertCircle,
   XCircle,
-  FileText
+  FileText,
+  Download
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -150,6 +151,31 @@ export default function AdminDistributors() {
     });
   };
 
+  // Export functions
+  const exportCustomersData = () => {
+    window.open('/api/admin/export/customers', '_blank');
+    toast({
+      title: "Export Started",
+      description: "Customer data export has been initiated. Download will start shortly.",
+    });
+  };
+
+  const exportReferralPartnersData = () => {
+    window.open('/api/admin/export/referral-partners', '_blank');
+    toast({
+      title: "Export Started", 
+      description: "Referral partner data export has been initiated. Download will start shortly.",
+    });
+  };
+
+  const exportPayoutsData = () => {
+    window.open('/api/admin/export/payouts', '_blank');
+    toast({
+      title: "Export Started",
+      description: "Payout data export has been initiated. Download will start shortly.",
+    });
+  };
+
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       pending: { variant: "secondary" as const, icon: Clock, color: "text-yellow-600" },
@@ -203,11 +229,31 @@ export default function AdminDistributors() {
 
           <TabsContent value="distributors" className="space-y-6">
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5" />
                   All Referral Partners
                 </CardTitle>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={exportReferralPartnersData}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Export Partners
+                  </Button>
+                  <Button
+                    onClick={exportCustomersData}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Export Customers
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 {distributorsLoading ? (
@@ -344,11 +390,21 @@ export default function AdminDistributors() {
 
           <TabsContent value="payouts" className="space-y-6">
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Wallet className="h-5 w-5" />
                   Commission Payouts
                 </CardTitle>
+                <Button
+                  onClick={exportPayoutsData}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                  disabled={!payouts || payouts.length === 0}
+                >
+                  <Download className="h-4 w-4" />
+                  Export Payouts
+                </Button>
               </CardHeader>
               <CardContent>
                 {payoutsLoading ? (

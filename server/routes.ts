@@ -1179,8 +1179,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // DYNAMIC WAITING PERIOD: Check admin-configurable waiting period settings
       // (Acer BBG registrations are exempt from this restriction)
-      const registrationSource = customer.registrationSource || 'regular';
-      const isAcerBBG = registrationSource === 'acer_bbg';
+      let registrationSource = customer.registrationSource || 'regular';
+      
+      // Enhanced Acer BBG detection: check both registrationSource field and registrationSlabData
+      let isAcerBBG = registrationSource === 'acer_bbg';
+      
+      // If not detected from registrationSource, check registrationSlabData
+      if (!isAcerBBG && customer.registrationSlabData) {
+        try {
+          const slabData = JSON.parse(customer.registrationSlabData);
+          if (slabData.registrationSource === 'acer_bbg') {
+            isAcerBBG = true;
+            registrationSource = 'acer_bbg';
+            console.log('🔧 Detected Acer BBG from registrationSlabData for voucher:', voucherCode);
+          }
+        } catch (error) {
+          console.error('Error parsing registrationSlabData:', error);
+        }
+      }
+      
+      console.log('🔍 Registration source check:', {
+        voucherCode,
+        customerRegistrationSource: customer.registrationSource,
+        detectedRegistrationSource: registrationSource,
+        isAcerBBG,
+        hasSlabData: !!customer.registrationSlabData
+      });
       
       // Get waiting period settings from database
       let waitingPeriodEnabled = true;

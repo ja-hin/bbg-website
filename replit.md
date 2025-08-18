@@ -4,6 +4,12 @@
 This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) system. Its primary purpose is to enable distributors (referral partners) to register and earn commissions, customers to register their devices for BBG protection, and users to claim their buyback guarantees. The project streamlines the BBG process, offers a user-friendly experience with real-time feedback, and provides robust administrative tools for managing all aspects of the system.
 
 ## Recent Critical Updates
+**Date: August 18, 2025**
+- **✅ FIXED ACER BBG WAITING PERIOD EXEMPTION**: Critical bug resolved where 3-month waiting period was incorrectly applying to Acer BBG voucher codes
+- **✅ ENHANCED ACER BBG DETECTION**: Added dual-detection system that checks both registrationSource field and registrationSlabData for proper Acer BBG identification  
+- **✅ WAITING PERIOD EXEMPTION VERIFIED**: Acer BBG registrations now properly bypass waiting period validation while regular BBG customers remain subject to configurable restrictions
+- **✅ TEXT CONTENT UPDATED**: Changed mobile BBG payout text from "Up to 70%" to "Up to 60%" as requested on homepage
+
 **Date: August 17, 2025**
 - **✅ COMPREHENSIVE FINANCE DATA EXPORT SYSTEM IMPLEMENTED**: Complete CSV export functionality for customers, referral partners, and commission payouts with finance-ready formatting
 - **✅ CUSTOMER DATA EXPORT**: Full customer records with BBG voucher codes, purchase details, payment references, registration source tracking, and referral partner associations

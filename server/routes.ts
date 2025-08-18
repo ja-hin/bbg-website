@@ -1181,20 +1181,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // (Acer BBG registrations are exempt from this restriction)
       let registrationSource = customer.registrationSource || 'regular';
       
-      // Enhanced Acer BBG detection: check both registrationSource field and registrationSlabData
+      // Enhanced Acer BBG detection: multiple detection methods for maximum reliability
       let isAcerBBG = registrationSource === 'acer_bbg';
+      let detectionMethod = 'registrationSource_field';
       
-      // If not detected from registrationSource, check registrationSlabData
+      // Method 1: Check registrationSlabData for Acer BBG source
       if (!isAcerBBG && customer.registrationSlabData) {
         try {
           const slabData = JSON.parse(customer.registrationSlabData);
           if (slabData.registrationSource === 'acer_bbg') {
             isAcerBBG = true;
             registrationSource = 'acer_bbg';
+            detectionMethod = 'registrationSlabData';
             console.log('🔧 Detected Acer BBG from registrationSlabData for voucher:', voucherCode);
           }
         } catch (error) {
-          console.error('Error parsing registrationSlabData:', error);
+          console.error('Error parsing registrationSlabData for voucher', voucherCode, ':', error);
+        }
+      }
+      
+      // Method 2: Check if customer has Acer BBG specific claim value slab (backup detection)
+      if (!isAcerBBG && customer.claimValueSlabId) {
+        try {
+          const slabDetails = await storage.getClaimValueSlabById(customer.claimValueSlabId);
+          if (slabDetails && slabDetails.registrationSource === 'acer_bbg') {
+            isAcerBBG = true;
+            registrationSource = 'acer_bbg';
+            detectionMethod = 'claimValueSlab';
+            console.log('🔧 Detected Acer BBG from claim value slab for voucher:', voucherCode);
+          }
+        } catch (error) {
+          console.error('Error checking claim value slab for voucher', voucherCode, ':', error);
         }
       }
       
@@ -1203,8 +1220,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         customerRegistrationSource: customer.registrationSource,
         detectedRegistrationSource: registrationSource,
         isAcerBBG,
-        hasSlabData: !!customer.registrationSlabData
+        detectionMethod,
+        hasSlabData: !!customer.registrationSlabData,
+        brand: customer.brand,
+        isAcerDevice: customer.brand === 'Acer',
+        claimValueSlabId: customer.claimValueSlabId
       });
+      
+      // FINAL VALIDATION: Ensure Acer BBG exemption is absolutely enforced
+      if (isAcerBBG) {
+        console.log('✅ CONFIRMED: Acer BBG customer detected - waiting period exemption will be applied');
+      } else if (customer.brand === 'Acer') {
+        console.log('⚠️  DETECTED: Regular Acer customer - waiting period rules apply normally');
+      }
       
       // Get waiting period settings from database
       let waitingPeriodEnabled = true;
@@ -1215,10 +1243,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (waitingPeriodSettings) {
           waitingPeriodEnabled = waitingPeriodSettings.enabled;
           waitingPeriodMonths = waitingPeriodSettings.months;
+          console.log('⚙️  Loaded waiting period settings:', { enabled: waitingPeriodEnabled, months: waitingPeriodMonths });
+        } else {
+          console.log('⚙️  No waiting period settings found, using defaults:', { enabled: waitingPeriodEnabled, months: waitingPeriodMonths });
         }
       } catch (error) {
-        console.error('Error fetching waiting period settings, using defaults:', error);
-        // Use defaults if database fails
+        console.error('⚠️  Error fetching waiting period settings, using defaults:', error);
+        // Use defaults if database fails - but Acer BBG customers are still exempt
         waitingPeriodEnabled = true;
         waitingPeriodMonths = 3;
       }
@@ -1236,7 +1267,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check dynamic waiting period for regular BBG only (if enabled)
-      if (!isAcerBBG && waitingPeriodEnabled && monthsSinceRegistration < waitingPeriodMonths) {
+      console.log('⏰ Waiting period evaluation:', {
+        isAcerBBG,
+        waitingPeriodEnabled,
+        monthsSinceRegistration,
+        waitingPeriodMonths,
+        shouldCheckWaitingPeriod: !isAcerBBG && waitingPeriodEnabled,
+        meetsWaitingPeriod: monthsSinceRegistration >= waitingPeriodMonths
+      });
+      
+      // ABSOLUTE FAILSAFE: Double-check Acer BBG exemption before applying waiting period
+      const absoluteAcerBBGCheck = registrationSource === 'acer_bbg' || 
+                                   (customer.registrationSlabData && customer.registrationSlabData.includes('"registrationSource":"acer_bbg"')) ||
+                                   (customer.claimValueSlabId && await storage.getClaimValueSlabById(customer.claimValueSlabId)?.then(slab => slab?.registrationSource === 'acer_bbg').catch(() => false));
+      
+      if (!isAcerBBG && !absoluteAcerBBGCheck && waitingPeriodEnabled && monthsSinceRegistration < waitingPeriodMonths) {
+        console.log('🚫 APPLYING WAITING PERIOD: Not an Acer BBG customer, waiting period restriction enforced');
+      } else if (isAcerBBG || absoluteAcerBBGCheck) {
+        console.log('✅ BYPASSING WAITING PERIOD: Acer BBG customer confirmed, exemption applied');
+      }
+      
+      if (!isAcerBBG && !absoluteAcerBBGCheck && waitingPeriodEnabled && monthsSinceRegistration < waitingPeriodMonths) {
         const remainingMonths = waitingPeriodMonths - monthsSinceRegistration;
         const eligibleDate = new Date(registrationDate);
         eligibleDate.setMonth(eligibleDate.getMonth() + waitingPeriodMonths);

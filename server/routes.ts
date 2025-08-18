@@ -6422,14 +6422,47 @@ Required: GUPSHUP_API_KEY environment variable
 
   // ===== ADMIN MENU ORDER MANAGEMENT ROUTES =====
 
-  // In-memory storage for menu order (in production, this would be in database)
-  let savedMenuOrder: any[] | null = null;
+  // Initialize menu_settings table
+  async function initializeMenuSettingsTable() {
+    try {
+      console.log('🔥 ENSURING MENU_SETTINGS TABLE EXISTS IN DATABASE...');
+      
+      await db.connectDB(); // Ensure connection
+      
+      // Check if menu_settings table exists
+      const tableCheck = await db.pool.request().query(`
+        SELECT COUNT(*) as count 
+        FROM INFORMATION_SCHEMA.TABLES 
+        WHERE TABLE_NAME = 'menu_settings'
+      `);
+      
+      if (tableCheck.recordset[0].count === 0) {
+        // Create menu_settings table
+        await db.pool.request().query(`
+          CREATE TABLE menu_settings (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            menu_data NVARCHAR(MAX) NOT NULL,
+            created_at DATETIME2 DEFAULT GETDATE(),
+            updated_at DATETIME2 DEFAULT GETDATE()
+          )
+        `);
+        console.log('✅ MENU_SETTINGS TABLE CREATED SUCCESSFULLY');
+      } else {
+        console.log('✅ MENU_SETTINGS TABLE ALREADY EXISTS');
+      }
+    } catch (error) {
+      console.error('❌ Error initializing menu_settings table:', error);
+    }
+  }
+
+  // Initialize the table
+  await initializeMenuSettingsTable();
 
   // Get admin menu order
   app.get("/api/admin/menu-order", isAdminAuthenticated, async (req, res) => {
     try {
-      // Always use default menu order to show BBG Price Settings
-      savedMenuOrder = null;
+      
+      // Default menu order
       const defaultMenuOrder = [
         { id: "dashboard", label: "Dashboard", href: "/admin/dashboard", icon: "BarChart3", order: 1, type: "item", parentId: null },
         { id: "masters", label: "Masters", href: "/admin/masters", icon: "Database", order: 2, type: "item", parentId: null },
@@ -6449,8 +6482,29 @@ Required: GUPSHUP_API_KEY environment variable
         { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 16, type: "item", parentId: null }
       ];
       
-      const menuToReturn = savedMenuOrder || defaultMenuOrder;
-      console.log('Returning menu order:', menuToReturn.map(item => `${item.order}. ${item.label}`));
+      // Try to get saved menu order from database
+      const savedMenuResult = await db.pool.request().query(`
+        SELECT TOP 1 menu_data 
+        FROM menu_settings 
+        ORDER BY id DESC
+      `);
+      
+      let menuToReturn = defaultMenuOrder;
+      
+      if (savedMenuResult.recordset.length > 0) {
+        try {
+          const savedMenuData = JSON.parse(savedMenuResult.recordset[0].menu_data);
+          menuToReturn = savedMenuData;
+          console.log('📋 Using saved menu order from database');
+        } catch (parseError) {
+          console.log('⚠️ Failed to parse saved menu data, using default');
+          menuToReturn = defaultMenuOrder;
+        }
+      } else {
+        console.log('📋 No saved menu order found, using default');
+      }
+      
+      console.log('Returning menu order:', menuToReturn.map((item: any) => `${item.order}. ${item.label}`));
       
       res.json({ menuItems: menuToReturn });
     } catch (error: any) {
@@ -6468,9 +6522,15 @@ Required: GUPSHUP_API_KEY environment variable
         return res.status(400).json({ message: "Invalid menu items data" });
       }
       
-      // Save to in-memory storage (in production, this would save to database)
-      savedMenuOrder = menuItems;
-      console.log('Menu order updated:', menuItems.map(item => `${item.order}. ${item.label}`));
+      // Save to database
+      await db.pool.request()
+        .input('menuData', sql.NVarChar(sql.MAX), JSON.stringify(menuItems))
+        .query(`
+          INSERT INTO menu_settings (menu_data) 
+          VALUES (@menuData)
+        `);
+      
+      console.log('💾 Menu order saved to database:', menuItems.map((item: any) => `${item.order}. ${item.label}`));
       
       res.json({ 
         success: true, 
@@ -6486,9 +6546,10 @@ Required: GUPSHUP_API_KEY environment variable
   // Reset admin menu order to default
   app.post("/api/admin/menu-order/reset", isAdminAuthenticated, async (req, res) => {
     try {
-      // Reset to default order by clearing saved order
-      savedMenuOrder = null;
-      console.log('Menu order reset to default');
+      // Clear all saved menu order data from database
+      await db.pool.request().query(`DELETE FROM menu_settings`);
+      
+      console.log('🔄 Menu order reset to default - database cleared');
       
       res.json({ 
         success: true, 

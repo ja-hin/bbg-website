@@ -662,9 +662,7 @@ export default function Home() {
               </div>
               <div className="flex-1 text-center sm:text-left">
                 <h2 className="text-xl sm:text-2xl font-bold mb-2 text-gray-900">Join Our Referral Program</h2>
-                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-0">
-                  Start earning commissions on every successful BBG registration. Easy setup and regular payouts.
-                </p>
+                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-0">Start earning ₹25 commission on every successful BBG registration. Easy setup and regular payouts.</p>
               </div>
               <div className="flex-shrink-0">
                 <Link href="/referral-partner-registration">

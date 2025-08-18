@@ -254,19 +254,54 @@ export class CommunicationService {
     };
 
     try {
+      console.log('🔔 Starting referral partner welcome notifications for:', partnerData.email);
+      
       // Email welcome using template
-      const emailTemplate = await templateService.getTemplate('email', 'distributor_welcome');
+      const emailTemplate = await templateService.getTemplate('email', 'referral_partner_welcome');
+      console.log('📧 Email template found:', emailTemplate ? 'Yes' : 'No');
+      
       if (emailTemplate) {
         const emailContent = templateService.renderTemplate(emailTemplate.content, partnerData);
         const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'Welcome to XtraCover BBG Partnership', partnerData);
-        results.email = await this.emailService.sendEmail(partnerData.email, emailSubject, emailContent);
+        
+        console.log('📧 Attempting to send welcome email to:', partnerData.email);
+        console.log('📧 Email subject:', emailSubject);
+        
+        // Try to get SMTP settings from database first
+        let smtpSettings = null;
+        try {
+          smtpSettings = await storage.getSmtpSettings();
+          console.log('📧 Database SMTP settings found:', smtpSettings ? 'Yes' : 'No');
+        } catch (error) {
+          console.log('📧 No database SMTP settings found, using env variables');
+        }
+        
+        // Use database SMTP settings if available, otherwise fallback to env
+        if (smtpSettings && smtpSettings.smtpHost) {
+          results.email = await this.emailService.sendEmailWithSmtpSettings(partnerData.email, emailSubject, emailContent, smtpSettings);
+        } else {
+          results.email = await this.emailService.sendEmail(partnerData.email, emailSubject, emailContent);
+        }
+        console.log('📧 Email send result:', results.email);
+      } else {
+        console.log('❌ No email template found for referral_partner_welcome');
+        results.email = { success: false, error: 'Template not found' };
       }
 
       // SMS welcome using template
-      const smsTemplate = await templateService.getTemplate('sms', 'distributor_welcome');
+      const smsTemplate = await templateService.getTemplate('sms', 'referral_partner_welcome');
+      console.log('📱 SMS template found:', smsTemplate ? 'Yes' : 'No');
+      
       if (smsTemplate) {
         const smsMessage = templateService.renderTemplate(smsTemplate.content, partnerData);
+        console.log('📱 Attempting to send SMS to:', partnerData.contact);
+        console.log('📱 SMS message:', smsMessage);
+        
         results.sms = await this.smsService.sendSMS(partnerData.contact, smsMessage);
+        console.log('📱 SMS send result:', results.sms);
+      } else {
+        console.log('❌ No SMS template found for referral_partner_welcome');
+        results.sms = { success: false, error: 'Template not found' };
       }
 
       // WhatsApp welcome using Gupshup service

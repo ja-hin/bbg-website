@@ -6,17 +6,36 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Calendar, 
-  CheckCircle, 
-  Upload, 
-  Smartphone, 
+import {
+  Calendar,
+  CheckCircle,
+  Upload,
+  Smartphone,
   Laptop,
   User,
   Phone,
@@ -27,7 +46,7 @@ import {
   Info,
   Building,
   AlertTriangle,
-  Clock
+  Clock,
 } from "lucide-react";
 import FileUpload from "@/components/file-upload";
 import { ValidatedField } from "@/components/validated-field";
@@ -36,18 +55,27 @@ import { SuccessConfetti } from "@/components/confetti";
 const acerRegistrationSchema = z.object({
   // Device Details - Only laptops for Acer registration
   deviceType: z.literal("laptop", {
-    required_error: "Device type must be laptop"
+    required_error: "Device type must be laptop",
   }),
   imeiSerial: z.string().min(7, "Serial number must be at least 7 characters"),
   brand: z.string().min(1, "Brand is required"),
   model: z.string().min(1, "Model is required"),
-  purchasePrice: z.string().min(1, "Device purchase price (inclusive of GST) is required"),
+  purchasePrice: z
+    .string()
+    .min(1, "Device purchase price (inclusive of GST) is required"),
   purchaseDate: z.string().min(1, "Device purchase date is required"),
-  // Customer Details  
+  // Customer Details
   name: z.string().min(2, "Name must be at least 2 characters"),
-  phone: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
+  phone: z
+    .string()
+    .regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
   email: z.string().email("Invalid email address"),
-  pincode: z.string().regex(/^[1-9][0-9]{5}$/, "Pincode must be 6 digits and cannot start with 0"),
+  pincode: z
+    .string()
+    .regex(
+      /^[1-9][0-9]{5}$/,
+      "Pincode must be 6 digits and cannot start with 0",
+    ),
 
   // File upload
   invoiceFile: z.instanceof(File).optional(),
@@ -84,17 +112,17 @@ export default function AcerBBG() {
   const registrationMutation = useMutation({
     mutationFn: async (data: AcerRegistrationData) => {
       const formData = new FormData();
-      
+
       // Add all form fields
       Object.entries(data).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && key !== 'invoiceFile') {
+        if (value !== undefined && value !== null && key !== "invoiceFile") {
           formData.append(key, value.toString());
         }
       });
 
       // Add file if selected
       if (invoiceFile) {
-        formData.append('invoice', invoiceFile);
+        formData.append("invoice", invoiceFile);
       }
 
       // Use fetch directly for FormData instead of apiRequest to avoid JSON headers
@@ -106,7 +134,7 @@ export default function AcerBBG() {
 
       if (!response.ok) {
         const text = await response.text();
-        
+
         // Try to extract clean error message from JSON response
         try {
           const errorData = JSON.parse(text);
@@ -116,9 +144,9 @@ export default function AcerBBG() {
         } catch (parseError) {
           // If not JSON or no message field, use the raw text
         }
-        
+
         // Fallback to status text or raw response
-        throw new Error(text || response.statusText || 'Registration failed');
+        throw new Error(text || response.statusText || "Registration failed");
       }
 
       return await response.json();
@@ -129,23 +157,26 @@ export default function AcerBBG() {
         title: "Registration Successful!",
         description: `Your Acer BBG registration has been submitted successfully. Registration ID: ${data.registrationId}`,
       });
-      
+
       // Reset form
       form.reset();
       setInvoiceFile(null);
-      
+
       // Store success data in session storage for thank you page
-      sessionStorage.setItem('acerRegistrationSuccess', JSON.stringify({
-        registrationId: data.registrationId,
-        voucherCode: data.voucherCode || data.registrationId, // Use voucherCode if available, fallback to registrationId
-        name: data.name,
-        deviceType: data.deviceType,
-        brand: data.brand,
-        model: data.model,
-      }));
-      
+      sessionStorage.setItem(
+        "acerRegistrationSuccess",
+        JSON.stringify({
+          registrationId: data.registrationId,
+          voucherCode: data.voucherCode || data.registrationId, // Use voucherCode if available, fallback to registrationId
+          name: data.name,
+          deviceType: data.deviceType,
+          brand: data.brand,
+          model: data.model,
+        }),
+      );
+
       // Redirect to thank you page
-      window.location.href = '/acer-thank-you';
+      window.location.href = "/acer-thank-you";
     },
     onError: (error: any) => {
       toast({
@@ -169,8 +200,8 @@ export default function AcerBBG() {
             Acer BBG Registration
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Register your Acer device for Buy Back Guarantee protection. 
-            Get up to 70% of your device value back after 6 months!
+            Register your Acer device for Buy Back Guarantee protection. Get up
+            to 70% of your device value back after 6 months!
           </p>
         </div>
 
@@ -181,11 +212,14 @@ export default function AcerBBG() {
             <AlertDescription className="text-orange-800">
               <div className="flex items-center space-x-2">
                 <Clock className="h-4 w-4" />
-                <span className="font-medium">Registration Time Limit Exceeded!</span>
+                <span className="font-medium">
+                  Registration Time Limit Exceeded!
+                </span>
               </div>
               <p className="mt-1 text-sm">
-                Please note: You should register your Acer BBG within 72 hours of purchase for optimal processing. 
-                You can still register, but processing may take longer.
+                Please note: You should register your Acer BBG within 72 hours
+                of purchase for optimal processing. You can still register, but
+                processing may take longer.
               </p>
             </AlertDescription>
           </Alert>
@@ -197,10 +231,13 @@ export default function AcerBBG() {
           <AlertDescription className="text-blue-800">
             <div className="flex items-center space-x-2">
               <Clock className="h-4 w-4" />
-              <span className="font-medium">⏰ Register within 72 hours of BBG purchase</span>
+              <span className="font-medium">
+                ⏰ Register within 72 hours of BBG purchase
+              </span>
             </div>
             <p className="mt-1 text-sm">
-              For fastest processing, complete your registration within 72 hours of purchasing your BBG protection.
+              For fastest processing, complete your registration within 72 hours
+              of purchasing your BBG protection.
             </p>
           </AlertDescription>
         </Alert>
@@ -218,17 +255,18 @@ export default function AcerBBG() {
           </CardHeader>
           <CardContent className="p-8">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8"
+              >
                 {/* Device Details Section */}
                 <div className="space-y-4">
                   <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
                     <Smartphone className="h-4 w-4 mr-2" />
                     Device Details
                   </h3>
-                  
-                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
 
+                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
                     <FormField
                       control={form.control}
                       name="brand"
@@ -239,9 +277,9 @@ export default function AcerBBG() {
                             Brand *
                           </FormLabel>
                           <FormControl>
-                            <Input 
-                              placeholder="Brand" 
-                              {...field} 
+                            <Input
+                              placeholder="Brand"
+                              {...field}
                               value="Acer"
                               readOnly
                               className="bg-gray-50"
@@ -372,7 +410,10 @@ export default function AcerBBG() {
                     <div className="flex items-start space-x-2">
                       <Info className="h-3 w-3 text-blue-600 mt-0.5" />
                       <div className="text-xs text-blue-800">
-                        <p className="font-medium">💻 Laptop Serial Number: Check sticker on bottom/back of device or System Info → Hardware</p>
+                        <p className="font-medium">
+                          💻 Laptop Serial Number: Check sticker on bottom/back
+                          of device or System Info → Hardware
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -384,7 +425,7 @@ export default function AcerBBG() {
                     <User className="h-4 w-4 mr-2" />
                     Customer Details
                   </h3>
-                  
+
                   <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
                     <FormField
                       control={form.control}
@@ -482,18 +523,14 @@ export default function AcerBBG() {
                         </FormItem>
                       )}
                     />
-
-
                   </div>
                 </div>
 
-
-
                 {/* Submit Button */}
                 <div className="flex justify-center pt-6">
-                  <Button 
-                    type="submit" 
-                    size="lg" 
+                  <Button
+                    type="submit"
+                    size="lg"
                     disabled={registrationMutation.isPending}
                     className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg shadow-lg transform transition hover:scale-105"
                   >
@@ -518,19 +555,31 @@ export default function AcerBBG() {
         {/* BBG Benefits Card */}
         <Card className="shadow-lg mt-8">
           <CardContent className="p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center">Your Acer BBG Benefits</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center">
+              Your Acer BBG Benefits
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
-                <div className="text-2xl font-bold text-green-600 mb-1">Up to 80%</div>
-                <div className="text-sm text-green-700">Maximum buyback value</div>
+                <div className="text-2xl font-bold text-green-600 mb-1">
+                  Up to 70%
+                </div>
+                <div className="text-sm text-green-700">
+                  Maximum buyback value
+                </div>
               </div>
               <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <div className="text-2xl font-bold text-blue-600 mb-1">60 Months</div>
+                <div className="text-2xl font-bold text-blue-600 mb-1">
+                  60 Months
+                </div>
                 <div className="text-sm text-blue-700">Coverage period</div>
               </div>
               <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
-                <div className="text-2xl font-bold text-purple-600 mb-1">Free</div>
-                <div className="text-sm text-purple-700">Home pickup service</div>
+                <div className="text-2xl font-bold text-purple-600 mb-1">
+                  Free
+                </div>
+                <div className="text-sm text-purple-700">
+                  Home pickup service
+                </div>
               </div>
             </div>
           </CardContent>
@@ -538,9 +587,9 @@ export default function AcerBBG() {
 
         {/* Success Confetti */}
         {showConfetti && (
-          <SuccessConfetti 
-            isActive={showConfetti} 
-            onComplete={() => setShowConfetti(false)} 
+          <SuccessConfetti
+            isActive={showConfetti}
+            onComplete={() => setShowConfetti(false)}
           />
         )}
       </div>

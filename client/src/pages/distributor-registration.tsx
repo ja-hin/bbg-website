@@ -272,7 +272,7 @@ export default function DistributorRegistration() {
                 <IndianRupee className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Earn Commission</h3>
-              <p className="text-gray-600">Get paid ₹25 for every successful BBG registration</p>
+              <p className="text-gray-600">Get paid ₹25 for every successful customer registration</p>
             </CardContent>
           </Card>
           

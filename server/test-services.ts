@@ -1,6 +1,5 @@
 // Separate testing endpoints for each communication service
-import { kaleyraSMSService } from './kaleyra-service';
-import { gupshupService } from './gupshup-service';
+import { getSafeKaleyraSMSService, getSafeGupshupService } from './config-service';
 import type { Express } from 'express';
 import nodemailer from 'nodemailer';
 
@@ -19,9 +18,18 @@ export function registerTestRoutes(app: Express) {
         return res.status(400).json({ message: 'Message is required' });
       }
 
+      const kaleyraSMS = getSafeKaleyraSMSService();
+      if (!kaleyraSMS) {
+        return res.status(500).json({ 
+          success: false, 
+          error: 'Kaleyra SMS service not configured. Please add KALEYRA_API_KEY to environment variables.',
+          service: 'Kaleyra SMS'
+        });
+      }
+
       console.log('Testing Kaleyra SMS service with phone:', phone);
       console.log('Testing Kaleyra SMS service with message:', message);
-      const result = await kaleyraSMSService.sendOTP(phone, '123456', message);
+      const result = await kaleyraSMS.sendOTP(phone, '123456', message);
       
       res.json({
         success: result.success,
@@ -53,8 +61,17 @@ export function registerTestRoutes(app: Express) {
         return res.status(400).json({ message: 'Message is required' });
       }
 
+      const gupshup = getSafeGupshupService();
+      if (!gupshup) {
+        return res.status(500).json({ 
+          success: false, 
+          error: 'Gupshup WhatsApp service not configured. Please add GUPSHUP_API_KEY and GUPSHUP_APP_ID to environment variables.',
+          service: 'Gupshup WhatsApp'
+        });
+      }
+
       console.log('Testing Gupshup WhatsApp service...');
-      const result = await gupshupService.sendMessage({
+      const result = await gupshup.sendMessage({
         to: phone,
         message: message,
         type: 'TEXT'

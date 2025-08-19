@@ -9,9 +9,8 @@ import { storage, SqlServerStorage } from "./sql-storage";
 import { db } from "./db";
 import sql from 'mssql';
 import XLSX from 'xlsx';
-import { kaleyraSMSService } from "./kaleyra-service";
 import { communicationService } from "./communication-service";
-import { gupshupService } from "./gupshup-service";
+import { initializeServices, getSafeKaleyraSMSService, getSafeGupshupService, getSafePayUConfig } from "./config-service";
 import { templateService } from "./template-service";
 import { testAllTemplates } from "./template-test";
 import { registerTestRoutes } from "./test-services";
@@ -90,35 +89,7 @@ const bulkUpload = multer({
 
 // Stripe removed - using PayU only
 
-// PayU Configuration - Using environment variables with test fallback for debugging
-const PAYU_CONFIG = {
-  merchantId: process.env.PAYU_MERCHANT_ID,  // PayU merchant ID (MID) - from secrets
-  merchantKey: process.env.PAYU_MERCHANT_KEY,  // PayU merchant key - from secrets
-  salt: process.env.PAYU_SALT,  // PayU salt - from secrets
-  clientId: process.env.PAYU_CLIENT_ID,  // PayU client ID - from secrets
-  clientSecret: process.env.PAYU_CLIENT_SECRET,  // PayU client secret - from secrets
-  baseUrl: process.env.PAYU_BASE_URL || "https://test.payu.in"  // Default to test environment
-};
-
-// Validate PayU configuration - all secrets must be present
-const requiredPayUSecrets = ['merchantId', 'merchantKey', 'salt', 'clientId', 'clientSecret'];
-const missingSecrets = requiredPayUSecrets.filter(key => !PAYU_CONFIG[key as keyof typeof PAYU_CONFIG]);
-
-if (missingSecrets.length > 0) {
-  console.error('Missing PayU secrets:', missingSecrets);
-  console.error('PayU payment gateway will not work without all required secrets');
-} else {
-  console.log('PayU Config: All secrets loaded successfully');
-}
-
-console.log('PayU Config:', {
-  merchantId: PAYU_CONFIG.merchantId ? 'loaded' : 'missing',
-  merchantKey: PAYU_CONFIG.merchantKey ? 'loaded' : 'missing',
-  salt: PAYU_CONFIG.salt ? 'loaded' : 'missing',
-  clientId: PAYU_CONFIG.clientId ? 'loaded' : 'missing',
-  clientSecret: PAYU_CONFIG.clientSecret ? 'loaded' : 'missing',
-  baseUrl: PAYU_CONFIG.baseUrl
-});
+// PayU Configuration will be initialized in registerRoutes using config service
 
 // Helper function to generate PayU hash
 function generatePayUHash(params: any, salt: string): string {
@@ -136,6 +107,9 @@ function generatePayUHash(params: any, salt: string): string {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  
+  // Initialize all services with environment variables
+  await initializeServices();
   
   // Initialize template service
   await templateService.initializeTables();
@@ -247,11 +221,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Valid 10-digit contact number required" });
       }
 
-      // Validate phone number format
-      if (!kaleyraSMSService.isValidPhoneNumber(phoneNumber)) {
-        return res.status(400).json({ message: "Please enter a valid Indian mobile number" });
-      }
-
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
@@ -262,8 +231,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         expiresAt
       });
 
-      // Send OTP via Kaleyra SMS service
-      const smsResult = await kaleyraSMSService.sendOTP(phoneNumber, otp);
+      // Send OTP via Kaleyra SMS service (using safe getter)
+      const kaleyraSMS = getSafeKaleyraSMSService();
+      let smsResult;
+      
+      if (kaleyraSMS) {
+        // Validate phone number format if service is available
+        if (!kaleyraSMS.isValidPhoneNumber(phoneNumber)) {
+          return res.status(400).json({ message: "Please enter a valid Indian mobile number" });
+        }
+        smsResult = await kaleyraSMS.sendOTP(phoneNumber, otp);
+      } else {
+        // Service not configured
+        smsResult = { success: false, error: "SMS service not configured" };
+      }
       
       if (smsResult.success) {
         console.log(`OTP sent via Kaleyra to ${phoneNumber}: ${otp} (Message ID: ${smsResult.messageId})`);
@@ -294,11 +275,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Valid 10-digit contact number required" });
       }
 
-      // Validate phone number format
-      if (!kaleyraSMSService.isValidPhoneNumber(contact)) {
-        return res.status(400).json({ message: "Please enter a valid Indian mobile number" });
-      }
-
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
@@ -309,8 +285,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         expiresAt
       });
 
-      // Send OTP via Kaleyra SMS service
-      const smsResult = await kaleyraSMSService.sendOTP(contact, otp);
+      // Send OTP via Kaleyra SMS service (using safe getter)
+      const kaleyraSMS = getSafeKaleyraSMSService();
+      let smsResult;
+      
+      if (kaleyraSMS) {
+        // Validate phone number format if service is available
+        if (!kaleyraSMS.isValidPhoneNumber(contact)) {
+          return res.status(400).json({ message: "Please enter a valid Indian mobile number" });
+        }
+        smsResult = await kaleyraSMS.sendOTP(contact, otp);
+      } else {
+        // Service not configured
+        smsResult = { success: false, error: "SMS service not configured" };
+      }
       
       if (smsResult.success) {
         console.log(`OTP sent via Kaleyra to ${contact}: ${otp} (Message ID: ${smsResult.messageId})`);
@@ -569,8 +557,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create PayU payment
   app.post("/api/create-payu-payment", async (req, res) => {
     try {
-      // Validate PayU configuration before processing payment
-      if (!PAYU_CONFIG.merchantId || !PAYU_CONFIG.merchantKey || !PAYU_CONFIG.salt || !PAYU_CONFIG.clientId || !PAYU_CONFIG.clientSecret) {
+      // Get PayU configuration using config service
+      const payuConfig = getSafePayUConfig();
+      if (!payuConfig) {
         return res.status(500).json({ 
           message: "PayU payment gateway is not properly configured. Please contact support.",
           error: "Missing PayU credentials"
@@ -631,7 +620,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           : `https://${host}`);  // Always use HTTPS for PayU redirects
       
       const payuParams = {
-        key: PAYU_CONFIG.merchantKey,
+        key: payuConfig.merchantKey,
         txnid,
         amount: amount.toString(),
         productinfo: `BBG Registration`,
@@ -643,12 +632,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       // Generate hash
-      const hash = generatePayUHash(payuParams, PAYU_CONFIG.salt);
+      const hash = generatePayUHash(payuParams, payuConfig.salt);
       payuParams.hash = hash;
 
       res.json({
         payuParams,
-        payuUrl: `${PAYU_CONFIG.baseUrl}/_payment`,
+        payuUrl: `${payuConfig.baseUrl}/_payment`,
         txnid
       });
     } catch (error: any) {
@@ -662,8 +651,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { txnid, amount, status, hash, ...otherParams } = req.body;
       
+      // Get PayU config for hash verification
+      const payuConfig = getSafePayUConfig();
+      if (!payuConfig) {
+        return res.status(500).json({ message: "PayU configuration not available" });
+      }
+
       // Verify hash for security (reverse hash format for success)
-      const verifyHashString = `${PAYU_CONFIG.salt}|${status}||||||${otherParams.udf5 || ''}|${otherParams.udf4 || ''}|${otherParams.udf3 || ''}|${otherParams.udf2 || ''}|${otherParams.udf1 || ''}|${otherParams.email}|${otherParams.firstname}|${otherParams.productinfo}|${amount}|${txnid}|${PAYU_CONFIG.merchantKey}`;
+      const verifyHashString = `${payuConfig.salt}|${status}||||||${otherParams.udf5 || ''}|${otherParams.udf4 || ''}|${otherParams.udf3 || ''}|${otherParams.udf2 || ''}|${otherParams.udf1 || ''}|${otherParams.email}|${otherParams.firstname}|${otherParams.productinfo}|${amount}|${txnid}|${payuConfig.merchantKey}`;
       console.log('PayU Success Verify Hash String:', verifyHashString);
       const expectedHash = crypto.createHash('sha512').update(verifyHashString).digest('hex');
       

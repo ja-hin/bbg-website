@@ -208,26 +208,31 @@ export class CommunicationService {
       let claimValueSlabs: any[] = [];
       try {
         const registrationSource = customerData.registrationSource || 'regular';
+        console.log(`📊 Fetching claim value slabs for: ${customerData.deviceType}/${customerData.brand}/${registrationSource}`);
         claimValueSlabs = await storage.getClaimValueSlabsByTypeAndBrand(
           customerData.deviceType, 
           customerData.brand, 
           registrationSource
         );
+        console.log(`📊 Fetched ${claimValueSlabs.length} claim value slabs for email`);
       } catch (error) {
-        console.error('Error fetching claim value slabs for email:', error);
+        console.error('❌ Error fetching claim value slabs for email:', error);
         // Continue without slabs if fetch fails
       }
 
       // Generate HTML for claim value slabs
       let claimValueSlabsHtml = '';
       if (claimValueSlabs.length > 0) {
+        console.log(`📋 Generating HTML for ${claimValueSlabs.length} claim value slabs`);
         claimValueSlabsHtml = claimValueSlabs.map(slab => 
           `<div style="background: white; padding: 10px 15px; margin: 8px 0; border-radius: 6px; border-left: 3px solid #0277bd;">
             <span style="font-weight: bold; color: #1976d2;">${slab.minMonths}-${slab.maxMonths} months old:</span>
             <span style="color: #2e7d32; font-weight: bold; float: right;">${slab.percentage}%</span>
           </div>`
         ).join('');
+        console.log(`📋 Generated claimValueSlabsHtml (${claimValueSlabsHtml.length} chars):`, claimValueSlabsHtml.substring(0, 200) + '...');
       } else {
+        console.log('📋 No claim value slabs found, using fallback message');
         claimValueSlabsHtml = '<div style="background: white; padding: 15px; border-radius: 6px; text-align: center; color: #666;">Claim value slabs will be available based on your device specifications.</div>';
       }
 
@@ -240,8 +245,13 @@ export class CommunicationService {
       // Email confirmation using template with SMTP settings from database
       const emailTemplate = await templateService.getTemplate('email', 'customer_registration');
       if (emailTemplate) {
+        console.log('📧 Rendering email template with variables:', {
+          ...emailData,
+          claimValueSlabsHtml: emailData.claimValueSlabsHtml?.length > 0 ? `${emailData.claimValueSlabsHtml.substring(0, 100)}...` : 'EMPTY OR MISSING'
+        });
         const emailContent = templateService.renderTemplate(emailTemplate.content, emailData);
         const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'BBG Registration Successful', emailData);
+        console.log('📧 Final email content length:', emailContent.length, 'chars');
         
         // Fetch SMTP settings from database
         const smtpSettings = await this.getSmtpSettings();

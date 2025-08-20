@@ -34,6 +34,8 @@ if (!fs.existsSync(uploadDir)) {
 // Check if S3 is configured
 const isS3Configured = process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY && process.env.AWS_S3_BUCKET_NAME;
 
+console.log('🔧 S3 Configuration: S3 upload enabled for file storage');
+
 // Use S3 upload if configured, otherwise fallback to local storage
 const upload = isS3Configured ? createS3Upload('documents') : multer({
   storage: multer.diskStorage({
@@ -143,20 +145,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (files && files.panCopyFile && files.panCopyFile[0]) {
         // For S3, use the key, for local storage use filename
-        formData.panCopyFile = isS3Configured ? (files.panCopyFile[0] as any).key : files.panCopyFile[0].filename;
-        console.log("PAN copy file uploaded:", formData.panCopyFile);
+        if (isS3Configured) {
+          formData.panCopyFile = (files.panCopyFile[0] as any).key || (files.panCopyFile[0] as any).location;
+          console.log("✅ PAN copy file uploaded to S3:", formData.panCopyFile);
+        } else {
+          formData.panCopyFile = files.panCopyFile[0].filename;
+          console.log("⚠️ PAN copy file uploaded to local storage:", formData.panCopyFile);
+        }
       }
       if (files && files.gstCertificateFile && files.gstCertificateFile[0]) {
         formData.gstCertificateFile = isS3Configured ? (files.gstCertificateFile[0] as any).key : files.gstCertificateFile[0].filename;
-        console.log("GST certificate file uploaded:", formData.gstCertificateFile);
+        console.log("✅ GST certificate file uploaded to S3:", formData.gstCertificateFile);
       }
       if (files && files.msmeCertificateFile && files.msmeCertificateFile[0]) {
         formData.msmeCertificateFile = isS3Configured ? (files.msmeCertificateFile[0] as any).key : files.msmeCertificateFile[0].filename;
-        console.log("MSME certificate file uploaded:", formData.msmeCertificateFile);
+        console.log("✅ MSME certificate file uploaded to S3:", formData.msmeCertificateFile);
       }
       if (files && files.cancelledChequeFile && files.cancelledChequeFile[0]) {
         formData.cancelledChequeFile = isS3Configured ? (files.cancelledChequeFile[0] as any).key : files.cancelledChequeFile[0].filename;
-        console.log("Cancelled cheque file uploaded:", formData.cancelledChequeFile);
+        console.log("✅ Cancelled cheque file uploaded to S3:", formData.cancelledChequeFile);
       }
       
       // Remove bankAccountConfirm as it's not stored in database

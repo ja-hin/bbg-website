@@ -65,7 +65,8 @@ const sampleData = {
     voucherCode: 'BBG123456',
     deviceType: 'mobile',
     brand: 'Samsung',
-    modelName: 'Galaxy S21'
+    modelName: 'Galaxy S21',
+    claimValueSlabsHtml: '<div style="background: white; padding: 10px 15px; margin: 8px 0; border-radius: 6px; border-left: 3px solid #0277bd;"><span style="font-weight: bold; color: #1976d2;">6-12 months old:</span><span style="color: #2e7d32; font-weight: bold; float: right;">65%</span></div><div style="background: white; padding: 10px 15px; margin: 8px 0; border-radius: 6px; border-left: 3px solid #0277bd;"><span style="font-weight: bold; color: #1976d2;">13-18 months old:</span><span style="color: #2e7d32; font-weight: bold; float: right;">60%</span></div>'
   },
   'referral_partner_welcome': {
     name: 'Jane Smith',

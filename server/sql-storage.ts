@@ -120,6 +120,7 @@ export interface IStorage {
   getActiveClaimValueSlabsByDeviceType(deviceType: string): Promise<ClaimValueSlab[]>;
   getActiveClaimValueSlabsByDeviceTypeAndSource(deviceType: string, registrationSource: string): Promise<ClaimValueSlab[]>;
   getClaimValueSlabsByRegistrationSource(registrationSource: string): Promise<ClaimValueSlab[]>;
+  getClaimValueSlabsByTypeAndBrand(deviceType: string, brand: string, registrationSource: string): Promise<ClaimValueSlab[]>;
   updateClaimValueSlab(id: number, updates: Partial<InsertClaimValueSlab>): Promise<void>;
   deleteClaimValueSlab(id: number): Promise<void>;
   getClaimValueSlabById(id: number): Promise<ClaimValueSlab | undefined>;
@@ -2674,6 +2675,47 @@ export class SqlServerStorage implements IStorage {
       
       // For 'regular' source, return all slabs
       return fallbackSlabs;
+    }
+  }
+
+  async getClaimValueSlabsByTypeAndBrand(deviceType: string, brand: string, registrationSource: string): Promise<ClaimValueSlab[]> {
+    await db.connectDB();
+    
+    try {
+      const query = `
+        SELECT 
+          id, 
+          device_type, 
+          brand, 
+          min_months, 
+          max_months, 
+          percentage, 
+          is_active, 
+          created_at, 
+          updated_at,
+          registration_source
+        FROM claim_value_slabs 
+        WHERE device_type = @deviceType 
+        AND brand = @brand
+        AND registration_source = @registrationSource
+        AND is_active = 1
+        ORDER BY min_months ASC
+      `;
+      
+      const request = db.pool.request();
+      request.input('deviceType', sql.NVarChar, deviceType);
+      request.input('brand', sql.NVarChar, brand);
+      request.input('registrationSource', sql.NVarChar, registrationSource);
+      
+      const result = await request.query(query);
+      const slabs = result.recordset.map(row => this.mapClaimValueSlabFromDb(row));
+      
+      console.log(`✅ Found ${slabs.length} ${registrationSource} ${deviceType} ${brand} slabs`);
+      return slabs;
+      
+    } catch (error: any) {
+      console.error(`Error fetching slabs by type/brand '${deviceType}/${brand}/${registrationSource}':`, error.message);
+      return [];
     }
   }
 

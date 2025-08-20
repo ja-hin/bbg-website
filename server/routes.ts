@@ -809,7 +809,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             voucherCode: customer.voucherCode,
             deviceType: customer.deviceType,
             brand: customer.brand,
-            modelName: customer.modelName
+            modelName: customer.modelName,
+            registrationSource: 'regular'
           });
           
           console.log('🔔 PayU customer registration notifications complete:', {
@@ -1077,7 +1078,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           voucherCode: customer.voucherCode,
           deviceType: customer.deviceType,
           brand: customer.brand,
-          modelName: customer.modelName
+          modelName: customer.modelName,
+          registrationSource: 'regular'
         });
         
         console.log('🔔 Customer registration notifications complete:', {
@@ -4954,7 +4956,8 @@ Required: GUPSHUP_API_KEY environment variable
           voucherCode: customer.voucherCode,
           deviceType: customer.deviceType,
           brand: customer.brand,
-          modelName: customer.modelName
+          modelName: customer.modelName,
+          registrationSource: 'acer_bbg'
         });
         
         console.log('🔔 Acer BBG registration notifications complete:', {

@@ -129,6 +129,17 @@ export class TemplateService {
     </ul>
   </div>
   
+  <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #0277bd; margin-top: 0;">Your Claim Value Slabs</h3>
+    <p style="color: #424242; margin-bottom: 15px;">Based on your device age at the time of claim, you can receive the following percentages of your device's current market value:</p>
+    
+    {{claimValueSlabsHtml}}
+    
+    <div style="background: #fff3e0; padding: 10px; border-radius: 6px; margin-top: 15px;">
+      <p style="margin: 0; color: #e65100; font-size: 14px;"><strong>Note:</strong> These rates are locked in at registration and won't change even if our rates are updated later.</p>
+    </div>
+  </div>
+
   <div style="background: #fef3c7; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
     <p style="margin: 0; color: #92400e;"><strong>Important:</strong> Save your voucher code safely. You'll need it to claim your BBG.</p>
   </div>
@@ -138,7 +149,7 @@ export class TemplateService {
   </div>
 </div>
           `,
-          variables: ['name', 'voucherCode', 'brand', 'modelName', 'deviceType', 'contact', 'email']
+          variables: ['name', 'voucherCode', 'brand', 'modelName', 'deviceType', 'contact', 'email', 'claimValueSlabsHtml']
         },
         // Customer Registration SMS
         {
@@ -590,7 +601,7 @@ export class TemplateService {
   // Get available template variables by event
   getAvailableVariables(event: string): string[] {
     const variableMap: Record<string, string[]> = {
-      'customer_registration': ['name', 'email', 'contact', 'voucherCode', 'deviceType', 'brand', 'modelName'],
+      'customer_registration': ['name', 'email', 'contact', 'voucherCode', 'deviceType', 'brand', 'modelName', 'claimValueSlabsHtml'],
       'referral_partner_welcome': ['name', 'email', 'contact', 'sellerCode', 'businessName'],
       'claim_status_update': ['name', 'email', 'contact', 'voucherCode', 'claimAmount', 'status'],
       'payout_notification': ['name', 'email', 'contact', 'amount', 'status', 'paymentReference'],

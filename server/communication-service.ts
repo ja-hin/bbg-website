@@ -194,6 +194,7 @@ export class CommunicationService {
       deviceType: string;
       brand: string;
       modelName: string;
+      registrationSource?: string;
     }
   ) {
     const results = {
@@ -203,11 +204,44 @@ export class CommunicationService {
     };
 
     try {
+      // Fetch claim value slabs for this device brand/type
+      let claimValueSlabs: any[] = [];
+      try {
+        const registrationSource = customerData.registrationSource || 'regular';
+        claimValueSlabs = await storage.getClaimValueSlabsByTypeAndBrand(
+          customerData.deviceType, 
+          customerData.brand, 
+          registrationSource
+        );
+      } catch (error) {
+        console.error('Error fetching claim value slabs for email:', error);
+        // Continue without slabs if fetch fails
+      }
+
+      // Generate HTML for claim value slabs
+      let claimValueSlabsHtml = '';
+      if (claimValueSlabs.length > 0) {
+        claimValueSlabsHtml = claimValueSlabs.map(slab => 
+          `<div style="background: white; padding: 10px 15px; margin: 8px 0; border-radius: 6px; border-left: 3px solid #0277bd;">
+            <span style="font-weight: bold; color: #1976d2;">${slab.minMonths}-${slab.maxMonths} months old:</span>
+            <span style="color: #2e7d32; font-weight: bold; float: right;">${slab.percentage}%</span>
+          </div>`
+        ).join('');
+      } else {
+        claimValueSlabsHtml = '<div style="background: white; padding: 15px; border-radius: 6px; text-align: center; color: #666;">Claim value slabs will be available based on your device specifications.</div>';
+      }
+
+      // Prepare extended customer data with claim value slabs HTML
+      const emailData = {
+        ...customerData,
+        claimValueSlabsHtml: claimValueSlabsHtml
+      };
+
       // Email confirmation using template with SMTP settings from database
       const emailTemplate = await templateService.getTemplate('email', 'customer_registration');
       if (emailTemplate) {
-        const emailContent = templateService.renderTemplate(emailTemplate.content, customerData);
-        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'BBG Registration Successful', customerData);
+        const emailContent = templateService.renderTemplate(emailTemplate.content, emailData);
+        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'BBG Registration Successful', emailData);
         
         // Fetch SMTP settings from database
         const smtpSettings = await this.getSmtpSettings();

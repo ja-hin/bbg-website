@@ -353,7 +353,21 @@ export class TemplateService {
             await this.createTemplate(template as CreateTemplateData);
             console.log(`Created default template: ${template.name}`);
           } else {
-            console.log(`Template already exists, skipping: ${template.name}`);
+            // For customer registration email, check if it has the claimValueSlabsHtml variable
+            if (template.event === 'customer_registration' && template.type === 'email') {
+              if (!existing.content.includes('{{claimValueSlabsHtml}}')) {
+                console.log(`🔧 Updating customer registration email template to include claim value slabs...`);
+                await this.updateTemplate(existing.id, {
+                  content: template.content,
+                  variables: template.variables
+                });
+                console.log(`✅ Updated customer registration email template with claim value slabs`);
+              } else {
+                console.log(`Template already exists and has claim value slabs: ${template.name}`);
+              }
+            } else {
+              console.log(`Template already exists, skipping: ${template.name}`);
+            }
           }
         } catch (error: any) {
           console.error('Error with default template:', template.name, error);

@@ -20,7 +20,9 @@ const distributorSchema = z.object({
   name: z.string().min(2, "Full name is required"),
   contact: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
   email: z.string().email("Invalid email address"),
-  termsAgreement: z.boolean().refine(val => val === true, "You must agree to the terms and conditions")
+  declarationAccuracy: z.boolean().refine(val => val === true, "You must declare that the information is true and correct"),
+  tdsUnderstanding: z.boolean().refine(val => val === true, "You must acknowledge TDS compliance understanding"),
+  gstInvoiceAgreement: z.boolean().refine(val => val === true, "You must agree to GST invoice requirements")
 });
 
 type DistributorFormData = z.infer<typeof distributorSchema>;
@@ -40,7 +42,9 @@ export default function DistributorRegistration() {
       name: "",
       contact: "",
       email: "",
-      termsAgreement: false
+      declarationAccuracy: false,
+      tdsUnderstanding: false,
+      gstInvoiceAgreement: false
     }
   });
 
@@ -391,41 +395,68 @@ export default function DistributorRegistration() {
                     Declaration & Consent
                   </h3>
                   
-                  <FormField
-                    control={form.control}
-                    name="termsAgreement"
-                    render={({ field }) => (
-                      <FormItem className="space-y-4">
-                        <div className="flex items-start space-x-3">
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="declarationAccuracy"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                           <FormControl>
                             <Checkbox 
                               checked={field.value}
                               onCheckedChange={field.onChange}
                             />
                           </FormControl>
-                          <div className="space-y-3 text-sm leading-relaxed">
-                            <p className="font-medium text-gray-900">
-                              I declare that the information provided above is true and correct
-                            </p>
-                            <p className="text-gray-700">
-                              I understand that commission payout is subject to TDS as per income tax laws
-                            </p>
-                            <p className="text-gray-700">
-                              If GST registered, I agree to raise tax invoices to XtraCover for each month's referral commission
-                            </p>
-                          </div>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          <FormLabel className="text-sm font-medium text-gray-900 leading-relaxed">
+                            I declare that the information provided above is true and correct
+                          </FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="tdsUnderstanding"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox 
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm text-gray-700 leading-relaxed">
+                            I understand that commission payout is subject to TDS as per income tax laws
+                          </FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="gstInvoiceAgreement"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox 
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm text-gray-700 leading-relaxed">
+                            If GST registered, I agree to raise tax invoices to XtraCover for each month's referral commission
+                          </FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
                 {/* Submit Button */}
                 <Button 
                   type="submit" 
                   className="w-full"
-                  disabled={!otpVerified || registerMutation.isPending}
+                  disabled={!otpVerified || registerMutation.isPending || !form.watch('declarationAccuracy') || !form.watch('tdsUnderstanding') || !form.watch('gstInvoiceAgreement')}
                 >
                   {registerMutation.isPending ? (
                     <>

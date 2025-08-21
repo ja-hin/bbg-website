@@ -4,6 +4,15 @@
 This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) system. Its primary purpose is to enable distributors (referral partners) to register and earn commissions, customers to register their devices for BBG protection, and users to claim their buyback guarantees. The project streamlines the BBG process, offers a user-friendly experience with real-time feedback, and provides robust administrative tools for managing all aspects of the system.
 
 ## Recent Critical Updates
+**Date: August 21, 2025**
+- **✅ REFERRAL CODE GENERATION ISSUE COMPLETELY RESOLVED**: Fixed undefined referral code problem in simplified distributor registration form
+- **✅ DATABASE SCHEMA COMPATIBILITY FIXED**: Updated SQL storage to handle simplified form while maintaining database table requirements for pincode and preferred_mode fields
+- **✅ SMART DEFAULT VALUES IMPLEMENTED**: System now provides automatic default values ('000000' for pincode, 'TBD' for preferred_mode) for missing optional fields during simplified registration
+- **✅ SELLER CODE GENERATION VERIFIED**: Confirmed referral codes generate correctly using distributor initials + last 3 mobile digits format (e.g., "TU426" for "Test User" + mobile ending in "426")
+- **✅ SIMPLIFIED REGISTRATION FORM FULLY FUNCTIONAL**: Minimal form with only name, contact, email, and 3 business declarations now works perfectly with proper referral code generation
+- **✅ FIELD MAPPING CORRECTED**: Fixed boolean conversion logic for new declaration field names (declarationAccuracy, tdsUnderstanding, gstInvoiceAgreement)
+- **✅ EMAIL NOTIFICATIONS WORKING**: Welcome emails successfully sent to new referral partners with correct seller codes included
+
 **Date: August 20, 2025**
 - **✅ CLAIM VALUE SLABS EMAIL INTEGRATION COMPLETED**: Successfully implemented claim value slabs display in customer registration confirmation emails
 - **✅ DYNAMIC HTML GENERATION**: Claim value slabs are fetched from database and rendered as formatted HTML table in emails showing device age ranges and claim percentages

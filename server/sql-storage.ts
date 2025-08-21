@@ -791,7 +791,7 @@ export class SqlServerStorage implements IStorage {
     
     const query = `
       INSERT INTO distributors (
-        name, contact, email,
+        name, contact, email, pincode, preferred_mode,
         pan_number, pan_copy_file, is_gst_registered, gstin, gst_certificate_file,
         is_msme_registered, msme_certificate_file,
         account_holder_name, bank_account, bank_account_confirm, ifsc_code, upi_id,
@@ -800,7 +800,7 @@ export class SqlServerStorage implements IStorage {
       ) 
       OUTPUT INSERTED.*
       VALUES (
-        @name, @contact, @email,
+        @name, @contact, @email, @pincode, @preferredMode,
         @panNumber, @panCopyFile, @isGstRegistered, @gstin, @gstCertificateFile,
         @isMsmeRegistered, @msmeCertificateFile,
         @accountHolderName, @bankAccount, @bankAccountConfirm, @ifscCode, @upiId,
@@ -814,6 +814,8 @@ export class SqlServerStorage implements IStorage {
     request.input('name', sql.NVarChar, insertDistributor.name);
     request.input('contact', sql.NVarChar, insertDistributor.contact);
     request.input('email', sql.NVarChar, insertDistributor.email);
+    request.input('pincode', sql.NVarChar, insertDistributor.pincode || '000000');
+    request.input('preferredMode', sql.NVarChar, insertDistributor.preferredMode || 'TBD');
     
     // Tax & Compliance Details - set defaults for missing fields
     request.input('panNumber', sql.NVarChar, insertDistributor.panNumber || null);

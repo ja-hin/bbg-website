@@ -443,7 +443,7 @@ export default function DistributorRegistration() {
                               onCheckedChange={field.onChange}
                             />
                           </FormControl>
-                          <FormLabel className="text-sm text-gray-700 leading-relaxed">
+                          <FormLabel className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm text-gray-700 leading-relaxed font-normal">
                             If GST registered, I agree to raise tax invoices to XtraCover for each month's referral commission
                           </FormLabel>
                         </FormItem>

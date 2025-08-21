@@ -105,12 +105,8 @@ export default function DistributorRegistration() {
       return response;
     },
     onSuccess: (data) => {
-      setSellerCode(data.sellerCode);
-      setShowConfetti(true);
-      toast({
-        title: "Registration Successful!",
-        description: `Your referral code is: ${data.sellerCode}`,
-      });
+      // Redirect to thank you page with distributor parameters
+      setLocation(`/thank-you?type=distributor&status=success&sellerCode=${data.sellerCode}`);
     },
     onError: (error: any) => {
       toast({
@@ -162,50 +158,6 @@ export default function DistributorRegistration() {
   const handleLoginRedirect = () => {
     setLocation("/distributor-login");
   };
-
-  if (sellerCode) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-green-50 border-green-200">
-          <CardContent className="p-6 text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <DollarSign className="h-8 w-8 text-green-600" />
-            </div>
-            <h3 className="text-xl font-semibold text-green-900 mb-2">Registration Successful!</h3>
-            <p className="text-green-700 mb-4">
-              Your referral code is: <strong className="text-2xl font-mono bg-green-100 px-2 py-1 rounded">{sellerCode}</strong>
-            </p>
-            <div className="space-y-3 text-sm text-green-600">
-              <p>• Share this code with customers to earn commissions</p>
-              <p>• Add your tax and bank details in your dashboard to receive payouts</p>
-              <p>• Each successful referral earns you ₹25</p>
-            </div>
-            <div className="mt-6 space-y-2">
-              <Button 
-                onClick={() => setLocation("/distributor-dashboard")} 
-                className="w-full"
-              >
-                Go to Dashboard
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => window.location.reload()}
-                className="w-full"
-              >
-                Register Another Partner
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-        {showConfetti && (
-          <SuccessConfetti 
-            isActive={showConfetti} 
-            onComplete={() => setShowConfetti(false)} 
-          />
-        )}
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">

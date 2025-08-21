@@ -6559,7 +6559,8 @@ Required: GUPSHUP_API_KEY environment variable
         { id: "communication", label: "Communication", href: "/admin/templates", icon: "MessageSquare", order: 13, type: "item", parentId: null },
         { id: "menu-settings", label: "Menu Settings", href: "/admin/menu-settings", icon: "Settings", order: 14, type: "item", parentId: null },
         { id: "logs", label: "System Logs", href: "/admin/logs", icon: "Activity", order: 15, type: "item", parentId: null },
-        { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 16, type: "item", parentId: null }
+        { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 16, type: "item", parentId: null },
+        { id: "homepage-banners", label: "Homepage Banners", href: "/admin/homepage-banners", icon: "Monitor", order: 17, type: "item", parentId: null }
       ];
       
       // Try to get saved menu order from database

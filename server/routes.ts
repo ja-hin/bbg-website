@@ -134,7 +134,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Convert boolean strings to actual booleans
       if (formData.isGstRegistered) formData.isGstRegistered = formData.isGstRegistered === 'true';
       if (formData.isMsmeRegistered) formData.isMsmeRegistered = formData.isMsmeRegistered === 'true';
-      if (formData.infoDeclaration) formData.infoDeclaration = formData.infoDeclaration === 'true';
+      if (formData.declarationAccuracy) formData.declarationAccuracy = formData.declarationAccuracy === 'true';
       if (formData.tdsUnderstanding) formData.tdsUnderstanding = formData.tdsUnderstanding === 'true';
       if (formData.gstInvoiceAgreement) formData.gstInvoiceAgreement = formData.gstInvoiceAgreement === 'true';
       if (formData.termsAgreement) formData.termsAgreement = formData.termsAgreement === 'true';

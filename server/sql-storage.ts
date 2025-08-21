@@ -791,7 +791,7 @@ export class SqlServerStorage implements IStorage {
     
     const query = `
       INSERT INTO distributors (
-        name, contact, email, pincode, preferred_mode,
+        name, contact, email,
         pan_number, pan_copy_file, is_gst_registered, gstin, gst_certificate_file,
         is_msme_registered, msme_certificate_file,
         account_holder_name, bank_account, bank_account_confirm, ifsc_code, upi_id,
@@ -800,7 +800,7 @@ export class SqlServerStorage implements IStorage {
       ) 
       OUTPUT INSERTED.*
       VALUES (
-        @name, @contact, @email, @pincode, @preferredMode,
+        @name, @contact, @email,
         @panNumber, @panCopyFile, @isGstRegistered, @gstin, @gstCertificateFile,
         @isMsmeRegistered, @msmeCertificateFile,
         @accountHolderName, @bankAccount, @bankAccountConfirm, @ifscCode, @upiId,
@@ -814,11 +814,9 @@ export class SqlServerStorage implements IStorage {
     request.input('name', sql.NVarChar, insertDistributor.name);
     request.input('contact', sql.NVarChar, insertDistributor.contact);
     request.input('email', sql.NVarChar, insertDistributor.email);
-    request.input('pincode', sql.NVarChar, insertDistributor.pincode);
-    request.input('preferredMode', sql.NVarChar, insertDistributor.preferredMode);
     
-    // Tax & Compliance Details
-    request.input('panNumber', sql.NVarChar, insertDistributor.panNumber);
+    // Tax & Compliance Details - set defaults for missing fields
+    request.input('panNumber', sql.NVarChar, insertDistributor.panNumber || null);
     request.input('panCopyFile', sql.NVarChar, insertDistributor.panCopyFile || null);
     request.input('isGstRegistered', sql.Bit, insertDistributor.isGstRegistered || false);
     request.input('gstin', sql.NVarChar, insertDistributor.gstin || null);
@@ -826,19 +824,19 @@ export class SqlServerStorage implements IStorage {
     request.input('isMsmeRegistered', sql.Bit, insertDistributor.isMsmeRegistered || false);
     request.input('msmeCertificateFile', sql.NVarChar, insertDistributor.msmeCertificateFile || null);
     
-    // Bank Details
-    request.input('accountHolderName', sql.NVarChar, insertDistributor.accountHolderName);
-    request.input('bankAccount', sql.NVarChar, insertDistributor.bankAccount);
-    request.input('bankAccountConfirm', sql.NVarChar, insertDistributor.bankAccountConfirm);
-    request.input('ifscCode', sql.NVarChar, insertDistributor.ifscCode);
+    // Bank Details - set defaults for missing fields
+    request.input('accountHolderName', sql.NVarChar, insertDistributor.accountHolderName || null);
+    request.input('bankAccount', sql.NVarChar, insertDistributor.bankAccount || null);
+    request.input('bankAccountConfirm', sql.NVarChar, insertDistributor.bankAccountConfirm || null);
+    request.input('ifscCode', sql.NVarChar, insertDistributor.ifscCode || null);
     request.input('upiId', sql.NVarChar, insertDistributor.upiId || null);
-    request.input('cancelledChequeFile', sql.NVarChar, insertDistributor.cancelledChequeFile);
+    request.input('cancelledChequeFile', sql.NVarChar, insertDistributor.cancelledChequeFile || null);
     
-    // Declarations
-    request.input('infoDeclaration', sql.Bit, insertDistributor.infoDeclaration || false);
+    // Declarations - map new field names
+    request.input('infoDeclaration', sql.Bit, insertDistributor.declarationAccuracy || false);
     request.input('tdsUnderstanding', sql.Bit, insertDistributor.tdsUnderstanding || false);
     request.input('gstInvoiceAgreement', sql.Bit, insertDistributor.gstInvoiceAgreement || false);
-    request.input('termsAgreement', sql.Bit, insertDistributor.termsAgreement || false);
+    request.input('termsAgreement', sql.Bit, insertDistributor.declarationAccuracy || insertDistributor.tdsUnderstanding || insertDistributor.gstInvoiceAgreement || false);
     
     request.input('sellerCode', sql.NVarChar, sellerCode);
 

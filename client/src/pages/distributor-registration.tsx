@@ -425,7 +425,7 @@ export default function DistributorRegistration() {
                               onCheckedChange={field.onChange}
                             />
                           </FormControl>
-                          <FormLabel className="text-sm text-gray-700 leading-relaxed">
+                          <FormLabel className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm text-gray-700 leading-relaxed font-normal">
                             I understand that commission payout is subject to TDS as per income tax laws
                           </FormLabel>
                         </FormItem>

@@ -320,16 +320,16 @@ export default function ThankYou() {
       case 'distributor':
         return {
           icon: <Users className="h-16 w-16 text-blue-600" />,
-          title: "Welcome to XtraCover Network!",
-          subtitle: "Referral Partner Registration Successful",
-          message: "You are now part of our trusted referral partner network. Start promoting BBG and earn ₹25 commission on every successful registration.",
+          title: "Welcome to Xtracover Network!",
+          subtitle: "Distributor Registration Successful",
+          message: "You are now part of our trusted distributor network. Start promoting BBG and earn ₹25 commission on every successful registration.",
           code: sellerCode,
-          codeLabel: "Your Referral Code:",
+          codeLabel: "Your Seller Code:",
           isFailure: false,
           details: [
-            "Share your referral code with customers during registration",
+            "Share your seller code with customers during registration",
             "Track your commission earnings through our portal",
-            "Get dedicated support for all referral partner queries",
+            "Get dedicated support for all distributor queries",
             "Monthly commission payments to your registered account"
           ]
         };
@@ -366,210 +366,132 @@ export default function ThankYou() {
   const content = getContent();
 
   return (
-    <div className="min-h-screen xtra-gradient-light">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Success Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <div className={`w-20 h-20 ${content.isFailure ? 'bg-red-100' : 'bg-green-100'} rounded-full flex items-center justify-center mr-4`}>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <Card className="text-center">
+          <CardContent className="pt-12 pb-8">
+            {/* Icon */}
+            <div className="flex justify-center mb-6">
               {content.icon}
             </div>
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900">{content.title}</h1>
-              <p className="text-lg text-gray-600 mt-2">{content.subtitle}</p>
-            </div>
-          </div>
-        </div>
 
-        {/* Main Content Card */}
-        <Card className="shadow-xl mb-8">
-          <CardContent className="p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Left Column - Registration/Code Info */}
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-xl font-semibold mb-4 text-gray-900">
-                    {type === 'distributor' ? 'Referral Partner Details' : 'Registration Details'}
-                  </h3>
-                  <div className="space-y-3">
-                    {content.code && (
-                      <div className={`flex justify-between items-center p-3 ${content.isFailure ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'} rounded-lg border-2`}>
-                        <span className={`font-medium ${content.isFailure ? 'text-red-700' : 'text-green-700'}`}>{content.codeLabel}</span>
-                        <div className={`font-mono text-lg font-bold ${content.isFailure ? 'text-red-800 bg-red-100 border-red-300' : 'text-green-800 bg-green-100 border-green-300'} px-3 py-1 rounded`}>
-                          {content.code}
-                        </div>
-                      </div>
-                    )}
-                    
-                    {sessionData?.customerName && (
-                      <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <span className="font-medium text-gray-700">Customer Name:</span>
-                        <span className="font-semibold">{sessionData.customerName}</span>
-                      </div>
-                    )}
-                    
-                    {sessionData?.deviceType && sessionData?.brand && (
-                      <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <span className="font-medium text-gray-700">Device:</span>
-                        <div className="flex items-center">
-                          {sessionData.deviceType === 'mobile' ? 
-                            <Smartphone className="h-5 w-5 text-xtra-primary mr-2" /> : 
-                            <div className="h-5 w-5 bg-xtra-primary rounded mr-2" />
-                          }
-                          <span className="font-semibold">
-                            {sessionData.brand} {sessionData.modelName}
-                          </span>
-                        </div>
-                      </div>
-                    )}
+            {/* Title and Subtitle */}
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">{content.title}</h1>
+            <h2 className="text-xl text-gray-600 mb-6">{content.subtitle}</h2>
 
-                    {txnid && (
-                      <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <span className="font-medium text-gray-700">Transaction ID:</span>
-                        <span className="font-mono text-sm">{txnid}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+            {/* Message */}
+            <p className="text-gray-700 mb-8 max-w-2xl mx-auto leading-relaxed">
+              {content.message}
+            </p>
 
-                {content.details.length > 0 && (
-                  <div className="border-t pt-6">
-                    <h3 className="text-lg font-semibold mb-3 text-gray-900">
-                      {content.isFailure ? "What you can do:" : "What's Next?"}
-                    </h3>
-                    <ul className="space-y-2 text-gray-600">
-                      {content.details.map((detail, index) => (
-                        <li key={index} className="flex items-center">
-                          {content.isFailure ? (
-                            <div className="w-4 h-4 bg-red-500 rounded-full mr-2" />
-                          ) : (
-                            <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                          )}
-                          {detail}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+            {/* Code Display */}
+            {content.code && (
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-6 mb-8">
+                <p className="text-sm text-gray-600 mb-2">{content.codeLabel}</p>
+                <p className="text-3xl font-bold text-xtra-primary font-mono tracking-wider">
+                  {content.code}
+                </p>
+                <p className="text-xs text-gray-500 mt-2">
+                  Please save this code for future reference
+                </p>
               </div>
+            )}
 
-              {/* Right Column - Benefits/Actions */}
-              <div className="space-y-6">
-                {type === 'customer' && status === 'success' && (
-                  <div>
-                    <h3 className="text-xl font-semibold mb-4 text-gray-900">Your BBG Benefits</h3>
-                    <div className="space-y-4">
-                      <div className="p-4 border-2 border-green-200 rounded-lg bg-green-50">
-                        <div className="text-center">
-                          <div className="text-3xl font-bold text-green-600 mb-1">
-                            {sessionData?.registrationSource === 'acer_bbg' ? 'Up to 80%' : 'Up to 70%'}
-                          </div>
-                          <div className="text-sm text-green-700">Maximum buyback value</div>
-                        </div>
-                      </div>
-                      <div className="p-4 border-2 border-blue-200 rounded-lg bg-blue-50">
-                        <div className="text-center">
-                          <div className="text-3xl font-bold text-blue-600 mb-1">60 Months</div>
-                          <div className="text-sm text-blue-700">Coverage period</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
+            {/* Show Brand-Specific Claim Values for Successful Customer Registrations */}
+            {type === 'customer' && status === 'success' && <BrandClaimValues sessionData={sessionData} />}
 
-                {type === 'distributor' && status === 'success' && (
-                  <div>
-                    <h3 className="text-xl font-semibold mb-4 text-gray-900">Earn Commissions</h3>
-                    <div className="space-y-4">
-                      <div className="p-4 border-2 border-green-200 rounded-lg bg-green-50">
-                        <div className="text-center">
-                          <div className="text-3xl font-bold text-green-600 mb-1">₹25</div>
-                          <div className="text-sm text-green-700">Per successful registration</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
+            {/* Transaction ID for failed payments */}
+            {content.isFailure && txnid && (
+              <div className="bg-gray-50 p-4 rounded-lg mb-8">
+                <p className="text-sm text-gray-600 mb-1">Transaction Reference:</p>
+                <p className="font-mono text-sm text-gray-800">{txnid}</p>
+              </div>
+            )}
 
-                {/* Action Buttons */}
+            {/* Action Details */}
+            {content.details.length > 0 && (
+              <div className="bg-blue-50 rounded-lg p-6 mb-8">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">What's Next?</h3>
                 <div className="space-y-3">
-                  {type === 'customer' && status === 'success' && voucherCode && (
-                    <Button 
-                      onClick={handleDownloadInvoice} 
-                      className="w-full bg-green-600 hover:bg-green-700"
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      Download Invoice
-                    </Button>
-                  )}
+                  {content.details.map((detail, index) => (
+                    <div key={index} className="flex items-start text-left">
+                      <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-0.5">
+                        {index + 1}
+                      </div>
+                      <p className="text-gray-700">{detail}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
+            {/* Download Invoice Button - Only for successful customer registrations */}
+            {type === 'customer' && status === 'success' && voucherCode && (
+              <div className="mb-8">
+                <Button 
+                  onClick={handleDownloadInvoice} 
+                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-3"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Download Invoice
+                </Button>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {content.isFailure ? (
+                <>
+                  <Button 
+                    onClick={() => window.location.reload()} 
+                    className="bg-xtra-primary hover:bg-blue-700 text-white px-6 py-3"
+                  >
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Try Again
+                  </Button>
                   <Link href="/">
-                    <Button className="w-full bg-xtra-primary hover:bg-blue-700">
+                    <Button variant="outline" className="px-6 py-3">
                       <Home className="h-4 w-4 mr-2" />
                       Go to Homepage
                     </Button>
                   </Link>
-
-                  {type === 'distributor' && status === 'success' && (
+                </>
+              ) : (
+                <>
+                  <Link href="/">
+                    <Button className="bg-xtra-primary hover:bg-blue-700 text-white px-6 py-3">
+                      <Home className="h-4 w-4 mr-2" />
+                      Back to Home
+                    </Button>
+                  </Link>
+                  {type === 'distributor' && (
                     <Link href="/customer-registration">
-                      <Button variant="outline" className="w-full">
+                      <Button variant="outline" className="px-6 py-3">
                         Help Customers Register
                       </Button>
                     </Link>
                   )}
+                </>
+              )}
+            </div>
 
-                  {type === 'customer' && status === 'success' && (
-                    <Link href="/claim-bbg">
-                      <Button variant="outline" className="w-full">
-                        Claim BBG
-                      </Button>
-                    </Link>
-                  )}
-
-                  {content.isFailure && (
-                    <Button 
-                      onClick={() => window.location.reload()} 
-                      variant="outline" 
-                      className="w-full"
-                    >
-                      <RefreshCw className="h-4 w-4 mr-2" />
-                      Try Again
-                    </Button>
-                  )}
+            {/* Contact Information */}
+            <div className="mt-12 pt-8 border-t border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Need Help?</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                <div className="text-center">
+                  <div className="text-xtra-primary font-semibold">Email Support</div>
+                  <div className="text-gray-600">support@xtracover.com</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xtra-primary font-semibold">Phone Support</div>
+                  <div className="text-gray-600">+91-8860396039</div>
+                  <p className="text-xs mt-1">between 09:30 to 18:30 IST</p>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
-
-        {/* Show Brand-Specific Claim Values for Successful Customer Registrations */}
-        {type === 'customer' && status === 'success' && <BrandClaimValues sessionData={sessionData} />}
-
-        {/* Contact Information */}
-        <Card className="shadow-lg">
-          <CardContent className="p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Need Help?</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-              <div className="text-center">
-                <div className="text-xtra-primary font-semibold">Email Support</div>
-                <div className="text-gray-600">contactus@xtracover.com</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xtra-primary font-semibold">Phone Support</div>
-                <div className="text-gray-600">886 039 6039</div>
-                <p className="text-xs mt-1">09:30 to 18:30 IST</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Success message */}
-        <div className="text-center mt-8">
-          <p className="text-sm text-gray-500">
-            Thank you for choosing XtraCover BBG protection. 
-            {type === 'distributor' ? 'Welcome to our referral partner network!' : 'Your device is now protected!'}
-          </p>
-        </div>
       </div>
     </div>
   );

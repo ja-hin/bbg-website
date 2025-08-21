@@ -384,19 +384,7 @@ export default function DistributorRegistration() {
                   </div>
                 </div>
 
-                {/* Complete Registration Notice */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                  <div className="flex items-start">
-                    <Info className="h-5 w-5 text-blue-600 mt-0.5 mr-3" />
-                    <div>
-                      <h3 className="font-semibold text-blue-900">Complete Your Profile Later</h3>
-                      <p className="text-blue-700 mt-1">
-                        After registration, you can add your tax compliance details and bank information 
-                        in your account dashboard to start receiving commission payouts.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                
 
                 {/* Terms Agreement */}
                 <div className="space-y-4">

@@ -98,7 +98,7 @@ export default function DistributorRegistration() {
 
   const registerMutation = useMutation({
     mutationFn: async (data: DistributorFormData) => {
-      const response = await apiRequest("/api/register-distributor", {
+      const response = await apiRequest("/api/distributors/register", {
         method: "POST",
         body: data
       });

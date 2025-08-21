@@ -13,14 +13,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Loader2, IndianRupee, Users, TrendingUp, Building, MapPin, Phone, Mail, FileText, ExternalLink, DollarSign, Info } from "lucide-react";
+import { Loader2, IndianRupee, Users, TrendingUp, Building, Phone, Mail, FileText, ExternalLink, DollarSign, Info } from "lucide-react";
 import { SuccessConfetti } from "@/components/confetti";
 
 const distributorSchema = z.object({
   name: z.string().min(2, "Full name is required"),
   contact: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
   email: z.string().email("Invalid email address"),
-  pincode: z.string().regex(/^\d{6}$/, "Pincode must be exactly 6 digits"),
   termsAgreement: z.boolean().refine(val => val === true, "You must agree to the terms and conditions")
 });
 
@@ -41,7 +40,6 @@ export default function DistributorRegistration() {
       name: "",
       contact: "",
       email: "",
-      pincode: "",
       termsAgreement: false
     }
   });
@@ -383,25 +381,6 @@ export default function DistributorRegistration() {
                         <span className="text-sm">✓ Phone number verified</span>
                       </div>
                     )}
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="pincode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <MapPin className="h-4 w-4 mr-2" />
-                            Pincode *
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter 6-digit pincode" maxLength={6} {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </div>
                 </div>
 

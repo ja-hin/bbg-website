@@ -351,7 +351,7 @@ export default function DistributorRegistration() {
                               onCheckedChange={field.onChange}
                             />
                           </FormControl>
-                          <FormLabel className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm text-gray-900 leading-relaxed font-normal">
+                          <FormLabel className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm leading-relaxed font-normal text-[#374151]">
                             I declare that the information provided above is true and correct
                           </FormLabel>
                         </FormItem>

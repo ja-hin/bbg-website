@@ -216,6 +216,20 @@ export const cartAbandonments = pgTable("cart_abandonments", {
   updatedAt: timestamp("updated_at").defaultNow()
 });
 
+// Homepage Banners table for slider management
+export const homepageBanners = pgTable("homepage_banners", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  desktopImageUrl: text("desktop_image_url").notNull(),
+  mobileImageUrl: text("mobile_image_url").notNull(),
+  linkUrl: text("link_url"),
+  isActive: boolean("is_active").default(true),
+  sortOrder: integer("sort_order").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertDistributorSchema = createInsertSchema(distributors).omit({
   id: true,
   sellerCode: true,
@@ -281,6 +295,12 @@ export const insertClaimValueSlabSchema = createInsertSchema(claimValueSlabs).om
   updatedAt: true,
 });
 
+export const insertHomepageBannerSchema = createInsertSchema(homepageBanners).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type UserRole = typeof userRoles.$inferSelect;
 export type Distributor = typeof distributors.$inferSelect;
 export type Customer = typeof customers.$inferSelect;
@@ -293,6 +313,7 @@ export type DeviceModel = typeof deviceModels.$inferSelect;
 export type CartAbandonment = typeof cartAbandonments.$inferSelect;
 export type DistributorSession = typeof distributorSessions.$inferSelect;
 export type CommissionPayout = typeof commissionPayouts.$inferSelect;
+export type HomepageBanner = typeof homepageBanners.$inferSelect;
 
 export type InsertUserRole = z.infer<typeof insertUserRoleSchema>;
 export type InsertDistributor = z.infer<typeof insertDistributorSchema>;
@@ -304,6 +325,7 @@ export type InsertPendingPayment = z.infer<typeof insertPendingPaymentSchema>;
 export type InsertBrand = z.infer<typeof insertBrandSchema>;
 export type InsertDeviceModel = z.infer<typeof insertDeviceModelSchema>;
 export type InsertCartAbandonment = typeof cartAbandonments.$inferInsert;
+export type InsertHomepageBanner = z.infer<typeof insertHomepageBannerSchema>;
 
 // Theme settings table for admin theme management
 export const themeSettings = pgTable("theme_settings", {

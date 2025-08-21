@@ -22,7 +22,9 @@ import {
   type ThemeSettings,
   type InsertThemeSettings,
   type SmtpSettings,
-  type InsertSmtpSettings
+  type InsertSmtpSettings,
+  type HomepageBanner,
+  type InsertHomepageBanner
 } from "@shared/schema";
 import { db } from "./db";
 import sql from 'mssql';
@@ -132,6 +134,14 @@ export interface IStorage {
   // SMTP Settings operations
   getSmtpSettings(): Promise<SmtpSettings | undefined>;
   updateSmtpSettings(settings: InsertSmtpSettings): Promise<SmtpSettings>;
+  
+  // Homepage Banner operations
+  getAllHomepageBanners(): Promise<HomepageBanner[]>;
+  getActiveHomepageBanners(): Promise<HomepageBanner[]>;
+  createHomepageBanner(banner: InsertHomepageBanner): Promise<HomepageBanner>;
+  updateHomepageBanner(id: number, updates: Partial<InsertHomepageBanner>): Promise<void>;
+  deleteHomepageBanner(id: number): Promise<void>;
+  getHomepageBannerById(id: number): Promise<HomepageBanner | undefined>;
   
   // WhatsApp Configuration operations
   getWhatsAppConfig(): Promise<any>;
@@ -775,6 +785,23 @@ export class SqlServerStorage implements IStorage {
         
         -- Insert default theme
         INSERT INTO theme_settings (primary_color) VALUES ('#254696');
+      END
+
+      -- Create homepage_banners table for slider management
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'homepage_banners')
+      BEGIN
+        CREATE TABLE homepage_banners (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          title NVARCHAR(255) NOT NULL,
+          description NVARCHAR(MAX),
+          desktop_image_url NVARCHAR(500) NOT NULL,
+          mobile_image_url NVARCHAR(500) NOT NULL,
+          link_url NVARCHAR(500),
+          is_active BIT DEFAULT 1,
+          sort_order INT DEFAULT 0,
+          created_at DATETIME2 DEFAULT GETDATE(),
+          updated_at DATETIME2 DEFAULT GETDATE()
+        );
       END
     `;
 
@@ -3332,6 +3359,149 @@ export class SqlServerStorage implements IStorage {
       .query(updateQuery);
       
     console.log(`✅ Waiting period settings updated - Enabled: ${enabled}, Months: ${months}`);
+  }
+
+  // Homepage Banner operations
+  async getAllHomepageBanners(): Promise<HomepageBanner[]> {
+    await db.connectDB();
+    
+    const query = `SELECT * FROM homepage_banners ORDER BY sort_order ASC, id ASC`;
+    const request = db.pool.request();
+    const result = await request.query(query);
+    
+    return result.recordset.map(this.mapHomepageBannerFromDb);
+  }
+
+  async getActiveHomepageBanners(): Promise<HomepageBanner[]> {
+    await db.connectDB();
+    
+    const query = `SELECT * FROM homepage_banners WHERE is_active = 1 ORDER BY sort_order ASC, id ASC`;
+    const request = db.pool.request();
+    const result = await request.query(query);
+    
+    return result.recordset.map(this.mapHomepageBannerFromDb);
+  }
+
+  async createHomepageBanner(banner: InsertHomepageBanner): Promise<HomepageBanner> {
+    await db.connectDB();
+    
+    const query = `
+      INSERT INTO homepage_banners (
+        title, description, desktop_image_url, mobile_image_url, 
+        link_url, is_active, sort_order
+      )
+      OUTPUT INSERTED.*
+      VALUES (
+        @title, @description, @desktopImageUrl, @mobileImageUrl,
+        @linkUrl, @isActive, @sortOrder
+      )
+    `;
+    
+    const request = db.pool.request();
+    request.input('title', sql.NVarChar, banner.title);
+    request.input('description', sql.NVarChar, banner.description || null);
+    request.input('desktopImageUrl', sql.NVarChar, banner.desktopImageUrl);
+    request.input('mobileImageUrl', sql.NVarChar, banner.mobileImageUrl);
+    request.input('linkUrl', sql.NVarChar, banner.linkUrl || null);
+    request.input('isActive', sql.Bit, banner.isActive ?? true);
+    request.input('sortOrder', sql.Int, banner.sortOrder || 0);
+    
+    const result = await request.query(query);
+    return this.mapHomepageBannerFromDb(result.recordset[0]);
+  }
+
+  async updateHomepageBanner(id: number, updates: Partial<InsertHomepageBanner>): Promise<void> {
+    await db.connectDB();
+    
+    const setParts = [];
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    
+    if (updates.title !== undefined) {
+      setParts.push('title = @title');
+      request.input('title', sql.NVarChar, updates.title);
+    }
+    
+    if (updates.description !== undefined) {
+      setParts.push('description = @description');
+      request.input('description', sql.NVarChar, updates.description);
+    }
+    
+    if (updates.desktopImageUrl !== undefined) {
+      setParts.push('desktop_image_url = @desktopImageUrl');
+      request.input('desktopImageUrl', sql.NVarChar, updates.desktopImageUrl);
+    }
+    
+    if (updates.mobileImageUrl !== undefined) {
+      setParts.push('mobile_image_url = @mobileImageUrl');
+      request.input('mobileImageUrl', sql.NVarChar, updates.mobileImageUrl);
+    }
+    
+    if (updates.linkUrl !== undefined) {
+      setParts.push('link_url = @linkUrl');
+      request.input('linkUrl', sql.NVarChar, updates.linkUrl);
+    }
+    
+    if (updates.isActive !== undefined) {
+      setParts.push('is_active = @isActive');
+      request.input('isActive', sql.Bit, updates.isActive);
+    }
+    
+    if (updates.sortOrder !== undefined) {
+      setParts.push('sort_order = @sortOrder');
+      request.input('sortOrder', sql.Int, updates.sortOrder);
+    }
+    
+    setParts.push('updated_at = GETDATE()');
+    
+    const query = `
+      UPDATE homepage_banners 
+      SET ${setParts.join(', ')}
+      WHERE id = @id
+    `;
+    
+    await request.query(query);
+  }
+
+  async deleteHomepageBanner(id: number): Promise<void> {
+    await db.connectDB();
+    
+    const query = `DELETE FROM homepage_banners WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    
+    await request.query(query);
+  }
+
+  async getHomepageBannerById(id: number): Promise<HomepageBanner | undefined> {
+    await db.connectDB();
+    
+    const query = `SELECT * FROM homepage_banners WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    
+    const result = await request.query(query);
+    
+    if (result.recordset.length === 0) {
+      return undefined;
+    }
+    
+    return this.mapHomepageBannerFromDb(result.recordset[0]);
+  }
+
+  private mapHomepageBannerFromDb(row: any): HomepageBanner {
+    return {
+      id: row.id,
+      title: row.title,
+      description: row.description,
+      desktopImageUrl: row.desktop_image_url,
+      mobileImageUrl: row.mobile_image_url,
+      linkUrl: row.link_url,
+      isActive: row.is_active,
+      sortOrder: row.sort_order,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
   }
 }
 

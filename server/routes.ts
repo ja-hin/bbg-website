@@ -6690,6 +6690,160 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // ===== HOMEPAGE BANNER MANAGEMENT ROUTES =====
+
+  // Public endpoint - Get active homepage banners (for frontend display)
+  app.get("/api/homepage-banners", async (req, res) => {
+    try {
+      const banners = await storage.getActiveHomepageBanners();
+      res.json(banners);
+    } catch (error: any) {
+      console.error("Error fetching homepage banners:", error);
+      res.status(500).json({ message: "Failed to get homepage banners" });
+    }
+  });
+
+  // Admin endpoint - Get all homepage banners (including inactive ones)
+  app.get("/api/admin/homepage-banners", isAdminAuthenticated, async (req, res) => {
+    try {
+      const banners = await storage.getAllHomepageBanners();
+      res.json(banners);
+    } catch (error: any) {
+      console.error("Error fetching all homepage banners:", error);
+      res.status(500).json({ message: "Failed to get homepage banners" });
+    }
+  });
+
+  // Admin endpoint - Create homepage banner
+  app.post("/api/admin/homepage-banners", isAdminAuthenticated, upload.fields([
+    { name: 'desktopImage', maxCount: 1 },
+    { name: 'mobileImage', maxCount: 1 }
+  ]), async (req, res) => {
+    try {
+      const { title, description, linkUrl, isActive, sortOrder } = req.body;
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+      if (!title) {
+        return res.status(400).json({ message: "Title is required" });
+      }
+
+      if (!files?.desktopImage || !files?.mobileImage) {
+        return res.status(400).json({ message: "Both desktop and mobile images are required" });
+      }
+
+      // Get image URLs (S3 URLs or local paths)
+      const desktopImageUrl = isS3Configured 
+        ? (files.desktopImage[0] as any).location 
+        : `/uploads/${files.desktopImage[0].filename}`;
+        
+      const mobileImageUrl = isS3Configured 
+        ? (files.mobileImage[0] as any).location 
+        : `/uploads/${files.mobileImage[0].filename}`;
+
+      const banner = await storage.createHomepageBanner({
+        title,
+        description,
+        desktopImageUrl,
+        mobileImageUrl,
+        linkUrl,
+        isActive: isActive === 'true',
+        sortOrder: parseInt(sortOrder) || 0
+      });
+
+      res.status(201).json({
+        message: "Homepage banner created successfully",
+        banner
+      });
+    } catch (error: any) {
+      console.error("Error creating homepage banner:", error);
+      res.status(500).json({ message: "Failed to create homepage banner" });
+    }
+  });
+
+  // Admin endpoint - Update homepage banner
+  app.put("/api/admin/homepage-banners/:id", isAdminAuthenticated, upload.fields([
+    { name: 'desktopImage', maxCount: 1 },
+    { name: 'mobileImage', maxCount: 1 }
+  ]), async (req, res) => {
+    try {
+      const bannerId = parseInt(req.params.id);
+      const { title, description, linkUrl, isActive, sortOrder } = req.body;
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+      if (isNaN(bannerId)) {
+        return res.status(400).json({ message: "Invalid banner ID" });
+      }
+
+      const updates: any = {};
+
+      if (title !== undefined) updates.title = title;
+      if (description !== undefined) updates.description = description;
+      if (linkUrl !== undefined) updates.linkUrl = linkUrl;
+      if (isActive !== undefined) updates.isActive = isActive === 'true';
+      if (sortOrder !== undefined) updates.sortOrder = parseInt(sortOrder);
+
+      // Update image URLs if new files are provided
+      if (files?.desktopImage) {
+        updates.desktopImageUrl = isS3Configured 
+          ? (files.desktopImage[0] as any).location 
+          : `/uploads/${files.desktopImage[0].filename}`;
+      }
+      
+      if (files?.mobileImage) {
+        updates.mobileImageUrl = isS3Configured 
+          ? (files.mobileImage[0] as any).location 
+          : `/uploads/${files.mobileImage[0].filename}`;
+      }
+
+      await storage.updateHomepageBanner(bannerId, updates);
+
+      res.json({ message: "Homepage banner updated successfully" });
+    } catch (error: any) {
+      console.error("Error updating homepage banner:", error);
+      res.status(500).json({ message: "Failed to update homepage banner" });
+    }
+  });
+
+  // Admin endpoint - Delete homepage banner
+  app.delete("/api/admin/homepage-banners/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const bannerId = parseInt(req.params.id);
+
+      if (isNaN(bannerId)) {
+        return res.status(400).json({ message: "Invalid banner ID" });
+      }
+
+      await storage.deleteHomepageBanner(bannerId);
+
+      res.json({ message: "Homepage banner deleted successfully" });
+    } catch (error: any) {
+      console.error("Error deleting homepage banner:", error);
+      res.status(500).json({ message: "Failed to delete homepage banner" });
+    }
+  });
+
+  // Admin endpoint - Get single homepage banner by ID
+  app.get("/api/admin/homepage-banners/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+      const bannerId = parseInt(req.params.id);
+
+      if (isNaN(bannerId)) {
+        return res.status(400).json({ message: "Invalid banner ID" });
+      }
+
+      const banner = await storage.getHomepageBannerById(bannerId);
+
+      if (!banner) {
+        return res.status(404).json({ message: "Homepage banner not found" });
+      }
+
+      res.json(banner);
+    } catch (error: any) {
+      console.error("Error fetching homepage banner:", error);
+      res.status(500).json({ message: "Failed to get homepage banner" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 

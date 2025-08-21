@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   Accordion,
   AccordionContent,
@@ -18,8 +19,18 @@ import {
   ArrowRight,
   CheckCircle,
   Loader2,
-  HelpCircle
+  HelpCircle,
+  Star,
+  Phone,
+  Clock,
+  IndianRupee,
+  Target,
+  Zap,
+  Globe,
+  HeadphonesIcon
 } from "lucide-react";
+import heroBannerImage from "@assets/generated_images/BBG_hero_banner_background_f6fe0fae.png";
+import processInfographicImage from "@assets/generated_images/BBG_process_infographic_c03b3505.png";
 
 export default function Home() {
   // Fetch theme for dynamic coloring
@@ -62,616 +73,477 @@ export default function Home() {
   const maxPercentage = allSlabs.length > 0 ? Math.max(...allSlabs.map((slab: any) => slab.percentage)) : 70;
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-white">
-      {/* Hero Section */}
-      <section className="py-12 sm:py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
-            Protect Your Investment with 
-            <span className="text-xtra-primary block sm:inline"> BuyBack Guarantee</span>
-          </h1>
-          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-12 px-4 sm:px-0">Get assured buyback value for your laptops and mobiles — transparent, fixed at registration, and redeemable when you’re ready to upgrade. Trusted by thousands of XtraCover customers across India.</p>
+    <div className="min-h-screen">
+      {/* Hero Banner Section */}
+      <section 
+        className="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroBannerImage})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-blue-700/60"></div>
+        
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+          {/* Trust Badge */}
+          <Badge className="mb-6 bg-white/10 text-white border-white/20 px-4 py-2 text-sm font-medium">
+            <Star className="h-4 w-4 mr-2" />
+            Trusted by 10,000+ customers across India
+          </Badge>
           
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 sm:mb-16 px-4 sm:px-0">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-tight">
+            India's #1
+            <span className="block text-yellow-400">BuyBack Guarantee</span>
+            <span className="block text-2xl sm:text-3xl lg:text-4xl font-normal mt-2">for Laptops & Mobiles</span>
+          </h1>
+          
+          <p className="text-xl sm:text-2xl mb-8 max-w-4xl mx-auto font-light">
+            Guaranteed cash when you're ready to upgrade • Up to <span className="font-bold text-yellow-400">{maxPercentage}% buyback value</span> • Instant payouts
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
             <Link href="/customer-registration" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
-                Buy BBG <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+              <Button size="lg" className="w-full sm:w-auto bg-yellow-500 hover:bg-yellow-400 text-black px-8 py-4 text-lg font-bold rounded-full shadow-2xl transform hover:scale-105 transition-all duration-200">
+                Get Protected Now <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
             <Link href="/claim-bbg" className="w-full sm:w-auto">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto border-xtra-primary text-xtra-primary hover:bg-xtra-primary/5 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
-                Claim BBG
+              <Button variant="outline" size="lg" className="w-full sm:w-auto border-2 border-white text-white hover:bg-white hover:text-black px-8 py-4 text-lg font-semibold rounded-full transition-all duration-200">
+                Claim Your BBG
               </Button>
             </Link>
           </div>
 
-          {/* Product Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto px-4 sm:px-0">
-            <Card className="p-6 sm:p-8 border-2 border-xtra-primary/20 hover:border-xtra-primary/40 transition-colors">
-              <CardContent className="text-center p-0">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-xtra-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <Laptop className="h-8 w-8 sm:h-10 sm:w-10 text-xtra-primary" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Laptop BBG</h3>
-                <div className="text-3xl sm:text-4xl font-bold text-xtra-primary mb-2">
-                  {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 299}`}
-                </div>
-                <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">(inclusive of GST)</p>
-                <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Assured buyback value for your Laptop</p>
-                <ul className="text-left space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Up to 60% payout value
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Coverage for up to 60 months
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Free doorstep pickup for claims
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Instant payouts at the time of device handover
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="p-6 sm:p-8 border-2 border-xtra-primary/20 hover:border-xtra-primary/40 transition-colors">
-              <CardContent className="text-center p-0">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-xtra-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <Smartphone className="h-8 w-8 sm:h-10 sm:w-10 text-xtra-primary" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Mobile BBG</h3>
-                <div className="text-3xl sm:text-4xl font-bold text-xtra-primary mb-2">
-                  {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 99}`}
-                </div>
-                <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">(inclusive of GST)</p>
-                <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Assured buyback value for your Mobile</p>
-                <ul className="text-left space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Up to 70% payout value
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Coverage for up to 18 months
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Free doorstep pickup for claims
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Instant payouts at the time of device handover
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+          {/* Key Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+            <div className="text-center">
+              <div className="text-3xl sm:text-4xl font-bold text-yellow-400">10,000+</div>
+              <div className="text-lg">Happy Customers</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl sm:text-4xl font-bold text-yellow-400">₹2+ Crores</div>
+              <div className="text-lg">Payouts Processed</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl sm:text-4xl font-bold text-yellow-400">24-48 Hrs</div>
+              <div className="text-lg">Payout Processing</div>
+            </div>
           </div>
         </div>
       </section>
-      {/* Acer BBG Section */}
-      <section className="py-12 sm:py-16 xtra-gradient-light">
+
+      {/* How It Works Section */}
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Acer Device Protection
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+              How BBG Works
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Special BBG registration for Acer users. Register your Acer devices and get the same amazing protection with up to 70% payout value.
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Simple, transparent, and guaranteed. Your device protection in 3 easy steps.
             </p>
           </div>
+          
+          <div className="mb-12">
+            <img 
+              src={processInfographicImage} 
+              alt="BBG Process" 
+              className="w-full max-w-4xl mx-auto rounded-2xl shadow-2xl"
+            />
+          </div>
 
-          <div className="bg-white rounded-xl shadow-xl p-6 sm:p-8 max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-4 text-gray-900">
-                  Register Your Acer Device
-                </h3>
-                <ul className="space-y-3 text-gray-600 mb-6">
-                  <li className="flex items-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Target className="h-10 w-10 text-xtra-primary" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4">1. Register Your Device</h3>
+              <p className="text-gray-600 text-lg">
+                Quick 2-minute registration with device details. Get instant confirmation and BBG certificate.
+              </p>
+            </div>
+            
+            <div className="text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Shield className="h-10 w-10 text-green-600" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4">2. Your Device is Protected</h3>
+              <p className="text-gray-600 text-lg">
+                Enjoy peace of mind knowing your investment is secured. Fixed buyback value locked-in.
+              </p>
+            </div>
+            
+            <div className="text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <IndianRupee className="h-10 w-10 text-yellow-600" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4">3. Get Instant Payout</h3>
+              <p className="text-gray-600 text-lg">
+                Ready to upgrade? Claim your guaranteed amount with doorstep pickup and instant payment.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Product Offerings Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+              Choose Your Protection
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Affordable protection plans for all your devices. Start from just ₹{bbgPrices?.mobile || 99}
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Laptop BBG Card */}
+            <Card className="p-8 border-2 border-xtra-primary/20 hover:border-xtra-primary hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-gradient-to-l from-xtra-primary to-blue-500 text-white px-4 py-2 text-sm font-bold">
+                POPULAR
+              </div>
+              <CardContent className="text-center p-0">
+                <div className="w-24 h-24 bg-gradient-to-br from-xtra-primary to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Laptop className="h-12 w-12 text-white" />
+                </div>
+                <h3 className="text-3xl font-bold mb-4">Laptop BBG</h3>
+                <div className="text-5xl font-bold text-xtra-primary mb-2">
+                  {pricesLoading ? <Loader2 className="h-10 w-10 animate-spin inline" /> : `₹${bbgPrices?.laptop || 299}`}
+                </div>
+                <p className="text-sm text-gray-500 mb-6">(inclusive of GST)</p>
+                <p className="text-gray-600 mb-8 text-lg">Complete protection for your laptop investment</p>
+                
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-center justify-center text-left">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                    Register your BBG purchased on Acer Store
-                  </li>
-                  <li className="flex items-center">
+                    <span className="text-gray-700">Up to 60% payout value</span>
+                  </div>
+                  <div className="flex items-center justify-center text-left">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                    70% maximum payout value
-                  </li>
-                  <li className="flex items-center">
+                    <span className="text-gray-700">Coverage for up to 60 months</span>
+                  </div>
+                  <div className="flex items-center justify-center text-left">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                    5-year coverage period
-                  </li>
-                  <li className="flex items-center">
+                    <span className="text-gray-700">Free doorstep pickup</span>
+                  </div>
+                  <div className="flex items-center justify-center text-left">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-                    Instant settlement upon device handover
-                  </li>
-                </ul>
-                <Link href="/acer">
-                  <Button className="w-full sm:w-auto xtra-gradient hover:opacity-90 text-white px-8 py-3 text-lg font-semibold">
-                    Register Acer Device <ArrowRight className="ml-2 h-5 w-5" />
+                    <span className="text-gray-700">Instant payouts on handover</span>
+                  </div>
+                </div>
+
+                <Link href="/customer-registration" className="w-full block">
+                  <Button className="w-full bg-xtra-primary hover:bg-xtra-primary/90 text-white py-3 text-lg font-semibold">
+                    Protect My Laptop
                   </Button>
                 </Link>
-              </div>
-              <div className="flex justify-center">
-                <div className="relative">
-                  <div className="w-48 h-48 xtra-gradient-light rounded-full flex items-center justify-center shadow-lg">
-                    <div className="text-center">
-                      <Laptop className="h-16 w-16 text-xtra-primary mx-auto mb-2" />
-                      <Smartphone className="h-12 w-12 text-xtra-secondary mx-auto" />
-                    </div>
-                  </div>
-                  <div className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full p-2">
-                    <Shield className="h-6 w-6" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          
-        </div>
-      </section>
-      {/* Features Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">Why Choose <span className="text-xtra-primary">XtraCover BBG?</span></h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto px-4 sm:px-0">
-              We provide the most comprehensive and reliable buyback guarantee program in the market
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            <Card className="p-6 sm:p-8 text-center hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-xtra-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-xtra-primary" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Guaranteed Returns</h3>
-                <p className="text-gray-600 text-sm sm:text-base">
-                  Get assured returns based on your device condition and age. No hidden terms or conditions.
-                </p>
               </CardContent>
             </Card>
 
-            <Card className="p-6 sm:p-8 text-center hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-xtra-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-xtra-primary" />
+            {/* Mobile BBG Card */}
+            <Card className="p-8 border-2 border-gray-200 hover:border-xtra-primary hover:shadow-2xl transition-all duration-300">
+              <CardContent className="text-center p-0">
+                <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Smartphone className="h-12 w-12 text-white" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Best Market Value</h3>
-                <p className="text-gray-600 text-sm sm:text-base">
-                  We offer the highest buyback percentages in the market with transparent pricing slabs.
-                </p>
-              </CardContent>
-            </Card>
+                <h3 className="text-3xl font-bold mb-4">Mobile BBG</h3>
+                <div className="text-5xl font-bold text-green-600 mb-2">
+                  {pricesLoading ? <Loader2 className="h-10 w-10 animate-spin inline" /> : `₹${bbgPrices?.mobile || 99}`}
+                </div>
+                <p className="text-sm text-gray-500 mb-6">(inclusive of GST)</p>
+                <p className="text-gray-600 mb-8 text-lg">Smart protection for your mobile device</p>
+                
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-center justify-center text-left">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                    <span className="text-gray-700">Up to 60% payout value</span>
+                  </div>
+                  <div className="flex items-center justify-center text-left">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                    <span className="text-gray-700">Coverage for up to 36 months</span>
+                  </div>
+                  <div className="flex items-center justify-center text-left">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                    <span className="text-gray-700">Free doorstep pickup</span>
+                  </div>
+                  <div className="flex items-center justify-center text-left">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                    <span className="text-gray-700">Instant payouts on handover</span>
+                  </div>
+                </div>
 
-            <Card className="p-6 sm:p-8 text-center hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-xtra-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <Users className="h-6 w-6 sm:h-8 sm:w-8 text-xtra-primary" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Trusted Network</h3>
-                <p className="text-gray-600 text-sm sm:text-base">
-                  Join our network of verified referral partners and satisfied customers across the country.
-                </p>
+                <Link href="/customer-registration" className="w-full block">
+                  <Button variant="outline" className="w-full border-green-600 text-green-600 hover:bg-green-600 hover:text-white py-3 text-lg font-semibold">
+                    Protect My Mobile
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </div>
         </div>
       </section>
-      {/* BBG Depreciation Slabs Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
+
+      {/* Why Choose BBG Section */}
+      <section className="py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
-              BBG Claim Value Slabs
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+              Why XtraCover BBG?
             </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4 sm:px-0">
-              Transparent pricing based on your device age. Know exactly what you'll get when you claim your BBG.
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              The only buyback guarantee you can truly trust. Here's what makes us different.
             </p>
           </div>
 
-          {isSlabsLoading ? (
-            <div className="flex justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-xtra-primary" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+                <Shield className="h-8 w-8 text-xtra-primary" />
+              </div>
+              <h3 className="text-xl font-bold mb-4">100% Guaranteed Payouts</h3>
+              <p className="text-gray-600">
+                Unlike other schemes, our payouts are guaranteed. No hidden terms, no rejections.
+              </p>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
-              
-              {/* Mobile Devices Table */}
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="bg-xtra-primary text-white px-6 py-4">
-                  <h3 className="text-xl font-bold flex items-center">
-                    <Smartphone className="w-6 h-6 mr-2" />
-                    Mobile Devices
-                  </h3>
-                </div>
-                <div className="overflow-x-auto">
-                  {(() => {
-                    // Get actual brands from the data (from logs: Apple, OnePlus, Realme, Samsung, Xiaomi)
-                    const mobileBrands = Array.from(new Set(activeMobileSlabs.map((slab: any) => slab.brand).filter(Boolean))).sort();
-                    
-                    if (mobileBrands.length === 0) {
-                      return (
-                        <div className="p-8 text-center">
-                          <p className="text-gray-500">No mobile device slabs available</p>
-                        </div>
-                      );
-                    }
 
-                    // Group mobile slabs by age range for brand comparison
-                    const ageRanges: { [key: string]: any } = {};
-                    
-                    activeMobileSlabs.forEach((slab: any) => {
-                      const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
-                      if (!ageRanges[ageKey]) {
-                        ageRanges[ageKey] = {
-                          minMonths: slab.minMonths,
-                          maxMonths: slab.maxMonths,
-                          brands: {}
-                        };
-                      }
-                      
-                      // Add brand-specific percentage
-                      if (slab.brand) {
-                        ageRanges[ageKey].brands[slab.brand] = slab.percentage;
-                      }
-                    });
-
-                    // Sort age ranges by minMonths
-                    const sortedAgeRanges = Object.entries(ageRanges).sort(
-                      ([, a], [, b]) => a.minMonths - b.minMonths
-                    );
-
-                    return (
-                      <table className="w-full">
-                        <thead className="bg-gray-100">
-                          <tr>
-                            <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
-                            {mobileBrands.map(brand => (
-                              <th key={brand} className="py-3 px-4 text-center font-semibold text-sm text-gray-700">{brand}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                          {sortedAgeRanges.map(([ageKey, ageData]) => (
-                            <tr key={ageKey} className="hover:bg-gray-50">
-                              <td className="py-3 px-4 text-sm font-medium text-gray-900">
-                                {ageData.minMonths}-{ageData.maxMonths} months
-                              </td>
-                              {mobileBrands.map(brand => {
-                                const percentage = ageData.brands[brand];
-                                if (!percentage) return <td key={brand} className="py-3 px-4 text-center text-gray-400">-</td>;
-                                
-                                return (
-                                  <td key={brand} className="py-3 px-4 text-center">
-                                    <span className="text-lg font-bold text-black">{percentage}%</span>
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    );
-                  })()}
-                </div>
+            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                <Zap className="h-8 w-8 text-green-600" />
               </div>
+              <h3 className="text-xl font-bold mb-4">Instant Processing</h3>
+              <p className="text-gray-600">
+                Claims processed within 24-48 hours. Get your money when you hand over your device.
+              </p>
+            </div>
 
-              {/* Laptop Devices Table */}
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="bg-xtra-primary text-white px-6 py-4">
-                  <h3 className="text-xl font-bold flex items-center">
-                    <Laptop className="w-6 h-6 mr-2" />
-                    Laptop Devices
-                  </h3>
-                </div>
-                <div className="overflow-x-auto">
-                  {(() => {
-                    // Get actual brands from the data (from logs: Acer, Apple, Asus, Dell, HP, Lenovo)
-                    const laptopBrands = Array.from(new Set(activeLaptopSlabs.map((slab: any) => slab.brand).filter(Boolean))).sort();
-                    
-                    if (laptopBrands.length === 0) {
-                      return (
-                        <div className="p-8 text-center">
-                          <p className="text-gray-500">No laptop device slabs available</p>
-                        </div>
-                      );
-                    }
-
-                    // Group laptop slabs by age range for brand comparison
-                    const ageRanges: { [key: string]: any } = {};
-                    
-                    activeLaptopSlabs.forEach((slab: any) => {
-                      const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
-                      if (!ageRanges[ageKey]) {
-                        ageRanges[ageKey] = {
-                          minMonths: slab.minMonths,
-                          maxMonths: slab.maxMonths,
-                          brands: {}
-                        };
-                      }
-                      
-                      // Add brand-specific percentage
-                      if (slab.brand) {
-                        ageRanges[ageKey].brands[slab.brand] = slab.percentage;
-                      }
-                    });
-
-                    // Sort age ranges by minMonths
-                    const sortedAgeRanges = Object.entries(ageRanges).sort(
-                      ([, a], [, b]) => a.minMonths - b.minMonths
-                    );
-
-                    return (
-                      <table className="w-full">
-                        <thead className="bg-gray-100">
-                          <tr>
-                            <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
-                            {laptopBrands.map(brand => (
-                              <th key={brand} className="py-3 px-4 text-center font-semibold text-sm text-gray-700">{brand}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                          {sortedAgeRanges.map(([ageKey, ageData]) => (
-                            <tr key={ageKey} className="hover:bg-gray-50">
-                              <td className="py-3 px-4 text-sm font-medium text-gray-900">
-                                {ageData.minMonths}-{ageData.maxMonths} months
-                              </td>
-                              {laptopBrands.map(brand => {
-                                const percentage = ageData.brands[brand];
-                                if (!percentage) return <td key={brand} className="py-3 px-4 text-center text-gray-400">-</td>;
-                                
-                                return (
-                                  <td key={brand} className="py-3 px-4 text-center">
-                                    <span className="text-lg font-bold text-black">{percentage}%</span>
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    );
-                  })()}
-                </div>
+            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
+                <Globe className="h-8 w-8 text-yellow-600" />
               </div>
+              <h3 className="text-xl font-bold mb-4">Pan-India Coverage</h3>
+              <p className="text-gray-600">
+                Free doorstep pickup available across all major cities and towns in India.
+              </p>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
+                <Users className="h-8 w-8 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-bold mb-4">10,000+ Happy Customers</h3>
+              <p className="text-gray-600">
+                Join thousands of satisfied customers who've successfully claimed their BBG.
+              </p>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-6">
+                <HeadphonesIcon className="h-8 w-8 text-red-600" />
+              </div>
+              <h3 className="text-xl font-bold mb-4">24/7 Customer Support</h3>
+              <p className="text-gray-600">
+                Dedicated support team available round the clock for all your queries.
+              </p>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-6">
+                <Award className="h-8 w-8 text-indigo-600" />
+              </div>
+              <h3 className="text-xl font-bold mb-4">Trusted Brand</h3>
+              <p className="text-gray-600">
+                Backed by XtraCover's reputation and ₹2+ crore in successful payouts.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Claim Value Slabs Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+              Transparent Buyback Values
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Know exactly how much you'll get based on your device age. No surprises, no hidden calculations.
+            </p>
+          </div>
+
+          {!isSlabsLoading && allSlabs.length > 0 && (
+            <div className="overflow-x-auto">
+              <table className="w-full max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
+                <thead className="bg-gradient-to-r from-xtra-primary to-blue-600 text-white">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-lg font-bold">Device Age</th>
+                    <th className="px-6 py-4 text-center text-lg font-bold">Laptop Payout</th>
+                    <th className="px-6 py-4 text-center text-lg font-bold">Mobile Payout</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {Array.from(new Set(allSlabs.map((slab: any) => `${slab.minMonths}-${slab.maxMonths}`))).map((range, index) => {
+                    const [minMonths, maxMonths] = range.split('-').map(Number);
+                    const laptopSlab = activeLaptopSlabs.find((s: any) => s.minMonths === minMonths && s.maxMonths === maxMonths);
+                    const mobileSlab = activeMobileSlabs.find((s: any) => s.minMonths === minMonths && s.maxMonths === maxMonths);
+                    
+                    return (
+                      <tr key={range} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                        <td className="px-6 py-4 text-lg font-semibold text-gray-900">
+                          {minMonths} - {maxMonths} months
+                        </td>
+                        <td className="px-6 py-4 text-center text-lg font-bold text-xtra-primary">
+                          {laptopSlab ? `${laptopSlab.percentage}%` : '-'}
+                        </td>
+                        <td className="px-6 py-4 text-center text-lg font-bold text-green-600">
+                          {mobileSlab ? `${mobileSlab.percentage}%` : '-'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
-          
-          {/* General Information */}
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-4xl mx-auto mt-6">
-            <div className="bg-gray-50 px-4 sm:px-6 py-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <p className="text-xs sm:text-sm text-gray-600">
-                  <strong>Note:</strong> All percentages are of invoice value for your devices in functional and fair condition. Your slabs are locked as per your purchase date/time and mapped to your unique BBG Voucher. 
-                </p>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <Link href="/customer-registration">
-                    <Button size="sm" className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white">
-                      Buy BBG
-                    </Button>
-                  </Link>
-                  <Link href="/claim-bbg">
-                    <Button size="sm" variant="outline" className="w-full sm:w-auto border-xtra-primary text-xtra-primary hover:bg-xtra-primary/5">
-                      Claim BBG
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Additional Info Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12">
-            <Card className="p-4 sm:p-6 text-center">
-              <CardContent className="p-0">
-                <div className="text-2xl sm:text-3xl font-bold text-xtra-primary mb-2">6-60</div>
-                <p className="text-sm sm:text-base text-gray-600">Months coverage period</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-4 sm:p-6 text-center">
-              <CardContent className="p-0">
-                <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-2">70%</div>
-                <p className="text-sm sm:text-base text-gray-600">Maximum claim value</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-4 sm:p-6 text-center">
-              <CardContent className="p-0">
-                <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-2">100%</div>
-                <p className="text-sm sm:text-base text-gray-600">Transparent pricing</p>
-              </CardContent>
-            </Card>
-          </div>
+          {isSlabsLoading && (
+            <div className="text-center py-12">
+              <Loader2 className="h-12 w-12 animate-spin mx-auto text-xtra-primary" />
+              <p className="mt-4 text-gray-600">Loading payout information...</p>
+            </div>
+          )}
         </div>
       </section>
+
       {/* FAQ Section */}
-      <section className="py-8 sm:py-12 lg:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-6 sm:mb-8">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
               Frequently Asked Questions
             </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto">
-              Everything you need to know about XtraCover's BuyBack Guarantee program.
+            <p className="text-xl text-gray-600">
+              Get answers to the most common questions about BBG
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Left Column */}
-            <div className="space-y-4">
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-1" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What is the BuyBack Guarantee (BBG)?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    BBG gives you a fixed, assured resale value for your mobile or laptop when you claim within the coverage period.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+          <Accordion type="single" collapsible className="space-y-4">
+            <AccordionItem value="item-1" className="bg-white rounded-lg shadow-md">
+              <AccordionTrigger className="px-6 py-4 text-left text-lg font-semibold hover:no-underline">
+                <div className="flex items-center">
+                  <HelpCircle className="h-5 w-5 mr-3 text-xtra-primary" />
+                  What is the BuyBack Guarantee (BBG)?
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4 text-gray-600 text-lg">
+                BBG gives you a guaranteed cash value for your laptop or mobile when you're ready to upgrade. The percentage is fixed at the time of registration and doesn't change based on market conditions.
+              </AccordionContent>
+            </AccordionItem>
 
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-2" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    Who can buy BBG?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    Only customers who purchased a new device from an authorized brand sales channel. Refurbished, open-box, second-hand, or grey-market devices are not eligible.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+            <AccordionItem value="item-2" className="bg-white rounded-lg shadow-md">
+              <AccordionTrigger className="px-6 py-4 text-left text-lg font-semibold hover:no-underline">
+                <div className="flex items-center">
+                  <HelpCircle className="h-5 w-5 mr-3 text-xtra-primary" />
+                  How is the buyback value calculated?
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4 text-gray-600 text-lg">
+                The buyback value is calculated as a percentage of your device's purchase price, based on its age when you claim. The exact percentage is determined at registration and remains fixed throughout your coverage period.
+              </AccordionContent>
+            </AccordionItem>
 
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-3" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    How long after my device purchase can I buy BBG?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    You can buy and register BBG within 6 months from your device purchase date.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+            <AccordionItem value="item-3" className="bg-white rounded-lg shadow-md">
+              <AccordionTrigger className="px-6 py-4 text-left text-lg font-semibold hover:no-underline">
+                <div className="flex items-center">
+                  <HelpCircle className="h-5 w-5 mr-3 text-xtra-primary" />
+                  When can I claim my BBG?
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4 text-gray-600 text-lg">
+                You can claim your BBG anytime after the mandatory 3-month waiting period from your device purchase date. The claim window extends up to 60 months for laptops and 36 months for mobiles.
+              </AccordionContent>
+            </AccordionItem>
 
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-4" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What's the catch?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    There isn't one. Just buy BBG for your new mobile or laptop, and when it's time, we'll buy the device back at the assured value shown when you registered.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+            <AccordionItem value="item-4" className="bg-white rounded-lg shadow-md">
+              <AccordionTrigger className="px-6 py-4 text-left text-lg font-semibold hover:no-underline">
+                <div className="flex items-center">
+                  <HelpCircle className="h-5 w-5 mr-3 text-xtra-primary" />
+                  How do I get paid?
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4 text-gray-600 text-lg">
+                Once you schedule a pickup, our team will collect your device and process payment within 24-48 hours. Payment is made directly to your bank account via NEFT/UPI.
+              </AccordionContent>
+            </AccordionItem>
 
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-5" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    When can I claim BBG?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    You can claim BBG anytime after 3 months from your BBG purchase date, provided your claim period has begun as per your device's age in the depreciation slabs.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-6" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What condition does my device need to be in?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    Your device must be fully functional, with no major cracks, damage, missing parts, or screen issues. The screen and body should be intact, and all buttons should work.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-
-            {/* Right Column */}
-            <div className="space-y-4">
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-7" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    Do I need to worry about normal wear & tear?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    No. Minor cosmetic wear is okay. The QC team just checks that it's still in good working order.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-8" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What if I've damaged my device?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    If there's major damage or it fails QC, your BBG value may be void and you'll get a market-based offer instead.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-9" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What do I need at the time of claim?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>Original GST invoice of the device</li>
-                      <li>Valid Government ID in your name</li>
-                      <li>Original box, charger, and accessories in working condition</li>
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-10" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What if my device fails QC?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    If your device fails the quality check, BBG becomes void. You may still receive a re-evaluated device price based on market standards.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-11" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What if I want to keep my device?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    That's fine. BBG is optional to claim — you can keep your device and skip the claim process.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-12" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    How will I receive payment?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    Once QC is passed, payment will be made instantly after device handover.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-          </div>
+            <AccordionItem value="item-5" className="bg-white rounded-lg shadow-md">
+              <AccordionTrigger className="px-6 py-4 text-left text-lg font-semibold hover:no-underline">
+                <div className="flex items-center">
+                  <HelpCircle className="h-5 w-5 mr-3 text-xtra-primary" />
+                  Is there any inspection required?
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4 text-gray-600 text-lg">
+                Yes, basic inspection is done to verify the device is genuine and functional. As long as the device powers on and matches the registered details, your claim will be processed.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </section>
-      {/* Distributor CTA Section */}
-      <section className="py-8 sm:py-12 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 border-l-4" style={{ borderLeftColor: (theme as any)?.primaryColor || '#254696' }}>
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
-              <div className="flex-shrink-0">
-                <div className="rounded-full w-12 h-12 flex items-center justify-center" style={{ backgroundColor: (theme as any)?.primaryColor || '#254696' }}>
-                  <Award className="h-6 w-6 text-white" />
-                </div>
-              </div>
-              <div className="flex-1 text-center sm:text-left">
-                <h2 className="text-xl sm:text-2xl font-bold mb-2 text-gray-900">Join Our Referral Program</h2>
-                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-0">Start earning ₹25 commission on every successful BBG registration. Easy setup and regular payouts.</p>
-              </div>
-              <div className="flex-shrink-0">
-                <Link href="/referral-partner-registration">
-                  <Button className="text-white hover:opacity-90 px-6 py-2.5 font-semibold" style={{ backgroundColor: (theme as any)?.primaryColor || '#254696' }}>
-                    Join Program <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
+
+      {/* Referral Partner CTA */}
+      <section className="py-20 bg-gradient-to-r from-xtra-primary to-blue-600 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl sm:text-5xl font-bold mb-6">
+            Become a BBG Partner
+          </h2>
+          <p className="text-xl mb-8 opacity-90">
+            Earn attractive commissions by referring customers to BBG. Join our growing network of partners across India.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-yellow-400">₹25+</div>
+              <div className="text-lg opacity-90">Commission per registration</div>
             </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-yellow-400">1000+</div>
+              <div className="text-lg opacity-90">Active partners</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-yellow-400">24-48 Hrs</div>
+              <div className="text-lg opacity-90">Payout processing</div>
+            </div>
+          </div>
+
+          <Link href="/distributor-registration">
+            <Button size="lg" className="bg-yellow-500 hover:bg-yellow-400 text-black px-8 py-4 text-lg font-bold rounded-full shadow-2xl">
+              Join as Partner <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+            Ready to Protect Your Investment?
+          </h2>
+          <p className="text-xl text-gray-600 mb-12">
+            Join thousands of smart device owners who chose BBG for guaranteed peace of mind.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <Link href="/customer-registration" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white px-8 py-4 text-lg font-bold rounded-full shadow-lg">
+                Get BBG Protection Now <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/claim-bbg" className="w-full sm:w-auto">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto border-2 border-xtra-primary text-xtra-primary hover:bg-xtra-primary hover:text-white px-8 py-4 text-lg font-semibold rounded-full">
+                Already Have BBG? Claim Now
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

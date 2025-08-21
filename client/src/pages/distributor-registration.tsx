@@ -205,15 +205,7 @@ export default function DistributorRegistration() {
           </Card>
         </div>
 
-        {/* Login Link */}
-        <div className="text-center mb-6">
-          <p className="text-gray-600">
-            Already have an account?{' '}
-            <Button variant="link" onClick={handleLoginRedirect} className="p-0 h-auto">
-              Login to Dashboard
-            </Button>
-          </p>
-        </div>
+        
 
         {/* Registration Form */}
         <Card>

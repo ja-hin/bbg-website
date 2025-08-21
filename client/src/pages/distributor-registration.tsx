@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -21,9 +21,6 @@ const distributorSchema = z.object({
   contact: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
   email: z.string().email("Invalid email address"),
   pincode: z.string().regex(/^\d{6}$/, "Pincode must be exactly 6 digits"),
-  preferredMode: z.enum(["in-store", "online", "both"], {
-    required_error: "Please select a preferred mode"
-  }),
   termsAgreement: z.boolean().refine(val => val === true, "You must agree to the terms and conditions")
 });
 
@@ -45,7 +42,6 @@ export default function DistributorRegistration() {
       contact: "",
       email: "",
       pincode: "",
-      preferredMode: undefined,
       termsAgreement: false
     }
   });
@@ -402,29 +398,6 @@ export default function DistributorRegistration() {
                           <FormControl>
                             <Input placeholder="Enter 6-digit pincode" maxLength={6} {...field} />
                           </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="preferredMode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Preferred Mode *</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select preferred mode" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="in-store">In-store</SelectItem>
-                              <SelectItem value="online">Online</SelectItem>
-                              <SelectItem value="both">Both</SelectItem>
-                            </SelectContent>
-                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}

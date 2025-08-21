@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { z } from "zod";
-import { insertDistributorSchema } from "@shared/schema";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,46 +13,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Loader2, IndianRupee, Users, TrendingUp, Building, MapPin, Phone, Mail, CreditCard, Upload, FileText, Shield, Receipt, ExternalLink, DollarSign } from "lucide-react";
+import { Loader2, IndianRupee, Users, TrendingUp, Building, MapPin, Phone, Mail, FileText, ExternalLink, DollarSign, Info } from "lucide-react";
 import { SuccessConfetti } from "@/components/confetti";
 
 const distributorSchema = z.object({
-  name: z.string().min(2, "Full name (as per PAN/GST) is required"),
+  name: z.string().min(2, "Full name is required"),
   contact: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
   email: z.string().email("Invalid email address"),
   pincode: z.string().regex(/^\d{6}$/, "Pincode must be exactly 6 digits"),
-
   preferredMode: z.enum(["in-store", "online", "both"], {
     required_error: "Please select a preferred mode"
   }),
-  // Tax & Compliance Details
-  panNumber: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN format (e.g., ABCDE1234F)"),
-  panCopyFile: z.instanceof(File, { message: "PAN copy is required" }),
-  isGstRegistered: z.boolean(),
-  gstin: z.string().optional(),
-  gstCertificateFile: z.instanceof(File).optional(),
-  isMsmeRegistered: z.boolean(),
-  msmeCertificateFile: z.instanceof(File).optional(),
-  // Bank Details
-  accountHolderName: z.string().min(2, "Account holder name is required"),
-  bankAccount: z.string().min(8, "Bank account number must be at least 8 digits"),
-  bankAccountConfirm: z.string().min(8, "Please confirm bank account number"),
-  ifscCode: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code format"),
-  upiId: z.string().optional(),
-  cancelledChequeFile: z.instanceof(File).optional(),
-  // Declarations
-  infoDeclaration: z.boolean().refine(val => val === true, "You must declare the information is correct"),
-  tdsUnderstanding: z.boolean().refine(val => val === true, "You must understand TDS compliance"),
-  gstInvoiceAgreement: z.boolean().refine(val => val === true, "You must agree to GST invoice terms")
-}).refine((data) => data.bankAccount === data.bankAccountConfirm, {
-  message: "Bank account numbers must match",
-  path: ["bankAccountConfirm"]
-}).refine((data) => !data.isGstRegistered || (data.gstin && data.gstCertificateFile), {
-  message: "GSTIN and GST certificate are required for GST registered businesses",
-  path: ["gstin"]
-}).refine((data) => !data.isMsmeRegistered || data.msmeCertificateFile, {
-  message: "MSME certificate is required if you are MSME registered",
-  path: ["msmeCertificateFile"]
+  termsAgreement: z.boolean().refine(val => val === true, "You must agree to the terms and conditions")
 });
 
 type DistributorFormData = z.infer<typeof distributorSchema>;
@@ -74,27 +45,8 @@ export default function DistributorRegistration() {
       contact: "",
       email: "",
       pincode: "",
-
       preferredMode: undefined,
-      // Tax & Compliance Details
-      panNumber: "",
-      panCopyFile: undefined,
-      isGstRegistered: false,
-      gstin: "",
-      gstCertificateFile: undefined,
-      isMsmeRegistered: false,
-      msmeCertificateFile: undefined,
-      // Bank Details
-      accountHolderName: "",
-      bankAccount: "",
-      bankAccountConfirm: "",
-      ifscCode: "",
-      upiId: "",
-      cancelledChequeFile: undefined,
-      // Declarations
-      infoDeclaration: false,
-      tdsUnderstanding: false,
-      gstInvoiceAgreement: false
+      termsAgreement: false
     }
   });
 
@@ -148,59 +100,19 @@ export default function DistributorRegistration() {
 
   const registerMutation = useMutation({
     mutationFn: async (data: DistributorFormData) => {
-      // Create FormData for file uploads
-      const formData = new FormData();
-      
-      // Add all text fields
-      Object.entries(data).forEach(([key, value]) => {
-        if (value instanceof File) {
-          formData.append(key, value);
-        } else if (typeof value === 'boolean') {
-          formData.append(key, value.toString());
-        } else if (value !== undefined && value !== null && value !== '') {
-          formData.append(key, value.toString());
-        }
-      });
-      
-      // Log the form data for debugging
-      console.log("Submitting distributor registration with data:", Object.keys(data));
-      console.log("Files to upload:", {
-        panCopyFile: data.panCopyFile ? data.panCopyFile.name : "none",
-        gstCertificateFile: data.gstCertificateFile ? data.gstCertificateFile.name : "none", 
-        msmeCertificateFile: data.msmeCertificateFile ? data.msmeCertificateFile.name : "none",
-        cancelledChequeFile: data.cancelledChequeFile ? data.cancelledChequeFile.name : "none"
-      });
-      
-      // Make direct fetch call to ensure proper FormData handling
-      const response = await fetch("/api/distributors/register", {
+      const response = await apiRequest("/api/register-distributor", {
         method: "POST",
-        body: formData
+        body: data
       });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Registration failed");
-      }
-      
-      return response.json();
+      return response;
     },
     onSuccess: (data) => {
       setSellerCode(data.sellerCode);
       setShowConfetti(true);
       toast({
         title: "Registration Successful!",
-        description: `Your seller code is: ${data.sellerCode}`,
+        description: `Your referral code is: ${data.sellerCode}`,
       });
-      // Store success data in session storage for thank you page
-      sessionStorage.setItem('thankYouData', JSON.stringify({
-        type: 'distributor',
-        sellerCode: data.sellerCode,
-        distributorName: data.distributor.name,
-        email: data.distributor.email
-      }));
-      setTimeout(() => {
-        setLocation("/thank-you");
-      }, 3000);
     },
     onError: (error: any) => {
       toast({
@@ -213,104 +125,162 @@ export default function DistributorRegistration() {
 
   const handleSendOtp = () => {
     const contact = form.getValues("contact");
-    if (contact && /^[6-9]\d{9}$/.test(contact)) {
-      sendOtpMutation.mutate(contact);
-    } else {
+    if (!contact || contact.length !== 10) {
       toast({
         title: "Invalid Contact",
         description: "Please enter a valid 10-digit phone number",
         variant: "destructive",
       });
+      return;
     }
+    sendOtpMutation.mutate(contact);
   };
 
   const handleVerifyOtp = () => {
     const contact = form.getValues("contact");
-    if (otp.length === 6) {
-      verifyOtpMutation.mutate({ contact, otp });
-    } else {
+    if (!otp || otp.length !== 6) {
       toast({
         title: "Invalid OTP",
-        description: "Please enter the 6-digit OTP",
+        description: "Please enter a valid 6-digit OTP",
         variant: "destructive",
       });
+      return;
     }
+    verifyOtpMutation.mutate({ contact, otp });
   };
 
   const onSubmit = (data: DistributorFormData) => {
     if (!otpVerified) {
       toast({
         title: "Phone Not Verified",
-        description: "Please verify your phone number first",
+        description: "Please verify your phone number before registering",
         variant: "destructive",
       });
       return;
     }
-
     registerMutation.mutate(data);
   };
 
+  const handleLoginRedirect = () => {
+    setLocation("/distributor-login");
+  };
+
+  if (sellerCode) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md bg-green-50 border-green-200">
+          <CardContent className="p-6 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <DollarSign className="h-8 w-8 text-green-600" />
+            </div>
+            <h3 className="text-xl font-semibold text-green-900 mb-2">Registration Successful!</h3>
+            <p className="text-green-700 mb-4">
+              Your referral code is: <strong className="text-2xl font-mono bg-green-100 px-2 py-1 rounded">{sellerCode}</strong>
+            </p>
+            <div className="space-y-3 text-sm text-green-600">
+              <p>• Share this code with customers to earn commissions</p>
+              <p>• Add your tax and bank details in your dashboard to receive payouts</p>
+              <p>• Each successful referral earns you ₹25</p>
+            </div>
+            <div className="mt-6 space-y-2">
+              <Button 
+                onClick={() => setLocation("/distributor-dashboard")} 
+                className="w-full"
+              >
+                Go to Dashboard
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => window.location.reload()}
+                className="w-full"
+              >
+                Register Another Partner
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+        {showConfetti && (
+          <SuccessConfetti 
+            isActive={showConfetti} 
+            onComplete={() => setShowConfetti(false)} 
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Join Our Referral Program
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Join Our Referral Partner Program
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Join our network and start earning commissions on every successful BBG registration. 
-            Easy setup, dedicated support, and regular payouts.
+          <p className="text-lg text-gray-600">
+            Earn ₹25 for every successful BBG registration you refer
           </p>
         </div>
 
-        {/* Benefits Section */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          <Card className="text-center p-6">
-            <CardContent className="p-0">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <IndianRupee className="h-8 w-8 text-green-600" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Earn Commission</h3>
-              <p className="text-gray-600">Get paid ₹25 for every successful customer registration</p>
+        {/* Benefits Cards */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <Card className="text-center">
+            <CardContent className="p-6">
+              <IndianRupee className="h-8 w-8 text-green-600 mx-auto mb-3" />
+              <h3 className="font-semibold text-gray-900">Earn ₹25 Per Referral</h3>
+              <p className="text-sm text-gray-600 mt-1">
+                Get paid for every customer who registers using your code
+              </p>
             </CardContent>
           </Card>
           
-          <Card className="text-center p-6">
-            <CardContent className="p-0">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Build Network</h3>
-              <p className="text-gray-600">Grow your customer base with our BBG platform</p>
+          <Card className="text-center">
+            <CardContent className="p-6">
+              <Users className="h-8 w-8 text-blue-600 mx-auto mb-3" />
+              <h3 className="font-semibold text-gray-900">Build Your Network</h3>
+              <p className="text-sm text-gray-600 mt-1">
+                Grow your customer base and increase monthly earnings
+              </p>
             </CardContent>
           </Card>
           
-          <Card className="text-center p-6">
-            <CardContent className="p-0">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="h-8 w-8 text-purple-600" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Track Performance</h3>
-              <p className="text-gray-600">Monitor your referrals and commission earnings</p>
+          <Card className="text-center">
+            <CardContent className="p-6">
+              <TrendingUp className="h-8 w-8 text-purple-600 mx-auto mb-3" />
+              <h3 className="font-semibold text-gray-900">Monthly Payouts</h3>
+              <p className="text-sm text-gray-600 mt-1">
+                Receive commissions directly to your bank account
+              </p>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Login Link */}
+        <div className="text-center mb-6">
+          <p className="text-gray-600">
+            Already have an account?{' '}
+            <Button variant="link" onClick={handleLoginRedirect} className="p-0 h-auto">
+              Login to Dashboard
+            </Button>
+          </p>
         </div>
 
         {/* Registration Form */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Referral Partner Registration Form</CardTitle>
+            <CardTitle>Register as Referral Partner</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                
                 {/* Basic Information */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Basic Information</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center">
+                    <Building className="h-5 w-5 mr-2" />
+                    Basic Information
+                  </h3>
                   
-                  <div className="grid md:grid-cols-1 gap-6">
+                  <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="name"
@@ -318,10 +288,27 @@ export default function DistributorRegistration() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Building className="h-4 w-4 mr-2" />
-                            Full Name (as per PAN / GST) *
+                            Full Name *
                           </FormLabel>
                           <FormControl>
                             <Input placeholder="Enter your full name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <Mail className="h-4 w-4 mr-2" />
+                            Email Address *
+                          </FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="Enter email address" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -337,69 +324,70 @@ export default function DistributorRegistration() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Phone className="h-4 w-4 mr-2" />
-                            Mobile Number *
+                            Phone Number *
                           </FormLabel>
-                          <FormControl>
-                            <div className="flex gap-2">
+                          <div className="flex gap-2">
+                            <FormControl>
                               <Input 
                                 placeholder="Enter 10-digit mobile number" 
                                 maxLength={10}
-                                {...field} 
                                 disabled={otpVerified}
+                                {...field} 
                               />
-                              <Button 
-                                type="button" 
-                                variant="outline" 
+                            </FormControl>
+                            {!otpVerified && (
+                              <Button
+                                type="button"
+                                variant="outline"
                                 onClick={handleSendOtp}
-                                disabled={otpSent || otpVerified || sendOtpMutation.isPending}
+                                disabled={sendOtpMutation.isPending || otpSent}
                               >
-                                {sendOtpMutation.isPending ? "Sending..." : otpVerified ? "Verified" : "Send OTP"}
+                                {sendOtpMutation.isPending ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : otpSent ? (
+                                  "Sent"
+                                ) : (
+                                  "Send OTP"
+                                )}
                               </Button>
-                            </div>
-                          </FormControl>
+                            )}
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
 
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <Mail className="h-4 w-4 mr-2" />
-                            Email ID *
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter your email address" type="email" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                    {otpSent && !otpVerified && (
+                      <FormItem>
+                        <FormLabel>Enter OTP *</FormLabel>
+                        <div className="flex gap-2">
+                          <Input
+                            placeholder="6-digit OTP"
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value)}
+                            maxLength={6}
+                          />
+                          <Button
+                            type="button"
+                            onClick={handleVerifyOtp}
+                            disabled={verifyOtpMutation.isPending}
+                          >
+                            {verifyOtpMutation.isPending ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              "Verify"
+                            )}
+                          </Button>
+                        </div>
+                      </FormItem>
+                    )}
 
-                  {otpSent && !otpVerified && (
-                    <div className="flex gap-2 items-end">
-                      <div className="flex-1">
-                        <label className="text-sm font-medium">Enter OTP</label>
-                        <Input 
-                          placeholder="Enter 6-digit OTP" 
-                          maxLength={6}
-                          value={otp}
-                          onChange={(e) => setOtp(e.target.value)}
-                        />
+                    {otpVerified && (
+                      <div className="flex items-center text-green-600">
+                        <span className="text-sm">✓ Phone number verified</span>
                       </div>
-                      <Button 
-                        type="button" 
-                        onClick={handleVerifyOtp}
-                        disabled={verifyOtpMutation.isPending}
-                      >
-                        {verifyOtpMutation.isPending ? "Verifying..." : "Verify"}
-                      </Button>
-                    </div>
-                  )}
+                    )}
+                  </div>
 
                   <div className="grid md:grid-cols-2 gap-6">
                     <FormField
@@ -444,384 +432,55 @@ export default function DistributorRegistration() {
                   </div>
                 </div>
 
-                {/* Tax & Compliance Details */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center">
-                    <Shield className="h-5 w-5 mr-2" />
-                    Tax & Compliance Details
-                  </h3>
-                  
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="panNumber"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <Receipt className="h-4 w-4 mr-2" />
-                            PAN Number * (Required for TDS compliance)
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="e.g., ABCDE1234F" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="panCopyFile"
-                      render={({ field: { onChange, value, ...field } }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <Upload className="h-4 w-4 mr-2" />
-                            Upload PAN Copy (PDF/JPEG) *
-                          </FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="file" 
-                              accept=".pdf,.jpg,.jpeg,.png"
-                              onChange={(e) => onChange(e.target.files?.[0])}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="isGstRegistered"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-sm font-medium">
-                            Are You GST Registered? *
-                          </FormLabel>
-                          <FormControl>
-                            <div className="flex gap-2">
-                              <Button
-                                type="button"
-                                variant={field.value ? "default" : "outline"}
-                                size="sm"
-                                onClick={() => field.onChange(true)}
-                              >
-                                Yes
-                              </Button>
-                              <Button
-                                type="button"
-                                variant={!field.value ? "default" : "outline"}
-                                size="sm"
-                                onClick={() => field.onChange(false)}
-                              >
-                                No
-                              </Button>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    {form.watch("isGstRegistered") && (
-                      <div className="space-y-4 ml-6">
-                        <FormField
-                          control={form.control}
-                          name="businessName"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Business Name (as per GST) *</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Enter business name as registered" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <div className="grid md:grid-cols-2 gap-6">
-                          <FormField
-                            control={form.control}
-                            name="gstin"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>GSTIN *</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Enter GSTIN number" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name="gstCertificateFile"
-                            render={({ field: { onChange, value, ...field } }) => (
-                              <FormItem>
-                                <FormLabel>Upload GST Certificate *</FormLabel>
-                                <FormControl>
-                                  <Input 
-                                    type="file" 
-                                    accept=".pdf,.jpg,.jpeg,.png"
-                                    onChange={(e) => onChange(e.target.files?.[0])}
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-
-
-                  <div className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="isMsmeRegistered"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-sm font-medium">
-                            Are you covered in MSME? *
-                          </FormLabel>
-                          <FormControl>
-                            <div className="flex gap-2">
-                              <Button
-                                type="button"
-                                variant={field.value ? "default" : "outline"}
-                                size="sm"
-                                onClick={() => field.onChange(true)}
-                              >
-                                Yes
-                              </Button>
-                              <Button
-                                type="button"
-                                variant={!field.value ? "default" : "outline"}
-                                size="sm"
-                                onClick={() => field.onChange(false)}
-                              >
-                                No
-                              </Button>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    {form.watch("isMsmeRegistered") && (
-                      <div className="ml-6">
-                        <FormField
-                          control={form.control}
-                          name="msmeCertificateFile"
-                          render={({ field: { onChange, value, ...field } }) => (
-                            <FormItem>
-                              <FormLabel>Upload MSME Certificate *</FormLabel>
-                              <FormControl>
-                                <Input 
-                                  type="file" 
-                                  accept=".pdf,.jpg,.jpeg,.png"
-                                  onChange={(e) => onChange(e.target.files?.[0])}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    )}
+                {/* Complete Registration Notice */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                  <div className="flex items-start">
+                    <Info className="h-5 w-5 text-blue-600 mt-0.5 mr-3" />
+                    <div>
+                      <h3 className="font-semibold text-blue-900">Complete Your Profile Later</h3>
+                      <p className="text-blue-700 mt-1">
+                        After registration, you can add your tax compliance details and bank information 
+                        in your account dashboard to start receiving commission payouts.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                {/* Bank Details */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center">
-                    <CreditCard className="h-5 w-5 mr-2" />
-                    Bank Details (for Monthly Payouts)
-                  </h3>
-                  
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="accountHolderName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <Building className="h-4 w-4 mr-2" />
-                            Bank Account Holder Name * (Must match PAN)
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter account holder name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="bankAccount"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <CreditCard className="h-4 w-4 mr-2" />
-                            Bank Account Number *
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter bank account number" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="bankAccountConfirm"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Confirm Account Number *</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="Re-enter bank account number"
-                              onPaste={(e) => e.preventDefault()}
-                              onDrop={(e) => e.preventDefault()}
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="ifscCode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>IFSC Code *</FormLabel>
-                          <FormControl>
-                            <Input placeholder="e.g., SBIN0001234" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="upiId"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>UPI ID (Optional but Recommended)</FormLabel>
-                          <FormControl>
-                            <Input placeholder="e.g., yourname@paytm" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="cancelledChequeFile"
-                      render={({ field: { onChange, value, ...field } }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <Upload className="h-4 w-4 mr-2" />
-                            Upload Cancelled Cheque / Bank Passbook *
-                          </FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="file" 
-                              accept=".pdf,.jpg,.jpeg,.png"
-                              onChange={(e) => onChange(e.target.files?.[0])}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-
-                {/* Declaration & Consent */}
+                {/* Terms Agreement */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center">
                     <FileText className="h-5 w-5 mr-2" />
-                    Declaration & Consent
+                    Terms & Agreement
                   </h3>
                   
-                  <div className="space-y-3">
-                    <FormField
-                      control={form.control}
-                      name="infoDeclaration"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox 
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm font-normal leading-relaxed">
-                            I declare that the information provided above is true and correct
-                          </FormLabel>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="tdsUnderstanding"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox 
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm font-normal leading-relaxed">
-                            I understand that commission payout is subject to TDS as per income tax laws
-                          </FormLabel>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="gstInvoiceAgreement"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox 
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm font-normal leading-relaxed">
-                            If GST registered, I agree to raise tax invoices to XtraCover for each month's referral commission
-                          </FormLabel>
-                        </FormItem>
-                      )}
-                    />
-
-
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="termsAgreement"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox 
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormLabel className="text-sm font-normal leading-relaxed">
+                          I agree to the{' '}
+                          <Button variant="link" className="p-0 h-auto text-blue-600" asChild>
+                            <a href="/terms" target="_blank">
+                              Terms and Conditions <ExternalLink className="w-3 h-3 ml-1 inline" />
+                            </a>
+                          </Button>
+                          {' '}and{' '}
+                          <Button variant="link" className="p-0 h-auto text-blue-600" asChild>
+                            <a href="/privacy" target="_blank">
+                              Privacy Policy <ExternalLink className="w-3 h-3 ml-1 inline" />
+                            </a>
+                          </Button>
+                        </FormLabel>
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
                 {/* Submit Button */}
@@ -843,32 +502,6 @@ export default function DistributorRegistration() {
             </Form>
           </CardContent>
         </Card>
-
-        {/* Success State */}
-        {sellerCode && (
-          <Card className="bg-green-50 border-green-200">
-            <CardContent className="p-6 text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <DollarSign className="h-8 w-8 text-green-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-green-900 mb-2">Registration Successful!</h3>
-              <p className="text-green-700 mb-4">
-                Your referral code is: <strong className="text-2xl">{sellerCode}</strong>
-              </p>
-              <p className="text-sm text-green-600">
-                Share this code with customers to earn commissions on their registrations.
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Success Confetti */}
-        {showConfetti && (
-          <SuccessConfetti 
-            isActive={showConfetti} 
-            onComplete={() => setShowConfetti(false)} 
-          />
-        )}
       </div>
     </div>
   );

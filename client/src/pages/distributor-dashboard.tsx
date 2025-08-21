@@ -23,7 +23,13 @@ import {
   Calendar,
   Smartphone,
   Laptop,
-  IndianRupee
+  IndianRupee,
+  Shield,
+  AlertCircle,
+  FileText,
+  CreditCard,
+  Building,
+  User
 } from "lucide-react";
 import { ScrollToTopButton } from "@/components/scroll-to-top-button";
 
@@ -205,6 +211,7 @@ export default function DistributorDashboard() {
           <TabsList>
             <TabsTrigger value="customers">Customer Registrations</TabsTrigger>
             <TabsTrigger value="payouts">Commission Payouts</TabsTrigger>
+            <TabsTrigger value="account">Account Details</TabsTrigger>
           </TabsList>
 
           <TabsContent value="customers">
@@ -335,6 +342,133 @@ export default function DistributorDashboard() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="account">
+            <div className="space-y-6">
+              {/* Tax & Compliance Details */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Shield className="h-5 w-5 mr-2" />
+                    Tax & Compliance Details
+                  </CardTitle>
+                  <p className="text-sm text-gray-600">
+                    Complete your tax information to comply with TDS regulations
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                    <div className="flex items-start">
+                      <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5 mr-3" />
+                      <div>
+                        <h4 className="font-semibold text-yellow-900">Required for Commission Payouts</h4>
+                        <p className="text-yellow-700 text-sm mt-1">
+                          PAN details are mandatory for TDS compliance. GST registration details are optional but recommended for business entities.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center py-8">
+                    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Tax Details Form</h3>
+                    <p className="text-gray-600 mb-4">
+                      This section will allow you to upload PAN card, GST certificate, and MSME certificate
+                    </p>
+                    <Badge variant="secondary">Coming Soon</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Bank Details */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <CreditCard className="h-5 w-5 mr-2" />
+                    Bank Details for Payouts
+                  </CardTitle>
+                  <p className="text-sm text-gray-600">
+                    Add your bank account details to receive monthly commission payouts
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <div className="flex items-start">
+                      <Building className="h-5 w-5 text-blue-600 mt-0.5 mr-3" />
+                      <div>
+                        <h4 className="font-semibold text-blue-900">Secure Bank Account Setup</h4>
+                        <p className="text-blue-700 text-sm mt-1">
+                          Your bank details are encrypted and stored securely. Account holder name must match your PAN card details.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center py-8">
+                    <Wallet className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Bank Details Form</h3>
+                    <p className="text-gray-600 mb-4">
+                      This section will allow you to add bank account details, IFSC code, and upload cancelled cheque
+                    </p>
+                    <Badge variant="secondary">Coming Soon</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Profile Summary */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <User className="h-5 w-5 mr-2" />
+                    Profile Completion Status
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                      <div className="flex items-center">
+                        <CheckCircle className="h-5 w-5 text-green-600 mr-3" />
+                        <span className="font-medium text-green-900">Basic Information</span>
+                      </div>
+                      <Badge variant="default">Complete</Badge>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                      <div className="flex items-center">
+                        <AlertCircle className="h-5 w-5 text-red-600 mr-3" />
+                        <span className="font-medium text-red-900">Tax Compliance Details</span>
+                      </div>
+                      <Badge variant="destructive">Pending</Badge>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                      <div className="flex items-center">
+                        <AlertCircle className="h-5 w-5 text-red-600 mr-3" />
+                        <span className="font-medium text-red-900">Bank Account Details</span>
+                      </div>
+                      <Badge variant="destructive">Pending</Badge>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-semibold text-gray-900">Profile Completion</h4>
+                        <p className="text-sm text-gray-600">Complete all sections to start receiving payouts</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-orange-600">33%</div>
+                        <div className="text-xs text-gray-500">Complete</div>
+                      </div>
+                    </div>
+                    <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-orange-600 h-2 rounded-full" style={{ width: "33%" }}></div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>

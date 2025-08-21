@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Loader2, IndianRupee, Users, TrendingUp, Building, Phone, Mail, FileText, ExternalLink, DollarSign, Info } from "lucide-react";
+import { Loader2, IndianRupee, Users, TrendingUp, Building, Phone, Mail, FileText, DollarSign } from "lucide-react";
 import { SuccessConfetti } from "@/components/confetti";
 
 const distributorSchema = z.object({
@@ -384,40 +384,38 @@ export default function DistributorRegistration() {
                   </div>
                 </div>
 
-                
-
-                {/* Terms Agreement */}
+                {/* Declaration & Consent */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 flex items-center">
                     <FileText className="h-5 w-5 mr-2" />
-                    Terms & Agreement
+                    Declaration & Consent
                   </h3>
                   
                   <FormField
                     control={form.control}
                     name="termsAgreement"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                        <FormControl>
-                          <Checkbox 
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <FormLabel className="text-sm font-normal leading-relaxed">
-                          I agree to the{' '}
-                          <Button variant="link" className="p-0 h-auto text-blue-600" asChild>
-                            <a href="/terms" target="_blank">
-                              Terms and Conditions <ExternalLink className="w-3 h-3 ml-1 inline" />
-                            </a>
-                          </Button>
-                          {' '}and{' '}
-                          <Button variant="link" className="p-0 h-auto text-blue-600" asChild>
-                            <a href="/privacy" target="_blank">
-                              Privacy Policy <ExternalLink className="w-3 h-3 ml-1 inline" />
-                            </a>
-                          </Button>
-                        </FormLabel>
+                      <FormItem className="space-y-4">
+                        <div className="flex items-start space-x-3">
+                          <FormControl>
+                            <Checkbox 
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <div className="space-y-3 text-sm leading-relaxed">
+                            <p className="font-medium text-gray-900">
+                              I declare that the information provided above is true and correct
+                            </p>
+                            <p className="text-gray-700">
+                              I understand that commission payout is subject to TDS as per income tax laws
+                            </p>
+                            <p className="text-gray-700">
+                              If GST registered, I agree to raise tax invoices to XtraCover for each month's referral commission
+                            </p>
+                          </div>
+                        </div>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />

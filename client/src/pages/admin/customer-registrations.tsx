@@ -30,6 +30,7 @@ import {
   Filter,
   Search
 } from "lucide-react";
+import { AdminLayout } from "@/components/admin-layout";
 
 interface Customer {
   id: number;
@@ -152,7 +153,8 @@ export default function CustomerRegistrations() {
   };
 
   return (
-    <div className="space-y-6">
+    <AdminLayout>
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -255,7 +257,7 @@ export default function CustomerRegistrations() {
       </Card>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 min-h-[120px]">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
@@ -318,7 +320,7 @@ export default function CustomerRegistrations() {
       </div>
 
       {/* Customer Table */}
-      <Card>
+      <Card className="min-h-[400px]">
         <CardHeader>
           <CardTitle>Customer Registrations ({totalCustomers})</CardTitle>
         </CardHeader>
@@ -436,6 +438,7 @@ export default function CustomerRegistrations() {
           )}
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }

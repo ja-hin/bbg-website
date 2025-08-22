@@ -103,6 +103,7 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
   // Default menu items for fallback
   const defaultMenuItems = [
     { id: "dashboard", label: "Dashboard", href: "/admin/dashboard", icon: "BarChart3", order: 1, type: "item", parentId: null },
+    { id: "customer-registrations", label: "Customer Registrations", href: "/admin/customer-registrations", icon: "Users", order: 2, type: "item", parentId: null },
     { id: "masters", label: "Masters", href: "/admin/masters", icon: "Database", order: 2, type: "item", parentId: null },
     { id: "brands", label: "Brands", href: "/admin/brands", icon: "Tags", order: 3, type: "item", parentId: null },
     { id: "distributors", label: "Referral Partners", href: "/admin/distributors", icon: "Users", order: 4, type: "item", parentId: null },

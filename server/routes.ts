@@ -6569,6 +6569,7 @@ Required: GUPSHUP_API_KEY environment variable
       // Default menu order
       const defaultMenuOrder = [
         { id: "dashboard", label: "Dashboard", href: "/admin/dashboard", icon: "BarChart3", order: 1, type: "item", parentId: null },
+        { id: "customer-registrations", label: "Customer Registrations", href: "/admin/customer-registrations", icon: "Users", order: 2, type: "item", parentId: null },
         { id: "masters", label: "Masters", href: "/admin/masters", icon: "Database", order: 2, type: "item", parentId: null },
         { id: "brands", label: "Brands", href: "/admin/brands", icon: "Tags", order: 3, type: "item", parentId: null },
         { id: "distributors", label: "Referral Partners", href: "/admin/distributors", icon: "Users", order: 4, type: "item", parentId: null },
@@ -6712,6 +6713,168 @@ Required: GUPSHUP_API_KEY environment variable
         success: false,
         error: "Using default prices"
       });
+    }
+  });
+
+  // ===== CUSTOMER REGISTRATIONS ADMIN ROUTES =====
+
+  // Admin endpoint - Get customer registrations with filtering and payout calculations
+  app.get("/api/admin/customer-registrations", isAdminAuthenticated, async (req, res) => {
+    try {
+      const { dateFrom, dateTo, deviceType, status, search } = req.query;
+      
+      let query = `
+        SELECT 
+          c.*,
+          cl.id as claim_id,
+          cl.status as claim_status,
+          cl.claim_amount,
+          cl.claim_percentage,
+          cl.device_age_months
+        FROM customers c
+        LEFT JOIN claims cl ON c.voucher_code = cl.voucher_code
+        WHERE 1=1
+      `;
+      
+      const request = db.pool.request();
+      
+      // Apply date filters
+      if (dateFrom) {
+        query += ` AND c.created_at >= @dateFrom`;
+        request.input('dateFrom', sql.DateTime, new Date(dateFrom as string));
+      }
+      
+      if (dateTo) {
+        query += ` AND c.created_at <= @dateTo`;
+        request.input('dateTo', sql.DateTime, new Date((dateTo as string) + 'T23:59:59'));
+      }
+      
+      // Apply device type filter
+      if (deviceType && deviceType !== 'all') {
+        query += ` AND c.device_type = @deviceType`;
+        request.input('deviceType', sql.VarChar, deviceType);
+      }
+      
+      // Apply search filter
+      if (search) {
+        query += ` AND (
+          c.name LIKE @search OR 
+          c.email LIKE @search OR 
+          c.voucher_code LIKE @search OR
+          c.contact LIKE @search OR
+          c.brand LIKE @search OR
+          c.model_name LIKE @search
+        )`;
+        request.input('search', sql.VarChar, `%${search}%`);
+      }
+      
+      query += ` ORDER BY c.created_at DESC`;
+      
+      await db.connectDB();
+      const result = await request.query(query);
+      
+      // Calculate payout for each customer
+      const customersWithPayout = await Promise.all(result.recordset.map(async (customer: any) => {
+        // Calculate device age in months
+        const purchaseDate = new Date(customer.date_of_purchase);
+        const currentDate = new Date();
+        const deviceAgeMonths = Math.floor((currentDate.getTime() - purchaseDate.getTime()) / (1000 * 60 * 60 * 24 * 30.44));
+        
+        // Parse registration slab data to get the slab structure
+        let estimatedPayout = 0;
+        let claimPercentage = 0;
+        
+        if (customer.registration_slab_data) {
+          try {
+            const slabData = JSON.parse(customer.registration_slab_data);
+            // Find appropriate slab based on device age
+            const applicableSlab = slabData.find((slab: any) => 
+              deviceAgeMonths >= slab.minMonths && deviceAgeMonths <= slab.maxMonths
+            );
+            
+            if (applicableSlab) {
+              claimPercentage = applicableSlab.percentage;
+              estimatedPayout = (parseFloat(customer.invoice_value) * claimPercentage) / 100;
+            }
+          } catch (error) {
+            console.error('Error parsing slab data for customer:', customer.id, error);
+          }
+        }
+        
+        // If no slab data, fallback to default calculation
+        if (estimatedPayout === 0) {
+          // Get current active slabs as fallback
+          try {
+            const fallbackRequest = db.pool.request();
+            fallbackRequest.input('deviceType', sql.VarChar, customer.device_type);
+            fallbackRequest.input('deviceAge', sql.Int, deviceAgeMonths);
+            fallbackRequest.input('brand', sql.VarChar, customer.brand);
+            fallbackRequest.input('registrationSource', sql.VarChar, customer.registration_source || 'regular');
+            
+            const slabQuery = `
+              SELECT TOP 1 percentage FROM claim_value_slabs 
+              WHERE device_type = @deviceType 
+              AND @deviceAge >= min_months 
+              AND @deviceAge <= max_months 
+              AND is_active = 1
+              AND (brand = @brand OR brand IS NULL)
+              AND (registration_source = @registrationSource OR registration_source IS NULL)
+              ORDER BY 
+                CASE WHEN brand = @brand THEN 1 ELSE 2 END,
+                CASE WHEN registration_source = @registrationSource THEN 1 ELSE 2 END,
+                percentage DESC
+            `;
+            
+            const slabResult = await fallbackRequest.query(slabQuery);
+            if (slabResult.recordset.length > 0) {
+              claimPercentage = slabResult.recordset[0].percentage;
+              estimatedPayout = (parseFloat(customer.invoice_value) * claimPercentage) / 100;
+            }
+          } catch (error) {
+            console.error('Error fetching fallback slab for customer:', customer.id, error);
+          }
+        }
+        
+        return {
+          id: customer.id,
+          name: customer.name,
+          contact: customer.contact,
+          email: customer.email,
+          pincode: customer.pincode,
+          deviceType: customer.device_type,
+          serialNumber: customer.serial_number,
+          brand: customer.brand,
+          modelName: customer.model_name,
+          invoiceValue: parseFloat(customer.invoice_value),
+          dateOfPurchase: customer.date_of_purchase,
+          sellerCode: customer.seller_code,
+          voucherCode: customer.voucher_code,
+          isVerified: customer.is_verified,
+          registrationSource: customer.registration_source || 'regular',
+          registrationSlabData: customer.registration_slab_data,
+          createdAt: customer.created_at,
+          claimStatus: customer.claim_status,
+          claimId: customer.claim_id,
+          deviceAge: deviceAgeMonths,
+          estimatedPayout: Math.round(estimatedPayout),
+          claimPercentage: claimPercentage
+        };
+      }));
+      
+      // Apply status filter after processing (since it's related to calculated claim status)
+      let filteredCustomers = customersWithPayout;
+      if (status && status !== 'all') {
+        filteredCustomers = customersWithPayout.filter(customer => {
+          if (status === 'claimed') return customer.claimStatus !== null;
+          if (status === 'unclaimed') return customer.claimStatus === null;
+          return customer.claimStatus === status;
+        });
+      }
+      
+      res.json(filteredCustomers);
+    } catch (error: any) {
+      console.error("Error fetching customer registrations:", error);
+      res.status(500).json({ message: "Failed to fetch customer registrations", error: error.message });
     }
   });
 

@@ -6738,16 +6738,7 @@ Required: GUPSHUP_API_KEY environment variable
       
       const request = db.pool.request();
       
-      // Apply date filters
-      if (dateFrom) {
-        query += ` AND c.created_at >= @dateFrom`;
-        request.input('dateFrom', sql.DateTime, new Date(dateFrom as string));
-      }
-      
-      if (dateTo) {
-        query += ` AND c.created_at <= @dateTo`;
-        request.input('dateTo', sql.DateTime, new Date((dateTo as string) + 'T23:59:59'));
-      }
+      // Note: dateFrom and dateTo are only used for payout calculation reference date, not for filtering customers
       
       // Apply device type filter
       if (deviceType && deviceType !== 'all') {
@@ -6775,10 +6766,12 @@ Required: GUPSHUP_API_KEY environment variable
       
       // Calculate payout for each customer
       const customersWithPayout = await Promise.all(result.recordset.map(async (customer: any) => {
-        // Calculate device age in months
+        // Calculate device age based on reference date (if provided) or current date
+        const referenceDate = dateTo ? new Date(dateTo as string) : new Date();
         const purchaseDate = new Date(customer.date_of_purchase);
-        const currentDate = new Date();
-        const deviceAgeMonths = Math.floor((currentDate.getTime() - purchaseDate.getTime()) / (1000 * 60 * 60 * 24 * 30.44));
+        const deviceAgeMonths = Math.floor((referenceDate.getTime() - purchaseDate.getTime()) / (1000 * 60 * 60 * 24 * 30.44));
+        
+        console.log(`🎯 Customer ${customer.name}: Purchase: ${customer.date_of_purchase}, Reference: ${referenceDate.toISOString().split('T')[0]}, Age: ${deviceAgeMonths} months`);
         
         // Parse registration slab data to get the slab structure
         let estimatedPayout = 0;
@@ -6787,6 +6780,8 @@ Required: GUPSHUP_API_KEY environment variable
         if (customer.registration_slab_data) {
           try {
             const slabData = JSON.parse(customer.registration_slab_data);
+            console.log(`🎯 Using saved slab data for ${customer.name}:`, slabData.length, 'slabs');
+            
             // Find appropriate slab based on device age
             const applicableSlab = slabData.find((slab: any) => 
               deviceAgeMonths >= slab.minMonths && deviceAgeMonths <= slab.maxMonths
@@ -6795,16 +6790,20 @@ Required: GUPSHUP_API_KEY environment variable
             if (applicableSlab) {
               claimPercentage = applicableSlab.percentage;
               estimatedPayout = (parseFloat(customer.invoice_value) * claimPercentage) / 100;
+              console.log(`✅ Found applicable slab: ${claimPercentage}% for ${deviceAgeMonths} months, payout: ₹${estimatedPayout}`);
+            } else {
+              console.log(`❌ No applicable slab found for ${deviceAgeMonths} months in saved data`);
             }
           } catch (error) {
             console.error('Error parsing slab data for customer:', customer.id, error);
           }
         }
         
-        // If no slab data, fallback to default calculation
+        // If no slab data, fallback to current active slabs
         if (estimatedPayout === 0) {
-          // Get current active slabs as fallback
           try {
+            console.log(`🔄 Fallback slab lookup for ${customer.name}: ${customer.device_type}, ${customer.brand}, age: ${deviceAgeMonths}`);
+            
             const fallbackRequest = db.pool.request();
             fallbackRequest.input('deviceType', sql.VarChar, customer.device_type);
             fallbackRequest.input('deviceAge', sql.Int, deviceAgeMonths);
@@ -6826,9 +6825,14 @@ Required: GUPSHUP_API_KEY environment variable
             `;
             
             const slabResult = await fallbackRequest.query(slabQuery);
+            console.log(`🎯 Fallback slab query returned:`, slabResult.recordset.length, 'results');
+            
             if (slabResult.recordset.length > 0) {
               claimPercentage = slabResult.recordset[0].percentage;
               estimatedPayout = (parseFloat(customer.invoice_value) * claimPercentage) / 100;
+              console.log(`✅ Fallback slab found: ${claimPercentage}% for ${deviceAgeMonths} months, payout: ₹${estimatedPayout}`);
+            } else {
+              console.log(`❌ No fallback slab found for device age ${deviceAgeMonths} months`);
             }
           } catch (error) {
             console.error('Error fetching fallback slab for customer:', customer.id, error);

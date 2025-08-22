@@ -53,10 +53,10 @@ interface Customer {
   claimId?: number;
   estimatedPayout?: number;
   deviceAge?: number;
+  claimPercentage?: number;
 }
 
 export default function CustomerRegistrations() {
-  const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [deviceTypeFilter, setDeviceTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -64,10 +64,9 @@ export default function CustomerRegistrations() {
 
   // Fetch customer registrations with filters
   const { data: customers, isLoading, refetch } = useQuery({
-    queryKey: ["/api/admin/customer-registrations", dateFrom, dateTo, deviceTypeFilter, statusFilter, searchTerm],
+    queryKey: ["/api/admin/customer-registrations", dateTo, deviceTypeFilter, statusFilter, searchTerm],
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (dateFrom) params.set('dateFrom', dateFrom);
       if (dateTo) params.set('dateTo', dateTo);
       if (deviceTypeFilter !== 'all') params.set('deviceType', deviceTypeFilter);
       if (statusFilter !== 'all') params.set('status', statusFilter);
@@ -94,7 +93,7 @@ export default function CustomerRegistrations() {
       'ID', 'Name', 'Contact', 'Email', 'Device Type', 'Brand', 'Model', 
       'Serial Number', 'Invoice Value', 'Purchase Date', 'Registration Date',
       'Voucher Code', 'Seller Code', 'Registration Source', 'Device Age (Months)',
-      'Estimated Payout', 'Claim Status', 'Verified'
+      'Claim Percentage', 'Estimated Payout', 'Claim Status', 'Verified'
     ];
     
     const csvContent = [
@@ -115,6 +114,7 @@ export default function CustomerRegistrations() {
         customer.sellerCode || '',
         customer.registrationSource,
         customer.deviceAge || 0,
+        customer.claimPercentage || 0,
         customer.estimatedPayout || 0,
         customer.claimStatus || 'No Claim',
         customer.isVerified ? 'Yes' : 'No'
@@ -176,23 +176,19 @@ export default function CustomerRegistrations() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {/* Date Range */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Reference Date for Payout Calculation */}
             <div className="space-y-2">
-              <Label>From Date</Label>
-              <Input
-                type="date"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>To Date</Label>
+              <Label>Payout Calculation Date</Label>
               <Input
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
+                placeholder="Leave empty for current date"
               />
+              <p className="text-xs text-gray-500">
+                Shows payouts as they would be on this date (based on device age)
+              </p>
             </div>
 
             {/* Device Type Filter */}
@@ -246,7 +242,6 @@ export default function CustomerRegistrations() {
             <Button
               variant="outline"
               onClick={() => {
-                setDateFrom("");
                 setDateTo("");
                 setDeviceTypeFilter("all");
                 setStatusFilter("all");

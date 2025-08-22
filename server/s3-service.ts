@@ -27,7 +27,7 @@ export class S3Service {
   }
 
   // Upload file to S3
-  async uploadFile(file: Buffer, fileName: string, mimeType: string, folder = 'uploads'): Promise<string> {
+  async uploadFile(file: Buffer, fileName: string, mimeType: string, folder = 'uploads', isPublic = false): Promise<string> {
     const key = `${folder}/${nanoid()}-${fileName}`;
     
     const command = new PutObjectCommand({
@@ -35,7 +35,7 @@ export class S3Service {
       Key: key,
       Body: file,
       ContentType: mimeType,
-      ACL: 'private', // Files are private by default
+      ACL: isPublic ? 'public-read' : 'private', // Make public if specified
     });
 
     try {
@@ -79,17 +79,18 @@ export class S3Service {
 
   // Get file URL (for public files)
   getPublicUrl(key: string): string {
-    return `https://${this.bucket}.s3.amazonaws.com/${key}`;
+    const region = process.env.AWS_REGION || 'ap-south-1';
+    return `https://${this.bucket}.s3.${region}.amazonaws.com/${key}`;
   }
 }
 
 // Multer S3 Configuration for direct uploads
-export const createS3Upload = (folder = 'uploads') => {
+export const createS3Upload = (folder = 'uploads', isPublic = false) => {
   return multer({
     storage: multerS3({
       s3: s3Client,
       bucket: BUCKET_NAME,
-      acl: 'private',
+      acl: isPublic ? 'public-read' : 'private',
       key: function (req: any, file: any, cb: any) {
         const uniqueId = nanoid();
         const extension = path.extname(file.originalname);

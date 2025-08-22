@@ -89,6 +89,30 @@ const bulkUpload = multer({
   }
 });
 
+// Separate upload configuration for public banner images
+const bannerUpload = isS3Configured ? createS3Upload('documents', true) : multer({
+  storage: multer.diskStorage({
+    destination: uploadDir,
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const extension = path.extname(file.originalname);
+      cb(null, file.fieldname + '-' + uniqueSuffix + extension);
+    }
+  }),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Only image types for banners
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only JPEG, PNG, JPG, and WEBP images are allowed for banners.'));
+    }
+  }
+});
+
 // Stripe removed - using PayU only
 
 // PayU Configuration will be initialized in registerRoutes using config service
@@ -6704,6 +6728,34 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // Public endpoint - Serve uploaded images
+  app.get("/uploads/:filename", (req, res) => {
+    const filename = req.params.filename;
+    const filepath = path.join(process.cwd(), 'uploads', filename);
+    
+    // Check if file exists
+    if (!fs.existsSync(filepath)) {
+      return res.status(404).json({ message: "Image not found" });
+    }
+    
+    // Set appropriate headers
+    const ext = path.extname(filename).toLowerCase();
+    const mimeTypes: { [key: string]: string } = {
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+      '.gif': 'image/gif',
+      '.webp': 'image/webp'
+    };
+    
+    const mimeType = mimeTypes[ext] || 'application/octet-stream';
+    res.setHeader('Content-Type', mimeType);
+    res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache
+    
+    // Send the file
+    res.sendFile(filepath);
+  });
+
   // Admin endpoint - Get all homepage banners (including inactive ones)
   app.get("/api/admin/homepage-banners", isAdminAuthenticated, async (req, res) => {
     try {
@@ -6716,7 +6768,7 @@ Required: GUPSHUP_API_KEY environment variable
   });
 
   // Admin endpoint - Create homepage banner
-  app.post("/api/admin/homepage-banners", isAdminAuthenticated, upload.fields([
+  app.post("/api/admin/homepage-banners", isAdminAuthenticated, bannerUpload.fields([
     { name: 'desktopImage', maxCount: 1 },
     { name: 'mobileImage', maxCount: 1 }
   ]), async (req, res) => {
@@ -6762,7 +6814,7 @@ Required: GUPSHUP_API_KEY environment variable
   });
 
   // Admin endpoint - Update homepage banner
-  app.put("/api/admin/homepage-banners/:id", isAdminAuthenticated, upload.fields([
+  app.put("/api/admin/homepage-banners/:id", isAdminAuthenticated, bannerUpload.fields([
     { name: 'desktopImage', maxCount: 1 },
     { name: 'mobileImage', maxCount: 1 }
   ]), async (req, res) => {

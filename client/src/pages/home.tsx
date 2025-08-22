@@ -61,11 +61,11 @@ export default function Home() {
   const allSlabs = [...activeMobileSlabs, ...activeLaptopSlabs];
   const maxPercentage = allSlabs.length > 0 ? Math.max(...allSlabs.map((slab: any) => slab.percentage)) : 70;
 
-  // Fetch homepage banners
+  // Fetch homepage banners (public endpoint)
   const { data: banners, isLoading: bannersLoading } = useQuery({
-    queryKey: ["/api/admin/homepage-banners"],
+    queryKey: ["/api/homepage-banners"],
     queryFn: async () => {
-      const response = await fetch("/api/admin/homepage-banners");
+      const response = await fetch("/api/homepage-banners");
       if (!response.ok) throw new Error("Failed to fetch banners");
       return response.json();
     }

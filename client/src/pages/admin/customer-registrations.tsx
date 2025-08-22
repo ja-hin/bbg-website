@@ -22,10 +22,8 @@ import {
 } from "@/components/ui/select";
 import { 
   Users, 
-  Calendar, 
   Smartphone, 
   Laptop, 
-  IndianRupee,
   Download,
   Filter,
   Search
@@ -81,12 +79,8 @@ export default function CustomerRegistrations() {
 
   const customerList = Array.isArray(customers) ? customers : [];
 
-  // Calculate totals
+  // Calculate total customers for display
   const totalCustomers = customerList.length;
-  const totalLaptops = customerList.filter((c: Customer) => c.deviceType === 'laptop').length;
-  const totalMobiles = customerList.filter((c: Customer) => c.deviceType === 'mobile').length;
-  const totalInvoiceValue = customerList.reduce((sum: number, c: Customer) => sum + (c.invoiceValue || 0), 0);
-  const totalEstimatedPayout = customerList.reduce((sum: number, c: Customer) => sum + (c.estimatedPayout || 0), 0);
 
   const exportToCSV = () => {
     // Create CSV content
@@ -115,7 +109,7 @@ export default function CustomerRegistrations() {
         customer.sellerCode || '',
         customer.registrationSource,
         customer.deviceAge || 0,
-        customer.claimPercentage || 0,
+        `${customer.claimPercentage || 0}%`,
         customer.estimatedPayout || 0,
         customer.claimStatus || 'No Claim',
         customer.isVerified ? 'Yes' : 'No'
@@ -256,68 +250,7 @@ export default function CustomerRegistrations() {
         </CardContent>
       </Card>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 min-h-[120px]">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Users className="h-8 w-8 text-blue-600" />
-              <div>
-                <p className="text-sm text-gray-600">Total Customers</p>
-                <p className="text-2xl font-bold">{totalCustomers}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Laptop className="h-8 w-8 text-green-600" />
-              <div>
-                <p className="text-sm text-gray-600">Laptops</p>
-                <p className="text-2xl font-bold">{totalLaptops}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Smartphone className="h-8 w-8 text-purple-600" />
-              <div>
-                <p className="text-sm text-gray-600">Mobiles</p>
-                <p className="text-2xl font-bold">{totalMobiles}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <IndianRupee className="h-8 w-8 text-yellow-600" />
-              <div>
-                <p className="text-sm text-gray-600">Total Invoice Value</p>
-                <p className="text-2xl font-bold">{formatCurrency(totalInvoiceValue)}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <IndianRupee className="h-8 w-8 text-red-600" />
-              <div>
-                <p className="text-sm text-gray-600">Estimated Payout</p>
-                <p className="text-2xl font-bold">{formatCurrency(totalEstimatedPayout)}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Customer Table */}
       <Card className="min-h-[400px]">

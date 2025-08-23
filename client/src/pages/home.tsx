@@ -61,67 +61,11 @@ export default function Home() {
   const allSlabs = [...activeMobileSlabs, ...activeLaptopSlabs];
   const maxPercentage = allSlabs.length > 0 ? Math.max(...allSlabs.map((slab: any) => slab.percentage)) : 70;
 
-  // Fetch homepage banners (public endpoint)
-  const { data: banners, isLoading: bannersLoading } = useQuery({
-    queryKey: ["/api/homepage-banners"],
-    queryFn: async () => {
-      const response = await fetch("/api/homepage-banners");
-      if (!response.ok) throw new Error("Failed to fetch banners");
-      return response.json();
-    }
-  });
 
-  const activeBanners = Array.isArray(banners) ? banners.filter((banner: any) => banner.isActive) : [];
 
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
-      {/* Homepage Banners Section */}
-      {activeBanners.length > 0 && (
-        <section className="relative">
-          <div className="overflow-hidden">
-            {activeBanners.map((banner: any, index: number) => (
-              <div key={banner.id} className={`relative ${index === 0 ? 'block' : 'hidden'}`}>
-                {/* Desktop Banner */}
-                <div className="hidden md:block">
-                  <img 
-                    src={banner.desktopImageUrl} 
-                    alt={banner.title}
-                    className="w-full h-64 lg:h-80 xl:h-96 object-cover"
-                  />
-                </div>
-                {/* Mobile Banner */}
-                <div className="block md:hidden">
-                  <img 
-                    src={banner.mobileImageUrl} 
-                    alt={banner.title}
-                    className="w-full h-48 sm:h-56 object-cover"
-                  />
-                </div>
-                {/* Banner Content Overlay */}
-                {(banner.title || banner.description || banner.linkUrl) && (
-                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                    <div className="text-center text-white p-4 max-w-2xl mx-auto">
-                      {banner.title && (
-                        <h2 className="text-2xl md:text-4xl font-bold mb-2">{banner.title}</h2>
-                      )}
-                      {banner.description && (
-                        <p className="text-lg md:text-xl mb-4 opacity-90">{banner.description}</p>
-                      )}
-                      {banner.linkUrl && (
-                        <a href={banner.linkUrl} className="inline-block">
-                          <Button size="lg" className="bg-white text-black hover:bg-gray-100">
-                            Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                          </Button>
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+
 
       {/* Hero Section */}
       <section className="py-12 sm:py-16 lg:py-20">

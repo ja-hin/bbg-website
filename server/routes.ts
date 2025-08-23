@@ -25,93 +25,17 @@ import {
 } from "@shared/schema";
 // Using SQL Server for all database operations
 
-// Configure multer for file uploads (fallback to local storage if S3 not configured)
-const uploadDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+// Configure S3-only file uploads
+console.log('🔧 S3 Configuration: Using S3-only upload for all file storage');
 
-// Check if S3 is configured
-const isS3Configured = process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY && process.env.AWS_S3_BUCKET_NAME;
+// S3-only upload configuration for documents (invoices, payment proofs)
+const upload = createS3Upload('documents');
 
-console.log('🔧 S3 Configuration: S3 upload enabled for file storage');
+// S3-only upload configuration for bulk data uploads (Excel/CSV) - stored temporarily for processing
+const bulkUpload = createS3Upload('bulk-uploads');
 
-// Use S3 upload if configured, otherwise fallback to local storage
-const upload = isS3Configured ? createS3Upload('documents') : multer({
-  storage: multer.diskStorage({
-    destination: uploadDir,
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const extension = path.extname(file.originalname);
-      cb(null, file.fieldname + '-' + uniqueSuffix + extension);
-    }
-  }),
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
-  },
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
-    if (allowedTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type. Only JPEG, PNG, and PDF files are allowed.'));
-    }
-  }
-});
-
-// Separate upload configuration for bulk data uploads (Excel/CSV)
-const bulkUpload = multer({
-  storage: multer.diskStorage({
-    destination: uploadDir,
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const extension = path.extname(file.originalname);
-      cb(null, file.fieldname + '-' + uniqueSuffix + extension);
-    }
-  }),
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit for data files
-  },
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = [
-      'text/csv',
-      'application/vnd.ms-excel',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/excel',
-      'application/x-excel',
-      'application/x-msexcel'
-    ];
-    if (allowedTypes.includes(file.mimetype) || file.originalname.toLowerCase().endsWith('.csv') || file.originalname.toLowerCase().endsWith('.xlsx') || file.originalname.toLowerCase().endsWith('.xls')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type. Only CSV and Excel files (.csv, .xlsx, .xls) are allowed.'));
-    }
-  }
-});
-
-// Separate upload configuration for public banner images
-const bannerUpload = isS3Configured ? createS3Upload('documents', true) : multer({
-  storage: multer.diskStorage({
-    destination: uploadDir,
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const extension = path.extname(file.originalname);
-      cb(null, file.fieldname + '-' + uniqueSuffix + extension);
-    }
-  }),
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
-  },
-  fileFilter: (req, file, cb) => {
-    // Only image types for banners
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-    if (allowedTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type. Only JPEG, PNG, JPG, and WEBP images are allowed for banners.'));
-    }
-  }
-});
+// S3-only upload configuration for public banner images
+const bannerUpload = createS3Upload('documents', true);
 
 // Stripe removed - using PayU only
 
@@ -163,30 +87,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (formData.gstInvoiceAgreement) formData.gstInvoiceAgreement = formData.gstInvoiceAgreement === 'true';
       if (formData.termsAgreement) formData.termsAgreement = formData.termsAgreement === 'true';
       
-      // Handle file uploads safely (S3 or local storage)
+      // Handle S3 file uploads
       const files = req.files as { [fieldname: string]: Express.Multer.File[] } || {};
       console.log("Files object:", files);
       
       if (files && files.panCopyFile && files.panCopyFile[0]) {
-        // For S3, use the key, for local storage use filename
-        if (isS3Configured) {
-          formData.panCopyFile = (files.panCopyFile[0] as any).key || (files.panCopyFile[0] as any).location;
-          console.log("✅ PAN copy file uploaded to S3:", formData.panCopyFile);
-        } else {
-          formData.panCopyFile = files.panCopyFile[0].filename;
-          console.log("⚠️ PAN copy file uploaded to local storage:", formData.panCopyFile);
-        }
+        formData.panCopyFile = (files.panCopyFile[0] as any).key || (files.panCopyFile[0] as any).location;
+        console.log("✅ PAN copy file uploaded to S3:", formData.panCopyFile);
       }
       if (files && files.gstCertificateFile && files.gstCertificateFile[0]) {
-        formData.gstCertificateFile = isS3Configured ? (files.gstCertificateFile[0] as any).key : files.gstCertificateFile[0].filename;
+        formData.gstCertificateFile = (files.gstCertificateFile[0] as any).key;
         console.log("✅ GST certificate file uploaded to S3:", formData.gstCertificateFile);
       }
       if (files && files.msmeCertificateFile && files.msmeCertificateFile[0]) {
-        formData.msmeCertificateFile = isS3Configured ? (files.msmeCertificateFile[0] as any).key : files.msmeCertificateFile[0].filename;
+        formData.msmeCertificateFile = (files.msmeCertificateFile[0] as any).key;
         console.log("✅ MSME certificate file uploaded to S3:", formData.msmeCertificateFile);
       }
       if (files && files.cancelledChequeFile && files.cancelledChequeFile[0]) {
-        formData.cancelledChequeFile = isS3Configured ? (files.cancelledChequeFile[0] as any).key : files.cancelledChequeFile[0].filename;
+        formData.cancelledChequeFile = (files.cancelledChequeFile[0] as any).key;
         console.log("✅ Cancelled cheque file uploaded to S3:", formData.cancelledChequeFile);
       }
       
@@ -3408,14 +3326,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         item.device && item.brand && item.model && ['mobile', 'laptop'].includes(item.device)
       ));
 
-      // Clean up uploaded file (only for local storage)
-      if (!isS3Configured && req.file && req.file.path) {
-        try {
-          require('fs').unlinkSync(req.file.path);
-        } catch (cleanupError) {
-          console.error('Failed to cleanup uploaded file:', cleanupError);
-        }
-      }
+      // S3 files are automatically managed, no cleanup needed
 
       res.json({
         message: "Bulk upload completed",
@@ -4499,14 +4410,7 @@ Required: GUPSHUP_API_KEY environment variable
         }
       }
 
-      // Clean up uploaded file (only for local storage)
-      if (!isS3Configured && req.file && req.file.path) {
-        try {
-          require('fs').unlinkSync(req.file.path);
-        } catch (cleanupError) {
-          console.error('Failed to cleanup uploaded file:', cleanupError);
-        }
-      }
+      // S3 files are automatically managed, no cleanup needed
 
       res.json({
         message: "Acer IMEI data uploaded successfully",
@@ -4657,10 +4561,6 @@ Required: GUPSHUP_API_KEY environment variable
   // File management API endpoints for S3
   app.get('/api/files/signed-url/:key', async (req, res) => {
     try {
-      if (!isS3Configured) {
-        return res.status(400).json({ message: 'S3 storage not configured' });
-      }
-      
       const { key } = req.params;
       const signedUrl = await s3Service.getSignedUrl(key);
       
@@ -4669,22 +4569,6 @@ Required: GUPSHUP_API_KEY environment variable
       console.error('Error generating signed URL:', error);
       res.status(500).json({ message: 'Failed to generate file access URL' });
     }
-  });
-
-  // Serve local files if S3 not configured
-  app.get('/api/files/local/:filename', (req, res) => {
-    if (isS3Configured) {
-      return res.status(400).json({ message: 'Local file access not available when S3 is configured' });
-    }
-    
-    const { filename } = req.params;
-    const filePath = path.join(uploadDir, filename);
-    
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ message: 'File not found' });
-    }
-    
-    res.sendFile(filePath);
   });
 
 
@@ -4813,14 +4697,10 @@ Required: GUPSHUP_API_KEY environment variable
         });
       }
 
-      // Handle file upload path
+      // Handle S3 file upload path
       let invoiceFilePath = null;
       if (req.file) {
-        if (isS3Configured) {
-          invoiceFilePath = req.file.location || req.file.key;
-        } else {
-          invoiceFilePath = req.file.filename;
-        }
+        invoiceFilePath = (req.file as any).location || (req.file as any).key;
       }
 
 
@@ -6038,8 +5918,7 @@ Required: GUPSHUP_API_KEY environment variable
             }
           }
 
-          // Clean up uploaded file
-          fs.unlinkSync(req.file.path);
+          // S3 files are automatically managed, no cleanup needed
 
           res.json({
             totalProcessed,
@@ -6051,14 +5930,7 @@ Required: GUPSHUP_API_KEY environment variable
           });
 
         } catch (fileError: any) {
-          // Clean up file on error
-          if (req.file?.path) {
-            try {
-              fs.unlinkSync(req.file.path);
-            } catch (cleanupError) {
-              console.error('Error cleaning up file:', cleanupError);
-            }
-          }
+          // S3 files are automatically managed, no cleanup needed
           
           console.error('Error processing Excel file:', fileError);
           res.status(400).json({ 
@@ -6955,14 +6827,9 @@ Required: GUPSHUP_API_KEY environment variable
         return res.status(400).json({ message: "Both desktop and mobile images are required" });
       }
 
-      // Get image URLs (S3 URLs or local paths)
-      const desktopImageUrl = isS3Configured 
-        ? (files.desktopImage[0] as any).location 
-        : `/uploads/${files.desktopImage[0].filename}`;
-        
-      const mobileImageUrl = isS3Configured 
-        ? (files.mobileImage[0] as any).location 
-        : `/uploads/${files.mobileImage[0].filename}`;
+      // Get S3 image URLs
+      const desktopImageUrl = (files.desktopImage[0] as any).location;
+      const mobileImageUrl = (files.mobileImage[0] as any).location;
 
       const banner = await storage.createHomepageBanner({
         title,
@@ -7006,17 +6873,13 @@ Required: GUPSHUP_API_KEY environment variable
       if (isActive !== undefined) updates.isActive = isActive === 'true';
       if (sortOrder !== undefined) updates.sortOrder = parseInt(sortOrder);
 
-      // Update image URLs if new files are provided
+      // Update S3 image URLs if new files are provided
       if (files?.desktopImage) {
-        updates.desktopImageUrl = isS3Configured 
-          ? (files.desktopImage[0] as any).location 
-          : `/uploads/${files.desktopImage[0].filename}`;
+        updates.desktopImageUrl = (files.desktopImage[0] as any).location;
       }
       
       if (files?.mobileImage) {
-        updates.mobileImageUrl = isS3Configured 
-          ? (files.mobileImage[0] as any).location 
-          : `/uploads/${files.mobileImage[0].filename}`;
+        updates.mobileImageUrl = (files.mobileImage[0] as any).location;
       }
 
       await storage.updateHomepageBanner(bannerId, updates);

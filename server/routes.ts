@@ -3408,11 +3408,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         item.device && item.brand && item.model && ['mobile', 'laptop'].includes(item.device)
       ));
 
-      // Clean up uploaded file
-      try {
-        require('fs').unlinkSync(req.file.path);
-      } catch (cleanupError) {
-        console.error('Failed to cleanup uploaded file:', cleanupError);
+      // Clean up uploaded file (only for local storage)
+      if (!isS3Configured && req.file && req.file.path) {
+        try {
+          require('fs').unlinkSync(req.file.path);
+        } catch (cleanupError) {
+          console.error('Failed to cleanup uploaded file:', cleanupError);
+        }
       }
 
       res.json({
@@ -4497,11 +4499,13 @@ Required: GUPSHUP_API_KEY environment variable
         }
       }
 
-      // Clean up uploaded file
-      try {
-        require('fs').unlinkSync(req.file.path);
-      } catch (cleanupError) {
-        console.error('Failed to cleanup uploaded file:', cleanupError);
+      // Clean up uploaded file (only for local storage)
+      if (!isS3Configured && req.file && req.file.path) {
+        try {
+          require('fs').unlinkSync(req.file.path);
+        } catch (cleanupError) {
+          console.error('Failed to cleanup uploaded file:', cleanupError);
+        }
       }
 
       res.json({

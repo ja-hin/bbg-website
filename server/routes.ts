@@ -3269,8 +3269,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      // XLSX is now imported at the top
-      const workbook = XLSX.readFile(req.file.path);
+      // Download and read the Excel file from S3
+      const s3Key = (req.file as any).key;
+      const signedUrl = await s3Service.getSignedUrl(s3Key);
+      
+      // Download file content
+      const response = await fetch(signedUrl);
+      const buffer = await response.arrayBuffer();
+      
+      // Read the Excel file from buffer
+      const workbook = XLSX.read(buffer, { type: 'array' });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(worksheet);
@@ -4352,8 +4360,16 @@ Required: GUPSHUP_API_KEY environment variable
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      // Parse Excel/CSV file with IMEI data
-      const workbook = XLSX.readFile(req.file.path);
+      // Download and read the Excel/CSV file from S3
+      const s3Key = (req.file as any).key;
+      const signedUrl = await s3Service.getSignedUrl(s3Key);
+      
+      // Download file content
+      const response = await fetch(signedUrl);
+      const buffer = await response.arrayBuffer();
+      
+      // Read the Excel file from buffer
+      const workbook = XLSX.read(buffer, { type: 'array' });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(worksheet);
@@ -5809,7 +5825,7 @@ Required: GUPSHUP_API_KEY environment variable
   // Excel Upload and Process
   app.post('/api/admin/claim-value-slabs/excel-upload', isAdminAuthenticated, async (req, res) => {
     try {
-      const excelUpload = multer({ dest: 'uploads/' });
+      const excelUpload = createS3Upload('bulk-uploads');
       
       // Handle file upload
       excelUpload.single('excel')(req, res, async (err: any) => {
@@ -5822,8 +5838,16 @@ Required: GUPSHUP_API_KEY environment variable
         }
 
         try {
-          // Read the Excel file
-          const workbook = XLSX.readFile(req.file.path);
+          // Download and read the Excel file from S3
+          const s3Key = (req.file as any).key;
+          const signedUrl = await s3Service.getSignedUrl(s3Key);
+          
+          // Download file content
+          const response = await fetch(signedUrl);
+          const buffer = await response.arrayBuffer();
+          
+          // Read the Excel file from buffer
+          const workbook = XLSX.read(buffer, { type: 'array' });
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
           
@@ -6771,32 +6795,20 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
-  // Public endpoint - Serve uploaded images
-  app.get("/uploads/:filename", (req, res) => {
+  // Public endpoint - Redirect to S3 for images (S3-only implementation)
+  app.get("/uploads/:filename", async (req, res) => {
     const filename = req.params.filename;
-    const filepath = path.join(process.cwd(), 'uploads', filename);
     
-    // Check if file exists
-    if (!fs.existsSync(filepath)) {
-      return res.status(404).json({ message: "Image not found" });
+    try {
+      // Generate signed URL for S3 file access
+      const signedUrl = await s3Service.getSignedUrl(`documents/${filename}`);
+      
+      // Redirect to S3 signed URL
+      res.redirect(signedUrl);
+    } catch (error) {
+      console.error('Error accessing S3 file:', error);
+      res.status(404).json({ message: "Image not found" });
     }
-    
-    // Set appropriate headers
-    const ext = path.extname(filename).toLowerCase();
-    const mimeTypes: { [key: string]: string } = {
-      '.jpg': 'image/jpeg',
-      '.jpeg': 'image/jpeg',
-      '.png': 'image/png',
-      '.gif': 'image/gif',
-      '.webp': 'image/webp'
-    };
-    
-    const mimeType = mimeTypes[ext] || 'application/octet-stream';
-    res.setHeader('Content-Type', mimeType);
-    res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache
-    
-    // Send the file
-    res.sendFile(filepath);
   });
 
   // Admin endpoint - Get all homepage banners (including inactive ones)

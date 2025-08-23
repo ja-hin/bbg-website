@@ -92,16 +92,16 @@ export default function AdminAcerImei() {
   };
 
   const downloadSampleFile = () => {
-    // Create sample Excel file content
+    // Create sample CSV file content with new format: Serial Number, Invoice Date
     const sampleData = [
-      { IMEI: "123456789012345", Model: "Aspire 5", Brand: "Acer" },
-      { IMEI: "678901234567890", Model: "Predator Helios", Brand: "Acer" },
-      { IMEI: "456789012345678", Model: "Swift 3", Brand: "Acer" }
+      { "Serial Number": "123456789012345", "Invoice Date": "2024-01-15" },
+      { "Serial Number": "678901234567890", "Invoice Date": "2024-02-20" },
+      { "Serial Number": "456789012345678", "Invoice Date": "2024-03-10" }
     ];
     
     const csvContent = "data:text/csv;charset=utf-8,"
-      + "IMEI,Model,Brand\n"
-      + sampleData.map(row => `${row.IMEI},${row.Model},${row.Brand}`).join("\n");
+      + "Serial Number,Invoice Date\n"
+      + sampleData.map(row => `${row["Serial Number"]},${row["Invoice Date"]}`).join("\n");
     
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -155,7 +155,7 @@ export default function AdminAcerImei() {
                 Upload IMEI Data
               </CardTitle>
               <CardDescription>
-                Upload Excel (.xlsx, .xls) or CSV files containing IMEI/Serial numbers with model information
+                Upload CSV files with format: Serial Number, Invoice Date
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -174,15 +174,15 @@ export default function AdminAcerImei() {
                 <div className="space-y-2">
                   <p className="text-lg font-medium">Drop your file here or click to browse</p>
                   <p className="text-sm text-gray-500">
-                    Supports Excel (.xlsx, .xls) and CSV files
+                    Supports CSV and Excel files
                   </p>
                   <p className="text-xs text-gray-400">
-                    Expected columns: IMEI/Serial, Model (optional)
+                    Required format: Serial Number, Invoice Date
                   </p>
                 </div>
                 <input
                   type="file"
-                  accept=".xlsx,.xls,.csv"
+                  accept=".csv,.xlsx,.xls"
                   onChange={handleFileInput}
                   className="hidden"
                   id="file-upload"

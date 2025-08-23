@@ -85,7 +85,7 @@ export class S3Service {
 }
 
 // Multer S3 Configuration for direct uploads
-export const createS3Upload = (folder = 'uploads', isPublic = false) => {
+export const createS3Upload = (folder = 'uploads', isPublic = false, allowCSV = false) => {
   return multer({
     storage: multerS3({
       s3: s3Client,
@@ -103,12 +103,24 @@ export const createS3Upload = (folder = 'uploads', isPublic = false) => {
       fileSize: 5 * 1024 * 1024, // 5MB limit
     },
     fileFilter: (req, file, cb) => {
-      // Allowed file types
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+      // Base allowed file types
+      let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+      
+      // Add CSV and Excel types for bulk uploads
+      if (allowCSV) {
+        allowedTypes = allowedTypes.concat([
+          'text/csv',
+          'application/csv',
+          'application/vnd.ms-excel',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ]);
+      }
+      
       if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
       } else {
-        cb(new Error('Invalid file type. Only JPEG, PNG, and PDF files are allowed.'));
+        const fileTypes = allowCSV ? 'JPEG, PNG, PDF, CSV, and Excel' : 'JPEG, PNG, and PDF';
+        cb(new Error(`Invalid file type. Only ${fileTypes} files are allowed.`));
       }
     },
   });

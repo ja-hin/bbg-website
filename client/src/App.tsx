@@ -1,5 +1,5 @@
+import React, { lazy, Suspense } from "react";
 import { Switch, Route } from "wouter";
-import { lazy, Suspense } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -25,7 +25,6 @@ import AdminBrandsNew from "@/pages/admin-brands-new";
 import AdminDistributors from "@/pages/admin-distributors";
 import AdminTemplates from "@/pages/admin-templates";
 import AdminLogs from "@/pages/admin-logs";
-import AdminWhatsAppTest from "@/pages/admin-whatsapp-test";
 import AdminCartAbandonments from "@/pages/admin-cart-abandonments";
 
 import AdminAcerRegistrations from "@/pages/admin-acer-registrations";
@@ -41,7 +40,6 @@ import AdminBbgSettings from "@/pages/admin-bbg-settings";
 import AdminWaitingPeriodSettings from "@/pages/admin-waiting-period-settings";
 import AdminHomepageBanners from "@/pages/admin/homepage-banners";
 import AdminCustomerRegistrations from "@/pages/admin/customer-registrations";
-import AdminS3Test from "@/pages/admin-s3-test";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import TermsAndConditions from "@/pages/terms-and-conditions";
@@ -82,7 +80,6 @@ function Router() {
       <Route path="/admin/templates" component={AdminTemplates} />
       <Route path="/admin/logs" component={AdminLogs} />
 
-      <Route path="/admin/whatsapp-test" component={AdminWhatsAppTest} />
       <Route path="/admin/hsm-templates" component={lazy(() => import("./pages/admin-hsm-templates"))} />
       <Route path="/admin/cart-abandonments">
         <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
@@ -106,7 +103,6 @@ function Router() {
       <Route path="/admin/waiting-period-settings" component={AdminWaitingPeriodSettings} />
       <Route path="/admin/homepage-banners" component={AdminHomepageBanners} />
       <Route path="/admin/customer-registrations" component={AdminCustomerRegistrations} />
-      <Route path="/admin/s3-test" component={AdminS3Test} />
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />

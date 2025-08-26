@@ -11,8 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { Loader2, CheckCircle, AlertCircle, Upload } from "lucide-react";
 import { SuccessConfetti } from "@/components/confetti";
+import FileUpload from "@/components/file-upload";
 
 const claimSchema = z.object({
   voucherCode: z.string().min(5, "Valid BBG voucher code required"),
@@ -20,7 +21,9 @@ const claimSchema = z.object({
   email: z.string().email("Invalid email address"),
   serialNumber: z.string().min(10, "Serial Number/IMEI must be at least 10 characters"),
   pickupDate: z.string().min(1, "Pickup date is required"),
-  pickupTimeSlot: z.string().min(1, "Pickup time slot is required")
+  pickupTimeSlot: z.string().min(1, "Pickup time slot is required"),
+  // Invoice upload for claim verification
+  invoiceFile: z.instanceof(File, "Device tax invoice is required for claim processing")
 });
 
 type ClaimFormData = z.infer<typeof claimSchema>;
@@ -47,6 +50,7 @@ export default function ClaimBBG() {
   const [otpVerified, setOtpVerified] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [otp, setOtp] = useState("");
+  const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
 
   const form = useForm<ClaimFormData>({
     resolver: zodResolver(claimSchema),
@@ -56,7 +60,8 @@ export default function ClaimBBG() {
       email: "",
       serialNumber: "",
       pickupDate: "",
-      pickupTimeSlot: ""
+      pickupTimeSlot: "",
+      invoiceFile: undefined
     }
   });
 
@@ -435,6 +440,35 @@ export default function ClaimBBG() {
                               </SelectContent>
                             </Select>
                             <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Device Tax Invoice Upload */}
+                      <FormField
+                        control={form.control}
+                        name="invoiceFile"
+                        render={({ field }) => (
+                          <FormItem className="md:col-span-2">
+                            <FormLabel className="flex items-center">
+                              <Upload className="h-4 w-4 mr-2" />
+                              Upload Device Tax Invoice *
+                            </FormLabel>
+                            <FormControl>
+                              <FileUpload
+                                accept="image/*,.pdf"
+                                onFileChange={(file) => {
+                                  setInvoiceFile(file);
+                                  field.onChange(file);
+                                }}
+                                placeholder="Upload device tax invoice for claim verification"
+                                className="w-full"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                            <p className="text-sm text-gray-500 mt-1">
+                              Upload the original tax invoice of your device for claim verification
+                            </p>
                           </FormItem>
                         )}
                       />

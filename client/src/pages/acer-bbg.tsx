@@ -34,7 +34,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   Calendar,
   CheckCircle,
-  Upload,
   Smartphone,
   Laptop,
   User,
@@ -48,7 +47,6 @@ import {
   AlertTriangle,
   Clock,
 } from "lucide-react";
-import FileUpload from "@/components/file-upload";
 import { ValidatedField } from "@/components/validated-field";
 import { SuccessConfetti } from "@/components/confetti";
 
@@ -77,14 +75,11 @@ const acerRegistrationSchema = z.object({
       "Pincode must be 6 digits and cannot start with 0",
     ),
 
-  // File upload
-  invoiceFile: z.instanceof(File).optional(),
 });
 
 type AcerRegistrationData = z.infer<typeof acerRegistrationSchema>;
 
 export default function AcerBBG() {
-  const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [is72HourExpired, setIs72HourExpired] = useState(false);
   const { toast } = useToast();
@@ -115,15 +110,10 @@ export default function AcerBBG() {
 
       // Add all form fields
       Object.entries(data).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && key !== "invoiceFile") {
+        if (value !== undefined && value !== null) {
           formData.append(key, value.toString());
         }
       });
-
-      // Add file if selected
-      if (invoiceFile) {
-        formData.append("invoice", invoiceFile);
-      }
 
       // Use fetch directly for FormData instead of apiRequest to avoid JSON headers
       const response = await fetch("/api/acer-bbg/register", {
@@ -380,30 +370,6 @@ export default function AcerBBG() {
                       )}
                     />
 
-                    <FormField
-                      control={form.control}
-                      name="invoiceFile"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <Upload className="h-4 w-4 mr-2" />
-                            Upload Device Tax Invoice
-                          </FormLabel>
-                          <FormControl>
-                            <FileUpload
-                              accept="image/*,.pdf"
-                              onFileChange={(file) => {
-                                setInvoiceFile(file);
-                                field.onChange(file);
-                              }}
-                              placeholder="Upload invoice"
-                              className="w-full"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </div>
 
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">

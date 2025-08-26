@@ -46,6 +46,7 @@ import {
   Building,
   AlertTriangle,
   Clock,
+  Loader2,
 } from "lucide-react";
 import { ValidatedField } from "@/components/validated-field";
 import { SuccessConfetti } from "@/components/confetti";
@@ -150,7 +151,6 @@ export default function AcerBBG() {
 
       // Reset form
       form.reset();
-      setInvoiceFile(null);
 
       // Store success data in session storage for thank you page
       sessionStorage.setItem(
@@ -502,7 +502,7 @@ export default function AcerBBG() {
                   >
                     {registrationMutation.isPending ? (
                       <>
-                        <Upload className="h-5 w-5 mr-2 animate-spin" />
+                        <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                         Registering...
                       </>
                     ) : (

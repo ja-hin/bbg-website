@@ -21,6 +21,7 @@ import { testAllTemplates } from "./template-test";
 import { registerTestRoutes } from "./test-services";
 import { s3Service, createS3Upload } from "./s3-service";
 import AWS from "aws-sdk";
+import bcrypt from "bcryptjs";
 // Removed nodemailer import - using communicationService instead
 import {
   insertDistributorSchema,
@@ -3757,7 +3758,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Hash password if provided
       if (updates.password) {
-        updates.passwordHash = updates.password;
+        updates.passwordHash = await bcrypt.hash(updates.password, 12);
         delete updates.password;
       }
 
@@ -3765,6 +3766,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Admin user updated successfully" });
     } catch (error: any) {
       res.status(500).json({ message: "Failed to update admin user" });
+    }
+  });
+
+  // Reset admin password (direct database update)
+  app.post("/api/admin/reset-password", async (req, res) => {
+    try {
+      // Get the admin user
+      const admin = await storage.getAdminByUsername("admin");
+      if (!admin) {
+        return res.status(404).json({ message: "Admin user not found" });
+      }
+
+      // Hash the new strong password
+      const newPassword = "XtraCover2025!#SecureAdmin";
+      const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+      // Update the admin user's password
+      await storage.updateAdminUser(admin.id, { passwordHash: hashedPassword });
+
+      res.json({ 
+        message: "Admin password reset successfully to strong password",
+        username: admin.username
+      });
+    } catch (error: any) {
+      console.error("Reset admin password error:", error);
+      res
+        .status(500)
+        .json({ message: "Failed to reset admin password", error: error.message });
     }
   });
 

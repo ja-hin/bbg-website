@@ -7,6 +7,7 @@ import path from "path";
 import { createS3Upload, s3Service } from "./s3-service";
 import { storage } from "./storage";
 import sql from "mssql";
+import { pool } from "./db";
 
 // Admin authentication middleware
 const isAdminAuthenticated = (req: any, res: any, next: any) => {
@@ -36,8 +37,10 @@ export async function registerRoutes(app: Express) {
         return res.status(400).json({ message: "Username and password are required" });
       }
 
-      // Direct SQL query for admin authentication since Drizzle isn't set up
-      const pool = await sql.connect();
+      // Direct SQL query for admin authentication using proper pool
+      if (!pool.connected) {
+        await pool.connect();
+      }
       const result = await pool.request()
         .input('username', sql.VarChar, username)
         .query(`
@@ -84,8 +87,10 @@ export async function registerRoutes(app: Express) {
     try {
       const adminId = req.session.adminId;
       
-      // Direct SQL query for admin info
-      const pool = await sql.connect();
+      // Direct SQL query for admin info using proper pool
+      if (!pool.connected) {
+        await pool.connect();
+      }
       const result = await pool.request()
         .input('id', sql.Int, adminId)
         .query(`

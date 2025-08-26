@@ -36,11 +36,31 @@ export async function registerRoutes(app: Express) {
         return res.status(400).json({ message: "Username and password are required" });
       }
 
-      const admin = await storage.verifyAdminPassword(username, password);
-      
-      if (!admin) {
+      // Direct SQL query for admin authentication since Drizzle isn't set up
+      const pool = await sql.connect();
+      const result = await pool.request()
+        .input('username', sql.VarChar, username)
+        .query(`
+          SELECT id, username, password_hash, role, is_active, last_login_at 
+          FROM admin_users 
+          WHERE username = @username AND is_active = 1
+        `);
+
+      if (result.recordset.length === 0) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
+
+      const admin = result.recordset[0];
+      const isValid = await bcrypt.compare(password, admin.password_hash);
+      
+      if (!isValid) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Update last login
+      await pool.request()
+        .input('id', sql.Int, admin.id)
+        .query(`UPDATE admin_users SET last_login_at = GETDATE() WHERE id = @id`);
 
       // Set session
       req.session.adminId = admin.id;
@@ -63,17 +83,27 @@ export async function registerRoutes(app: Express) {
   app.get("/api/admin/me", isAdminAuthenticated, async (req, res) => {
     try {
       const adminId = req.session.adminId;
-      const admin = await storage.getAdminById(adminId);
       
-      if (!admin || !admin.isActive) {
+      // Direct SQL query for admin info
+      const pool = await sql.connect();
+      const result = await pool.request()
+        .input('id', sql.Int, adminId)
+        .query(`
+          SELECT id, username, role, is_active, last_login_at 
+          FROM admin_users 
+          WHERE id = @id AND is_active = 1
+        `);
+      
+      if (result.recordset.length === 0) {
         return res.status(401).json({ message: "Admin not found or inactive" });
       }
 
+      const admin = result.recordset[0];
       res.json({
         id: admin.id,
         username: admin.username,
         role: admin.role,
-        lastLoginAt: admin.lastLoginAt
+        lastLoginAt: admin.last_login_at
       });
     } catch (error: any) {
       console.error("Admin me error:", error);

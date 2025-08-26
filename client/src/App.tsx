@@ -41,6 +41,7 @@ import AdminBbgSettings from "@/pages/admin-bbg-settings";
 import AdminWaitingPeriodSettings from "@/pages/admin-waiting-period-settings";
 import AdminHomepageBanners from "@/pages/admin/homepage-banners";
 import AdminCustomerRegistrations from "@/pages/admin/customer-registrations";
+import AdminS3Test from "@/pages/admin-s3-test";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import TermsAndConditions from "@/pages/terms-and-conditions";
@@ -105,6 +106,7 @@ function Router() {
       <Route path="/admin/waiting-period-settings" component={AdminWaitingPeriodSettings} />
       <Route path="/admin/homepage-banners" component={AdminHomepageBanners} />
       <Route path="/admin/customer-registrations" component={AdminCustomerRegistrations} />
+      <Route path="/admin/s3-test" component={AdminS3Test} />
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />

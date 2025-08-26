@@ -125,6 +125,64 @@ export async function registerRoutes(app: Express) {
     });
   });
 
+  // Admin Data Endpoints
+  app.get("/api/admin/dashboard", isAdminAuthenticated, async (req, res) => {
+    try {
+      const stats = await storage.getAdminDashboardStats();
+      res.json({ stats });
+    } catch (error: any) {
+      console.error("Dashboard stats error:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard stats" });
+    }
+  });
+
+  app.get("/api/admin/customers", isAdminAuthenticated, async (req, res) => {
+    try {
+      const customers = await storage.getAllCustomers();
+      res.json(customers);
+    } catch (error: any) {
+      console.error("Get customers error:", error);
+      res.status(500).json({ message: "Failed to fetch customers" });
+    }
+  });
+
+  app.get("/api/admin/distributors", isAdminAuthenticated, async (req, res) => {
+    try {
+      const distributors = await storage.getAllDistributors();
+      res.json(distributors);
+    } catch (error: any) {
+      console.error("Get distributors error:", error);
+      res.status(500).json({ message: "Failed to fetch distributors" });
+    }
+  });
+
+  app.get("/api/admin/claims", isAdminAuthenticated, async (req, res) => {
+    try {
+      const claims = await storage.getAllClaims();
+      res.json(claims);
+    } catch (error: any) {
+      console.error("Get claims error:", error);
+      res.status(500).json({ message: "Failed to fetch claims" });
+    }
+  });
+
+  app.get("/api/admin/menu-order", isAdminAuthenticated, async (req, res) => {
+    try {
+      // Return default menu order - this can be made configurable later
+      const menuOrder = [
+        { id: "dashboard", label: "Dashboard", order: 1 },
+        { id: "customers", label: "Customers", order: 2 },
+        { id: "distributors", label: "Referral Partners", order: 3 },
+        { id: "claims", label: "Claims", order: 4 },
+        { id: "settings", label: "Settings", order: 5 }
+      ];
+      res.json(menuOrder);
+    } catch (error: any) {
+      console.error("Get menu order error:", error);
+      res.status(500).json({ message: "Failed to fetch menu order" });
+    }
+  });
+
   // S3 Test endpoints for admin
   app.post('/api/admin/s3-test/upload', isAdminAuthenticated, upload.single('pdf'), async (req: any, res) => {
     try {

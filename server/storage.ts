@@ -147,6 +147,17 @@ export interface IStorage {
   getWhatsAppConfig(): Promise<any>;
   updateWhatsAppConfig(config: { userId: string; password: string; baseUrl: string; isEnabled: boolean }): Promise<any>;
   getWhatsAppTemplates(): Promise<any[]>;
+  
+  // Admin Dashboard Stats
+  getAdminDashboardStats(): Promise<{
+    totalDistributors: number;
+    totalCustomers: number;
+    totalClaims: number;
+    pendingClaims: number;
+    totalRevenue: number;
+    recentCustomers: Customer[];
+    recentClaims: Claim[];
+  }>;
 }
 
 export class SqlServerStorage implements IStorage {
@@ -3502,6 +3513,51 @@ export class SqlServerStorage implements IStorage {
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };
+  }
+
+  // Admin Dashboard Stats Implementation
+  async getAdminDashboardStats(): Promise<{
+    totalDistributors: number;
+    totalCustomers: number;
+    totalClaims: number;
+    pendingClaims: number;
+    totalRevenue: number;
+    recentCustomers: Customer[];
+    recentClaims: Claim[];
+  }> {
+    await db.connectDB();
+    
+    try {
+      // Get totals using individual queries for better SQL Server compatibility
+      const distributorResult = await db.pool.request().query('SELECT COUNT(*) as count FROM distributors');
+      const customerResult = await db.pool.request().query('SELECT COUNT(*) as count FROM customers');
+      const claimResult = await db.pool.request().query('SELECT COUNT(*) as count FROM claims');
+      const pendingClaimResult = await db.pool.request().query("SELECT COUNT(*) as count FROM claims WHERE status = 'pending'");
+      
+      // Calculate total revenue from customers (sum of invoice_value)
+      const revenueResult = await db.pool.request().query('SELECT ISNULL(SUM(invoice_value), 0) as total FROM customers');
+      
+      // Get recent customers (last 10)
+      const recentCustomersQuery = `SELECT TOP 10 * FROM customers ORDER BY created_at DESC`;
+      const recentCustomersResult = await db.pool.request().query(recentCustomersQuery);
+      
+      // Get recent claims (last 10)
+      const recentClaimsQuery = `SELECT TOP 10 * FROM claims ORDER BY created_at DESC`;
+      const recentClaimsResult = await db.pool.request().query(recentClaimsQuery);
+      
+      return {
+        totalDistributors: distributorResult.recordset[0].count || 0,
+        totalCustomers: customerResult.recordset[0].count || 0,
+        totalClaims: claimResult.recordset[0].count || 0,
+        pendingClaims: pendingClaimResult.recordset[0].count || 0,
+        totalRevenue: parseFloat(revenueResult.recordset[0].total) || 0,
+        recentCustomers: recentCustomersResult.recordset.map(row => this.mapCustomerFromDb(row)),
+        recentClaims: recentClaimsResult.recordset.map(row => this.mapClaimFromDb(row))
+      };
+    } catch (error) {
+      console.error('Error fetching admin dashboard stats:', error);
+      throw error;
+    }
   }
 }
 

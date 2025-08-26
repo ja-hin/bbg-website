@@ -1,5 +1,5 @@
-import React, { lazy, Suspense } from "react";
 import { Switch, Route } from "wouter";
+import { lazy, Suspense } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -25,6 +25,7 @@ import AdminBrandsNew from "@/pages/admin-brands-new";
 import AdminDistributors from "@/pages/admin-distributors";
 import AdminTemplates from "@/pages/admin-templates";
 import AdminLogs from "@/pages/admin-logs";
+import AdminWhatsAppTest from "@/pages/admin-whatsapp-test";
 import AdminCartAbandonments from "@/pages/admin-cart-abandonments";
 
 import AdminAcerRegistrations from "@/pages/admin-acer-registrations";
@@ -80,6 +81,7 @@ function Router() {
       <Route path="/admin/templates" component={AdminTemplates} />
       <Route path="/admin/logs" component={AdminLogs} />
 
+      <Route path="/admin/whatsapp-test" component={AdminWhatsAppTest} />
       <Route path="/admin/hsm-templates" component={lazy(() => import("./pages/admin-hsm-templates"))} />
       <Route path="/admin/cart-abandonments">
         <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>

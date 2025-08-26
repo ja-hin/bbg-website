@@ -1,0 +1,412 @@
+Error creating template: RequestError: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (email, customer_registration).
+    at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:384:15)
+    at Connection.emit (node:events:524:28)
+    at Connection.emit (node:domain:489:12)
+    at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+    at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+    at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+    at Readable.emit (node:events:524:28)
+    at Readable.emit (node:domain:489:12)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+  code: 'EREQUEST',
+  originalError: Error: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (email, customer_registration).
+      at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:382:19)
+      at Connection.emit (node:events:524:28)
+      at Connection.emit (node:domain:489:12)
+      at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+      at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+      at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+      at Readable.emit (node:events:524:28)
+      at Readable.emit (node:domain:489:12)
+      at addChunk (node:internal/streams/readable:561:12)
+      at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+    info: ErrorMessageToken {
+      name: 'ERROR',
+      handlerName: 'onErrorMessage',
+      number: 2627,
+      state: 1,
+      class: 14,
+      message: "Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (email, customer_registration).",
+      serverName: 'wsrv41176-ind',
+      procName: '',
+      lineNumber: 2
+    }
+  },
+  number: 2627,
+  lineNumber: 2,
+  state: 1,
+  class: 14,
+  serverName: 'wsrv41176-ind',
+  procName: '',
+  precedingErrors: []
+}
+Error creating template: RequestError: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (sms, customer_registration).
+    at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:384:15)
+    at Connection.emit (node:events:524:28)
+    at Connection.emit (node:domain:489:12)
+    at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+    at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+    at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+    at Readable.emit (node:events:524:28)
+    at Readable.emit (node:domain:489:12)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+  code: 'EREQUEST',
+  originalError: Error: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (sms, customer_registration).
+      at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:382:19)
+      at Connection.emit (node:events:524:28)
+      at Connection.emit (node:domain:489:12)
+      at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+      at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+      at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+      at Readable.emit (node:events:524:28)
+      at Readable.emit (node:domain:489:12)
+      at addChunk (node:internal/streams/readable:561:12)
+      at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+    info: ErrorMessageToken {
+      name: 'ERROR',
+      handlerName: 'onErrorMessage',
+      number: 2627,
+      state: 1,
+      class: 14,
+      message: "Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (sms, customer_registration).",
+      serverName: 'wsrv41176-ind',
+      procName: '',
+      lineNumber: 2
+    }
+  },
+  number: 2627,
+  lineNumber: 2,
+  state: 1,
+  class: 14,
+  serverName: 'wsrv41176-ind',
+  procName: '',
+  precedingErrors: []
+}
+Error creating template: RequestError: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (whatsapp, customer_registration).
+    at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:384:15)
+    at Connection.emit (node:events:524:28)
+    at Connection.emit (node:domain:489:12)
+    at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+    at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+    at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+    at Readable.emit (node:events:524:28)
+    at Readable.emit (node:domain:489:12)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+  code: 'EREQUEST',
+  originalError: Error: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (whatsapp, customer_registration).
+      at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:382:19)
+      at Connection.emit (node:events:524:28)
+      at Connection.emit (node:domain:489:12)
+      at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+      at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+      at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+      at Readable.emit (node:events:524:28)
+      at Readable.emit (node:domain:489:12)
+      at addChunk (node:internal/streams/readable:561:12)
+      at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+    info: ErrorMessageToken {
+      name: 'ERROR',
+      handlerName: 'onErrorMessage',
+      number: 2627,
+      state: 1,
+      class: 14,
+      message: "Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (whatsapp, customer_registration).",
+      serverName: 'wsrv41176-ind',
+      procName: '',
+      lineNumber: 2
+    }
+  },
+  number: 2627,
+  lineNumber: 2,
+  state: 1,
+  class: 14,
+  serverName: 'wsrv41176-ind',
+  procName: '',
+  precedingErrors: []
+}
+Error creating template: RequestError: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (email, referral_partner_welcome).
+    at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:384:15)
+    at Connection.emit (node:events:524:28)
+    at Connection.emit (node:domain:489:12)
+    at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+    at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+    at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+    at Readable.emit (node:events:524:28)
+    at Readable.emit (node:domain:489:12)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+  code: 'EREQUEST',
+  originalError: Error: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (email, referral_partner_welcome).
+      at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:382:19)
+      at Connection.emit (node:events:524:28)
+      at Connection.emit (node:domain:489:12)
+      at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+      at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+      at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+      at Readable.emit (node:events:524:28)
+      at Readable.emit (node:domain:489:12)
+      at addChunk (node:internal/streams/readable:561:12)
+      at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+    info: ErrorMessageToken {
+      name: 'ERROR',
+      handlerName: 'onErrorMessage',
+      number: 2627,
+      state: 1,
+      class: 14,
+      message: "Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (email, referral_partner_welcome).",
+      serverName: 'wsrv41176-ind',
+      procName: '',
+      lineNumber: 2
+    }
+  },
+  number: 2627,
+  lineNumber: 2,
+  state: 1,
+  class: 14,
+  serverName: 'wsrv41176-ind',
+  procName: '',
+  precedingErrors: []
+}
+Error creating template: RequestError: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (sms, referral_partner_welcome).
+    at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:384:15)
+    at Connection.emit (node:events:524:28)
+    at Connection.emit (node:domain:489:12)
+    at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+    at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+    at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+    at Readable.emit (node:events:524:28)
+    at Readable.emit (node:domain:489:12)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+  code: 'EREQUEST',
+  originalError: Error: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (sms, referral_partner_welcome).
+      at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:382:19)
+      at Connection.emit (node:events:524:28)
+      at Connection.emit (node:domain:489:12)
+      at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+      at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+      at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+      at Readable.emit (node:events:524:28)
+      at Readable.emit (node:domain:489:12)
+      at addChunk (node:internal/streams/readable:561:12)
+      at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+    info: ErrorMessageToken {
+      name: 'ERROR',
+      handlerName: 'onErrorMessage',
+      number: 2627,
+      state: 1,
+      class: 14,
+      message: "Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (sms, referral_partner_welcome).",
+      serverName: 'wsrv41176-ind',
+      procName: '',
+      lineNumber: 2
+    }
+  },
+  number: 2627,
+  lineNumber: 2,
+  state: 1,
+  class: 14,
+  serverName: 'wsrv41176-ind',
+  procName: '',
+  precedingErrors: []
+}
+Error creating template: RequestError: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (whatsapp, referral_partner_welcome).
+    at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:384:15)
+    at Connection.emit (node:events:524:28)
+    at Connection.emit (node:domain:489:12)
+    at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+    at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+    at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+    at Readable.emit (node:events:524:28)
+    at Readable.emit (node:domain:489:12)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+  code: 'EREQUEST',
+  originalError: Error: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (whatsapp, referral_partner_welcome).
+      at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:382:19)
+      at Connection.emit (node:events:524:28)
+      at Connection.emit (node:domain:489:12)
+      at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+      at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+      at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+      at Readable.emit (node:events:524:28)
+      at Readable.emit (node:domain:489:12)
+      at addChunk (node:internal/streams/readable:561:12)
+      at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+    info: ErrorMessageToken {
+      name: 'ERROR',
+      handlerName: 'onErrorMessage',
+      number: 2627,
+      state: 1,
+      class: 14,
+      message: "Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (whatsapp, referral_partner_welcome).",
+      serverName: 'wsrv41176-ind',
+      procName: '',
+      lineNumber: 2
+    }
+  },
+  number: 2627,
+  lineNumber: 2,
+  state: 1,
+  class: 14,
+  serverName: 'wsrv41176-ind',
+  procName: '',
+  precedingErrors: []
+}
+Error creating template: RequestError: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (email, claim_status_update).
+    at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:384:15)
+    at Connection.emit (node:events:524:28)
+    at Connection.emit (node:domain:489:12)
+    at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+    at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+    at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+    at Readable.emit (node:events:524:28)
+    at Readable.emit (node:domain:489:12)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+  code: 'EREQUEST',
+  originalError: Error: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (email, claim_status_update).
+      at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:382:19)
+      at Connection.emit (node:events:524:28)
+      at Connection.emit (node:domain:489:12)
+      at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+      at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+      at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+      at Readable.emit (node:events:524:28)
+      at Readable.emit (node:domain:489:12)
+      at addChunk (node:internal/streams/readable:561:12)
+      at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+    info: ErrorMessageToken {
+      name: 'ERROR',
+      handlerName: 'onErrorMessage',
+      number: 2627,
+      state: 1,
+      class: 14,
+      message: "Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (email, claim_status_update).",
+      serverName: 'wsrv41176-ind',
+      procName: '',
+      lineNumber: 2
+    }
+  },
+  number: 2627,
+  lineNumber: 2,
+  state: 1,
+  class: 14,
+  serverName: 'wsrv41176-ind',
+  procName: '',
+  precedingErrors: []
+}
+Error creating template: RequestError: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (email, payout_notification).
+    at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:384:15)
+    at Connection.emit (node:events:524:28)
+    at Connection.emit (node:domain:489:12)
+    at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+    at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+    at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+    at Readable.emit (node:events:524:28)
+    at Readable.emit (node:domain:489:12)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+  code: 'EREQUEST',
+  originalError: Error: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (email, payout_notification).
+      at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:382:19)
+      at Connection.emit (node:events:524:28)
+      at Connection.emit (node:domain:489:12)
+      at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+      at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+      at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+      at Readable.emit (node:events:524:28)
+      at Readable.emit (node:domain:489:12)
+      at addChunk (node:internal/streams/readable:561:12)
+      at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+    info: ErrorMessageToken {
+      name: 'ERROR',
+      handlerName: 'onErrorMessage',
+      number: 2627,
+      state: 1,
+      class: 14,
+      message: "Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (email, payout_notification).",
+      serverName: 'wsrv41176-ind',
+      procName: '',
+      lineNumber: 2
+    }
+  },
+  number: 2627,
+  lineNumber: 2,
+  state: 1,
+  class: 14,
+  serverName: 'wsrv41176-ind',
+  procName: '',
+  precedingErrors: []
+}
+Error creating template: RequestError: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (sms, otp_verification).
+    at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:384:15)
+    at Connection.emit (node:events:524:28)
+    at Connection.emit (node:domain:489:12)
+    at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+    at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+    at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+    at Readable.emit (node:events:524:28)
+    at Readable.emit (node:domain:489:12)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+  code: 'EREQUEST',
+  originalError: Error: Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (sms, otp_verification).
+      at handleError (/home/runner/workspace/node_modules/mssql/lib/tedious/request.js:382:19)
+      at Connection.emit (node:events:524:28)
+      at Connection.emit (node:domain:489:12)
+      at emit (/home/runner/workspace/node_modules/tedious/src/connection.ts:1927:18)
+      at onErrorMessage (/home/runner/workspace/node_modules/tedious/src/token/handler.ts:386:21)
+      at token (/home/runner/workspace/node_modules/tedious/src/token/token-stream-parser.ts:23:55)
+      at Readable.emit (node:events:524:28)
+      at Readable.emit (node:domain:489:12)
+      at addChunk (node:internal/streams/readable:561:12)
+      at readableAddChunkPushObjectMode (node:internal/streams/readable:538:3) {
+    info: ErrorMessageToken {
+      name: 'ERROR',
+      handlerName: 'onErrorMessage',
+      number: 2627,
+      state: 1,
+      class: 14,
+      message: "Violation of UNIQUE KEY constraint 'UQ__message___5F5A2DD4D06149AF'. Cannot insert duplicate key in object 'dbo.message_templates'. The duplicate key value is (sms, otp_verification).",
+      serverName: 'wsrv41176-ind',
+      procName: '',
+      lineNumber: 2
+    }
+  },
+  number: 2627,
+  lineNumber: 2,
+  state: 1,
+  class: 14,
+  serverName: 'wsrv41176-ind',
+  procName: '',
+  precedingErrors: []
+}
+Default templates created/verified
+6:18:21 AM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 10 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Auth check - Session ID: undefined
+Auth check - Session object: Session {
+  cookie: {
+    path: '/',
+    _expires: 2025-08-07T06:19:01.923Z,
+    originalMaxAge: 86400000,
+    httpOnly: true,
+    secure: false
+  }
+}
+Authentication failed - no valid session
+6:19:01 AM [express] GET /api/admin/acer-imei 401 in 2ms :: {"message":"Admin authentication require…
+/api/admin/me called - Session ID: undefined
+/api/admin/me called - Session username: undefined
+Admin /me endpoint - Authentication failed
+6:19:01 AM [express] GET /api/admin/me 401 in 1ms :: {"message":"Admin authentication required"}
+/api/admin/me called - Session ID: undefined
+/api/admin/me called - Session username: undefined
+Admin /me endpoint - Authentication failed
+6:19:02 AM [express] GET /api/admin/me 401 in 1ms :: {"message":"Admin authentication required"}

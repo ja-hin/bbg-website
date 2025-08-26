@@ -5,29 +5,76 @@ import multerS3 from 'multer-s3';
 import path from 'path';
 import { nanoid } from 'nanoid';
 
-// S3 Client Configuration
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION || 'ap-south-1',
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
-  },
-});
+// Validate AWS credentials at startup
+function validateAWSCredentials() {
+  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  const region = process.env.AWS_REGION;
+  const bucketName = process.env.AWS_S3_BUCKET_NAME;
 
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || 'xtracover-bbg-storage';
+  const missing = [];
+  if (!accessKeyId || accessKeyId.trim() === '') missing.push('AWS_ACCESS_KEY_ID');
+  if (!secretAccessKey || secretAccessKey.trim() === '') missing.push('AWS_SECRET_ACCESS_KEY');
+  if (!region || region.trim() === '') missing.push('AWS_REGION');
+  if (!bucketName || bucketName.trim() === '') missing.push('AWS_S3_BUCKET_NAME');
+
+  if (missing.length > 0) {
+    console.error('❌ Missing or empty AWS credentials:', missing.join(', '));
+    console.error('🔧 Please configure the following environment variables:');
+    missing.forEach(key => console.error(`   - ${key}`));
+    return false;
+  }
+
+  console.log('✅ AWS S3 credentials validated successfully');
+  console.log(`🪣 Using S3 bucket: ${bucketName} in region: ${region}`);
+  return true;
+}
+
+// Validate credentials
+const credentialsValid = validateAWSCredentials();
+
+// S3 Client Configuration - only if credentials are valid
+let s3Client: S3Client;
+let BUCKET_NAME: string;
+
+if (credentialsValid) {
+  s3Client = new S3Client({
+    region: process.env.AWS_REGION!,
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    },
+  });
+  BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME!;
+} else {
+  // Create a dummy client that will throw errors
+  BUCKET_NAME = 'unconfigured-bucket';
+}
 
 // S3 Service Class
 export class S3Service {
   private bucket: string;
-  private client: S3Client;
+  private client: S3Client | null;
+  private credentialsValid: boolean;
 
   constructor() {
     this.bucket = BUCKET_NAME;
-    this.client = s3Client;
+    this.client = credentialsValid ? s3Client : null;
+    this.credentialsValid = credentialsValid;
+  }
+
+  private validateCredentials() {
+    if (!this.credentialsValid || !this.client) {
+      throw new Error(
+        'AWS S3 credentials not configured. Please set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, and AWS_S3_BUCKET_NAME environment variables.'
+      );
+    }
   }
 
   // Upload file to S3
   async uploadFile(file: Buffer, fileName: string, mimeType: string, folder = 'uploads', isPublic = false): Promise<string> {
+    this.validateCredentials();
+    
     const key = `${folder}/${nanoid()}-${fileName}`;
     
     const command = new PutObjectCommand({
@@ -39,41 +86,45 @@ export class S3Service {
     });
 
     try {
-      await this.client.send(command);
+      await this.client!.send(command);
       return key; // Return the S3 key for database storage
     } catch (error) {
       console.error('S3 upload error:', error);
-      throw new Error('Failed to upload file to S3');
+      throw new Error('Failed to upload file to S3: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
   }
 
   // Get signed URL for secure file access
   async getSignedUrl(key: string, expiresIn = 3600): Promise<string> {
+    this.validateCredentials();
+    
     const command = new GetObjectCommand({
       Bucket: this.bucket,
       Key: key,
     });
 
     try {
-      return await getSignedUrl(this.client, command, { expiresIn });
+      return await getSignedUrl(this.client!, command, { expiresIn });
     } catch (error) {
       console.error('S3 signed URL error:', error);
-      throw new Error('Failed to generate signed URL');
+      throw new Error('Failed to generate signed URL: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
   }
 
   // Delete file from S3
   async deleteFile(key: string): Promise<void> {
+    this.validateCredentials();
+    
     const command = new DeleteObjectCommand({
       Bucket: this.bucket,
       Key: key,
     });
 
     try {
-      await this.client.send(command);
+      await this.client!.send(command);
     } catch (error) {
       console.error('S3 delete error:', error);
-      throw new Error('Failed to delete file from S3');
+      throw new Error('Failed to delete file from S3: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
   }
 
@@ -86,6 +137,17 @@ export class S3Service {
 
 // Multer S3 Configuration for direct uploads
 export const createS3Upload = (folder = 'uploads', isPublic = false, allowCSV = false) => {
+  if (!credentialsValid) {
+    // Return a multer instance that immediately throws an error
+    return multer({
+      storage: multer.memoryStorage(),
+      limits: { fileSize: 1 },
+      fileFilter: (req, file, cb) => {
+        cb(new Error('AWS S3 credentials not configured. Please set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, and AWS_S3_BUCKET_NAME environment variables.'));
+      },
+    });
+  }
+
   return multer({
     storage: multerS3({
       s3: s3Client,

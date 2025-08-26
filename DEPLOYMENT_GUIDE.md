@@ -89,7 +89,7 @@ The application will automatically create all required tables on first run:
 
 ### Default Admin Account
 - Username: `admin`
-- Password: `admin123`
+- Password: `XtraCover2025!#SecureAdmin`
 - **Change this immediately in production**
 
 ## File Upload Configuration

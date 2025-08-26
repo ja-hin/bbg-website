@@ -2660,7 +2660,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const defaultAdmin = await storage.createAdminUser({
         username: "admin",
         email: "admin@xtracover.com",
-        passwordHash: "admin123", // This will be hashed by the storage layer
+        passwordHash: "XtraCover2025!#SecureAdmin", // This will be hashed by the storage layer
         roleId: 1, // Default admin role
         role: "admin",
       });

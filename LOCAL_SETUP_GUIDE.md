@@ -104,7 +104,7 @@ The application will start on:
 - **Admin Login**: http://localhost:5000/admin/login
 - **Default Credentials**: 
   - Username: `admin`
-  - Password: `admin123`
+  - Password: `XtraCover2025!#SecureAdmin`
 
 #### Admin Dashboard Sections:
 - Dashboard Overview

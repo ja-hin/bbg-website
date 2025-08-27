@@ -1021,10 +1021,10 @@ export class SqlServerStorage implements IStorage {
   async getDistributorMonthlyCommission(distributorId: number, startOfMonth: Date): Promise<number> {
     await db.connectDB();
     const query = `
-      SELECT COALESCE(SUM(c.commission_amount), 0) as monthly_commission
-      FROM customers c
-      INNER JOIN distributors d ON c.seller_code = d.seller_code
-      WHERE d.id = @distributorId 
+      SELECT COALESCE(SUM(cp.amount), 0) as monthly_commission
+      FROM commission_payouts cp
+      INNER JOIN customers c ON cp.customer_id = c.id
+      WHERE cp.distributor_id = @distributorId 
       AND c.created_at >= @startOfMonth
       AND c.created_at < DATEADD(month, 1, @startOfMonth)
     `;

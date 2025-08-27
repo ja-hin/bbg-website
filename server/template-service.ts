@@ -317,6 +317,18 @@ export class TemplateService {
     <div style="background: #dcfce7; padding: 15px; border-radius: 6px; border-left: 4px solid #16a34a;">
       <p style="margin: 0; color: #166534;"><strong>Commission Earned:</strong> You'll receive your commission once the customer's BBG registration is verified. Check your dashboard for payout details.</p>
     </div>
+    
+    <div style="background: #eff6ff; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #2563eb;">
+      <h4 style="color: #1e40af; margin: 0 0 10px 0;">Your Commission Summary:</h4>
+      <p style="margin: 5px 0; color: #1e3a8a;"><strong>Total Monthly Commission Earned as on Date:</strong> ₹{{monthlyCommissionTotal}}</p>
+      <p style="margin: 5px 0; color: #1e3a8a;"><strong>Your Next Payout:</strong> {{nextPayoutDate}} (Last Day of the Month)</p>
+    </div>
+  </div>
+  
+  <div style="text-align: center; margin: 30px 0 20px 0;">
+    <a href="{{referralPartnerLoginUrl}}" style="display: inline-block; background-color: #254696; color: white; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-weight: bold; margin-bottom: 20px;">
+      🔑 Referral Partner Login
+    </a>
   </div>
   
   <div style="text-align: center; margin-top: 30px;">
@@ -325,7 +337,7 @@ export class TemplateService {
   </div>
 </div>
           `,
-          variables: ['distributorName', 'distributorEmail', 'distributorContact', 'customerName', 'customerContact', 'sellerCode', 'voucherCode', 'deviceType', 'brand', 'modelName']
+          variables: ['distributorName', 'distributorEmail', 'distributorContact', 'customerName', 'customerContact', 'sellerCode', 'voucherCode', 'deviceType', 'brand', 'modelName', 'monthlyCommissionTotal', 'nextPayoutDate', 'referralPartnerLoginUrl']
         },
         // Distributor BBG Notification - SMS
         {

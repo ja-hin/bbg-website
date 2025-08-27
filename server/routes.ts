@@ -919,6 +919,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
               );
 
               if (distributor) {
+                // Calculate monthly commission total
+                const currentDate = new Date();
+                const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+                const monthlyCommissionTotal = await storage.getDistributorMonthlyCommission(distributor.id, startOfMonth);
+                
+                // Calculate next payout date (last day of current month)
+                const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+                const nextPayoutDate = nextMonth.toLocaleDateString('en-IN', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                });
+                
+                // Set referral partner login URL
+                const referralPartnerLoginUrl = `${req.protocol}://${req.get('host')}/referral-partner-login`;
+
                 const distributorNotificationResults =
                   await communicationService.sendDistributorBBGNotification({
                     distributorName: distributor.name,
@@ -931,6 +947,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
                     deviceType: customer.deviceType,
                     brand: customer.brand,
                     modelName: customer.modelName,
+                    monthlyCommissionTotal: monthlyCommissionTotal?.toString() || '0',
+                    nextPayoutDate: nextPayoutDate,
+                    referralPartnerLoginUrl: referralPartnerLoginUrl,
                   });
 
                 console.log("🔔 PayU Distributor BBG notification sent:", {
@@ -1259,6 +1278,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
             );
 
             if (distributor) {
+              // Calculate monthly commission total
+              const currentDate = new Date();
+              const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+              const monthlyCommissionTotal = await storage.getDistributorMonthlyCommission(distributor.id, startOfMonth);
+              
+              // Calculate next payout date (last day of current month)
+              const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+              const nextPayoutDate = nextMonth.toLocaleDateString('en-IN', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              });
+              
+              // Set referral partner login URL
+              const referralPartnerLoginUrl = `${req.protocol}://${req.get('host')}/referral-partner-login`;
+
               const distributorNotificationResults =
                 await communicationService.sendDistributorBBGNotification({
                   distributorName: distributor.name,
@@ -1271,6 +1306,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   deviceType: customer.deviceType,
                   brand: customer.brand,
                   modelName: customer.modelName,
+                  monthlyCommissionTotal: monthlyCommissionTotal?.toString() || '0',
+                  nextPayoutDate: nextPayoutDate,
+                  referralPartnerLoginUrl: referralPartnerLoginUrl,
                 });
 
               console.log("🔔 Distributor BBG notification sent:", {

@@ -1018,6 +1018,25 @@ export class SqlServerStorage implements IStorage {
     };
   }
 
+  async getDistributorMonthlyCommission(distributorId: number, startOfMonth: Date): Promise<number> {
+    await db.connectDB();
+    const query = `
+      SELECT COALESCE(SUM(c.commission_amount), 0) as monthly_commission
+      FROM customers c
+      INNER JOIN distributors d ON c.seller_code = d.seller_code
+      WHERE d.id = @distributorId 
+      AND c.created_at >= @startOfMonth
+      AND c.created_at < DATEADD(month, 1, @startOfMonth)
+    `;
+
+    const request = db.pool.request();
+    request.input('distributorId', sql.Int, distributorId);
+    request.input('startOfMonth', sql.DateTime, startOfMonth);
+
+    const result = await request.query(query);
+    return result.recordset[0]?.monthly_commission || 0;
+  }
+
   async getDistributorCustomers(distributorId: number): Promise<Customer[]> {
     await db.connectDB();
     const query = `

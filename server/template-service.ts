@@ -124,6 +124,9 @@ export class TemplateService {
     
     <ul style="color: #6b7280;">
       <li><strong>Device:</strong> {{brand}} {{modelName}} ({{deviceType}})</li>
+      <li><strong>IMEI / Serial No.:</strong> {{serialNumber}}</li>
+      <li><strong>Device Purchase Date:</strong> {{devicePurchaseDate}}</li>
+      <li><strong>BBG Purchase Date:</strong> {{bbgPurchaseDate}}</li>
       <li><strong>Contact:</strong> {{contact}}</li>
       <li><strong>Email:</strong> {{email}}</li>
     </ul>
@@ -147,9 +150,16 @@ export class TemplateService {
   <div style="text-align: center; margin-top: 30px;">
     <p style="color: #6b7280;">Thank you for choosing XtraCover BBG!</p>
   </div>
+  
+  <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+    <p style="color: #9ca3af; font-size: 14px;">
+      <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
+      For support, contact us at support@xtracover.com
+    </p>
+  </div>
 </div>
           `,
-          variables: ['name', 'voucherCode', 'brand', 'modelName', 'deviceType', 'contact', 'email', 'claimValueSlabsHtml']
+          variables: ['name', 'voucherCode', 'brand', 'modelName', 'deviceType', 'serialNumber', 'devicePurchaseDate', 'bbgPurchaseDate', 'contact', 'email', 'claimValueSlabsHtml', 'termsAndConditionsUrl']
         },
         // Customer Registration SMS
         {

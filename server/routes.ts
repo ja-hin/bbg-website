@@ -893,6 +893,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
               brand: customer.brand,
               modelName: customer.modelName,
               registrationSource: "regular",
+              serialNumber: customer.serialNumber,
+              devicePurchaseDate: customer.dateOfPurchase,
+              bbgPurchaseDate: customer.createdAt?.toLocaleDateString('en-IN', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }) || new Date().toLocaleDateString('en-IN', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }),
+              termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
             });
 
           console.log("🔔 PayU customer registration notifications complete:", {
@@ -1252,6 +1264,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
             brand: customer.brand,
             modelName: customer.modelName,
             registrationSource: "regular",
+            serialNumber: customer.serialNumber,
+            devicePurchaseDate: customer.dateOfPurchase,
+            bbgPurchaseDate: customer.createdAt?.toLocaleDateString('en-IN', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            }) || new Date().toLocaleDateString('en-IN', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            }),
+            termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
           });
 
         console.log("🔔 Customer registration notifications complete:", {
@@ -5807,6 +5831,18 @@ Required: GUPSHUP_API_KEY environment variable
               brand: customer.brand,
               modelName: customer.modelName,
               registrationSource: "acer_bbg",
+              serialNumber: customer.serialNumber,
+              devicePurchaseDate: customer.dateOfPurchase,
+              bbgPurchaseDate: customer.createdAt?.toLocaleDateString('en-IN', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }) || new Date().toLocaleDateString('en-IN', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }),
+              termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
             });
 
           console.log("🔔 Acer BBG registration notifications complete:", {

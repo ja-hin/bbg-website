@@ -195,6 +195,10 @@ export class CommunicationService {
       brand: string;
       modelName: string;
       registrationSource?: string;
+      serialNumber?: string;
+      devicePurchaseDate?: string;
+      bbgPurchaseDate?: string;
+      termsAndConditionsUrl?: string;
     }
   ) {
     const results = {

@@ -303,9 +303,9 @@ function PayUPaymentForm({
           <span className="text-lg font-semibold">BBG for {deviceType}</span>
           <div className="text-right">
             {/* Show original price if discounted */}
-            {customerData?.sellerCode && bbgPrices?.discountApplied && (
+            {customerData?.sellerCode && bbgPrices?.discountApplied && bbgPrices?.discountDetails && (
               <div className="text-sm text-gray-500 line-through">
-                ₹{deviceType === 'laptop' ? (bbgPrices?.laptop || 499) : (bbgPrices?.mobile || 299)}
+                ₹{deviceType === 'laptop' ? bbgPrices.discountDetails.originalLaptopPrice : bbgPrices.discountDetails.originalMobilePrice}
               </div>
             )}
             <span className="text-2xl font-bold text-green-600">₹{amount}</span>
@@ -813,8 +813,12 @@ function BuyBBGContent() {
           <CardContent className="pt-0">
             <PaymentMethodSelector
               amount={formData.deviceType === 'laptop' ? 
-                (bbgPrices?.discountDetails?.discountedLaptopPrice || bbgPrices?.laptop || 499) : 
-                (bbgPrices?.discountDetails?.discountedMobilePrice || bbgPrices?.mobile || 299)}
+                (bbgPrices?.discountApplied && bbgPrices?.discountDetails ? 
+                  bbgPrices.discountDetails.discountedLaptopPrice : 
+                  (bbgPrices?.laptop || 499)) : 
+                (bbgPrices?.discountApplied && bbgPrices?.discountDetails ? 
+                  bbgPrices.discountDetails.discountedMobilePrice : 
+                  (bbgPrices?.mobile || 299))}
               deviceType={formData.deviceType}
               onPaymentSuccess={handlePaymentSuccess}
               customerData={formData}

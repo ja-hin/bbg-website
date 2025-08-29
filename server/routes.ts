@@ -605,26 +605,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const { customerData } = req.body;
+      const { customerData, amount, referralCode } = req.body;
       const deviceType = customerData.deviceType;
 
-      // Fetch dynamic BBG prices from database
-      let amount;
-      try {
-        const bbgPrices = await storage.getBbgPriceSettings();
-        if (bbgPrices) {
-          amount =
-            deviceType === "laptop"
-              ? bbgPrices.laptopPrice
-              : bbgPrices.mobilePrice;
-        } else {
-          amount = deviceType === "laptop" ? 299 : 99;
+      let finalAmount = amount;
+
+      // If amount not provided from frontend, calculate with discounts
+      if (!finalAmount) {
+        const priceSettings = await storage.getBbgPriceSettings();
+        const prices = priceSettings || {
+          laptopPrice: 499,
+          mobilePrice: 299,
+        };
+
+        let basePrice = deviceType === 'laptop' ? prices.laptopPrice : prices.mobilePrice;
+
+        // Apply referral discount if code provided
+        if (referralCode) {
+          try {
+            const referralPartner = await storage.getDistributorBySellerCode(referralCode);
+            if (referralPartner) {
+              const discountSettings = await storage.getReferralDiscountSettings();
+              
+              if (discountSettings && discountSettings.isActive && discountSettings.discountValue > 0) {
+                let discount = 0;
+                if (discountSettings.discountType === 'percentage') {
+                  discount = (basePrice * discountSettings.discountValue) / 100;
+                } else if (discountSettings.discountType === 'flat') {
+                  discount = Math.min(discountSettings.discountValue, basePrice);
+                }
+                basePrice = Math.max(0, basePrice - discount);
+              }
+            }
+          } catch (discountError) {
+            console.error("Error applying referral discount in PayU:", discountError);
+          }
         }
-      } catch (error) {
-        console.error("Error fetching BBG prices, using defaults:", error);
-        // Fallback to default prices if database fails
-        amount = deviceType === "laptop" ? 299 : 99;
+        
+        finalAmount = Math.round(basePrice);
       }
+
 
       // Check rate limiting for this IP
       const clientIP = req.ip || req.connection.remoteAddress || "unknown";
@@ -665,7 +685,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const payuParams = {
         key: payuConfig.merchantKey,
         txnid,
-        amount: amount.toString(),
+        amount: finalAmount.toString(),
         productinfo: `BBG Registration`,
         firstname: customerData.name,
         email: customerData.email,

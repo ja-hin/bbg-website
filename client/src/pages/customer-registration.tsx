@@ -179,12 +179,32 @@ function PayUPaymentForm({
     setIsProcessing(true);
     
     try {
-      // Create PayU payment
+      // If amount is 0, skip payment and directly complete registration
+      if (amount === 0) {
+        toast({
+          title: "🎉 Free Registration!",
+          description: "100% discount applied! Completing registration...",
+          duration: 3000,
+        });
+        
+        // Complete registration without payment
+        const registrationData = {
+          ...customerData,
+          paymentIntentId: `free_${Date.now()}_${Math.random().toString(36).substring(7)}`
+        };
+        
+        onPaymentSuccess(registrationData.paymentIntentId);
+        return;
+      }
+      
+      // Create PayU payment with discount information
       const paymentData = await apiRequest("/api/create-payu-payment", { 
         method: "POST",
         body: { 
           deviceType, 
-          customerData 
+          customerData,
+          amount: amount,
+          referralCode: customerData.sellerCode
         }
       });
       

@@ -160,12 +160,14 @@ function PayUPaymentForm({
   amount, 
   deviceType, 
   onPaymentSuccess, 
-  customerData 
+  customerData,
+  bbgPrices 
 }: { 
   amount: number;
   deviceType: string;
   onPaymentSuccess: (paymentIntentId: string) => void;
   customerData: CustomerFormData;
+  bbgPrices?: any;
 }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -299,7 +301,20 @@ function PayUPaymentForm({
       <div className="bg-gray-50 rounded-lg p-4">
         <div className="flex items-center justify-between mb-4">
           <span className="text-lg font-semibold">BBG for {deviceType}</span>
-          <span className="text-2xl font-bold text-green-600">₹{amount}</span>
+          <div className="text-right">
+            {/* Show original price if discounted */}
+            {customerData?.sellerCode && bbgPrices?.discountApplied && (
+              <div className="text-sm text-gray-500 line-through">
+                ₹{deviceType === 'laptop' ? (bbgPrices?.laptop || 499) : (bbgPrices?.mobile || 299)}
+              </div>
+            )}
+            <span className="text-2xl font-bold text-green-600">₹{amount}</span>
+            {customerData?.sellerCode && bbgPrices?.discountApplied && (
+              <div className="text-sm text-green-600 font-medium">
+                Referral discount applied! 🎉
+              </div>
+            )}
+          </div>
         </div>
         <div className="text-sm text-gray-600">
           Secure your device with BuyBack Guarantee via PayU
@@ -361,12 +376,14 @@ function PaymentMethodSelector({
   amount, 
   deviceType, 
   onPaymentSuccess, 
-  customerData 
+  customerData,
+  bbgPrices 
 }: { 
   amount: number;
   deviceType: string;
   onPaymentSuccess: (paymentIntentId: string) => void;
   customerData: CustomerFormData;
+  bbgPrices?: any;
 }) {
   // Direct PayU payment - no method selection needed
   return (
@@ -375,6 +392,7 @@ function PaymentMethodSelector({
       deviceType={deviceType}
       onPaymentSuccess={onPaymentSuccess}
       customerData={customerData}
+      bbgPrices={bbgPrices}
     />
   );
 }
@@ -405,16 +423,6 @@ function BuyBBGContent() {
     return newId;
   });
 
-  // Fetch dynamic BBG prices
-  const { data: bbgPrices, isLoading: pricesLoading } = useQuery({
-    queryKey: ["/api/bbg-prices"],
-    queryFn: async () => {
-      const response = await fetch("/api/bbg-prices");
-      if (!response.ok) throw new Error("Failed to fetch BBG prices");
-      return response.json();
-    }
-  });
-
   const form = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema),
     defaultValues: {
@@ -431,6 +439,22 @@ function BuyBBGContent() {
       sellerCode: "",
       otpCode: "",
       agreeToTerms: false
+    }
+  });
+
+  // Watch referral code to fetch discounted prices
+  const referralCode = form.watch("sellerCode");
+
+  // Fetch dynamic BBG prices with referral discount
+  const { data: bbgPrices, isLoading: pricesLoading } = useQuery({
+    queryKey: ["/api/bbg-prices", referralCode || ""],
+    queryFn: async () => {
+      const url = referralCode && referralCode.trim() 
+        ? `/api/bbg-prices?referralCode=${encodeURIComponent(referralCode.trim())}`
+        : "/api/bbg-prices";
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch BBG prices");
+      return response.json();
     }
   });
 
@@ -655,6 +679,43 @@ function BuyBBGContent() {
         message: data.message || "",
         distributorName: data.distributorName
       });
+      
+      // Show discount notification if referral code is valid
+      if (data.valid) {
+        // Trigger refresh of pricing to get discount info
+        queryClient.invalidateQueries({ queryKey: ["/api/bbg-prices"] });
+        
+        // Show discount popup after a brief delay to allow price refresh
+        setTimeout(() => {
+          const currentDeviceType = form.getValues("deviceType");
+          if (currentDeviceType) {
+            // Refetch pricing to get exact discount amount
+            queryClient.refetchQueries({ queryKey: ["/api/bbg-prices"] }).then(() => {
+              // After refetch, check if we have discount info and show specific savings
+              const updatedPrices = queryClient.getQueryData(["/api/bbg-prices", referralCode || ""]) as any;
+              if (updatedPrices?.discountApplied && updatedPrices?.discountDetails) {
+                const originalPrice = currentDeviceType === 'laptop' ? (updatedPrices.laptop || 499) : (updatedPrices.mobile || 299);
+                const discountedPrice = currentDeviceType === 'laptop' ? 
+                  updatedPrices.discountDetails.discountedLaptopPrice : 
+                  updatedPrices.discountDetails.discountedMobilePrice;
+                const savings = originalPrice - discountedPrice;
+                
+                toast({
+                  title: "🎉 Referral Code Applied!",
+                  description: `You save ₹${savings}! BBG price reduced from ₹${originalPrice} to ₹${discountedPrice}.`,
+                  duration: 5000,
+                });
+              } else {
+                toast({
+                  title: "🎉 Referral Code Applied!",
+                  description: `You're eligible for a discount! Check the updated BBG price below.`,
+                  duration: 4000,
+                });
+              }
+            });
+          }
+        }, 500);
+      }
     },
     onError: () => {
       setReferralCodeStatus({
@@ -751,10 +812,13 @@ function BuyBBGContent() {
           </CardHeader>
           <CardContent className="pt-0">
             <PaymentMethodSelector
-              amount={formData.deviceType === 'laptop' ? (bbgPrices?.laptop || 299) : (bbgPrices?.mobile || 99)}
+              amount={formData.deviceType === 'laptop' ? 
+                (bbgPrices?.discountDetails?.discountedLaptopPrice || bbgPrices?.laptop || 499) : 
+                (bbgPrices?.discountDetails?.discountedMobilePrice || bbgPrices?.mobile || 299)}
               deviceType={formData.deviceType}
               onPaymentSuccess={handlePaymentSuccess}
               customerData={formData}
+              bbgPrices={bbgPrices}
             />
           </CardContent>
         </Card>
@@ -797,8 +861,26 @@ function BuyBBGContent() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent side="bottom" align="start">
-                              <SelectItem value="mobile">Mobile (₹{bbgPrices?.mobile || 99})</SelectItem>
-                              <SelectItem value="laptop">Laptop (₹{bbgPrices?.laptop || 299})</SelectItem>
+                              <SelectItem value="mobile">
+                                Mobile {bbgPrices?.discountApplied && bbgPrices?.discountDetails ? (
+                                  <span>
+                                    <span className="line-through text-gray-500">₹{bbgPrices?.mobile || 299}</span>{' '}
+                                    <span className="text-green-600 font-semibold">₹{bbgPrices.discountDetails.discountedMobilePrice}</span>
+                                  </span>
+                                ) : (
+                                  <span>(₹{bbgPrices?.mobile || 299})</span>
+                                )}
+                              </SelectItem>
+                              <SelectItem value="laptop">
+                                Laptop {bbgPrices?.discountApplied && bbgPrices?.discountDetails ? (
+                                  <span>
+                                    <span className="line-through text-gray-500">₹{bbgPrices?.laptop || 499}</span>{' '}
+                                    <span className="text-green-600 font-semibold">₹{bbgPrices.discountDetails.discountedLaptopPrice}</span>
+                                  </span>
+                                ) : (
+                                  <span>(₹{bbgPrices?.laptop || 499})</span>
+                                )}
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

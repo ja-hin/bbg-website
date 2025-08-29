@@ -8179,7 +8179,7 @@ Required: GUPSHUP_API_KEY environment variable
       if (referralCode) {
         try {
           // Validate referral code exists
-          const referralPartner = await storage.findDistributorBySellerCode(referralCode);
+          const referralPartner = await storage.getDistributorBySellerCode(referralCode);
           if (referralPartner) {
             // Get discount settings
             const discountSettings = await storage.getReferralDiscountSettings();
@@ -8207,7 +8207,9 @@ Required: GUPSHUP_API_KEY environment variable
                 laptopDiscount: Math.round(laptopDiscount),
                 mobileDiscount: Math.round(mobileDiscount),
                 originalLaptopPrice: prices.laptopPrice,
-                originalMobilePrice: prices.mobilePrice
+                originalMobilePrice: prices.mobilePrice,
+                discountedLaptopPrice: Math.round(laptopPrice),
+                discountedMobilePrice: Math.round(mobilePrice)
               };
             }
           }

@@ -1,6 +1,6 @@
 // Note: We're using SQL Server but keeping these type definitions for compatibility
 // The actual database operations are handled by SqlServerStorage with raw SQL
-import { pgTable, text, serial, integer, boolean, timestamp, decimal } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, integer, boolean, timestamp, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -392,3 +392,23 @@ export const insertBbgPriceSettingsSchema = createInsertSchema(bbgPriceSettings)
 // BBG Price Settings types
 export type BbgPriceSettings = typeof bbgPriceSettings.$inferSelect;
 export type InsertBbgPriceSettings = z.infer<typeof insertBbgPriceSettingsSchema>;
+
+// Referral Discount Settings table
+export const referralDiscountSettings = pgTable("referral_discount_settings", {
+  id: serial("id").primaryKey(),
+  isActive: boolean("is_active").default(false),
+  discountType: varchar("discount_type", { length: 20 }).notNull().default("percentage"), // 'percentage' or 'flat'
+  discountValue: decimal("discount_value", { precision: 10, scale: 2 }).notNull().default("0.00"), // Percentage or flat amount
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertReferralDiscountSettingsSchema = createInsertSchema(referralDiscountSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Referral Discount Settings types
+export type ReferralDiscountSettings = typeof referralDiscountSettings.$inferSelect;
+export type InsertReferralDiscountSettings = z.infer<typeof insertReferralDiscountSettingsSchema>;

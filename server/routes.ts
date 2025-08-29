@@ -3625,6 +3625,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
     },
   );
 
+  // Referral Discount Settings Management API routes
+  // Get current referral discount settings (admin endpoint)
+  app.get(
+    "/api/admin/referral-discount/current",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        const discountSettings = await storage.getReferralDiscountSettings();
+        res.json(discountSettings || {
+          isActive: false,
+          discountType: 'percentage',
+          discountValue: 0
+        });
+      } catch (error: any) {
+        console.error("Failed to get referral discount settings:", error);
+        res.status(500).json({ message: "Failed to get referral discount settings" });
+      }
+    },
+  );
+
+  // Update referral discount settings (admin only)
+  app.post(
+    "/api/admin/referral-discount/update",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        console.log("Updating referral discount settings:", req.body);
+
+        const { isActive, discountType, discountValue } = req.body;
+
+        // Validate required fields
+        if (typeof isActive !== 'boolean') {
+          return res
+            .status(400)
+            .json({ message: "isActive field is required and must be boolean" });
+        }
+
+        if (!discountType || !['percentage', 'flat'].includes(discountType)) {
+          return res
+            .status(400)
+            .json({ message: "discountType must be either 'percentage' or 'flat'" });
+        }
+
+        // Validate discount value
+        const discountNum = parseFloat(discountValue);
+        if (isNaN(discountNum) || discountNum < 0) {
+          return res
+            .status(400)
+            .json({
+              message: "Invalid discount value. Must be a non-negative number.",
+            });
+        }
+
+        // Additional validation for percentage
+        if (discountType === 'percentage' && discountNum > 100) {
+          return res
+            .status(400)
+            .json({
+              message: "Percentage discount cannot exceed 100%.",
+            });
+        }
+
+        const updatedSettings = await storage.updateReferralDiscountSettings({
+          isActive,
+          discountType,
+          discountValue: discountNum,
+        });
+
+        console.log("Referral discount settings updated successfully");
+
+        res.json({
+          message: "Referral discount settings updated successfully",
+          settings: updatedSettings,
+        });
+      } catch (error: any) {
+        console.error("Failed to update referral discount settings:", error);
+        res
+          .status(500)
+          .json({
+            message: "Failed to update referral discount settings",
+            error: error.message,
+          });
+      }
+    },
+  );
+
   // Waiting Period Settings Routes (admin only)
   app.get(
     "/api/admin/waiting-period/current",
@@ -8075,6 +8161,7 @@ Required: GUPSHUP_API_KEY environment variable
   // Public endpoint for BBG prices (used in customer registration)
   app.get("/api/bbg-prices", async (req, res) => {
     try {
+      const referralCode = req.query.referralCode as string;
       const priceSettings = await storage.getBbgPriceSettings();
 
       // Return default prices if no settings found
@@ -8083,9 +8170,58 @@ Required: GUPSHUP_API_KEY environment variable
         mobilePrice: 99,
       };
 
+      let laptopPrice = prices.laptopPrice;
+      let mobilePrice = prices.mobilePrice;
+      let discountApplied = false;
+      let discountDetails = null;
+
+      // Check for referral discount if code is provided
+      if (referralCode) {
+        try {
+          // Validate referral code exists
+          const referralPartner = await storage.findDistributorBySellerCode(referralCode);
+          if (referralPartner) {
+            // Get discount settings
+            const discountSettings = await storage.getReferralDiscountSettings();
+            
+            if (discountSettings && discountSettings.isActive && discountSettings.discountValue > 0) {
+              let laptopDiscount = 0;
+              let mobileDiscount = 0;
+
+              if (discountSettings.discountType === 'percentage') {
+                laptopDiscount = (laptopPrice * discountSettings.discountValue) / 100;
+                mobileDiscount = (mobilePrice * discountSettings.discountValue) / 100;
+              } else if (discountSettings.discountType === 'flat') {
+                laptopDiscount = Math.min(discountSettings.discountValue, laptopPrice);
+                mobileDiscount = Math.min(discountSettings.discountValue, mobilePrice);
+              }
+
+              // Apply discounts (ensure prices don't go below 0)
+              laptopPrice = Math.max(0, laptopPrice - laptopDiscount);
+              mobilePrice = Math.max(0, mobilePrice - mobileDiscount);
+              
+              discountApplied = true;
+              discountDetails = {
+                type: discountSettings.discountType,
+                value: discountSettings.discountValue,
+                laptopDiscount: Math.round(laptopDiscount),
+                mobileDiscount: Math.round(mobileDiscount),
+                originalLaptopPrice: prices.laptopPrice,
+                originalMobilePrice: prices.mobilePrice
+              };
+            }
+          }
+        } catch (discountError) {
+          console.error("Error applying referral discount:", discountError);
+          // Continue with original prices if discount calculation fails
+        }
+      }
+
       res.json({
-        laptop: prices.laptopPrice,
-        mobile: prices.mobilePrice,
+        laptop: Math.round(laptopPrice),
+        mobile: Math.round(mobilePrice),
+        discountApplied,
+        discountDetails,
         success: true,
       });
     } catch (error: any) {
@@ -8094,6 +8230,7 @@ Required: GUPSHUP_API_KEY environment variable
       res.json({
         laptop: 299,
         mobile: 99,
+        discountApplied: false,
         success: false,
         error: "Using default prices",
       });

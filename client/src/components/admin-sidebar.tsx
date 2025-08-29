@@ -26,7 +26,8 @@ import {
   MoreHorizontal,
   User,
   Clock,
-  Monitor
+  Monitor,
+  Percent
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -97,7 +98,8 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
     Folder,
     FolderOpen,
     Clock,
-    Monitor
+    Monitor,
+    Percent
   };
 
   // Default menu items for fallback
@@ -112,6 +114,7 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
     { id: "acer-imei", label: "Acer IMEI Management", href: "/admin/acer-imei", icon: "Shield", order: 7, type: "item", parentId: null },
     { id: "claim-slabs", label: "Claim Value Slabs", href: "/admin/claim-value-slabs", icon: "Calculator", order: 8, type: "item", parentId: null },
     { id: "bbg-settings", label: "BBG Price Settings", href: "/admin/bbg-settings", icon: "Settings", order: 9, type: "item", parentId: null },
+    { id: "referral-discount-settings", label: "Referral Discount Settings", href: "/admin/referral-discount-settings", icon: "Percent", order: 9.5, type: "item", parentId: null },
     { id: "waiting-period", label: "Waiting Period Settings", href: "/admin/waiting-period-settings", icon: "Clock", order: 10, type: "item", parentId: null },
     { id: "smtp", label: "SMTP Settings", href: "/admin/smtp-settings", icon: "Mail", order: 11, type: "item", parentId: null },
     { id: "whatsapp", label: "WhatsApp Settings", href: "/admin/whatsapp-settings", icon: "MessageCircle", order: 12, type: "item", parentId: null },

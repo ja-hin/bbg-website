@@ -38,6 +38,7 @@ import AdminWhatsAppSettings from "@/pages/admin-whatsapp-settings";
 import AdminAdminUsers from "@/pages/admin-admin-users";
 import AdminMenuSettings from "@/pages/admin-menu-settings";
 import AdminBbgSettings from "@/pages/admin-bbg-settings";
+import AdminReferralDiscountSettings from "@/pages/admin-referral-discount-settings";
 import AdminWaitingPeriodSettings from "@/pages/admin-waiting-period-settings";
 import AdminHomepageBanners from "@/pages/admin/homepage-banners";
 import AdminCustomerRegistrations from "@/pages/admin/customer-registrations";
@@ -102,6 +103,7 @@ function Router() {
       <Route path="/admin/admin-users" component={AdminAdminUsers} />
       <Route path="/admin/menu-settings" component={AdminMenuSettings} />
       <Route path="/admin/bbg-settings" component={AdminBbgSettings} />
+      <Route path="/admin/referral-discount-settings" component={AdminReferralDiscountSettings} />
       <Route path="/admin/waiting-period-settings" component={AdminWaitingPeriodSettings} />
       <Route path="/admin/homepage-banners" component={AdminHomepageBanners} />
       <Route path="/admin/customer-registrations" component={AdminCustomerRegistrations} />

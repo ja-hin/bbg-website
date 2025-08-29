@@ -135,6 +135,10 @@ export interface IStorage {
   getSmtpSettings(): Promise<SmtpSettings | undefined>;
   updateSmtpSettings(settings: InsertSmtpSettings): Promise<SmtpSettings>;
   
+  // Referral Discount Settings operations
+  getReferralDiscountSettings(): Promise<ReferralDiscountSettings | undefined>;
+  updateReferralDiscountSettings(settings: InsertReferralDiscountSettings): Promise<ReferralDiscountSettings>;
+  
   // Homepage Banner operations
   getAllHomepageBanners(): Promise<HomepageBanner[]>;
   getActiveHomepageBanners(): Promise<HomepageBanner[]>;
@@ -263,6 +267,34 @@ export class SqlServerStorage implements IStorage {
       const bbgPriceRequest = db.pool.request();
       await bbgPriceRequest.query(bbgPriceTableQuery);
       console.log('✅ BBG_PRICE_SETTINGS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+      
+      // Create REFERRAL_DISCOUNT_SETTINGS table as well
+      console.log('🔥 ENSURING REFERRAL_DISCOUNT_SETTINGS TABLE EXISTS IN DATABASE...');
+      const referralDiscountTableQuery = `
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'referral_discount_settings')
+        BEGIN
+          CREATE TABLE referral_discount_settings (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            is_active BIT DEFAULT 0,
+            discount_type NVARCHAR(20) NOT NULL DEFAULT 'percentage',
+            discount_value DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+            created_at DATETIME2 DEFAULT GETDATE(),
+            updated_at DATETIME2 DEFAULT GETDATE()
+          );
+          
+          INSERT INTO referral_discount_settings (is_active, discount_type, discount_value) 
+          VALUES (0, 'percentage', 10.00);
+          PRINT 'Referral discount settings table created with default 10% discount (inactive)';
+        END
+        ELSE
+        BEGIN
+          PRINT 'Referral discount settings table already exists, preserving current data';
+        END
+      `;
+      
+      const referralDiscountRequest = db.pool.request();
+      await referralDiscountRequest.query(referralDiscountTableQuery);
+      console.log('✅ REFERRAL_DISCOUNT_SETTINGS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
       
       // Create WAITING_PERIOD_SETTINGS table as well
       console.log('🔥 ENSURING WAITING_PERIOD_SETTINGS TABLE EXISTS IN DATABASE...');
@@ -3186,6 +3218,76 @@ export class SqlServerStorage implements IStorage {
       laptopPrice: parseFloat(row.laptop_price),
       mobilePrice: parseFloat(row.mobile_price),
       isActive: row.is_active,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  // Referral Discount Settings operations
+  async getReferralDiscountSettings(): Promise<any> {
+    await db.connectDB();
+    
+    const query = `SELECT TOP 1 * FROM referral_discount_settings ORDER BY id DESC`;
+    const request = db.pool.request();
+    const result = await request.query(query);
+    
+    if (result.recordset.length === 0) {
+      return undefined;
+    }
+    
+    const row = result.recordset[0];
+    return {
+      id: row.id,
+      isActive: row.is_active,
+      discountType: row.discount_type,
+      discountValue: parseFloat(row.discount_value),
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  async updateReferralDiscountSettings(settings: any): Promise<any> {
+    await db.connectDB();
+    
+    // Check if settings exist
+    const existingQuery = `SELECT TOP 1 id FROM referral_discount_settings`;
+    const existingResult = await db.pool.request().query(existingQuery);
+    
+    let query: string;
+    let request = db.pool.request();
+    
+    if (existingResult.recordset.length > 0) {
+      // Update existing settings
+      query = `
+        UPDATE referral_discount_settings 
+        SET is_active = @isActive, 
+            discount_type = @discountType, 
+            discount_value = @discountValue,
+            updated_at = GETDATE()
+        OUTPUT INSERTED.*
+        WHERE id = (SELECT TOP 1 id FROM referral_discount_settings ORDER BY id DESC)
+      `;
+    } else {
+      // Insert new settings
+      query = `
+        INSERT INTO referral_discount_settings (is_active, discount_type, discount_value)
+        OUTPUT INSERTED.*
+        VALUES (@isActive, @discountType, @discountValue)
+      `;
+    }
+    
+    request.input('isActive', sql.Bit, settings.isActive);
+    request.input('discountType', sql.NVarChar, settings.discountType);
+    request.input('discountValue', sql.Decimal(10, 2), settings.discountValue);
+    
+    const result = await request.query(query);
+    const row = result.recordset[0];
+    
+    return {
+      id: row.id,
+      isActive: row.is_active,
+      discountType: row.discount_type,
+      discountValue: parseFloat(row.discount_value),
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };

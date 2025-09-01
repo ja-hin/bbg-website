@@ -1042,11 +1042,9 @@ export class SqlServerStorage implements IStorage {
         return this.mapDistributorFromDb(result.recordset[0]);
       }
       
-      // Check if session exists but expired
+      // Check if session exists but expired (simplified)
       const expiredCheckQuery = `
-        SELECT ds.expires_at, GETDATE() as current_time
-        FROM distributor_sessions ds 
-        WHERE ds.session_token = @token
+        SELECT expires_at FROM distributor_sessions WHERE session_token = @token
       `;
       const expiredCheck = await db.pool.request()
         .input('token', sql.NVarChar, token)

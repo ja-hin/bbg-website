@@ -487,15 +487,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid or expired session" });
       }
 
+      // Return complete distributor object for progress calculation
       res.json({
-        distributor: {
-          id: distributor.id,
-          name: distributor.name,
-          businessName: distributor.businessName,
-          contact: distributor.contact,
-          email: distributor.email,
-          sellerCode: distributor.sellerCode,
-        },
+        distributor: distributor, // Return full object with all fields
       });
     } catch (error: any) {
       console.error("Session verification error:", error);

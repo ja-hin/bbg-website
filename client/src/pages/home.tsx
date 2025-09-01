@@ -20,6 +20,7 @@ import {
   Loader2,
   HelpCircle
 } from "lucide-react";
+import { HomepageCarousel } from "@/components/homepage-carousel";
 
 export default function Home() {
   // Fetch theme for dynamic coloring
@@ -66,6 +67,8 @@ export default function Home() {
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
 
+      {/* Homepage Carousel */}
+      <HomepageCarousel />
 
       {/* Hero Section */}
       <section className="py-12 sm:py-16 lg:py-20">

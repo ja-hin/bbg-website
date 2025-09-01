@@ -181,6 +181,9 @@ export class SqlServerStorage implements IStorage {
       // HIGHEST PRIORITY: Create theme_settings table FIRST
       await this.createThemeSettingsTableAtAnyCost();
       
+      // Create homepage_banners table as well
+      await this.createHomepageBannersTableAtAnyCost();
+      
       await this.createTablesIfNotExist();
       console.log('SQL Server database initialized successfully');
     } catch (error) {
@@ -874,6 +877,44 @@ export class SqlServerStorage implements IStorage {
     await request.query(createTablesScript);
     
     console.log("Database tables initialized successfully");
+  }
+
+  // Force create homepage_banners table
+  private async createHomepageBannersTableAtAnyCost() {
+    try {
+      await db.connectDB();
+      
+      console.log('🔥 ENSURING HOMEPAGE_BANNERS TABLE EXISTS IN DATABASE...');
+      const homepageBannersTableQuery = `
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'homepage_banners')
+        BEGIN
+          CREATE TABLE homepage_banners (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            title NVARCHAR(255) NOT NULL,
+            description NVARCHAR(MAX),
+            desktop_image_url NVARCHAR(500) NOT NULL,
+            mobile_image_url NVARCHAR(500) NOT NULL,
+            link_url NVARCHAR(500),
+            is_active BIT DEFAULT 1,
+            sort_order INT DEFAULT 0,
+            created_at DATETIME2 DEFAULT GETDATE(),
+            updated_at DATETIME2 DEFAULT GETDATE()
+          );
+          PRINT 'Homepage banners table created';
+        END
+        ELSE
+        BEGIN
+          PRINT 'Homepage banners table already exists, preserving current data';
+        END
+      `;
+      
+      const homepageRequest = db.pool.request();
+      await homepageRequest.query(homepageBannersTableQuery);
+      console.log('✅ HOMEPAGE_BANNERS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+      
+    } catch (error) {
+      console.error('❌ HOMEPAGE_BANNERS TABLE CREATION FAILED:', error);
+    }
   }
 
   // Distributor operations

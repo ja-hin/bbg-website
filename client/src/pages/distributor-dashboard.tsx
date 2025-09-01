@@ -1,5 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +42,112 @@ export default function DistributorDashboard() {
   const { data: stats, isLoading: statsLoading } = useDistributorStats();
   const { data: customers, isLoading: customersLoading } = useDistributorCustomers();
   const { data: payouts, isLoading: payoutsLoading } = useDistributorPayouts();
+
+  // Form state
+  const [taxFormData, setTaxFormData] = useState({
+    panNumber: '',
+    isGstRegistered: false,
+    gstin: '',
+    isMsmeRegistered: false
+  });
+  
+  const [bankFormData, setBankFormData] = useState({
+    accountHolderName: '',
+    bankAccount: '',
+    bankAccountConfirm: '',
+    ifscCode: '',
+    upiId: ''
+  });
+
+  // Profile update mutations
+  const updateProfileMutation = useMutation({
+    mutationFn: async (profileData: any) => {
+      return await apiRequest("/api/distributor/profile", {
+        method: "PUT",
+        body: profileData
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Profile Updated",
+        description: "Your profile has been updated successfully",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/distributor/me"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Update Failed",
+        description: error.message || "Failed to update profile",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Save handlers
+  const handleSaveTaxDetails = () => {
+    const taxData = {
+      panNumber: (document.querySelector('input[placeholder="ABCDE1234F"]') as HTMLInputElement)?.value,
+      isGstRegistered: (document.querySelector('#gstRegistered') as HTMLInputElement)?.checked,
+      gstin: (document.querySelector('input[placeholder="22ABCDE1234F1Z5"]') as HTMLInputElement)?.value,
+      isMsmeRegistered: (document.querySelector('#msmeRegistered') as HTMLInputElement)?.checked
+    };
+    
+    console.log("Saving tax details:", taxData);
+    updateProfileMutation.mutate(taxData);
+  };
+
+  const handleSaveBankDetails = () => {
+    const bankAccount = (document.querySelector('input[placeholder="Account number"]') as HTMLInputElement)?.value;
+    const bankAccountConfirm = (document.querySelector('input[placeholder="Re-enter account number"]') as HTMLInputElement)?.value;
+    
+    if (bankAccount !== bankAccountConfirm) {
+      toast({
+        title: "Validation Error",
+        description: "Account numbers do not match",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const bankData = {
+      accountHolderName: (document.querySelector('input[placeholder="As per bank records"]') as HTMLInputElement)?.value,
+      bankAccount: bankAccount,
+      bankAccountConfirm: bankAccountConfirm,
+      ifscCode: (document.querySelector('input[placeholder="SBIN0001234"]') as HTMLInputElement)?.value,
+      upiId: (document.querySelector('input[placeholder="username@bankname"]') as HTMLInputElement)?.value
+    };
+    
+    console.log("Saving bank details:", bankData);
+    updateProfileMutation.mutate(bankData);
+  };
+
+  // Calculate profile completion percentage
+  const calculateProfileCompletion = (distributor: any) => {
+    if (!distributor) return { percentage: 0, completedFields: 0, totalFields: 0 };
+    
+    const requiredFields = [
+      { key: 'name', value: distributor.name },
+      { key: 'contact', value: distributor.contact },
+      { key: 'email', value: distributor.email },
+      { key: 'pincode', value: distributor.pincode },
+      { key: 'panNumber', value: distributor.panNumber },
+      { key: 'accountHolderName', value: distributor.accountHolderName },
+      { key: 'bankAccount', value: distributor.bankAccount },
+      { key: 'ifscCode', value: distributor.ifscCode }
+    ];
+    
+    const completedFields = requiredFields.filter(field => field.value && field.value.trim() !== '').length;
+    const percentage = Math.round((completedFields / requiredFields.length) * 100);
+    
+    return { 
+      percentage, 
+      completedFields, 
+      totalFields: requiredFields.length,
+      isEligibleForPayouts: percentage >= 90 // Need 90%+ completion for payouts
+    };
+  };
+
+  const profileStats = calculateProfileCompletion(distributor);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -370,13 +478,115 @@ export default function DistributorDashboard() {
                     </div>
                   </div>
                   
-                  <div className="text-center py-8">
-                    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Tax Details Form</h3>
-                    <p className="text-gray-600 mb-4">
-                      This section will allow you to upload PAN card, GST certificate, and MSME certificate
-                    </p>
-                    <Badge variant="secondary">Coming Soon</Badge>
+                  {/* Tax & Compliance Form */}
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          PAN Number *
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="ABCDE1234F"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          defaultValue={distributor.panNumber || ''}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          PAN Card Copy *
+                        </label>
+                        <input
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        {distributor.panCopyFile && (
+                          <p className="text-xs text-green-600 mt-1">✓ File uploaded</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-3">
+                        <input
+                          type="checkbox"
+                          id="gstRegistered"
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          defaultChecked={distributor.isGstRegistered || false}
+                        />
+                        <label htmlFor="gstRegistered" className="text-sm text-gray-700">
+                          I am GST registered
+                        </label>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            GSTIN
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="22ABCDE1234F1Z5"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            defaultValue={distributor.gstin || ''}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            GST Certificate
+                          </label>
+                          <input
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                          {distributor.gstCertificateFile && (
+                            <p className="text-xs text-green-600 mt-1">✓ File uploaded</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-3">
+                        <input
+                          type="checkbox"
+                          id="msmeRegistered"
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          defaultChecked={distributor.isMsmeRegistered || false}
+                        />
+                        <label htmlFor="msmeRegistered" className="text-sm text-gray-700">
+                          I am MSME registered
+                        </label>
+                      </div>
+
+                      {/* MSME Certificate Upload */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          MSME Certificate
+                        </label>
+                        <input
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        {distributor.msmeCertificateFile && (
+                          <p className="text-xs text-green-600 mt-1">✓ File uploaded</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="pt-4">
+                      <button
+                        type="button"
+                        onClick={handleSaveTaxDetails}
+                        disabled={updateProfileMutation.isPending}
+                        className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {updateProfileMutation.isPending ? "Saving..." : "Save Tax & Compliance Details"}
+                      </button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -405,13 +615,95 @@ export default function DistributorDashboard() {
                     </div>
                   </div>
                   
-                  <div className="text-center py-8">
-                    <Wallet className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Bank Details Form</h3>
-                    <p className="text-gray-600 mb-4">
-                      This section will allow you to add bank account details, IFSC code, and upload cancelled cheque
-                    </p>
-                    <Badge variant="secondary">Coming Soon</Badge>
+                  {/* Bank Details Form */}
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Account Holder Name *
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="As per bank records"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          defaultValue={distributor.accountHolderName || ''}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          IFSC Code *
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="SBIN0001234"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          defaultValue={distributor.ifscCode || ''}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Bank Account Number *
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Account number"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          defaultValue={distributor.bankAccount || ''}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Confirm Account Number *
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Re-enter account number"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          defaultValue={distributor.bankAccountConfirm || ''}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          UPI ID (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="username@bankname"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          defaultValue={distributor.upiId || ''}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Cancelled Cheque (Optional)
+                        </label>
+                        <input
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        {distributor.cancelledChequeFile && (
+                          <p className="text-xs text-green-600 mt-1">✓ File uploaded</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="pt-4">
+                      <button
+                        type="button"
+                        onClick={handleSaveBankDetails}
+                        disabled={updateProfileMutation.isPending}
+                        className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {updateProfileMutation.isPending ? "Saving..." : "Save Bank Details"}
+                      </button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -426,6 +718,28 @@ export default function DistributorDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
+                    {/* Profile Completion Progress Bar */}
+                    <div className="mb-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium">Overall Progress</span>
+                        <Badge variant={profileStats.percentage >= 90 ? "default" : "secondary"}>
+                          {profileStats.percentage}% Complete
+                        </Badge>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
+                        <div 
+                          className={`h-3 rounded-full transition-all duration-500 ${
+                            profileStats.percentage >= 90 ? 'bg-green-500' : 
+                            profileStats.percentage >= 50 ? 'bg-orange-500' : 'bg-red-500'
+                          }`}
+                          style={{ width: `${profileStats.percentage}%` }}
+                        ></div>
+                      </div>
+                      <div className="text-center text-sm text-gray-600">
+                        {profileStats.completedFields} of {profileStats.totalFields} required fields completed
+                      </div>
+                    </div>
+                    
                     <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                       <div className="flex items-center">
                         <CheckCircle className="h-5 w-5 text-green-600 mr-3" />
@@ -434,36 +748,81 @@ export default function DistributorDashboard() {
                       <Badge variant="default">Complete</Badge>
                     </div>
                     
-                    <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                    <div className={`flex items-center justify-between p-3 rounded-lg ${
+                      distributor?.panNumber ? 'bg-green-50' : 'bg-red-50'
+                    }`}>
                       <div className="flex items-center">
-                        <AlertCircle className="h-5 w-5 text-red-600 mr-3" />
-                        <span className="font-medium text-red-900">Tax Compliance Details</span>
+                        {distributor?.panNumber ? (
+                          <CheckCircle className="h-5 w-5 text-green-600 mr-3" />
+                        ) : (
+                          <AlertCircle className="h-5 w-5 text-red-600 mr-3" />
+                        )}
+                        <span className={`font-medium ${
+                          distributor?.panNumber ? 'text-green-900' : 'text-red-900'
+                        }`}>Tax Compliance Details</span>
                       </div>
-                      <Badge variant="destructive">Pending</Badge>
+                      <Badge variant={distributor?.panNumber ? "default" : "destructive"}>
+                        {distributor?.panNumber ? "Complete" : "Pending"}
+                      </Badge>
                     </div>
                     
-                    <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                    <div className={`flex items-center justify-between p-3 rounded-lg ${
+                      (distributor?.bankAccount && distributor?.ifscCode) ? 'bg-green-50' : 'bg-red-50'
+                    }`}>
                       <div className="flex items-center">
-                        <AlertCircle className="h-5 w-5 text-red-600 mr-3" />
-                        <span className="font-medium text-red-900">Bank Account Details</span>
+                        {(distributor?.bankAccount && distributor?.ifscCode) ? (
+                          <CheckCircle className="h-5 w-5 text-green-600 mr-3" />
+                        ) : (
+                          <AlertCircle className="h-5 w-5 text-red-600 mr-3" />
+                        )}
+                        <span className={`font-medium ${
+                          (distributor?.bankAccount && distributor?.ifscCode) ? 'text-green-900' : 'text-red-900'
+                        }`}>Bank Account Details</span>
                       </div>
-                      <Badge variant="destructive">Pending</Badge>
+                      <Badge variant={(distributor?.bankAccount && distributor?.ifscCode) ? "default" : "destructive"}>
+                        {(distributor?.bankAccount && distributor?.ifscCode) ? "Complete" : "Pending"}
+                      </Badge>
                     </div>
                   </div>
                   
-                  <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                  <div className={`mt-6 p-4 rounded-lg ${
+                    profileStats.isEligibleForPayouts 
+                      ? 'bg-green-50 border border-green-200' 
+                      : 'bg-orange-50 border border-orange-200'
+                  }`}>
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="font-semibold text-gray-900">Profile Completion</h4>
-                        <p className="text-sm text-gray-600">Complete all sections to start receiving payouts</p>
+                        <h4 className={`font-semibold ${
+                          profileStats.isEligibleForPayouts ? 'text-green-900' : 'text-orange-900'
+                        }`}>
+                          {profileStats.isEligibleForPayouts ? 'Payout Eligible' : 'Profile Completion'}
+                        </h4>
+                        <p className={`text-sm ${
+                          profileStats.isEligibleForPayouts ? 'text-green-700' : 'text-orange-700'
+                        }`}>
+                          {profileStats.isEligibleForPayouts 
+                            ? 'Your profile is complete and eligible for commission payouts' 
+                            : `Complete ${profileStats.totalFields - profileStats.completedFields} more field${profileStats.totalFields - profileStats.completedFields !== 1 ? 's' : ''} to start receiving payouts`}
+                        </p>
                       </div>
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-orange-600">33%</div>
+                        <div className={`text-2xl font-bold ${
+                          profileStats.percentage >= 90 ? 'text-green-600' : 
+                          profileStats.percentage >= 50 ? 'text-orange-600' : 'text-red-600'
+                        }`}>
+                          {profileStats.percentage}%
+                        </div>
                         <div className="text-xs text-gray-500">Complete</div>
                       </div>
                     </div>
                     <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-orange-600 h-2 rounded-full" style={{ width: "33%" }}></div>
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-500 ${
+                          profileStats.percentage >= 90 ? 'bg-green-600' : 
+                          profileStats.percentage >= 50 ? 'bg-orange-600' : 'bg-red-600'
+                        }`}
+                        style={{ width: `${profileStats.percentage}%` }}
+                      ></div>
                     </div>
                   </div>
                 </CardContent>

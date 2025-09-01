@@ -503,6 +503,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update distributor profile
+  app.put("/api/distributor/profile", async (req, res) => {
+    try {
+      const sessionToken = req.headers.authorization?.replace("Bearer ", "");
+
+      if (!sessionToken) {
+        return res.status(401).json({ message: "No session token provided" });
+      }
+
+      const distributor = await storage.verifyDistributorSession(sessionToken);
+      if (!distributor) {
+        return res.status(401).json({ message: "Invalid or expired session" });
+      }
+
+      console.log("📝 Updating distributor profile for ID:", distributor.id);
+      console.log("📝 Profile update data:", req.body);
+
+      await storage.updateDistributor(distributor.id, req.body);
+      const updatedDistributor = await storage.getDistributorById(distributor.id);
+      
+      res.json({
+        message: "Profile updated successfully",
+        distributor: updatedDistributor
+      });
+    } catch (error: any) {
+      console.error("❌ Profile update failed:", error);
+      res.status(500).json({ 
+        message: "Profile update failed", 
+        error: error.message 
+      });
+    }
+  });
+
   // Get distributor dashboard stats
   app.get("/api/distributor/stats", async (req, res) => {
     try {

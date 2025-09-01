@@ -6,6 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { 
   useDistributorAuth, 
@@ -86,10 +89,10 @@ export default function DistributorDashboard() {
   // Save handlers
   const handleSaveTaxDetails = () => {
     const taxData = {
-      panNumber: (document.querySelector('input[placeholder="ABCDE1234F"]') as HTMLInputElement)?.value,
-      isGstRegistered: (document.querySelector('#gstRegistered') as HTMLInputElement)?.checked,
-      gstin: (document.querySelector('input[placeholder="22ABCDE1234F1Z5"]') as HTMLInputElement)?.value,
-      isMsmeRegistered: (document.querySelector('#msmeRegistered') as HTMLInputElement)?.checked
+      panNumber: (document.getElementById('panNumber') as HTMLInputElement)?.value,
+      isGstRegistered: (document.getElementById('gstRegistered') as HTMLInputElement)?.checked,
+      gstin: (document.getElementById('gstin') as HTMLInputElement)?.value,
+      isMsmeRegistered: (document.getElementById('msmeRegistered') as HTMLInputElement)?.checked
     };
     
     console.log("Saving tax details:", taxData);
@@ -97,8 +100,8 @@ export default function DistributorDashboard() {
   };
 
   const handleSaveBankDetails = () => {
-    const bankAccount = (document.querySelector('input[placeholder="Account number"]') as HTMLInputElement)?.value;
-    const bankAccountConfirm = (document.querySelector('input[placeholder="Re-enter account number"]') as HTMLInputElement)?.value;
+    const bankAccount = (document.getElementById('bankAccount') as HTMLInputElement)?.value;
+    const bankAccountConfirm = (document.getElementById('bankAccountConfirm') as HTMLInputElement)?.value;
     
     if (bankAccount !== bankAccountConfirm) {
       toast({
@@ -110,11 +113,11 @@ export default function DistributorDashboard() {
     }
     
     const bankData = {
-      accountHolderName: (document.querySelector('input[placeholder="As per bank records"]') as HTMLInputElement)?.value,
+      accountHolderName: (document.getElementById('accountHolder') as HTMLInputElement)?.value,
       bankAccount: bankAccount,
       bankAccountConfirm: bankAccountConfirm,
-      ifscCode: (document.querySelector('input[placeholder="SBIN0001234"]') as HTMLInputElement)?.value,
-      upiId: (document.querySelector('input[placeholder="username@bankname"]') as HTMLInputElement)?.value
+      ifscCode: (document.getElementById('ifscCode') as HTMLInputElement)?.value,
+      upiId: (document.getElementById('upiId') as HTMLInputElement)?.value
     };
     
     console.log("Saving bank details:", bankData);
@@ -479,113 +482,116 @@ export default function DistributorDashboard() {
                   </div>
                   
                   {/* Tax & Compliance Form */}
-                  <div className="space-y-6">
+                  <div className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          PAN Number *
-                        </label>
-                        <input
+                      <div className="space-y-2">
+                        <Label htmlFor="panNumber">PAN Number *</Label>
+                        <Input
+                          id="panNumber"
                           type="text"
                           placeholder="ABCDE1234F"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          defaultValue={distributor.panNumber || ''}
+                          defaultValue={distributor?.panNumber || ''}
                         />
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          PAN Card Copy *
-                        </label>
-                        <input
+                      <div className="space-y-2">
+                        <Label htmlFor="panFile">PAN Card Copy *</Label>
+                        <Input
+                          id="panFile"
                           type="file"
                           accept=".pdf,.jpg,.jpeg,.png"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
-                        {distributor.panCopyFile && (
-                          <p className="text-xs text-green-600 mt-1">✓ File uploaded</p>
+                        {distributor?.panCopyFile && (
+                          <p className="text-xs text-green-600 flex items-center gap-1">
+                            <CheckCircle className="w-3 h-3" />
+                            File uploaded
+                          </p>
                         )}
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-3">
-                        <input
-                          type="checkbox"
+                    <div className="space-y-6 p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
                           id="gstRegistered"
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          defaultChecked={distributor.isGstRegistered || false}
+                          defaultChecked={distributor?.isGstRegistered || false}
                         />
-                        <label htmlFor="gstRegistered" className="text-sm text-gray-700">
+                        <Label htmlFor="gstRegistered" className="text-sm font-medium">
                           I am GST registered
-                        </label>
+                        </Label>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            GSTIN
-                          </label>
-                          <input
+                        <div className="space-y-2">
+                          <Label htmlFor="gstin">GSTIN</Label>
+                          <Input
+                            id="gstin"
                             type="text"
                             placeholder="22ABCDE1234F1Z5"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            defaultValue={distributor.gstin || ''}
+                            defaultValue={distributor?.gstin || ''}
                           />
                         </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            GST Certificate
-                          </label>
-                          <input
+                        <div className="space-y-2">
+                          <Label htmlFor="gstFile">GST Certificate</Label>
+                          <Input
+                            id="gstFile"
                             type="file"
                             accept=".pdf,.jpg,.jpeg,.png"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
-                          {distributor.gstCertificateFile && (
-                            <p className="text-xs text-green-600 mt-1">✓ File uploaded</p>
+                          {distributor?.gstCertificateFile && (
+                            <p className="text-xs text-green-600 flex items-center gap-1">
+                              <CheckCircle className="w-3 h-3" />
+                              File uploaded
+                            </p>
                           )}
                         </div>
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-3">
-                        <input
-                          type="checkbox"
+                    <div className="space-y-6 p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
                           id="msmeRegistered"
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          defaultChecked={distributor.isMsmeRegistered || false}
+                          defaultChecked={distributor?.isMsmeRegistered || false}
                         />
-                        <label htmlFor="msmeRegistered" className="text-sm text-gray-700">
+                        <Label htmlFor="msmeRegistered" className="text-sm font-medium">
                           I am MSME registered
-                        </label>
+                        </Label>
                       </div>
 
-                      {/* MSME Certificate Upload */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          MSME Certificate
-                        </label>
-                        <input
+                      <div className="space-y-2">
+                        <Label htmlFor="msmeFile">MSME Certificate</Label>
+                        <Input
+                          id="msmeFile"
                           type="file"
                           accept=".pdf,.jpg,.jpeg,.png"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
-                        {distributor.msmeCertificateFile && (
-                          <p className="text-xs text-green-600 mt-1">✓ File uploaded</p>
+                        {distributor?.msmeCertificateFile && (
+                          <p className="text-xs text-green-600 flex items-center gap-1">
+                            <CheckCircle className="w-3 h-3" />
+                            File uploaded
+                          </p>
                         )}
                       </div>
                     </div>
 
                     <div className="pt-4">
-                      <button
-                        type="button"
+                      <Button
                         onClick={handleSaveTaxDetails}
                         disabled={updateProfileMutation.isPending}
-                        className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full md:w-auto"
                       >
-                        {updateProfileMutation.isPending ? "Saving..." : "Save Tax & Compliance Details"}
-                      </button>
+                        {updateProfileMutation.isPending ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                            Saving...
+                          </>
+                        ) : (
+                          <>
+                            <FileText className="w-4 h-4 mr-2" />
+                            Save Tax & Compliance Details
+                          </>
+                        )}
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -616,93 +622,100 @@ export default function DistributorDashboard() {
                   </div>
                   
                   {/* Bank Details Form */}
-                  <div className="space-y-6">
+                  <div className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Account Holder Name *
-                        </label>
-                        <input
+                      <div className="space-y-2">
+                        <Label htmlFor="accountHolder">Account Holder Name *</Label>
+                        <Input
+                          id="accountHolder"
                           type="text"
                           placeholder="As per bank records"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          defaultValue={distributor.accountHolderName || ''}
+                          defaultValue={distributor?.accountHolderName || ''}
                         />
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          IFSC Code *
-                        </label>
-                        <input
+                      <div className="space-y-2">
+                        <Label htmlFor="ifscCode">IFSC Code *</Label>
+                        <Input
+                          id="ifscCode"
                           type="text"
                           placeholder="SBIN0001234"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          defaultValue={distributor.ifscCode || ''}
+                          defaultValue={distributor?.ifscCode || ''}
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Bank Account Number *
-                        </label>
-                        <input
+                      <div className="space-y-2">
+                        <Label htmlFor="bankAccount">Bank Account Number *</Label>
+                        <Input
+                          id="bankAccount"
                           type="text"
                           placeholder="Account number"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          defaultValue={distributor.bankAccount || ''}
+                          defaultValue={distributor?.bankAccount || ''}
                         />
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Confirm Account Number *
-                        </label>
-                        <input
+                      <div className="space-y-2">
+                        <Label htmlFor="bankAccountConfirm">Confirm Account Number *</Label>
+                        <Input
+                          id="bankAccountConfirm"
                           type="text"
                           placeholder="Re-enter account number"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          defaultValue={distributor.bankAccountConfirm || ''}
+                          defaultValue={distributor?.bankAccountConfirm || ''}
                         />
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          UPI ID (Optional)
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="username@bankname"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          defaultValue={distributor.upiId || ''}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Cancelled Cheque (Optional)
-                        </label>
-                        <input
-                          type="file"
-                          accept=".pdf,.jpg,.jpeg,.png"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        {distributor.cancelledChequeFile && (
-                          <p className="text-xs text-green-600 mt-1">✓ File uploaded</p>
-                        )}
+                    <div className="space-y-6 p-4 bg-gray-50 rounded-lg">
+                      <h4 className="font-medium text-gray-900 flex items-center gap-2">
+                        <Wallet className="w-4 h-4" />
+                        Additional Payment Options
+                      </h4>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="upiId">UPI ID (Optional)</Label>
+                          <Input
+                            id="upiId"
+                            type="text"
+                            placeholder="username@bankname"
+                            defaultValue={distributor?.upiId || ''}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="chequeFile">Cancelled Cheque (Optional)</Label>
+                          <Input
+                            id="chequeFile"
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                          />
+                          {distributor?.cancelledChequeFile && (
+                            <p className="text-xs text-green-600 flex items-center gap-1">
+                              <CheckCircle className="w-3 h-3" />
+                              File uploaded
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
 
                     <div className="pt-4">
-                      <button
-                        type="button"
+                      <Button
                         onClick={handleSaveBankDetails}
                         disabled={updateProfileMutation.isPending}
-                        className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full md:w-auto"
                       >
-                        {updateProfileMutation.isPending ? "Saving..." : "Save Bank Details"}
-                      </button>
+                        {updateProfileMutation.isPending ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                            Saving...
+                          </>
+                        ) : (
+                          <>
+                            <Building className="w-4 h-4 mr-2" />
+                            Save Bank Details
+                          </>
+                        )}
+                      </Button>
                     </div>
                   </div>
                 </CardContent>

@@ -1470,7 +1470,7 @@ export class SqlServerStorage implements IStorage {
   // Customer operations
   async createCustomer(insertCustomer: InsertCustomer): Promise<Customer> {
     await db.connectDB();
-    const voucherCode = this.generateVoucherCode();
+    const voucherCode = await this.generateVoucherCode(insertCustomer.deviceType);
     
     // Use the claim value slab ID passed from the registration route
     // This preserves the correct slab for both regular and Acer BBG registrations
@@ -1920,8 +1920,39 @@ export class SqlServerStorage implements IStorage {
     return shortCode;
   }
 
-  private generateVoucherCode(): string {
-    return 'BBG' + Math.random().toString(36).substring(2, 12).toUpperCase();
+  private async getNextSerialNumber(deviceType: string): Promise<string> {
+    await db.connectDB();
+    
+    // Get the category prefix
+    const category = deviceType === 'mobile' ? 'MOB' : 'LAP';
+    
+    // Get the highest existing serial number for this device type (new format only)
+    const query = `
+      SELECT MAX(CASE 
+        WHEN voucher_code LIKE @exactPattern 
+        AND ISNUMERIC(RIGHT(voucher_code, 2)) = 1
+        THEN CAST(RIGHT(voucher_code, 2) AS INT)
+        ELSE 0 
+      END) as maxSerial
+      FROM customers 
+      WHERE voucher_code LIKE @exactPattern
+    `;
+    
+    const request = db.pool.request();
+    request.input('exactPattern', sql.NVarChar, `BBG${category}__`); // Exact length match with 2 digits
+    
+    const result = await request.query(query);
+    const maxSerial = result.recordset[0]?.maxSerial || 0;
+    const nextSerial = maxSerial + 1;
+    
+    // Format as two-digit number (01, 02, 03, etc.)
+    return nextSerial.toString().padStart(2, '0');
+  }
+
+  private async generateVoucherCode(deviceType: string): Promise<string> {
+    const category = deviceType === 'mobile' ? 'MOB' : 'LAP';
+    const serialNumber = await this.getNextSerialNumber(deviceType);
+    return `BBG${category}${serialNumber}`;
   }
 
   private generateSessionToken(): string {

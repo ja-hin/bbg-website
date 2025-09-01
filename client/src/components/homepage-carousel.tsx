@@ -116,11 +116,11 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 5000 }: H
                 className="block md:hidden relative w-full cursor-pointer"
                 onClick={() => handleBannerClick(banner)}
               >
-                <div className="aspect-[4/3] w-full overflow-hidden">
+                <div className="aspect-[16/9] w-full overflow-hidden">
                   <img
                     src={banner.mobileImageUrl}
                     alt="Banner Image"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain bg-gray-100"
                     style={{ imageRendering: 'crisp-edges' }}
                     onError={(e) => {
                       console.error('Mobile image failed to load:', banner.mobileImageUrl);

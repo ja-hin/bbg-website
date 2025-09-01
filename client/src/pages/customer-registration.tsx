@@ -888,7 +888,7 @@ function BuyBBGContent() {
                               <SelectItem value="mobile">
                                 Mobile {bbgPrices?.discountApplied && bbgPrices?.discountDetails ? (
                                   <span>
-                                    <span className="line-through text-gray-500">₹{bbgPrices?.mobile || 299}</span>{' '}
+                                    <span className="line-through text-gray-500">₹{bbgPrices.discountDetails.originalMobilePrice || 299}</span>{' '}
                                     <span className="text-green-600 font-semibold">₹{bbgPrices.discountDetails.discountedMobilePrice}</span>
                                   </span>
                                 ) : (
@@ -898,7 +898,7 @@ function BuyBBGContent() {
                               <SelectItem value="laptop">
                                 Laptop {bbgPrices?.discountApplied && bbgPrices?.discountDetails ? (
                                   <span>
-                                    <span className="line-through text-gray-500">₹{bbgPrices?.laptop || 499}</span>{' '}
+                                    <span className="line-through text-gray-500">₹{bbgPrices.discountDetails.originalLaptopPrice || 499}</span>{' '}
                                     <span className="text-green-600 font-semibold">₹{bbgPrices.discountDetails.discountedLaptopPrice}</span>
                                   </span>
                                 ) : (

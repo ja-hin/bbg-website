@@ -2089,10 +2089,7 @@ export class SqlServerStorage implements IStorage {
       request.input('termsAgreement', sql.Bit, updates.termsAgreement);
     }
 
-    // Always update timestamp
-    setParts.push('updated_at = GETDATE()');
-
-    if (setParts.length > 1) { // More than just timestamp
+    if (setParts.length > 0) { // Check if there are fields to update
       const query = `UPDATE distributors SET ${setParts.join(', ')} WHERE id = @id`;
       console.log("📝 Executing update query:", query);
       await request.query(query);

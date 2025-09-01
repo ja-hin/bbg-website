@@ -712,7 +712,7 @@ function BuyBBGContent() {
             // Refetch pricing to get exact discount amount
             queryClient.refetchQueries({ queryKey: ["/api/bbg-prices"] }).then(() => {
               // After refetch, check if we have discount info and show specific savings
-              const updatedPrices = queryClient.getQueryData(["/api/bbg-prices", referralCode || ""]) as any;
+              const updatedPrices = queryClient.getQueryData(["/api/bbg-prices"]) as any;
               if (updatedPrices?.discountApplied && updatedPrices?.discountDetails) {
                 const originalPrice = currentDeviceType === 'laptop' ? (updatedPrices.laptop || 499) : (updatedPrices.mobile || 299);
                 const discountedPrice = currentDeviceType === 'laptop' ? 

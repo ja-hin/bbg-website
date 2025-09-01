@@ -40,6 +40,7 @@ export interface IStorage {
   
   // Distributor operations (Master)
   createDistributor(distributor: InsertDistributor): Promise<Distributor>;
+  getDistributorById(id: number): Promise<Distributor | undefined>;
   getDistributorBySellerCode(sellerCode: string): Promise<Distributor | undefined>;
   getDistributorByEmail(email: string): Promise<Distributor | undefined>;
   getDistributorByContact(contact: string): Promise<Distributor | undefined>;
@@ -965,6 +966,17 @@ export class SqlServerStorage implements IStorage {
     
     const request = db.pool.request();
     request.input('contact', sql.NVarChar, contact);
+    
+    const result = await request.query(query);
+    return result.recordset.length > 0 ? this.mapDistributorFromDb(result.recordset[0]) : undefined;
+  }
+
+  async getDistributorById(id: number): Promise<Distributor | undefined> {
+    await db.connectDB();
+    const query = `SELECT * FROM distributors WHERE id = @id`;
+    
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
     
     const result = await request.query(query);
     return result.recordset.length > 0 ? this.mapDistributorFromDb(result.recordset[0]) : undefined;

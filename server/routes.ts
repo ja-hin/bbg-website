@@ -503,8 +503,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update distributor profile
-  app.put("/api/distributor/profile", async (req, res) => {
+  // Update distributor profile (with file upload support)
+  app.put("/api/distributor/profile", 
+  upload.fields([
+    { name: 'panCopyFile', maxCount: 1 },
+    { name: 'gstCertificateFile', maxCount: 1 },
+    { name: 'msmeCertificateFile', maxCount: 1 },
+    { name: 'cancelledChequeFile', maxCount: 1 },
+  ]),
+  async (req, res) => {
     try {
       const sessionToken = req.headers.authorization?.replace("Bearer ", "");
 
@@ -519,8 +526,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log("📝 Updating distributor profile for ID:", distributor.id);
       console.log("📝 Profile update data:", req.body);
+      console.log("📝 Uploaded files:", req.files ? Object.keys(req.files) : "No files");
 
-      await storage.updateDistributor(distributor.id, req.body);
+      // Process form data
+      const updateData = { ...req.body };
+
+      // Convert boolean strings to actual booleans
+      if (updateData.isGstRegistered) updateData.isGstRegistered = updateData.isGstRegistered === "true";
+      if (updateData.isMsmeRegistered) updateData.isMsmeRegistered = updateData.isMsmeRegistered === "true";
+      if (updateData.infoDeclaration) updateData.infoDeclaration = updateData.infoDeclaration === "true";
+      if (updateData.tdsUnderstanding) updateData.tdsUnderstanding = updateData.tdsUnderstanding === "true";
+      if (updateData.gstInvoiceAgreement) updateData.gstInvoiceAgreement = updateData.gstInvoiceAgreement === "true";
+      if (updateData.termsAgreement) updateData.termsAgreement = updateData.termsAgreement === "true";
+
+      // Process uploaded files
+      if (req.files && typeof req.files === "object") {
+        const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+        
+        if (files.panCopyFile && files.panCopyFile[0]) {
+          updateData.panCopyFile = files.panCopyFile[0].location;
+          console.log("📄 PAN copy uploaded to S3:", updateData.panCopyFile);
+        }
+        if (files.gstCertificateFile && files.gstCertificateFile[0]) {
+          updateData.gstCertificateFile = files.gstCertificateFile[0].location;
+          console.log("📄 GST certificate uploaded to S3:", updateData.gstCertificateFile);
+        }
+        if (files.msmeCertificateFile && files.msmeCertificateFile[0]) {
+          updateData.msmeCertificateFile = files.msmeCertificateFile[0].location;
+          console.log("📄 MSME certificate uploaded to S3:", updateData.msmeCertificateFile);
+        }
+        if (files.cancelledChequeFile && files.cancelledChequeFile[0]) {
+          updateData.cancelledChequeFile = files.cancelledChequeFile[0].location;
+          console.log("📄 Cancelled cheque uploaded to S3:", updateData.cancelledChequeFile);
+        }
+      }
+
+      await storage.updateDistributor(distributor.id, updateData);
       const updatedDistributor = await storage.getDistributorById(distributor.id);
       
       res.json({

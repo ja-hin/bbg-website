@@ -1989,6 +1989,7 @@ export class SqlServerStorage implements IStorage {
     const request = db.pool.request();
     request.input('id', sql.Int, id);
 
+    // Basic info fields
     if (updates.name !== undefined) {
       setParts.push('name = @name');
       request.input('name', sql.NVarChar, updates.name);
@@ -2009,10 +2010,91 @@ export class SqlServerStorage implements IStorage {
       setParts.push('pincode = @pincode');
       request.input('pincode', sql.NVarChar, updates.pincode);
     }
+    if (updates.preferredMode !== undefined) {
+      setParts.push('preferred_mode = @preferredMode');
+      request.input('preferredMode', sql.NVarChar, updates.preferredMode);
+    }
 
+    // Tax & Compliance fields
+    if (updates.panNumber !== undefined) {
+      setParts.push('pan_number = @panNumber');
+      request.input('panNumber', sql.NVarChar, updates.panNumber);
+    }
+    if (updates.panCopyFile !== undefined) {
+      setParts.push('pan_copy_file = @panCopyFile');
+      request.input('panCopyFile', sql.NVarChar, updates.panCopyFile);
+    }
+    if (updates.isGstRegistered !== undefined) {
+      setParts.push('is_gst_registered = @isGstRegistered');
+      request.input('isGstRegistered', sql.Bit, updates.isGstRegistered);
+    }
+    if (updates.gstin !== undefined) {
+      setParts.push('gstin = @gstin');
+      request.input('gstin', sql.NVarChar, updates.gstin);
+    }
+    if (updates.gstCertificateFile !== undefined) {
+      setParts.push('gst_certificate_file = @gstCertificateFile');
+      request.input('gstCertificateFile', sql.NVarChar, updates.gstCertificateFile);
+    }
+    if (updates.isMsmeRegistered !== undefined) {
+      setParts.push('is_msme_registered = @isMsmeRegistered');
+      request.input('isMsmeRegistered', sql.Bit, updates.isMsmeRegistered);
+    }
+    if (updates.msmeCertificateFile !== undefined) {
+      setParts.push('msme_certificate_file = @msmeCertificateFile');
+      request.input('msmeCertificateFile', sql.NVarChar, updates.msmeCertificateFile);
+    }
 
-    if (setParts.length > 0) {
+    // Bank details fields
+    if (updates.accountHolderName !== undefined) {
+      setParts.push('account_holder_name = @accountHolderName');
+      request.input('accountHolderName', sql.NVarChar, updates.accountHolderName);
+    }
+    if (updates.bankAccount !== undefined) {
+      setParts.push('bank_account = @bankAccount');
+      request.input('bankAccount', sql.NVarChar, updates.bankAccount);
+    }
+    if (updates.bankAccountConfirm !== undefined) {
+      setParts.push('bank_account_confirm = @bankAccountConfirm');
+      request.input('bankAccountConfirm', sql.NVarChar, updates.bankAccountConfirm);
+    }
+    if (updates.ifscCode !== undefined) {
+      setParts.push('ifsc_code = @ifscCode');
+      request.input('ifscCode', sql.NVarChar, updates.ifscCode);
+    }
+    if (updates.upiId !== undefined) {
+      setParts.push('upi_id = @upiId');
+      request.input('upiId', sql.NVarChar, updates.upiId);
+    }
+    if (updates.cancelledChequeFile !== undefined) {
+      setParts.push('cancelled_cheque_file = @cancelledChequeFile');
+      request.input('cancelledChequeFile', sql.NVarChar, updates.cancelledChequeFile);
+    }
+
+    // Declaration fields
+    if (updates.infoDeclaration !== undefined) {
+      setParts.push('info_declaration = @infoDeclaration');
+      request.input('infoDeclaration', sql.Bit, updates.infoDeclaration);
+    }
+    if (updates.tdsUnderstanding !== undefined) {
+      setParts.push('tds_understanding = @tdsUnderstanding');
+      request.input('tdsUnderstanding', sql.Bit, updates.tdsUnderstanding);
+    }
+    if (updates.gstInvoiceAgreement !== undefined) {
+      setParts.push('gst_invoice_agreement = @gstInvoiceAgreement');
+      request.input('gstInvoiceAgreement', sql.Bit, updates.gstInvoiceAgreement);
+    }
+    if (updates.termsAgreement !== undefined) {
+      setParts.push('terms_agreement = @termsAgreement');
+      request.input('termsAgreement', sql.Bit, updates.termsAgreement);
+    }
+
+    // Always update timestamp
+    setParts.push('updated_at = GETDATE()');
+
+    if (setParts.length > 1) { // More than just timestamp
       const query = `UPDATE distributors SET ${setParts.join(', ')} WHERE id = @id`;
+      console.log("📝 Executing update query:", query);
       await request.query(query);
     }
   }

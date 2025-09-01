@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Trash2, Edit2, Plus, Upload, ImageIcon, Smartphone, Monitor, Loader2, AlertTriangle } from "lucide-react";
+import { Trash2, Edit2, Plus, Upload, ImageIcon, Smartphone, Monitor, Loader2, AlertTriangle, Clock, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { HomepageBanner } from "@shared/schema";
@@ -496,6 +496,38 @@ const HomepageBannersPage = () => {
         </CardContent>
       </Card>
 
+      {/* Statistics */}
+      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">{banners.length}</div>
+              <div className="text-sm text-blue-800">Total Banners</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">{banners.filter((b: HomepageBanner) => b.isActive).length}</div>
+              <div className="text-sm text-green-800">Active Banners</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-600">{banners.filter((b: HomepageBanner) => !b.isActive).length}</div>
+              <div className="text-sm text-gray-800">Inactive Banners</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-purple-600">
+                {banners.length > 0 
+                  ? new Date(Math.max(...banners
+                      .filter((b: HomepageBanner) => b.updatedAt)
+                      .map((b: HomepageBanner) => new Date(b.updatedAt!).getTime())
+                    )).toLocaleDateString()
+                  : 'N/A'
+                }
+              </div>
+              <div className="text-sm text-purple-800">Last Updated</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Banners List */}
       <div className="space-y-4">
         {sortedBanners.length === 0 ? (
@@ -528,6 +560,18 @@ const HomepageBannersPage = () => {
                       <Badge variant="outline" className="text-xs">
                         Order: {banner.sortOrder}
                       </Badge>
+                    </div>
+                    
+                    {/* Date Information */}
+                    <div className="flex items-center gap-4 mb-2 text-xs text-gray-500">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        <span>Created: {new Date(banner.createdAt).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        <span>Updated: {new Date(banner.updatedAt).toLocaleString()}</span>
+                      </div>
                     </div>
                     {banner.description && (
                       <CardDescription className="text-sm text-gray-600">

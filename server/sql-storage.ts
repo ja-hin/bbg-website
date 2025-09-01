@@ -984,42 +984,85 @@ export class SqlServerStorage implements IStorage {
 
   // Distributor Authentication
   async createDistributorSession(distributorId: number, contact: string): Promise<string> {
-    await db.connectDB();
-    const sessionToken = this.generateSessionToken();
-    const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 24); // 24-hour session
+    try {
+      await db.connectDB();
+      const sessionToken = this.generateSessionToken();
+      const expiresAt = new Date();
+      expiresAt.setHours(expiresAt.getHours() + 24); // 24-hour session
 
-    const query = `
-      INSERT INTO distributor_sessions (distributor_id, session_token, expires_at)
-      VALUES (@distributorId, @sessionToken, @expiresAt)
-    `;
+      console.log("🔐 Creating distributor session:", {
+        distributorId,
+        contact,
+        sessionToken,
+        expiresAt: expiresAt.toISOString()
+      });
 
-    const request = db.pool.request();
-    request.input('distributorId', sql.Int, distributorId);
-    request.input('sessionToken', sql.NVarChar, sessionToken);
-    request.input('expiresAt', sql.DateTime2, expiresAt);
+      const query = `
+        INSERT INTO distributor_sessions (distributor_id, session_token, expires_at)
+        VALUES (@distributorId, @sessionToken, @expiresAt)
+      `;
 
-    await request.query(query);
-    return sessionToken;
+      const request = db.pool.request();
+      request.input('distributorId', sql.Int, distributorId);
+      request.input('sessionToken', sql.NVarChar, sessionToken);
+      request.input('expiresAt', sql.DateTime2, expiresAt);
+
+      const result = await request.query(query);
+      console.log("✅ Session created successfully:", result.rowsAffected);
+      return sessionToken;
+    } catch (error) {
+      console.error("❌ Session creation failed:", error);
+      throw error;
+    }
   }
 
   async verifyDistributorSession(token: string): Promise<Distributor | null> {
-    await db.connectDB();
-    const query = `
-      SELECT d.*, ds.expires_at 
-      FROM distributors d
-      INNER JOIN distributor_sessions ds ON d.id = ds.distributor_id
-      WHERE ds.session_token = @token AND ds.expires_at > GETDATE()
-    `;
+    try {
+      await db.connectDB();
+      console.log("🔍 Verifying distributor session:", token);
+      
+      const query = `
+        SELECT d.*, ds.expires_at 
+        FROM distributors d
+        INNER JOIN distributor_sessions ds ON d.id = ds.distributor_id
+        WHERE ds.session_token = @token AND ds.expires_at > GETDATE()
+      `;
 
-    const request = db.pool.request();
-    request.input('token', sql.NVarChar, token);
+      const request = db.pool.request();
+      request.input('token', sql.NVarChar, token);
 
-    const result = await request.query(query);
-    if (result.recordset.length > 0) {
-      return this.mapDistributorFromDb(result.recordset[0]);
+      const result = await request.query(query);
+      console.log("🔍 Session verification result:", {
+        recordsFound: result.recordset.length,
+        currentTime: new Date().toISOString()
+      });
+
+      if (result.recordset.length > 0) {
+        console.log("✅ Session verified successfully");
+        return this.mapDistributorFromDb(result.recordset[0]);
+      }
+      
+      // Check if session exists but expired
+      const expiredCheckQuery = `
+        SELECT ds.expires_at, GETDATE() as current_time
+        FROM distributor_sessions ds 
+        WHERE ds.session_token = @token
+      `;
+      const expiredCheck = await db.pool.request()
+        .input('token', sql.NVarChar, token)
+        .query(expiredCheckQuery);
+      
+      if (expiredCheck.recordset.length > 0) {
+        console.log("⏰ Session found but expired:", expiredCheck.recordset[0]);
+      } else {
+        console.log("❌ No session found in database");
+      }
+      
+      return null;
+    } catch (error) {
+      console.error("❌ Session verification failed:", error);
+      return null;
     }
-    return null;
   }
 
   async deleteDistributorSession(token: string): Promise<void> {

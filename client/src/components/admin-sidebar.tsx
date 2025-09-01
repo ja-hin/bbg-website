@@ -27,7 +27,8 @@ import {
   User,
   Clock,
   Monitor,
-  Percent
+  Percent,
+  Receipt
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -99,7 +100,8 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
     FolderOpen,
     Clock,
     Monitor,
-    Percent
+    Percent,
+    Receipt
   };
 
   // Default menu items for fallback
@@ -122,7 +124,8 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
     { id: "menu-settings", label: "Menu Settings", href: "/admin/menu-settings", icon: "Settings", order: 14, type: "item", parentId: null },
     { id: "logs", label: "System Logs", href: "/admin/logs", icon: "Activity", order: 15, type: "item", parentId: null },
     { id: "whatsapp-test", label: "WhatsApp Test", href: "/admin/whatsapp-test", icon: "MessageCircle", order: 16, type: "item", parentId: null },
-    { id: "homepage-banners", label: "Homepage Banners", href: "/admin/homepage-banners", icon: "Monitor", order: 17, type: "item", parentId: null }
+    { id: "homepage-banners", label: "Homepage Banners", href: "/admin/homepage-banners", icon: "Monitor", order: 17, type: "item", parentId: null },
+    { id: "transaction-history", label: "Transaction History", href: "/admin/transaction-history", icon: "Receipt", order: 18, type: "item", parentId: null }
   ];
 
   // Fetch menu order from backend

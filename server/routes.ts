@@ -1405,6 +1405,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
         registrationSlabData: customer.registrationSlabData,
       };
 
+      // Record transaction history for successful registration
+      try {
+        const transactionHistoryData = {
+          customerId: customer.id.toString(),
+          customerName: customer.name,
+          customerEmail: customer.email,
+          customerContact: customer.contact,
+          transactionId: `direct_${Date.now()}_${customer.id}`,
+          paymentMethod: finalAmount === 0 ? 'free' : 'direct',
+          amount: finalAmount,
+          currency: 'INR',
+          status: 'success',
+          deviceType: customerData.deviceType,
+          deviceBrand: customerData.brand,
+          referralCode: customerData.sellerCode || null,
+          discountApplied: discount,
+          originalAmount: originalPrice,
+          registrationSource: customerData.registrationSource || 'regular',
+          metadata: JSON.stringify({
+            voucherCode: customer.voucherCode,
+            serialNumber: customerData.serialNumber,
+            modelName: customerData.modelName,
+            invoiceValue: customerData.invoiceValue,
+            dateOfPurchase: customerData.dateOfPurchase,
+            referralDiscountApplied: discount > 0
+          })
+        };
+        
+        console.log('📝 Creating transaction history for direct registration:', transactionHistoryData);
+        await storage.createTransactionHistory(transactionHistoryData);
+        console.log('✅ Transaction history recorded successfully');
+      } catch (historyError) {
+        console.error('❌ Failed to record transaction history:', historyError);
+        // Don't fail the registration if transaction history fails
+      }
+
       res.status(201).json({
         message:
           "Registration successful! You will receive confirmation shortly.",

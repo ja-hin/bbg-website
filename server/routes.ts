@@ -8135,20 +8135,9 @@ Required: GUPSHUP_API_KEY environment variable
 
       let menuToReturn = defaultMenuOrder;
 
-      if (savedMenuResult.recordset.length > 0) {
-        try {
-          const savedMenuData = JSON.parse(
-            savedMenuResult.recordset[0].menu_data,
-          );
-          menuToReturn = savedMenuData;
-          console.log("📋 Using saved menu order from database");
-        } catch (parseError) {
-          console.log("⚠️ Failed to parse saved menu data, using default");
-          menuToReturn = defaultMenuOrder;
-        }
-      } else {
-        console.log("📋 No saved menu order found, using default");
-      }
+      // TEMPORARILY FORCE DEFAULT MENU - ignore saved menu for now
+      console.log("🔄 FORCING DEFAULT MENU ORDER - including Referral Discount Settings and Transaction History");
+      menuToReturn = defaultMenuOrder;
 
       console.log(
         "Returning menu order:",

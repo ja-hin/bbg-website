@@ -7992,6 +7992,15 @@ Required: GUPSHUP_API_KEY environment variable
           parentId: null,
         },
         {
+          id: "referral-discount-settings",
+          label: "Referral Discount Settings",
+          href: "/admin/referral-discount-settings",
+          icon: "Percent",
+          order: 9.5,
+          type: "item",
+          parentId: null,
+        },
+        {
           id: "waiting-period",
           label: "Waiting Period Settings",
           href: "/admin/waiting-period-settings",
@@ -8447,6 +8456,7 @@ Required: GUPSHUP_API_KEY environment variable
               dateOfPurchase: customer.date_of_purchase,
               sellerCode: customer.seller_code,
               voucherCode: customer.voucher_code,
+              paymentIntentId: customer.payment_intent_id,
               isVerified: customer.is_verified,
               registrationSource: customer.registration_source || "regular",
               registrationSlabData: customer.registration_slab_data,

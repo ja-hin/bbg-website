@@ -44,6 +44,7 @@ interface Customer {
   dateOfPurchase: string;
   sellerCode?: string;
   voucherCode: string;
+  paymentIntentId?: string;
   isVerified: boolean;
   registrationSource: string;
   registrationSlabData?: string;
@@ -87,7 +88,7 @@ export default function CustomerRegistrations() {
     const headers = [
       'ID', 'Name', 'Contact', 'Email', 'Device Type', 'Brand', 'Model', 
       'Serial Number', 'Invoice Value', 'Purchase Date', 'Registration Date',
-      'Voucher Code', 'Seller Code', 'Registration Source', 'Device Age (Months)',
+      'Voucher Code', 'Seller Code', 'Transaction ID', 'Registration Source', 'Device Age (Months)',
       'Claim Percentage', 'Estimated Payout', 'Claim Status', 'Verified'
     ];
     
@@ -107,6 +108,7 @@ export default function CustomerRegistrations() {
         new Date(customer.createdAt).toLocaleDateString(),
         customer.voucherCode,
         customer.sellerCode || '',
+        customer.paymentIntentId || 'N/A',
         customer.registrationSource,
         customer.deviceAge || 0,
         `${customer.claimPercentage || 0}%`,
@@ -276,6 +278,7 @@ export default function CustomerRegistrations() {
                     <TableHead>Device Info</TableHead>
                     <TableHead>Purchase Details</TableHead>
                     <TableHead>Registration Info</TableHead>
+                    <TableHead>Transaction ID</TableHead>
                     <TableHead>Device Age</TableHead>
                     <TableHead>Estimated Payout</TableHead>
                     <TableHead>Claim Status</TableHead>
@@ -328,6 +331,26 @@ export default function CustomerRegistrations() {
                           <Badge variant={customer.registrationSource === 'acer_bbg' ? 'default' : 'secondary'} className="text-xs">
                             {customer.registrationSource === 'acer_bbg' ? 'Acer BBG' : 'Regular'}
                           </Badge>
+                        </div>
+                      </TableCell>
+                      
+                      <TableCell>
+                        <div className="space-y-1">
+                          {customer.paymentIntentId ? (
+                            <p className="text-sm font-mono text-blue-600">
+                              {customer.paymentIntentId.length > 20 ? 
+                                `${customer.paymentIntentId.substring(0, 20)}...` : 
+                                customer.paymentIntentId
+                              }
+                            </p>
+                          ) : (
+                            <p className="text-sm text-gray-400">No Transaction</p>
+                          )}
+                          <p className="text-xs text-gray-500">
+                            {customer.paymentIntentId?.startsWith('free_') ? 'Free Registration' : 
+                             customer.paymentIntentId?.startsWith('BBG_') ? 'PayU Payment' : 
+                             customer.paymentIntentId ? 'Payment Completed' : 'Direct Entry'}
+                          </p>
                         </div>
                       </TableCell>
                       

@@ -2143,8 +2143,24 @@ export class SqlServerStorage implements IStorage {
     if (setParts.length > 0) { // Check if there are fields to update
       const query = `UPDATE distributors SET ${setParts.join(', ')} WHERE id = @id`;
       console.log("📝 Executing update query:", query);
+      console.log("📝 SQL Parameters being sent:", {
+        id: id,
+        accountHolderName: updates.accountHolderName,
+        bankAccount: updates.bankAccount,
+        bankAccountConfirm: updates.bankAccountConfirm,
+        ifscCode: updates.ifscCode,
+        upiId: updates.upiId
+      });
+      
       const result = await request.query(query);
       console.log("✅ Update completed. Rows affected:", result.rowsAffected);
+      
+      // Immediately verify the update by re-reading the data
+      const verifyQuery = `SELECT account_holder_name, bank_account, ifsc_code, upi_id FROM distributors WHERE id = @verifyId`;
+      const verifyRequest = db.pool.request();
+      verifyRequest.input('verifyId', sql.Int, id);
+      const verifyResult = await verifyRequest.query(verifyQuery);
+      console.log("🔍 Post-update verification:", verifyResult.recordset[0]);
     } else {
       console.log("⚠️ No fields to update - all values were undefined");
     }

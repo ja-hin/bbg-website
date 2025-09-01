@@ -562,11 +562,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       await storage.updateDistributor(distributor.id, updateData);
+      
+      // Force fresh data by getting distributor again
       const updatedDistributor = await storage.getDistributorById(distributor.id);
+      console.log("🔄 Returning updated distributor data:", {
+        accountHolderName: updatedDistributor?.accountHolderName,
+        bankAccount: updatedDistributor?.bankAccount,
+        ifscCode: updatedDistributor?.ifscCode
+      });
+      
+      // Set no-cache headers to force fresh data
+      res.set({
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'Surrogate-Control': 'no-store'
+      });
       
       res.json({
         message: "Profile updated successfully",
-        distributor: updatedDistributor
+        distributor: updatedDistributor,
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       console.error("❌ Profile update failed:", error);

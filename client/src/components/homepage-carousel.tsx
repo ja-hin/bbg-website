@@ -90,14 +90,15 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 5000 }: H
             <div key={banner.id} className="w-full flex-shrink-0">
               {/* Desktop Image */}
               <div 
-                className="hidden md:block relative w-full cursor-pointer group"
+                className="hidden md:block relative w-full cursor-pointer"
                 onClick={() => handleBannerClick(banner)}
               >
                 <div className="aspect-[16/5] w-full overflow-hidden">
                   <img
                     src={banner.desktopImageUrl}
                     alt="Banner Image"
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-full object-cover"
+                    style={{ imageRendering: 'crisp-edges' }}
                     onError={(e) => {
                       console.error('Desktop image failed to load:', banner.desktopImageUrl);
                       // Try local uploads route if the original S3 URL fails
@@ -112,14 +113,15 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 5000 }: H
 
               {/* Mobile Image */}
               <div 
-                className="block md:hidden relative w-full cursor-pointer group"
+                className="block md:hidden relative w-full cursor-pointer"
                 onClick={() => handleBannerClick(banner)}
               >
                 <div className="aspect-[4/3] w-full overflow-hidden">
                   <img
                     src={banner.mobileImageUrl}
                     alt="Banner Image"
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-full object-cover"
+                    style={{ imageRendering: 'crisp-edges' }}
                     onError={(e) => {
                       console.error('Mobile image failed to load:', banner.mobileImageUrl);
                       // Try local uploads route if the original S3 URL fails

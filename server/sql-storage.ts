@@ -296,6 +296,38 @@ export class SqlServerStorage implements IStorage {
       await referralDiscountRequest.query(referralDiscountTableQuery);
       console.log('✅ REFERRAL_DISCOUNT_SETTINGS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
       
+      // Create transaction_history table
+      console.log('🔥 ENSURING TRANSACTION_HISTORY TABLE EXISTS IN DATABASE...');
+      const transactionHistoryQuery = `
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'transaction_history')
+        BEGIN
+          CREATE TABLE transaction_history (
+            id NVARCHAR(100) PRIMARY KEY DEFAULT NEWID(),
+            customer_id NVARCHAR(50),
+            customer_name NVARCHAR(255) NOT NULL,
+            customer_email NVARCHAR(255),
+            customer_contact NVARCHAR(20),
+            transaction_id NVARCHAR(255) NOT NULL,
+            payment_method NVARCHAR(50) NOT NULL,
+            amount DECIMAL(10,2) NOT NULL,
+            currency NVARCHAR(10) DEFAULT 'INR',
+            status NVARCHAR(50) DEFAULT 'pending',
+            device_type NVARCHAR(50),
+            device_brand NVARCHAR(100),
+            referral_code NVARCHAR(20),
+            discount_applied DECIMAL(10,2) DEFAULT 0,
+            original_amount DECIMAL(10,2),
+            registration_source NVARCHAR(50) DEFAULT 'regular',
+            metadata NVARCHAR(MAX),
+            created_at DATETIME2 DEFAULT GETDATE(),
+            updated_at DATETIME2 DEFAULT GETDATE()
+          );
+        END
+      `;
+      const transactionHistoryRequest = db.pool.request();
+      await transactionHistoryRequest.query(transactionHistoryQuery);
+      console.log('✅ TRANSACTION_HISTORY TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+      
       // Create WAITING_PERIOD_SETTINGS table as well
       console.log('🔥 ENSURING WAITING_PERIOD_SETTINGS TABLE EXISTS IN DATABASE...');
       const waitingPeriodTableQuery = `
@@ -3623,6 +3655,178 @@ export class SqlServerStorage implements IStorage {
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };
+  }
+
+  // ===== TRANSACTION HISTORY METHODS =====
+
+  async createTransactionHistory(transaction: {
+    customerId?: string;
+    customerName: string;
+    customerEmail?: string;
+    customerContact?: string;
+    transactionId: string;
+    paymentMethod: string;
+    amount: number;
+    currency?: string;
+    status?: string;
+    deviceType?: string;
+    deviceBrand?: string;
+    referralCode?: string;
+    discountApplied?: number;
+    originalAmount?: number;
+    registrationSource?: string;
+    metadata?: string;
+  }): Promise<any> {
+    await db.connectDB();
+    
+    const query = `
+      INSERT INTO transaction_history (
+        customer_id, customer_name, customer_email, customer_contact,
+        transaction_id, payment_method, amount, currency, status,
+        device_type, device_brand, referral_code, discount_applied,
+        original_amount, registration_source, metadata
+      )
+      OUTPUT INSERTED.*
+      VALUES (
+        @customerId, @customerName, @customerEmail, @customerContact,
+        @transactionId, @paymentMethod, @amount, @currency, @status,
+        @deviceType, @deviceBrand, @referralCode, @discountApplied,
+        @originalAmount, @registrationSource, @metadata
+      )
+    `;
+    
+    const request = db.pool.request();
+    request.input('customerId', sql.VarChar, transaction.customerId || null);
+    request.input('customerName', sql.VarChar, transaction.customerName);
+    request.input('customerEmail', sql.VarChar, transaction.customerEmail || null);
+    request.input('customerContact', sql.VarChar, transaction.customerContact || null);
+    request.input('transactionId', sql.VarChar, transaction.transactionId);
+    request.input('paymentMethod', sql.VarChar, transaction.paymentMethod);
+    request.input('amount', sql.Decimal(10, 2), transaction.amount);
+    request.input('currency', sql.VarChar, transaction.currency || 'INR');
+    request.input('status', sql.VarChar, transaction.status || 'pending');
+    request.input('deviceType', sql.VarChar, transaction.deviceType || null);
+    request.input('deviceBrand', sql.VarChar, transaction.deviceBrand || null);
+    request.input('referralCode', sql.VarChar, transaction.referralCode || null);
+    request.input('discountApplied', sql.Decimal(10, 2), transaction.discountApplied || 0);
+    request.input('originalAmount', sql.Decimal(10, 2), transaction.originalAmount || null);
+    request.input('registrationSource', sql.VarChar, transaction.registrationSource || 'regular');
+    request.input('metadata', sql.NVarChar(sql.MAX), transaction.metadata || null);
+    
+    const result = await request.query(query);
+    return result.recordset[0];
+  }
+
+  async updateTransactionHistory(transactionId: string, updates: {
+    status?: string;
+    customerId?: string;
+    metadata?: string;
+  }): Promise<void> {
+    await db.connectDB();
+    
+    let setParts: string[] = [];
+    const request = db.pool.request();
+    
+    if (updates.status) {
+      setParts.push('status = @status');
+      request.input('status', sql.VarChar, updates.status);
+    }
+    if (updates.customerId) {
+      setParts.push('customer_id = @customerId');
+      request.input('customerId', sql.VarChar, updates.customerId);
+    }
+    if (updates.metadata !== undefined) {
+      setParts.push('metadata = @metadata');
+      request.input('metadata', sql.NVarChar(sql.MAX), updates.metadata);
+    }
+    
+    if (setParts.length === 0) return;
+    
+    setParts.push('updated_at = GETDATE()');
+    
+    const query = `
+      UPDATE transaction_history 
+      SET ${setParts.join(', ')}
+      WHERE transaction_id = @transactionId
+    `;
+    
+    request.input('transactionId', sql.VarChar, transactionId);
+    await request.query(query);
+  }
+
+  async getAllTransactionHistory(filters?: {
+    status?: string;
+    paymentMethod?: string;
+    dateFrom?: string;
+    dateTo?: string;
+    search?: string;
+  }): Promise<any[]> {
+    await db.connectDB();
+    
+    let query = `
+      SELECT *
+      FROM transaction_history
+      WHERE 1=1
+    `;
+    
+    const request = db.pool.request();
+    
+    if (filters?.status && filters.status !== 'all') {
+      query += ' AND status = @status';
+      request.input('status', sql.VarChar, filters.status);
+    }
+    
+    if (filters?.paymentMethod && filters.paymentMethod !== 'all') {
+      query += ' AND payment_method = @paymentMethod';
+      request.input('paymentMethod', sql.VarChar, filters.paymentMethod);
+    }
+    
+    if (filters?.dateFrom) {
+      query += ' AND created_at >= @dateFrom';
+      request.input('dateFrom', sql.DateTime2, new Date(filters.dateFrom));
+    }
+    
+    if (filters?.dateTo) {
+      query += ' AND created_at <= @dateTo';
+      request.input('dateTo', sql.DateTime2, new Date(filters.dateTo + ' 23:59:59'));
+    }
+    
+    if (filters?.search) {
+      query += ` AND (
+        customer_name LIKE @search OR 
+        customer_email LIKE @search OR 
+        customer_contact LIKE @search OR
+        transaction_id LIKE @search OR
+        referral_code LIKE @search
+      )`;
+      request.input('search', sql.VarChar, `%${filters.search}%`);
+    }
+    
+    query += ' ORDER BY created_at DESC';
+    
+    const result = await request.query(query);
+    
+    return result.recordset.map((row: any) => ({
+      id: row.id,
+      customerId: row.customer_id,
+      customerName: row.customer_name,
+      customerEmail: row.customer_email,
+      customerContact: row.customer_contact,
+      transactionId: row.transaction_id,
+      paymentMethod: row.payment_method,
+      amount: parseFloat(row.amount),
+      currency: row.currency,
+      status: row.status,
+      deviceType: row.device_type,
+      deviceBrand: row.device_brand,
+      referralCode: row.referral_code,
+      discountApplied: parseFloat(row.discount_applied || 0),
+      originalAmount: parseFloat(row.original_amount || 0),
+      registrationSource: row.registration_source,
+      metadata: row.metadata,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    }));
   }
 }
 

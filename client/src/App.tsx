@@ -42,6 +42,7 @@ import AdminReferralDiscountSettings from "@/pages/admin-referral-discount-setti
 import AdminWaitingPeriodSettings from "@/pages/admin-waiting-period-settings";
 import AdminHomepageBanners from "@/pages/admin/homepage-banners";
 import AdminCustomerRegistrations from "@/pages/admin/customer-registrations";
+import AdminTransactionHistory from "@/pages/admin/admin-transaction-history";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import TermsAndConditions from "@/pages/terms-and-conditions";
@@ -107,6 +108,7 @@ function Router() {
       <Route path="/admin/waiting-period-settings" component={AdminWaitingPeriodSettings} />
       <Route path="/admin/homepage-banners" component={AdminHomepageBanners} />
       <Route path="/admin/customer-registrations" component={AdminCustomerRegistrations} />
+      <Route path="/admin/transaction-history" component={AdminTransactionHistory} />
       
       {/* Distributor routes without header/footer */}
       <Route path="/distributor/login" component={DistributorLogin} />

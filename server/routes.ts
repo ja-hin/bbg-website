@@ -716,6 +716,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { txnid, amount, status, hash, ...otherParams } = req.body;
 
+      console.log('📝 PayU SUCCESS - Recording transaction history:', {
+        txnid,
+        amount,
+        status,
+        customerData: otherParams
+      });
+
       // Get PayU config for hash verification
       const payuConfig = getSafePayUConfig();
       if (!payuConfig) {
@@ -8072,6 +8079,15 @@ Required: GUPSHUP_API_KEY environment variable
           type: "item",
           parentId: null,
         },
+        {
+          id: "transaction-history",
+          label: "Transaction History",
+          href: "/admin/transaction-history",
+          icon: "Receipt",
+          order: 18,
+          type: "item",
+          parentId: null,
+        },
       ];
 
       // Try to get saved menu order from database
@@ -8681,6 +8697,127 @@ Required: GUPSHUP_API_KEY environment variable
       }
     },
   );
+
+  // ===== TRANSACTION HISTORY API ROUTES =====
+
+  // Admin transaction history routes
+  app.get('/api/admin/transaction-history', isAdminAuthenticated, async (req, res) => {
+    try {
+      console.log('🔍 Fetching transaction history with filters:', req.query);
+      
+      const filters = {
+        status: req.query.status as string,
+        paymentMethod: req.query.paymentMethod as string,
+        dateFrom: req.query.dateFrom as string,
+        dateTo: req.query.dateTo as string,
+        search: req.query.search as string,
+      };
+
+      const transactions = await storage.getAllTransactionHistory(filters);
+      console.log(`✅ Found ${transactions.length} transaction history records`);
+      res.json(transactions);
+    } catch (error) {
+      console.error('❌ Error fetching transaction history:', error);
+      res.status(500).json({ error: 'Failed to fetch transaction history' });
+    }
+  });
+
+  app.post('/api/admin/transaction-history', isAdminAuthenticated, async (req, res) => {
+    try {
+      console.log('📝 Creating new transaction history entry:', req.body);
+      
+      const transaction = await storage.createTransactionHistory(req.body);
+      console.log('✅ Transaction history created successfully:', transaction.id);
+      res.json(transaction);
+    } catch (error) {
+      console.error('❌ Error creating transaction history:', error);
+      res.status(500).json({ error: 'Failed to create transaction history' });
+    }
+  });
+
+  app.put('/api/admin/transaction-history/:transactionId', isAdminAuthenticated, async (req, res) => {
+    try {
+      const transactionId = req.params.transactionId;
+      console.log(`📝 Updating transaction history ${transactionId}:`, req.body);
+      
+      await storage.updateTransactionHistory(transactionId, req.body);
+      console.log(`✅ Transaction history ${transactionId} updated successfully`);
+      res.json({ message: 'Transaction updated successfully' });
+    } catch (error) {
+      console.error('❌ Error updating transaction history:', error);
+      res.status(500).json({ error: 'Failed to update transaction history' });
+    }
+  });
+
+  // Export transaction history to CSV
+  app.get('/api/admin/export/transaction-history', isAdminAuthenticated, async (req, res) => {
+    try {
+      console.log('📋 Exporting transaction history to CSV...');
+      
+      const filters = {
+        status: req.query.status as string,
+        paymentMethod: req.query.paymentMethod as string,
+        dateFrom: req.query.dateFrom as string,
+        dateTo: req.query.dateTo as string,
+        search: req.query.search as string,
+      };
+
+      const transactions = await storage.getAllTransactionHistory(filters);
+      
+      // Create CSV content
+      const csvHeader = [
+        'Transaction ID',
+        'Customer Name',
+        'Customer Email', 
+        'Customer Contact',
+        'Payment Method',
+        'Amount (₹)',
+        'Currency',
+        'Status',
+        'Device Type',
+        'Device Brand',
+        'Referral Code',
+        'Discount Applied (₹)',
+        'Original Amount (₹)',
+        'Registration Source',
+        'Created At',
+        'Updated At'
+      ].join(',');
+      
+      const csvRows = transactions.map(transaction => [
+        `"${transaction.transactionId}"`,
+        `"${transaction.customerName}"`,
+        `"${transaction.customerEmail || ''}"`,
+        `"${transaction.customerContact || ''}"`,
+        `"${transaction.paymentMethod}"`,
+        transaction.amount,
+        `"${transaction.currency}"`,
+        `"${transaction.status}"`,
+        `"${transaction.deviceType || ''}"`,
+        `"${transaction.deviceBrand || ''}"`,
+        `"${transaction.referralCode || ''}"`,
+        transaction.discountApplied,
+        transaction.originalAmount,
+        `"${transaction.registrationSource}"`,
+        `"${new Date(transaction.createdAt).toLocaleString()}"`,
+        `"${new Date(transaction.updatedAt).toLocaleString()}"`
+      ].join(','));
+      
+      const csvContent = [csvHeader, ...csvRows].join('\n');
+      
+      const currentDate = new Date().toISOString().split('T')[0];
+      const filename = `transaction_history_${currentDate}.csv`;
+      
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.send(csvContent);
+      
+      console.log(`✅ Transaction history CSV exported successfully: ${filename}`);
+    } catch (error) {
+      console.error('❌ Error exporting transaction history:', error);
+      res.status(500).json({ error: 'Failed to export transaction history' });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

@@ -96,31 +96,18 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 5000 }: H
                 <div className="aspect-[16/5] w-full overflow-hidden">
                   <img
                     src={banner.desktopImageUrl}
-                    alt={banner.title}
+                    alt="Banner Image"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y3ZjdmNyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5JbWFnZSBOb3QgRm91bmQ8L3RleHQ+PC9zdmc+';
+                      console.error('Desktop image failed to load:', banner.desktopImageUrl);
+                      // Try local uploads route if the original S3 URL fails
+                      const img = e.target as HTMLImageElement;
+                      if (!img.src.includes('/uploads/')) {
+                        img.src = `/uploads/${banner.desktopImageUrl.split('/').pop()}`;
+                      }
                     }}
                   />
                 </div>
-                
-                {/* Banner Text Overlay - Desktop */}
-                {(banner.title || banner.description) && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent flex items-center">
-                    <div className="text-white p-8 md:p-12 lg:p-16 max-w-2xl">
-                      {banner.title && (
-                        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-4 leading-tight">
-                          {banner.title}
-                        </h2>
-                      )}
-                      {banner.description && (
-                        <p className="text-lg md:text-xl text-white/90 leading-relaxed">
-                          {banner.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Mobile Image */}
@@ -131,31 +118,18 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 5000 }: H
                 <div className="aspect-[4/3] w-full overflow-hidden">
                   <img
                     src={banner.mobileImageUrl}
-                    alt={banner.title}
+                    alt="Banner Image"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y3ZjdmNyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5JbWFnZSBOb3QgRm91bmQ8L3RleHQ+PC9zdmc+';
+                      console.error('Mobile image failed to load:', banner.mobileImageUrl);
+                      // Try local uploads route if the original S3 URL fails
+                      const img = e.target as HTMLImageElement;
+                      if (!img.src.includes('/uploads/')) {
+                        img.src = `/uploads/${banner.mobileImageUrl.split('/').pop()}`;
+                      }
                     }}
                   />
                 </div>
-                
-                {/* Banner Text Overlay - Mobile */}
-                {(banner.title || banner.description) && (
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
-                    <div className="text-white p-4 w-full">
-                      {banner.title && (
-                        <h2 className="text-xl font-bold mb-1 leading-tight">
-                          {banner.title}
-                        </h2>
-                      )}
-                      {banner.description && (
-                        <p className="text-sm text-white/90 leading-snug line-clamp-2">
-                          {banner.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           ))}

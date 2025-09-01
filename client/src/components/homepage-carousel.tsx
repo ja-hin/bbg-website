@@ -16,8 +16,19 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 5000 }: H
   // Fetch active homepage banners
   const { data: banners = [], isLoading } = useQuery({
     queryKey: ['/api/homepage-banners'],
-    queryFn: () => apiRequest('/api/homepage-banners').then(res => res.json()),
-    retry: false
+    queryFn: async () => {
+      const response = await fetch('/api/homepage-banners', {
+        cache: 'no-cache'
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch banners');
+      }
+      return response.json();
+    },
+    retry: false,
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false
   });
 
   // Auto-play functionality

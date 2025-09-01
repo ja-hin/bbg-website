@@ -46,13 +46,25 @@ export default function DistributorDashboard() {
   const { data: customers, isLoading: customersLoading } = useDistributorCustomers();
   const { data: payouts, isLoading: payoutsLoading } = useDistributorPayouts();
 
-  // Form state
+  // Form state - initialize with distributor data when available
   const [taxFormData, setTaxFormData] = useState({
-    panNumber: '',
-    isGstRegistered: false,
-    gstin: '',
-    isMsmeRegistered: false
+    panNumber: distributor?.panNumber || '',
+    isGstRegistered: distributor?.isGstRegistered || false,
+    gstin: distributor?.gstin || '',
+    isMsmeRegistered: distributor?.isMsmeRegistered || false
   });
+
+  // Update form data when distributor data loads
+  useEffect(() => {
+    if (distributor) {
+      setTaxFormData({
+        panNumber: distributor.panNumber || '',
+        isGstRegistered: distributor.isGstRegistered || false,
+        gstin: distributor.gstin || '',
+        isMsmeRegistered: distributor.isMsmeRegistered || false
+      });
+    }
+  }, [distributor]);
   
   const [bankFormData, setBankFormData] = useState({
     accountHolderName: '',
@@ -99,11 +111,13 @@ export default function DistributorDashboard() {
 
   // Save handlers
   const handleSaveTaxDetails = () => {
+    const panNumber = (document.getElementById('panNumber') as HTMLInputElement)?.value;
+    
     const taxData = {
-      panNumber: (document.getElementById('panNumber') as HTMLInputElement)?.value,
-      isGstRegistered: (document.getElementById('gstRegistered') as HTMLInputElement)?.checked,
-      gstin: (document.getElementById('gstin') as HTMLInputElement)?.value,
-      isMsmeRegistered: (document.getElementById('msmeRegistered') as HTMLInputElement)?.checked
+      panNumber: panNumber,
+      isGstRegistered: taxFormData.isGstRegistered,
+      gstin: taxFormData.gstin,
+      isMsmeRegistered: taxFormData.isMsmeRegistered
     };
     
     console.log("Saving tax details:", taxData);
@@ -524,65 +538,78 @@ export default function DistributorDashboard() {
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="gstRegistered"
-                          defaultChecked={distributor?.isGstRegistered || false}
+                          checked={taxFormData.isGstRegistered}
+                          onCheckedChange={(checked) => 
+                            setTaxFormData(prev => ({ ...prev, isGstRegistered: !!checked }))
+                          }
                         />
                         <Label htmlFor="gstRegistered" className="text-sm font-medium">
                           I am GST registered
                         </Label>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <Label htmlFor="gstin">GSTIN</Label>
-                          <Input
-                            id="gstin"
-                            type="text"
-                            placeholder="22ABCDE1234F1Z5"
-                            defaultValue={distributor?.gstin || ''}
-                          />
+                      {taxFormData.isGstRegistered && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <Label htmlFor="gstin">GSTIN</Label>
+                            <Input
+                              id="gstin"
+                              type="text"
+                              placeholder="22ABCDE1234F1Z5"
+                              value={taxFormData.gstin}
+                              onChange={(e) => 
+                                setTaxFormData(prev => ({ ...prev, gstin: e.target.value }))
+                              }
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="gstFile">GST Certificate</Label>
+                            <Input
+                              id="gstFile"
+                              type="file"
+                              accept=".pdf,.jpg,.jpeg,.png"
+                            />
+                            {distributor?.gstCertificateFile && (
+                              <p className="text-xs text-green-600 flex items-center gap-1">
+                                <CheckCircle className="w-3 h-3" />
+                                File uploaded
+                              </p>
+                            )}
+                          </div>
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="gstFile">GST Certificate</Label>
-                          <Input
-                            id="gstFile"
-                            type="file"
-                            accept=".pdf,.jpg,.jpeg,.png"
-                          />
-                          {distributor?.gstCertificateFile && (
-                            <p className="text-xs text-green-600 flex items-center gap-1">
-                              <CheckCircle className="w-3 h-3" />
-                              File uploaded
-                            </p>
-                          )}
-                        </div>
-                      </div>
+                      )}
                     </div>
 
                     <div className="space-y-6 p-4 bg-gray-50 rounded-lg">
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id="msmeRegistered"
-                          defaultChecked={distributor?.isMsmeRegistered || false}
+                          checked={taxFormData.isMsmeRegistered}
+                          onCheckedChange={(checked) => 
+                            setTaxFormData(prev => ({ ...prev, isMsmeRegistered: !!checked }))
+                          }
                         />
                         <Label htmlFor="msmeRegistered" className="text-sm font-medium">
                           I am MSME registered
                         </Label>
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="msmeFile">MSME Certificate</Label>
-                        <Input
-                          id="msmeFile"
-                          type="file"
-                          accept=".pdf,.jpg,.jpeg,.png"
-                        />
-                        {distributor?.msmeCertificateFile && (
-                          <p className="text-xs text-green-600 flex items-center gap-1">
-                            <CheckCircle className="w-3 h-3" />
-                            File uploaded
-                          </p>
-                        )}
-                      </div>
+                      {taxFormData.isMsmeRegistered && (
+                        <div className="space-y-2">
+                          <Label htmlFor="msmeFile">MSME Certificate</Label>
+                          <Input
+                            id="msmeFile"
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                          />
+                          {distributor?.msmeCertificateFile && (
+                            <p className="text-xs text-green-600 flex items-center gap-1">
+                              <CheckCircle className="w-3 h-3" />
+                              File uploaded
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                     <div className="pt-4">

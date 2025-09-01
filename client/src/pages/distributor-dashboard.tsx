@@ -65,9 +65,13 @@ export default function DistributorDashboard() {
   // Profile update mutations
   const updateProfileMutation = useMutation({
     mutationFn: async (profileData: any) => {
+      const sessionToken = localStorage.getItem('distributorToken');
       return await apiRequest("/api/distributor/profile", {
         method: "PUT",
-        body: profileData
+        body: profileData,
+        headers: {
+          Authorization: `Bearer ${sessionToken}`
+        }
       });
     },
     onSuccess: () => {

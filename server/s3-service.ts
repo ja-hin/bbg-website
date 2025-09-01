@@ -35,7 +35,7 @@ export class S3Service {
       Key: key,
       Body: file,
       ContentType: mimeType,
-      ACL: isPublic ? 'public-read' : 'private', // Make public if specified
+      // ACL removed - bucket doesn't allow ACLs
     });
 
     try {
@@ -90,7 +90,7 @@ export const createS3Upload = (folder = 'uploads', isPublic = false, allowCSV = 
     storage: multerS3({
       s3: s3Client,
       bucket: BUCKET_NAME,
-      acl: isPublic ? 'public-read' : 'private',
+      // acl removed - bucket doesn't allow ACLs
       key: function (req: any, file: any, cb: any) {
         const uniqueId = nanoid();
         const extension = path.extname(file.originalname);

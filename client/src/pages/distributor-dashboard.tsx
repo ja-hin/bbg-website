@@ -77,9 +77,16 @@ export default function DistributorDashboard() {
     onSuccess: () => {
       toast({
         title: "Profile Updated",
-        description: "Your profile has been updated successfully",
+        description: "Your profile has been updated successfully. Progress will refresh in a moment.",
       });
+      // Force refresh all distributor-related data
       queryClient.invalidateQueries({ queryKey: ["/api/distributor/me"] });
+      queryClient.refetchQueries({ queryKey: ["/api/distributor/me"] });
+      
+      // Additional refresh after short delay to ensure progress updates
+      setTimeout(() => {
+        queryClient.refetchQueries({ queryKey: ["/api/distributor/me"] });
+      }, 1500);
     },
     onError: (error: any) => {
       toast({

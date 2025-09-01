@@ -2088,7 +2088,15 @@ export class SqlServerStorage implements IStorage {
       request.input('msmeCertificateFile', sql.NVarChar, updates.msmeCertificateFile);
     }
 
-    // Bank details fields
+    // Bank details fields - with detailed logging
+    console.log("🔍 Bank details values being processed:", {
+      accountHolderName: updates.accountHolderName,
+      bankAccount: updates.bankAccount,
+      bankAccountConfirm: updates.bankAccountConfirm,
+      ifscCode: updates.ifscCode,
+      upiId: updates.upiId
+    });
+
     if (updates.accountHolderName !== undefined) {
       setParts.push('account_holder_name = @accountHolderName');
       request.input('accountHolderName', sql.NVarChar, updates.accountHolderName);
@@ -2135,7 +2143,10 @@ export class SqlServerStorage implements IStorage {
     if (setParts.length > 0) { // Check if there are fields to update
       const query = `UPDATE distributors SET ${setParts.join(', ')} WHERE id = @id`;
       console.log("📝 Executing update query:", query);
-      await request.query(query);
+      const result = await request.query(query);
+      console.log("✅ Update completed. Rows affected:", result.rowsAffected);
+    } else {
+      console.log("⚠️ No fields to update - all values were undefined");
     }
   }
 

@@ -120,7 +120,7 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 5000 }: H
                   <img
                     src={banner.mobileImageUrl}
                     alt="Banner Image"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     style={{ imageRendering: 'crisp-edges' }}
                     onError={(e) => {
                       console.error('Mobile image failed to load:', banner.mobileImageUrl);

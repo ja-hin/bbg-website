@@ -83,6 +83,8 @@ export default function AdminBrandsNew() {
   const [bulkData, setBulkData] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'completed' | 'error'>('idle');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isProcessingFile, setIsProcessingFile] = useState(false);
 
   // Fetch brands
   const { data: brands, isLoading: brandsLoading } = useQuery<Brand[]>({
@@ -333,6 +335,182 @@ laptop,Surface,Pro 9`;
 
   const insertSampleData = () => {
     setBulkData(getSampleData());
+  };
+
+  // File handling functions
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setBulkData(''); // Clear manual input when file is selected
+    }
+  };
+
+  const handleFileUpload = async () => {
+    if (!selectedFile) {
+      toast({ title: 'Please select a file to upload', variant: 'destructive' });
+      return;
+    }
+
+    setIsProcessingFile(true);
+    try {
+      const parsedData = await processExcelFile(selectedFile);
+      if (parsedData.length === 0) {
+        toast({ title: 'No valid data found in file', variant: 'destructive' });
+        return;
+      }
+      
+      // Convert to the format expected by the bulk upload
+      const csvText = [
+        'Device Type,Brand,Model',
+        ...parsedData.map(item => `${item.device},${item.brand},${item.model}`)
+      ].join('\n');
+      
+      setBulkData(csvText);
+      setSelectedFile(null);
+      toast({ title: `File processed successfully! ${parsedData.length} rows loaded.` });
+    } catch (error: any) {
+      toast({ title: 'File processing failed', description: error.message, variant: 'destructive' });
+    } finally {
+      setIsProcessingFile(false);
+    }
+  };
+
+  const processExcelFile = async (file: File): Promise<Array<{ device: string; brand: string; model: string }>> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        try {
+          const data = e.target?.result;
+          if (!data) {
+            reject(new Error('Failed to read file'));
+            return;
+          }
+
+          const fileName = file.name.toLowerCase();
+          
+          if (fileName.endsWith('.csv')) {
+            const text = data as string;
+            const parsedData = parseCsvData(text);
+            resolve(parsedData);
+          } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+            // Import XLSX library dynamically
+            import('xlsx').then((XLSX) => {
+              const workbook = XLSX.read(data, { type: 'array' });
+              const sheetName = workbook.SheetNames[0];
+              const worksheet = workbook.Sheets[sheetName];
+              const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+              
+              const processedData: Array<{ device: string; brand: string; model: string }> = [];
+              
+              // Skip header row if it exists
+              const startIndex = jsonData[0] && Array.isArray(jsonData[0]) && 
+                               (jsonData[0] as any[])[0]?.toString().toLowerCase().includes('device') ? 1 : 0;
+              
+              for (let i = startIndex; i < jsonData.length; i++) {
+                const row = jsonData[i] as any[];
+                if (row && row.length >= 3 && row[0] && row[1] && row[2]) {
+                  processedData.push({
+                    device: row[0].toString().trim(),
+                    brand: row[1].toString().trim(),
+                    model: row[2].toString().trim()
+                  });
+                }
+              }
+              
+              resolve(processedData);
+            }).catch(reject);
+          } else {
+            reject(new Error('Unsupported file format. Please use .xlsx, .xls, or .csv files.'));
+          }
+        } catch (error) {
+          reject(error);
+        }
+      };
+      
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      
+      if (file.name.toLowerCase().endsWith('.csv')) {
+        reader.readAsText(file);
+      } else {
+        reader.readAsArrayBuffer(file);
+      }
+    });
+  };
+
+  const parseCsvData = (csvText: string): Array<{ device: string; brand: string; model: string }> => {
+    const lines = csvText.trim().split('\n');
+    const data: Array<{ device: string; brand: string; model: string }> = [];
+    
+    // Skip header row if it exists
+    const startIndex = lines[0]?.toLowerCase().includes('device') ? 1 : 0;
+    
+    for (let i = startIndex; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      
+      const columns = line.split(',').map(col => col.trim().replace(/"/g, ''));
+      if (columns.length >= 3) {
+        data.push({
+          device: columns[0],
+          brand: columns[1], 
+          model: columns[2]
+        });
+      }
+    }
+    
+    return data;
+  };
+
+  const downloadSampleExcel = async () => {
+    try {
+      // Dynamically import XLSX library
+      const XLSX = await import('xlsx');
+      
+      // Create sample Excel data
+      const sampleData = [
+        ['Device Type', 'Brand', 'Model'],
+        ['mobile', 'Apple', 'iPhone 15 Pro'],
+        ['mobile', 'Samsung', 'Galaxy S24 Ultra'],
+        ['laptop', 'Dell', 'XPS 13'],
+        ['laptop', 'MacBook', 'Air M2']
+      ];
+      
+      // Create workbook and worksheet
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.aoa_to_sheet(sampleData);
+      
+      // Add the worksheet to workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Brands & Models');
+      
+      // Generate Excel file and download
+      XLSX.writeFile(workbook, 'brands_models_sample.xlsx');
+      
+      toast({ title: 'Sample file downloaded successfully' });
+    } catch (error) {
+      // Fallback to CSV if Excel generation fails
+      const csvContent = [
+        'Device Type,Brand,Model',
+        'mobile,Apple,iPhone 15 Pro',
+        'mobile,Samsung,Galaxy S24 Ultra',
+        'laptop,Dell,XPS 13',
+        'laptop,MacBook,Air M2'
+      ].join('\n');
+      
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'brands_models_sample.csv';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({ title: 'Sample CSV file downloaded (Excel not available)' });
+    }
   };
 
   // Add dummy data mutation
@@ -757,28 +935,85 @@ laptop,Surface,Pro 9`;
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="flex space-x-2 justify-center">
-                <Button onClick={insertSampleData} variant="outline" size="sm">
-                  <Download className="h-4 w-4 mr-2" />
-                  Insert Sample Data
-                </Button>
-                <Button 
-                  onClick={() => setBulkData('')} 
-                  variant="outline" 
-                  size="sm"
-                  disabled={!bulkData}
-                >
-                  Clear
-                </Button>
-                <Button 
-                  onClick={() => addDummyDataMutation.mutate()}
-                  variant="default" 
-                  size="sm"
-                  disabled={addDummyDataMutation.isPending}
-                  className="bg-green-600 hover:bg-green-700"
-                >
-                  {addDummyDataMutation.isPending ? "Adding..." : "Add Dummy Data to DB"}
-                </Button>
+              {/* Excel File Upload Section */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50">
+                <div className="text-center space-y-4">
+                  <Upload className="w-12 h-12 text-gray-400 mx-auto" />
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Upload Excel/CSV File</h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Upload a file with columns: Device Type, Brand, Model
+                    </p>
+                    
+                    <div className="flex justify-center gap-3 mb-4">
+                      <Button 
+                        onClick={() => document.getElementById('file-upload')?.click()}
+                        disabled={isProcessingFile}
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        Choose File
+                      </Button>
+                      <Button variant="outline" onClick={downloadSampleExcel}>
+                        <Download className="w-4 h-4 mr-2" />
+                        Download Sample
+                      </Button>
+                    </div>
+                    
+                    <input 
+                      id="file-upload"
+                      type="file" 
+                      accept=".xlsx,.xls,.csv"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+                    
+                    {selectedFile && (
+                      <div className="bg-white p-4 rounded-lg border">
+                        <p className="font-medium text-green-600">📄 {selectedFile.name}</p>
+                        <p className="text-sm text-gray-500">{(selectedFile.size / 1024).toFixed(1)} KB</p>
+                        <div className="flex justify-center gap-2 mt-3">
+                          <Button 
+                            onClick={handleFileUpload}
+                            disabled={isProcessingFile}
+                          >
+                            {isProcessingFile ? 'Processing...' : 'Process File'}
+                          </Button>
+                          <Button variant="outline" onClick={() => setSelectedFile(null)}>
+                            Remove
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Manual Input Section */}
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Or Enter Data Manually</h3>
+                <div className="flex space-x-2 justify-center mb-4">
+                  <Button onClick={insertSampleData} variant="outline" size="sm">
+                    <Download className="h-4 w-4 mr-2" />
+                    Insert Sample Data
+                  </Button>
+                  <Button 
+                    onClick={() => setBulkData('')} 
+                    variant="outline" 
+                    size="sm"
+                    disabled={!bulkData}
+                  >
+                    Clear
+                  </Button>
+                  <Button 
+                    onClick={() => addDummyDataMutation.mutate()}
+                    variant="default" 
+                    size="sm"
+                    disabled={addDummyDataMutation.isPending}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    {addDummyDataMutation.isPending ? "Adding..." : "Add Dummy Data to DB"}
+                  </Button>
+                </div>
               </div>
 
               <div className="space-y-4">

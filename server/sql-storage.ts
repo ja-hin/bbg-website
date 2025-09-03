@@ -185,6 +185,7 @@ export class SqlServerStorage implements IStorage {
       await this.createHomepageBannersTableAtAnyCost();
       
       await this.createTablesIfNotExist();
+      await this.ensureDefaultBrandsExist();
       console.log('SQL Server database initialized successfully');
     } catch (error) {
       console.error('Failed to initialize SQL Server database:', error);
@@ -914,6 +915,44 @@ export class SqlServerStorage implements IStorage {
       
     } catch (error) {
       console.error('❌ HOMEPAGE_BANNERS TABLE CREATION FAILED:', error);
+    }
+  }
+
+  // Ensure default brands exist in database
+  private async ensureDefaultBrandsExist() {
+    try {
+      await db.connectDB();
+      
+      // Check if brands table has any records
+      const countQuery = 'SELECT COUNT(*) as brand_count FROM brands WHERE is_active = 1';
+      const countResult = await db.pool.request().query(countQuery);
+      const brandCount = countResult.recordset[0].brand_count;
+      
+      console.log(`🔍 Found ${brandCount} active brands in database`);
+      
+      if (brandCount === 0) {
+        console.log('🔥 INSERTING DEFAULT BRANDS INTO EMPTY TABLE...');
+        
+        const insertBrandsQuery = `
+          INSERT INTO brands (name, device_type) VALUES
+          ('Apple', 'mobile'), ('Samsung', 'mobile'), ('Xiaomi', 'mobile'), ('OnePlus', 'mobile'), ('Oppo', 'mobile'),
+          ('Vivo', 'mobile'), ('Realme', 'mobile'), ('Motorola', 'mobile'), ('Google', 'mobile'), ('Nokia', 'mobile'),
+          ('Huawei', 'mobile'), ('Honor', 'mobile'), ('Nothing', 'mobile'), ('iQOO', 'mobile'), ('Poco', 'mobile'),
+          ('Apple', 'laptop'), ('Dell', 'laptop'), ('HP', 'laptop'), ('Lenovo', 'laptop'), ('Asus', 'laptop'),
+          ('Acer', 'laptop'), ('MSI', 'laptop'), ('Samsung', 'laptop'), ('Microsoft', 'laptop'), ('LG', 'laptop');
+        `;
+        
+        await db.pool.request().query(insertBrandsQuery);
+        
+        // Verify insertion
+        const newCountResult = await db.pool.request().query(countQuery);
+        const newBrandCount = newCountResult.recordset[0].brand_count;
+        console.log(`✅ Successfully inserted ${newBrandCount} default brands!`);
+      } else {
+        console.log('✅ Default brands already exist in database');
+      }
+    } catch (error) {
+      console.error('❌ Error ensuring default brands exist:', error);
     }
   }
 

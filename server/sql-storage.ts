@@ -2632,6 +2632,10 @@ export class SqlServerStorage implements IStorage {
     const query = `SELECT * FROM brands WHERE is_active = 1 ORDER BY name`;
     const request = db.pool.request();
     const result = await request.query(query);
+    
+    console.log(`🔍 getAllBrands query result: Found ${result.recordset.length} brands`);
+    console.log('🔍 Raw records:', result.recordset);
+    
     return result.recordset.map(row => this.mapBrandFromDb(row));
   }
 

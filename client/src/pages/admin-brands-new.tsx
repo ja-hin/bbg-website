@@ -208,62 +208,6 @@ export default function AdminBrandsNew() {
     }
   });
 
-  // Bulk upload mutation for text input
-  const bulkUploadMutation = useMutation({
-    mutationFn: async (data: string) => {
-      setUploadStatus('uploading');
-      
-      const response = await fetch('/api/admin/bulk-upload-text', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ data }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Upload failed');
-      }
-      
-      return response.json();
-    },
-    onSuccess: (result: BulkUploadResult) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/brands"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/models"] });
-      
-      const { totalRows, successfulRows, errors, created } = result;
-      
-      setUploadStatus('completed');
-      setIsUploading(false);
-      
-      toast({
-        title: "Bulk upload completed successfully!",
-        description: `${successfulRows}/${totalRows} rows processed. ${created?.brands || 0} brands and ${created?.models || 0} models created.${errors.length > 0 ? ` ${errors.length} errors found.` : ''}`
-      });
-      
-      // Reset after 3 seconds
-      setTimeout(() => {
-        setBulkData('');
-        setUploadStatus('idle');
-      }, 3000);
-    },
-    onError: (error) => {
-      setIsUploading(false);
-      setUploadStatus('error');
-      
-      toast({ 
-        title: "Bulk upload failed", 
-        description: error.message,
-        variant: "destructive" 
-      });
-      
-      // Reset after 3 seconds
-      setTimeout(() => {
-        setUploadStatus('idle');
-      }, 3000);
-    }
-  });
 
   // Clear all models mutation
   const clearModelsMutation = useMutation({
@@ -283,64 +227,13 @@ export default function AdminBrandsNew() {
     }
   });
 
-  // Handle bulk data submit
-  const handleBulkSubmit = () => {
-    if (!bulkData.trim()) return;
-    setIsUploading(true);
-    bulkUploadMutation.mutate(bulkData.trim());
-  };
 
-  // Sample data for reference with comprehensive dummy data
-  const getSampleData = () => {
-    return `Device Type,Brand,Model
-mobile,Apple,iPhone 15
-mobile,Apple,iPhone 14
-mobile,Apple,iPhone 13
-mobile,Samsung,Galaxy S24
-mobile,Samsung,Galaxy S23
-mobile,Samsung,Galaxy A54
-mobile,OnePlus,OnePlus 12
-mobile,OnePlus,OnePlus 11
-mobile,Xiaomi,Mi 14
-mobile,Xiaomi,Redmi Note 13
-mobile,Vivo,V30
-mobile,Vivo,Y28
-mobile,Oppo,Find X7
-mobile,Oppo,A78
-mobile,Realme,GT 6
-mobile,Realme,Narzo 70
-mobile,Google,Pixel 8
-mobile,Google,Pixel 7a
-mobile,Nothing,Phone 2
-mobile,Motorola,Edge 50
-laptop,Apple,MacBook Air M3
-laptop,Apple,MacBook Pro 14
-laptop,Dell,XPS 13
-laptop,Dell,Inspiron 15
-laptop,HP,Pavilion 15
-laptop,HP,Spectre x360
-laptop,Lenovo,ThinkPad X1
-laptop,Lenovo,IdeaPad 3
-laptop,Asus,ZenBook 14
-laptop,Asus,VivoBook 15
-laptop,Acer,Swift 3
-laptop,Acer,Aspire 5
-laptop,MSI,Modern 14
-laptop,MSI,Gaming GF63
-laptop,Surface,Laptop 5
-laptop,Surface,Pro 9`;
-  };
-
-  const insertSampleData = () => {
-    setBulkData(getSampleData());
-  };
 
   // File handling functions
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      setBulkData(''); // Clear manual input when file is selected
     }
   };
 
@@ -581,7 +474,7 @@ laptop,Surface,Pro 9`;
 
   const filteredModels = modelsWithBrandNames.filter(model => 
     (modelSearch === "" || 
-     (model.modelName || model.name || "").toLowerCase().includes(modelSearch.toLowerCase()) ||
+     (model.name || "").toLowerCase().includes(modelSearch.toLowerCase()) ||
      model.brandName.toLowerCase().includes(modelSearch.toLowerCase())) &&
     (brandFilter === "all" || model.brandId.toString() === brandFilter)
   );
@@ -861,12 +754,12 @@ laptop,Surface,Pro 9`;
                           <TableCell>
                             {editingModel?.id === model.id ? (
                               <Input
-                                value={editingModel.modelName || editingModel.name || ""}
-                                onChange={(e) => setEditingModel({ ...editingModel, modelName: e.target.value, name: e.target.value })}
+                                value={editingModel.name || ""}
+                                onChange={(e) => setEditingModel({ ...editingModel, name: e.target.value })}
                                 className="w-full"
                               />
                             ) : (
-                              <div className="font-medium text-gray-900">{model.modelName || model.name}</div>
+                              <div className="font-medium text-gray-900">{model.name}</div>
                             )}
                           </TableCell>
                           <TableCell>

@@ -899,18 +899,18 @@ export default function AdminBrandsNew() {
                 <div className="bg-white p-6 rounded-lg border mt-6">
                   <h4 className="text-lg font-medium text-gray-900 mb-3">Upload Results</h4>
                   <div className="space-y-2">
-                    <p className="text-green-600">✅ Successfully processed {uploadResults.results.successfulRows}/{uploadResults.results.totalRows} rows</p>
-                    <p className="text-blue-600">📊 Created {uploadResults.results.created?.brands || 0} brands and {uploadResults.results.created?.models || 0} models</p>
+                    <p className="text-green-600">✅ Successfully processed {uploadResults.successfulRows || uploadResults.results?.successfulRows || 0}/{uploadResults.totalRows || uploadResults.results?.totalRows || 0} rows</p>
+                    <p className="text-blue-600">📊 Created {uploadResults.created?.brands || uploadResults.results?.created?.brands || 0} brands and {uploadResults.created?.models || uploadResults.results?.created?.models || 0} models</p>
                     
-                    {uploadResults.results.errors.length > 0 && (
+                    {(uploadResults.errors || uploadResults.results?.errors || []).length > 0 && (
                       <div className="mt-4">
                         <p className="font-medium text-red-600">Errors:</p>
                         <ul className="text-sm text-red-600 space-y-1 mt-2">
-                          {uploadResults.results.errors.slice(0, 5).map((error: string, index: number) => (
+                          {(uploadResults.errors || uploadResults.results?.errors || []).slice(0, 5).map((error: string, index: number) => (
                             <li key={index}>• {error}</li>
                           ))}
-                          {uploadResults.results.errors.length > 5 && (
-                            <li>• ... and {uploadResults.results.errors.length - 5} more errors</li>
+                          {(uploadResults.errors || uploadResults.results?.errors || []).length > 5 && (
+                            <li>• ... and {(uploadResults.errors || uploadResults.results?.errors || []).length - 5} more errors</li>
                           )}
                         </ul>
                       </div>

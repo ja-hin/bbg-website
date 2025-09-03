@@ -79,12 +79,10 @@ export default function AdminBrandsNew() {
   const [newBrand, setNewBrand] = useState({ name: "", deviceType: "mobile" });
   const [newModel, setNewModel] = useState({ name: "", brandId: "" });
   
-  // Bulk upload state
-  const [bulkData, setBulkData] = useState('');
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'completed' | 'error'>('idle');
+  // Excel upload state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
+  const [uploadResults, setUploadResults] = useState<any>(null);
 
   // Fetch brands
   const { data: brands, isLoading: brandsLoading } = useQuery<Brand[]>({
@@ -353,6 +351,8 @@ laptop,Surface,Pro 9`;
     }
 
     setIsProcessingFile(true);
+    setUploadResults(null);
+    
     try {
       const parsedData = await processExcelFile(selectedFile);
       if (parsedData.length === 0) {
@@ -360,17 +360,37 @@ laptop,Surface,Pro 9`;
         return;
       }
       
-      // Convert to the format expected by the bulk upload
-      const csvText = [
-        'Device Type,Brand,Model',
-        ...parsedData.map(item => `${item.device},${item.brand},${item.model}`)
-      ].join('\n');
+      // Direct API call to upload data
+      const response = await fetch('/api/admin/bulk-upload-text', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          data: [
+            'Device Type,Brand,Model',
+            ...parsedData.map(item => `${item.device},${item.brand},${item.model}`)
+          ].join('\n')
+        }),
+      });
+
+      const result = await response.json();
       
-      setBulkData(csvText);
-      setSelectedFile(null);
-      toast({ title: `File processed successfully! ${parsedData.length} rows loaded.` });
+      if (response.ok) {
+        setUploadResults(result);
+        toast({ 
+          title: 'Upload successful!', 
+          description: `Created ${result.created?.brands || 0} brands and ${result.created?.models || 0} models` 
+        });
+        
+        // Refresh data
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/brands"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/admin/models"] });
+      } else {
+        throw new Error(result.message || 'Upload failed');
+      }
     } catch (error: any) {
-      toast({ title: 'File processing failed', description: error.message, variant: 'destructive' });
+      toast({ title: 'Upload failed', description: error.message, variant: 'destructive' });
     } finally {
       setIsProcessingFile(false);
     }
@@ -931,33 +951,19 @@ laptop,Surface,Pro 9`;
             <CardHeader>
               <CardTitle className="flex items-center text-lg font-semibold">
                 <Upload className="h-5 w-5 mr-2 text-purple-600" />
-                Bulk Upload Brands & Models
+                Excel Upload
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Excel File Upload Section */}
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50">
+              {/* Simple Excel File Upload */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 bg-gray-50">
                 <div className="text-center space-y-4">
-                  <Upload className="w-12 h-12 text-gray-400 mx-auto" />
+                  <Upload className="w-16 h-16 text-gray-400 mx-auto" />
                   <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Upload Excel/CSV File</h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Upload a file with columns: Device Type, Brand, Model
+                    <h3 className="text-xl font-medium text-gray-900 mb-2">Upload Excel File</h3>
+                    <p className="text-gray-600 mb-6">
+                      Select an Excel file with columns: Device Type, Brand, Model
                     </p>
-                    
-                    <div className="flex justify-center gap-3 mb-4">
-                      <Button 
-                        onClick={() => document.getElementById('file-upload')?.click()}
-                        disabled={isProcessingFile}
-                      >
-                        <Upload className="w-4 h-4 mr-2" />
-                        Choose File
-                      </Button>
-                      <Button variant="outline" onClick={downloadSampleExcel}>
-                        <Download className="w-4 h-4 mr-2" />
-                        Download Sample
-                      </Button>
-                    </div>
                     
                     <input 
                       id="file-upload"
@@ -967,117 +973,58 @@ laptop,Surface,Pro 9`;
                       className="hidden"
                     />
                     
+                    <Button 
+                      onClick={() => document.getElementById('file-upload')?.click()}
+                      size="lg"
+                      className="mb-4"
+                    >
+                      <Upload className="w-5 h-5 mr-2" />
+                      Choose Excel File
+                    </Button>
+                    
                     {selectedFile && (
-                      <div className="bg-white p-4 rounded-lg border">
-                        <p className="font-medium text-green-600">📄 {selectedFile.name}</p>
-                        <p className="text-sm text-gray-500">{(selectedFile.size / 1024).toFixed(1)} KB</p>
-                        <div className="flex justify-center gap-2 mt-3">
-                          <Button 
-                            onClick={handleFileUpload}
-                            disabled={isProcessingFile}
-                          >
-                            {isProcessingFile ? 'Processing...' : 'Process File'}
-                          </Button>
-                          <Button variant="outline" onClick={() => setSelectedFile(null)}>
-                            Remove
-                          </Button>
-                        </div>
+                      <div className="bg-white p-6 rounded-lg border mt-4">
+                        <p className="font-medium text-green-600 mb-2">📄 {selectedFile.name}</p>
+                        <p className="text-sm text-gray-500 mb-4">{(selectedFile.size / 1024).toFixed(1)} KB</p>
+                        
+                        <Button 
+                          onClick={handleFileUpload}
+                          disabled={isProcessingFile}
+                          size="lg"
+                          className="w-full"
+                        >
+                          {isProcessingFile ? 'Processing Excel...' : 'Submit & Process Excel'}
+                        </Button>
                       </div>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Manual Input Section */}
-              <div className="border-t pt-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Or Enter Data Manually</h3>
-                <div className="flex space-x-2 justify-center mb-4">
-                  <Button onClick={insertSampleData} variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-2" />
-                    Insert Sample Data
-                  </Button>
-                  <Button 
-                    onClick={() => setBulkData('')} 
-                    variant="outline" 
-                    size="sm"
-                    disabled={!bulkData}
-                  >
-                    Clear
-                  </Button>
-                  <Button 
-                    onClick={() => addDummyDataMutation.mutate()}
-                    variant="default" 
-                    size="sm"
-                    disabled={addDummyDataMutation.isPending}
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    {addDummyDataMutation.isPending ? "Adding..." : "Add Dummy Data to DB"}
-                  </Button>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    CSV Data (Device Type, Brand, Model)
-                  </label>
-                  <textarea
-                    value={bulkData}
-                    onChange={(e) => setBulkData(e.target.value)}
-                    placeholder="Device Type,Brand,Model&#10;mobile,Apple,iPhone 15&#10;mobile,Samsung,Galaxy S24&#10;laptop,Dell,XPS 13&#10;laptop,HP,Pavilion 15"
-                    className="w-full h-48 p-4 border border-gray-300 rounded-lg resize-none font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    disabled={isUploading}
-                  />
-                  <div className="flex justify-between items-center mt-2">
-                    <p className="text-xs text-gray-500">
-                      Enter one row per line. First line should be headers: Device Type,Brand,Model
-                    </p>
-                    <span className="text-xs text-gray-600">
-                      {bulkData ? `${bulkData.split('\n').filter(line => line.trim()).length} rows` : '0 rows'}
-                    </span>
+              {/* Results Display */}
+              {uploadResults && (
+                <div className="bg-white p-6 rounded-lg border mt-6">
+                  <h4 className="text-lg font-medium text-gray-900 mb-3">Upload Results</h4>
+                  <div className="space-y-2">
+                    <p className="text-green-600">✅ Successfully processed {uploadResults.results.successfulRows}/{uploadResults.results.totalRows} rows</p>
+                    <p className="text-blue-600">📊 Created {uploadResults.results.created?.brands || 0} brands and {uploadResults.results.created?.models || 0} models</p>
+                    
+                    {uploadResults.results.errors.length > 0 && (
+                      <div className="mt-4">
+                        <p className="font-medium text-red-600">Errors:</p>
+                        <ul className="text-sm text-red-600 space-y-1 mt-2">
+                          {uploadResults.results.errors.slice(0, 5).map((error: string, index: number) => (
+                            <li key={index}>• {error}</li>
+                          ))}
+                          {uploadResults.results.errors.length > 5 && (
+                            <li>• ... and {uploadResults.results.errors.length - 5} more errors</li>
+                          )}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 </div>
-                
-                <div className="flex justify-end">
-                  <Button
-                    onClick={handleBulkSubmit}
-                    disabled={!bulkData.trim() || isUploading || bulkUploadMutation.isPending}
-                    className="min-w-[140px]"
-                  >
-                    {isUploading ? "Processing..." : "Upload Data"}
-                  </Button>
-                </div>
-                
-                {/* Status Messages */}
-                {uploadStatus === 'uploading' && (
-                  <div className="flex items-center space-x-2 text-blue-600 bg-blue-50 p-3 rounded-md">
-                    <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="font-medium">Processing your data...</span>
-                  </div>
-                )}
-                
-                {uploadStatus === 'completed' && (
-                  <div className="flex items-center space-x-2 text-green-600 bg-green-50 p-3 rounded-md">
-                    <div className="w-5 h-5 rounded-full bg-green-600 flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <span className="font-medium">Upload completed successfully!</span>
-                  </div>
-                )}
-                
-                {uploadStatus === 'error' && (
-                  <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-md">
-                    <div className="w-5 h-5 rounded-full bg-red-600 flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <span className="font-medium">Upload failed. Please try again.</span>
-                  </div>
-                )}
-              </div>
+              )}
             </CardContent>
           </Card>
         )}

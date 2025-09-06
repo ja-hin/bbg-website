@@ -4205,34 +4205,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const XLSX = require('xlsx');
         
-        // Create sample data
+        // Create sample data with exact column names expected by the upload processor
         const sampleData = [
           { "Device Type": "mobile", "Brand": "Apple", "Model": "iPhone 15" },
           { "Device Type": "mobile", "Brand": "Samsung", "Model": "Galaxy S24" },
           { "Device Type": "laptop", "Brand": "Dell", "Model": "XPS 13" },
-          { "Device Type": "laptop", "Brand": "MacBook", "Model": "Air M2" }
+          { "Device Type": "laptop", "Brand": "HP", "Model": "Pavilion" }
         ];
 
-        // Create workbook and worksheet
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(sampleData);
+        // Create workbook
+        const workbook = XLSX.utils.book_new();
+        
+        // Create worksheet from JSON data
+        const worksheet = XLSX.utils.json_to_sheet(sampleData);
+        
+        // Set column widths for better visibility
+        const columnWidths = [
+          { wch: 15 }, // Device Type
+          { wch: 12 }, // Brand
+          { wch: 20 }  // Model
+        ];
+        worksheet['!cols'] = columnWidths;
 
-        // Add worksheet to workbook
-        XLSX.utils.book_append_sheet(wb, ws, "Brands & Models");
+        // Append worksheet to workbook
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Brands & Models");
 
-        // Generate Excel buffer
-        const excelBuffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+        // Write workbook to buffer with proper options
+        const buffer = XLSX.write(workbook, { 
+          bookType: 'xlsx', 
+          type: 'buffer',
+          compression: true
+        });
 
-        // Set headers for file download
+        // Set proper headers for Excel file download
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename="brands-models-sample.xlsx"');
-        res.setHeader('Content-Length', excelBuffer.length);
+        res.setHeader('Cache-Control', 'no-cache');
+        
+        // Send the buffer directly
+        res.end(buffer);
 
-        // Send file
-        res.send(excelBuffer);
       } catch (error: any) {
-        console.error("Sample file generation error:", error);
-        res.status(500).json({ message: "Failed to generate sample file" });
+        console.error("Sample Excel file generation error:", error);
+        res.status(500).json({ message: "Failed to generate sample Excel file" });
       }
     }
   );

@@ -469,6 +469,7 @@ export default function AdminBrandsNew() {
 
   const modelsWithBrandNames = models?.map(model => ({
     ...model,
+    name: model.modelName || model.name, // Handle both modelName and name properties
     brandName: brands?.find(b => b.id === model.brandId)?.name || 'Unknown'
   })) || [];
 

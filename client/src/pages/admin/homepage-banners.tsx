@@ -45,8 +45,7 @@ const HomepageBannersPage = () => {
     queryKey: ['/api/admin/homepage-banners'],
     queryFn: async () => {
       console.log('🔍 Fetching homepage banners...');
-      const response = await apiRequest('/api/admin/homepage-banners');
-      const data = await response.json();
+      const data = await apiRequest('/api/admin/homepage-banners');
       console.log('📊 Homepage banners data:', data);
       console.log('📈 Banners array length:', Array.isArray(data) ? data.length : 'Not an array');
       return data;

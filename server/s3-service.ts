@@ -1,20 +1,25 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import multer from 'multer';
-import multerS3 from 'multer-s3';
-import path from 'path';
-import { nanoid } from 'nanoid';
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import multer from "multer";
+import multerS3 from "multer-s3";
+import path from "path";
+import { nanoid } from "nanoid";
 
 // S3 Client Configuration
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION || 'ap-south-1',
+  region: process.env.AWS_REGION || "ap-south-1",
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
   },
 });
 
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || 'xtracover-bbg-storage';
+const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || "xtracover-bbg-storage";
 
 // S3 Service Class
 export class S3Service {
@@ -27,9 +32,15 @@ export class S3Service {
   }
 
   // Upload file to S3
-  async uploadFile(file: Buffer, fileName: string, mimeType: string, folder = 'uploads', isPublic = false): Promise<string> {
+  async uploadFile(
+    file: Buffer,
+    fileName: string,
+    mimeType: string,
+    folder = "uploads",
+    isPublic = false,
+  ): Promise<string> {
     const key = `${folder}/${nanoid()}-${fileName}`;
-    
+
     const command = new PutObjectCommand({
       Bucket: this.bucket,
       Key: key,
@@ -42,8 +53,8 @@ export class S3Service {
       await this.client.send(command);
       return key; // Return the S3 key for database storage
     } catch (error) {
-      console.error('S3 upload error:', error);
-      throw new Error('Failed to upload file to S3');
+      console.error("S3 upload error:", error);
+      throw new Error("Failed to upload file to S3");
     }
   }
 
@@ -57,8 +68,8 @@ export class S3Service {
     try {
       return await getSignedUrl(this.client, command, { expiresIn });
     } catch (error) {
-      console.error('S3 signed URL error:', error);
-      throw new Error('Failed to generate signed URL');
+      console.error("S3 signed URL error:", error);
+      throw new Error("Failed to generate signed URL");
     }
   }
 
@@ -72,20 +83,24 @@ export class S3Service {
     try {
       await this.client.send(command);
     } catch (error) {
-      console.error('S3 delete error:', error);
-      throw new Error('Failed to delete file from S3');
+      console.error("S3 delete error:", error);
+      throw new Error("Failed to delete file from S3");
     }
   }
 
   // Get file URL (for public files)
   getPublicUrl(key: string): string {
-    const region = process.env.AWS_REGION || 'ap-south-1';
-    return `https://${this.bucket}.s3.${region}.amazonaws.com/${key}`;
+    const region = process.env.AWS_REGION || "ap-south-1";
+    return `https://bbgassets.xtracover.com/${key}`;
   }
 }
 
 // Multer S3 Configuration for direct uploads
-export const createS3Upload = (folder = 'uploads', isPublic = false, allowCSV = false) => {
+export const createS3Upload = (
+  folder = "uploads",
+  isPublic = false,
+  allowCSV = false,
+) => {
   return multer({
     storage: multerS3({
       s3: s3Client,
@@ -104,23 +119,32 @@ export const createS3Upload = (folder = 'uploads', isPublic = false, allowCSV = 
     },
     fileFilter: (req, file, cb) => {
       // Base allowed file types
-      let allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
-      
+      let allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/jpg",
+        "application/pdf",
+      ];
+
       // Add CSV and Excel types for bulk uploads
       if (allowCSV) {
         allowedTypes = allowedTypes.concat([
-          'text/csv',
-          'application/csv',
-          'application/vnd.ms-excel',
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          "text/csv",
+          "application/csv",
+          "application/vnd.ms-excel",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         ]);
       }
-      
+
       if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
       } else {
-        const fileTypes = allowCSV ? 'JPEG, PNG, PDF, CSV, and Excel' : 'JPEG, PNG, and PDF';
-        cb(new Error(`Invalid file type. Only ${fileTypes} files are allowed.`));
+        const fileTypes = allowCSV
+          ? "JPEG, PNG, PDF, CSV, and Excel"
+          : "JPEG, PNG, and PDF";
+        cb(
+          new Error(`Invalid file type. Only ${fileTypes} files are allowed.`),
+        );
       }
     },
   });

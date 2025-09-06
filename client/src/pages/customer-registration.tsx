@@ -60,23 +60,7 @@ const customerSchema = z.object({
   brand: z.string().min(2, "Brand is required"),
   modelName: z.string().min(2, "Model name is required"),
   invoiceValue: z.string().min(1, "Device purchase price (inclusive of GST) is required"),
-  dateOfPurchase: z.string().min(10, "Date of purchase is required")
-    .refine((dateStr) => {
-      // Skip validation for Acer registration by checking URL params or other indicators
-      const urlParams = new URLSearchParams(window.location.search);
-      const isAcerRegistration = window.location.pathname.includes('acer') || urlParams.has('acer');
-      
-      if (isAcerRegistration) {
-        return true; // Allow any date for Acer registrations
-      }
-      
-      const purchaseDate = new Date(dateStr);
-      const currentDate = new Date();
-      const oneYearAgo = new Date();
-      oneYearAgo.setFullYear(currentDate.getFullYear() - 1);
-      
-      return purchaseDate >= oneYearAgo;
-    }, "Device must be purchased within the last 12 months to be eligible for BBG coverage"),
+  dateOfPurchase: z.string().min(10, "Date of purchase is required"),
   // Seller Details
   sellerCode: z.string().optional(),
   // OTP verification

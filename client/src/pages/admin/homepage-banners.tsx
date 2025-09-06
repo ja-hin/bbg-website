@@ -320,6 +320,13 @@ const HomepageBannersPage = () => {
   }
 
   if (error) {
+    // Check if it's an authentication error and redirect to login
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    if (errorMessage.includes('Admin authentication required')) {
+      window.location.href = '/admin/login';
+      return null;
+    }
+
     return (
       <div className="p-6">
         <Card className="border-red-200 bg-red-50">
@@ -328,7 +335,7 @@ const HomepageBannersPage = () => {
               <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-red-900 mb-2">Error Loading Banners</h3>
               <p className="text-red-700 mb-4">
-                {error instanceof Error ? error.message : 'Unknown error occurred'}
+                {errorMessage}
               </p>
               <Button onClick={() => window.location.reload()}>
                 Try Again

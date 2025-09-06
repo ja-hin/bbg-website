@@ -8773,9 +8773,6 @@ Required: GUPSHUP_API_KEY environment variable
           return res.status(400).json({ message: "Invalid banner ID" });
         }
 
-        console.log("Update request body:", { title, description, linkUrl, isActive, sortOrder, desktopImageUrl, mobileImageUrl });
-        console.log("Update files:", files);
-
         const updates: any = {};
 
         if (title !== undefined) updates.title = title;
@@ -8787,21 +8784,15 @@ Required: GUPSHUP_API_KEY environment variable
         // Handle image URL updates - prioritize uploaded files over URL fields
         if (files?.desktopImage) {
           updates.desktopImageUrl = (files.desktopImage[0] as any).location;
-          console.log("Using uploaded desktop image:", updates.desktopImageUrl);
         } else if (desktopImageUrl !== undefined && desktopImageUrl !== null && desktopImageUrl.trim() !== '') {
           updates.desktopImageUrl = desktopImageUrl.trim();
-          console.log("Using desktop image URL:", updates.desktopImageUrl);
         }
 
         if (files?.mobileImage) {
           updates.mobileImageUrl = (files.mobileImage[0] as any).location;
-          console.log("Using uploaded mobile image:", updates.mobileImageUrl);
         } else if (mobileImageUrl !== undefined && mobileImageUrl !== null && mobileImageUrl.trim() !== '') {
           updates.mobileImageUrl = mobileImageUrl.trim();
-          console.log("Using mobile image URL:", updates.mobileImageUrl);
         }
-
-        console.log("Final updates object:", updates);
 
         await storage.updateHomepageBanner(bannerId, updates);
 

@@ -4197,6 +4197,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     },
   );
 
+  // Sample Excel file download endpoint
+  app.get(
+    "/api/admin/brands/sample-excel",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        const XLSX = require('xlsx');
+        
+        // Create sample data
+        const sampleData = [
+          { "Device Type": "mobile", "Brand": "Apple", "Model": "iPhone 15" },
+          { "Device Type": "mobile", "Brand": "Samsung", "Model": "Galaxy S24" },
+          { "Device Type": "laptop", "Brand": "Dell", "Model": "XPS 13" },
+          { "Device Type": "laptop", "Brand": "MacBook", "Model": "Air M2" }
+        ];
+
+        // Create workbook and worksheet
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(sampleData);
+
+        // Add worksheet to workbook
+        XLSX.utils.book_append_sheet(wb, ws, "Brands & Models");
+
+        // Generate Excel buffer
+        const excelBuffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+
+        // Set headers for file download
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename="brands-models-sample.xlsx"');
+        res.setHeader('Content-Length', excelBuffer.length);
+
+        // Send file
+        res.send(excelBuffer);
+      } catch (error: any) {
+        console.error("Sample file generation error:", error);
+        res.status(500).json({ message: "Failed to generate sample file" });
+      }
+    }
+  );
+
   // Bulk upload brands and models
   app.post(
     "/api/admin/brands/bulk-upload",

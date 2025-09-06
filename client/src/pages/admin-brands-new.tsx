@@ -848,6 +848,29 @@ export default function AdminBrandsNew() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
+              {/* Sample File Download */}
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-sm font-medium text-blue-900">Need a template?</h4>
+                    <p className="text-xs text-blue-700 mt-1">Download our sample Excel file to see the correct format</p>
+                  </div>
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = '/api/admin/brands/sample-excel';
+                      link.download = 'brands-models-sample.xlsx';
+                      link.click();
+                    }}
+                    className="text-blue-700 border-blue-300 hover:bg-blue-100"
+                  >
+                    📥 Download Sample
+                  </Button>
+                </div>
+              </div>
+
               {/* Simple Excel File Upload */}
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 bg-gray-50">
                 <div className="text-center space-y-4">

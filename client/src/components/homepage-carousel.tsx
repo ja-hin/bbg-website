@@ -10,7 +10,7 @@ interface HomepageCarouselProps {
   autoPlayInterval?: number;
 }
 
-export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 5000 }: HomepageCarouselProps) {
+export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: HomepageCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Fetch active homepage banners

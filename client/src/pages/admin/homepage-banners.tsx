@@ -43,22 +43,9 @@ const HomepageBannersPage = () => {
   // Fetch all homepage banners
   const { data: banners = [], isLoading, error } = useQuery({
     queryKey: ['/api/admin/homepage-banners'],
-    queryFn: async () => {
-      console.log('🔍 Fetching homepage banners...');
-      const data = await apiRequest('/api/admin/homepage-banners');
-      console.log('📊 Homepage banners data:', data);
-      console.log('📈 Banners array length:', Array.isArray(data) ? data.length : 'Not an array');
-      return data;
-    },
-    retry: false,
-    staleTime: 0, // Force fresh data
-    gcTime: 0     // Don't cache (TanStack Query v5)
+    queryFn: () => apiRequest('/api/admin/homepage-banners'),
+    retry: false
   });
-
-  // Debug: Log error if exists
-  if (error) {
-    console.error('❌ Homepage banners query error:', error);
-  }
 
   // Create banner mutation
   const createBannerMutation = useMutation({
@@ -405,6 +392,23 @@ const HomepageBannersPage = () => {
                   Desktop Image {!editingBanner && '*'}
                   <span className="text-xs text-gray-500 ml-1">(Recommended: 1920x600px)</span>
                 </Label>
+                
+                {/* Show current image when editing */}
+                {editingBanner && editingBanner.desktopImageUrl && (
+                  <div className="mb-3 p-3 border rounded-lg bg-gray-50">
+                    <p className="text-sm text-gray-600 mb-2">Current Desktop Image:</p>
+                    <img 
+                      src={editingBanner.desktopImageUrl} 
+                      alt="Current desktop banner"
+                      className="w-full max-w-md h-32 object-cover rounded border"
+                      onError={(e) => {
+                        e.currentTarget.src = '/api/placeholder/400/200';
+                        e.currentTarget.alt = 'Image preview unavailable';
+                      }}
+                    />
+                  </div>
+                )}
+                
                 <div className="flex items-center gap-2">
                   <Button
                     type="button"
@@ -413,7 +417,7 @@ const HomepageBannersPage = () => {
                     className="flex items-center gap-2"
                   >
                     <Monitor className="h-4 w-4" />
-                    Choose Desktop Image
+                    {editingBanner ? 'Change Desktop Image' : 'Choose Desktop Image'}
                   </Button>
                   {formData.desktopImage && (
                     <span className="text-sm text-green-600">
@@ -436,6 +440,23 @@ const HomepageBannersPage = () => {
                   Mobile Image {!editingBanner && '*'}
                   <span className="text-xs text-gray-500 ml-1">(Recommended: 768x400px)</span>
                 </Label>
+                
+                {/* Show current mobile image when editing */}
+                {editingBanner && editingBanner.mobileImageUrl && (
+                  <div className="mb-3 p-3 border rounded-lg bg-gray-50">
+                    <p className="text-sm text-gray-600 mb-2">Current Mobile Image:</p>
+                    <img 
+                      src={editingBanner.mobileImageUrl} 
+                      alt="Current mobile banner"
+                      className="w-full max-w-sm h-32 object-cover rounded border"
+                      onError={(e) => {
+                        e.currentTarget.src = '/api/placeholder/400/200';
+                        e.currentTarget.alt = 'Image preview unavailable';
+                      }}
+                    />
+                  </div>
+                )}
+                
                 <div className="flex items-center gap-2">
                   <Button
                     type="button"
@@ -444,7 +465,7 @@ const HomepageBannersPage = () => {
                     className="flex items-center gap-2"
                   >
                     <Smartphone className="h-4 w-4" />
-                    Choose Mobile Image
+                    {editingBanner ? 'Change Mobile Image' : 'Choose Mobile Image'}
                   </Button>
                   {formData.mobileImage && (
                     <span className="text-sm text-green-600">

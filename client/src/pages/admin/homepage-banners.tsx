@@ -41,11 +41,25 @@ const HomepageBannersPage = () => {
   const mobileFileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch all homepage banners
-  const { data: banners = [], isLoading } = useQuery({
+  const { data: banners = [], isLoading, error } = useQuery({
     queryKey: ['/api/admin/homepage-banners'],
-    queryFn: () => apiRequest('/api/admin/homepage-banners').then(res => res.json()),
-    retry: false
+    queryFn: async () => {
+      console.log('🔍 Fetching homepage banners...');
+      const response = await apiRequest('/api/admin/homepage-banners');
+      const data = await response.json();
+      console.log('📊 Homepage banners data:', data);
+      console.log('📈 Banners array length:', Array.isArray(data) ? data.length : 'Not an array');
+      return data;
+    },
+    retry: false,
+    staleTime: 0, // Force fresh data
+    gcTime: 0     // Don't cache (TanStack Query v5)
   });
+
+  // Debug: Log error if exists
+  if (error) {
+    console.error('❌ Homepage banners query error:', error);
+  }
 
   // Create banner mutation
   const createBannerMutation = useMutation({
@@ -293,6 +307,27 @@ const HomepageBannersPage = () => {
           <Loader2 className="h-8 w-8 animate-spin" />
           <span className="ml-2 text-lg">Loading homepage banners...</span>
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-red-900 mb-2">Error Loading Banners</h3>
+              <p className="text-red-700 mb-4">
+                {error instanceof Error ? error.message : 'Unknown error occurred'}
+              </p>
+              <Button onClick={() => window.location.reload()}>
+                Try Again
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }

@@ -1,4 +1,59 @@
-epage-banners",
+import express, { Request, Response } from "express";
+import { createServer, type Server } from "http";
+import multer from "multer";
+import path from "path";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { nanoid } from "nanoid";
+import { s3Service, createS3Upload } from "./s3-service";
+import { storage } from "./sql-storage";
+import { communicationService } from "./communication-service";
+import { createHash } from "crypto";
+import {
+  getKaleyraSMSService,
+  getSafeGupshupService,
+  getSafePayUConfig,
+} from "./config-service";
+import { templateService } from "./template-service";
+import { testAllTemplates } from "./template-test";
+import { registerTestRoutes } from "./test-services";
+import sql from "mssql";
+import { insertCustomerSchema, insertDistributorSchema, insertClaimSchema, insertOtpSchema } from "@shared/schema";
+import AWS from "aws-sdk";
+import bcrypt from "bcryptjs";
+
+// SQL Server storage is imported as storage from sql-storage
+
+// Create upload instances
+const upload = createS3Upload("documents");
+const bulkUpload = createS3Upload("bulk-uploads");
+const bannerUpload = createS3Upload("documents", true);
+
+// PayU Configuration will be initialized in registerRoutes using config service
+function generatePayUHash(params: any, salt: string): string {
+  const hashString = `${params.key}|${params.txnid}|${params.amount}|${params.productinfo}|${params.firstname}|${params.email}|||||||||||${salt}`;
+  return createHash("sha512").update(hashString).digest("hex");
+}
+
+// Admin authentication middleware
+function isAdminAuthenticated(req: Request, res: Response, next: any) {
+  const session = req.session as any;
+  
+  console.log("Auth check - Session ID:", session?.adminId);
+  console.log("Auth check - Session object:", session);
+  
+  if (session?.adminId && session?.adminUsername) {
+    return next();
+  }
+  
+  console.log("Admin authentication failed");
+  return res.status(401).json({ message: "Admin authentication required" });
+}
+
+export async function registerRoutes(app: express.Application): Promise<Server> {
+  // Admin endpoint - Get all homepage banners
+  app.get(
+    "/api/admin/homepage-banners",
     isAdminAuthenticated,
     async (req, res) => {
       try {
@@ -283,6 +338,17 @@ epage-banners",
   // Helper function to check database connection
   async function checkDatabaseConnection() {
     try {
+      const config = {
+        server: process.env.SQL_SERVER || "localhost",
+        database: process.env.SQL_DATABASE || "bbg_db",
+        user: process.env.SQL_USER || "",
+        password: process.env.SQL_PASSWORD || "",
+        options: {
+          encrypt: true,
+          trustServerCertificate: true,
+        },
+      };
+      
       await sql.connect(config);
       return {
         status: "connected",

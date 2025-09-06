@@ -22,6 +22,8 @@ interface HomepageBannerFormData {
   sortOrder: number;
   desktopImage?: File;
   mobileImage?: File;
+  desktopImageUrl?: string;
+  mobileImageUrl?: string;
 }
 
 const HomepageBannersPage = () => {
@@ -62,6 +64,14 @@ const HomepageBannersPage = () => {
       }
       if (data.mobileImage) {
         formData.append('mobileImage', data.mobileImage);
+      }
+      
+      // Include URL fields for direct URL setting
+      if (data.desktopImageUrl) {
+        formData.append('desktopImageUrl', data.desktopImageUrl);
+      }
+      if (data.mobileImageUrl) {
+        formData.append('mobileImageUrl', data.mobileImageUrl);
       }
 
       const response = await fetch('/api/admin/homepage-banners', {
@@ -111,6 +121,14 @@ const HomepageBannersPage = () => {
       }
       if (data.mobileImage) {
         formDataToSend.append('mobileImage', data.mobileImage);
+      }
+      
+      // Include URL fields for direct URL setting
+      if (data.desktopImageUrl) {
+        formDataToSend.append('desktopImageUrl', data.desktopImageUrl);
+      }
+      if (data.mobileImageUrl) {
+        formDataToSend.append('mobileImageUrl', data.mobileImageUrl);
       }
 
       const response = await fetch(`/api/admin/homepage-banners/${id}`, {
@@ -177,7 +195,9 @@ const HomepageBannersPage = () => {
       description: "",
       linkUrl: "",
       isActive: true,
-      sortOrder: 0
+      sortOrder: 0,
+      desktopImageUrl: "",
+      mobileImageUrl: ""
     });
     if (desktopFileInputRef.current) {
       desktopFileInputRef.current.value = '';
@@ -194,7 +214,9 @@ const HomepageBannersPage = () => {
       description: banner.description || "",
       linkUrl: banner.linkUrl || "",
       isActive: banner.isActive || false,
-      sortOrder: banner.sortOrder || 0
+      sortOrder: banner.sortOrder || 0,
+      desktopImageUrl: banner.desktopImageUrl,
+      mobileImageUrl: banner.mobileImageUrl
     });
     setIsDialogOpen(true);
   };
@@ -393,18 +415,16 @@ const HomepageBannersPage = () => {
                   <span className="text-xs text-gray-500 ml-1">(Recommended: 1920x600px)</span>
                 </Label>
                 
-                {/* Show current image when editing */}
-                {editingBanner && editingBanner.desktopImageUrl && (
-                  <div className="mb-3 p-3 border rounded-lg bg-gray-50">
-                    <p className="text-sm text-gray-600 mb-2">Current Desktop Image:</p>
-                    <img 
-                      src={editingBanner.desktopImageUrl} 
-                      alt="Current desktop banner"
-                      className="w-full max-w-md h-32 object-cover rounded border"
-                      onError={(e) => {
-                        e.currentTarget.src = '/api/placeholder/400/200';
-                        e.currentTarget.alt = 'Image preview unavailable';
-                      }}
+                {/* Current Desktop Image URL (editable when editing) */}
+                {editingBanner && (
+                  <div className="space-y-2">
+                    <Label htmlFor="desktopImageUrl" className="text-sm">Current Desktop Image URL:</Label>
+                    <Input
+                      id="desktopImageUrl"
+                      value={formData.desktopImageUrl || ''}
+                      onChange={(e) => setFormData(prev => ({ ...prev, desktopImageUrl: e.target.value }))}
+                      placeholder="https://example.com/desktop-image.jpg"
+                      className="font-mono text-sm"
                     />
                   </div>
                 )}
@@ -417,7 +437,7 @@ const HomepageBannersPage = () => {
                     className="flex items-center gap-2"
                   >
                     <Monitor className="h-4 w-4" />
-                    {editingBanner ? 'Change Desktop Image' : 'Choose Desktop Image'}
+                    {editingBanner ? 'Upload New Desktop Image' : 'Choose Desktop Image'}
                   </Button>
                   {formData.desktopImage && (
                     <span className="text-sm text-green-600">
@@ -441,18 +461,16 @@ const HomepageBannersPage = () => {
                   <span className="text-xs text-gray-500 ml-1">(Recommended: 768x400px)</span>
                 </Label>
                 
-                {/* Show current mobile image when editing */}
-                {editingBanner && editingBanner.mobileImageUrl && (
-                  <div className="mb-3 p-3 border rounded-lg bg-gray-50">
-                    <p className="text-sm text-gray-600 mb-2">Current Mobile Image:</p>
-                    <img 
-                      src={editingBanner.mobileImageUrl} 
-                      alt="Current mobile banner"
-                      className="w-full max-w-sm h-32 object-cover rounded border"
-                      onError={(e) => {
-                        e.currentTarget.src = '/api/placeholder/400/200';
-                        e.currentTarget.alt = 'Image preview unavailable';
-                      }}
+                {/* Current Mobile Image URL (editable when editing) */}
+                {editingBanner && (
+                  <div className="space-y-2">
+                    <Label htmlFor="mobileImageUrl" className="text-sm">Current Mobile Image URL:</Label>
+                    <Input
+                      id="mobileImageUrl"
+                      value={formData.mobileImageUrl || ''}
+                      onChange={(e) => setFormData(prev => ({ ...prev, mobileImageUrl: e.target.value }))}
+                      placeholder="https://example.com/mobile-image.jpg"
+                      className="font-mono text-sm"
                     />
                   </div>
                 )}
@@ -465,7 +483,7 @@ const HomepageBannersPage = () => {
                     className="flex items-center gap-2"
                   >
                     <Smartphone className="h-4 w-4" />
-                    {editingBanner ? 'Change Mobile Image' : 'Choose Mobile Image'}
+                    {editingBanner ? 'Upload New Mobile Image' : 'Choose Mobile Image'}
                   </Button>
                   {formData.mobileImage && (
                     <span className="text-sm text-green-600">

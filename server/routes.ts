@@ -8705,7 +8705,7 @@ Required: GUPSHUP_API_KEY environment variable
     ]),
     async (req, res) => {
       try {
-        const { title, description, linkUrl, isActive, sortOrder } = req.body;
+        const { title, description, linkUrl, isActive, sortOrder, desktopImageUrl, mobileImageUrl } = req.body;
         const files = req.files as {
           [fieldname: string]: Express.Multer.File[];
         };
@@ -8714,21 +8714,29 @@ Required: GUPSHUP_API_KEY environment variable
           return res.status(400).json({ message: "Title is required" });
         }
 
-        if (!files?.desktopImage || !files?.mobileImage) {
-          return res
-            .status(400)
-            .json({ message: "Both desktop and mobile images are required" });
+        // Determine image URLs - use uploaded files or provided URLs
+        let finalDesktopImageUrl = desktopImageUrl;
+        let finalMobileImageUrl = mobileImageUrl;
+
+        if (files?.desktopImage) {
+          finalDesktopImageUrl = (files.desktopImage[0] as any).location;
+        }
+        if (files?.mobileImage) {
+          finalMobileImageUrl = (files.mobileImage[0] as any).location;
         }
 
-        // Get S3 image URLs
-        const desktopImageUrl = (files.desktopImage[0] as any).location;
-        const mobileImageUrl = (files.mobileImage[0] as any).location;
+        // Check if we have both desktop and mobile images (either files or URLs)
+        if (!finalDesktopImageUrl || !finalMobileImageUrl) {
+          return res
+            .status(400)
+            .json({ message: "Both desktop and mobile images (files or URLs) are required" });
+        }
 
         const banner = await storage.createHomepageBanner({
           title,
           description,
-          desktopImageUrl,
-          mobileImageUrl,
+          desktopImageUrl: finalDesktopImageUrl,
+          mobileImageUrl: finalMobileImageUrl,
           linkUrl,
           isActive: isActive === "true",
           sortOrder: parseInt(sortOrder) || 0,
@@ -8756,7 +8764,7 @@ Required: GUPSHUP_API_KEY environment variable
     async (req, res) => {
       try {
         const bannerId = parseInt(req.params.id);
-        const { title, description, linkUrl, isActive, sortOrder } = req.body;
+        const { title, description, linkUrl, isActive, sortOrder, desktopImageUrl, mobileImageUrl } = req.body;
         const files = req.files as {
           [fieldname: string]: Express.Multer.File[];
         };
@@ -8773,13 +8781,17 @@ Required: GUPSHUP_API_KEY environment variable
         if (isActive !== undefined) updates.isActive = isActive === "true";
         if (sortOrder !== undefined) updates.sortOrder = parseInt(sortOrder);
 
-        // Update S3 image URLs if new files are provided
+        // Handle image URL updates - prioritize uploaded files over URL fields
         if (files?.desktopImage) {
           updates.desktopImageUrl = (files.desktopImage[0] as any).location;
+        } else if (desktopImageUrl !== undefined) {
+          updates.desktopImageUrl = desktopImageUrl;
         }
 
         if (files?.mobileImage) {
           updates.mobileImageUrl = (files.mobileImage[0] as any).location;
+        } else if (mobileImageUrl !== undefined) {
+          updates.mobileImageUrl = mobileImageUrl;
         }
 
         await storage.updateHomepageBanner(bannerId, updates);

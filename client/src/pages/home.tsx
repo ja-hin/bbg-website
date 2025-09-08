@@ -474,21 +474,21 @@ export default function Home() {
             <Card className="p-4 sm:p-6 text-center">
               <CardContent className="p-0">
                 <div className="text-2xl sm:text-3xl font-bold text-xtra-primary mb-2">Upto 36 Months</div>
-                <p className="text-sm sm:text-base text-gray-600">Months coverage period</p>
+                <p className="text-sm sm:text-base text-gray-600">coverage period</p>
               </CardContent>
             </Card>
             
             <Card className="p-4 sm:p-6 text-center">
               <CardContent className="p-0">
                 <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-2">70%</div>
-                <p className="text-sm sm:text-base text-gray-600">Maximum claim value</p>
+                <p className="text-sm sm:text-base text-gray-600">maximum claim value</p>
               </CardContent>
             </Card>
             
             <Card className="p-4 sm:p-6 text-center">
               <CardContent className="p-0">
                 <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-2">100%</div>
-                <p className="text-sm sm:text-base text-gray-600">Transparent pricing</p>
+                <p className="text-sm sm:text-base text-gray-600">transparent pricing</p>
               </CardContent>
             </Card>
           </div>

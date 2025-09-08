@@ -69,7 +69,6 @@ export default function Header() {
     <header className="sticky top-0 z-50 shadow-md">
       {/* 4px Red line at top */}
       <div className="h-1 bg-xtra-primary"></div>
-
       {/* Logo Section - White Background */}
       <div className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -94,9 +93,7 @@ export default function Header() {
                 <span
                   className="text-2xl font-bold"
                   style={{ color: (theme as any)?.primaryColor || "#254696" }}
-                >
-                  | BBG
-                </span>
+                >| BuyBack Guarantee</span>
               </Link>
             </div>
 
@@ -148,7 +145,6 @@ export default function Header() {
           </div>
         </div>
       </div>
-
       {/* Navigation Section - Theme Color Background */}
       <div
         className="hidden lg:block"

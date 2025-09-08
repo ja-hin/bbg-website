@@ -473,7 +473,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12">
             <Card className="p-4 sm:p-6 text-center">
               <CardContent className="p-0">
-                <div className="text-2xl sm:text-3xl font-bold text-xtra-primary mb-2">6-60</div>
+                <div className="text-2xl sm:text-3xl font-bold text-xtra-primary mb-2">Upto 36 Months</div>
                 <p className="text-sm sm:text-base text-gray-600">Months coverage period</p>
               </CardContent>
             </Card>

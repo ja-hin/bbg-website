@@ -12,9 +12,9 @@ export default function Header() {
 
   const navigationItems = [
     { href: "/", label: "Home" },
-    { href: "/customer-registration", label: "Buy BBG" },
-    { href: "/acer", label: "Register Acer BBG" },
-    { href: "/claim-bbg", label: "Claim BBG" },
+    { href: "/customer-registration", label: "Buy" },
+    { href: "/acer", label: "Register" },
+    { href: "/claim-bbg", label: "Claim" },
     { href: "/referral-partner-registration", label: "Join Referral Program" },
   ];
 

@@ -543,7 +543,7 @@ export default function Home() {
                     How long after my device purchase can I buy BBG?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    You can buy and register BBG within 6 months from your device purchase date.
+                    You can buy BBG within 5 years from your device purchase date.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

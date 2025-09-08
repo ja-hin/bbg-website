@@ -66,10 +66,8 @@ export default function Home() {
 
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
-
       {/* Homepage Carousel */}
       <HomepageCarousel />
-
       {/* Hero Section */}
       <section className="py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -461,9 +459,7 @@ export default function Home() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Link href="/customer-registration">
-                    <Button size="sm" className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white">
-                      Buy BBG
-                    </Button>
+                    <Button size="sm" className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white">Buy</Button>
                   </Link>
                   <Link href="/claim-bbg">
                     <Button size="sm" variant="outline" className="w-full sm:w-auto border-xtra-primary text-xtra-primary hover:bg-xtra-primary/5">

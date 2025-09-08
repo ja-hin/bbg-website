@@ -462,9 +462,7 @@ export default function Home() {
                     <Button size="sm" className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white">Buy</Button>
                   </Link>
                   <Link href="/claim-bbg">
-                    <Button size="sm" variant="outline" className="w-full sm:w-auto border-xtra-primary text-xtra-primary hover:bg-xtra-primary/5">
-                      Claim BBG
-                    </Button>
+                    <Button size="sm" variant="outline" className="w-full sm:w-auto border-xtra-primary text-xtra-primary hover:bg-xtra-primary/5">Claim</Button>
                   </Link>
                 </div>
               </div>

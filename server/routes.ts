@@ -1124,6 +1124,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           modelName: customer.modelName,
           registrationSlabData: customer.registrationSlabData,
           txnid: txnid,
+          amount: amount, // Store actual charged amount (includes any referral discounts)
         };
 
         // Redirect to success page without query parameters

@@ -163,12 +163,21 @@ export default function ThankYou() {
       brand: sessionData?.brand || params?.get('brand') || '',
       modelName: sessionData?.modelName || params?.get('modelName') || '',
       amount: (() => {
+        // Use actual charged amount from session data (includes referral discounts)
+        if (sessionData?.amount) {
+          return `₹${sessionData.amount}`;
+        }
+        // If amount is in URL params, use that
+        if (params?.get('amount')) {
+          return `₹${params.get('amount')}`;
+        }
+        // Fallback to calculating from BBG prices (for backward compatibility)
         const deviceType = sessionData?.deviceType || params?.get('deviceType') || '';
         if (bbgPrices && deviceType && typeof bbgPrices === 'object' && 'laptop' in bbgPrices && 'mobile' in bbgPrices) {
           const price = deviceType === 'laptop' ? bbgPrices.laptop : bbgPrices.mobile;
           return `₹${price}`;
         }
-        // Fallback to session data or default
+        // Final fallback to session data or default
         if (sessionData?.paymentMethod === 'payu') {
           return sessionData?.deviceType === 'laptop' ? '₹125' : '₹99';
         }

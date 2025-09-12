@@ -86,7 +86,7 @@ export default function Home() {
             </Link>
             <Link href="/claim-bbg" className="w-full sm:w-auto">
               <Button variant="outline" size="lg" className="w-full sm:w-auto border-xtra-primary text-xtra-primary hover:bg-xtra-primary/5 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
-                Claim BBG
+                Claim
               </Button>
             </Link>
           </div>
@@ -107,11 +107,11 @@ export default function Home() {
                 <ul className="text-left space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Up to 60% payout value
+                    Up to 70% payout value
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Coverage for up to 60 months
+                    Coverage for up to 36 months
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />

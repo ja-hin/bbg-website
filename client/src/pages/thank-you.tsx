@@ -350,7 +350,6 @@ export default function ThankYou() {
       doc.setFontSize(7);
       doc.text(invoiceData.brand + ' ' + invoiceData.modelName, 27, customerSectionY + 17);
     }
-    doc.text('Indore', 27, customerSectionY + 22);
     
     // Buyer section  
     doc.rect(25, customerSectionY + 25, 85, 30);
@@ -362,9 +361,6 @@ export default function ThankYou() {
       doc.setFontSize(7);
       doc.text(invoiceData.brand + ' ' + invoiceData.modelName, 27, customerSectionY + 42);
     }
-    doc.text('Indore', 27, customerSectionY + 47);
-    doc.setFontSize(7);
-    doc.text('GSTIN/UIN: 23CWPPS5113M1Z2 | State: Madhya Pradesh-23', 27, customerSectionY + 52);
     
     // Additional fields (right side) - compressed
     doc.setFontSize(7);

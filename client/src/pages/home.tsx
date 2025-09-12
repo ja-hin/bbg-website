@@ -286,21 +286,23 @@ export default function Home() {
               <Loader2 className="w-8 h-8 animate-spin text-xtra-primary" />
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
+            <div className="space-y-8 max-w-7xl mx-auto">
               
-              {/* Mobile Devices Table */}
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="bg-xtra-primary text-white px-6 py-4">
-                  <h3 className="text-xl font-bold flex items-center">
-                    <Smartphone className="w-6 h-6 mr-2" />
+              {/* Mobile Devices Grid */}
+              <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+                <div className="bg-gradient-to-r from-xtra-primary to-xtra-primary/80 text-white px-6 py-6">
+                  <h3 className="text-2xl font-bold flex items-center">
+                    <Smartphone className="w-8 h-8 mr-3" />
                     Mobile Devices
                   </h3>
+                  <p className="text-white/90 mt-2">BBG claim values based on device age</p>
                 </div>
-                <div className="overflow-x-auto">
+                <div className="p-6">
                   {(() => {
                     if (activeMobileSlabs.length === 0) {
                       return (
-                        <div className="p-8 text-center">
+                        <div className="py-12 text-center">
+                          <Smartphone className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                           <p className="text-gray-500">No mobile device slabs available</p>
                         </div>
                       );
@@ -329,44 +331,62 @@ export default function Home() {
                     );
 
                     return (
-                      <table className="w-full">
-                        <thead className="bg-gray-100">
-                          <tr>
-                            <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
-                            <th className="py-3 px-4 text-center font-semibold text-sm text-gray-700">BBG Value</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                          {sortedAgeRanges.map(([ageKey, ageData]) => (
-                            <tr key={ageKey} className="hover:bg-gray-50">
-                              <td className="py-3 px-4 text-sm font-medium text-gray-900">
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                        {sortedAgeRanges.map(([ageKey, ageData]) => {
+                          // Determine color based on percentage
+                          let bgColor = "bg-gradient-to-br from-green-50 to-green-100";
+                          let textColor = "text-green-700";
+                          let borderColor = "border-green-200";
+                          
+                          if (ageData.percentage < 30) {
+                            bgColor = "bg-gradient-to-br from-red-50 to-red-100";
+                            textColor = "text-red-700";
+                            borderColor = "border-red-200";
+                          } else if (ageData.percentage < 50) {
+                            bgColor = "bg-gradient-to-br from-orange-50 to-orange-100";
+                            textColor = "text-orange-700";
+                            borderColor = "border-orange-200";
+                          } else if (ageData.percentage < 70) {
+                            bgColor = "bg-gradient-to-br from-yellow-50 to-yellow-100";
+                            textColor = "text-yellow-700";
+                            borderColor = "border-yellow-200";
+                          }
+
+                          return (
+                            <div key={ageKey} className={`${bgColor} ${borderColor} border-2 rounded-xl p-4 text-center hover:shadow-md transition-all duration-200 hover:scale-105`}>
+                              <div className="text-xs font-medium text-gray-600 mb-2">
                                 {ageData.minMonths}-{ageData.maxMonths} months
-                              </td>
-                              <td className="py-3 px-4 text-center">
-                                <span className="text-lg font-bold text-black">Up to {ageData.percentage}%</span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                              </div>
+                              <div className={`text-2xl font-bold ${textColor} mb-1`}>
+                                {ageData.percentage}%
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                max value
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     );
                   })()}
                 </div>
               </div>
 
-              {/* Laptop Devices Table */}
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="bg-xtra-primary text-white px-6 py-4">
-                  <h3 className="text-xl font-bold flex items-center">
-                    <Laptop className="w-6 h-6 mr-2" />
+              {/* Laptop Devices Grid */}
+              <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+                <div className="bg-gradient-to-r from-xtra-primary to-xtra-primary/80 text-white px-6 py-6">
+                  <h3 className="text-2xl font-bold flex items-center">
+                    <Laptop className="w-8 h-8 mr-3" />
                     Laptop Devices
                   </h3>
+                  <p className="text-white/90 mt-2">BBG claim values based on device age</p>
                 </div>
-                <div className="overflow-x-auto">
+                <div className="p-6">
                   {(() => {
                     if (activeLaptopSlabs.length === 0) {
                       return (
-                        <div className="p-8 text-center">
+                        <div className="py-12 text-center">
+                          <Laptop className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                           <p className="text-gray-500">No laptop device slabs available</p>
                         </div>
                       );
@@ -395,26 +415,42 @@ export default function Home() {
                     );
 
                     return (
-                      <table className="w-full">
-                        <thead className="bg-gray-100">
-                          <tr>
-                            <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
-                            <th className="py-3 px-4 text-center font-semibold text-sm text-gray-700">BBG Value</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                          {sortedAgeRanges.map(([ageKey, ageData]) => (
-                            <tr key={ageKey} className="hover:bg-gray-50">
-                              <td className="py-3 px-4 text-sm font-medium text-gray-900">
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                        {sortedAgeRanges.map(([ageKey, ageData]) => {
+                          // Determine color based on percentage
+                          let bgColor = "bg-gradient-to-br from-green-50 to-green-100";
+                          let textColor = "text-green-700";
+                          let borderColor = "border-green-200";
+                          
+                          if (ageData.percentage < 30) {
+                            bgColor = "bg-gradient-to-br from-red-50 to-red-100";
+                            textColor = "text-red-700";
+                            borderColor = "border-red-200";
+                          } else if (ageData.percentage < 50) {
+                            bgColor = "bg-gradient-to-br from-orange-50 to-orange-100";
+                            textColor = "text-orange-700";
+                            borderColor = "border-orange-200";
+                          } else if (ageData.percentage < 70) {
+                            bgColor = "bg-gradient-to-br from-yellow-50 to-yellow-100";
+                            textColor = "text-yellow-700";
+                            borderColor = "border-yellow-200";
+                          }
+
+                          return (
+                            <div key={ageKey} className={`${bgColor} ${borderColor} border-2 rounded-xl p-4 text-center hover:shadow-md transition-all duration-200 hover:scale-105`}>
+                              <div className="text-xs font-medium text-gray-600 mb-2">
                                 {ageData.minMonths}-{ageData.maxMonths} months
-                              </td>
-                              <td className="py-3 px-4 text-center">
-                                <span className="text-lg font-bold text-black">Up to {ageData.percentage}%</span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                              </div>
+                              <div className={`text-2xl font-bold ${textColor} mb-1`}>
+                                {ageData.percentage}%
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                max value
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     );
                   })()}
                 </div>

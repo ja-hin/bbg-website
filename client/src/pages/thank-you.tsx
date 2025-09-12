@@ -5,7 +5,7 @@ import jsPDF from 'jspdf';
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw } from "lucide-react";
+import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award } from "lucide-react";
 
 // Device Type Claim Values Component
 function BrandClaimValues({ sessionData }: { sessionData: any }) {
@@ -37,34 +37,72 @@ function BrandClaimValues({ sessionData }: { sessionData: any }) {
   const slabs = Object.values(ageRanges).sort((a: any, b: any) => a.minMonths - b.minMonths);
 
   return (
-    <div className="bg-gradient-to-r from-gray-50 to-green-50 border border-gray-200 rounded-lg p-6 mb-8">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-        <Info className="h-5 w-5 mr-2 text-xtra-primary" />
-        Your {sessionData.deviceType.charAt(0).toUpperCase() + sessionData.deviceType.slice(1)} - BuyBack Guarantee Values
-      </h3>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200/60 rounded-xl p-6 mb-8 shadow-lg">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-xl font-bold text-gray-900 flex items-center">
+          <CheckCircle className="h-6 w-6 mr-3 text-emerald-600" />
+          Your {sessionData.deviceType.charAt(0).toUpperCase() + sessionData.deviceType.slice(1)} BBG Coverage
+        </h3>
+        <div className="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+          LOCKED RATES
+        </div>
+      </div>
+      
+      <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 mb-6">
+        <p className="text-sm text-emerald-800 flex items-center">
+          <Info className="w-4 h-4 mr-2" />
+          These are your guaranteed BBG rates, locked at registration time. Values shown are maximum percentages of your original invoice value.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {slabs.map((slab: any, index: number) => {
-          // Determine color based on percentage
-          let colorClass = "text-green-600";
-          if (slab.percentage < 30) colorClass = "text-xtra-primary";
-          else if (slab.percentage < 50) colorClass = "text-orange-600";
-          else if (slab.percentage < 70) colorClass = "text-yellow-600";
+          // Determine colors based on percentage with success theme
+          let bgColor = "bg-gradient-to-br from-emerald-100 to-emerald-200";
+          let textColor = "text-emerald-800";
+          let borderColor = "border-emerald-300";
+          let iconColor = "bg-emerald-500";
+          
+          if (slab.percentage < 30) {
+            bgColor = "bg-gradient-to-br from-slate-100 to-slate-200";
+            textColor = "text-slate-800";
+            borderColor = "border-slate-300";
+            iconColor = "bg-slate-500";
+          } else if (slab.percentage < 50) {
+            bgColor = "bg-gradient-to-br from-amber-100 to-amber-200";
+            textColor = "text-amber-800";
+            borderColor = "border-amber-300";
+            iconColor = "bg-amber-500";
+          } else if (slab.percentage < 70) {
+            bgColor = "bg-gradient-to-br from-yellow-100 to-yellow-200";
+            textColor = "text-yellow-800";
+            borderColor = "border-yellow-300";
+            iconColor = "bg-yellow-500";
+          }
 
           return (
-            <div key={index} className="bg-white rounded-lg p-3 text-center border border-gray-200">
-              <div className="text-sm font-medium text-gray-600">
+            <div key={index} className={`${bgColor} ${borderColor} border-2 rounded-xl p-5 text-center hover:shadow-md transition-all duration-300 relative group`}>
+              <div className={`absolute -top-1 -right-1 w-3 h-3 ${iconColor} rounded-full opacity-80`}></div>
+              <div className="text-sm font-semibold text-gray-700 mb-3">
                 {slab.minMonths}-{slab.maxMonths} months
               </div>
-              <div className={`text-lg font-bold ${colorClass}`}>
-                Up to {slab.percentage}%
+              <div className={`text-3xl font-bold ${textColor} mb-2 group-hover:scale-110 transition-transform duration-200`}>
+                {slab.percentage}%
+              </div>
+              <div className="text-xs text-gray-600 bg-white/50 px-2 py-1 rounded-full">
+                guaranteed
               </div>
             </div>
           );
         })}
       </div>
-      <p className="text-xs text-gray-600 mt-3">
-        * Percentage of original invoice value you'll receive when claiming BBG for your {sessionData.deviceType}
-      </p>
+
+      <div className="mt-6 bg-white/50 rounded-lg p-4">
+        <p className="text-xs text-gray-700 flex items-center justify-center">
+          <Award className="w-4 h-4 mr-2 text-emerald-600" />
+          Your BBG rates are permanently locked and cannot be reduced, ensuring guaranteed returns for your {sessionData.deviceType}
+        </p>
+      </div>
     </div>
   );
 }

@@ -109,39 +109,71 @@ function DepreciationSlabs({ customerData }: { customerData?: CustomerFormData }
   const consolidatedSlabs = Object.values(ageRanges).sort((a: any, b: any) => a.minMonths - b.minMonths);
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6 mb-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-        <Info className="h-5 w-5 mr-2 text-blue-600" />
-        {customerData.deviceType.charAt(0).toUpperCase() + customerData.deviceType.slice(1)} BuyBack Guarantee Values
-      </h3>
-      <p className="text-xs text-gray-600 mb-4">
-        * Percentage of original invoice value you'll receive when claiming BBG
+    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200/50 rounded-xl p-6 mb-6 shadow-lg">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-xl font-bold text-gray-900 flex items-center">
+          <Info className="h-6 w-6 mr-3 text-blue-600" />
+          {customerData.deviceType.charAt(0).toUpperCase() + customerData.deviceType.slice(1)} BBG Values
+        </h3>
+        <div className="text-xs text-gray-500 bg-white/70 px-3 py-1 rounded-full">
+          Based on device age
+        </div>
+      </div>
+      <p className="text-sm text-gray-600 mb-6 bg-white/50 p-3 rounded-lg">
+        <strong>Note:</strong> These are the maximum percentages of your original invoice value you'll receive when claiming BBG
       </p>
       
       {isLoading ? (
-        <div className="flex justify-center py-4">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+        <div className="flex justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
       ) : consolidatedSlabs.length === 0 ? (
-        <div className="text-center py-4 text-gray-600">
-          No claim values available for {customerData.deviceType}
+        <div className="text-center py-8">
+          <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+            {customerData.deviceType === 'mobile' ? 
+              <Smartphone className="w-8 h-8 text-gray-400" /> : 
+              <Hash className="w-8 h-8 text-gray-400" />
+            }
+          </div>
+          <p className="text-gray-500">No claim values available for {customerData.deviceType}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {consolidatedSlabs.map((slab: any, index: number) => {
-              // Determine color based on percentage
-              let colorClass = "text-green-600";
-              if (slab.percentage < 30) colorClass = "text-red-600";
-              else if (slab.percentage < 50) colorClass = "text-orange-600";
-              else if (slab.percentage < 70) colorClass = "text-yellow-600";
+              // Determine colors based on percentage
+              let bgColor = "bg-gradient-to-br from-green-100 to-green-200";
+              let textColor = "text-green-800";
+              let borderColor = "border-green-300";
+              let badgeColor = "bg-green-500";
+              
+              if (slab.percentage < 30) {
+                bgColor = "bg-gradient-to-br from-red-100 to-red-200";
+                textColor = "text-red-800";
+                borderColor = "border-red-300";
+                badgeColor = "bg-red-500";
+              } else if (slab.percentage < 50) {
+                bgColor = "bg-gradient-to-br from-orange-100 to-orange-200";
+                textColor = "text-orange-800";
+                borderColor = "border-orange-300";
+                badgeColor = "bg-orange-500";
+              } else if (slab.percentage < 70) {
+                bgColor = "bg-gradient-to-br from-yellow-100 to-yellow-200";
+                textColor = "text-yellow-800";
+                borderColor = "border-yellow-300";
+                badgeColor = "bg-yellow-500";
+              }
 
               return (
-                <div key={index} className="bg-white rounded-lg p-3 text-center border border-gray-200">
-                  <div className="text-sm font-medium text-gray-600">
+                <div key={index} className={`${bgColor} ${borderColor} border-2 rounded-xl p-4 text-center hover:shadow-lg transition-all duration-300 hover:scale-105 relative overflow-hidden`}>
+                  <div className={`absolute top-0 right-0 w-6 h-6 ${badgeColor} rounded-bl-lg`}></div>
+                  <div className="text-sm font-semibold text-gray-700 mb-2">
                     {slab.minMonths}-{slab.maxMonths} months
                   </div>
-                  <div className={`text-lg font-bold ${colorClass}`}>
-                    Up to {slab.percentage}%
+                  <div className={`text-2xl font-bold ${textColor} mb-1`}>
+                    {slab.percentage}%
+                  </div>
+                  <div className="text-xs text-gray-600 opacity-75">
+                    maximum value
                   </div>
                 </div>
               );

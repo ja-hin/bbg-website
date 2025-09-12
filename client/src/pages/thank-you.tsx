@@ -293,9 +293,19 @@ export default function ThankYou() {
     doc.setLineWidth(0.3);
     
     // Header - Logo area and company name
-    doc.setFontSize(14);
-    doc.setTextColor('#E72829'); // XtraCover red
-    doc.text('XTRACOVER', 25, currentY);
+    // Use base64 encoded logo for reliable PDF generation
+    const logoBase64 = 'data:image/png;base64,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';
+    
+    try {
+      // Add the XTRACOVER logo to the PDF
+      doc.addImage(logoBase64, 'PNG', 25, currentY - 5, 30, 8);
+    } catch (error) {
+      console.error('Error adding logo to PDF:', error);
+      // Fallback to text if logo fails
+      doc.setFontSize(14);
+      doc.setTextColor('#E72829');
+      doc.text('XTRACOVER', 25, currentY);
+    }
     currentY += 8;
     
     // Company details section - compressed spacing

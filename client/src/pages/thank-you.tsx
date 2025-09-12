@@ -185,95 +185,132 @@ export default function ThankYou() {
     const primaryBlue = '#254696';
     const secondaryRed = '#E72829';
     
-    // Header with company branding
-    doc.setFontSize(20);
-    doc.setTextColor(primaryBlue);
-    doc.text('XTRACOVER', 20, 25);
+    // Professional header - centered
+    doc.setFontSize(16);
+    doc.setTextColor('#000000');
+    doc.text('INVOICE', 105, 25, { align: 'center' });
     
-    doc.setFontSize(14);
-    doc.setTextColor(secondaryRed);
-    doc.text('BuyBack Guarantee Invoice', 20, 35);
-    
-    // Invoice details
+    // Company details (Invoice To section)
     doc.setFontSize(10);
-    doc.setTextColor('#666666');
-    doc.text('Date: ' + invoiceData.date, 20, 50);
-    doc.text('Invoice ID: BBG-' + invoiceData.voucherCode, 20, 58);
-    
-    // Customer information section
+    doc.setTextColor('#000000');
+    doc.text('Invoice To:', 20, 40);
     doc.setFontSize(12);
     doc.setTextColor('#000000');
-    doc.text('BILL TO:', 20, 75);
+    doc.text('XtraCover Technologies Pvt Ltd', 20, 50);
+    doc.text('(Delhi)', 20, 58);
     
-    doc.setFontSize(10);
+    doc.setFontSize(9);
     doc.setTextColor('#333333');
-    doc.text('Customer Name: ' + invoiceData.customerName, 20, 85);
+    doc.text('Near C Lal Chowk, 3rd Floor', 20, 68);
+    doc.text('A-1, FIEE Complex, Okhla Estate Phase 2', 20, 76);
+    doc.text('New Delhi-110020', 20, 84);
+    doc.text('GSTIN/UIN: 07AAPCA2328D1ZW', 20, 92);
+    doc.text('State Name: Delhi, Code: 07', 20, 100);
+    doc.text('CIN: U74999DL2017PTC313555', 20, 108);
+    doc.text('E-Mail: compliance@xtracover.com', 20, 116);
+
+    // Invoice details (top right)
+    doc.setFontSize(10);
+    doc.setTextColor('#000000');
+    doc.text('Invoice No.', 130, 40);
+    doc.text('Date', 170, 40);
+    doc.text('BBG-' + invoiceData.voucherCode, 130, 50);
+    doc.text(invoiceData.date, 170, 50);
+    
+    doc.text('Mode/Terms of Payment:', 130, 65);
+    doc.text('Online Payment', 130, 73);
+    
+    // Customer section (Consignee/Ship to)
+    doc.setFontSize(10);
+    doc.setTextColor('#000000');
+    doc.text('Consignee (Bill To):', 20, 135);
+    doc.setFontSize(11);
+    doc.text(invoiceData.customerName, 20, 145);
     if (invoiceData.deviceType && invoiceData.brand) {
-      doc.text(`Device: ${invoiceData.brand} ${invoiceData.modelName} (${invoiceData.deviceType})`, 20, 93);
+      doc.setFontSize(9);
+      doc.text(`Device: ${invoiceData.brand} ${invoiceData.modelName} (${invoiceData.deviceType})`, 20, 153);
     }
     
-    // Service details
-    doc.setFontSize(12);
-    doc.setTextColor('#000000');
-    doc.text('SERVICE DETAILS:', 20, 115);
-    
-    // Create table-like structure
+    // Service provider section
     doc.setFontSize(10);
-    doc.setTextColor('#333333');
-    doc.text('Description', 20, 130);
-    doc.text('BBG Voucher Code', 75, 130);
-    doc.text('Amount', 140, 130);
+    doc.setTextColor('#000000');
+    doc.text('Service Provider:', 20, 175);
+    doc.setFontSize(9);
+    doc.text('XtraCover Technologies Pvt Ltd', 20, 185);
+    doc.text('Near C Lal Chowk, 3rd Floor, A-1, FIEE Complex', 20, 193);
+    doc.text('Okhla Estate Phase 2, New Delhi-110020', 20, 201);
+    doc.text('GSTIN/UIN: 07AAPCA2328D1ZW', 20, 209);
+    doc.text('State Name: DELHI, Code: 07', 20, 217);
+
+    // Service details table
+    doc.setFontSize(10);
+    doc.setTextColor('#000000');
     
-    // Draw line under headers
-    doc.setDrawColor('#CCCCCC');
-    doc.line(20, 133, 180, 133);
+    // Table headers
+    doc.text('SI', 20, 235);
+    doc.text('Description Of Services', 30, 235);
+    doc.text('Quantity', 110, 235);
+    doc.text('Rate', 135, 235);
+    doc.text('Per', 155, 235);
+    doc.text('Amount', 170, 235);
+    
+    // Table border lines
+    doc.setDrawColor('#000000');
+    doc.line(20, 238, 190, 238); // Header underline
     
     // Service row
-    doc.text('BuyBack Guarantee Registration', 20, 145);
-    doc.text(invoiceData.voucherCode, 75, 145);
-    doc.text(invoiceData.amount, 140, 145);
-    
-    // Draw line above total
-    doc.line(20, 155, 180, 155);
+    doc.text('1.', 20, 250);
+    doc.text('BuyBack Guarantee (BBG) Registration', 30, 250);
+    doc.text('1', 110, 250);
+    doc.text(invoiceData.amount.replace('₹', ''), 135, 250);
+    doc.text('Service', 155, 250);
+    doc.text(invoiceData.amount.replace('₹', ''), 170, 250);
     
     // Total section
-    doc.setFontSize(12);
-    doc.setTextColor('#000000');
-    doc.text('TOTAL AMOUNT: ' + invoiceData.amount, 20, 168);
-    
-    // Payment information
+    doc.line(20, 258, 190, 258); // Line above total
     doc.setFontSize(10);
-    doc.setTextColor('#666666');
-    doc.text('Payment Method: ' + invoiceData.paymentMethod, 20, 180);
-    if (invoiceData.txnid !== 'N/A') {
-      doc.text('Transaction ID: ' + invoiceData.txnid, 20, 188);
+    doc.text('Total', 110, 270);
+    doc.text('1 Service', 135, 270);
+    doc.text(invoiceData.amount.replace('₹', ''), 170, 270);
+    
+    // Amount in words
+    doc.setFontSize(9);
+    doc.text('Amount chargeable (in words)', 20, 285);
+    doc.text('E. & O.E', 170, 285);
+    
+    // Convert amount to words (simplified)
+    const amountNum = parseInt(invoiceData.amount.replace('₹', ''));
+    let amountInWords = '';
+    if (amountNum === 299) {
+      amountInWords = 'INR TWO HUNDRED AND NINETY NINE ONLY';
+    } else if (amountNum === 499) {
+      amountInWords = 'INR FOUR HUNDRED AND NINETY NINE ONLY';
+    } else {
+      amountInWords = `INR ${amountNum} ONLY`;
     }
-    doc.text('Payment Status: Completed', 20, 196);
-    
-    // Important notes
-    doc.setFontSize(10);
-    doc.setTextColor(primaryBlue);
-    doc.text('IMPORTANT NOTES:', 20, 215);
     
     doc.setFontSize(8);
-    doc.setTextColor('#333333');
-    const notes = [
-      '• Keep this invoice safe for future reference and claims',
-      '• BBG claims can be filed after the waiting period as per terms',
-      '• Visit our website or contact support for claim assistance',
-      '• This is a system-generated invoice and does not require signature'
-    ];
+    doc.text(amountInWords, 20, 295);
     
-    notes.forEach((note, index) => {
-      doc.text(note, 20, 225 + (index * 8));
-    });
+    // Company signature section
+    doc.setFontSize(9);
+    doc.text("Company's PAN: AAPCA2328D", 20, 310);
+    doc.text('for XtraCover Technologies Pvt Ltd (Delhi)', 130, 320);
+    doc.text('Authorized Signatory', 130, 335);
+    
+    // Payment information
+    doc.setFontSize(8);
+    doc.setTextColor('#666666');
+    if (invoiceData.txnid !== 'N/A') {
+      doc.text('Transaction ID: ' + invoiceData.txnid, 20, 350);
+    }
+    doc.text('Payment Status: Completed', 20, 358);
     
     // Footer
     doc.setFontSize(8);
     doc.setTextColor('#999999');
-    doc.text('XtraCover - Protecting Your Investments', 20, 265);
-    doc.text('Email: support@xtracover.com | Website: www.xtracover.com', 20, 272);
-    doc.text('Generated on: ' + new Date().toLocaleString('en-IN'), 20, 279);
+    doc.text('This is a Computer Generated Document', 105, 370, { align: 'center' });
+    doc.text('Generated on: ' + new Date().toLocaleString('en-IN'), 20, 380);
     
     // Save the PDF
     doc.save(`BBG_Invoice_${invoiceData.voucherCode}.pdf`);

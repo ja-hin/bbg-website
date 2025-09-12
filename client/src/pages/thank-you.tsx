@@ -181,13 +181,10 @@ export default function ThankYou() {
     // Generate PDF invoice
     const doc = new jsPDF();
     
-    // Helper function to generate unique IRN and Ack numbers
-    const generateIRN = () => {
-      const chars = 'abcdef0123456789';
-      return Array.from({length: 64}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-    };
-    
-    const generateAckNo = () => Math.floor(100000000000000 + Math.random() * 900000000000000).toString();
+    // Page constraints
+    const pageHeight = 297; // A4 height in mm
+    const maxContentHeight = 280; // Safe content height
+    let currentY = 15; // Track current Y position
     
     // Calculate amounts and tax
     const baseAmount = parseInt(invoiceData.amount.replace('₹', ''));
@@ -232,187 +229,263 @@ export default function ThankYou() {
     const totalInWords = `INR ${numberToWords(baseAmount)} Only`;
     const taxInWords = `INR ${numberToWords(Math.floor(igstAmount))} and ${Math.round((igstAmount % 1) * 100)} paise Only`;
     
-    // Header section
-    doc.setFontSize(14);
-    doc.setTextColor('#000000');
-    doc.text('Tax Invoice', 60, 20);
-    doc.text('e-Invoice', 140, 20);
-    
-    // IRN and Ack details
-    doc.setFontSize(8);
-    doc.text('IRN      : ' + generateIRN().substring(0, 32) + '-', 20, 30);
-    doc.text('           ' + generateIRN().substring(32), 20, 36);
-    doc.text('Ack No.  : ' + generateAckNo(), 20, 42);
-    doc.text('Ack Date : ' + invoiceData.date, 20, 48);
-    
-    // Company header
-    doc.setFontSize(12);
-    doc.setTextColor('#000000');
-    doc.text('Xtracover Technologies Pvt Ltd (Delhi)', 20, 60);
-    
-    doc.setFontSize(9);
-    doc.text('Near C Lal Chowk, 3rd Floor', 20, 68);
-    doc.text('A-1, FIEE Complex, Okhla Estate Phase 2', 20, 76);
-    doc.text('New Delhi-110020', 20, 84);
-    doc.text('UDYAM : UDYAM-DL-08-0002853 (Small/Traders)', 20, 92);
-    doc.text('GSTIN/UIN: 07AAPCA2328D1ZW', 20, 100);
-    doc.text('State Name : Delhi, Code : 07', 20, 108);
-    doc.text('CIN: U74999DL2017PTC313555', 20, 116);
-    doc.text('E-Mail : compliance@xtracover.com', 20, 124);
-    
-    // Invoice details (right side)
-    doc.setFontSize(9);
-    doc.text('Invoice No.', 140, 60);
-    doc.text('Dated', 170, 60);
-    doc.text('XTPLD/25-26/' + invoiceData.voucherCode, 140, 68);
-    doc.text(invoiceData.date, 170, 68);
-    
-    doc.text('Delivery Note', 140, 80);
-    doc.text('Mode/Terms of Payment', 170, 80);
-    doc.text('Online Payment', 170, 88);
-    
-    doc.text('Reference No. & Date.', 140, 100);
-    doc.text('Other References', 170, 100);
-    doc.text('BBG/' + invoiceData.voucherCode + ' dt. ' + invoiceData.date, 140, 108);
-    
-    doc.text("Buyer's Order No.", 140, 120);
-    doc.text('Dated', 170, 120);
-    
-    doc.text('Dispatch Doc No.', 140, 132);
-    doc.text('Delivery Note Date', 170, 132);
-    
-    doc.text('Dispatched through', 140, 144);
-    doc.text('Destination', 170, 144);
-    
-    doc.text('Terms of Delivery', 140, 156);
-    
-    // Consignee section
-    doc.setFontSize(9);
-    doc.text('Consignee (Ship to)', 20, 140);
-    doc.text(invoiceData.customerName, 20, 150);
-    if (invoiceData.deviceType && invoiceData.brand) {
-      doc.text(`Device: ${invoiceData.brand} ${invoiceData.modelName}`, 20, 158);
-    }
-    doc.text('GSTIN/UIN      : N/A', 20, 166);
-    doc.text('State Name     : Delhi, Code : 07', 20, 174);
-    
-    // Buyer section
-    doc.text('Buyer (Bill to)', 20, 186);
-    doc.text(invoiceData.customerName, 20, 194);
-    if (invoiceData.deviceType && invoiceData.brand) {
-      doc.text(`Device: ${invoiceData.brand} ${invoiceData.modelName}`, 20, 202);
-    }
-    doc.text('GSTIN/UIN       : N/A', 20, 210);
-    doc.text('State Name      : Delhi, Code : 07', 20, 218);
-    doc.text('Place of Supply : Delhi', 20, 226);
-    
-    // Service table
-    doc.setFontSize(8);
-    doc.text('Sl', 20, 240);
-    doc.text('Description of Goods', 25, 240);
-    doc.text('HSN/SAC', 90, 240);
-    doc.text('Part No.', 110, 240);
-    doc.text('Quantity', 125, 240);
-    doc.text('Rate', 145, 240);
-    doc.text('per', 160, 240);
-    doc.text('Amount', 175, 240);
-    doc.text('No.', 20, 248);
-    
-    // Table border
+    // Set document properties
     doc.setDrawColor('#000000');
-    doc.line(20, 250, 190, 250);
+    doc.setLineWidth(0.3);
     
-    // Service row
-    doc.text('1', 20, 260);
-    doc.text('BuyBack Guarantee (BBG) Service', 25, 260);
-    doc.text('998314', 90, 260); // SAC code for business support services
-    doc.text('', 110, 260);
-    doc.text('1 service', 125, 260);
-    doc.text(taxableValue.toFixed(2), 145, 260);
-    doc.text('service', 160, 260);
-    doc.text(taxableValue.toFixed(2), 175, 260);
-    doc.text('Batch : BBG-' + invoiceData.voucherCode, 25, 268);
-    doc.text('1 service', 125, 276);
+    // Header - Logo area and company name
+    doc.setFontSize(14);
+    doc.setTextColor('#E72829'); // XtraCover red
+    doc.text('XTRACOVER', 25, currentY);
+    currentY += 8;
     
-    // Tax calculations
-    doc.text('IGST @ 18%', 90, 288);
-    doc.text('18 %', 160, 288);
-    doc.text(igstAmount.toFixed(2), 175, 288);
+    // Company details section - compressed spacing
+    doc.setFontSize(10);
+    doc.setTextColor('#000000');
+    doc.text('Xtracover Technologies Pvt Ltd (Delhi)', 25, currentY);
+    currentY += 5;
     
-    doc.text('Round Off', 90, 300);
-    doc.text(roundOff.toFixed(2), 175, 300);
-    
-    doc.text('Total', 90, 312);
-    doc.text('1 service', 125, 312);
-    doc.text('₹ ' + baseAmount.toFixed(2), 170, 312);
-    
-    // Amount in words
-    doc.setFontSize(9);
-    doc.text('Amount Chargeable (in words)', 20, 325);
-    doc.text('E. & O.E', 175, 325);
     doc.setFontSize(8);
-    doc.text(totalInWords, 20, 335);
+    doc.text('Near C Lal Chowk, 3rd Floor, A-1, FIEE Complex, Okhla Estate Phase 2', 25, currentY);
+    currentY += 4;
+    doc.text('New Delhi-110020', 25, currentY);
+    currentY += 4;
+    doc.text('UDYAM: UDYAM-DL-08-0002853 | GSTIN/UIN: 07AAPCA2328D1ZW | State: Delhi-07', 25, currentY);
+    currentY += 4;
+    doc.text('CIN: U74999DL2017PTC313555 | E-Mail: compliance@xtracover.com', 25, currentY);
     
-    // Tax summary table
+    // Invoice details box (top right) - reset Y for right side
+    const invoiceBoxY = 15;
+    doc.rect(140, invoiceBoxY, 55, 35);
     doc.setFontSize(8);
-    doc.text('HSN/SAC', 25, 350);
-    doc.text('Taxable', 60, 350);
-    doc.text('IGST', 90, 350);
-    doc.text('Total', 120, 350);
-    doc.text('', 25, 358);
-    doc.text('Value', 60, 358);
-    doc.text('Rate    Amount', 90, 358);
-    doc.text('Tax Amount', 120, 358);
+    doc.text('Invoice No.', 142, invoiceBoxY + 8);
+    doc.text('Dated', 175, invoiceBoxY + 8);
+    doc.text('XTPLD/25-26/' + invoiceData.voucherCode, 142, invoiceBoxY + 14);
+    doc.text(invoiceData.date, 175, invoiceBoxY + 14);
+    doc.text('Delivery Note', 142, invoiceBoxY + 22);
+    doc.text('Mode/Payment', 175, invoiceBoxY + 22);
+    doc.text('Online Payment', 142, invoiceBoxY + 28);
+    doc.text('PO' + invoiceData.voucherCode, 142, invoiceBoxY + 34);
     
-    doc.line(20, 360, 150, 360);
+    currentY = Math.max(currentY + 8, invoiceBoxY + 40);
     
-    doc.text('998314', 25, 370);
-    doc.text(taxableValue.toFixed(2), 60, 370);
-    doc.text('18%     ' + igstAmount.toFixed(2), 90, 370);
-    doc.text(igstAmount.toFixed(2), 120, 370);
-    
-    doc.line(20, 375, 150, 375);
-    doc.text('Total', 25, 385);
-    doc.text(taxableValue.toFixed(2), 60, 385);
-    doc.text(igstAmount.toFixed(2), 105, 385);
-    doc.text(igstAmount.toFixed(2), 120, 385);
-    
-    doc.text('Tax Amount (in words) : ' + taxInWords, 20, 395);
-    
-    // Remarks section
-    doc.text('Remarks:', 20, 408);
-    doc.text('Service provided as per agreement terms and conditions.', 20, 416);
-    doc.text('GST applicable as per government regulations.', 20, 424);
-    
-    // Company details and signature
-    doc.text("Company's PAN              : AAPCA2328D", 20, 440);
-    
-    doc.text('Declaration', 20, 452);
-    doc.text('Services once provided will not be cancelled or refunded.', 20, 460);
-    doc.text('All payments must be made as per the agreed payment terms.', 20, 468);
-    doc.text('Interest @ 18% p.a. will be charged on overdue payments.', 20, 476);
-    doc.text('Any discrepancies in the invoice must be reported within 7 days', 20, 484);
-    doc.text('from the date of invoice.', 20, 492);
-    doc.text('All disputes are subject to Delhi jurisdiction.', 20, 500);
-    doc.text('Tax liability is as per applicable GST rules.', 20, 508);
-    
-    // Bank details
-    doc.text("Company's Bank Details", 110, 440);
-    doc.text("A/c Holder's Name : Xtracover Technologies Pvt Ltd", 110, 448);
-    doc.text('Bank Name         : Axis Bank Current A/c', 110, 456);
-    doc.text('A/c No.           : 923020046439817', 110, 464);
-    doc.text('Branch & IFS Code: Okhla Phase-1, New Delhi & UTIB0001103', 110, 472);
-    doc.text('for Xtracover Technologies Pvt Ltd (Delhi)', 110, 488);
-    doc.text('Authorised Signatory', 110, 504);
-    
-    // Footer
+    // Customer sections with borders - compressed
+    const customerSectionY = currentY;
+    // Consignee section
+    doc.rect(25, customerSectionY, 85, 25);
+    doc.setFontSize(8);
+    doc.text('Consignee (Ship to)', 27, customerSectionY + 6);
     doc.setFontSize(9);
-    doc.text('SUBJECT TO DELHI JURISDICTION', 75, 520, { align: 'center' });
-    doc.text('This is a Computer Generated Invoice', 75, 530, { align: 'center' });
+    doc.text(invoiceData.customerName, 27, customerSectionY + 12);
+    if (invoiceData.brand && invoiceData.modelName) {
+      doc.setFontSize(7);
+      doc.text(invoiceData.brand + ' ' + invoiceData.modelName, 27, customerSectionY + 17);
+    }
+    doc.text('Indore', 27, customerSectionY + 22);
+    
+    // Buyer section  
+    doc.rect(25, customerSectionY + 25, 85, 30);
+    doc.setFontSize(8);
+    doc.text('Buyer (Bill to)', 27, customerSectionY + 31);
+    doc.setFontSize(9);
+    doc.text(invoiceData.customerName, 27, customerSectionY + 37);
+    if (invoiceData.brand && invoiceData.modelName) {
+      doc.setFontSize(7);
+      doc.text(invoiceData.brand + ' ' + invoiceData.modelName, 27, customerSectionY + 42);
+    }
+    doc.text('Indore', 27, customerSectionY + 47);
+    doc.setFontSize(7);
+    doc.text('GSTIN/UIN: 23CWPPS5113M1Z2 | State: Madhya Pradesh-23', 27, customerSectionY + 52);
+    
+    // Additional fields (right side) - compressed
+    doc.setFontSize(7);
+    doc.text("Buyer's Order No.", 142, customerSectionY + 8);
+    doc.text('Dispatch Doc No.', 142, customerSectionY + 16);
+    doc.text('Destination', 142, customerSectionY + 24);
+    doc.text('Terms of Delivery', 142, customerSectionY + 32);
+    
+    currentY = customerSectionY + 60;
+    
+    // Main products/services table with complete structure
+    const tableY = currentY;
+    const tableWidth = 170;
+    const tableHeight = 40;
+    
+    // Complete table border
+    doc.rect(25, tableY, tableWidth, tableHeight);
+    
+    // Column definitions (widths in mm)
+    const cols = [
+      { x: 25, width: 8, title: 'Sl No.' },
+      { x: 33, width: 75, title: 'Description of Goods' },
+      { x: 108, width: 15, title: 'HSN/SAC' },
+      { x: 123, width: 15, title: 'Quantity' },
+      { x: 138, width: 17, title: 'Rate' },
+      { x: 155, width: 15, title: 'per' },
+      { x: 170, width: 25, title: 'Amount' }
+    ];
+    
+    // Draw all vertical grid lines
+    for (let i = 1; i < cols.length; i++) {
+      doc.line(cols[i].x, tableY, cols[i].x, tableY + tableHeight);
+    }
+    
+    // Header row
+    const headerHeight = 10;
+    doc.line(25, tableY + headerHeight, 25 + tableWidth, tableY + headerHeight);
+    
+    doc.setFontSize(7);
+    cols.forEach((col, i) => {
+      doc.text(col.title, col.x + 1, tableY + 7);
+    });
+    
+    // Product row
+    const productY = tableY + headerHeight + 6;
+    doc.text('1', 27, productY);
+    
+    // Service description
+    let serviceDescription = 'BuyBack Guarantee (BBG) Service B2B';
+    if (invoiceData.brand && invoiceData.modelName) {
+      serviceDescription = `${invoiceData.brand} ${invoiceData.modelName} BBG Service`;
+    }
+    doc.text(serviceDescription, 35, productY);
+    doc.text('Batch: BBG' + invoiceData.voucherCode, 35, productY + 5);
+    
+    doc.text('998314', 110, productY); // SAC code
+    doc.text('1 pcs', 125, productY); // Quantity
+    doc.text(taxableValue.toFixed(2), 140, productY); // Rate
+    doc.text('pcs', 157, productY); // Per unit
+    doc.text(taxableValue.toFixed(2), 172, productY); // Amount
+    
+    // Tax lines within table structure
+    const taxRowY = productY + 12;
+    doc.line(25, taxRowY, 25 + tableWidth, taxRowY); // Horizontal line before tax
+    
+    // Empty cells for tax row alignment
+    doc.text('', 27, taxRowY + 5); // Sl No
+    doc.text('IGST @ 18%', 35, taxRowY + 5); // Description
+    doc.text('', 110, taxRowY + 5); // HSN/SAC
+    doc.text('', 125, taxRowY + 5); // Quantity
+    doc.text('18%', 140, taxRowY + 5); // Rate
+    doc.text('', 157, taxRowY + 5); // Per
+    doc.text(igstAmount.toFixed(2), 172, taxRowY + 5); // Amount
+    
+    // Round off row
+    const roundOffY = taxRowY + 8;
+    doc.text('', 27, roundOffY); // Sl No
+    doc.text('Round Off', 35, roundOffY); // Description
+    doc.text('', 110, roundOffY); // HSN/SAC
+    doc.text('', 125, roundOffY); // Quantity
+    doc.text('', 140, roundOffY); // Rate
+    doc.text('', 157, roundOffY); // Per
+    doc.text(roundOff.toFixed(2), 172, roundOffY); // Amount
+    
+    // Total row with proper structure
+    const totalRowY = roundOffY + 6;
+    doc.line(25, totalRowY, 25 + tableWidth, totalRowY); // Line before total
+    doc.setFontSize(8);
+    doc.text('', 27, totalRowY + 4); // Sl No
+    doc.text('Total', 35, totalRowY + 4); // Description
+    doc.text('', 110, totalRowY + 4); // HSN/SAC
+    doc.text('1 pcs', 125, totalRowY + 4); // Total Quantity
+    doc.text('', 140, totalRowY + 4); // Rate
+    doc.text('', 157, totalRowY + 4); // Per
+    doc.text('₹ ' + baseAmount.toFixed(2), 172, totalRowY + 4); // Total Amount
+    
+    currentY = tableY + tableHeight + 8;
+    
+    // Amount in words section - compressed
+    doc.setFontSize(8);
+    doc.text('Amount Chargeable (in words):', 27, currentY);
+    doc.text('E. & O.E', 175, currentY);
+    currentY += 5;
+    doc.setFontSize(7);
+    doc.text(totalInWords, 27, currentY);
+    currentY += 8;
+    
+    // Tax summary table - compressed
+    const taxTableWidth = 120;
+    const taxTableHeight = 25;
+    doc.rect(25, currentY, taxTableWidth, taxTableHeight);
+    
+    // Tax table column lines
+    doc.line(45, currentY, 45, currentY + taxTableHeight); // After HSN/SAC
+    doc.line(75, currentY, 75, currentY + taxTableHeight); // After Taxable Value
+    doc.line(105, currentY, 105, currentY + taxTableHeight); // After IGST
+    
+    // Tax table headers
+    doc.line(25, currentY + 10, 25 + taxTableWidth, currentY + 10);
+    doc.setFontSize(7);
+    doc.text('HSN/SAC', 27, currentY + 6);
+    doc.text('Taxable Value', 47, currentY + 6);
+    doc.text('IGST', 77, currentY + 6);
+    doc.text('Total Tax', 107, currentY + 6);
+    
+    // Tax values
+    doc.text('998314', 27, currentY + 18);
+    doc.text(taxableValue.toFixed(2), 47, currentY + 18);
+    doc.text('18% - ' + igstAmount.toFixed(2), 77, currentY + 18);
+    doc.text(igstAmount.toFixed(2), 107, currentY + 18);
+    
+    currentY += taxTableHeight + 6;
+    
+    // Tax amount in words
+    doc.setFontSize(7);
+    doc.text('Tax Amount (in words): ' + taxInWords, 27, currentY);
+    currentY += 8;
+    
+    // Remarks section - highly compressed
+    doc.text('Remarks: Margin Scheme (Rule 32(5)) for used goods valuation.', 27, currentY);
+    currentY += 5;
+    doc.text("Company's PAN: AAPCA2328D", 27, currentY);
+    currentY += 8;
+    
+    // Declaration and Bank details in two columns - final section
+    const declarationY = currentY;
+    
+    // Left column - Declaration (compressed)
+    doc.setFontSize(7);
+    doc.text('Declaration:', 27, declarationY);
+    const declarations = [
+      'Goods sold will not be taken back.',
+      'Payments as per agreed terms.',
+      'Interest @ 18% p.a. on overdue payments.',
+      'Report discrepancies within 7 days.',
+      'Company not responsible for transit damage.',
+      'Delhi jurisdiction applies.',
+      'Tax as per GST rules.'
+    ];
+    
+    declarations.forEach((decl, i) => {
+      doc.text(decl, 27, declarationY + 5 + (i * 4));
+    });
+    
+    // Right column - Bank details (compressed)
+    doc.text("Company's Bank Details:", 110, declarationY);
+    const bankDetails = [
+      "A/c: Xtracover Technologies Pvt Ltd",
+      'Bank: Axis Bank A/c 923020046439817',
+      'Branch: Okhla Phase-1, New Delhi',
+      'IFS Code: UTIB0001103',
+      '',
+      'for Xtracover Technologies Pvt Ltd',
+      'Authorised Signatory'
+    ];
+    
+    bankDetails.forEach((detail, i) => {
+      doc.text(detail, 110, declarationY + 5 + (i * 4));
+    });
+    
+    currentY = declarationY + 35;
+    
+    // Footer - ensure it fits
+    doc.setFontSize(8);
+    doc.text('SUBJECT TO DELHI JURISDICTION', 105, currentY, { align: 'center' });
+    doc.text('This is a Computer Generated Invoice', 105, currentY + 5, { align: 'center' });
     
     if (invoiceData.txnid !== 'N/A') {
-      doc.setFontSize(7);
-      doc.text('Transaction ID: ' + invoiceData.txnid, 20, 545);
+      doc.setFontSize(6);
+      doc.text('Transaction ID: ' + invoiceData.txnid, 27, currentY + 10);
     }
     
     // Save the PDF

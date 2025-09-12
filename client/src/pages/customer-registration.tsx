@@ -138,7 +138,7 @@ function DepreciationSlabs({ customerData }: { customerData?: CustomerFormData }
           <p className="text-gray-500">No claim values available for {customerData.deviceType}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {consolidatedSlabs.map((slab: any, index: number) => {
               // Determine colors based on percentage
               let bgColor = "bg-gradient-to-br from-green-100 to-green-200";

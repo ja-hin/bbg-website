@@ -55,7 +55,7 @@ function BrandClaimValues({ sessionData }: { sessionData: any }) {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
         {slabs.map((slab: any, index: number) => {
           // Determine colors based on percentage with success theme
           let bgColor = "bg-gradient-to-br from-emerald-100 to-emerald-200";

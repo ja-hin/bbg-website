@@ -286,7 +286,7 @@ export default function Home() {
               <Loader2 className="w-8 h-8 animate-spin text-xtra-primary" />
             </div>
           ) : (
-            <div className="space-y-8 max-w-7xl mx-auto">
+            <div className="space-y-8 w-full">
               
               {/* Mobile Devices Grid */}
               <div className="bg-white rounded-xl shadow-xl overflow-hidden">
@@ -331,7 +331,7 @@ export default function Home() {
                     );
 
                     return (
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
                         {sortedAgeRanges.map(([ageKey, ageData]) => {
                           // Determine color based on percentage
                           let bgColor = "bg-gradient-to-br from-green-50 to-green-100";
@@ -415,7 +415,7 @@ export default function Home() {
                     );
 
                     return (
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
                         {sortedAgeRanges.map(([ageKey, ageData]) => {
                           // Determine color based on percentage
                           let bgColor = "bg-gradient-to-br from-green-50 to-green-100";

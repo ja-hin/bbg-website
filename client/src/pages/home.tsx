@@ -298,10 +298,7 @@ export default function Home() {
                 </div>
                 <div className="overflow-x-auto">
                   {(() => {
-                    // Get actual brands from the data (from logs: Apple, OnePlus, Realme, Samsung, Xiaomi)
-                    const mobileBrands = Array.from(new Set(activeMobileSlabs.map((slab: any) => slab.brand).filter(Boolean))).sort();
-                    
-                    if (mobileBrands.length === 0) {
+                    if (activeMobileSlabs.length === 0) {
                       return (
                         <div className="p-8 text-center">
                           <p className="text-gray-500">No mobile device slabs available</p>
@@ -309,7 +306,7 @@ export default function Home() {
                       );
                     }
 
-                    // Group mobile slabs by age range for brand comparison
+                    // Group mobile slabs by age range - get the highest percentage for each age range
                     const ageRanges: { [key: string]: any } = {};
                     
                     activeMobileSlabs.forEach((slab: any) => {
@@ -318,13 +315,11 @@ export default function Home() {
                         ageRanges[ageKey] = {
                           minMonths: slab.minMonths,
                           maxMonths: slab.maxMonths,
-                          brands: {}
+                          percentage: slab.percentage
                         };
-                      }
-                      
-                      // Add brand-specific percentage
-                      if (slab.brand) {
-                        ageRanges[ageKey].brands[slab.brand] = slab.percentage;
+                      } else {
+                        // Keep the highest percentage for this age range
+                        ageRanges[ageKey].percentage = Math.max(ageRanges[ageKey].percentage, slab.percentage);
                       }
                     });
 
@@ -338,9 +333,7 @@ export default function Home() {
                         <thead className="bg-gray-100">
                           <tr>
                             <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
-                            {mobileBrands.map(brand => (
-                              <th key={brand} className="py-3 px-4 text-center font-semibold text-sm text-gray-700">{brand}</th>
-                            ))}
+                            <th className="py-3 px-4 text-center font-semibold text-sm text-gray-700">BBG Value</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
@@ -349,16 +342,9 @@ export default function Home() {
                               <td className="py-3 px-4 text-sm font-medium text-gray-900">
                                 {ageData.minMonths}-{ageData.maxMonths} months
                               </td>
-                              {mobileBrands.map(brand => {
-                                const percentage = ageData.brands[brand];
-                                if (!percentage) return <td key={brand} className="py-3 px-4 text-center text-gray-400">-</td>;
-                                
-                                return (
-                                  <td key={brand} className="py-3 px-4 text-center">
-                                    <span className="text-lg font-bold text-black">{percentage}%</span>
-                                  </td>
-                                );
-                              })}
+                              <td className="py-3 px-4 text-center">
+                                <span className="text-lg font-bold text-black">Up to {ageData.percentage}%</span>
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -378,10 +364,7 @@ export default function Home() {
                 </div>
                 <div className="overflow-x-auto">
                   {(() => {
-                    // Get actual brands from the data (from logs: Acer, Apple, Asus, Dell, HP, Lenovo)
-                    const laptopBrands = Array.from(new Set(activeLaptopSlabs.map((slab: any) => slab.brand).filter(Boolean))).sort();
-                    
-                    if (laptopBrands.length === 0) {
+                    if (activeLaptopSlabs.length === 0) {
                       return (
                         <div className="p-8 text-center">
                           <p className="text-gray-500">No laptop device slabs available</p>
@@ -389,7 +372,7 @@ export default function Home() {
                       );
                     }
 
-                    // Group laptop slabs by age range for brand comparison
+                    // Group laptop slabs by age range - get the highest percentage for each age range
                     const ageRanges: { [key: string]: any } = {};
                     
                     activeLaptopSlabs.forEach((slab: any) => {
@@ -398,13 +381,11 @@ export default function Home() {
                         ageRanges[ageKey] = {
                           minMonths: slab.minMonths,
                           maxMonths: slab.maxMonths,
-                          brands: {}
+                          percentage: slab.percentage
                         };
-                      }
-                      
-                      // Add brand-specific percentage
-                      if (slab.brand) {
-                        ageRanges[ageKey].brands[slab.brand] = slab.percentage;
+                      } else {
+                        // Keep the highest percentage for this age range
+                        ageRanges[ageKey].percentage = Math.max(ageRanges[ageKey].percentage, slab.percentage);
                       }
                     });
 
@@ -418,9 +399,7 @@ export default function Home() {
                         <thead className="bg-gray-100">
                           <tr>
                             <th className="py-3 px-4 text-left font-semibold text-sm text-gray-700">Device Age</th>
-                            {laptopBrands.map(brand => (
-                              <th key={brand} className="py-3 px-4 text-center font-semibold text-sm text-gray-700">{brand}</th>
-                            ))}
+                            <th className="py-3 px-4 text-center font-semibold text-sm text-gray-700">BBG Value</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
@@ -429,16 +408,9 @@ export default function Home() {
                               <td className="py-3 px-4 text-sm font-medium text-gray-900">
                                 {ageData.minMonths}-{ageData.maxMonths} months
                               </td>
-                              {laptopBrands.map(brand => {
-                                const percentage = ageData.brands[brand];
-                                if (!percentage) return <td key={brand} className="py-3 px-4 text-center text-gray-400">-</td>;
-                                
-                                return (
-                                  <td key={brand} className="py-3 px-4 text-center">
-                                    <span className="text-lg font-bold text-black">{percentage}%</span>
-                                  </td>
-                                );
-                              })}
+                              <td className="py-3 px-4 text-center">
+                                <span className="text-lg font-bold text-black">Up to {ageData.percentage}%</span>
+                              </td>
                             </tr>
                           ))}
                         </tbody>

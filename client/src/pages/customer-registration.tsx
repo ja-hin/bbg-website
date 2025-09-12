@@ -75,8 +75,8 @@ type CustomerFormData = z.infer<typeof customerSchema>;
 
 // Depreciation Slabs Component
 function DepreciationSlabs({ customerData }: { customerData?: CustomerFormData }) {
-  // If no customer data provided, don't show anything
-  if (!customerData?.brand || !customerData?.deviceType) {
+  // If no device type provided, don't show anything
+  if (!customerData?.deviceType) {
     return null;
   }
 
@@ -88,16 +88,31 @@ function DepreciationSlabs({ customerData }: { customerData?: CustomerFormData }
 
   const slabsArray = Array.isArray(slabs) ? slabs : [];
   
-  // Filter slabs for the selected brand only
-  const brandSlabs = slabsArray.filter((slab: any) => 
-    slab.brand?.toLowerCase() === customerData.brand?.toLowerCase()
-  );
+  // Group slabs by age range and get the highest percentage for each age range
+  const ageRanges: { [key: string]: any } = {};
+  
+  slabsArray.forEach((slab: any) => {
+    const ageKey = `${slab.minMonths}-${slab.maxMonths}`;
+    if (!ageRanges[ageKey]) {
+      ageRanges[ageKey] = {
+        minMonths: slab.minMonths,
+        maxMonths: slab.maxMonths,
+        percentage: slab.percentage
+      };
+    } else {
+      // Keep the highest percentage for this age range
+      ageRanges[ageKey].percentage = Math.max(ageRanges[ageKey].percentage, slab.percentage);
+    }
+  });
+
+  // Convert to array and sort by minMonths
+  const consolidatedSlabs = Object.values(ageRanges).sort((a: any, b: any) => a.minMonths - b.minMonths);
 
   return (
     <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6 mb-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
         <Info className="h-5 w-5 mr-2 text-blue-600" />
-        Your {customerData.brand} {customerData.deviceType} - BuyBack Guarantee Values
+        {customerData.deviceType.charAt(0).toUpperCase() + customerData.deviceType.slice(1)} BuyBack Guarantee Values
       </h3>
       <p className="text-xs text-gray-600 mb-4">
         * Percentage of original invoice value you'll receive when claiming BBG
@@ -107,15 +122,13 @@ function DepreciationSlabs({ customerData }: { customerData?: CustomerFormData }
         <div className="flex justify-center py-4">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
         </div>
-      ) : brandSlabs.length === 0 ? (
+      ) : consolidatedSlabs.length === 0 ? (
         <div className="text-center py-4 text-gray-600">
-          No claim values available for {customerData.brand} {customerData.deviceType}
+          No claim values available for {customerData.deviceType}
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {brandSlabs
-            .sort((a: any, b: any) => a.minMonths - b.minMonths)
-            .map((slab: any, index: number) => {
+          {consolidatedSlabs.map((slab: any, index: number) => {
               // Determine color based on percentage
               let colorClass = "text-green-600";
               if (slab.percentage < 30) colorClass = "text-red-600";
@@ -128,7 +141,7 @@ function DepreciationSlabs({ customerData }: { customerData?: CustomerFormData }
                     {slab.minMonths}-{slab.maxMonths} months
                   </div>
                   <div className={`text-lg font-bold ${colorClass}`}>
-                    {slab.percentage}%
+                    Up to {slab.percentage}%
                   </div>
                 </div>
               );

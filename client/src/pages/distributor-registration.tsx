@@ -177,9 +177,9 @@ export default function DistributorRegistration() {
           <Card className="text-center">
             <CardContent className="p-6">
               <IndianRupee className="h-8 w-8 text-green-600 mx-auto mb-3" />
-              <h3 className="font-semibold text-gray-900">Earn ₹25 Per Referral</h3>
+              <h3 className="font-semibold text-gray-900">Earn 10% + ₹25 Per BBG Sale</h3>
               <p className="text-sm text-gray-600 mt-1">
-                Get paid for every customer who registers using your code
+                Get rewarded for every BBG you help sell using your code
               </p>
             </CardContent>
           </Card>

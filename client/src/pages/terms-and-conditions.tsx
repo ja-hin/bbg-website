@@ -29,6 +29,8 @@ export default function TermsAndConditions() {
                   <p><span className="font-medium">2.1</span> Upon payment of a specified price on the website, the customer obtains an assured, pre-determined value as mentioned on the website/voucher, subject to the terms and conditions set forth below (Buyback Guarantee Value).</p>
                   <p><span className="font-medium">2.2</span> The customer obtains the aforementioned value on the exchange of certain specified devices (Original Device) on which the policy will be applicable.</p>
                   <p><span className="font-medium">2.3</span> The Buyback Guarantee is valid on the original device purchased against a valid invoice and registered for XtraCover's Buyback Guarantee Assurance.</p>
+                  <p><span className="font-medium">2.4</span> The Buyback Guarantee also entitles the Customer to one (1) Free Device Repair during the validity of the BBG plan. Only the service charges will be waived under this benefit. The cost of replacement parts, if required, shall be borne entirely by the Customer.</p>
+                  <p><span className="font-medium">2.5</span> The Buyback Guarantee also provides access to Auction Service in case the device doesn't pass the quality checks to be eligible for Buyback Guarantee, whereby the Customer may choose to auction the registered device through XtraCover's authorized platform.</p>
                 </div>
               </section>
 
@@ -36,7 +38,7 @@ export default function TermsAndConditions() {
                 <h2 className="text-lg font-semibold mb-3">3. Buyback Guarantee Specific Terms & Conditions</h2>
                 <div className="ml-4 space-y-2">
                   <p><span className="font-medium">3.1</span> BBG pricing and depreciation slabs shown at e-time of purchase are final and will be locked with the customer's BBG Voucher Code. Provided that while BBG Pricing & Depreciation slabs will generally remain as indicated at the time of purchase, XtraCover reserves the right to revise the assured value if significant market fluctuations, unforeseen technological obsolescence, or changes in applicable law occur, provided that such revision shall not reduce the assured value by more than 10% of the original assured value.</p>
-                  <p><span className="font-medium">3.2</span> Customers must Buy / Register the BuyBack Guarantee at https://bbg.xtracover.com within 6 months of their new device purchase.</p>
+                  <p><span className="font-medium">3.2</span> Customers must Buy / Register the BuyBack Guarantee at https://bbg.xtracover.com within 5 years of their new device purchase.</p>
                   <p><span className="font-medium">3.3</span> Fraudulent claims, including those involving fake invoices or devices, will lead to blacklisting and may result in legal action as per laws in India.</p>
                   <p><span className="font-medium">3.4</span> The Buyback Guarantee Policy is non-transferable, non-refundable once sold.</p>
                   <p><span className="font-medium">3.5</span> Buyback Guarantee has no return policy.</p>
@@ -53,20 +55,33 @@ export default function TermsAndConditions() {
                   <p><span className="font-medium">3.16</span> The Buyback Guarantee Policy can be exercised only if the new device purchased belongs to mobile laptops/phones sold by a select set of manufacturers. The list of eligible manufacturers may be changed over time. Customers are requested to check with XtraCover Customer Support whether Buyback Guarantee is applicable on the new device being purchased prior to the exercise.</p>
                   <p><span className="font-medium">3.17</span> If the original device is defective or dead-on arrival and is exchanged for another device of the same model as the original device by the Brand, then the timeframe for exercising the Buyback Guarantee shall commence from the date of invoice of the original device.</p>
                   <p><span className="font-medium">3.18</span> Only one successful claim allowed per BBG Voucher. If the customer refuses submitting their device after a valid claim as per our terms and conditions, only 1 more claim attempt is allowed.</p>
-                  <p><span className="font-medium">3.19</span> If the device fails in physical or functional checks or in either aspects or customer fails to provide original tax invoice or accessories bought along with the device or customer's government photo ID proof, the BBG offerings will be null and void. In this case, re-evaluation of the device will be taken as per market standards, same value will be offered to the customer.</p>
+                  <p><span className="font-medium">3.19</span> If the device fails in physical or functional checks or in either aspects or customer fails to provide original tax invoice or accessories bought along with the device or customer's government photo ID proof, the BBG offerings will be null and void. In this case, re-evaluation of the device will be taken for the auction service as per market standards, same value will be offered to the customer.</p>
                   <p><span className="font-medium">3.20</span> BBG Pricing & Depreciation slabs are subject to revision as per market trend. Slabs are locked as per purchase date/time and will be mapped with the customer's unique BBG Voucher Code.</p>
+                  <p><span className="font-medium">3.20.1</span> The slabs committed at the time of BBG purchase shall be valid only if the BBG purchase date falls within one (1) year from the original device purchase date, as evidenced by the original tax invoice. In the event that the BBG purchase date is more than one (1) year from the original device purchase date, such slabs shall be deemed null and void. In such circumstances, only the following BBG service offerings shall remain valid and enforceable:</p>
+                  <div className="ml-4 space-y-1">
+                    <p><span className="font-medium">3.20.1.1</span> Free Device Repair (Clause 2.4). The Customer shall be entitled to one (1) free device repair during the validity of the BBG plan. Only the service charges shall be waived under this benefit, while the cost of replacement parts, if required, shall be borne entirely by the Customer.</p>
+                    <p><span className="font-medium">3.20.1.2</span> Auction Service (Clause 2.5). The Customer shall have access to the Auction Service in the event that the registered device does not pass the Buyback Guarantee quality checks. In such case, the Customer may elect to auction the device through XtraCover's authorized platform, and the highest bid received thereunder shall be final and binding.</p>
+                  </div>
+                  <p><span className="font-medium">3.21</span> The Free Device Repair benefit can be availed only once during the BBG validity period, and only for the device registered under BBG.</p>
+                  <p><span className="font-medium">3.22</span> This benefit does not cover consumables, cosmetic damages, accessories, or preventive maintenance.</p>
+                  <p><span className="font-medium">3.23</span> In case parts are required for the repair, the Customer shall pay the parts cost upfront as per actuals. XtraCover's obligation under this benefit is limited to waiving the service charges.</p>
+                  <p><span className="font-medium">3.24</span> Participation in the Auction Service is optional and at the sole discretion of the Customer.</p>
+                  <p><span className="font-medium">3.25</span> Once a device is submitted for auction, the Customer agrees to accept the highest bid offered through the platform, which shall be final and binding.</p>
+                  <p><span className="font-medium">3.26</span> The Auction Service is available only for devices registered under BBG and only within the validity period of the BBG plan.</p>
+                  <p><span className="font-medium">3.27</span> Devices that fail basic eligibility or condition checks (as per Clause 4) may be excluded from the Auction Service at XtraCover's discretion.</p>
                 </div>
               </section>
 
               <section>
-                <h2 className="text-lg font-semibold mb-3">4. Claim Validity and Device Condition Checks:</h2>
+                <h2 className="text-lg font-semibold mb-3">4. Claim Validity and Device Condition Checks</h2>
                 <div className="ml-4 space-y-2">
                   <p><span className="font-medium">4.1</span> A claim is valid only if:</p>
                   <div className="ml-4 space-y-1">
-                    <p><span className="font-medium">4.1.1</span> The device must be physically and functionally working.</p>
-                    <p><span className="font-medium">4.1.2</span> The original Tax invoice of device and all included accessories are available.</p>
-                    <p><span className="font-medium">4.1.3</span> The IMEI/Serial Number of device matches the data provided at time of purchasing BuyBack Guarantee.</p>
-                    <p><span className="font-medium">4.1.4</span> A valid Government-issued ID is submitted and matches the name of the claimant.</p>
+                    <p><span className="font-medium">4.1.1</span> A minimum waiting period of three (3) months from the date of BBG purchase must elapse before a claim can be initiated.</p>
+                    <p><span className="font-medium">4.1.2</span> The device must be physically and functionally working.</p>
+                    <p><span className="font-medium">4.1.3</span> The original Tax invoice of device and all included accessories are available.</p>
+                    <p><span className="font-medium">4.1.4</span> The IMEI/Serial Number of device matches the data provided at time of purchasing BuyBack Guarantee.</p>
+                    <p><span className="font-medium">4.1.5</span> A valid Government-issued ID is submitted and matches the name of the claimant.</p>
                   </div>
                   <p><span className="font-medium">4.2</span> While exercising Buyback Guarantee, a field executive shall visit the location of the customer for the pick-up and shall conduct the following checks on the original device. The customer must make sure that:</p>
                   <div className="ml-4 space-y-1">
@@ -83,15 +98,17 @@ export default function TermsAndConditions() {
               </section>
 
               <section>
-                <h2 className="text-lg font-semibold mb-3">5. Consequences of Not Meeting Criteria:</h2>
+                <h2 className="text-lg font-semibold mb-3">5. Consequences of Not Meeting Criteria</h2>
                 <div className="ml-4 space-y-2">
                   <p><span className="font-medium">5.1</span> If any of the above criteria are not met, the BBG plan becomes null and void. Under such condition the re-evaluation of the device price based on the market standard would be offered to the customer.</p>
                   <p><span className="font-medium">5.2</span> If the original device satisfies all the quality checks stated above, only then will the customer be eligible to avail Buyback Guarantee. If any or all the quality checks stated above are not satisfied, the transaction may be cancelled. The quality check shall be to the satisfaction of the XTPL field executive, and his decision shall be final in this regard.</p>
+                  <p><span className="font-medium">5.3</span> If the repair request is for a device that is non-repairable, liquid-damaged beyond repair, or tampered with by unauthorized service providers, the Free Repair benefit will be deemed null and void.</p>
+                  <p><span className="font-medium">5.4</span> If the device submitted for Auction fails eligibility checks or is found to be non-functional, XtraCover reserves the right to withdraw the device from the Auction Service. In such cases, the Customer may still exercise the assured resale value benefit (if eligible) as per BBG slabs.</p>
                 </div>
               </section>
 
               <section>
-                <h2 className="text-lg font-semibold mb-3">6. Eligibility Criteria:</h2>
+                <h2 className="text-lg font-semibold mb-3">6. Eligibility Criteria</h2>
                 <div className="ml-4 space-y-2">
                   <p><span className="font-medium">6.1</span> Participation in the Buyback Guarantee ("BBG") program is subject to the following eligibility conditions:</p>
                   <div className="ml-4 space-y-1">
@@ -99,9 +116,10 @@ export default function TermsAndConditions() {
                     <p><span className="font-medium">6.1.2</span> The Buyback Guarantee is applicable only for the original device purchased and registered under the BBG program.</p>
                     <div className="ml-4 space-y-1">
                       <p><span className="font-medium">6.1.2.1</span> The device must have been purchased in new condition from certified or authorized sales channels of the respective device brand.</p>
-                      <p><span className="font-medium">6.1.2.2</span> Devices that are refurbished, open-box, second-hand, or procured from unauthorized dealers or grey market channels are strictly ineligible for the Buyback Guarantee.</p>
+                      <p><span className="font-medium">6.1.2.2</span> Devices that are procured from unauthorized dealers or grey market channels are strictly ineligible for the Buyback Guarantee.</p>
                     </div>
                     <p><span className="font-medium">6.1.3</span> The Buyback Guarantee is non-transferable and is applicable only to the original purchaser (customer) who bought the device and registered for the BBG. Claims made by any other person, including subsequent owners, will not be entertained.</p>
+                    <p><span className="font-medium">6.1.4</span> Devices eligible for the Free Repair Service and Auction Service must be functional to the extent that repair is possible. Dead or irreparably damaged devices may be excluded at XtraCover's discretion.</p>
                   </div>
                 </div>
               </section>
@@ -125,6 +143,7 @@ export default function TermsAndConditions() {
                       <p><span className="font-medium">8.1.1.2</span> The acceptance, redemption, or use of the Buyback Guarantee.</p>
                     </div>
                     <p><span className="font-medium">8.2</span> To the maximum extent permitted under applicable law, XtraCover/XTPL shall not be liable for any loss or damage suffered by the Customer in connection with the Buyback Guarantee, regardless of the form of action or legal theory, whether in contract, tort (including negligence), strict liability, or otherwise.</p>
+                    <p><span className="font-medium">8.3</span> To the maximum extent permitted under applicable law, XtraCover/XTPL XtraCover shall not be liable for any dissatisfaction or perceived loss of value arising out of the Auction Service, as the final price is determined by market participants and not by XtraCover.</p>
                   </div>
                 </section>
 
@@ -158,8 +177,6 @@ export default function TermsAndConditions() {
                     <p><span className="font-medium">11.3</span> XtraCover/XTPL's responsibility is strictly limited to the scope of the Buyback Guarantee as outlined in these Terms and Conditions. XtraCover/XTPL shall not be held liable for any separate representations, warranties, or commitments made by third parties, including sellers, manufacturers, or other service providers, whether express or implied.</p>
                   </div>
                 </section>
-
-
 
                 <section className="mb-6">
                   <h3 className="text-lg font-semibold mb-3">12. Compliance with Applicable Laws and Technical Impairments</h3>
@@ -236,16 +253,16 @@ export default function TermsAndConditions() {
                   </div>
                 </section>
 
-                <section>
+                <section className="mb-6">
                   <h3 className="text-lg font-semibold mb-3">18. Support & Contact</h3>
                   <div className="ml-4 space-y-2">
                     <p>For any queries, concerns, or support related to the Buyback Guarantee, Customers may reach out to XtraCover through the following channels:</p>
-                    <ul className="ml-4 space-y-1 list-disc">
-                      <li><strong>Call Centre:</strong> Available from Monday to Saturday (excluding public holidays), between 09:30 Hrs to 18:30 Hrs IST at (+91) 8860396039</li>
-                      <li><strong>Email:</strong> contactus@xtracover.com</li>
-                      <li><strong>Online Portal:</strong> https://bbg.xtracover.com</li>
+                    <ul className="list-disc ml-6 space-y-1">
+                      <li><span className="font-medium">Call Centre:</span> Available from Monday to Saturday (excluding public holidays), between 09:30 Hrs to 18:30 Hrs IST at (+91) 8860396039</li>
+                      <li><span className="font-medium">Email:</span> contactus@xtracover.com</li>
+                      <li><span className="font-medium">Online Portal:</span> https://bbg.xtracover.com</li>
                     </ul>
-                    <p className="mt-4 text-sm font-medium">Please note that these Terms & Conditions are subject to modification at the sole discretion of XtraCover. The latest version of the Terms & Conditions shall always be available on the above-mentioned portal and shall be deemed applicable to all active Buyback Guarantees.</p>
+                    <p className="mt-4 text-sm italic">Please note that these Terms & Conditions are subject to modification at the sole discretion of XtraCover. The latest version of the Terms & Conditions shall always be available on the above-mentioned portal and shall be deemed applicable to all active Buyback Guarantees.</p>
                   </div>
                 </section>
               </div>

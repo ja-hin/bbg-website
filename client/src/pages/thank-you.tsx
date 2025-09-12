@@ -499,11 +499,11 @@ export default function ThankYou() {
     doc.text("Company's PAN: AAPCA2328D", 27, currentY);
     currentY += 8;
     
-    // Declaration and Bank details in two columns - final section
+    // Declaration section - full width due to longer BBG text
     const declarationY = currentY;
     
-    // Left column - Declaration (compressed)
-    doc.setFontSize(7);
+    // Declaration (compressed font size and spacing)
+    doc.setFontSize(6);
     doc.text('Declaration:', 27, declarationY);
     const declarations = [
       'BBG applicable only on the original device registered with a valid BBG voucher and tax invoice.',
@@ -515,12 +515,17 @@ export default function ThankYou() {
       'Customer must factory-reset and remove all data; XtraCover not liable for data recovery after handover.'
     ];
     
+    // Use smaller line spacing for compact layout
     declarations.forEach((decl, i) => {
-      doc.text(decl, 27, declarationY + 5 + (i * 4));
+      doc.text(decl, 27, declarationY + 5 + (i * 3), { maxWidth: 160 });
     });
     
-    // Right column - Bank details (compressed)
-    doc.text("Company's Bank Details:", 110, declarationY);
+    // Calculate where declarations end
+    const declarationEndY = declarationY + 5 + (declarations.length * 3) + 5;
+    
+    // Bank details positioned below declarations to avoid overlap
+    doc.setFontSize(6);
+    doc.text("Company's Bank Details:", 27, declarationEndY);
     const bankDetails = [
       "A/c: Xtracover Technologies Pvt Ltd",
       'Bank: Axis Bank A/c 923020046439817',
@@ -532,10 +537,10 @@ export default function ThankYou() {
     ];
     
     bankDetails.forEach((detail, i) => {
-      doc.text(detail, 110, declarationY + 5 + (i * 4));
+      doc.text(detail, 27, declarationEndY + 5 + (i * 3));
     });
     
-    currentY = declarationY + 35;
+    currentY = declarationEndY + (bankDetails.length * 3) + 10;
     
     // Footer - ensure it fits
     doc.setFontSize(8);

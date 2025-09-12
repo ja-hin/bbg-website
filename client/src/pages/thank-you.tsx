@@ -506,13 +506,13 @@ export default function ThankYou() {
     doc.setFontSize(7);
     doc.text('Declaration:', 27, declarationY);
     const declarations = [
-      'Goods sold will not be taken back.',
-      'Payments as per agreed terms.',
-      'Interest @ 18% p.a. on overdue payments.',
-      'Report discrepancies within 7 days.',
-      'Company not responsible for transit damage.',
-      'Delhi jurisdiction applies.',
-      'Tax as per GST rules.'
+      'BBG applicable only on the original device registered with a valid BBG voucher and tax invoice.',
+      'Assured value as per voucher/slab on bbg.xtracover.com; slabs valid only if BBG is bought within 1 year of device invoice.',
+      'One successful claim per voucher; minimum 3-month waiting period from BBG purchase.',
+      'Device must be functional and pass QC; original box, charger & accessories and Govt. ID mandatory.',
+      'Free Device Repair: service charges waived once; parts cost extra. Auction Service (if QC fails): highest bid on authorized platform is final.',
+      'BBG is non-transferable and non-refundable; fraudulent claims will be blacklisted and may invite legal action.',
+      'Customer must factory-reset and remove all data; XtraCover not liable for data recovery after handover.'
     ];
     
     declarations.forEach((decl, i) => {

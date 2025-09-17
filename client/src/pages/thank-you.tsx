@@ -331,9 +331,9 @@ export default function ThankYou() {
     doc.rect(140, invoiceBoxY, 55, 42);
     doc.setFontSize(8);
     doc.text('Invoice No.', 142, invoiceBoxY + 8);
-    doc.text('Dated', 175, invoiceBoxY + 8);
+    doc.text('Dated', 180, invoiceBoxY + 8);
     doc.text('XTPLD/25-26/' + invoiceData.voucherCode, 142, invoiceBoxY + 18);
-    doc.text(invoiceData.date, 175, invoiceBoxY + 18);
+    doc.text(invoiceData.date, 180, invoiceBoxY + 18);
     doc.text('Delivery Note', 142, invoiceBoxY + 26);
     doc.text('Mode/Payment', 175, invoiceBoxY + 26);
     doc.text('Online Payment', 142, invoiceBoxY + 32);

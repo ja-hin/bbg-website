@@ -328,18 +328,18 @@ export default function ThankYou() {
     
     // Invoice details box (top right) - reset Y for right side
     const invoiceBoxY = 15;
-    doc.rect(140, invoiceBoxY, 55, 35);
+    doc.rect(140, invoiceBoxY, 55, 42);
     doc.setFontSize(8);
     doc.text('Invoice No.', 142, invoiceBoxY + 8);
     doc.text('Dated', 175, invoiceBoxY + 8);
-    doc.text('XTPLD/25-26/' + invoiceData.voucherCode, 142, invoiceBoxY + 14);
-    doc.text(invoiceData.date, 175, invoiceBoxY + 14);
-    doc.text('Delivery Note', 142, invoiceBoxY + 22);
-    doc.text('Mode/Payment', 175, invoiceBoxY + 22);
-    doc.text('Online Payment', 142, invoiceBoxY + 28);
-    doc.text('PO' + invoiceData.voucherCode, 142, invoiceBoxY + 34);
+    doc.text('XTPLD/25-26/' + invoiceData.voucherCode, 142, invoiceBoxY + 18);
+    doc.text(invoiceData.date, 175, invoiceBoxY + 18);
+    doc.text('Delivery Note', 142, invoiceBoxY + 26);
+    doc.text('Mode/Payment', 175, invoiceBoxY + 26);
+    doc.text('Online Payment', 142, invoiceBoxY + 32);
+    doc.text('PO' + invoiceData.voucherCode, 142, invoiceBoxY + 38);
     
-    currentY = Math.max(currentY + 8, invoiceBoxY + 40);
+    currentY = Math.max(currentY + 8, invoiceBoxY + 47);
     
     // Customer Information section
     const customerSectionY = currentY;

@@ -209,6 +209,9 @@ export default function ThankYou() {
       voucherCode,
       date: new Date().toLocaleDateString('en-IN'),
       customerName: sessionData?.customerName || params?.get('customerName') || 'Customer',
+      customerEmail: sessionData?.email || params?.get('email') || '',
+      customerPhone: sessionData?.contact || params?.get('contact') || '',
+      customerPincode: sessionData?.pincode || params?.get('pincode') || '',
       deviceType: sessionData?.deviceType || params?.get('deviceType') || '',
       brand: sessionData?.brand || params?.get('brand') || '',
       modelName: sessionData?.modelName || params?.get('modelName') || '',
@@ -338,30 +341,27 @@ export default function ThankYou() {
     
     currentY = Math.max(currentY + 8, invoiceBoxY + 40);
     
-    // Customer sections with borders - compressed
+    // Customer Information section
     const customerSectionY = currentY;
-    // Consignee section
-    doc.rect(25, customerSectionY, 85, 25);
+    doc.rect(25, customerSectionY, 170, 35);
     doc.setFontSize(8);
-    doc.text('Consignee (Ship to)', 27, customerSectionY + 6);
+    doc.text('Customer Information', 27, customerSectionY + 8);
+    
+    // Customer details in a grid format
     doc.setFontSize(9);
-    doc.text(invoiceData.customerName, 27, customerSectionY + 12);
+    doc.text('Name:', 27, customerSectionY + 16);
+    doc.text(invoiceData.customerName, 50, customerSectionY + 16);
     
-    // Buyer section  
-    doc.rect(25, customerSectionY + 25, 85, 30);
-    doc.setFontSize(8);
-    doc.text('Buyer (Bill to)', 27, customerSectionY + 31);
-    doc.setFontSize(9);
-    doc.text(invoiceData.customerName, 27, customerSectionY + 37);
+    doc.text('Email:', 27, customerSectionY + 23);
+    doc.text(invoiceData.customerEmail, 50, customerSectionY + 23);
     
-    // Additional fields (right side) - compressed
-    doc.setFontSize(7);
-    doc.text("Buyer's Order No.", 142, customerSectionY + 8);
-    doc.text('Dispatch Doc No.', 142, customerSectionY + 16);
-    doc.text('Destination', 142, customerSectionY + 24);
-    doc.text('Terms of Delivery', 142, customerSectionY + 32);
+    doc.text('Phone:', 120, customerSectionY + 16);
+    doc.text(invoiceData.customerPhone, 145, customerSectionY + 16);
     
-    currentY = customerSectionY + 60;
+    doc.text('Pincode:', 120, customerSectionY + 23);
+    doc.text(invoiceData.customerPincode, 145, customerSectionY + 23);
+    
+    currentY = customerSectionY + 45;
     
     // Main products/services table with complete structure
     const tableY = currentY;

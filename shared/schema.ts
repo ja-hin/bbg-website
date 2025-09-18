@@ -412,3 +412,41 @@ export const insertReferralDiscountSettingsSchema = createInsertSchema(referralD
 // Referral Discount Settings types
 export type ReferralDiscountSettings = typeof referralDiscountSettings.$inferSelect;
 export type InsertReferralDiscountSettings = z.infer<typeof insertReferralDiscountSettingsSchema>;
+
+// Post-Purchase Device Registrations table
+export const deviceRegistrations = pgTable("device_registrations", {
+  id: serial("id").primaryKey(),
+  // Purchase Information
+  purchaseType: text("purchase_type").notNull(), // 'acer_estore' or 'website'
+  // Device Details
+  deviceType: text("device_type").notNull(), // 'laptop' or 'mobile'
+  imeiSerial: text("imei_serial").notNull(), // Device IMEI/Serial Number
+  brand: text("brand").notNull(),
+  model: text("model").notNull(),
+  purchasePrice: text("purchase_price").notNull(),
+  purchaseDate: text("purchase_date").notNull(),
+  // Customer Details
+  name: text("name").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email").notNull(),
+  pincode: text("pincode").notNull(),
+  // System fields
+  registrationId: text("registration_id").notNull().unique(),
+  voucherCode: text("voucher_code").notNull().unique(),
+  isVerified: boolean("is_verified").default(false),
+  registrationSource: text("registration_source").default("post_purchase"), // 'post_purchase'
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertDeviceRegistrationSchema = createInsertSchema(deviceRegistrations).omit({
+  id: true,
+  registrationId: true,
+  voucherCode: true,
+  isVerified: true,
+  registrationSource: true,
+  createdAt: true,
+});
+
+// Device Registration types
+export type DeviceRegistration = typeof deviceRegistrations.$inferSelect;
+export type InsertDeviceRegistration = z.infer<typeof insertDeviceRegistrationSchema>;

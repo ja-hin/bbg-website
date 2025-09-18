@@ -28,6 +28,7 @@ import {
   insertCustomerSchema,
   insertClaimSchema,
   insertOtpSchema,
+  insertDeviceRegistrationSchema,
 } from "@shared/schema";
 // Using SQL Server for all database operations
 
@@ -1526,6 +1527,161 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Customer registration error:", error);
       console.error("Error details:", error.issues || error.details);
       res.status(400).json({ message: error.message || "Registration failed" });
+    }
+  });
+
+  // Post-Purchase Device Registration (FormData)
+  app.post("/api/register", async (req, res) => {
+    try {
+      console.log("Post-purchase device registration request received");
+      console.log("Request body keys:", Object.keys(req.body));
+
+      // Process form data - convert from string values
+      const formData = { ...req.body };
+
+      // Validate required fields
+      const requiredFields = [
+        'purchaseType', 'deviceType', 'imeiSerial', 'brand', 'model', 
+        'purchasePrice', 'purchaseDate', 'name', 'phone', 'email', 'pincode'
+      ];
+      
+      for (const field of requiredFields) {
+        if (!formData[field]) {
+          return res.status(400).json({ 
+            message: `Missing required field: ${field}` 
+          });
+        }
+      }
+
+      // Generate unique registration ID and voucher code
+      const registrationId = `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const voucherCode = `BBG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      // Create device registration record
+      const deviceRegistrationData = {
+        purchaseType: formData.purchaseType,
+        deviceType: formData.deviceType,
+        imeiSerial: formData.imeiSerial,
+        brand: formData.brand,
+        model: formData.model,
+        purchasePrice: formData.purchasePrice,
+        purchaseDate: formData.purchaseDate,
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        pincode: formData.pincode,
+        registrationId,
+        voucherCode,
+        isVerified: true, // Auto-verify post-purchase registrations
+        registrationSource: 'post_purchase'
+      };
+
+      // Save to device registrations table (new table for post-purchase registrations)
+      try {
+        // Since we don't have storage method for device registrations yet, 
+        // let's save it directly to the database using raw SQL
+        await db.connectDB();
+        
+        const result = await db.pool.request()
+          .input('purchaseType', formData.purchaseType)
+          .input('deviceType', formData.deviceType)
+          .input('imeiSerial', formData.imeiSerial)
+          .input('brand', formData.brand)
+          .input('model', formData.model)
+          .input('purchasePrice', formData.purchasePrice)
+          .input('purchaseDate', formData.purchaseDate)
+          .input('name', formData.name)
+          .input('phone', formData.phone)
+          .input('email', formData.email)
+          .input('pincode', formData.pincode)
+          .input('registrationId', registrationId)
+          .input('voucherCode', voucherCode)
+          .input('isVerified', true)
+          .input('registrationSource', 'post_purchase')
+          .query(`
+            INSERT INTO device_registrations (
+              purchase_type, device_type, imei_serial, brand, model,
+              purchase_price, purchase_date, name, phone, email, pincode,
+              registration_id, voucher_code, is_verified, registration_source, created_at
+            ) VALUES (
+              @purchaseType, @deviceType, @imeiSerial, @brand, @model,
+              @purchasePrice, @purchaseDate, @name, @phone, @email, @pincode,
+              @registrationId, @voucherCode, @isVerified, @registrationSource, GETDATE()
+            )
+          `);
+
+        console.log("✅ Device registration saved successfully:", {
+          registrationId,
+          voucherCode,
+          purchaseType: formData.purchaseType,
+          deviceType: formData.deviceType,
+          brand: formData.brand
+        });
+
+      } catch (dbError) {
+        console.error("❌ Database error saving device registration:", dbError);
+        return res.status(500).json({ 
+          message: "Failed to save device registration" 
+        });
+      }
+
+      // Send confirmation notifications
+      try {
+        console.log("🔔 Starting device registration notifications...");
+        
+        const notificationResults = await communicationService.sendRegistrationConfirmation({
+          name: formData.name,
+          email: formData.email,
+          contact: formData.phone,
+          voucherCode: voucherCode,
+          deviceType: formData.deviceType,
+          brand: formData.brand,
+          modelName: formData.model,
+          registrationSource: "post_purchase",
+          serialNumber: formData.imeiSerial,
+          devicePurchaseDate: formData.purchaseDate,
+          bbgPurchaseDate: new Date().toLocaleDateString('en-IN', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          }),
+          termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
+        });
+
+        console.log("🔔 Device registration notifications complete:", {
+          email: notificationResults.email?.success 
+            ? "✅ Sent" 
+            : `❌ Failed: ${notificationResults.email?.error}`,
+          sms: notificationResults.sms?.success 
+            ? "✅ Sent" 
+            : `❌ Failed: ${notificationResults.sms?.error}`,
+        });
+
+      } catch (notificationError) {
+        console.error("❌ Failed to send registration notifications:", notificationError);
+        // Don't fail the registration if notifications fail
+      }
+
+      res.status(201).json({
+        message: "Device registration successful! You will receive confirmation shortly.",
+        registrationId,
+        voucherCode,
+        registration: {
+          id: registrationId,
+          name: formData.name,
+          email: formData.email,
+          voucherCode: voucherCode,
+          deviceType: formData.deviceType,
+          brand: formData.brand,
+          purchaseType: formData.purchaseType
+        },
+      });
+
+    } catch (error: any) {
+      console.error("Device registration error:", error);
+      res.status(400).json({ 
+        message: error.message || "Device registration failed" 
+      });
     }
   });
 

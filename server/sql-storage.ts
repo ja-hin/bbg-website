@@ -362,6 +362,42 @@ export class SqlServerStorage implements IStorage {
       await waitingPeriodRequest.query(waitingPeriodTableQuery);
       console.log('✅ WAITING_PERIOD_SETTINGS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
       
+      // Create DEVICE_REGISTRATIONS table for post-purchase registrations
+      console.log('🔥 ENSURING DEVICE_REGISTRATIONS TABLE EXISTS IN DATABASE...');
+      const deviceRegistrationsTableQuery = `
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'device_registrations')
+        BEGIN
+          CREATE TABLE device_registrations (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            purchase_type NVARCHAR(50) NOT NULL,
+            device_type NVARCHAR(50) NOT NULL,
+            imei_serial NVARCHAR(100) NOT NULL,
+            brand NVARCHAR(100) NOT NULL,
+            model NVARCHAR(255) NOT NULL,
+            purchase_price NVARCHAR(50) NOT NULL,
+            purchase_date NVARCHAR(50) NOT NULL,
+            name NVARCHAR(255) NOT NULL,
+            phone NVARCHAR(20) NOT NULL,
+            email NVARCHAR(255) NOT NULL,
+            pincode NVARCHAR(10) NOT NULL,
+            registration_id NVARCHAR(100) NOT NULL UNIQUE,
+            voucher_code NVARCHAR(100) NOT NULL UNIQUE,
+            is_verified BIT DEFAULT 1,
+            registration_source NVARCHAR(50) DEFAULT 'post_purchase',
+            created_at DATETIME2 DEFAULT GETDATE()
+          );
+          PRINT 'Device registrations table created for post-purchase registrations';
+        END
+        ELSE
+        BEGIN
+          PRINT 'Device registrations table already exists, preserving current data';
+        END
+      `;
+      
+      const deviceRegistrationsRequest = db.pool.request();
+      await deviceRegistrationsRequest.query(deviceRegistrationsTableQuery);
+      console.log('✅ DEVICE_REGISTRATIONS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+      
     } catch (themeError) {
       console.error('❌ TABLE CREATION FAILED:', themeError);
       throw themeError;

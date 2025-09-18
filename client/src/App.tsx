@@ -14,6 +14,8 @@ import ClaimBBG from "@/pages/claim-bbg";
 import ThankYou from "@/pages/thank-you";
 import AcerBBG from "@/pages/acer-bbg";
 import AcerThankYou from "@/pages/acer-thank-you";
+import Register from "@/pages/register";
+import RegistrationThankYou from "@/pages/registration-thank-you";
 import CustomerDashboard from "@/pages/customer-dashboard";
 import CustomerLogin from "@/pages/customer-login";
 import AdminLogin from "@/pages/admin-login";
@@ -128,6 +130,8 @@ function Router() {
               <Route path="/acer" component={AcerBBG} />
               <Route path="/acer-bbg" component={AcerBBG} />
               <Route path="/acer-thank-you" component={AcerThankYou} />
+              <Route path="/register" component={Register} />
+              <Route path="/registration-thank-you" component={RegistrationThankYou} />
               <Route path="/customer/login" component={CustomerLogin} />
               <Route path="/customer-dashboard" component={CustomerDashboard} />
               <Route path="/terms-and-conditions" component={TermsAndConditions} />

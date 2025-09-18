@@ -1574,11 +1574,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .input('voucherCode', formData.voucherCode)
           .input('isVerified', true)
           .input('registrationSource', 'website')
+          .input('purchaseType', 'website') // Default value for required field
+          .input('deviceType', 'unknown') // Default value for required field
+          .input('brand', 'unknown') // Default value for required field
+          .input('model', 'unknown') // Default value for required field
+          .input('purchasePrice', 0) // Default value for required field
+          .input('purchaseDate', new Date()) // Default value for required field
+          .input('name', 'N/A') // Default value for required field
+          .input('phone', 'N/A') // Default value for required field
+          .input('email', 'N/A') // Default value for required field
+          .input('pincode', '000000') // Default value for required field
           .query(`
             INSERT INTO device_registrations (
-              imei_serial, registration_id, voucher_code, is_verified, registration_source, created_at
+              imei_serial, registration_id, voucher_code, is_verified, registration_source, 
+              purchase_type, device_type, brand, model, purchase_price, purchase_date,
+              name, phone, email, pincode, created_at
             ) VALUES (
-              @imeiSerial, @registrationId, @voucherCode, @isVerified, @registrationSource, GETDATE()
+              @imeiSerial, @registrationId, @voucherCode, @isVerified, @registrationSource,
+              @purchaseType, @deviceType, @brand, @model, @purchasePrice, @purchaseDate,
+              @name, @phone, @email, @pincode, GETDATE()
             )
           `);
 

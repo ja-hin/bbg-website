@@ -53,11 +53,7 @@ function generatePayUHash(params: any, salt: string): string {
   // Note: This is the BASIC format without UDF fields - let's try this first
   const hashString = `${params.key}|${params.txnid}|${params.amount}|${params.productinfo}|${params.firstname}|${params.email}|||||||||||${salt}`;
 
-  console.log("PayU Basic Hash String:", hashString);
-  console.log("Parameters:", JSON.stringify(params, null, 2));
-
   const hash = crypto.createHash("sha512").update(hashString).digest("hex");
-  console.log("Generated Basic Hash:", hash);
 
   return hash;
 }

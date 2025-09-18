@@ -682,6 +682,19 @@ export class SqlServerStorage implements IStorage {
         );
       END
 
+      -- Fix serial_number column to allow NULL for regular BBG flow (one-time schema update)
+      IF EXISTS (SELECT * FROM sys.tables WHERE name = 'pending_payments')
+      BEGIN
+        IF EXISTS (SELECT * FROM sys.columns 
+                   WHERE object_id = OBJECT_ID('pending_payments') 
+                   AND name = 'serial_number' 
+                   AND is_nullable = 0)
+        BEGIN
+          ALTER TABLE pending_payments ALTER COLUMN serial_number NVARCHAR(255) NULL;
+          PRINT 'Updated pending_payments.serial_number to allow NULL for regular BBG flow';
+        END
+      END
+
       -- Create brands table
       IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'brands')
       BEGIN

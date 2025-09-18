@@ -53,33 +53,9 @@ import { ValidatedField } from "@/components/validated-field";
 import { SuccessConfetti } from "@/components/confetti";
 
 const postPurchaseRegistrationSchema = z.object({
-  // Purchase Type
-  purchaseType: z.enum(["acer_estore", "website"], {
-    required_error: "Please select purchase type",
-  }),
-  // Device Details
-  deviceType: z.enum(["laptop", "mobile"], {
-    required_error: "Device type is required",
-  }),
-  imeiSerial: z.string().min(7, "Serial number must be at least 7 characters"),
-  brand: z.string().min(1, "Brand is required"),
-  model: z.string().min(1, "Model is required"),
-  purchasePrice: z
-    .string()
-    .min(1, "Device purchase price (inclusive of GST) is required"),
-  purchaseDate: z.string().min(1, "Device purchase date is required"),
-  // Customer Details
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  phone: z
-    .string()
-    .regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
-  email: z.string().email("Invalid email address"),
-  pincode: z
-    .string()
-    .regex(
-      /^[1-9][0-9]{5}$/,
-      "Pincode must be 6 digits and cannot start with 0",
-    ),
+  // BBG Details
+  voucherCode: z.string().min(1, "BBG voucher code is required"),
+  imeiSerial: z.string().min(7, "IMEI/Serial number must be at least 7 characters"),
 });
 
 type PostPurchaseRegistrationData = z.infer<typeof postPurchaseRegistrationSchema>;
@@ -90,11 +66,11 @@ export default function Register() {
 
   const form = useForm<PostPurchaseRegistrationData>({
     resolver: zodResolver(postPurchaseRegistrationSchema),
-    defaultValues: {},
+    defaultValues: {
+      voucherCode: "",
+      imeiSerial: "",
+    },
   });
-
-  const selectedDeviceType = form.watch("deviceType");
-  const selectedPurchaseType = form.watch("purchaseType");
 
   const registrationMutation = useMutation({
     mutationFn: async (data: PostPurchaseRegistrationData) => {
@@ -149,29 +125,12 @@ export default function Register() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Device Registration
+            Website Device Registration
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Complete your device registration to activate your BBG protection.
-            Provide your device serial number and details below.
+            Enter your BBG voucher code and device IMEI/serial number to complete registration.
           </p>
         </div>
-
-        {/* Important Registration Notice */}
-        <Alert className="mb-6 border-blue-200 bg-blue-50">
-          <Info className="h-4 w-4 text-blue-600" />
-          <AlertDescription className="text-blue-800">
-            <div className="flex items-center space-x-2">
-              <ShoppingCart className="h-4 w-4" />
-              <span className="font-medium">
-                ⚠️ Post-Purchase Registration Required
-              </span>
-            </div>
-            <p className="mt-1 text-sm">
-              This form is for customers who have already purchased BBG coverage and need to register their device details.
-            </p>
-          </AlertDescription>
-        </Alert>
 
         {/* Registration Form */}
         <Card className="shadow-xl">
@@ -190,155 +149,32 @@ export default function Register() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-8"
               >
-                {/* Purchase Type Section */}
-                <div className="space-y-4">
+                {/* BBG Registration Details */}
+                <div className="space-y-6">
                   <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
-                    <ShoppingCart className="h-4 w-4 mr-2" />
-                    Purchase Information
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    BBG Registration Details
                   </h3>
 
-                  <FormField
-                    control={form.control}
-                    name="purchaseType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center">
-                          <ShoppingCart className="h-4 w-4 mr-2" />
-                          Purchase Type *
-                        </FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select where you purchased your device" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="acer_estore">Acer E-Store Purchase</SelectItem>
-                            <SelectItem value="website">Website Purchase</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Device Details Section */}
-                <div className="space-y-4">
-                  <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
-                    <Smartphone className="h-4 w-4 mr-2" />
-                    Device Details
-                  </h3>
-
-                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
+                  <div className="grid sm:grid-cols-1 md:grid-cols-1 gap-6 max-w-md mx-auto">
                     <FormField
                       control={form.control}
-                      name="deviceType"
+                      name="voucherCode"
                       render={({ field }) => (
-                        <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <Laptop className="h-4 w-4 mr-2" />
-                            Device Type *
-                          </FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select device type" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="laptop">Laptop</SelectItem>
-                              <SelectItem value="mobile">Mobile</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="brand"
-                      render={({ field }) => (
-                        <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <Building className="h-4 w-4 mr-2" />
-                            Brand *
+                        <FormItem>
+                          <FormLabel className="flex items-center text-base">
+                            <Hash className="h-5 w-5 mr-2" />
+                            BBG Voucher Code *
                           </FormLabel>
                           <FormControl>
                             <ValidatedField
                               value={field.value}
                               onChange={field.onChange}
                               onBlur={field.onBlur}
-                              placeholder="Enter device brand"
+                              placeholder="Enter your BBG voucher code"
                               validationType="name"
+                              className="h-12 text-lg"
                             />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="model"
-                      render={({ field }) => (
-                        <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <Hash className="h-4 w-4 mr-2" />
-                            Model *
-                          </FormLabel>
-                          <FormControl>
-                            <ValidatedField
-                              value={field.value}
-                              onChange={field.onChange}
-                              onBlur={field.onBlur}
-                              placeholder="Enter device model name"
-                              validationType="model"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="purchasePrice"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <IndianRupee className="h-4 w-4 mr-2" />
-                            Device Purchase Price (Inclusive of GST) *
-                          </FormLabel>
-                          <FormControl>
-                            <ValidatedField
-                              value={field.value}
-                              onChange={field.onChange}
-                              onBlur={field.onBlur}
-                              placeholder="Enter purchase amount (inclusive of GST)"
-                              validationType="price"
-                              type="number"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="purchaseDate"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <Calendar className="h-4 w-4 mr-2" />
-                            Device Purchase Date *
-                          </FormLabel>
-                          <FormControl>
-                            <Input type="date" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -350,18 +186,18 @@ export default function Register() {
                       name="imeiSerial"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="flex items-center">
-                            <Hash className="h-4 w-4 mr-2" />
-                            {selectedDeviceType === "mobile" ? "IMEI Number" : "Serial Number"} *
+                          <FormLabel className="flex items-center text-base">
+                            <Smartphone className="h-5 w-5 mr-2" />
+                            IMEI / Serial Number *
                           </FormLabel>
                           <FormControl>
                             <ValidatedField
                               value={field.value}
                               onChange={field.onChange}
                               onBlur={field.onBlur}
-                              placeholder={selectedDeviceType === "mobile" ? "Enter IMEI Number" : "Enter Serial Number"}
+                              placeholder="Enter device IMEI or serial number"
                               validationType="imei"
-                              customValidation={selectedPurchaseType === "acer_estore" ? "acerImeiValidation" : undefined}
+                              className="h-12 text-lg"
                             />
                           </FormControl>
                           <FormMessage />
@@ -370,128 +206,17 @@ export default function Register() {
                     />
                   </div>
 
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
-                    <div className="flex items-start space-x-2">
-                      <Info className="h-3 w-3 text-blue-600 mt-0.5" />
-                      <div className="text-xs text-blue-800">
-                        {selectedDeviceType === "mobile" ? (
-                          <p className="font-medium">
-                            📱 Mobile IMEI: Dial *#06# or check Settings → About Phone → IMEI
-                          </p>
-                        ) : (
-                          <p className="font-medium">
-                            💻 Laptop Serial Number: Check sticker on bottom/back of device or System Info → Hardware
-                          </p>
-                        )}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+                    <div className="flex items-start space-x-3">
+                      <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+                      <div className="text-sm text-blue-800">
+                        <p className="font-medium mb-2">How to find your device details:</p>
+                        <ul className="space-y-1 text-xs">
+                          <li>📱 <strong>Mobile IMEI:</strong> Dial *#06# or Settings → About Phone</li>
+                          <li>💻 <strong>Laptop Serial:</strong> Sticker on bottom/back or System Info</li>
+                        </ul>
                       </div>
                     </div>
-                  </div>
-                </div>
-
-                {/* Customer Details Section */}
-                <div className="space-y-4">
-                  <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
-                    <User className="h-4 w-4 mr-2" />
-                    Customer Details
-                  </h3>
-
-                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 items-start">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <User className="h-4 w-4 mr-2" />
-                            Customer Name *
-                          </FormLabel>
-                          <FormControl>
-                            <ValidatedField
-                              value={field.value}
-                              onChange={field.onChange}
-                              onBlur={field.onBlur}
-                              placeholder="Enter your full name"
-                              validationType="name"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <Phone className="h-4 w-4 mr-2" />
-                            Contact Number *
-                          </FormLabel>
-                          <FormControl>
-                            <ValidatedField
-                              value={field.value}
-                              onChange={field.onChange}
-                              onBlur={field.onBlur}
-                              placeholder="Enter 10-digit mobile number"
-                              validationType="phone"
-                              customValidation="phoneExists"
-                              type="tel"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <Mail className="h-4 w-4 mr-2" />
-                            Email ID *
-                          </FormLabel>
-                          <FormControl>
-                            <ValidatedField
-                              value={field.value}
-                              onChange={field.onChange}
-                              onBlur={field.onBlur}
-                              placeholder="Enter your email address"
-                              validationType="email"
-                              customValidation="emailExists"
-                              type="email"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="pincode"
-                      render={({ field }) => (
-                        <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <MapPin className="h-4 w-4 mr-2" />
-                            Pincode *
-                          </FormLabel>
-                          <FormControl>
-                            <ValidatedField
-                              value={field.value}
-                              onChange={field.onChange}
-                              onBlur={field.onBlur}
-                              placeholder="Enter 6-digit pincode"
-                              validationType="pincode"
-                              type="tel"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </div>
                 </div>
 

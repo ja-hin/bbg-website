@@ -1539,11 +1539,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Process form data - convert from string values
       const formData = { ...req.body };
 
-      // Validate required fields
-      const requiredFields = [
-        'purchaseType', 'deviceType', 'imeiSerial', 'brand', 'model', 
-        'purchasePrice', 'purchaseDate', 'name', 'phone', 'email', 'pincode'
-      ];
+      // Validate required fields for simplified registration
+      const requiredFields = ['voucherCode', 'imeiSerial'];
       
       for (const field of requiredFields) {
         if (!formData[field]) {
@@ -1553,27 +1550,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Generate unique registration ID and voucher code
+      // Generate unique registration ID
       const registrationId = `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const voucherCode = `BBG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      // Create device registration record
+      // Create device registration record with simplified data
       const deviceRegistrationData = {
-        purchaseType: formData.purchaseType,
-        deviceType: formData.deviceType,
-        imeiSerial: formData.imeiSerial,
-        brand: formData.brand,
-        model: formData.model,
-        purchasePrice: formData.purchasePrice,
-        purchaseDate: formData.purchaseDate,
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email,
-        pincode: formData.pincode,
         registrationId,
-        voucherCode,
-        isVerified: true, // Auto-verify post-purchase registrations
-        registrationSource: 'post_purchase'
+        voucherCode: formData.voucherCode,
+        imeiSerial: formData.imeiSerial,
+        isVerified: true,
+        registrationSource: 'website'
       };
 
       // Save to device registrations table (new table for post-purchase registrations)
@@ -1583,39 +1569,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await db.connectDB();
         
         const result = await db.pool.request()
-          .input('purchaseType', formData.purchaseType)
-          .input('deviceType', formData.deviceType)
           .input('imeiSerial', formData.imeiSerial)
-          .input('brand', formData.brand)
-          .input('model', formData.model)
-          .input('purchasePrice', formData.purchasePrice)
-          .input('purchaseDate', formData.purchaseDate)
-          .input('name', formData.name)
-          .input('phone', formData.phone)
-          .input('email', formData.email)
-          .input('pincode', formData.pincode)
           .input('registrationId', registrationId)
-          .input('voucherCode', voucherCode)
+          .input('voucherCode', formData.voucherCode)
           .input('isVerified', true)
-          .input('registrationSource', 'post_purchase')
+          .input('registrationSource', 'website')
           .query(`
             INSERT INTO device_registrations (
-              purchase_type, device_type, imei_serial, brand, model,
-              purchase_price, purchase_date, name, phone, email, pincode,
-              registration_id, voucher_code, is_verified, registration_source, created_at
+              imei_serial, registration_id, voucher_code, is_verified, registration_source, created_at
             ) VALUES (
-              @purchaseType, @deviceType, @imeiSerial, @brand, @model,
-              @purchasePrice, @purchaseDate, @name, @phone, @email, @pincode,
-              @registrationId, @voucherCode, @isVerified, @registrationSource, GETDATE()
+              @imeiSerial, @registrationId, @voucherCode, @isVerified, @registrationSource, GETDATE()
             )
           `);
 
         console.log("✅ Device registration saved successfully:", {
           registrationId,
-          voucherCode,
-          purchaseType: formData.purchaseType,
-          deviceType: formData.deviceType,
-          brand: formData.brand
+          voucherCode: formData.voucherCode,
+          imeiSerial: formData.imeiSerial
         });
 
       } catch (dbError) {
@@ -1625,55 +1595,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Send confirmation notifications
-      try {
-        console.log("🔔 Starting device registration notifications...");
-        
-        const notificationResults = await communicationService.sendRegistrationConfirmation({
-          name: formData.name,
-          email: formData.email,
-          contact: formData.phone,
-          voucherCode: voucherCode,
-          deviceType: formData.deviceType,
-          brand: formData.brand,
-          modelName: formData.model,
-          registrationSource: "post_purchase",
-          serialNumber: formData.imeiSerial,
-          devicePurchaseDate: formData.purchaseDate,
-          bbgPurchaseDate: new Date().toLocaleDateString('en-IN', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          }),
-          termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
-        });
-
-        console.log("🔔 Device registration notifications complete:", {
-          email: notificationResults.email?.success 
-            ? "✅ Sent" 
-            : `❌ Failed: ${notificationResults.email?.error}`,
-          sms: notificationResults.sms?.success 
-            ? "✅ Sent" 
-            : `❌ Failed: ${notificationResults.sms?.error}`,
-        });
-
-      } catch (notificationError) {
-        console.error("❌ Failed to send registration notifications:", notificationError);
-        // Don't fail the registration if notifications fail
-      }
+      // For simplified registration, skip email notifications since we don't have user contact details
+      console.log("✅ Website device registration completed successfully");
 
       res.status(201).json({
-        message: "Device registration successful! You will receive confirmation shortly.",
+        message: "Device registration successful!",
         registrationId,
-        voucherCode,
+        voucherCode: formData.voucherCode,
         registration: {
           id: registrationId,
-          name: formData.name,
-          email: formData.email,
-          voucherCode: voucherCode,
-          deviceType: formData.deviceType,
-          brand: formData.brand,
-          purchaseType: formData.purchaseType
+          voucherCode: formData.voucherCode,
+          imeiSerial: formData.imeiSerial,
+          registrationSource: 'website'
         },
       });
 

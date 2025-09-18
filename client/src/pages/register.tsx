@@ -93,7 +93,6 @@ export default function Register() {
       sessionStorage.setItem(
         "deviceRegistrationSuccess",
         JSON.stringify({
-          registrationId: data.registrationId,
           voucherCode: data.voucherCode,
           imeiSerial: data.registration?.imeiSerial,
         }),

@@ -18,17 +18,26 @@ import {
 } from "lucide-react";
 
 interface DeviceRegistrationData {
-  registrationId: string;
-  voucherCode?: string;
+  voucherCode: string;
+  imeiSerial: string;
+}
+
+interface CustomerData {
   name: string;
+  email: string;
+  phone: string;
   deviceType: string;
   brand: string;
   model: string;
-  purchaseType: string;
+  purchasePrice: number;
+  purchaseDate: string;
+  voucherCode: string;
 }
 
 export default function RegistrationThankYou() {
   const [registrationData, setRegistrationData] = useState<DeviceRegistrationData | null>(null);
+  const [customerData, setCustomerData] = useState<CustomerData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Fetch dynamic BBG prices
   const { data: bbgPrices } = useQuery({
@@ -51,23 +60,54 @@ export default function RegistrationThankYou() {
         sessionStorage.removeItem('deviceRegistrationSuccess');
       } catch (error) {
         console.error('Error parsing registration data:', error);
+        setLoading(false);
       }
+    } else {
+      setLoading(false);
     }
   }, []);
 
+  // Fetch customer details when voucher code is available
+  useEffect(() => {
+    const fetchCustomerData = async () => {
+      if (registrationData?.voucherCode) {
+        try {
+          const response = await fetch(`/api/customer-details/${registrationData.voucherCode}`);
+          if (response.ok) {
+            const data = await response.json();
+            setCustomerData(data);
+          } else {
+            console.error('Failed to fetch customer data');
+          }
+        } catch (error) {
+          console.error('Error fetching customer data:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchCustomerData();
+  }, [registrationData]);
+
   const getDeviceIcon = () => {
-    if (registrationData?.deviceType === 'mobile') {
+    if (customerData?.deviceType === 'mobile') {
       return <Smartphone className="h-12 w-12 text-xtra-primary" />;
     }
     return <Laptop className="h-12 w-12 text-xtra-primary" />;
   };
 
-  const getPurchaseTypeDisplay = () => {
-    if (registrationData?.purchaseType === 'acer_estore') {
-      return 'Acer E-Store Purchase';
-    }
-    return 'Website Purchase';
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen xtra-gradient-light flex items-center justify-center">
+        <Card className="max-w-md mx-auto">
+          <CardContent className="text-center p-8">
+            <p className="text-gray-600 mb-4">Loading registration details...</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (!registrationData) {
     return (
@@ -120,12 +160,6 @@ export default function RegistrationThankYou() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Registration ID</label>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {registrationData.registrationId}
-                  </p>
-                </div>
-                <div>
                   <label className="text-sm font-medium text-gray-500">BBG Voucher Code</label>
                   <p className="text-lg font-semibold text-xtra-primary">
                     {registrationData.voucherCode}
@@ -134,14 +168,14 @@ export default function RegistrationThankYou() {
                 <div>
                   <label className="text-sm font-medium text-gray-500">Customer Name</label>
                   <p className="text-lg font-semibold text-gray-900">
-                    {registrationData.name}
+                    {customerData?.name || 'Loading...'}
                   </p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Purchase Type</label>
                   <Badge variant="outline" className="text-sm">
                     <ShoppingCart className="h-3 w-3 mr-1" />
-                    {getPurchaseTypeDisplay()}
+                    Website Purchase
                   </Badge>
                 </div>
               </div>
@@ -149,19 +183,19 @@ export default function RegistrationThankYou() {
                 <div>
                   <label className="text-sm font-medium text-gray-500">Device Type</label>
                   <p className="text-lg font-semibold text-gray-900 capitalize">
-                    {registrationData.deviceType}
+                    {customerData?.deviceType || 'Loading...'}
                   </p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Brand</label>
                   <p className="text-lg font-semibold text-gray-900">
-                    {registrationData.brand}
+                    {customerData?.brand || 'Loading...'}
                   </p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Model</label>
                   <p className="text-lg font-semibold text-gray-900">
-                    {registrationData.model}
+                    {customerData?.model || 'Loading...'}
                   </p>
                 </div>
               </div>

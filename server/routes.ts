@@ -1614,10 +1614,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.status(201).json({
         message: "Device registration successful!",
-        registrationId,
         voucherCode: formData.voucherCode,
         registration: {
-          id: registrationId,
           voucherCode: formData.voucherCode,
           imeiSerial: formData.imeiSerial,
           registrationSource: 'website'
@@ -1629,6 +1627,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(400).json({ 
         message: error.message || "Device registration failed" 
       });
+    }
+  });
+
+  // Get customer details by BBG voucher code
+  app.get("/api/customer-details/:voucherCode", async (req, res) => {
+    try {
+      const { voucherCode } = req.params;
+      
+      if (!voucherCode) {
+        return res.status(400).json({ message: "Voucher code is required" });
+      }
+
+      // Connect to database and lookup customer details
+      await db.connectDB();
+      
+      const result = await db.pool.request()
+        .input('voucherCode', voucherCode)
+        .query(`
+          SELECT 
+            name, email, phone, device_type, brand, model, 
+            purchase_price, purchase_date, voucher_code
+          FROM customers 
+          WHERE voucher_code = @voucherCode
+        `);
+
+      if (result.recordset.length === 0) {
+        return res.status(404).json({ message: "Customer not found with this voucher code" });
+      }
+
+      const customer = result.recordset[0];
+      
+      res.json({
+        name: customer.name,
+        email: customer.email,
+        phone: customer.phone,
+        deviceType: customer.device_type,
+        brand: customer.brand,
+        model: customer.model,
+        purchasePrice: customer.purchase_price,
+        purchaseDate: customer.purchase_date,
+        voucherCode: customer.voucher_code
+      });
+
+    } catch (error: any) {
+      console.error("Error fetching customer details:", error);
+      res.status(500).json({ message: "Failed to fetch customer details" });
     }
   });
 

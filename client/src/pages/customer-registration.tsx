@@ -56,7 +56,7 @@ const customerSchema = z.object({
   deviceType: z.enum(["mobile", "laptop"], {
     required_error: "Please select device type"
   }),
-  serialNumber: z.string().min(7, "Serial number/IMEI must be at least 7 characters"),
+  serialNumber: z.string().min(4, "Serial number must be at least 4 characters"),
   brand: z.string().min(2, "Brand is required"),
   modelName: z.string().min(2, "Model name is required"),
   invoiceValue: z.string().min(1, "Device purchase price (inclusive of GST) is required"),
@@ -1052,10 +1052,10 @@ function BuyBBGContent() {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Hash className="h-4 w-4 mr-2" />
-                            IMEI/Serial Number *
+                            Serial Number *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter IMEI or Serial" {...field} />
+                            <Input placeholder="Enter Serial Number" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1068,7 +1068,7 @@ function BuyBBGContent() {
                     <div className="flex items-start space-x-2">
                       <Info className="h-3 w-3 text-blue-600 mt-0.5" />
                       <div className="text-xs text-blue-800">
-                        <p className="font-medium">📱 Mobile: Dial *#06# to get IMEI | 💻 Laptop: Check sticker on bottom/back or System Info → Hardware</p>
+                        <p className="font-medium">💻 Check device sticker on bottom/back or System Info → Hardware for Serial Number</p>
                       </div>
                     </div>
                   </div>

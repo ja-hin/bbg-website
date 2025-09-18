@@ -314,7 +314,7 @@ export default function RegistrationThankYou() {
                 <Phone className="h-8 w-8 text-blue-600" />
                 <div>
                   <p className="font-semibold text-gray-900">Phone Support</p>
-                  <p className="text-sm text-gray-600">+91-XXXX-XXXX-XX</p>
+                  <p className="text-sm text-gray-600">+91 8860396039</p>
                 </div>
               </div>
               <div className="flex flex-col items-center space-y-2">

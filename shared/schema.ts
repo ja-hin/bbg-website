@@ -148,7 +148,7 @@ export const pendingPayments = pgTable("pending_payments", {
   pincode: text("pincode").notNull(),
   // Device Details
   deviceType: text("device_type").notNull(), // 'laptop' or 'mobile'
-  serialNumber: text("serial_number").notNull(),
+  serialNumber: text("serial_number"), // Optional for regular BBG flow, required for Acer
   brand: text("brand").notNull(),
   modelName: text("model_name").notNull(),
   invoiceValue: decimal("invoice_value", { precision: 10, scale: 2 }).notNull(),

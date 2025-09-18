@@ -938,6 +938,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         const submitData = {
           ...cleanCustomerData,
+          // Generate placeholder serialNumber if not provided (for regular BBG flow)
+          serialNumber: cleanCustomerData.serialNumber || `AUTO_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           paymentIntentId: `payu_${txnid}`,
           isVerified: true,
           claimValueSlabId: activeClaimValueSlab?.id || null,

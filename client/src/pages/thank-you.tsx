@@ -453,8 +453,7 @@ export default function ThankYou() {
     
     // Amount in words section - compressed
     doc.setFontSize(8);
-    doc.text('Amount Chargeable (in words):', 27, currentY);
-    doc.text('E. & O.E', 175, currentY);
+    doc.text('Total   Amount Chargeable (in words):', 27, currentY);
     currentY += 5;
     doc.setFontSize(7);
     doc.text(totalInWords, 27, currentY);

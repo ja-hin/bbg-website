@@ -76,7 +76,7 @@ export default function Register() {
     mutationFn: async (data: PostPurchaseRegistrationData) => {
       return apiRequest("/api/register", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: data,
       });
     },
     onSuccess: (data) => {
@@ -94,12 +94,8 @@ export default function Register() {
         "deviceRegistrationSuccess",
         JSON.stringify({
           registrationId: data.registrationId,
-          voucherCode: data.voucherCode || data.registrationId,
-          name: data.name,
-          deviceType: data.deviceType,
-          brand: data.brand,
-          model: data.model,
-          purchaseType: data.purchaseType,
+          voucherCode: data.voucherCode,
+          imeiSerial: data.registration?.imeiSerial,
         }),
       );
 

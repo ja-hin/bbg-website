@@ -1550,6 +1550,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
+      // Check if BBG voucher code is already registered
+      await db.connectDB();
+      const existingRegistration = await db.pool.request()
+        .input('voucherCode', formData.voucherCode)
+        .query(`
+          SELECT registration_id FROM device_registrations 
+          WHERE voucher_code = @voucherCode
+        `);
+
+      if (existingRegistration.recordset.length > 0) {
+        return res.status(400).json({ 
+          message: `This BBG voucher code (${formData.voucherCode}) has already been used for device registration.` 
+        });
+      }
+
       // Generate unique registration ID
       const registrationId = `REG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -1564,9 +1579,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Save to device registrations table (new table for post-purchase registrations)
       try {
-        // Since we don't have storage method for device registrations yet, 
-        // let's save it directly to the database using raw SQL
-        await db.connectDB();
+        // Database connection already established above
         
         const result = await db.pool.request()
           .input('imeiSerial', formData.imeiSerial)

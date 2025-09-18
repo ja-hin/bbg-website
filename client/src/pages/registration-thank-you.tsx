@@ -264,7 +264,7 @@ export default function RegistrationThankYou() {
               </div>
               <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="text-2xl font-bold text-blue-600 mb-1">
-                  60 Months
+                  Upto 36 Months
                 </div>
                 <div className="text-sm text-blue-700">Coverage period</div>
               </div>

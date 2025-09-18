@@ -1642,12 +1642,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Connect to database and lookup customer details
       await db.connectDB();
       
+      // First, let's check what columns actually exist
+      const schemaResult = await db.pool.request()
+        .query(`
+          SELECT COLUMN_NAME 
+          FROM INFORMATION_SCHEMA.COLUMNS 
+          WHERE TABLE_NAME = 'customers'
+        `);
+      
+      console.log("Available columns in customers table:", schemaResult.recordset.map(row => row.COLUMN_NAME));
+
       const result = await db.pool.request()
         .input('voucherCode', voucherCode)
         .query(`
           SELECT 
-            name, email, contact, device_type, brand, model_name, 
-            device_purchase_price, device_purchase_date, voucher_code
+            name, email, contact, device_type, brand, model_name, voucher_code
           FROM customers 
           WHERE voucher_code = @voucherCode
         `);
@@ -1665,8 +1674,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         deviceType: customer.device_type,
         brand: customer.brand,
         model: customer.model_name,
-        purchasePrice: customer.device_purchase_price,
-        purchaseDate: customer.device_purchase_date,
+        purchasePrice: 0, // Default value for now
+        purchaseDate: new Date().toISOString(), // Default value for now
         voucherCode: customer.voucher_code
       });
 

@@ -1646,8 +1646,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .input('voucherCode', voucherCode)
         .query(`
           SELECT 
-            name, email, phone, device_type, brand, model, 
-            purchase_price, purchase_date, voucher_code
+            name, email, contact, device_type, brand, model_name, 
+            device_purchase_price, device_purchase_date, voucher_code
           FROM customers 
           WHERE voucher_code = @voucherCode
         `);
@@ -1661,12 +1661,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({
         name: customer.name,
         email: customer.email,
-        phone: customer.phone,
+        phone: customer.contact,
         deviceType: customer.device_type,
         brand: customer.brand,
-        model: customer.model,
-        purchasePrice: customer.purchase_price,
-        purchaseDate: customer.purchase_date,
+        model: customer.model_name,
+        purchasePrice: customer.device_purchase_price,
+        purchaseDate: customer.device_purchase_date,
         voucherCode: customer.voucher_code
       });
 

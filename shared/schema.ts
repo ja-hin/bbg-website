@@ -47,7 +47,7 @@ export const customers = pgTable("customers", {
   pincode: text("pincode").notNull(),
   // Device Details
   deviceType: text("device_type").notNull(), // 'laptop' or 'mobile'
-  serialNumber: text("serial_number").notNull(), // Device Serial Number
+  serialNumber: text("serial_number"), // Device Serial Number (optional for regular BBG, required for Acer)
   brand: text("brand").notNull(),
   modelName: text("model_name").notNull(),
   invoiceValue: decimal("invoice_value", { precision: 10, scale: 2 }).notNull(),

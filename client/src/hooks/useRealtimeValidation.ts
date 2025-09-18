@@ -163,7 +163,6 @@ export function useRealtimeValidation(
 export const validationSchemas = {
   phone: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
   email: z.string().email("Invalid email address"),
-  serialNumber: z.string().min(4, "Serial number must be at least 4 characters"),
   name: z.string().min(2, "Name must be at least 2 characters"),
   price: z.string().min(1, "Price is required").regex(/^\d+$/, "Price must be a number"),
   address: z.string().min(5, "Address must be at least 5 characters"),
@@ -242,26 +241,4 @@ export const customValidations = {
     return null;
   },
 
-  serialNumberExists: async (serialNumber: string): Promise<string | null> => {
-    try {
-      // Check if serial number already exists in regular customers table
-      const response = await fetch('/api/check-device-registration', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ serialNumber })
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.exists) {
-          return "This device is already registered";
-        }
-      }
-      
-      return null;
-    } catch (error) {
-      console.error('Serial number validation error:', error);
-      return null; // Don't fail validation on network errors
-    }
-  }
 };

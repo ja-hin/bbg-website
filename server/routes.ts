@@ -1206,6 +1206,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         invoiceValue: req.body.invoiceValue?.toString() || "0",
         dateOfPurchase:
           req.body.dateOfPurchase || new Date().toISOString().split("T")[0],
+        // Generate placeholder serialNumber if not provided (for regular BBG flow)
+        serialNumber: req.body.serialNumber || `AUTO_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         // Handle legacy fields for compatibility
         address: req.body.address || "",
         purchaseDate:

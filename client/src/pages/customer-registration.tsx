@@ -56,7 +56,6 @@ const customerSchema = z.object({
   deviceType: z.enum(["mobile", "laptop"], {
     required_error: "Please select device type"
   }),
-  serialNumber: z.string().min(4, "Serial number must be at least 4 characters"),
   brand: z.string().min(2, "Brand is required"),
   modelName: z.string().min(2, "Model name is required"),
   invoiceValue: z.string().min(1, "Device purchase price (inclusive of GST) is required"),
@@ -480,7 +479,6 @@ function BuyBBGContent() {
       email: "",
       pincode: "",
       deviceType: undefined,
-      serialNumber: "",
       brand: "",
       modelName: "",
       invoiceValue: "",
@@ -634,7 +632,6 @@ function BuyBBGContent() {
           email: formValues.email || null,
           pincode: formValues.pincode || null,
           deviceType: formValues.deviceType || null,
-          serialNumber: formValues.serialNumber || null,
           brand: formValues.brand || null,
           modelName: formValues.modelName || null,
           invoiceValue: formValues.invoiceValue ? parseFloat(formValues.invoiceValue) : null,
@@ -658,7 +655,7 @@ function BuyBBGContent() {
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
       // Only track for important fields that indicate real user engagement
-      const importantFields = ['name', 'contact', 'email', 'deviceType', 'serialNumber'];
+      const importantFields = ['name', 'contact', 'email', 'deviceType'];
       if (name && importantFields.includes(name) && value[name]) {
         trackCartAbandonment('details_entered');
       }
@@ -1045,33 +1042,9 @@ function BuyBBGContent() {
                       )}
                     />
 
-                    <FormField
-                      control={form.control}
-                      name="serialNumber"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center">
-                            <Hash className="h-4 w-4 mr-2" />
-                            Serial Number *
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter Serial Number" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
 
                   </div>
 
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
-                    <div className="flex items-start space-x-2">
-                      <Info className="h-3 w-3 text-blue-600 mt-0.5" />
-                      <div className="text-xs text-blue-800">
-                        <p className="font-medium">💻 Check device sticker on bottom/back or System Info → Hardware for Serial Number</p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
                 {/* Customer Details Section */}

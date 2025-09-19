@@ -2451,13 +2451,15 @@ export class SqlServerStorage implements IStorage {
       INSERT INTO pending_payments (
         name, contact, email, pincode, device_type, serial_number, 
         brand, model_name, invoice_value, payment_amount, transaction_id, 
-        seller_code, status, expires_at
+        seller_code, status, expires_at, purchase_timing_category, 
+        benefit_type, plan_price, benefits_json, email_template_key
       ) 
       OUTPUT INSERTED.*
       VALUES (
         @name, @contact, @email, @pincode, @deviceType, @serialNumber, 
         @brand, @modelName, @invoiceValue, @paymentAmount, @transactionId, 
-        @sellerCode, @status, @expiresAt
+        @sellerCode, @status, @expiresAt, @purchaseTimingCategory,
+        @benefitType, @planPrice, @benefitsJson, @emailTemplateKey
       )
     `;
 
@@ -2476,6 +2478,12 @@ export class SqlServerStorage implements IStorage {
     request.input('sellerCode', sql.NVarChar, insertPayment.sellerCode || null);
     request.input('status', sql.NVarChar, insertPayment.status || 'pending');
     request.input('expiresAt', sql.DateTime2, insertPayment.expiresAt);
+    // New dual-flow BBG columns
+    request.input('purchaseTimingCategory', sql.NVarChar, insertPayment.purchaseTimingCategory || null);
+    request.input('benefitType', sql.NVarChar, insertPayment.benefitType || null);
+    request.input('planPrice', sql.Decimal(10,2), insertPayment.planPrice || null);
+    request.input('benefitsJson', sql.NVarChar, insertPayment.benefitsJson || null);
+    request.input('emailTemplateKey', sql.NVarChar, insertPayment.emailTemplateKey || null);
 
     const result = await request.query(query);
     return this.mapPendingPaymentFromDb(result.recordset[0]);
@@ -2494,6 +2502,17 @@ export class SqlServerStorage implements IStorage {
     
     const request = db.pool.request();
     request.input('id', sql.Int, id);
+    
+    const result = await request.query(query);
+    return result.recordset.length > 0 ? this.mapPendingPaymentFromDb(result.recordset[0]) : undefined;
+  }
+
+  async getPendingPaymentByTransactionId(transactionId: string): Promise<PendingPayment | undefined> {
+    await db.connectDB();
+    const query = `SELECT * FROM pending_payments WHERE transaction_id = @transactionId`;
+    
+    const request = db.pool.request();
+    request.input('transactionId', sql.NVarChar, transactionId);
     
     const result = await request.query(query);
     return result.recordset.length > 0 ? this.mapPendingPaymentFromDb(result.recordset[0]) : undefined;
@@ -2535,7 +2554,13 @@ export class SqlServerStorage implements IStorage {
       sellerCode: row.seller_code,
       status: row.status,
       expiresAt: row.expires_at,
-      createdAt: row.created_at
+      createdAt: row.created_at,
+      // New dual-flow BBG fields
+      purchaseTimingCategory: row.purchase_timing_category,
+      benefitType: row.benefit_type,
+      planPrice: row.plan_price,
+      benefitsJson: row.benefits_json,
+      emailTemplateKey: row.email_template_key
     };
   }
 

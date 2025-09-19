@@ -688,20 +688,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const { customerData, amount, referralCode } = req.body;
+      const { customerData, referralCode } = req.body;
       const deviceType = customerData.deviceType;
+      const dateOfPurchase = customerData.dateOfPurchase;
 
-      let finalAmount = amount;
+      // Validate required fields for dual-flow BBG system
+      if (!deviceType || !dateOfPurchase) {
+        return res.status(400).json({
+          message: "deviceType and dateOfPurchase are required for BBG registration",
+          error: "Missing required fields"
+        });
+      }
 
-      // If amount not provided from frontend, calculate with discounts
-      if (!finalAmount) {
+      // SECURITY: Always compute pricing server-side - never trust client amounts
+      let planDetails = null;
+      let finalAmount = 0;
+
+      try {
+        // Get current price settings for plan calculation
         const priceSettings = await storage.getBbgPriceSettings();
-        const prices = priceSettings || {
-          laptopPrice: 499,
-          mobilePrice: 299,
-        };
+        const prices = priceSettings ? {
+          laptopPrice: priceSettings.laptopPrice ?? (priceSettings as any).laptop,
+          mobilePrice: priceSettings.mobilePrice ?? (priceSettings as any).mobile
+        } : undefined;
 
-        let basePrice = deviceType === 'laptop' ? prices.laptopPrice : prices.mobilePrice;
+        // Always calculate plan using server-side logic
+        planDetails = getPlanFor(deviceType, dateOfPurchase, prices);
+        console.log('📊 PayU Plan calculated:', planDetails);
+
+        let basePrice = planDetails.planPrice;
 
         // Apply referral discount if code provided
         if (referralCode) {
@@ -726,6 +741,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         finalAmount = Math.round(basePrice);
+        console.log('💰 PayU Final amount calculated:', { originalPrice: planDetails.planPrice, finalAmount, referralCode });
+      } catch (planError) {
+        console.error("Error calculating BBG plan for PayU payment:", planError);
+        return res.status(400).json({
+          message: "Failed to calculate BBG plan",
+          error: planError.message || "Invalid device or purchase date"
+        });
       }
 
 
@@ -750,10 +772,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate unique transaction ID
       const txnid = `BBG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-      // Store customer data in temporary storage for success handler
+      // Persist plan context to pending_payments for reliability
+      try {
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+        
+        const pendingPaymentData = {
+          name: customerData.name,
+          contact: customerData.contact,
+          email: customerData.email,
+          pincode: customerData.pincode || '000000',
+          deviceType: customerData.deviceType,
+          serialNumber: customerData.serialNumber || null,
+          brand: customerData.brand,
+          modelName: customerData.modelName,
+          invoiceValue: parseFloat(customerData.invoiceValue) || 0,
+          paymentAmount: finalAmount,
+          transactionId: txnid,
+          sellerCode: referralCode || null,
+          status: 'pending',
+          expiresAt: expiresAt,
+          // New dual-flow BBG fields
+          purchaseTimingCategory: planDetails.purchaseTimingCategory,
+          benefitType: planDetails.benefitType,
+          planPrice: planDetails.planPrice,
+          benefitsJson: JSON.stringify(planDetails.benefits),
+          emailTemplateKey: planDetails.emailTemplateKey
+        };
+
+        await storage.createPendingPayment(pendingPaymentData);
+        console.log('💾 PayU Plan context persisted to pending_payments:', { txnid, benefitType: planDetails.benefitType, planPrice: planDetails.planPrice });
+      } catch (persistError) {
+        console.error('❌ Failed to persist plan context to pending_payments:', persistError);
+        // Continue with temp storage as fallback
+      }
+
+      // Store customer data and plan details in temporary storage as backup
       // Using a simple in-memory map with transaction ID as key
       const tempStorage = app.locals.tempCustomerData || new Map();
-      tempStorage.set(txnid, customerData);
+      tempStorage.set(txnid, {
+        customerData,
+        planDetails,
+        finalAmount
+      });
       app.locals.tempCustomerData = tempStorage;
 
       // Create basic PayU parameters without UDF fields first
@@ -827,9 +887,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       if (status === "success") {
-        // Get customer data from temporary storage
+        // Get customer data and plan details from temporary storage with pending_payments fallback
         const tempStorage = app.locals.tempCustomerData || new Map();
-        const customerData = tempStorage.get(txnid);
+        const tempData = tempStorage.get(txnid);
+        let customerData = null;
+        let planDetails = null;
+
+        if (tempData && tempData.customerData) {
+          // Use temp storage if available
+          customerData = tempData.customerData;
+          planDetails = tempData.planDetails;
+          console.log('✅ PayU Success: Using temp storage for plan data:', { benefitType: planDetails?.benefitType });
+        } else {
+          // Fallback to pending_payments if temp storage missing
+          try {
+            const pendingPayment = await storage.getPendingPaymentByTransactionId(txnid);
+            if (pendingPayment) {
+              // Reconstruct customer data from pending_payment
+              customerData = {
+                name: pendingPayment.name,
+                contact: pendingPayment.contact,
+                email: pendingPayment.email,
+                pincode: pendingPayment.pincode,
+                deviceType: pendingPayment.deviceType,
+                serialNumber: pendingPayment.serialNumber,
+                brand: pendingPayment.brand,
+                modelName: pendingPayment.modelName,
+                invoiceValue: pendingPayment.invoiceValue.toString(),
+                sellerCode: pendingPayment.sellerCode,
+                dateOfPurchase: null // Will be recovered from original data if needed
+              };
+
+              // Reconstruct plan details from pending_payment
+              if (pendingPayment.benefitType && pendingPayment.benefitsJson) {
+                planDetails = {
+                  purchaseTimingCategory: pendingPayment.purchaseTimingCategory,
+                  benefitType: pendingPayment.benefitType,
+                  planPrice: pendingPayment.planPrice,
+                  benefits: JSON.parse(pendingPayment.benefitsJson),
+                  emailTemplateKey: pendingPayment.emailTemplateKey
+                };
+              }
+              console.log('✅ PayU Success: Using pending_payments fallback for plan data:', { benefitType: planDetails?.benefitType });
+            }
+          } catch (pendingError) {
+            console.error('❌ Failed to retrieve from pending_payments:', pendingError);
+          }
+        }
 
         if (!customerData) {
           console.error("Customer data not found for transaction:", txnid);
@@ -848,91 +952,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Clean up file data for SQL insertion - PayU payments don't include files
         const { invoiceFile, ...cleanCustomerData } = customerData;
 
-        // Get active claim value slab at time of registration
+        // Handle claim value slabs only for customers with claim_slabs benefit type
         let activeClaimValueSlab = null;
-        try {
-          const purchaseDate = new Date(
-            cleanCustomerData.dateOfPurchase + "T00:00:00.000Z",
-          );
-          const currentDate = new Date();
-          const monthsDiff =
-            (currentDate.getFullYear() - purchaseDate.getFullYear()) * 12 +
-            (currentDate.getMonth() - purchaseDate.getMonth());
+        let completeSlabData = null;
+        
+        if (planDetails && planDetails.benefitType === 'claim_slabs') {
+          try {
+            const purchaseDate = new Date(
+              cleanCustomerData.dateOfPurchase + "T00:00:00.000Z",
+            );
+            const currentDate = new Date();
+            const monthsDiff =
+              (currentDate.getFullYear() - purchaseDate.getFullYear()) * 12 +
+              (currentDate.getMonth() - purchaseDate.getMonth());
 
-          console.log("PayU Registration: Date calculation:", {
-            currentDate: currentDate.toISOString(),
-            purchaseDate: purchaseDate.toISOString(),
-            monthsDiff,
-          });
+            console.log("PayU Registration (Claim Slabs): Date calculation:", {
+              currentDate: currentDate.toISOString(),
+              purchaseDate: purchaseDate.toISOString(),
+              monthsDiff,
+            });
 
-          const activeSlabs = await storage.getActiveClaimValueSlabs();
+            const activeSlabs = await storage.getActiveClaimValueSlabs();
 
-          // Find brand-specific slab first
-          activeClaimValueSlab = activeSlabs.find(
-            (slab) =>
-              slab.deviceType === cleanCustomerData.deviceType &&
-              slab.brand === cleanCustomerData.brand &&
-              monthsDiff >= slab.minMonths &&
-              monthsDiff <= slab.maxMonths,
-          );
-
-          // If no brand-specific slab, try generic slab
-          if (!activeClaimValueSlab) {
+            // Find brand-specific slab first
             activeClaimValueSlab = activeSlabs.find(
               (slab) =>
                 slab.deviceType === cleanCustomerData.deviceType &&
-                !slab.brand &&
+                slab.brand === cleanCustomerData.brand &&
                 monthsDiff >= slab.minMonths &&
                 monthsDiff <= slab.maxMonths,
             );
-          }
 
-          console.log(
-            "PayU Registration: Selected claim value slab:",
-            activeClaimValueSlab,
-          );
-        } catch (error) {
-          console.log(
-            "Warning: Could not fetch active claim value slab for PayU:",
-            error,
-          );
-          activeClaimValueSlab = null;
-        }
-
-        // Build complete slab data structure for PayU customer registration
-        let completeSlabData = null;
-        if (activeClaimValueSlab) {
-          try {
-            const brandSpecificSlabs =
-              await storage.getActiveClaimValueSlabsByDeviceBrand(
-                activeClaimValueSlab.deviceType,
-                activeClaimValueSlab.brand || null,
+            // If no brand-specific slab, try generic slab
+            if (!activeClaimValueSlab) {
+              activeClaimValueSlab = activeSlabs.find(
+                (slab) =>
+                  slab.deviceType === cleanCustomerData.deviceType &&
+                  !slab.brand &&
+                  monthsDiff >= slab.minMonths &&
+                  monthsDiff <= slab.maxMonths,
               );
-            completeSlabData = JSON.stringify({
-              deviceType: activeClaimValueSlab.deviceType,
-              brand: activeClaimValueSlab.brand,
-              registrationAge: monthsDiff,
-              registrationDate: new Date().toISOString(),
-              slabs: brandSpecificSlabs,
-              applicableSlabId: activeClaimValueSlab.id,
-            });
+            }
 
             console.log(
-              "✅ PayU Complete slab data structure created for customer registration:",
-              {
+              "PayU Registration (Claim Slabs): Selected claim value slab:",
+              activeClaimValueSlab,
+            );
+
+            // Build complete slab data structure
+            if (activeClaimValueSlab) {
+              const brandSpecificSlabs =
+                await storage.getActiveClaimValueSlabsByDeviceBrand(
+                  activeClaimValueSlab.deviceType,
+                  activeClaimValueSlab.brand || null,
+                );
+              completeSlabData = JSON.stringify({
                 deviceType: activeClaimValueSlab.deviceType,
                 brand: activeClaimValueSlab.brand,
-                totalSlabs: brandSpecificSlabs.length,
                 registrationAge: monthsDiff,
-              },
-            );
+                registrationDate: new Date().toISOString(),
+                slabs: brandSpecificSlabs,
+                applicableSlabId: activeClaimValueSlab.id,
+              });
+
+              console.log(
+                "✅ PayU Complete slab data structure created for claim_slabs customer:",
+                {
+                  deviceType: activeClaimValueSlab.deviceType,
+                  brand: activeClaimValueSlab.brand,
+                  totalSlabs: brandSpecificSlabs.length,
+                  registrationAge: monthsDiff,
+                },
+              );
+            }
           } catch (slabError) {
             console.error(
-              "❌ PayU Error building complete slab structure for registration:",
+              "❌ PayU Error building complete slab structure for claim_slabs customer:",
               slabError,
             );
+            activeClaimValueSlab = null;
             completeSlabData = null;
           }
+        } else {
+          console.log("PayU Registration: Skipping claim value slabs for auction_repair benefit type");
         }
 
         const submitData = {
@@ -944,6 +1046,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           claimValueSlabId: activeClaimValueSlab?.id || null,
           // Store complete slab structure from registration time (preserves entire rate structure)
           registrationSlabData: completeSlabData,
+          // New dual-flow BBG columns
+          purchaseTimingCategory: planDetails?.purchaseTimingCategory || null,
+          benefitType: planDetails?.benefitType || null,
+          planPrice: planDetails?.planPrice || null,
+          benefitsJson: planDetails ? JSON.stringify(planDetails.benefits) : null,
           // Remove invoiceFile completely for PayU payments
         };
 
@@ -1127,6 +1234,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           brand: customer.brand,
           modelName: customer.modelName,
           registrationSlabData: customer.registrationSlabData,
+          // New dual-flow BBG fields
+          benefitType: customer.benefitType,
+          benefitsJson: customer.benefitsJson,
+          planPrice: customer.planPrice,
           txnid: txnid,
           amount: amount, // Store actual charged amount (includes any referral discounts)
         };

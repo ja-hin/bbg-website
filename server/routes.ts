@@ -20,6 +20,7 @@ import { templateService } from "./template-service";
 import { testAllTemplates } from "./template-test";
 import { registerTestRoutes } from "./test-services";
 import { s3Service, createS3Upload } from "./s3-service";
+import { getPlanFor, getBenefitsDescription, isEligibleForBBG } from "./plan-service";
 import AWS from "aws-sdk";
 import bcrypt from "bcryptjs";
 // Removed nodemailer import - using communicationService instead
@@ -30,6 +31,7 @@ import {
   insertOtpSchema,
   insertDeviceRegistrationSchema,
 } from "@shared/schema";
+import { z } from "zod";
 // Using SQL Server for all database operations
 
 // Configure S3-only file uploads
@@ -8598,6 +8600,69 @@ Required: GUPSHUP_API_KEY environment variable
         discountApplied: false,
         success: false,
         error: "Using default prices",
+      });
+    }
+  });
+
+  // Plan calculation endpoint for dual-flow BBG system
+  app.post("/api/plan/calculate", async (req, res) => {
+    try {
+      // Define validation schema
+      const planCalculationSchema = z.object({
+        deviceType: z.enum(['laptop', 'mobile'], {
+          errorMap: () => ({ message: "deviceType must be 'laptop' or 'mobile'" })
+        }),
+        dateOfPurchase: z.string().refine((date) => {
+          const parsedDate = new Date(date);
+          return !isNaN(parsedDate.getTime());
+        }, {
+          message: "dateOfPurchase must be a valid ISO date string"
+        })
+      });
+
+      // Validate request body
+      const validation = planCalculationSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({
+          success: false,
+          error: validation.error.errors[0].message
+        });
+      }
+
+      const { deviceType, dateOfPurchase } = validation.data;
+
+      // Check if purchase date is eligible for BBG
+      if (!isEligibleForBBG(dateOfPurchase)) {
+        return res.status(400).json({
+          success: false,
+          error: "Device purchase date is not eligible for BBG coverage"
+        });
+      }
+
+      // Fetch current price settings for accurate calculation
+      const priceSettings = await storage.getBbgPriceSettings();
+      const prices = priceSettings ? {
+        laptopPrice: priceSettings.laptopPrice ?? (priceSettings as any).laptop,
+        mobilePrice: priceSettings.mobilePrice ?? (priceSettings as any).mobile
+      } : undefined;
+
+      // Calculate plan details
+      const plan = getPlanFor(deviceType, dateOfPurchase, prices);
+      const description = getBenefitsDescription(plan);
+
+      res.json({
+        success: true,
+        plan: {
+          ...plan,
+          description
+        }
+      });
+
+    } catch (error: any) {
+      console.error("Error calculating BBG plan:", error);
+      res.status(500).json({
+        success: false,
+        error: error.message || "Failed to calculate BBG plan"
       });
     }
   });

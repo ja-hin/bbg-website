@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { validatePhoneNumber, validateEmail, validatePincode } from "@/lib/utils";
 import { SuccessConfetti } from "@/components/confetti";
 import { scrollToTopInstant } from "@/hooks/useScrollToTop";
+import { BenefitsCard } from "@/components/BenefitsCard";
 
 // Generate unique session ID for cart abandonment tracking
 const generateSessionId = () => {
@@ -425,13 +426,15 @@ function PaymentMethodSelector({
   deviceType, 
   onPaymentSuccess, 
   customerData,
-  bbgPrices 
+  bbgPrices,
+  planData 
 }: { 
   amount: number;
   deviceType: string;
   onPaymentSuccess: (paymentIntentId: string) => void;
   customerData: CustomerFormData;
   bbgPrices?: any;
+  planData?: any;
 }) {
   // Direct PayU payment - no method selection needed
   return (
@@ -506,8 +509,25 @@ function BuyBBGContent() {
     }
   });
 
-  // Watch device type to fetch appropriate brands
+  // Fetch plan data (pricing and benefits) based on device details
   const deviceType = form.watch("deviceType");
+  const dateOfPurchase = form.watch("dateOfPurchase");
+  
+  const { data: planData, isLoading: planLoading } = useQuery({
+    queryKey: ["/api/plan", deviceType, dateOfPurchase],
+    queryFn: async () => {
+      if (!deviceType || !dateOfPurchase) return null;
+      
+      const response = await apiRequest("/api/plan", {
+        method: "POST",
+        body: { deviceType, dateOfPurchase }
+      });
+      return response;
+    },
+    enabled: !!(deviceType && dateOfPurchase), // Only fetch when we have both values
+  });
+
+  // Watch device type to fetch appropriate brands  
   const selectedBrand = form.watch("brand");
 
   // Fetch brands based on device type
@@ -911,17 +931,18 @@ function BuyBBGContent() {
           </CardHeader>
           <CardContent className="pt-0">
             <PaymentMethodSelector
-              amount={formData.deviceType === 'laptop' ? 
+              amount={planData?.planPrice || (formData.deviceType === 'laptop' ? 
                 (bbgPrices?.discountApplied && bbgPrices?.discountDetails ? 
                   bbgPrices.discountDetails.discountedLaptopPrice : 
                   (bbgPrices?.laptop || 499)) : 
                 (bbgPrices?.discountApplied && bbgPrices?.discountDetails ? 
                   bbgPrices.discountDetails.discountedMobilePrice : 
-                  (bbgPrices?.mobile || 299))}
+                  (bbgPrices?.mobile || 299)))}
               deviceType={formData.deviceType}
               onPaymentSuccess={handlePaymentSuccess}
               customerData={formData}
               bbgPrices={bbgPrices}
+              planData={planData}
             />
           </CardContent>
         </Card>
@@ -1099,6 +1120,29 @@ function BuyBBGContent() {
                   </div>
 
                 </div>
+
+                {/* BBG Benefits Section - Show auction/repair benefits or pricing info */}
+                {planData?.benefitType === 'auction_repair' ? (
+                  <BenefitsCard 
+                    deviceType={planData.deviceType || deviceType}
+                    benefits={planData.benefits}
+                    totalPrice={planData.benefits.auctionService.price + planData.benefits.repairBenefit.price}
+                    planPrice={planData.planPrice}
+                  />
+                ) : planData && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-semibold text-blue-900">BBG Plan Details</h4>
+                        <p className="text-sm text-blue-700">Your device qualifies for claim coverage benefits</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-blue-900">₹{planData.planPrice}</div>
+                        <div className="text-xs text-blue-600">{planData.benefitType === 'claim_slabs' ? 'Claim Coverage' : 'Standard BBG'}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Customer Details Section */}
                 <div className="space-y-4">

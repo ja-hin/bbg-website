@@ -61,6 +61,7 @@ const postPurchaseRegistrationSchema = z.object({
 type PostPurchaseRegistrationData = z.infer<typeof postPurchaseRegistrationSchema>;
 
 export default function Register() {
+  const [registrationType, setRegistrationType] = useState<'acer' | 'device' | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const { toast } = useToast();
 
@@ -114,11 +115,113 @@ export default function Register() {
     registrationMutation.mutate(data);
   };
 
+  const handleRegistrationTypeSelect = (type: 'acer' | 'device') => {
+    if (type === 'acer') {
+      window.location.href = '/acer';
+    } else {
+      setRegistrationType(type);
+    }
+  };
+
+  // If no registration type is selected, show selection screen
+  if (!registrationType) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
+        <div className="container mx-auto px-4 max-w-4xl">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Choose Registration Type
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Select the type of registration you want to complete
+            </p>
+          </div>
+
+          {/* Registration Type Selection */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Acer E-Store Option */}
+            <Card 
+              className="shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer hover:scale-105 border-2 hover:border-blue-500"
+              onClick={() => handleRegistrationTypeSelect('acer')}
+              data-testid="card-acer-registration"
+            >
+              <CardHeader className="bg-gradient-to-r from-orange-600 to-red-600 text-white">
+                <CardTitle className="text-2xl flex items-center justify-center">
+                  <Building className="h-6 w-6 mr-2" />
+                  Acer E-Store
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-8 text-center">
+                <div className="space-y-4">
+                  <div className="text-6xl">🛒</div>
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    Acer E-Store Registration
+                  </h3>
+                  <p className="text-gray-600 text-base">
+                    Register your device purchased from Acer E-Store with special benefits and faster processing
+                  </p>
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mt-4">
+                    <p className="text-sm font-medium text-orange-800">
+                      ✓ Instant verification<br/>
+                      ✓ Enhanced coverage<br/>
+                      ✓ Priority support
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Device Registration Option */}
+            <Card 
+              className="shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer hover:scale-105 border-2 hover:border-blue-500"
+              onClick={() => handleRegistrationTypeSelect('device')}
+              data-testid="card-device-registration"
+            >
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                <CardTitle className="text-2xl flex items-center justify-center">
+                  <Smartphone className="h-6 w-6 mr-2" />
+                  Device Registration
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-8 text-center">
+                <div className="space-y-4">
+                  <div className="text-6xl">📱</div>
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    Website Device Registration
+                  </h3>
+                  <p className="text-gray-600 text-base">
+                    Register your device purchased from other sources using your BBG voucher code
+                  </p>
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                    <p className="text-sm font-medium text-blue-800">
+                      ✓ Standard coverage<br/>
+                      ✓ BBG voucher required<br/>
+                      ✓ Regular processing
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-8">
+          <Button
+            variant="outline"
+            onClick={() => setRegistrationType(null)}
+            className="mb-4"
+            data-testid="button-back-to-selection"
+          >
+            ← Back to Registration Type Selection
+          </Button>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Website Device Registration
           </h1>

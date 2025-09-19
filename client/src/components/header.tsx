@@ -13,6 +13,7 @@ export default function Header() {
   const navigationItems = [
     { href: "/", label: "Home" },
     { href: "/customer-registration", label: "Buy" },
+    { href: "/register", label: "Register" },
     { href: "/claim-bbg", label: "Claim" },
     { href: "/referral-partner-registration", label: "Join Referral Program" },
   ];

@@ -199,6 +199,7 @@ export class CommunicationService {
       devicePurchaseDate?: string;
       bbgPurchaseDate?: string;
       termsAndConditionsUrl?: string;
+      emailTemplateKey?: string; // For auction/repair vs claim_slabs flow
     }
   ) {
     const results = {
@@ -247,7 +248,16 @@ export class CommunicationService {
       };
 
       // Email confirmation using template with SMTP settings from database
-      const emailTemplate = await templateService.getTemplate('email', 'customer_registration');
+      // Use device-specific template for auction/repair flow, regular template otherwise
+      let emailTemplate;
+      if (customerData.emailTemplateKey === 'bbg_registration_benefits') {
+        console.log(`📧 Using device-specific BBG benefits template for ${customerData.deviceType} device`);
+        emailTemplate = await templateService.getTemplateByTypeEventAndDevice('email', 'bbg_registration_benefits', customerData.deviceType);
+      } else {
+        console.log('📧 Using regular customer registration template');
+        emailTemplate = await templateService.getTemplate('email', 'customer_registration');
+      }
+      
       if (emailTemplate) {
         console.log('📧 Rendering email template with variables:', {
           ...emailData,

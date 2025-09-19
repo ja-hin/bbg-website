@@ -4,6 +4,42 @@ import { pgTable, text, varchar, serial, integer, boolean, timestamp, decimal } 
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Enums for dual-flow BBG system
+export const PurchaseTimingCategory = {
+  WITHIN_6_MONTHS: 'within_6_months',
+  OVER_6_MONTHS: 'over_6_months'
+} as const;
+
+export const BenefitType = {
+  CLAIM_SLABS: 'claim_slabs',
+  AUCTION_REPAIR: 'auction_repair'
+} as const;
+
+export type PurchaseTimingCategoryType = typeof PurchaseTimingCategory[keyof typeof PurchaseTimingCategory];
+export type BenefitTypeType = typeof BenefitType[keyof typeof BenefitType];
+
+// Benefits structure for auction/repair flow
+export interface AuctionRepairBenefits {
+  auctionService: {
+    value: number; // e.g., 599 for mobile, 799 for laptop
+    description: string;
+  };
+  repairService: {
+    value: number; // e.g., 599 for mobile, 799 for laptop
+    description: string;
+  };
+  totalValue: number;
+  actualPrice: number;
+}
+
+// Benefits structure for claim slabs flow
+export interface ClaimSlabsBenefits {
+  maxClaimPercentage: number; // e.g., 70
+  slabStructure: any[]; // Complete slab structure at time of registration
+}
+
+export type BenefitsStructure = AuctionRepairBenefits | ClaimSlabsBenefits;
+
 export const distributors = pgTable("distributors", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -249,11 +285,41 @@ export const insertDistributorSchema = createInsertSchema(distributors).omit({
   createdAt: true,
 });
 
+// Zod schemas for dual-flow BBG validation
+export const purchaseTimingCategorySchema = z.enum(['within_6_months', 'over_6_months']);
+export const benefitTypeSchema = z.enum(['claim_slabs', 'auction_repair']);
+
+export const auctionRepairBenefitsSchema = z.object({
+  auctionService: z.object({
+    value: z.number(),
+    description: z.string(),
+  }),
+  repairService: z.object({
+    value: z.number(),
+    description: z.string(),
+  }),
+  totalValue: z.number(),
+  actualPrice: z.number(),
+});
+
+export const claimSlabsBenefitsSchema = z.object({
+  maxClaimPercentage: z.number(),
+  slabStructure: z.array(z.any()),
+});
+
+export const benefitsStructureSchema = z.union([auctionRepairBenefitsSchema, claimSlabsBenefitsSchema]);
+
 export const insertCustomerSchema = createInsertSchema(customers).omit({
   id: true,
   voucherCode: true,
   isVerified: true,
   createdAt: true,
+}).extend({
+  purchaseTimingCategory: purchaseTimingCategorySchema.optional(),
+  benefitType: benefitTypeSchema.optional(),
+  planPrice: z.number().optional(),
+  benefitsJson: z.string().optional(), // JSON string
+  emailTemplateKey: z.string().optional(),
 });
 
 export const insertClaimSchema = createInsertSchema(claims).omit({
@@ -286,6 +352,12 @@ export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({
 export const insertPendingPaymentSchema = createInsertSchema(pendingPayments).omit({
   id: true,
   createdAt: true
+}).extend({
+  purchaseTimingCategory: purchaseTimingCategorySchema.optional(),
+  benefitType: benefitTypeSchema.optional(),
+  planPrice: z.number().optional(),
+  benefitsJson: z.string().optional(), // JSON string
+  emailTemplateKey: z.string().optional(),
 });
 
 export const insertBrandSchema = createInsertSchema(brands).omit({
@@ -462,3 +534,10 @@ export const insertDeviceRegistrationSchema = createInsertSchema(deviceRegistrat
 // Device Registration types
 export type DeviceRegistration = typeof deviceRegistrations.$inferSelect;
 export type InsertDeviceRegistration = z.infer<typeof insertDeviceRegistrationSchema>;
+
+// Dual-flow BBG system types
+export type PurchaseTimingCategoryValidation = z.infer<typeof purchaseTimingCategorySchema>;
+export type BenefitTypeValidation = z.infer<typeof benefitTypeSchema>;
+export type AuctionRepairBenefitsValidation = z.infer<typeof auctionRepairBenefitsSchema>;
+export type ClaimSlabsBenefitsValidation = z.infer<typeof claimSlabsBenefitsSchema>;
+export type BenefitsStructureValidation = z.infer<typeof benefitsStructureSchema>;

@@ -1830,6 +1830,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .json({ message: "Customer registration not yet verified" });
       }
 
+      // Check if customer has auction/repair benefits instead of claim coverage
+      if (customer.benefitType === 'auction_repair') {
+        return res.status(400).json({
+          message: "Claims are not available for your BBG plan",
+          details: "Your device purchase was over 6 months old, so your BBG plan includes auction service and repair benefits instead of claim coverage. Please contact support for assistance with these services.",
+          benefitType: customer.benefitType,
+          availableServices: ["Auction Service", "Repair Benefits"]
+        });
+      }
+
       // DYNAMIC WAITING PERIOD: Check admin-configurable waiting period settings
       // (Acer BBG registrations are exempt from this restriction)
       let registrationSource = customer.registrationSource || "regular";
@@ -2231,6 +2241,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const customer = await storage.getCustomerByVoucherCode(voucherCode);
       if (!customer) {
         return res.status(404).json({ message: "Invalid BBG voucher code" });
+      }
+
+      // Check if customer has auction/repair benefits instead of claim coverage
+      if (customer.benefitType === 'auction_repair') {
+        return res.status(400).json({
+          message: "Claims are not available for your BBG plan",
+          details: "Your device purchase was over 6 months old, so your BBG plan includes auction service and repair benefits instead of claim coverage. Please contact support for assistance with these services.",
+          benefitType: customer.benefitType,
+          availableServices: ["Auction Service", "Repair Benefits"]
+        });
       }
 
       // Check if claim already exists

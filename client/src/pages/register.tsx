@@ -50,6 +50,7 @@ const postPurchaseRegistrationSchema = z.object({
 type PostPurchaseRegistrationData = z.infer<typeof postPurchaseRegistrationSchema>;
 
 export default function Register() {
+  const [registrationType, setRegistrationType] = useState<'acer' | 'website' | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const { toast } = useToast();
 
@@ -103,11 +104,73 @@ export default function Register() {
     registrationMutation.mutate(data);
   };
 
+  const handleRegistrationTypeSelect = (type: 'acer' | 'website') => {
+    if (type === 'acer') {
+      window.location.href = '/acer';
+    } else {
+      setRegistrationType(type);
+    }
+  };
+
+  // If no registration type is selected, show selection screen
+  if (!registrationType) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
+        <div className="container mx-auto px-4 max-w-2xl">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Device Registration
+            </h1>
+            <p className="text-lg text-gray-600 max-w-xl mx-auto">
+              Please select where you purchased your device
+            </p>
+          </div>
+
+          {/* Simple Selection */}
+          <Card className="shadow-xl">
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+              <CardTitle className="text-xl text-center">
+                Select Purchase Source
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8">
+              <div className="space-y-4">
+                <Button
+                  onClick={() => handleRegistrationTypeSelect('acer')}
+                  className="w-full h-16 text-lg bg-orange-600 hover:bg-orange-700"
+                  data-testid="button-acer-selection"
+                >
+                  Acer E-Store
+                </Button>
+                <Button
+                  onClick={() => handleRegistrationTypeSelect('website')}
+                  className="w-full h-16 text-lg bg-blue-600 hover:bg-blue-700"
+                  data-testid="button-website-selection"
+                >
+                  Website Purchase
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-8">
+          <Button
+            variant="outline"
+            onClick={() => setRegistrationType(null)}
+            className="mb-4"
+            data-testid="button-back-to-selection"
+          >
+            ← Back to Selection
+          </Button>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Website Device Registration
           </h1>

@@ -739,7 +739,7 @@ export default function ThankYou() {
                     </Button>
                   </Link>
                   {type === 'distributor' && (
-                    <Link href="/customer-registration">
+                    <Link href="/buy-bbg">
                       <Button variant="outline" className="px-6 py-3">
                         Help Customers Register
                       </Button>

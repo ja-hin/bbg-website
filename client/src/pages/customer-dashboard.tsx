@@ -355,7 +355,7 @@ export default function CustomerDashboard() {
               <p className="text-gray-600 mb-4">
                 You haven't registered any devices for BBG protection yet.
               </p>
-              <Button onClick={() => window.location.href = '/customer-registration'}>
+              <Button onClick={() => window.location.href = '/buy-bbg'}>
                 Register Your First Device
               </Button>
             </CardContent>

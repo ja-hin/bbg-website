@@ -124,7 +124,7 @@ function Router() {
             <Switch>
               <Route path="/" component={Home} />
               <Route path="/referral-partner-registration" component={DistributorRegistration} />
-              <Route path="/customer-registration" component={CustomerRegistration} />
+              <Route path="/buy-bbg" component={CustomerRegistration} />
               <Route path="/claim-bbg" component={ClaimBBG} />
               <Route path="/thank-you" component={ThankYou} />
               <Route path="/acer" component={AcerBBG} />

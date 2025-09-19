@@ -79,7 +79,7 @@ export default function Home() {
           
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 sm:mb-16 px-4 sm:px-0">
-            <Link href="/customer-registration" className="w-full sm:w-auto">
+            <Link href="/buy-bbg" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
                 Buy <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
@@ -466,7 +466,7 @@ export default function Home() {
                   <strong>Note:</strong> All percentages are of invoice value for your devices in functional and fair condition. Your slabs are locked as per your purchase date/time and mapped to your unique BBG Voucher. 
                 </p>
                 <div className="flex flex-col sm:flex-row gap-2">
-                  <Link href="/customer-registration">
+                  <Link href="/buy-bbg">
                     <Button size="sm" className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white">Buy</Button>
                   </Link>
                   <Link href="/claim-bbg">

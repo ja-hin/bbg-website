@@ -5,7 +5,7 @@ import jsPDF from 'jspdf';
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award } from "lucide-react";
+import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award, Gavel, Wrench, Star } from "lucide-react";
 
 // Device Type Claim Values Component
 function BrandClaimValues({ sessionData }: { sessionData: any }) {
@@ -102,6 +102,116 @@ function BrandClaimValues({ sessionData }: { sessionData: any }) {
           <Award className="w-4 h-4 mr-2 text-emerald-600" />
           Your BBG rates are permanently locked and cannot be reduced, ensuring guaranteed returns for your {sessionData.deviceType}
         </p>
+      </div>
+    </div>
+  );
+}
+
+// Auction and Repair Benefits Component for auction_repair customers
+function AuctionRepairBenefits({ sessionData }: { sessionData: any }) {
+  const deviceType = sessionData?.deviceType || 'device';
+  const deviceTypeDisplay = deviceType.charAt(0).toUpperCase() + deviceType.slice(1);
+  
+  // Default benefits if benefitsJson is missing or malformed
+  const defaultBenefits = {
+    auctionService: {
+      price: deviceType === 'mobile' ? 599 : 799,
+      description: `Professional auction service for your ${deviceType}`
+    },
+    repairBenefit: {
+      price: deviceType === 'mobile' ? 599 : 799, 
+      description: `Professional repair services for your ${deviceType}`
+    }
+  };
+  
+  let benefits = defaultBenefits;
+  
+  if (sessionData?.benefitsJson) {
+    try {
+      const parsedBenefits = typeof sessionData.benefitsJson === 'string' 
+        ? JSON.parse(sessionData.benefitsJson) 
+        : sessionData.benefitsJson;
+      benefits = { ...defaultBenefits, ...parsedBenefits };
+    } catch (error) {
+      console.error('Error parsing benefits JSON:', error);
+      // Continue with defaultBenefits
+    }
+  }
+
+  return (
+    <div className="bg-gradient-to-r from-orange-50 to-amber-50 border-2 border-orange-200/60 rounded-xl p-6 mb-8 shadow-lg">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-xl font-bold text-gray-900 flex items-center">
+          <CheckCircle className="h-6 w-6 mr-3 text-orange-600" />
+          Your {deviceTypeDisplay} BBG Benefits
+        </h3>
+        <div className="bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+          PREMIUM SERVICES
+        </div>
+      </div>
+      
+      <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 mb-6">
+        <p className="text-sm text-orange-800 flex items-center">
+          <Info className="w-4 h-4 mr-2" />
+          Your device qualifies for our premium auction and repair services. Contact us to activate these benefits.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Auction Service Card */}
+        <div className="bg-gradient-to-br from-orange-100 to-orange-200 border-2 border-orange-300 rounded-xl p-6 text-center hover:shadow-md transition-all duration-300">
+          <div className="flex justify-center mb-4">
+            <div className="bg-orange-500 p-3 rounded-full">
+              <Gavel className="h-8 w-8 text-white" />
+            </div>
+          </div>
+          <h4 className="text-lg font-bold text-orange-800 mb-2">Auction Service</h4>
+          <div className="text-3xl font-bold text-orange-600 mb-3">
+            ₹{Number(benefits.auctionService?.price || (deviceType === 'mobile' ? 599 : 799))}
+          </div>
+          <p className="text-sm text-orange-700 bg-white/50 px-3 py-2 rounded-lg">
+            {benefits.auctionService?.description || `Professional auction service for your ${deviceType}`}
+          </p>
+        </div>
+
+        {/* Repair Benefit Card */}
+        <div className="bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-amber-300 rounded-xl p-6 text-center hover:shadow-md transition-all duration-300">
+          <div className="flex justify-center mb-4">
+            <div className="bg-amber-500 p-3 rounded-full">
+              <Wrench className="h-8 w-8 text-white" />
+            </div>
+          </div>
+          <h4 className="text-lg font-bold text-amber-800 mb-2">Repair Benefit</h4>
+          <div className="text-3xl font-bold text-amber-600 mb-3">
+            ₹{Number(benefits.repairBenefit?.price || (deviceType === 'mobile' ? 599 : 799))}
+          </div>
+          <p className="text-sm text-amber-700 bg-white/50 px-3 py-2 rounded-lg">
+            {benefits.repairBenefit?.description || `Professional repair services for your ${deviceType}`}
+          </p>
+        </div>
+      </div>
+
+      {/* Value Summary */}
+      <div className="mt-6 bg-white/50 rounded-lg p-4">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-medium text-gray-700">Total Services Value:</span>
+          <span className="text-lg font-bold text-orange-600">
+            ₹{(Number(benefits.auctionService?.price || (deviceType === 'mobile' ? 599 : 799)) + 
+               Number(benefits.repairBenefit?.price || (deviceType === 'mobile' ? 599 : 799)))}
+          </span>
+        </div>
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-medium text-gray-700">You Paid:</span>
+          <span className="text-lg font-bold text-green-600">₹{sessionData.planPrice || (deviceType === 'mobile' ? '499' : '799')}</span>
+        </div>
+        <div className="bg-green-100 border border-green-300 rounded-lg p-3 text-center">
+          <p className="text-sm font-semibold text-green-800 flex items-center justify-center">
+            <Star className="w-4 h-4 mr-2" />
+            You saved ₹{(Number(benefits.auctionService?.price || (deviceType === 'mobile' ? 599 : 799)) + 
+                        Number(benefits.repairBenefit?.price || (deviceType === 'mobile' ? 599 : 799))) - 
+                       Number(sessionData.planPrice || (deviceType === 'mobile' ? 499 : 799))} with this BBG plan!
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -671,8 +781,14 @@ export default function ThankYou() {
               </div>
             )}
 
-            {/* Show Brand-Specific Claim Values for Successful Customer Registrations */}
-            {type === 'customer' && status === 'success' && <BrandClaimValues sessionData={sessionData} />}
+            {/* Show Benefits based on benefit type for Successful Customer Registrations */}
+            {type === 'customer' && status === 'success' && (
+              sessionData?.benefitType === 'auction_repair' ? (
+                <AuctionRepairBenefits sessionData={sessionData} />
+              ) : (
+                <BrandClaimValues sessionData={sessionData} />
+              )
+            )}
 
             {/* Transaction ID for failed payments */}
             {content.isFailure && txnid && (

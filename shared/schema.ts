@@ -66,6 +66,12 @@ export const customers = pgTable("customers", {
   claimValueSlabId: integer("claim_value_slab_id"), // Reference to active slab when registered (legacy)
   // Store complete slab configuration from registration time (preserves entire rate structure)
   registrationSlabData: text("registration_slab_data"), // JSON string of complete slab structure at time of registration
+  // Dual-flow BBG system fields
+  purchaseTimingCategory: text("purchase_timing_category"), // 'within_6_months' | 'over_6_months'
+  benefitType: text("benefit_type"), // 'claim_slabs' | 'auction_repair'
+  planPrice: decimal("plan_price", { precision: 10, scale: 2 }), // Price paid for BBG plan
+  benefitsJson: text("benefits_json"), // JSON string of benefits structure
+  emailTemplateKey: text("email_template_key"), // Template key for email notifications
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -156,6 +162,12 @@ export const pendingPayments = pgTable("pending_payments", {
   paymentAmount: decimal("payment_amount", { precision: 10, scale: 2 }).notNull(),
   transactionId: text("transaction_id"), // PayU transaction ID
   sellerCode: text("seller_code"),
+  // Dual-flow BBG system fields
+  purchaseTimingCategory: text("purchase_timing_category"), // 'within_6_months' | 'over_6_months'
+  benefitType: text("benefit_type"), // 'claim_slabs' | 'auction_repair'
+  planPrice: decimal("plan_price", { precision: 10, scale: 2 }), // Price for BBG plan
+  benefitsJson: text("benefits_json"), // JSON string of benefits structure
+  emailTemplateKey: text("email_template_key"), // Template key for email notifications
   status: text("status").notNull().default('pending'), // 'pending', 'abandoned', 'completed'
   expiresAt: timestamp("expires_at").notNull(), // Payment link expiry
   createdAt: timestamp("created_at").defaultNow(),

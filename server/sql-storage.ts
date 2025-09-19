@@ -515,6 +515,38 @@ export class SqlServerStorage implements IStorage {
         BEGIN
           ALTER TABLE customers ADD claim_value_slab_id INT;
         END
+        
+        -- Add registration_slab_data column to store complete slab structure at registration time
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'registration_slab_data')
+        BEGIN
+          ALTER TABLE customers ADD registration_slab_data NVARCHAR(MAX);
+        END
+        
+        -- Add dual-flow BBG system columns
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'purchase_timing_category')
+        BEGIN
+          ALTER TABLE customers ADD purchase_timing_category NVARCHAR(50);
+        END
+        
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'benefit_type')
+        BEGIN
+          ALTER TABLE customers ADD benefit_type NVARCHAR(50);
+        END
+        
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'plan_price')
+        BEGIN
+          ALTER TABLE customers ADD plan_price DECIMAL(10,2);
+        END
+        
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'benefits_json')
+        BEGIN
+          ALTER TABLE customers ADD benefits_json NVARCHAR(MAX);
+        END
+        
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'email_template_key')
+        BEGIN
+          ALTER TABLE customers ADD email_template_key NVARCHAR(100);
+        END
       END
 
       -- Create claims table
@@ -728,6 +760,32 @@ export class SqlServerStorage implements IStorage {
         BEGIN
           ALTER TABLE pending_payments ALTER COLUMN serial_number NVARCHAR(255) NULL;
           PRINT 'Updated pending_payments.serial_number to allow NULL for regular BBG flow';
+        END
+        
+        -- Add dual-flow BBG system columns to pending_payments
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('pending_payments') AND name = 'purchase_timing_category')
+        BEGIN
+          ALTER TABLE pending_payments ADD purchase_timing_category NVARCHAR(50);
+        END
+        
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('pending_payments') AND name = 'benefit_type')
+        BEGIN
+          ALTER TABLE pending_payments ADD benefit_type NVARCHAR(50);
+        END
+        
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('pending_payments') AND name = 'plan_price')
+        BEGIN
+          ALTER TABLE pending_payments ADD plan_price DECIMAL(10,2);
+        END
+        
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('pending_payments') AND name = 'benefits_json')
+        BEGIN
+          ALTER TABLE pending_payments ADD benefits_json NVARCHAR(MAX);
+        END
+        
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('pending_payments') AND name = 'email_template_key')
+        BEGIN
+          ALTER TABLE pending_payments ADD email_template_key NVARCHAR(100);
         END
       END
 

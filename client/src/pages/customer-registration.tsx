@@ -450,6 +450,7 @@ function BuyBBGContent() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  const [purchaseTiming, setPurchaseTiming] = useState<'within6months' | 'over6months' | null>(null);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [referralCodeStatus, setReferralCodeStatus] = useState<{
     isValid: boolean | null;
@@ -836,10 +837,62 @@ function BuyBBGContent() {
     mutation.mutate(submitData);
   };
 
+  // If no purchase timing is selected, show selection screen
+  if (!purchaseTiming) {
+    return (
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-2xl mx-auto">
+          {/* Header Section */}
+          <div className="text-center mb-12">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">Buy BuyBack Guarantee</h1>
+            <p className="text-lg text-gray-600">
+              Let's start by understanding when you purchased your device
+            </p>
+          </div>
+
+          {/* Purchase Timing Selection */}
+          <Card className="shadow-xl">
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+              <CardTitle className="text-xl text-center">
+                When did you purchase your device?
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8">
+              <div className="space-y-4">
+                <Button
+                  onClick={() => setPurchaseTiming('within6months')}
+                  className="w-full h-16 text-lg bg-green-600 hover:bg-green-700"
+                  data-testid="button-within-6months"
+                >
+                  Within 6 months
+                </Button>
+                <Button
+                  onClick={() => setPurchaseTiming('over6months')}
+                  className="w-full h-16 text-lg bg-orange-600 hover:bg-orange-700"
+                  data-testid="button-over-6months"
+                >
+                  More than 6 months ago
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
       {/* Header Section */}
       <div className="text-center mb-6">
+        <Button
+          variant="outline"
+          onClick={() => setPurchaseTiming(null)}
+          className="mb-4"
+          data-testid="button-back-to-timing-selection"
+        >
+          ← Back to Purchase Timing
+        </Button>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Buy BuyBack Guarantee</h1>
         <p className="text-lg text-gray-600">
           Secure your device investment with our comprehensive BuyBack Guarantee program

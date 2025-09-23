@@ -123,7 +123,7 @@ export default function Register() {
               Device Registration
             </h1>
             <p className="text-lg text-gray-600 max-w-xl mx-auto">
-              Please select where you purchased your device
+              Please select where you purchased your plan
             </p>
           </div>
 

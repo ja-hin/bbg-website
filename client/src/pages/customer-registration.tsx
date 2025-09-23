@@ -1028,7 +1028,6 @@ function BuyBBGContent() {
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center text-lg">
               <ShoppingCart className="h-5 w-5 mr-2" />
-              Buy BBG Form
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
@@ -1037,10 +1036,6 @@ function BuyBBGContent() {
                 
                 {/* Device Details Section */}
                 <div className="space-y-4">
-                  <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
-                    <Smartphone className="h-4 w-4 mr-2" />
-                    Device Details
-                  </h3>
                   
                   <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
                     <FormField
@@ -1223,10 +1218,6 @@ function BuyBBGContent() {
 
                 {/* Customer Details Section */}
                 <div className="space-y-4">
-                  <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
-                    <User className="h-4 w-4 mr-2" />
-                    Customer Details
-                  </h3>
                   
                   <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
                     <FormField
@@ -1305,10 +1296,6 @@ function BuyBBGContent() {
 
                 {/* Verification & Seller Details Section */}
                 <div className="space-y-4">
-                  <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
-                    <CheckCircle className="h-4 w-4 mr-2" />
-                    Verification & Referral Details
-                  </h3>
                   
                   {/* OTP Verification and Referral Code in same row */}
                   <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">

@@ -1965,8 +1965,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Calculate time since BBG registration (not device purchase)
-      const registrationDate = new Date(customer.createdAt!);
+      console.log('🔍 DEBUG: Raw customer.createdAt value:', customer.createdAt);
+      console.log('🔍 DEBUG: Type of customer.createdAt:', typeof customer.createdAt);
+      
+      // Safe date parsing: handle various input formats and timezone issues
+      let registrationDate: Date;
+      if (customer.createdAt instanceof Date) {
+        registrationDate = new Date(customer.createdAt.getTime()); // Create new instance to avoid mutations
+      } else if (typeof customer.createdAt === 'string') {
+        // Parse string dates carefully
+        registrationDate = new Date(customer.createdAt);
+      } else {
+        // Convert other types to Date
+        registrationDate = new Date(customer.createdAt!);
+      }
+      
+      // Validate parsed date
+      if (isNaN(registrationDate.getTime())) {
+        console.error('❌ Invalid registration date parsed:', customer.createdAt);
+        return res.status(400).json({ message: 'Invalid registration date found' });
+      }
+      
       const currentDate = new Date();
+      
+      console.log('🔍 DEBUG: Parsed registrationDate:', registrationDate);
+      console.log('🔍 DEBUG: Parsed registrationDate ISO:', registrationDate.toISOString());
+      console.log('🔍 DEBUG: Parsed registrationDate local string:', registrationDate.toString());
+      console.log('🔍 DEBUG: Current date:', currentDate);
+      console.log('🔍 DEBUG: Current date ISO:', currentDate.toISOString());
 
       let monthsSinceRegistration =
         (currentDate.getFullYear() - registrationDate.getFullYear()) * 12;
@@ -2025,12 +2051,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const remainingMonths = waitingPeriodMonths - monthsSinceRegistration;
         
         // Proper date calculation: Safe construction to avoid month rollover issues
+        console.log('🔍 DEBUG: Calculating eligible date...');
+        console.log('🔍 DEBUG: Registration date year:', registrationDate.getFullYear());
+        console.log('🔍 DEBUG: Registration date month:', registrationDate.getMonth());
+        console.log('🔍 DEBUG: Waiting period months:', waitingPeriodMonths);
+        
         const targetMonthTotal = registrationDate.getMonth() + waitingPeriodMonths;
         const targetYear = registrationDate.getFullYear() + Math.floor(targetMonthTotal / 12);
         const targetMonth = targetMonthTotal % 12;
         const targetDay = registrationDate.getDate();
         const lastDay = new Date(targetYear, targetMonth + 1, 0).getDate();
         const eligibleDate = new Date(targetYear, targetMonth, Math.min(targetDay, lastDay));
+        
+        console.log('🔍 DEBUG: Calculated targetYear:', targetYear);
+        console.log('🔍 DEBUG: Calculated targetMonth:', targetMonth);
+        console.log('🔍 DEBUG: Calculated eligibleDate:', eligibleDate);
+        console.log('🔍 DEBUG: Eligible date ISO:', eligibleDate.toISOString());
+        
+        // Validation: ensure eligible date is reasonable (within next 5 years)
+        const currentYear = new Date().getFullYear();
+        if (eligibleDate.getFullYear() > currentYear + 5 || eligibleDate.getFullYear() < currentYear - 1) {
+          console.error('❌ INVALID ELIGIBLE DATE CALCULATED:', {
+            eligibleDate: eligibleDate.toISOString(),
+            registrationDate: registrationDate.toISOString(),
+            currentYear,
+            calculatedYear: eligibleDate.getFullYear()
+          });
+        }
 
         return res.status(400).json({
           message: `BBG claims require a ${waitingPeriodMonths}-month waiting period. You purchased BBG coverage on ${registrationDate.toLocaleDateString(

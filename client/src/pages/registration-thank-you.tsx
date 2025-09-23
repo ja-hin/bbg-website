@@ -203,49 +203,6 @@ export default function RegistrationThankYou() {
           </CardContent>
         </Card>
 
-        {/* Next Steps Card */}
-        <Card className="shadow-lg mb-8">
-          <CardHeader>
-            <CardTitle className="text-xl text-gray-900">What happens next?</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-bold text-blue-600">1</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Confirmation Sent</h3>
-                  <p className="text-gray-600 text-sm">
-                    You'll receive email and SMS confirmations with your registration details.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-bold text-blue-600">2</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">BBG Protection Active</h3>
-                  <p className="text-gray-600 text-sm">
-                    Your device is now protected under the Buy Back Guarantee program.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-bold text-blue-600">3</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Keep Your Voucher Code Safe</h3>
-                  <p className="text-gray-600 text-sm">
-                    You'll need your voucher code ({registrationData.voucherCode}) to file claims in the future.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* BBG Benefits Card */}
         <Card className="shadow-lg mb-8">

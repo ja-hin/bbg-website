@@ -52,6 +52,8 @@ type PostPurchaseRegistrationData = z.infer<typeof postPurchaseRegistrationSchem
 export default function Register() {
   const [registrationType, setRegistrationType] = useState<'acer' | 'website' | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [voucherValidated, setVoucherValidated] = useState(false);
+  const [customerInfo, setCustomerInfo] = useState<any>(null);
   const { toast } = useToast();
 
   const form = useForm<PostPurchaseRegistrationData>({
@@ -62,6 +64,34 @@ export default function Register() {
     },
   });
 
+  // Step 1: Voucher validation mutation
+  const voucherValidationMutation = useMutation({
+    mutationFn: async (voucherCode: string) => {
+      return apiRequest("/api/validate-voucher", {
+        method: "POST",
+        body: { voucherCode },
+      });
+    },
+    onSuccess: (data) => {
+      setVoucherValidated(true);
+      setCustomerInfo(data.customer);
+      toast({
+        title: "Voucher Validated!",
+        description: `Valid BBG voucher for ${data.customer.name}'s ${data.customer.brand} ${data.customer.deviceType}`,
+      });
+    },
+    onError: (error: any) => {
+      setVoucherValidated(false);
+      setCustomerInfo(null);
+      toast({
+        title: "Invalid Voucher Code",
+        description: error.message || "Please check your voucher code and try again",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Step 2: Device registration mutation
   const registrationMutation = useMutation({
     mutationFn: async (data: PostPurchaseRegistrationData) => {
       return apiRequest("/api/register", {
@@ -76,8 +106,10 @@ export default function Register() {
         description: `Your device has been registered successfully. Registration ID: ${data.registrationId}`,
       });
 
-      // Reset form
+      // Reset form and state
       form.reset();
+      setVoucherValidated(false);
+      setCustomerInfo(null);
 
       // Store success data in session storage for thank you page
       sessionStorage.setItem(
@@ -100,7 +132,28 @@ export default function Register() {
     },
   });
 
+  const handleValidateVoucher = () => {
+    const voucherCode = form.getValues("voucherCode");
+    if (!voucherCode) {
+      toast({
+        title: "Voucher Code Required",
+        description: "Please enter your BBG voucher code",
+        variant: "destructive",
+      });
+      return;
+    }
+    voucherValidationMutation.mutate(voucherCode);
+  };
+
   const onSubmit = (data: PostPurchaseRegistrationData) => {
+    if (!voucherValidated) {
+      toast({
+        title: "Voucher Not Validated",
+        description: "Please validate your voucher code first",
+        variant: "destructive",
+      });
+      return;
+    }
     registrationMutation.mutate(data);
   };
 
@@ -110,6 +163,12 @@ export default function Register() {
     } else {
       setRegistrationType(type);
     }
+  };
+
+  const handleStartOver = () => {
+    setVoucherValidated(false);
+    setCustomerInfo(null);
+    form.reset();
   };
 
   // If no registration type is selected, show selection screen
@@ -196,99 +255,173 @@ export default function Register() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-8"
               >
-                {/* BBG Registration Details */}
-                <div className="space-y-6">
-                  <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
-                    <CheckCircle className="h-4 w-4 mr-2" />
-                    BBG Registration Details
-                  </h3>
+                {/* Step 1: BBG Voucher Validation */}
+                {!voucherValidated && (
+                  <div className="space-y-6">
+                    <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
+                      <Hash className="h-4 w-4 mr-2" />
+                      Step 1: Validate BBG Voucher Code
+                    </h3>
 
-                  <div className="grid sm:grid-cols-1 md:grid-cols-1 gap-6 max-w-md mx-auto">
-                    <FormField
-                      control={form.control}
-                      name="voucherCode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center text-base">
-                            <Hash className="h-5 w-5 mr-2" />
-                            BBG Voucher Code *
-                          </FormLabel>
-                          <FormControl>
-                            <ValidatedField
-                              value={field.value}
-                              onChange={field.onChange}
-                              onBlur={field.onBlur}
-                              placeholder="Enter your BBG voucher code"
-                              validationType="name"
-                              className="h-12 text-lg"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="max-w-md mx-auto space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="voucherCode"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center text-base">
+                              <Hash className="h-5 w-5 mr-2" />
+                              BBG Voucher Code *
+                            </FormLabel>
+                            <FormControl>
+                              <ValidatedField
+                                value={field.value}
+                                onChange={field.onChange}
+                                onBlur={field.onBlur}
+                                placeholder="Enter your BBG voucher code"
+                                validationType="name"
+                                className="h-12 text-lg"
+                                disabled={voucherValidationMutation.isPending}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name="imeiSerial"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center text-base">
-                            <Smartphone className="h-5 w-5 mr-2" />
-                            IMEI / Serial Number *
-                          </FormLabel>
-                          <FormControl>
-                            <ValidatedField
-                              value={field.value}
-                              onChange={field.onChange}
-                              onBlur={field.onBlur}
-                              placeholder="Enter device IMEI or serial number"
-                              validationType="imei"
-                              className="h-12 text-lg"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                      <Button
+                        type="button"
+                        onClick={handleValidateVoucher}
+                        disabled={voucherValidationMutation.isPending}
+                        className="w-full h-12 bg-blue-600 hover:bg-blue-700"
+                        data-testid="button-validate-voucher"
+                      >
+                        {voucherValidationMutation.isPending ? (
+                          <>
+                            <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                            Validating Voucher...
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle className="h-5 w-5 mr-2" />
+                            Validate Voucher Code
+                          </>
+                        )}
+                      </Button>
+                    </div>
 
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
-                    <div className="flex items-start space-x-3">
-                      <Info className="h-5 w-5 text-blue-600 mt-0.5" />
-                      <div className="text-sm text-blue-800">
-                        <p className="font-medium mb-2">How to find your device details:</p>
-                        <ul className="space-y-1 text-xs">
-                          <li>📱 <strong>Mobile IMEI:</strong> Dial *#06# or Settings → About Phone</li>
-                          <li>💻 <strong>Laptop Serial:</strong> Sticker on bottom/back or System Info</li>
-                        </ul>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+                      <div className="flex items-start space-x-3">
+                        <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+                        <div className="text-sm text-blue-800">
+                          <p className="font-medium mb-2">Where to find your BBG voucher code:</p>
+                          <ul className="space-y-1 text-xs">
+                            <li>📧 <strong>Email:</strong> Check your BBG purchase confirmation email</li>
+                            <li>📱 <strong>SMS:</strong> Sent to your registered mobile number</li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
 
-                {/* Submit Button */}
-                <div className="flex justify-center pt-6">
-                  <Button
-                    type="submit"
-                    size="lg"
-                    disabled={registrationMutation.isPending}
-                    className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg shadow-lg transform transition hover:scale-105"
-                    data-testid="button-submit-registration"
-                  >
-                    {registrationMutation.isPending ? (
-                      <>
-                        <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                        Registering Device...
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="h-5 w-5 mr-2" />
-                        Register Device
-                      </>
-                    )}
-                  </Button>
-                </div>
+                {/* Step 2: Customer Info & Device Registration */}
+                {voucherValidated && customerInfo && (
+                  <div className="space-y-6">
+                    {/* Customer Information Display */}
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
+                      <div className="flex items-start space-x-3">
+                        <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+                        <div className="text-sm text-green-800">
+                          <p className="font-medium mb-2">✅ Valid BBG Voucher Code</p>
+                          <div className="space-y-1 text-xs">
+                            <p><strong>Customer:</strong> {customerInfo.name}</p>
+                            <p><strong>Device:</strong> {customerInfo.brand} {customerInfo.deviceType}</p>
+                            <p><strong>Voucher:</strong> {customerInfo.voucherCode}</p>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={handleStartOver}
+                            className="mt-2 text-xs"
+                          >
+                            Use Different Voucher Code
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
+                      <Smartphone className="h-4 w-4 mr-2" />
+                      Step 2: Enter Device IMEI/Serial Number
+                    </h3>
+
+                    <div className="max-w-md mx-auto">
+                      <FormField
+                        control={form.control}
+                        name="imeiSerial"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center text-base">
+                              <Smartphone className="h-5 w-5 mr-2" />
+                              IMEI / Serial Number *
+                            </FormLabel>
+                            <FormControl>
+                              <ValidatedField
+                                value={field.value}
+                                onChange={field.onChange}
+                                onBlur={field.onBlur}
+                                placeholder="Enter device IMEI or serial number"
+                                validationType="imei"
+                                className="h-12 text-lg"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+                      <div className="flex items-start space-x-3">
+                        <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+                        <div className="text-sm text-blue-800">
+                          <p className="font-medium mb-2">How to find your device details:</p>
+                          <ul className="space-y-1 text-xs">
+                            <li>📱 <strong>Mobile IMEI:</strong> Dial *#06# or Settings → About Phone</li>
+                            <li>💻 <strong>Laptop Serial:</strong> Sticker on bottom/back or System Info</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Submit Button - Only show when voucher is validated */}
+                {voucherValidated && (
+                  <div className="flex justify-center pt-6">
+                    <Button
+                      type="submit"
+                      size="lg"
+                      disabled={registrationMutation.isPending}
+                      className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg shadow-lg transform transition hover:scale-105"
+                      data-testid="button-submit-registration"
+                    >
+                      {registrationMutation.isPending ? (
+                        <>
+                          <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                          Registering Device...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="h-5 w-5 mr-2" />
+                          Complete Device Registration
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                )}
               </form>
             </Form>
           </CardContent>

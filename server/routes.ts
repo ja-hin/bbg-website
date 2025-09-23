@@ -1659,6 +1659,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Validate BBG Voucher Code (Step 1 of registration)
+  app.post("/api/validate-voucher", async (req, res) => {
+    try {
+      console.log("BBG voucher validation request received");
+      
+      const { voucherCode } = req.body;
+      
+      if (!voucherCode) {
+        return res.status(400).json({ 
+          message: "BBG voucher code is required" 
+        });
+      }
+
+      await db.connectDB();
+      
+      // Check if voucher code exists in customers table (valid BBG purchase)
+      const validVoucher = await db.pool.request()
+        .input('voucherCode', voucherCode)
+        .query(`
+          SELECT id, name, device_type, brand, voucher_code 
+          FROM customers 
+          WHERE voucher_code = @voucherCode
+        `);
+
+      if (validVoucher.recordset.length === 0) {
+        return res.status(404).json({ 
+          message: "Invalid BBG voucher code. Please check your voucher code and try again.",
+          valid: false
+        });
+      }
+
+      // Check if this voucher has already been used for device registration
+      const existingRegistration = await db.pool.request()
+        .input('voucherCode', voucherCode)
+        .query(`
+          SELECT registration_id FROM device_registrations 
+          WHERE voucher_code = @voucherCode
+        `);
+
+      if (existingRegistration.recordset.length > 0) {
+        return res.status(400).json({ 
+          message: `This BBG voucher code has already been used for device registration.`,
+          valid: false,
+          alreadyRegistered: true
+        });
+      }
+
+      // Voucher is valid and not yet used for registration
+      const customer = validVoucher.recordset[0];
+      res.status(200).json({
+        message: "BBG voucher code is valid!",
+        valid: true,
+        customer: {
+          name: customer.name,
+          deviceType: customer.device_type,
+          brand: customer.brand,
+          voucherCode: customer.voucher_code
+        }
+      });
+
+    } catch (error: any) {
+      console.error("Voucher validation error:", error);
+      res.status(500).json({ 
+        message: "Failed to validate voucher code. Please try again.",
+        valid: false
+      });
+    }
+  });
+
   // Post-Purchase Device Registration (FormData)
   app.post("/api/register", async (req, res) => {
     try {
@@ -1679,8 +1748,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Check if BBG voucher code is already registered
       await db.connectDB();
+      
+      // First, validate that the voucher code exists (valid BBG purchase)
+      const validVoucher = await db.pool.request()
+        .input('voucherCode', formData.voucherCode)
+        .query(`
+          SELECT id, name, device_type, brand 
+          FROM customers 
+          WHERE voucher_code = @voucherCode
+        `);
+
+      if (validVoucher.recordset.length === 0) {
+        return res.status(404).json({ 
+          message: "Invalid BBG voucher code. Please check your voucher code and try again." 
+        });
+      }
+
+      // Check if BBG voucher code is already registered
       const existingRegistration = await db.pool.request()
         .input('voucherCode', formData.voucherCode)
         .query(`

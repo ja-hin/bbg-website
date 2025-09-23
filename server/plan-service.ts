@@ -68,12 +68,14 @@ export function getPlanFor(deviceType: string, dateOfPurchase: string, priceSett
       benefits
     };
   } else {
-    // Auction + Repair benefits flow
+    // Auction + Repair benefits flow - use provided price settings or defaults
     const isLaptop = deviceType === 'laptop';
     const auctionValue = isLaptop ? 799 : 599;
     const repairValue = isLaptop ? 799 : 599;
     const totalValue = auctionValue + repairValue;
-    const planPrice = isLaptop ? 799 : 499;
+    const planPrice = isLaptop 
+      ? (priceSettings?.laptopPrice || 799) 
+      : (priceSettings?.mobilePrice || 499);
     
     const benefits: AuctionRepairBenefits = {
       auctionService: {

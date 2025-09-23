@@ -1701,14 +1701,60 @@ export class SqlServerStorage implements IStorage {
   }
 
   async getCustomerByVoucherCode(voucherCode: string): Promise<Customer | undefined> {
-    await db.connectDB();
-    const query = `SELECT * FROM customers WHERE voucher_code = @voucherCode`;
+    console.log(`🔍 DEBUG: Looking up customer with voucher code: "${voucherCode}"`);
     
-    const request = db.pool.request();
-    request.input('voucherCode', sql.NVarChar, voucherCode);
-    
-    const result = await request.query(query);
-    return result.recordset.length > 0 ? this.mapCustomerFromDb(result.recordset[0]) : undefined;
+    try {
+      await db.connectDB();
+      const query = `SELECT * FROM customers WHERE voucher_code = @voucherCode`;
+      
+      console.log(`🔍 DEBUG: Executing SQL query: ${query}`);
+      console.log(`🔍 DEBUG: Query parameter - voucherCode: "${voucherCode}"`);
+      
+      const request = db.pool.request();
+      request.input('voucherCode', sql.NVarChar, voucherCode);
+      
+      const result = await request.query(query);
+      
+      console.log(`🔍 DEBUG: Query result - recordset length: ${result.recordset.length}`);
+      
+      if (result.recordset.length > 0) {
+        console.log(`🔍 DEBUG: Found customer row:`, {
+          id: result.recordset[0].id,
+          voucher_code: result.recordset[0].voucher_code,
+          name: result.recordset[0].name,
+          created_at: result.recordset[0].created_at,
+          purchase_date: result.recordset[0].purchase_date,
+          registration_source: result.recordset[0].registration_source
+        });
+        
+        const mappedCustomer = this.mapCustomerFromDb(result.recordset[0]);
+        console.log(`🔍 DEBUG: Mapped customer:`, {
+          id: mappedCustomer.id,
+          voucherCode: mappedCustomer.voucherCode,
+          name: mappedCustomer.name,
+          createdAt: mappedCustomer.createdAt,
+          dateOfPurchase: mappedCustomer.dateOfPurchase,
+          registrationSource: mappedCustomer.registrationSource
+        });
+        
+        return mappedCustomer;
+      } else {
+        console.log(`🔍 DEBUG: No customer found for voucher code: "${voucherCode}"`);
+        
+        // Let's also try a case-insensitive search to debug
+        const debugQuery = `SELECT voucher_code FROM customers WHERE UPPER(voucher_code) = UPPER(@voucherCode)`;
+        const debugRequest = db.pool.request();
+        debugRequest.input('voucherCode', sql.NVarChar, voucherCode);
+        const debugResult = await debugRequest.query(debugQuery);
+        
+        console.log(`🔍 DEBUG: Case-insensitive search result:`, debugResult.recordset);
+        
+        return undefined;
+      }
+    } catch (error) {
+      console.error(`🔍 DEBUG: Error in getCustomerByVoucherCode:`, error);
+      throw error;
+    }
   }
 
   async getCustomersBySellerCode(sellerCode: string): Promise<Customer[]> {
@@ -2006,13 +2052,14 @@ export class SqlServerStorage implements IStorage {
       brand: row.brand,
       modelName: row.model_name,
       invoiceValue: parseFloat(row.invoice_value),
-      dateOfPurchase: row.date_of_purchase,
+      dateOfPurchase: row.purchase_date, // Fixed: was row.date_of_purchase, should be row.purchase_date
       sellerCode: row.seller_code,
       voucherCode: row.voucher_code,
       paymentIntentId: row.payment_intent_id,
       isVerified: Boolean(row.is_verified),
       claimValueSlabId: row.claim_value_slab_id || null,
       registrationSlabData: row.registration_slab_data || null,
+      registrationSource: row.registration_source || 'regular', // Fixed: missing mapping for registration_source
       createdAt: row.created_at
     };
   }

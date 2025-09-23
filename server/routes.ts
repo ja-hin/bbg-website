@@ -705,20 +705,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let finalAmount = 0;
 
       try {
-        // Get current price settings for plan calculation
+        // Get base price settings
         const priceSettings = await storage.getBbgPriceSettings();
-        const prices = priceSettings ? {
-          laptopPrice: priceSettings.laptopPrice ?? (priceSettings as any).laptop,
-          mobilePrice: priceSettings.mobilePrice ?? (priceSettings as any).mobile
-        } : undefined;
+        let laptopPrice = priceSettings?.laptopPrice || 299;
+        let mobilePrice = priceSettings?.mobilePrice || 99;
 
-        // Always calculate plan using server-side logic
-        planDetails = getPlanFor(deviceType, dateOfPurchase, prices);
-        console.log('📊 PayU Plan calculated:', planDetails);
-
-        let basePrice = planDetails.planPrice;
-
-        // Apply referral discount if code provided
+        // Apply referral discount to base prices (same logic as /api/bbg-prices endpoint)
         if (referralCode) {
           try {
             const referralPartner = await storage.getDistributorBySellerCode(referralCode);
@@ -726,21 +718,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
               const discountSettings = await storage.getReferralDiscountSettings();
               
               if (discountSettings && discountSettings.isActive && discountSettings.discountValue > 0) {
-                let discount = 0;
+                let laptopDiscount = 0;
+                let mobileDiscount = 0;
+
                 if (discountSettings.discountType === 'percentage') {
-                  discount = (basePrice * discountSettings.discountValue) / 100;
+                  laptopDiscount = (laptopPrice * discountSettings.discountValue) / 100;
+                  mobileDiscount = (mobilePrice * discountSettings.discountValue) / 100;
                 } else if (discountSettings.discountType === 'flat') {
-                  discount = Math.min(discountSettings.discountValue, basePrice);
+                  laptopDiscount = Math.min(discountSettings.discountValue, laptopPrice);
+                  mobileDiscount = Math.min(discountSettings.discountValue, mobilePrice);
                 }
-                basePrice = Math.max(0, basePrice - discount);
+
+                // Apply discounts (ensure prices don't go below 0)
+                laptopPrice = Math.max(0, laptopPrice - laptopDiscount);
+                mobilePrice = Math.max(0, mobilePrice - mobileDiscount);
+                
+                console.log('🎯 PayU Referral discount applied:', {
+                  discountType: discountSettings.discountType,
+                  discountValue: discountSettings.discountValue,
+                  originalPrices: { laptop: priceSettings?.laptopPrice || 299, mobile: priceSettings?.mobilePrice || 99 },
+                  discountedPrices: { laptop: laptopPrice, mobile: mobilePrice }
+                });
               }
             }
           } catch (discountError) {
             console.error("Error applying referral discount in PayU:", discountError);
           }
         }
-        
-        finalAmount = Math.round(basePrice);
+
+        // Use discounted prices for plan calculation
+        const discountedPrices = {
+          laptopPrice: Math.round(laptopPrice),
+          mobilePrice: Math.round(mobilePrice)
+        };
+
+        // Calculate plan using discounted prices
+        planDetails = getPlanFor(deviceType, dateOfPurchase, discountedPrices);
+        console.log('📊 PayU Plan calculated with discounted prices:', planDetails);
+
+        finalAmount = planDetails.planPrice;
         console.log('💰 PayU Final amount calculated:', { originalPrice: planDetails.planPrice, finalAmount, referralCode });
       } catch (planError) {
         console.error("Error calculating BBG plan for PayU payment:", planError);

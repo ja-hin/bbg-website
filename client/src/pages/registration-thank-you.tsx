@@ -307,7 +307,7 @@ export default function RegistrationThankYou() {
                 <Mail className="h-8 w-8 text-blue-600" />
                 <div>
                   <p className="font-semibold text-gray-900">Email Support</p>
-                  <p className="text-sm text-gray-600">support@xtracover.com</p>
+                  <p className="text-sm text-gray-600">contactus@xtracover.com</p>
                 </div>
               </div>
               <div className="flex flex-col items-center space-y-2">

@@ -215,7 +215,7 @@ export class TemplateService {
   <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
     <p style="color: #9ca3af; font-size: 14px;">
       <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
-      For support, contact us at support@xtracover.com
+      For support, contact us at contactus@xtracover.com
     </p>
   </div>
 </div>
@@ -511,7 +511,7 @@ export class TemplateService {
   <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
     <p style="color: #9ca3af; font-size: 14px;">
       <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
-      For support, contact us at support@xtracover.com
+      For support, contact us at contactus@xtracover.com
     </p>
   </div>
 </div>
@@ -603,7 +603,7 @@ export class TemplateService {
   <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
     <p style="color: #9ca3af; font-size: 14px;">
       <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
-      For support, contact us at support@xtracover.com
+      For support, contact us at contactus@xtracover.com
     </p>
   </div>
 </div>

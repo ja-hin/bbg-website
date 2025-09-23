@@ -871,7 +871,7 @@ export default function ThankYou() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                 <div className="text-center">
                   <div className="text-xtra-primary font-semibold">Email Support</div>
-                  <div className="text-gray-600">support@xtracover.com</div>
+                  <div className="text-gray-600">contactus@xtracover.com</div>
                 </div>
                 <div className="text-center">
                   <div className="text-xtra-primary font-semibold">Phone Support</div>

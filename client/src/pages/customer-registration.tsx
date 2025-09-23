@@ -46,8 +46,8 @@ import {
 // Initialize Stripe - will be null if key not configured
 // Stripe initialization removed - using PayU only
 
-// Extended customer schema with validation
-const customerSchema = z.object({
+// Extended customer schema with validation (schema will be created dynamically with purchase timing validation)
+const createCustomerSchema = (purchaseTiming: 'within6months' | 'over6months' | null) => z.object({
   // Customer Details
   name: z.string().min(2, "Name must be at least 2 characters"),
   contact: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
@@ -60,7 +60,73 @@ const customerSchema = z.object({
   brand: z.string().min(2, "Brand is required"),
   modelName: z.string().min(2, "Model name is required"),
   invoiceValue: z.string().min(1, "Device purchase price (inclusive of GST) is required"),
-  dateOfPurchase: z.string().min(10, "Date of purchase is required"),
+  dateOfPurchase: z.string()
+    .min(10, "Date of purchase is required")
+    .refine((dateStr) => {
+      const purchaseDate = new Date(dateStr);
+      const currentDate = new Date();
+      
+      // Check for valid date
+      if (isNaN(purchaseDate.getTime())) {
+        return false;
+      }
+      
+      // Check if date is not in the future
+      if (purchaseDate > currentDate) {
+        return false;
+      }
+      
+      // If no purchase timing selected, skip specific validation
+      if (!purchaseTiming) {
+        return true;
+      }
+      
+      // Calculate days difference for validation
+      const timeDifference = currentDate.getTime() - purchaseDate.getTime();
+      const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+      const sixMonthsInDays = 183; // 6 months ≈ 183 days
+      
+      if (purchaseTiming === 'within6months') {
+        return daysDifference <= sixMonthsInDays;
+      } else if (purchaseTiming === 'over6months') {
+        return daysDifference > sixMonthsInDays;
+      }
+      
+      return true;
+    }, (dateStr) => {
+      const purchaseDate = new Date(dateStr);
+      const currentDate = new Date();
+      
+      // Check for valid date format
+      if (isNaN(purchaseDate.getTime())) {
+        return { message: "Please enter a valid date" };
+      }
+      
+      // Check if date is in the future
+      if (purchaseDate > currentDate) {
+        return { message: "Purchase date cannot be in the future" };
+      }
+      
+      // If no purchase timing selected, skip specific validation
+      if (!purchaseTiming) {
+        return { message: "Valid date required" };
+      }
+      
+      // Calculate days difference for validation
+      const timeDifference = currentDate.getTime() - purchaseDate.getTime();
+      const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+      const sixMonthsInDays = 183; // 6 months ≈ 183 days
+      
+      if (purchaseTiming === 'within6months' && daysDifference > sixMonthsInDays) {
+        const monthsOld = Math.floor(daysDifference / 30.44); // Average days per month
+        return { message: `Device is ${monthsOld} months old. For devices older than 6 months, please select "More than 6 months ago" option.` };
+      } else if (purchaseTiming === 'over6months' && daysDifference <= sixMonthsInDays) {
+        const monthsOld = Math.floor(daysDifference / 30.44);
+        return { message: `Device is only ${monthsOld} months old. For devices less than 6 months old, please select "Within 6 months" option.` };
+      }
+      
+      return { message: "Valid date required" };
+    }),
   // Seller Details
   sellerCode: z.string().optional(),
   // OTP verification
@@ -68,6 +134,9 @@ const customerSchema = z.object({
   // Terms agreement
   agreeToTerms: z.boolean().refine(val => val === true, "You must agree to the terms")
 });
+
+// Base schema without purchase timing validation (for initial form setup)
+const customerSchema = createCustomerSchema(null);
 
 type CustomerFormData = z.infer<typeof customerSchema>;
 
@@ -476,7 +545,7 @@ function BuyBBGContent() {
   });
 
   const form = useForm<CustomerFormData>({
-    resolver: zodResolver(customerSchema),
+    resolver: zodResolver(createCustomerSchema(purchaseTiming)),
     defaultValues: {
       name: "",
       contact: "",
@@ -492,6 +561,14 @@ function BuyBBGContent() {
       agreeToTerms: false
     }
   });
+
+  // Trigger validation when purchase timing changes
+  useEffect(() => {
+    if (purchaseTiming) {
+      // Trigger validation for the dateOfPurchase field when timing changes
+      form.trigger('dateOfPurchase');
+    }
+  }, [purchaseTiming, form]);
 
   // Watch referral code to fetch discounted prices
   const referralCode = form.watch("sellerCode");

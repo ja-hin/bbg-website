@@ -251,10 +251,6 @@ export default function AcerBBG() {
               >
                 {/* Device Details Section */}
                 <div className="space-y-4">
-                  <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
-                    <Smartphone className="h-4 w-4 mr-2" />
-                    Device Details
-                  </h3>
 
                   <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
                     <FormField
@@ -387,10 +383,6 @@ export default function AcerBBG() {
 
                 {/* Customer Details Section */}
                 <div className="space-y-4">
-                  <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
-                    <User className="h-4 w-4 mr-2" />
-                    Customer Details
-                  </h3>
 
                   <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
                     <FormField

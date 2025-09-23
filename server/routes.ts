@@ -2023,8 +2023,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         monthsSinceRegistration < waitingPeriodMonths
       ) {
         const remainingMonths = waitingPeriodMonths - monthsSinceRegistration;
-        const eligibleDate = new Date(registrationDate);
-        eligibleDate.setMonth(eligibleDate.getMonth() + waitingPeriodMonths);
+        
+        // Proper date calculation: Safe construction to avoid month rollover issues
+        const targetMonthTotal = registrationDate.getMonth() + waitingPeriodMonths;
+        const targetYear = registrationDate.getFullYear() + Math.floor(targetMonthTotal / 12);
+        const targetMonth = targetMonthTotal % 12;
+        const targetDay = registrationDate.getDate();
+        const lastDay = new Date(targetYear, targetMonth + 1, 0).getDate();
+        const eligibleDate = new Date(targetYear, targetMonth, Math.min(targetDay, lastDay));
 
         return res.status(400).json({
           message: `BBG claims require a ${waitingPeriodMonths}-month waiting period. You purchased BBG coverage on ${registrationDate.toLocaleDateString(

@@ -130,41 +130,52 @@ export default function ClaimBBG() {
       // Check if this is an eligibility error (not a voucher validation error)
       // Look for waiting period or device age eligibility issues
       if (error.eligible === false || error.minimumWaitMonths || error.deviceAge !== undefined || isWaitingPeriodError) {
+        // Only set eligibility error if backend provides waiting period or eligibility data
         setEligibilityError({
           message: error.message,
           eligible: error.eligible !== undefined ? error.eligible : false,
           deviceAge: error.deviceAge,
           minimumAge: error.minimumAge,
           maximumAge: error.maximumAge,
-          registrationDate: error.registrationDate || "2025-08-17T21:42:31.183Z",
-          monthsSinceRegistration: error.monthsSinceRegistration !== undefined ? error.monthsSinceRegistration : 0,
-          minimumWaitMonths: error.minimumWaitMonths !== undefined ? error.minimumWaitMonths : 3,
-          registrationSource: error.registrationSource || "regular",
-          eligibleDate: error.eligibleDate || "2025-11-17T21:42:31.183Z",
-          remainingMonths: error.remainingMonths !== undefined ? error.remainingMonths : 3
+          // Only include waiting period fields if backend provides them (no fallbacks)
+          registrationDate: error.registrationDate,
+          monthsSinceRegistration: error.monthsSinceRegistration,
+          minimumWaitMonths: error.minimumWaitMonths,
+          registrationSource: error.registrationSource,
+          eligibleDate: error.eligibleDate,
+          remainingMonths: error.remainingMonths
         });
       } else {
         setEligibilityError(null);
-        // Clean up the error message for toast display
-        const cleanMessage = (() => {
-          const errorMsg = error.message || "Please check your voucher code and try again.";
-          // Check if it's a JSON string being displayed as error
-          if (typeof errorMsg === 'string' && errorMsg.includes('{"message":')) {
-            try {
-              const parsed = JSON.parse(errorMsg);
-              return parsed.message || "Please check your voucher code and try again.";
-            } catch {
-              return "Please check your voucher code and try again.";
-            }
-          }
-          return errorMsg;
-        })();
         
-        toast({
-          title: "Invalid BBG Voucher Code",
-          description: cleanMessage,
-          variant: "destructive",
-        });
+        // Handle unregistered voucher specific error
+        if (error.code === "UNREGISTERED_VOUCHER") {
+          setEligibilityError({
+            message: error.message,
+            eligible: false
+          });
+        } else {
+          // Clean up the error message for toast display
+          const cleanMessage = (() => {
+            const errorMsg = error.message || "Please check your voucher code and try again.";
+            // Check if it's a JSON string being displayed as error
+            if (typeof errorMsg === 'string' && errorMsg.includes('{"message":')) {
+              try {
+                const parsed = JSON.parse(errorMsg);
+                return parsed.message || "Please check your voucher code and try again.";
+              } catch {
+                return "Please check your voucher code and try again.";
+              }
+            }
+            return errorMsg;
+          })();
+          
+          toast({
+            title: "Invalid BBG Voucher Code",
+            description: cleanMessage,
+            variant: "destructive",
+          });
+        }
       }
     }
   });
@@ -415,25 +426,25 @@ export default function ClaimBBG() {
                       <div>
                         <h4 className="font-semibold text-orange-900 mb-2">Claim Not Eligible</h4>
                         <p className="text-orange-800 mb-2">
-                          {eligibilityError.minimumWaitMonths ? (
-                            // Waiting period error
+                          {eligibilityError.minimumWaitMonths && eligibilityError.registrationDate && eligibilityError.eligibleDate ? (
+                            // Only show waiting period message if backend provides all required fields
                             (() => {
-                              const regDate = eligibilityError.registrationDate ? new Date(eligibilityError.registrationDate).toLocaleDateString('en-IN', { 
+                              const regDate = new Date(eligibilityError.registrationDate).toLocaleDateString('en-IN', { 
                                 year: 'numeric', 
                                 month: 'long', 
                                 day: 'numeric' 
-                              }) : '';
-                              const eligibleDate = eligibilityError.eligibleDate ? new Date(eligibilityError.eligibleDate).toLocaleDateString('en-IN', { 
+                              });
+                              const eligibleDate = new Date(eligibilityError.eligibleDate).toLocaleDateString('en-IN', { 
                                 year: 'numeric', 
                                 month: 'long', 
                                 day: 'numeric' 
-                              }) : '';
+                              });
                               const waitingPeriod = eligibilityError.minimumWaitMonths === 10 ? '10-month' : '3-month';
                               
-                              return `BBG claims require a ${waitingPeriod} waiting period. You purchased BBG coverage on ${regDate}. You can file a claim starting ${eligibleDate}.`;
+                              return `BBG claims require a ${waitingPeriod} waiting period. You registered your device on ${regDate}. You can file a claim starting ${eligibleDate}.`;
                             })()
                           ) : (
-                            // Device age or other eligibility issues
+                            // Show backend message for other eligibility issues or unregistered vouchers
                             eligibilityError.message
                           )}
                         </p>

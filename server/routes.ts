@@ -1918,6 +1918,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { voucherCode } = req.body;
       console.log("Claim check for voucher code:", voucherCode);
 
+      // Step 1: Check if voucher exists (BBG purchase)
       const customer = await storage.getCustomerByVoucherCode(voucherCode);
       console.log("Customer found:", customer ? "Yes" : "No");
       console.log("Customer data:", customer);
@@ -1930,6 +1931,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .status(400)
           .json({ message: "Customer registration not yet verified" });
       }
+
+      // Step 2: Check if BBG voucher has been registered for device coverage
+      await db.connectDB();
+      const deviceRegistration = await db.pool.request()
+        .input('voucherCode', voucherCode)
+        .query(`
+          SELECT registration_id, imei_serial, created_at 
+          FROM device_registrations 
+          WHERE voucher_code = @voucherCode
+        `);
+
+      if (deviceRegistration.recordset.length === 0) {
+        return res.status(400).json({
+          message: "Your BBG voucher is not registered for device coverage. Please complete device registration before claiming.",
+          eligible: false,
+          code: "UNREGISTERED_VOUCHER"
+        });
+      }
+
+      const deviceRegInfo = deviceRegistration.recordset[0];
+      console.log("Device registration found:", deviceRegInfo);
 
       // Check if customer has auction/repair benefits instead of claim coverage
       if (customer.benefitType === 'auction_repair') {
@@ -2049,26 +2071,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         waitingPeriodMonths = 3;
       }
 
-      // Calculate time since BBG registration (not device purchase)
-      console.log('🔍 DEBUG: Raw customer.createdAt value:', customer.createdAt);
-      console.log('🔍 DEBUG: Type of customer.createdAt:', typeof customer.createdAt);
+      // Calculate time since DEVICE REGISTRATION (not BBG purchase)
+      console.log('🔍 DEBUG: Raw device registration created_at value:', deviceRegInfo.created_at);
+      console.log('🔍 DEBUG: Type of device registration created_at:', typeof deviceRegInfo.created_at);
       
-      // Safe date parsing: handle various input formats and timezone issues
+      // Safe date parsing: use device registration date for waiting period calculation
       let registrationDate: Date;
-      if (customer.createdAt instanceof Date) {
-        registrationDate = new Date(customer.createdAt.getTime()); // Create new instance to avoid mutations
-      } else if (typeof customer.createdAt === 'string') {
+      if (deviceRegInfo.created_at instanceof Date) {
+        registrationDate = new Date(deviceRegInfo.created_at.getTime()); // Create new instance to avoid mutations
+      } else if (typeof deviceRegInfo.created_at === 'string') {
         // Parse string dates carefully
-        registrationDate = new Date(customer.createdAt);
+        registrationDate = new Date(deviceRegInfo.created_at);
       } else {
         // Convert other types to Date
-        registrationDate = new Date(customer.createdAt!);
+        registrationDate = new Date(deviceRegInfo.created_at!);
       }
       
       // Validate parsed date
       if (isNaN(registrationDate.getTime())) {
-        console.error('❌ Invalid registration date parsed:', customer.createdAt);
-        return res.status(400).json({ message: 'Invalid registration date found' });
+        console.error('❌ Invalid device registration date parsed:', deviceRegInfo.created_at);
+        return res.status(400).json({ message: 'Invalid device registration date found' });
       }
       
       const currentDate = new Date();
@@ -2165,7 +2187,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
 
         return res.status(400).json({
-          message: `BBG claims require a ${waitingPeriodMonths}-month waiting period. You purchased BBG coverage on ${registrationDate.toLocaleDateString(
+          message: `BBG claims require a ${waitingPeriodMonths}-month waiting period. You registered your device on ${registrationDate.toLocaleDateString(
             "en-IN",
             {
               day: "numeric",

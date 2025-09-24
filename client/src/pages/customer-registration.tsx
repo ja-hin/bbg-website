@@ -546,6 +546,7 @@ function BuyBBGContent() {
 
   const form = useForm<CustomerFormData>({
     resolver: zodResolver(createCustomerSchema(purchaseTiming)),
+    mode: "onTouched", // Only validate after user interacts with fields
     defaultValues: {
       name: "",
       contact: "",
@@ -562,13 +563,8 @@ function BuyBBGContent() {
     }
   });
 
-  // Trigger validation when purchase timing changes
-  useEffect(() => {
-    if (purchaseTiming) {
-      // Trigger validation for the dateOfPurchase field when timing changes
-      form.trigger('dateOfPurchase');
-    }
-  }, [purchaseTiming, form]);
+  // Removed automatic validation trigger to prevent red text on initial load
+  // Validation will now only occur when user interacts with fields (mode: "onTouched")
 
   // Watch referral code to fetch discounted prices
   const referralCode = form.watch("sellerCode");

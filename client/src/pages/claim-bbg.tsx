@@ -148,8 +148,8 @@ export default function ClaimBBG() {
       } else {
         setEligibilityError(null);
         
-        // Handle unregistered voucher specific error
-        if (error.code === "UNREGISTERED_VOUCHER") {
+        // Handle specific validation errors
+        if (error.code === "UNREGISTERED_VOUCHER" || error.code === "INVALID_REGISTRATION_ORDER" || error.code === "SLAB_NOT_STARTED" || error.code === "WAITING_PERIOD_NOT_MET") {
           setEligibilityError({
             message: error.message,
             eligible: false

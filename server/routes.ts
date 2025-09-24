@@ -1944,7 +1944,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (deviceRegistration.recordset.length === 0) {
         return res.status(400).json({
-          message: "Your BBG voucher is not registered for device coverage. Please complete device registration before claiming.",
+          message: "Your device is not registered yet",
           eligible: false,
           code: "UNREGISTERED_VOUCHER"
         });
@@ -1952,6 +1952,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const deviceRegInfo = deviceRegistration.recordset[0];
       console.log("Device registration found:", deviceRegInfo);
+
+      // Validation 1: Device should be registered after BBG purchase
+      const bbgPurchaseDate = new Date(customer.createdAt);
+      const deviceRegistrationDate = new Date(deviceRegInfo.created_at);
+      
+      if (deviceRegistrationDate < bbgPurchaseDate) {
+        console.log('❌ Device registered before BBG purchase');
+        return res.status(400).json({
+          message: "Your device is not registered yet",
+          eligible: false,
+          code: "INVALID_REGISTRATION_ORDER"
+        });
+      }
+      
+      console.log('✅ Validation 1 passed: Device registered after BBG purchase');
 
       // Check if customer has auction/repair benefits instead of claim coverage
       if (customer.benefitType === 'auction_repair') {
@@ -2071,26 +2086,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         waitingPeriodMonths = 3;
       }
 
-      // Calculate time since DEVICE REGISTRATION (not BBG purchase)
-      console.log('🔍 DEBUG: Raw device registration created_at value:', deviceRegInfo.created_at);
-      console.log('🔍 DEBUG: Type of device registration created_at:', typeof deviceRegInfo.created_at);
+      // Validation 2: Calculate time since BBG PURCHASE (not device registration)
+      console.log('🔍 DEBUG: Raw BBG purchase created_at value:', customer.createdAt);
+      console.log('🔍 DEBUG: Type of BBG purchase created_at:', typeof customer.createdAt);
       
-      // Safe date parsing: use device registration date for waiting period calculation
+      // Safe date parsing: use BBG purchase date for waiting period calculation
       let registrationDate: Date;
-      if (deviceRegInfo.created_at instanceof Date) {
-        registrationDate = new Date(deviceRegInfo.created_at.getTime()); // Create new instance to avoid mutations
-      } else if (typeof deviceRegInfo.created_at === 'string') {
+      if (customer.createdAt instanceof Date) {
+        registrationDate = new Date(customer.createdAt.getTime()); // Create new instance to avoid mutations
+      } else if (typeof customer.createdAt === 'string') {
         // Parse string dates carefully
-        registrationDate = new Date(deviceRegInfo.created_at);
+        registrationDate = new Date(customer.createdAt);
       } else {
         // Convert other types to Date
-        registrationDate = new Date(deviceRegInfo.created_at!);
+        registrationDate = new Date(customer.createdAt!);
       }
       
       // Validate parsed date
       if (isNaN(registrationDate.getTime())) {
-        console.error('❌ Invalid device registration date parsed:', deviceRegInfo.created_at);
-        return res.status(400).json({ message: 'Invalid device registration date found' });
+        console.error('❌ Invalid BBG purchase date parsed:', customer.createdAt);
+        return res.status(400).json({ message: 'Invalid BBG purchase date found' });
       }
       
       const currentDate = new Date();
@@ -2187,22 +2202,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
 
         return res.status(400).json({
-          message: `BBG claims require a ${waitingPeriodMonths}-month waiting period. You registered your device on ${registrationDate.toLocaleDateString(
-            "en-IN",
-            {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            },
-          )}. You can file a claim starting ${eligibleDate.toLocaleDateString(
-            "en-IN",
-            {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            },
-          )}.`,
+          message: "You are not eligible until the waiting period has passed",
           eligible: false,
+          code: "WAITING_PERIOD_NOT_MET",
           registrationDate: registrationDate.toISOString(),
           monthsSinceRegistration: monthsSinceRegistration,
           minimumWaitMonths: waitingPeriodMonths,
@@ -2212,11 +2214,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Validation 3: Check if claim value slab period has started
+      // Calculate device age from purchase date
+      const purchaseDateForAge = new Date(customer.dateOfPurchase || customer.createdAt!);
+      let deviceAgeInMonths = (currentDate.getFullYear() - purchaseDateForAge.getFullYear()) * 12;
+      deviceAgeInMonths += currentDate.getMonth() - purchaseDateForAge.getMonth();
+      
+      if (currentDate.getDate() < purchaseDateForAge.getDate()) {
+        deviceAgeInMonths--;
+      }
+
+      // Check if device has reached the minimum age for claims (typically 4 months)
+      const minimumClaimAge = 4; // You can make this configurable later
+      if (deviceAgeInMonths < minimumClaimAge) {
+        console.log(`❌ Device age ${deviceAgeInMonths} months is below minimum claim age of ${minimumClaimAge} months`);
+        return res.status(400).json({
+          message: "You cannot claim until the claim value slab starts",
+          eligible: false,
+          deviceAgeInMonths,
+          minimumClaimAge,
+          code: "SLAB_NOT_STARTED"
+        });
+      }
+
+      console.log('✅ Validation 3 passed: Claim value slab period has started');
+
       console.log("BBG Registration eligibility check:", {
         registrationSource,
         isAcerBBG,
         registrationDate: registrationDate.toISOString(),
         monthsSinceRegistration,
+        deviceAgeInMonths,
         eligible: isAcerBBG || monthsSinceRegistration >= 3,
       });
 

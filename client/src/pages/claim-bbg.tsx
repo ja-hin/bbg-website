@@ -120,41 +120,39 @@ export default function ClaimBBG() {
       // Clear any previous claim details
       setClaimDetails(null);
       
-      // Try to detect waiting period errors from message content as fallback
-      const isWaitingPeriodError = error.message && (
-        error.message.includes("3-month waiting period") || 
-        error.message.includes("10-month waiting period") ||
-        error.message.includes("waiting period")
-      );
-      
-      // Check if this is an eligibility error (not a voucher validation error)
-      // Look for waiting period or device age eligibility issues
-      if (error.eligible === false || error.minimumWaitMonths !== undefined || error.deviceAge !== undefined || isWaitingPeriodError) {
-        // Only set eligibility error if backend provides waiting period or eligibility data
+      // Handle specific validation errors first (priority handling)
+      if (error.code === "UNREGISTERED_VOUCHER" || error.code === "INVALID_REGISTRATION_ORDER" || error.code === "SLAB_NOT_STARTED" || error.code === "WAITING_PERIOD_NOT_MET") {
         setEligibilityError({
           message: error.message,
-          eligible: error.eligible !== undefined ? error.eligible : false,
-          deviceAge: error.deviceAge,
-          minimumAge: error.minimumAge,
-          maximumAge: error.maximumAge,
-          // Only include waiting period fields if backend provides them (no fallbacks)
-          registrationDate: error.registrationDate,
-          monthsSinceRegistration: error.monthsSinceRegistration,
-          minimumWaitMonths: error.minimumWaitMonths,
-          registrationSource: error.registrationSource,
-          eligibleDate: error.eligibleDate,
-          remainingMonths: error.remainingMonths
+          eligible: false
         });
       } else {
-        setEligibilityError(null);
+        // Legacy handling for errors without specific codes
+        const isWaitingPeriodError = error.message && (
+          error.message.includes("3-month waiting period") || 
+          error.message.includes("10-month waiting period") ||
+          error.message.includes("waiting period")
+        );
         
-        // Handle specific validation errors
-        if (error.code === "UNREGISTERED_VOUCHER" || error.code === "INVALID_REGISTRATION_ORDER" || error.code === "SLAB_NOT_STARTED" || error.code === "WAITING_PERIOD_NOT_MET") {
+        // Check if this is an eligibility error (not a voucher validation error)
+        if (error.eligible === false || error.minimumWaitMonths !== undefined || error.deviceAge !== undefined || isWaitingPeriodError) {
+          // Only set eligibility error if backend provides waiting period or eligibility data
           setEligibilityError({
             message: error.message,
-            eligible: false
+            eligible: error.eligible !== undefined ? error.eligible : false,
+            deviceAge: error.deviceAge,
+            minimumAge: error.minimumAge,
+            maximumAge: error.maximumAge,
+            // Only include waiting period fields if backend provides them (no fallbacks)
+            registrationDate: error.registrationDate,
+            monthsSinceRegistration: error.monthsSinceRegistration,
+            minimumWaitMonths: error.minimumWaitMonths,
+            registrationSource: error.registrationSource,
+            eligibleDate: error.eligibleDate,
+            remainingMonths: error.remainingMonths
           });
         } else {
+          setEligibilityError(null);
           // Clean up the error message for toast display
           const cleanMessage = (() => {
             const errorMsg = error.message || "Please check your voucher code and try again.";

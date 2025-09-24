@@ -134,8 +134,8 @@ export default function ClaimBBG() {
           error.message.includes("waiting period")
         );
         
-        // Check if this is an eligibility error (not a voucher validation error)
-        if (error.eligible === false || error.minimumWaitMonths !== undefined || error.deviceAge !== undefined || isWaitingPeriodError) {
+        // Check if this is a legacy eligibility error (only if no specific error code was handled)
+        if ((error.eligible === false || error.deviceAge !== undefined || isWaitingPeriodError) && !error.code) {
           // Only set eligibility error if backend provides waiting period or eligibility data
           setEligibilityError({
             message: error.message,

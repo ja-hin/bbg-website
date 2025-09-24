@@ -1829,6 +1829,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
           imeiSerial: formData.imeiSerial
         });
 
+        // Also update the customers table with the actual serial number
+        // Only update if current serial is auto-generated to avoid overwriting real IMEIs
+        const updateCustomerSerial = await db.pool.request()
+          .input('voucherCode', formData.voucherCode)
+          .input('serialNumber', formData.imeiSerial)
+          .query(`
+            UPDATE customers 
+            SET serial_number = @serialNumber
+            WHERE voucher_code = @voucherCode 
+              AND serial_number LIKE 'AUTO_%'
+          `);
+
+        console.log("✅ Customer serial number updated successfully:", {
+          voucherCode: formData.voucherCode,
+          newSerial: formData.imeiSerial,
+          rowsAffected: updateCustomerSerial.rowsAffected,
+          condition: "Only updated if previous serial was AUTO_generated"
+        });
+
       } catch (dbError) {
         console.error("❌ Database error saving device registration:", dbError);
         return res.status(500).json({ 

@@ -120,10 +120,58 @@ export default function ClaimBBG() {
       // Clear any previous claim details
       setClaimDetails(null);
       
-      // Handle specific validation errors first (priority handling)
-      if (error.code === "UNREGISTERED_VOUCHER" || error.code === "INVALID_REGISTRATION_ORDER" || error.code === "SLAB_NOT_STARTED" || error.code === "WAITING_PERIOD_NOT_MET") {
+      // Debug logging to see exactly what we receive
+      console.log("🔍 FRONTEND DEBUG - Full error object:", JSON.stringify(error, null, 2));
+      console.log("🔍 FRONTEND DEBUG - Error code:", error.code);
+      console.log("🔍 FRONTEND DEBUG - Error message:", error.message);
+      console.log("🔍 FRONTEND DEBUG - Error message type:", typeof error.message);
+      console.log("🔍 FRONTEND DEBUG - Error eligible:", error.eligible);
+      console.log("🔍 FRONTEND DEBUG - Error keys:", Object.keys(error));
+      
+      // Extract clean message from error (handle various formats)
+      let cleanMessage = 'An error occurred';
+      let errorCode = null;
+      
+      // Method 1: Direct property access
+      if (error.code && error.message) {
+        errorCode = error.code;
+        cleanMessage = error.message;
+      }
+      // Method 2: Parse JSON string from error message
+      else if (typeof error.message === 'string' && error.message.includes('{"message":')) {
+        try {
+          const parsed = JSON.parse(error.message);
+          if (parsed.message) {
+            cleanMessage = parsed.message;
+            errorCode = parsed.code;
+          }
+        } catch (parseError) {
+          console.log("🔍 FRONTEND DEBUG - Failed to parse JSON from error message");
+        }
+      }
+      // Method 3: Check if error itself is the JSON object
+      else if (error.message && error.eligible !== undefined) {
+        cleanMessage = error.message;
+        errorCode = error.code;
+      }
+      
+      console.log("🔍 FRONTEND DEBUG - Extracted message:", cleanMessage);
+      console.log("🔍 FRONTEND DEBUG - Extracted code:", errorCode);
+      
+      // Check if this is a specific validation error
+      const isSpecificValidationError = 
+        errorCode === "UNREGISTERED_VOUCHER" || 
+        errorCode === "INVALID_REGISTRATION_ORDER" || 
+        errorCode === "SLAB_NOT_STARTED" || 
+        errorCode === "WAITING_PERIOD_NOT_MET" ||
+        cleanMessage === "Your device is not registered yet" ||
+        cleanMessage === "You are not eligible until the waiting period has passed" ||
+        cleanMessage === "You cannot claim until the claim value slab starts";
+
+      if (isSpecificValidationError) {
+        console.log("🔍 FRONTEND DEBUG: Using specific error validation path");
         setEligibilityError({
-          message: error.message,
+          message: cleanMessage,
           eligible: false
         });
       } else {

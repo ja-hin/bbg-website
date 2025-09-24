@@ -129,7 +129,7 @@ export default function ClaimBBG() {
       
       // Check if this is an eligibility error (not a voucher validation error)
       // Look for waiting period or device age eligibility issues
-      if (error.eligible === false || error.minimumWaitMonths || error.deviceAge !== undefined || isWaitingPeriodError) {
+      if (error.eligible === false || error.minimumWaitMonths !== undefined || error.deviceAge !== undefined || isWaitingPeriodError) {
         // Only set eligibility error if backend provides waiting period or eligibility data
         setEligibilityError({
           message: error.message,
@@ -426,27 +426,7 @@ export default function ClaimBBG() {
                       <div>
                         <h4 className="font-semibold text-orange-900 mb-2">Claim Not Eligible</h4>
                         <p className="text-orange-800 mb-2">
-                          {eligibilityError.minimumWaitMonths && eligibilityError.registrationDate && eligibilityError.eligibleDate ? (
-                            // Only show waiting period message if backend provides all required fields
-                            (() => {
-                              const regDate = new Date(eligibilityError.registrationDate).toLocaleDateString('en-IN', { 
-                                year: 'numeric', 
-                                month: 'long', 
-                                day: 'numeric' 
-                              });
-                              const eligibleDate = new Date(eligibilityError.eligibleDate).toLocaleDateString('en-IN', { 
-                                year: 'numeric', 
-                                month: 'long', 
-                                day: 'numeric' 
-                              });
-                              const waitingPeriod = eligibilityError.minimumWaitMonths === 10 ? '10-month' : '3-month';
-                              
-                              return `BBG claims require a ${waitingPeriod} waiting period. You registered your device on ${regDate}. You can file a claim starting ${eligibleDate}.`;
-                            })()
-                          ) : (
-                            // Show backend message for other eligibility issues or unregistered vouchers
-                            eligibilityError.message
-                          )}
+                          {eligibilityError.message}
                         </p>
                         
                         

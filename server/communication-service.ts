@@ -237,12 +237,18 @@ export class CommunicationService {
       // Fetch claim value slabs for this device brand/type
       let claimValueSlabs: any[] = [];
       try {
-        const registrationSource = customerData.registrationSource || 'regular';
-        console.log(`📊 Fetching claim value slabs for: ${customerData.deviceType}/${customerData.brand}/${registrationSource}`);
+        // For website device registrations, use 'regular' slabs instead of 'website'
+        // For Acer BBG and other registrations, use their respective registration sources
+        let slabRegistrationSource = customerData.registrationSource || 'regular';
+        if (customerData.registrationSource === 'website') {
+          slabRegistrationSource = 'regular'; // Website device registrations use regular claim slabs
+        }
+        
+        console.log(`📊 Fetching claim value slabs for: ${customerData.deviceType}/${customerData.brand}/${slabRegistrationSource}`);
         claimValueSlabs = await storage.getClaimValueSlabsByTypeAndBrand(
           customerData.deviceType, 
           customerData.brand, 
-          registrationSource
+          slabRegistrationSource
         );
         console.log(`📊 Fetched ${claimValueSlabs.length} claim value slabs for email`);
       } catch (error) {
@@ -280,18 +286,24 @@ export class CommunicationService {
       const deviceAgeInMonths = this.calculateDeviceAgeInMonths(customerData.devicePurchaseDate);
       const isWithin6Months = deviceAgeInMonths < 6;
       
-      // For BBG purchases (when customers buy BBG protection), use BBG purchase templates
-      // For device registration (post-purchase device setup), use device registration templates
-      // Determine context based on registrationSource parameter
-      const isBbgPurchase = customerData.registrationSource !== 'website'; // Website registrations are device registrations, others are BBG purchases
+      // Determine the appropriate template based on registration source:
+      // - Website registrations = device registration templates
+      // - Acer BBG registrations = Acer-specific templates  
+      // - Regular registrations = BBG purchase templates
       
       let eventType: string;
-      if (isBbgPurchase) {
-        eventType = isWithin6Months ? 'bbg_purchase_within_6_months' : 'bbg_purchase_over_6_months';
-        console.log(`📧 BBG Purchase - Device age: ${deviceAgeInMonths} months, using template: ${eventType}`);
-      } else {
+      if (customerData.registrationSource === 'website') {
+        // Website device registrations
         eventType = isWithin6Months ? 'device_registration_within_6_months' : 'device_registration_over_6_months';
         console.log(`📧 Device Registration - Device age: ${deviceAgeInMonths} months, using template: ${eventType}`);
+      } else if (customerData.registrationSource === 'acer_bbg') {
+        // Acer BBG registrations - use BBG purchase templates but mark as Acer for subject customization
+        eventType = isWithin6Months ? 'bbg_purchase_within_6_months' : 'bbg_purchase_over_6_months';
+        console.log(`📧 Acer Registration - Device age: ${deviceAgeInMonths} months, using template: ${eventType} (customized for Acer)`);
+      } else {
+        // Regular BBG purchases
+        eventType = isWithin6Months ? 'bbg_purchase_within_6_months' : 'bbg_purchase_over_6_months';
+        console.log(`📧 BBG Purchase - Device age: ${deviceAgeInMonths} months, using template: ${eventType}`);
       }
       
       emailTemplate = await templateService.getTemplateByTypeEventAndDevice('email', eventType, undefined);
@@ -302,7 +314,16 @@ export class CommunicationService {
           claimValueSlabsHtml: emailData.claimValueSlabsHtml?.length > 0 ? `${emailData.claimValueSlabsHtml.substring(0, 100)}...` : 'EMPTY OR MISSING'
         });
         const emailContent = templateService.renderTemplate(emailTemplate.content, emailData);
-        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'BBG Registration Successful', emailData);
+        
+        // Customize subject for different registration types
+        let defaultSubject = 'BBG Registration Successful';
+        if (customerData.registrationSource === 'acer_bbg') {
+          defaultSubject = 'Acer Registration Successful';
+        } else if (customerData.registrationSource === 'website') {
+          defaultSubject = 'Device Registration Successful';
+        }
+        
+        const emailSubject = templateService.renderTemplate(emailTemplate.subject || defaultSubject, emailData);
         console.log('📧 Final email content length:', emailContent.length, 'chars');
         
         // Fetch SMTP settings from database

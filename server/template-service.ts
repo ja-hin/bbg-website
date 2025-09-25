@@ -5,7 +5,7 @@ export interface MessageTemplate {
   id: number;
   name: string;
   type: 'email' | 'sms' | 'whatsapp';
-  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification' | 'distributor_bbg_notification' | 'bbg_registration_benefits';
+  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification' | 'distributor_bbg_notification' | 'bbg_registration_benefits' | 'bbg_purchase_confirmation' | 'device_registration_confirmation' | 'bbg_purchase_within_6_months' | 'bbg_purchase_over_6_months' | 'device_registration_within_6_months' | 'device_registration_over_6_months';
   deviceType?: 'mobile' | 'laptop'; // For device-specific templates
   subject?: string; // For emails
   content: string;
@@ -18,7 +18,7 @@ export interface MessageTemplate {
 export interface CreateTemplateData {
   name: string;
   type: 'email' | 'sms' | 'whatsapp';
-  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification' | 'distributor_bbg_notification' | 'bbg_registration_benefits';
+  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification' | 'distributor_bbg_notification' | 'bbg_registration_benefits' | 'bbg_purchase_confirmation' | 'device_registration_confirmation' | 'bbg_purchase_within_6_months' | 'bbg_purchase_over_6_months' | 'device_registration_within_6_months' | 'device_registration_over_6_months';
   deviceType?: 'mobile' | 'laptop'; // For device-specific templates
   subject?: string;
   content: string;
@@ -82,24 +82,21 @@ export class TemplateService {
       
       // Update UNIQUE constraint to include device_type for template variants
       try {
-        // Drop existing unique constraint
-        const dropUniqueQuery = `
-          IF EXISTS (SELECT * FROM sys.key_constraints WHERE type = 'UQ' AND parent_object_id = OBJECT_ID('message_templates'))
+        // Drop ALL existing unique constraints
+        const dropAllUniqueQuery = `
+          DECLARE @sql NVARCHAR(MAX) = ''
+          SELECT @sql = @sql + 'ALTER TABLE message_templates DROP CONSTRAINT [' + name + ']; '
+          FROM sys.key_constraints 
+          WHERE type = 'UQ' AND parent_object_id = OBJECT_ID('message_templates')
+          
+          IF LEN(@sql) > 0
           BEGIN
-            DECLARE @constraint_name NVARCHAR(128)
-            SELECT @constraint_name = name FROM sys.key_constraints 
-            WHERE type = 'UQ' AND parent_object_id = OBJECT_ID('message_templates')
-            
-            IF @constraint_name IS NOT NULL
-            BEGIN
-              DECLARE @sql NVARCHAR(MAX) = 'ALTER TABLE message_templates DROP CONSTRAINT [' + @constraint_name + ']'
-              EXEC sp_executesql @sql
-              PRINT '✅ Dropped old unique constraint on message_templates'
-            END
+            EXEC sp_executesql @sql
+            PRINT '✅ Dropped all unique constraints on message_templates'
           END
         `;
         
-        await db.pool.request().query(dropUniqueQuery);
+        await db.pool.request().query(dropAllUniqueQuery);
         
         // Add new unique constraint with device_type
         const addUniqueQuery = `
@@ -111,12 +108,12 @@ export class TemplateService {
         `;
         
         await db.pool.request().query(addUniqueQuery);
-      } catch (constraintError) {
+      } catch (constraintError: any) {
         console.log('⚠️ Unique constraint update skipped (may already be correct):', constraintError.message);
       }
       
       console.log('✅ Table schema updated for device-specific templates');
-    } catch (error) {
+    } catch (error: any) {
       console.log('⚠️ Table schema update failed (may already be correct):', error.message);
       // Don't throw error as this is a migration that might not be needed
     }
@@ -125,19 +122,19 @@ export class TemplateService {
   // Update event constraint to allow new event types
   async updateEventConstraint(): Promise<void> {
     try {
-      // Drop existing constraint if it exists
+      // Drop ALL existing event-related CHECK constraints
       const dropConstraintQuery = `
-        IF EXISTS (SELECT * FROM sys.check_constraints WHERE name LIKE '%event%' AND parent_object_id = OBJECT_ID('message_templates'))
+        DECLARE @sql NVARCHAR(MAX) = ''
+        SELECT @sql = @sql + 'ALTER TABLE message_templates DROP CONSTRAINT [' + cc.name + ']; '
+        FROM sys.check_constraints cc
+        INNER JOIN sys.columns c ON cc.parent_object_id = c.object_id
+        WHERE cc.parent_object_id = OBJECT_ID('message_templates') 
+        AND (cc.name LIKE '%event%' OR c.name = 'event')
+        
+        IF LEN(@sql) > 0
         BEGIN
-          DECLARE @constraint_name NVARCHAR(255)
-          SELECT @constraint_name = name FROM sys.check_constraints 
-          WHERE name LIKE '%event%' AND parent_object_id = OBJECT_ID('message_templates')
-          
-          IF @constraint_name IS NOT NULL
-          BEGIN
-            DECLARE @sql NVARCHAR(MAX) = 'ALTER TABLE message_templates DROP CONSTRAINT ' + @constraint_name
-            EXEC sp_executesql @sql
-          END
+          EXEC sp_executesql @sql
+          PRINT '✅ Dropped all event CHECK constraints on message_templates'
         END
       `;
       
@@ -147,12 +144,12 @@ export class TemplateService {
       const addConstraintQuery = `
         ALTER TABLE message_templates 
         ADD CONSTRAINT CHK_message_templates_event 
-        CHECK (event IN ('customer_registration', 'referral_partner_welcome', 'claim_status_update', 'payout_notification', 'otp_verification', 'distributor_bbg_notification', 'bbg_registration_benefits'))
+        CHECK (event IN ('customer_registration', 'referral_partner_welcome', 'claim_status_update', 'payout_notification', 'otp_verification', 'distributor_bbg_notification', 'bbg_registration_benefits', 'bbg_purchase_confirmation', 'device_registration_confirmation', 'bbg_purchase_within_6_months', 'bbg_purchase_over_6_months', 'device_registration_within_6_months', 'device_registration_over_6_months'))
       `;
       
       await db.pool.request().query(addConstraintQuery);
       console.log('✅ Updated event constraint to include distributor_bbg_notification and bbg_registration_benefits');
-    } catch (error) {
+    } catch (error: any) {
       console.log('⚠️ Event constraint update failed (may already be correct):', error.message);
       // Don't throw error as this is a migration that might not be needed
     }
@@ -609,35 +606,323 @@ export class TemplateService {
 </div>
           `,
           variables: ['name', 'email', 'contact', 'voucherCode', 'brand', 'modelName', 'deviceType', 'serialNumber', 'devicePurchaseDate', 'bbgPurchaseDate', 'termsAndConditionsUrl']
+        },
+        // BBG Purchase Confirmation - Within 6 Months (Claim Slabs)
+        {
+          name: 'BBG Purchase Confirmation - Within 6 Months',
+          type: 'email',
+          event: 'bbg_purchase_within_6_months',
+          subject: 'BBG Purchase Successful - Your Protection Plan - XtraCover',
+          content: `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #dc2626;">XtraCover BBG</h1>
+    <h2 style="color: #374151;">Purchase Successful!</h2>
+  </div>
+  
+  <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #374151; margin-top: 0;">Hi {{name}},</h3>
+    <p>Thank you for purchasing XtraCover BBG protection! Your BBG plan has been successfully activated.</p>
+    
+    <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+      <strong>BBG Voucher Code: {{voucherCode}}</strong>
+    </div>
+    
+    <ul style="color: #6b7280;">
+      <li><strong>Device:</strong> {{brand}} {{modelName}} ({{deviceType}})</li>
+      <li><strong>BBG Purchase Date:</strong> {{bbgPurchaseDate}}</li>
+      <li><strong>Contact:</strong> {{contact}}</li>
+      <li><strong>Email:</strong> {{email}}</li>
+    </ul>
+  </div>
+  
+  <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #0277bd; margin-top: 0;">📱 Your BBG Protection Plan</h3>
+    <p style="color: #424242; margin-bottom: 15px;">Your device qualifies for our Claim Slabs benefit plan. Here's what you'll get when you claim:</p>
+    
+    <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0;">
+      <h4 style="color: #16a34a; margin-top: 0;">Claim Value Slabs</h4>
+      <p style="color: #6b7280; margin-bottom: 15px;">Based on your device age at the time of claim, you can receive up to 70% of your device's current market value.</p>
+      
+      <div style="background: #f3f4f6; padding: 15px; border-radius: 6px;">
+        <p style="margin: 0; color: #374151; font-weight: bold;">Example Claims:</p>
+        <ul style="color: #6b7280; margin: 10px 0;">
+          <li>0-6 months old: Up to 70% of market value</li>
+          <li>7-12 months old: Up to 60% of market value</li>
+          <li>13-18 months old: Up to 50% of market value</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div style="background: #fff3e0; padding: 10px; border-radius: 6px; margin-top: 15px;">
+      <p style="margin: 0; color: #e65100; font-size: 14px;"><strong>Next Step:</strong> Complete your device registration with IMEI/Serial number to activate your protection.</p>
+    </div>
+  </div>
+
+  <div style="background: #fef3c7; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+    <p style="margin: 0; color: #92400e;"><strong>Important:</strong> Save your voucher code safely. You'll need it to register your device and file claims.</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 30px;">
+    <p style="color: #6b7280;">Thank you for choosing XtraCover BBG!</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+    <p style="color: #9ca3af; font-size: 14px;">
+      <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
+      For support, contact us at contactus@xtracover.com
+    </p>
+  </div>
+</div>
+          `,
+          variables: ['name', 'email', 'contact', 'voucherCode', 'brand', 'modelName', 'deviceType', 'bbgPurchaseDate', 'termsAndConditionsUrl']
+        },
+        // BBG Purchase Confirmation - Over 6 Months (Auction + Repair)
+        {
+          name: 'BBG Purchase Confirmation - Over 6 Months',
+          type: 'email',
+          event: 'bbg_purchase_over_6_months',
+          subject: 'BBG Purchase Successful - Your Comprehensive Benefits - XtraCover',
+          content: `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #dc2626;">XtraCover BBG</h1>
+    <h2 style="color: #374151;">Purchase Successful!</h2>
+  </div>
+  
+  <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #374151; margin-top: 0;">Hi {{name}},</h3>
+    <p>Thank you for purchasing XtraCover BBG protection! Your comprehensive benefits package has been activated.</p>
+    
+    <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+      <strong>BBG Voucher Code: {{voucherCode}}</strong>
+    </div>
+    
+    <ul style="color: #6b7280;">
+      <li><strong>Device:</strong> {{brand}} {{modelName}} ({{deviceType}})</li>
+      <li><strong>BBG Purchase Date:</strong> {{bbgPurchaseDate}}</li>
+      <li><strong>Contact:</strong> {{contact}}</li>
+      <li><strong>Email:</strong> {{email}}</li>
+    </ul>
+  </div>
+  
+  <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #0277bd; margin-top: 0;">🎯 Your Comprehensive Benefits Package</h3>
+    <p style="color: #424242; margin-bottom: 15px;">Since your device was purchased more than 6 months ago, you receive our premium benefits package:</p>
+    
+    <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0;">
+      <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <div style="background: #16a34a; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">1</div>
+        <div>
+          <h4 style="margin: 0; color: #16a34a;">Professional Auction Service</h4>
+          <p style="margin: 0; color: #6b7280; font-size: 14px;">Get maximum value through our professional auction platform</p>
+        </div>
+        <div style="margin-left: auto; font-weight: bold; color: #16a34a; font-size: 18px;">₹599+</div>
+      </div>
+      
+      <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <div style="background: #2563eb; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">2</div>
+        <div>
+          <h4 style="margin: 0; color: #2563eb;">Professional Repair Service</h4>
+          <p style="margin: 0; color: #6b7280; font-size: 14px;">Expert repair services for your device</p>
+        </div>
+        <div style="margin-left: auto; font-weight: bold; color: #2563eb; font-size: 18px;">₹599+</div>
+      </div>
+    </div>
+    
+    <div style="background: #fff3e0; padding: 10px; border-radius: 6px; margin-top: 15px;">
+      <p style="margin: 0; color: #e65100; font-size: 14px;"><strong>Next Step:</strong> Complete your device registration with IMEI/Serial number to activate your benefits.</p>
+    </div>
+  </div>
+
+  <div style="background: #fef3c7; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+    <p style="margin: 0; color: #92400e;"><strong>Important:</strong> Save your voucher code safely. You'll need it to register your device and access your benefits.</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 30px;">
+    <p style="color: #6b7280;">Thank you for choosing XtraCover BBG!</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+    <p style="color: #9ca3af; font-size: 14px;">
+      <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
+      For support, contact us at contactus@xtracover.com
+    </p>
+  </div>
+</div>
+          `,
+          variables: ['name', 'email', 'contact', 'voucherCode', 'brand', 'modelName', 'deviceType', 'bbgPurchaseDate', 'termsAndConditionsUrl']
+        },
+        // Device Registration Confirmation - Within 6 Months (Claim Slabs)
+        {
+          name: 'Device Registration Confirmation - Within 6 Months',
+          type: 'email',
+          event: 'device_registration_within_6_months', 
+          subject: 'Device Registration Complete - Your Claim Slabs - XtraCover',
+          content: `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #dc2626;">XtraCover BBG</h1>
+    <h2 style="color: #374151;">Device Registration Complete!</h2>
+  </div>
+  
+  <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #374151; margin-top: 0;">Hi {{name}},</h3>
+    <p>Your device has been successfully registered and your BBG protection is now fully active!</p>
+    
+    <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+      <strong>BBG Voucher Code: {{voucherCode}}</strong>
+    </div>
+    
+    <ul style="color: #6b7280;">
+      <li><strong>Device:</strong> {{brand}} {{modelName}} ({{deviceType}})</li>
+      <li><strong>IMEI / Serial No.:</strong> {{serialNumber}}</li>
+      <li><strong>Device Purchase Date:</strong> {{devicePurchaseDate}}</li>
+      <li><strong>BBG Purchase Date:</strong> {{bbgPurchaseDate}}</li>
+      <li><strong>Contact:</strong> {{contact}}</li>
+      <li><strong>Email:</strong> {{email}}</li>
+    </ul>
+  </div>
+  
+  <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #0277bd; margin-top: 0;">Your Active Claim Value Slabs</h3>
+    <p style="color: #424242; margin-bottom: 15px;">Based on your device age at the time of claim, you can receive the following percentages of your device's current market value:</p>
+    
+    {{claimValueSlabsHtml}}
+    
+    <div style="background: #fff3e0; padding: 10px; border-radius: 6px; margin-top: 15px;">
+      <p style="margin: 0; color: #e65100; font-size: 14px;"><strong>Note:</strong> These rates are locked in at registration and won't change even if our rates are updated later.</p>
+    </div>
+  </div>
+
+  <div style="background: #dcfce7; padding: 15px; border-radius: 6px; border-left: 4px solid #16a34a;">
+    <p style="margin: 0; color: #166534;"><strong>Protection Active:</strong> You can now file a claim using your voucher code when needed.</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 30px;">
+    <p style="color: #6b7280;">Thank you for choosing XtraCover BBG!</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+    <p style="color: #9ca3af; font-size: 14px;">
+      <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
+      For support, contact us at contactus@xtracover.com
+    </p>
+  </div>
+</div>
+          `,
+          variables: ['name', 'voucherCode', 'brand', 'modelName', 'deviceType', 'serialNumber', 'devicePurchaseDate', 'bbgPurchaseDate', 'contact', 'email', 'claimValueSlabsHtml', 'termsAndConditionsUrl']
+        },
+        // Device Registration Confirmation - Over 6 Months (Auction + Repair)
+        {
+          name: 'Device Registration Confirmation - Over 6 Months',
+          type: 'email',
+          event: 'device_registration_over_6_months',
+          subject: 'Device Registration Complete - Your Benefits Active - XtraCover', 
+          content: `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #dc2626;">XtraCover BBG</h1>
+    <h2 style="color: #374151;">Device Registration Complete!</h2>
+  </div>
+  
+  <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #374151; margin-top: 0;">Hi {{name}},</h3>
+    <p>Your device has been successfully registered and your comprehensive BBG benefits are now fully active!</p>
+    
+    <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+      <strong>BBG Voucher Code: {{voucherCode}}</strong>
+    </div>
+    
+    <ul style="color: #6b7280;">
+      <li><strong>Device:</strong> {{brand}} {{modelName}} ({{deviceType}})</li>
+      <li><strong>IMEI / Serial No.:</strong> {{serialNumber}}</li>
+      <li><strong>Device Purchase Date:</strong> {{devicePurchaseDate}}</li>
+      <li><strong>BBG Purchase Date:</strong> {{bbgPurchaseDate}}</li>
+      <li><strong>Contact:</strong> {{contact}}</li>
+      <li><strong>Email:</strong> {{email}}</li>
+    </ul>
+  </div>
+  
+  <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #0277bd; margin-top: 0;">🎯 Your Active Benefits Package</h3>
+    <p style="color: #424242; margin-bottom: 15px;">Your comprehensive benefits are now ready to use whenever you need them:</p>
+    
+    <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0;">
+      <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <div style="background: #16a34a; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">✓</div>
+        <div>
+          <h4 style="margin: 0; color: #16a34a;">Professional Auction Service</h4>
+          <p style="margin: 0; color: #6b7280; font-size: 14px;">Get maximum value through our professional auction platform</p>
+        </div>
+        <div style="margin-left: auto; font-weight: bold; color: #16a34a; font-size: 18px;">Active</div>
+      </div>
+      
+      <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <div style="background: #2563eb; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">✓</div>
+        <div>
+          <h4 style="margin: 0; color: #2563eb;">Professional Repair Service</h4>
+          <p style="margin: 0; color: #6b7280; font-size: 14px;">Expert repair services for your device</p>
+        </div>
+        <div style="margin-left: auto; font-weight: bold; color: #2563eb; font-size: 18px;">Active</div>
+      </div>
+    </div>
+    
+    <div style="background: #fff3e0; padding: 10px; border-radius: 6px; margin-top: 15px;">
+      <p style="margin: 0; color: #e65100; font-size: 14px;"><strong>Note:</strong> These benefits are locked in at registration and can be accessed using your voucher code.</p>
+    </div>
+  </div>
+
+  <div style="background: #dcfce7; padding: 15px; border-radius: 6px; border-left: 4px solid #16a34a;">
+    <p style="margin: 0; color: #166534;"><strong>Benefits Active:</strong> You can now access your auction and repair services using your voucher code when needed.</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 30px;">
+    <p style="color: #6b7280;">Thank you for choosing XtraCover BBG!</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+    <p style="color: #9ca3af; font-size: 14px;">
+      <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
+      For support, contact us at contactus@xtracover.com
+    </p>
+  </div>
+</div>
+          `,
+          variables: ['name', 'voucherCode', 'brand', 'modelName', 'deviceType', 'serialNumber', 'devicePurchaseDate', 'bbgPurchaseDate', 'contact', 'email', 'termsAndConditionsUrl']
         }
       ];
 
       for (const template of defaultTemplates) {
         try {
-          // Check if template already exists
-          const existing = await this.getTemplateByTypeAndEvent(template.type as string, template.event as string);
+          // Check if template already exists by (type, event, device_type)
+          const existing = await this.getTemplateByTypeEventAndDevice(
+            template.type as string, 
+            template.event as string, 
+            template.deviceType as string | undefined
+          );
+          
           if (!existing) {
             await this.createTemplate(template as CreateTemplateData);
-            console.log(`Created default template: ${template.name}`);
+            console.log(`✅ Created default template: ${template.name}`);
           } else {
-            // For customer registration email, check if it has the claimValueSlabsHtml variable
-            if (template.event === 'customer_registration' && template.type === 'email') {
-              if (!existing.content.includes('{{claimValueSlabsHtml}}')) {
-                console.log(`🔧 Updating customer registration email template to include claim value slabs...`);
-                await this.updateTemplate(existing.id, {
-                  content: template.content,
-                  variables: template.variables
-                });
-                console.log(`✅ Updated customer registration email template with claim value slabs`);
-              } else {
-                console.log(`Template already exists and has claim value slabs: ${template.name}`);
-              }
+            // Update existing template if content has changed
+            if (existing.content !== template.content || 
+                JSON.stringify(existing.variables) !== JSON.stringify(template.variables)) {
+              console.log(`🔧 Updating existing template: ${template.name}`);
+              await this.updateTemplate(existing.id, {
+                content: template.content,
+                variables: template.variables,
+                subject: template.subject
+              });
+              console.log(`✅ Updated template: ${template.name}`);
             } else {
-              console.log(`Template already exists, skipping: ${template.name}`);
+              console.log(`Template already exists and is up to date: ${template.name}`);
             }
           }
         } catch (error: any) {
-          console.error('Error with default template:', template.name, error);
+          console.error('❌ Error with default template:', template.name, error.message);
+          // Continue with other templates instead of failing entirely
         }
       }
       

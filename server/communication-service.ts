@@ -297,9 +297,9 @@ export class CommunicationService {
         eventType = isWithin6Months ? 'device_registration_within_6_months' : 'device_registration_over_6_months';
         console.log(`📧 Device Registration - Device age: ${deviceAgeInMonths} months, using template: ${eventType}`);
       } else if (customerData.registrationSource === 'acer_bbg') {
-        // Acer BBG registrations - use BBG purchase templates but mark as Acer for subject customization
-        eventType = isWithin6Months ? 'bbg_purchase_within_6_months' : 'bbg_purchase_over_6_months';
-        console.log(`📧 Acer Registration - Device age: ${deviceAgeInMonths} months, using template: ${eventType} (with Acer subject)`);
+        // Acer BBG registrations - use dedicated Acer templates
+        eventType = isWithin6Months ? 'acer_registration_within_6_months' : 'acer_registration_over_6_months';
+        console.log(`📧 Acer Registration - Device age: ${deviceAgeInMonths} months, using template: ${eventType}`);
       } else {
         // Regular BBG purchases
         eventType = isWithin6Months ? 'bbg_purchase_within_6_months' : 'bbg_purchase_over_6_months';
@@ -314,16 +314,7 @@ export class CommunicationService {
           claimValueSlabsHtml: emailData.claimValueSlabsHtml?.length > 0 ? `${emailData.claimValueSlabsHtml.substring(0, 100)}...` : 'EMPTY OR MISSING'
         });
         const emailContent = templateService.renderTemplate(emailTemplate.content, emailData);
-        
-        // Customize subject for different registration types
-        let defaultSubject = 'BBG Registration Successful';
-        if (customerData.registrationSource === 'acer_bbg') {
-          defaultSubject = 'Acer Registration Successful';
-        } else if (customerData.registrationSource === 'website') {
-          defaultSubject = 'Device Registration Successful';
-        }
-        
-        const emailSubject = templateService.renderTemplate(emailTemplate.subject || defaultSubject, emailData);
+        const emailSubject = templateService.renderTemplate(emailTemplate.subject || 'Registration Successful', emailData);
         console.log('📧 Final email content length:', emailContent.length, 'chars');
         
         // Fetch SMTP settings from database

@@ -1750,11 +1750,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       await db.connectDB();
       
-      // First, validate that the voucher code exists (valid BBG purchase)
+      // First, validate that the voucher code exists (valid BBG purchase) and get customer details
       const validVoucher = await db.pool.request()
         .input('voucherCode', formData.voucherCode)
         .query(`
-          SELECT id, name, device_type, brand 
+          SELECT id, name, device_type, brand, email, contact, date_of_purchase 
           FROM customers 
           WHERE voucher_code = @voucherCode
         `);
@@ -1855,7 +1855,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // For simplified registration, skip email notifications since we don't have user contact details
+      // Send device registration confirmation email using customer details from voucher
+      const customerInfo = validVoucher.recordset[0];
+      
+      try {
+        console.log("🔔 Starting website device registration notifications...");
+        console.log("📧 Customer contact details:", {
+          name: customerInfo.name,
+          email: customerInfo.email,
+          contact: customerInfo.contact,
+        });
+
+        // Determine purchase timing for correct template selection
+        const purchaseDate = new Date(customerInfo.date_of_purchase);
+        const currentDate = new Date();
+        const timeDifference = currentDate.getTime() - purchaseDate.getTime();
+        const monthsDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24 * 30.44));
+        const isWithin6Months = monthsDifference <= 6;
+        
+        console.log("📅 Purchase timing analysis:", {
+          purchaseDate: purchaseDate.toISOString(),
+          monthsOld: monthsDifference,
+          isWithin6Months,
+          templateType: isWithin6Months ? "Device Registration Confirmation - Within 6 Months" : "Device Registration Confirmation - Over 6 Months"
+        });
+
+        // Send device registration confirmation email
+        const emailTemplateKey = isWithin6Months 
+          ? 'device_registration_confirmation_within_6_months'
+          : 'device_registration_confirmation_over_6_months';
+        
+        const templateVariables = {
+          customerName: customerInfo.name,
+          voucherCode: formData.voucherCode,
+          imeiSerial: formData.imeiSerial,
+          deviceType: customerInfo.device_type,
+          deviceBrand: customerInfo.brand,
+          registrationDate: new Date().toLocaleDateString('en-IN', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          }),
+          devicePurchaseDate: purchaseDate.toLocaleDateString('en-IN', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          }),
+          termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
+          supportEmail: 'care@xtracover.com',
+          supportPhone: '+91-8069195326'
+        };
+
+        // Send email notification
+        const emailResult = await communicationService.sendCustomEmail({
+          to: customerInfo.email,
+          templateKey: emailTemplateKey,
+          templateVariables,
+          eventType: 'device_registration_confirmation'
+        });
+
+        console.log("🔔 Website device registration email notification result:", {
+          email: emailResult?.success ? "✅ Sent" : `❌ Failed: ${emailResult?.error}`,
+          recipient: customerInfo.email,
+          template: emailTemplateKey
+        });
+
+      } catch (notificationError) {
+        console.error("❌ Failed to send device registration confirmation email:", notificationError);
+        // Don't fail the registration if email fails
+      }
+
       console.log("✅ Website device registration completed successfully");
 
       res.status(201).json({

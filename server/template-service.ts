@@ -5,7 +5,7 @@ export interface MessageTemplate {
   id: number;
   name: string;
   type: 'email' | 'sms' | 'whatsapp';
-  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification' | 'distributor_bbg_notification' | 'bbg_registration_benefits' | 'bbg_purchase_confirmation' | 'device_registration_confirmation' | 'bbg_purchase_within_6_months' | 'bbg_purchase_over_6_months' | 'device_registration_within_6_months' | 'device_registration_over_6_months';
+  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification' | 'distributor_bbg_notification' | 'bbg_registration_benefits' | 'bbg_purchase_confirmation' | 'device_registration_confirmation' | 'bbg_purchase_within_6_months' | 'bbg_purchase_over_6_months' | 'device_registration_within_6_months' | 'device_registration_over_6_months' | 'acer_registration_within_6_months' | 'acer_registration_over_6_months';
   deviceType?: 'mobile' | 'laptop'; // For device-specific templates
   subject?: string; // For emails
   content: string;
@@ -18,7 +18,7 @@ export interface MessageTemplate {
 export interface CreateTemplateData {
   name: string;
   type: 'email' | 'sms' | 'whatsapp';
-  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification' | 'distributor_bbg_notification' | 'bbg_registration_benefits' | 'bbg_purchase_confirmation' | 'device_registration_confirmation' | 'bbg_purchase_within_6_months' | 'bbg_purchase_over_6_months' | 'device_registration_within_6_months' | 'device_registration_over_6_months';
+  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification' | 'distributor_bbg_notification' | 'bbg_registration_benefits' | 'bbg_purchase_confirmation' | 'device_registration_confirmation' | 'bbg_purchase_within_6_months' | 'bbg_purchase_over_6_months' | 'device_registration_within_6_months' | 'device_registration_over_6_months' | 'acer_registration_within_6_months' | 'acer_registration_over_6_months';
   deviceType?: 'mobile' | 'laptop'; // For device-specific templates
   subject?: string;
   content: string;
@@ -144,7 +144,7 @@ export class TemplateService {
       const addConstraintQuery = `
         ALTER TABLE message_templates 
         ADD CONSTRAINT CHK_message_templates_event 
-        CHECK (event IN ('customer_registration', 'referral_partner_welcome', 'claim_status_update', 'payout_notification', 'otp_verification', 'distributor_bbg_notification', 'bbg_registration_benefits', 'bbg_purchase_confirmation', 'device_registration_confirmation', 'bbg_purchase_within_6_months', 'bbg_purchase_over_6_months', 'device_registration_within_6_months', 'device_registration_over_6_months'))
+        CHECK (event IN ('customer_registration', 'referral_partner_welcome', 'claim_status_update', 'payout_notification', 'otp_verification', 'distributor_bbg_notification', 'bbg_registration_benefits', 'bbg_purchase_confirmation', 'device_registration_confirmation', 'bbg_purchase_within_6_months', 'bbg_purchase_over_6_months', 'device_registration_within_6_months', 'device_registration_over_6_months', 'acer_registration_within_6_months', 'acer_registration_over_6_months'))
       `;
       
       await db.pool.request().query(addConstraintQuery);
@@ -658,6 +658,158 @@ export class TemplateService {
   
   <div style="text-align: center; margin-top: 30px;">
     <p style="color: #6b7280;">Thank you for choosing XtraCover BBG!</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+    <p style="color: #9ca3af; font-size: 14px;">
+      <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
+      For support, contact us at contactus@xtracover.com
+    </p>
+  </div>
+</div>
+          `,
+          variables: ['name', 'email', 'contact', 'voucherCode', 'brand', 'modelName', 'deviceType', 'bbgPurchaseDate', 'termsAndConditionsUrl']
+        },
+        // Acer Registration Confirmation - Within 6 Months (Claim Slabs)
+        {
+          name: 'Acer Registration Confirmation - Within 6 Months',
+          type: 'email',
+          event: 'acer_registration_within_6_months',
+          subject: 'Acer Registration Successful - Your Protection Plan - XtraCover',
+          content: `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #dc2626;">XtraCover BBG</h1>
+    <h2 style="color: #374151;">Acer Registration Successful!</h2>
+  </div>
+  
+  <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #374151; margin-top: 0;">Hi {{name}},</h3>
+    <p>Thank you for registering your Acer device! Your Acer BBG protection plan has been successfully activated.</p>
+    
+    <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+      <strong>BBG Voucher Code: {{voucherCode}}</strong>
+    </div>
+    
+    <ul style="color: #6b7280;">
+      <li><strong>Device:</strong> {{brand}} {{modelName}} ({{deviceType}})</li>
+      <li><strong>Acer Registration Date:</strong> {{bbgPurchaseDate}}</li>
+      <li><strong>Contact:</strong> {{contact}}</li>
+      <li><strong>Email:</strong> {{email}}</li>
+    </ul>
+  </div>
+  
+  <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #0277bd; margin-top: 0;">📱 Your Acer BBG Protection Plan</h3>
+    <p style="color: #424242; margin-bottom: 15px;">Your device qualifies for our premium Acer BBG claim slabs. Here's what you'll get when you claim:</p>
+    
+    <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0;">
+      <h4 style="color: #16a34a; margin-top: 0;">Acer BBG Claim Value Slabs</h4>
+      <p style="color: #6b7280; margin-bottom: 15px;">Based on your device age at the time of claim, you can receive up to 80% of your device's current market value with our Acer BBG plan.</p>
+      
+      {{claimValueSlabsHtml}}
+    </div>
+    
+    <div style="background: #fff3e0; padding: 10px; border-radius: 6px; margin-top: 15px;">
+      <p style="margin: 0; color: #e65100; font-size: 14px;"><strong>Acer BBG Advantage:</strong> Your Acer device registration includes enhanced protection benefits.</p>
+    </div>
+  </div>
+
+  <div style="background: #fef3c7; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+    <p style="margin: 0; color: #92400e;"><strong>Important:</strong> Save your voucher code safely. You'll need it to file claims for your Acer device.</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 30px;">
+    <p style="color: #6b7280;">Thank you for choosing XtraCover Acer BBG!</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+    <p style="color: #9ca3af; font-size: 14px;">
+      <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
+      For support, contact us at contactus@xtracover.com
+    </p>
+  </div>
+</div>
+          `,
+          variables: ['name', 'email', 'contact', 'voucherCode', 'brand', 'modelName', 'deviceType', 'bbgPurchaseDate', 'termsAndConditionsUrl', 'claimValueSlabsHtml']
+        },
+        // Acer Registration Confirmation - Over 6 Months (Comprehensive Benefits)  
+        {
+          name: 'Acer Registration Confirmation - Over 6 Months',
+          type: 'email',
+          event: 'acer_registration_over_6_months',
+          subject: 'Acer Registration Successful - Your Comprehensive Benefits - XtraCover',
+          content: `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #dc2626;">XtraCover BBG</h1>
+    <h2 style="color: #374151;">Acer Registration Successful!</h2>
+  </div>
+  
+  <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #374151; margin-top: 0;">Hi {{name}},</h3>
+    <p>Thank you for registering your Acer device! Your comprehensive Acer BBG benefits package has been activated.</p>
+    
+    <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+      <strong>BBG Voucher Code: {{voucherCode}}</strong>
+    </div>
+    
+    <ul style="color: #6b7280;">
+      <li><strong>Device:</strong> {{brand}} {{modelName}} ({{deviceType}})</li>
+      <li><strong>Acer Registration Date:</strong> {{bbgPurchaseDate}}</li>
+      <li><strong>Contact:</strong> {{contact}}</li>
+      <li><strong>Email:</strong> {{email}}</li>
+    </ul>
+  </div>
+  
+  <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #0277bd; margin-top: 0;">🎯 Your Comprehensive Acer BBG Package</h3>
+    <p style="color: #424242; margin-bottom: 15px;">Since your device was purchased more than 6 months ago, you receive our premium Acer BBG benefits package:</p>
+    
+    <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0;">
+      <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <div style="background: #16a34a; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">1</div>
+        <div>
+          <h4 style="margin: 0; color: #16a34a;">Professional Auction Service</h4>
+          <p style="margin: 0; color: #6b7280; font-size: 14px;">Get maximum value through our professional auction platform</p>
+        </div>
+        <div style="margin-left: auto; font-weight: bold; color: #16a34a; font-size: 18px;">₹599+</div>
+      </div>
+      
+      <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <div style="background: #2563eb; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">2</div>
+        <div>
+          <h4 style="margin: 0; color: #2563eb;">Professional Repair Service</h4>
+          <p style="margin: 0; color: #6b7280; font-size: 14px;">Expert repair services for your Acer device</p>
+        </div>
+        <div style="margin-left: auto; font-weight: bold; color: #2563eb; font-size: 18px;">₹599+</div>
+      </div>
+      
+      <div style="border-top: 2px solid #e5e7eb; padding-top: 15px; margin-top: 15px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h4 style="margin: 0; color: #374151;">Total Benefit Value</h4>
+            <p style="margin: 0; color: #6b7280; font-size: 14px;">Auction + Repair Services</p>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 24px; font-weight: bold; color: #dc2626;">₹1,198+</div>
+            <div style="color: #16a34a; font-size: 14px; font-weight: bold;">Acer BBG Benefits</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="background: #fff3e0; padding: 10px; border-radius: 6px; margin-top: 15px;">
+      <p style="margin: 0; color: #e65100; font-size: 14px;"><strong>Acer BBG Special:</strong> These enhanced benefits are exclusive to your Acer device registration.</p>
+    </div>
+  </div>
+
+  <div style="background: #fef3c7; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+    <p style="margin: 0; color: #92400e;"><strong>Important:</strong> Save your voucher code safely. You'll need it to access your Acer BBG benefits.</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 30px;">
+    <p style="color: #6b7280;">Thank you for choosing XtraCover Acer BBG!</p>
   </div>
   
   <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">

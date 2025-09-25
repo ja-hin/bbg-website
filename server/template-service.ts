@@ -568,14 +568,7 @@ export class TemplateService {
       <h4 style="color: #16a34a; margin-top: 0;">Claim Value Slabs</h4>
       <p style="color: #6b7280; margin-bottom: 15px;">Based on your device age at the time of claim, you can receive up to 70% of your device's current market value.</p>
       
-      <div style="background: #f3f4f6; padding: 15px; border-radius: 6px;">
-        <p style="margin: 0; color: #374151; font-weight: bold;">Example Claims:</p>
-        <ul style="color: #6b7280; margin: 10px 0;">
-          <li>0-6 months old: Up to 70% of market value</li>
-          <li>7-12 months old: Up to 60% of market value</li>
-          <li>13-18 months old: Up to 50% of market value</li>
-        </ul>
-      </div>
+      {{claimValueSlabsHtml}}
     </div>
     
     <div style="background: #fff3e0; padding: 10px; border-radius: 6px; margin-top: 15px;">
@@ -599,7 +592,7 @@ export class TemplateService {
   </div>
 </div>
           `,
-          variables: ['name', 'email', 'contact', 'voucherCode', 'brand', 'modelName', 'deviceType', 'bbgPurchaseDate', 'termsAndConditionsUrl']
+          variables: ['name', 'email', 'contact', 'voucherCode', 'brand', 'modelName', 'deviceType', 'bbgPurchaseDate', 'termsAndConditionsUrl', 'claimValueSlabsHtml']
         },
         // BBG Purchase Confirmation - Over 6 Months (Auction + Repair)
         {

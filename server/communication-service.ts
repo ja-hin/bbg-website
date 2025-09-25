@@ -282,7 +282,8 @@ export class CommunicationService {
       
       // For BBG purchases (when customers buy BBG protection), use BBG purchase templates
       // For device registration (post-purchase device setup), use device registration templates
-      const isBbgPurchase = true; // This method is called when customers buy BBG
+      // Determine context based on registrationSource parameter
+      const isBbgPurchase = customerData.registrationSource !== 'website'; // Website registrations are device registrations, others are BBG purchases
       
       let eventType: string;
       if (isBbgPurchase) {

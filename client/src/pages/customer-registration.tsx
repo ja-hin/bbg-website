@@ -149,9 +149,9 @@ function DepreciationSlabs({ customerData }: { customerData?: CustomerFormData }
     return null;
   }
 
-  // Fetch claim value slabs for the specific device type
+  // Fetch claim value slabs for the specific device type and registration source
   const { data: slabs, isLoading } = useQuery({
-    queryKey: [`/api/claim-value-slabs/active/${customerData.deviceType}`],
+    queryKey: [`/api/claim-value-slabs/active/${customerData.deviceType}/regular`],
     retry: false,
   });
 

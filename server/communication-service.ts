@@ -185,6 +185,31 @@ export class CommunicationService {
     }
   }
 
+  // Helper method to calculate device age in months
+  private calculateDeviceAgeInMonths(devicePurchaseDate?: string): number {
+    if (!devicePurchaseDate) {
+      console.log('⚠️ No device purchase date provided, assuming 0 months');
+      return 0; // Default to within 6 months if no date
+    }
+    
+    try {
+      const purchaseDate = new Date(devicePurchaseDate);
+      const currentDate = new Date();
+      
+      // Calculate difference in months
+      const yearDiff = currentDate.getFullYear() - purchaseDate.getFullYear();
+      const monthDiff = currentDate.getMonth() - purchaseDate.getMonth();
+      
+      const totalMonths = yearDiff * 12 + monthDiff;
+      console.log(`📅 Device age calculation: Purchase date ${devicePurchaseDate} is ${totalMonths} months old`);
+      
+      return Math.max(0, totalMonths); // Ensure non-negative
+    } catch (error) {
+      console.error('❌ Error calculating device age:', error);
+      return 0; // Default to within 6 months on error
+    }
+  }
+
   async sendRegistrationConfirmation(
     customerData: {
       name: string;
@@ -248,15 +273,27 @@ export class CommunicationService {
       };
 
       // Email confirmation using template with SMTP settings from database
-      // Use device-specific template for auction/repair flow, regular template otherwise
+      // Determine if this is BBG purchase vs device registration and timing
       let emailTemplate;
-      if (customerData.emailTemplateKey === 'bbg_registration_benefits') {
-        console.log(`📧 Using device-specific BBG benefits template for ${customerData.deviceType} device`);
-        emailTemplate = await templateService.getTemplateByTypeEventAndDevice('email', 'bbg_registration_benefits', customerData.deviceType);
+      
+      // Calculate device age in months to determine template
+      const deviceAgeInMonths = this.calculateDeviceAgeInMonths(customerData.devicePurchaseDate);
+      const isWithin6Months = deviceAgeInMonths < 6;
+      
+      // For BBG purchases (when customers buy BBG protection), use BBG purchase templates
+      // For device registration (post-purchase device setup), use device registration templates
+      const isBbgPurchase = true; // This method is called when customers buy BBG
+      
+      let eventType: string;
+      if (isBbgPurchase) {
+        eventType = isWithin6Months ? 'bbg_purchase_within_6_months' : 'bbg_purchase_over_6_months';
+        console.log(`📧 BBG Purchase - Device age: ${deviceAgeInMonths} months, using template: ${eventType}`);
       } else {
-        console.log('📧 Using regular customer registration template');
-        emailTemplate = await templateService.getTemplate('email', 'customer_registration');
+        eventType = isWithin6Months ? 'device_registration_within_6_months' : 'device_registration_over_6_months';
+        console.log(`📧 Device Registration - Device age: ${deviceAgeInMonths} months, using template: ${eventType}`);
       }
+      
+      emailTemplate = await templateService.getTemplateByTypeEventAndDevice('email', eventType, undefined);
       
       if (emailTemplate) {
         console.log('📧 Rendering email template with variables:', {
@@ -276,15 +313,15 @@ export class CommunicationService {
         }
       }
 
-      // SMS confirmation using template
-      const smsTemplate = await templateService.getTemplate('sms', 'customer_registration');
+      // SMS confirmation using template with same logic as email
+      const smsTemplate = await templateService.getTemplateByTypeEventAndDevice('sms', eventType, undefined);
       if (smsTemplate) {
         const smsMessage = templateService.renderTemplate(smsTemplate.content, customerData);
         results.sms = await this.smsService.sendSMS(customerData.contact, smsMessage);
       }
 
-      // WhatsApp confirmation using template
-      const whatsappTemplate = await templateService.getTemplate('whatsapp', 'customer_registration');
+      // WhatsApp confirmation using template with same logic as email
+      const whatsappTemplate = await templateService.getTemplateByTypeEventAndDevice('whatsapp', eventType, undefined);
       if (whatsappTemplate) {
         const whatsappMessage = templateService.renderTemplate(whatsappTemplate.content, customerData);
         results.whatsapp = await this.whatsappService.sendWhatsAppMessage(customerData.contact, whatsappMessage);

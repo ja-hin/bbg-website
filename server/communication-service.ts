@@ -299,7 +299,7 @@ export class CommunicationService {
       } else if (customerData.registrationSource === 'acer_bbg') {
         // Acer BBG registrations - use BBG purchase templates but mark as Acer for subject customization
         eventType = isWithin6Months ? 'bbg_purchase_within_6_months' : 'bbg_purchase_over_6_months';
-        console.log(`📧 Acer Registration - Device age: ${deviceAgeInMonths} months, using template: ${eventType} (customized for Acer)`);
+        console.log(`📧 Acer Registration - Device age: ${deviceAgeInMonths} months, using template: ${eventType} (with Acer subject)`);
       } else {
         // Regular BBG purchases
         eventType = isWithin6Months ? 'bbg_purchase_within_6_months' : 'bbg_purchase_over_6_months';

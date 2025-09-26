@@ -170,8 +170,8 @@ export default function Home() {
                 <h4 className="text-lg sm:text-xl lg:text-3xl xl:text-4xl font-bold text-gray-900 text-right">
                   You register your device once
                 </h4>
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/4 z-10">
-                  <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2 shadow-md">
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/6 z-10">
+                  <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
                     <img 
                       src={deviceRegistrationImg} 
                       alt="Device registration illustration" 

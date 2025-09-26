@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { HomepageCarousel } from "@/components/homepage-carousel";
 import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png";
+import resaleValueImg from "@assets/Untitled design (4)_1758890353128.png";
 
 export default function Home() {
   // Fetch theme for dynamic coloring
@@ -162,7 +163,7 @@ export default function Home() {
       {/* Process Flow Section */}
       <section className="py-12 sm:py-16 lg:py-20" style={{backgroundColor: "rgba(117, 157, 245, 0.27)"}}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-8 sm:space-y-12">
+          <div className="space-y-8">
             
             {/* Step 1 - Icon Left */}
             <div className="relative max-w-4xl mx-auto">
@@ -191,7 +192,7 @@ export default function Home() {
                 <div className="absolute right-10 top-1/2 -translate-y-1/2 z-10">
                   <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
                     <img 
-                      src={import.meta.env.BASE_URL + "attached_assets/Untitled design (4)_1758890353128.png"} 
+                      src={resaleValueImg} 
                       alt="Upfront resale value illustration" 
                       className="w-full h-full object-contain"
                     />

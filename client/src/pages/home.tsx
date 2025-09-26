@@ -189,7 +189,7 @@ export default function Home() {
                 <h4 className="text-lg sm:text-xl lg:text-3xl xl:text-4xl font-bold text-gray-900 text-left">
                   Your resale value is upfront
                 </h4>
-                <div className="absolute right-10 top-1/2 -translate-y-1/2 z-10">
+                <div className="absolute right-16 top-1/2 -translate-y-1/2 z-10">
                   <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
                     <img 
                       src={resaleValueImg} 

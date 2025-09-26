@@ -25,6 +25,7 @@ import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png
 import resaleValueImg from "@assets/Untitled design (4)_1758890353128.png";
 import doorstepPickupImg from "@assets/1_1758893676653.png";
 import instantPaymentImg from "@assets/2_1758893843696.png";
+import bbgVideoFile from "@assets/Video final BBG ky hota_1758894912803.mp4";
 
 export default function Home() {
   // Fetch theme for dynamic coloring
@@ -119,23 +120,17 @@ export default function Home() {
             
             {/* Right Video */}
             <div className="order-1 lg:order-2 flex items-center">
-              <div className="relative rounded-xl overflow-hidden shadow-2xl bg-gray-100 w-full">
-                {/* Video placeholder - you can replace this with an actual video element */}
-                <div className="aspect-[3/4] bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-xtra-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Laptop className="w-10 h-10 text-xtra-primary" />
-                    </div>
-                    <p className="text-gray-600 font-medium">
-                      BBG Protection Demo
-                    </p>
-                    <p className="text-sm text-gray-500 mt-2">
-                      Video placeholder - Replace with actual video
-                    </p>
-                  </div>
-                </div>
-                {/* Overlay for video styling similar to the image */}
-                <div className="absolute inset-0 bg-black/10 rounded-xl pointer-events-none"></div>
+              <div className="relative rounded-xl overflow-hidden shadow-2xl bg-gray-100 w-full max-w-md mx-auto lg:max-w-none">
+                {/* Actual Video Element */}
+                <video 
+                  src={bbgVideoFile}
+                  className="w-full aspect-[3/4] object-cover"
+                  controls
+                  preload="metadata"
+                  data-testid="video-bbg-demo"
+                >
+                  Your browser does not support the video tag.
+                </video>
               </div>
             </div>
           </div>

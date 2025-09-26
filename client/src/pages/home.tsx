@@ -190,10 +190,11 @@ export default function Home() {
                 </h4>
                 <div className="absolute right-10 top-1/2 -translate-y-1/2 z-10">
                   <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
-                    <div className="text-center">
-                      <TrendingUp className="w-12 h-12 sm:w-16 sm:h-16 text-xtra-primary mx-auto mb-2" />
-                      <div className="w-8 h-8 bg-xtra-primary/30 rounded-lg mx-auto"></div>
-                    </div>
+                    <img 
+                      src={import.meta.env.BASE_URL + "attached_assets/Untitled design (4)_1758890353128.png"} 
+                      alt="Upfront resale value illustration" 
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                 </div>
               </div>

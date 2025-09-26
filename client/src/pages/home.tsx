@@ -249,96 +249,104 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
             
             {/* Laptop BBG Card */}
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-md mx-auto lg:max-w-none">
-              {/* Blue Header Section */}
-              <div className="bg-xtra-primary rounded-t-2xl p-8 sm:p-10 text-white text-center">
-                <h3 className="text-3xl sm:text-4xl font-bold mb-6">Laptop BBG</h3>
-                <div className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4">
-                  {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
+            <div className="relative ml-12">
+              <div className="bg-xtra-primary rounded-2xl shadow-xl overflow-hidden">
+                {/* Blue Header Section */}
+                <div className="bg-xtra-primary rounded-t-2xl p-8 sm:p-10 text-white text-center">
+                  <h3 className="text-3xl sm:text-4xl font-bold mb-6">Laptop BBG</h3>
+                  <div className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4">
+                    {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
+                    </div>
+                  <p className="text-white/90 text-lg">(inclusive of GST)</p>
                 </div>
-                <p className="text-white/90 text-lg">(inclusive of GST)</p>
+              
+                {/* Blue Features Section */}
+                <div className="bg-xtra-primary p-8 sm:p-10 rounded-b-2xl">
+                  <ul className="space-y-4 text-white">
+                    <li className="flex items-start">
+                      <span className="text-white mr-3 mt-1 text-lg">•</span>
+                      <span className="text-base sm:text-lg">Up to 70% payout value</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-white mr-3 mt-1 text-lg">•</span>
+                      <span className="text-base sm:text-lg">Coverage for up to 36 months</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-white mr-3 mt-1 text-lg">•</span>
+                      <span className="text-base sm:text-lg">Free doorstep pickup for claims</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-white mr-3 mt-1 text-lg">•</span>
+                      <span className="text-base sm:text-lg">Instant payouts at the time of device handover</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
               
-              {/* 3D Ribbon Banner */}
-              <div className="relative">
-                <div className="bg-blue-200 py-5 px-8 text-center relative">
-                  {/* 3D Left Triangle */}
-                  <div className="absolute left-0 top-0 w-0 h-0 border-t-[30px] border-t-blue-300 border-l-[20px] border-l-transparent border-b-[30px] border-b-blue-300"></div>
-                  <div className="absolute left-0 top-0 w-0 h-0 border-t-[30px] border-t-blue-200 border-l-[15px] border-l-transparent border-b-[30px] border-b-blue-200 ml-1"></div>
+              {/* 3D Ribbon positioned absolutely */}
+              <div className="absolute top-48 -left-12 z-20">
+                <div className="relative">
+                  {/* Main ribbon */}
+                  <div className="bg-blue-200 py-4 px-8 pr-12 rounded-r-2xl shadow-lg">
+                    <p className="text-gray-800 font-bold text-base sm:text-lg text-center whitespace-nowrap">
+                      Assured buyback value for<br />your Laptop
+                    </p>
+                  </div>
                   
-                  <p className="text-gray-800 font-bold text-lg sm:text-xl relative z-10 ml-6">
-                    Assured buyback value for<br />your Laptop
-                  </p>
+                  {/* 3D fold effect */}
+                  <div className="absolute -bottom-2 -left-2 w-0 h-0 border-l-[16px] border-l-blue-300 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent"></div>
                 </div>
-              </div>
-              
-              {/* Blue Features Section */}
-              <div className="bg-xtra-primary p-6 sm:p-8 rounded-b-2xl">
-                <ul className="space-y-4 text-white">
-                  <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1 text-lg">•</span>
-                    <span className="text-base sm:text-lg">Up to 70% payout value</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1 text-lg">•</span>
-                    <span className="text-base sm:text-lg">Coverage for up to 36 months</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1 text-lg">•</span>
-                    <span className="text-base sm:text-lg">Free doorstep pickup for claims</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1 text-lg">•</span>
-                    <span className="text-base sm:text-lg">Instant payouts at the time of device handover</span>
-                  </li>
-                </ul>
               </div>
             </div>
 
             {/* Mobile BBG Card */}
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-md mx-auto lg:max-w-none">
-              {/* Blue Header Section */}
-              <div className="bg-xtra-primary rounded-t-2xl p-8 sm:p-10 text-white text-center">
-                <h3 className="text-3xl sm:text-4xl font-bold mb-6">Mobile BBG</h3>
-                <div className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4">
-                  {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
+            <div className="relative ml-12">
+              <div className="bg-xtra-primary rounded-2xl shadow-xl overflow-hidden">
+                {/* Blue Header Section */}
+                <div className="bg-xtra-primary rounded-t-2xl p-8 sm:p-10 text-white text-center">
+                  <h3 className="text-3xl sm:text-4xl font-bold mb-6">Mobile BBG</h3>
+                  <div className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4">
+                    {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
+                  </div>
+                  <p className="text-white/90 text-lg">(inclusive of GST)</p>
                 </div>
-                <p className="text-white/90 text-lg">(inclusive of GST)</p>
+              
+                {/* Blue Features Section */}
+                <div className="bg-xtra-primary p-8 sm:p-10 rounded-b-2xl">
+                  <ul className="space-y-4 text-white">
+                    <li className="flex items-start">
+                      <span className="text-white mr-3 mt-1 text-lg">•</span>
+                      <span className="text-base sm:text-lg">Up to 70% payout value</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-white mr-3 mt-1 text-lg">•</span>
+                      <span className="text-base sm:text-lg">Coverage for up to 18 months</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-white mr-3 mt-1 text-lg">•</span>
+                      <span className="text-base sm:text-lg">Free doorstep pickup for claims</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-white mr-3 mt-1 text-lg">•</span>
+                      <span className="text-base sm:text-lg">Instant payouts at the time of device handover</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
               
-              {/* 3D Ribbon Banner */}
-              <div className="relative">
-                <div className="bg-blue-200 py-5 px-8 text-center relative">
-                  {/* 3D Left Triangle */}
-                  <div className="absolute left-0 top-0 w-0 h-0 border-t-[30px] border-t-blue-300 border-l-[20px] border-l-transparent border-b-[30px] border-b-blue-300"></div>
-                  <div className="absolute left-0 top-0 w-0 h-0 border-t-[30px] border-t-blue-200 border-l-[15px] border-l-transparent border-b-[30px] border-b-blue-200 ml-1"></div>
+              {/* 3D Ribbon positioned absolutely */}
+              <div className="absolute top-48 -left-12 z-20">
+                <div className="relative">
+                  {/* Main ribbon */}
+                  <div className="bg-blue-200 py-4 px-8 pr-12 rounded-r-2xl shadow-lg">
+                    <p className="text-gray-800 font-bold text-base sm:text-lg text-center whitespace-nowrap">
+                      Assured buyback value for<br />your Mobile
+                    </p>
+                  </div>
                   
-                  <p className="text-gray-800 font-bold text-lg sm:text-xl relative z-10 ml-6">
-                    Assured buyback value for<br />your Mobile
-                  </p>
+                  {/* 3D fold effect */}
+                  <div className="absolute -bottom-2 -left-2 w-0 h-0 border-l-[16px] border-l-blue-300 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent"></div>
                 </div>
-              </div>
-              
-              {/* Blue Features Section */}
-              <div className="bg-xtra-primary p-6 sm:p-8 rounded-b-2xl">
-                <ul className="space-y-4 text-white">
-                  <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1 text-lg">•</span>
-                    <span className="text-base sm:text-lg">Up to 70% payout value</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1 text-lg">•</span>
-                    <span className="text-base sm:text-lg">Coverage for up to 18 months</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1 text-lg">•</span>
-                    <span className="text-base sm:text-lg">Free doorstep pickup for claims</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1 text-lg">•</span>
-                    <span className="text-base sm:text-lg">Instant payouts at the time of device handover</span>
-                  </li>
-                </ul>
               </div>
             </div>
 

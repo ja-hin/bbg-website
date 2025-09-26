@@ -121,7 +121,7 @@ export default function Home() {
             <div className="order-1 lg:order-2 flex items-center">
               <div className="relative rounded-xl overflow-hidden shadow-2xl bg-gray-100 w-full">
                 {/* Video placeholder - you can replace this with an actual video element */}
-                <div className="aspect-video bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                <div className="aspect-[3/4] bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
                   <div className="text-center">
                     <div className="w-20 h-20 bg-xtra-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Laptop className="w-10 h-10 text-xtra-primary" />

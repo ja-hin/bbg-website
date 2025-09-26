@@ -205,7 +205,7 @@ export default function Home() {
             {/* Step 3 - Icon Left */}
             <div className="relative max-w-4xl mx-auto">
               <div className="relative bg-white rounded-full w-full py-3 sm:py-4 pr-8 sm:pr-12 pl-24 sm:pl-32 md:pl-40">
-                <h4 className="text-lg sm:text-xl lg:text-3xl xl:text-4xl font-bold text-gray-900 text-right">
+                <h4 className="text-sm sm:text-base lg:text-xl xl:text-2xl font-bold text-gray-900 text-right">
                   We pick it up right from your doorstep
                 </h4>
                 <div className="absolute left-10 top-1/2 -translate-y-1/2 z-10">

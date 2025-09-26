@@ -460,13 +460,6 @@ export default function Home() {
         </div>
       </section>
       
-      {/* Hero Section */}
-      <section className="py-12 sm:py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
-            Protect Your Investment with 
-            <span className="text-xtra-primary block sm:inline"> BuyBack Guarantee</span>
-          </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-12 px-4 sm:px-0">Get assured buyback value for your laptops and mobiles — transparent, fixed at registration, and redeemable when you’re ready to upgrade. Trusted by thousands of XtraCover customers across India.</p>
           
           {/* CTA Buttons */}
@@ -483,74 +476,9 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Product Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto px-4 sm:px-0">
-            <Card className="p-6 sm:p-8 border-2 border-xtra-primary/20 hover:border-xtra-primary/40 transition-colors">
-              <CardContent className="text-center p-0">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-xtra-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <Laptop className="h-8 w-8 sm:h-10 sm:w-10 text-xtra-primary" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Laptop BBG</h3>
-                <div className="text-3xl sm:text-4xl font-bold text-xtra-primary mb-2">
-                  {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 299}`}
-                </div>
-                <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">(inclusive of GST)</p>
-                <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Assured buyback value for your Laptop</p>
-                <ul className="text-left space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Up to 70% payout value
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Coverage for up to 36 months
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Free doorstep pickup for claims
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Instant payouts at the time of device handover
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="p-6 sm:p-8 border-2 border-xtra-primary/20 hover:border-xtra-primary/40 transition-colors">
-              <CardContent className="text-center p-0">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-xtra-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <Smartphone className="h-8 w-8 sm:h-10 sm:w-10 text-xtra-primary" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Mobile BBG</h3>
-                <div className="text-3xl sm:text-4xl font-bold text-xtra-primary mb-2">
-                  {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 99}`}
-                </div>
-                <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">(inclusive of GST)</p>
-                <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Assured buyback value for your Mobile</p>
-                <ul className="text-left space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Up to 70% payout value
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Coverage for up to 18 months
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Free doorstep pickup for claims
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Instant payouts at the time of device handover
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </section>
+      
       {/* Acer BBG Section */}
       <section className="py-12 sm:py-16 xtra-gradient-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

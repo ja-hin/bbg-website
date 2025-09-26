@@ -249,84 +249,84 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             
             {/* Laptop BBG Card */}
-            <div className="relative">
-              <div className="bg-xtra-primary rounded-3xl p-6 sm:p-8 text-white shadow-xl">
+            <div className="relative ml-8">
+              <div className="bg-xtra-primary rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
                 {/* Header */}
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl sm:text-3xl font-bold mb-2">Laptop BBG</h3>
-                  <div className="text-4xl sm:text-5xl font-bold mb-2">
-                    {pricesLoading ? <Loader2 className="h-10 w-10 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
+                <div className="text-center mb-16">
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-4">Laptop BBG</h3>
+                  <div className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">
+                    {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
                   </div>
-                  <p className="text-white/80 text-sm">(inclusive of GST)</p>
-                </div>
-
-                {/* Gray Banner */}
-                <div className="bg-white/20 backdrop-blur-sm rounded-xl py-3 px-4 mb-6 text-center">
-                  <p className="text-white font-semibold text-sm sm:text-base">
-                    Assured buyback value for your Laptop
-                  </p>
+                  <p className="text-white/90 text-base">(inclusive of GST)</p>
                 </div>
 
                 {/* Features List */}
-                <ul className="space-y-3 text-white">
+                <ul className="space-y-4 text-white">
                   <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1">•</span>
-                    <span className="text-sm sm:text-base">Up to 70% payout value</span>
+                    <span className="text-white mr-3 mt-1 text-lg">•</span>
+                    <span className="text-base sm:text-lg">Up to 70% payout value</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1">•</span>
-                    <span className="text-sm sm:text-base">Coverage for up to 36 months</span>
+                    <span className="text-white mr-3 mt-1 text-lg">•</span>
+                    <span className="text-base sm:text-lg">Coverage for up to 36 months</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1">•</span>
-                    <span className="text-sm sm:text-base">Free doorstep pickup for claims</span>
+                    <span className="text-white mr-3 mt-1 text-lg">•</span>
+                    <span className="text-base sm:text-lg">Free doorstep pickup for claims</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1">•</span>
-                    <span className="text-sm sm:text-base">Instant payouts at the time of device handover</span>
+                    <span className="text-white mr-3 mt-1 text-lg">•</span>
+                    <span className="text-base sm:text-lg">Instant payouts at the time of device handover</span>
                   </li>
                 </ul>
+              </div>
+              
+              {/* Gray Ribbon/Banner */}
+              <div className="absolute top-32 -left-8 bg-blue-200 py-3 px-8 pr-12 rounded-r-xl shadow-lg z-10">
+                <p className="text-gray-800 font-bold text-sm sm:text-base text-center">
+                  Assured buyback value for<br />your Laptop
+                </p>
               </div>
             </div>
 
             {/* Mobile BBG Card */}
-            <div className="relative">
-              <div className="bg-xtra-primary rounded-3xl p-6 sm:p-8 text-white shadow-xl">
+            <div className="relative ml-8">
+              <div className="bg-xtra-primary rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
                 {/* Header */}
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl sm:text-3xl font-bold mb-2">Mobile BBG</h3>
-                  <div className="text-4xl sm:text-5xl font-bold mb-2">
-                    {pricesLoading ? <Loader2 className="h-10 w-10 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
+                <div className="text-center mb-16">
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-4">Mobile BBG</h3>
+                  <div className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">
+                    {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
                   </div>
-                  <p className="text-white/80 text-sm">(inclusive of GST)</p>
-                </div>
-
-                {/* Gray Banner */}
-                <div className="bg-white/20 backdrop-blur-sm rounded-xl py-3 px-4 mb-6 text-center">
-                  <p className="text-white font-semibold text-sm sm:text-base">
-                    Assured buyback value for your Mobile
-                  </p>
+                  <p className="text-white/90 text-base">(inclusive of GST)</p>
                 </div>
 
                 {/* Features List */}
-                <ul className="space-y-3 text-white">
+                <ul className="space-y-4 text-white">
                   <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1">•</span>
-                    <span className="text-sm sm:text-base">Up to 70% payout value</span>
+                    <span className="text-white mr-3 mt-1 text-lg">•</span>
+                    <span className="text-base sm:text-lg">Up to 70% payout value</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1">•</span>
-                    <span className="text-sm sm:text-base">Coverage for up to 18 months</span>
+                    <span className="text-white mr-3 mt-1 text-lg">•</span>
+                    <span className="text-base sm:text-lg">Coverage for up to 18 months</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1">•</span>
-                    <span className="text-sm sm:text-base">Free doorstep pickup for claims</span>
+                    <span className="text-white mr-3 mt-1 text-lg">•</span>
+                    <span className="text-base sm:text-lg">Free doorstep pickup for claims</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-white mr-3 mt-1">•</span>
-                    <span className="text-sm sm:text-base">Instant payouts at the time of device handover</span>
+                    <span className="text-white mr-3 mt-1 text-lg">•</span>
+                    <span className="text-base sm:text-lg">Instant payouts at the time of device handover</span>
                   </li>
                 </ul>
+              </div>
+              
+              {/* Gray Ribbon/Banner */}
+              <div className="absolute top-32 -left-8 bg-blue-200 py-3 px-8 pr-12 rounded-r-xl shadow-lg z-10">
+                <p className="text-gray-800 font-bold text-sm sm:text-base text-center">
+                  Assured buyback value for<br />your Mobile
+                </p>
               </div>
             </div>
 

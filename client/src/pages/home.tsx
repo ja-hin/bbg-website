@@ -68,6 +68,76 @@ export default function Home() {
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Homepage Carousel */}
       <HomepageCarousel />
+      
+      {/* What is XtraCover BBG Section */}
+      <section className="py-12 sm:py-16 lg:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Left Content */}
+            <div className="order-2 lg:order-1">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-xtra-primary mb-6">
+                What is XtraCover Buyback Guarantee (BBG)?
+              </h2>
+              <p className="text-base sm:text-lg text-gray-700 mb-8 leading-relaxed">
+                BuyBack Guarantee (BBG) is a plan that locks the future resale value of your phone or laptop at the time of purchase. Instead of losing money to fast depreciation, BBG secures up to 70% of your device's price upfront. When it's time to upgrade, you get instant cash to your bank or UPI after a simple quality check. BBG makes owning and upgrading your device smarter, safer, and worry-free.
+              </p>
+              
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-xtra-primary mb-4">
+                Lock Your Device's Value Before it drops
+              </h3>
+              <p className="text-base sm:text-lg text-gray-700 mb-8 leading-relaxed">
+                With BuyBack Guarantee, secure up to 70% resale value for your mobile or laptop. Fixed upfront, hassle-free, and ready to redeem whenever you upgrade. Trusted by thousands across India.
+              </p>
+              
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/buy-bbg" className="w-full sm:w-auto">
+                  <Button 
+                    size="lg" 
+                    className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white px-8 py-3 text-lg font-semibold"
+                    data-testid="button-buy-bbg"
+                  >
+                    Buy
+                  </Button>
+                </Link>
+                <Link href="/claim-bbg" className="w-full sm:w-auto">
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="w-full sm:w-auto border-xtra-primary text-xtra-primary hover:bg-xtra-primary/5 px-8 py-3 text-lg font-semibold"
+                    data-testid="button-claim-bbg"
+                  >
+                    Claim
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            
+            {/* Right Video */}
+            <div className="order-1 lg:order-2">
+              <div className="relative rounded-xl overflow-hidden shadow-2xl bg-gray-100">
+                {/* Video placeholder - you can replace this with an actual video element */}
+                <div className="aspect-video bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-xtra-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Laptop className="w-10 h-10 text-xtra-primary" />
+                    </div>
+                    <p className="text-gray-600 font-medium">
+                      BBG Protection Demo
+                    </p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Video placeholder - Replace with actual video
+                    </p>
+                  </div>
+                </div>
+                {/* Overlay for video styling similar to the image */}
+                <div className="absolute inset-0 bg-black/10 rounded-xl pointer-events-none"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* Hero Section */}
       <section className="py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

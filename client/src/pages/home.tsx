@@ -165,21 +165,19 @@ export default function Home() {
           <div className="space-y-8 sm:space-y-12">
             
             {/* Step 1 - Icon Left */}
-            <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
-              <div className="flex-shrink-0 order-1 md:order-1">
-                <div className="w-40 h-40 sm:w-48 sm:h-48 lg:w-56 lg:h-56 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
-                  <img 
-                    src={deviceRegistrationImg} 
-                    alt="Device registration illustration" 
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              </div>
-              <div className="flex-1 order-2 md:order-2">
-                <div className="bg-white rounded-full px-8 sm:px-12 py-4 sm:py-6 shadow-lg">
-                  <h4 className="text-lg sm:text-xl lg:text-3xl xl:text-4xl font-bold text-gray-900 text-center md:text-right">
-                    You register your device once
-                  </h4>
+            <div className="relative max-w-4xl mx-auto">
+              <div className="relative bg-white rounded-full shadow-lg w-full py-4 sm:py-6 pr-8 sm:pr-12 pl-24 sm:pl-32 md:pl-40">
+                <h4 className="text-lg sm:text-xl lg:text-3xl xl:text-4xl font-bold text-gray-900 text-right">
+                  You register your device once
+                </h4>
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/4 z-10">
+                  <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2 shadow-md">
+                    <img 
+                      src={deviceRegistrationImg} 
+                      alt="Device registration illustration" 
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

@@ -460,6 +460,19 @@ export default function Home() {
         </div>
       </section>
       
+      {/* How Much You'll Get Back Section */}
+      <section className="py-12 sm:py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="inline-block border-2 border-xtra-primary rounded-3xl py-4 px-8 sm:px-12">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-xtra-primary">
+                How Much You'll Get Back
+              </h2>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* Hero Section */}
       <section className="py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

@@ -420,9 +420,42 @@ export default function Home() {
             </div>
             
             {/* Title */}
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-xtra-primary leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-xtra-primary leading-tight mb-12">
               Why People<br />Choose BBG?
             </h2>
+
+            {/* Benefits List */}
+            <div className="space-y-6 max-w-4xl mx-auto">
+              
+              {/* Benefit 1 */}
+              <div className="bg-xtra-primary rounded-2xl py-6 sm:py-8 px-6 sm:px-8 text-center">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
+                  Assured returns – your payout is locked on day one
+                </h3>
+              </div>
+              
+              {/* Benefit 2 */}
+              <div className="bg-xtra-primary rounded-2xl py-6 sm:py-8 px-6 sm:px-8 text-center">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
+                  Best value in India – higher buyback than any other option
+                </h3>
+              </div>
+              
+              {/* Benefit 3 */}
+              <div className="bg-xtra-primary rounded-2xl py-6 sm:py-8 px-6 sm:px-8 text-center">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
+                  Simple process – claim is doorstep pickup + instant payment
+                </h3>
+              </div>
+              
+              {/* Benefit 4 */}
+              <div className="bg-xtra-primary rounded-2xl py-6 sm:py-8 px-6 sm:px-8 text-center">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
+                  Trusted brand – already chosen by thousands across the country
+                </h3>
+              </div>
+              
+            </div>
           </div>
         </div>
       </section>

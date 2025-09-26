@@ -23,7 +23,7 @@ import {
 import { HomepageCarousel } from "@/components/homepage-carousel";
 import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png";
 import resaleValueImg from "@assets/Untitled design (4)_1758890353128.png";
-import doorstepPickupImg from "@assets/Untitled design (3) (1)_1758892330102.png";
+import doorstepPickupImg from "@assets/1_1758893676653.png";
 import instantPaymentImg from "@assets/Untitled design (4) (1)_1758893390570.png";
 
 export default function Home() {

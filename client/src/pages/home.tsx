@@ -160,7 +160,7 @@ export default function Home() {
       </section>
       
       {/* Process Flow Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-blue-50">
+      <section className="py-12 sm:py-16 lg:py-20" style={{backgroundColor: "#759df5"}}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="space-y-8 sm:space-y-12">
             

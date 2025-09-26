@@ -243,6 +243,97 @@ export default function Home() {
         </div>
       </section>
       
+      {/* BBG Pricing Cards Section */}
+      <section className="py-12 sm:py-16 lg:py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            
+            {/* Laptop BBG Card */}
+            <div className="relative">
+              <div className="bg-xtra-primary rounded-3xl p-6 sm:p-8 text-white shadow-xl">
+                {/* Header */}
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-2">Laptop BBG</h3>
+                  <div className="text-4xl sm:text-5xl font-bold mb-2">
+                    {pricesLoading ? <Loader2 className="h-10 w-10 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
+                  </div>
+                  <p className="text-white/80 text-sm">(inclusive of GST)</p>
+                </div>
+
+                {/* Gray Banner */}
+                <div className="bg-white/20 backdrop-blur-sm rounded-xl py-3 px-4 mb-6 text-center">
+                  <p className="text-white font-semibold text-sm sm:text-base">
+                    Assured buyback value for your Laptop
+                  </p>
+                </div>
+
+                {/* Features List */}
+                <ul className="space-y-3 text-white">
+                  <li className="flex items-start">
+                    <span className="text-white mr-3 mt-1">•</span>
+                    <span className="text-sm sm:text-base">Up to 70% payout value</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-white mr-3 mt-1">•</span>
+                    <span className="text-sm sm:text-base">Coverage for up to 36 months</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-white mr-3 mt-1">•</span>
+                    <span className="text-sm sm:text-base">Free doorstep pickup for claims</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-white mr-3 mt-1">•</span>
+                    <span className="text-sm sm:text-base">Instant payouts at the time of device handover</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Mobile BBG Card */}
+            <div className="relative">
+              <div className="bg-xtra-primary rounded-3xl p-6 sm:p-8 text-white shadow-xl">
+                {/* Header */}
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-2">Mobile BBG</h3>
+                  <div className="text-4xl sm:text-5xl font-bold mb-2">
+                    {pricesLoading ? <Loader2 className="h-10 w-10 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
+                  </div>
+                  <p className="text-white/80 text-sm">(inclusive of GST)</p>
+                </div>
+
+                {/* Gray Banner */}
+                <div className="bg-white/20 backdrop-blur-sm rounded-xl py-3 px-4 mb-6 text-center">
+                  <p className="text-white font-semibold text-sm sm:text-base">
+                    Assured buyback value for your Mobile
+                  </p>
+                </div>
+
+                {/* Features List */}
+                <ul className="space-y-3 text-white">
+                  <li className="flex items-start">
+                    <span className="text-white mr-3 mt-1">•</span>
+                    <span className="text-sm sm:text-base">Up to 70% payout value</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-white mr-3 mt-1">•</span>
+                    <span className="text-sm sm:text-base">Coverage for up to 18 months</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-white mr-3 mt-1">•</span>
+                    <span className="text-sm sm:text-base">Free doorstep pickup for claims</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-white mr-3 mt-1">•</span>
+                    <span className="text-sm sm:text-base">Instant payouts at the time of device handover</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+      
       {/* Hero Section */}
       <section className="py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

@@ -144,7 +144,8 @@ export default function Home() {
           {/* First Title */}
           <div className="bg-xtra-primary rounded-2xl py-6 sm:py-8 px-6 sm:px-8 text-center">
             <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white leading-relaxed">
-              Your device starts losing value the moment you buy it. BBG protects you from that.
+              Your device starts losing value the moment you<br />
+              buy it. BBG protects you from that.
             </h3>
           </div>
           

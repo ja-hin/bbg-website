@@ -669,29 +669,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Additional Info Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12">
-            <Card className="p-4 sm:p-6 text-center">
-              <CardContent className="p-0">
-                <div className="text-2xl sm:text-3xl font-bold text-xtra-primary mb-2">Upto 36 Months</div>
-                <p className="text-sm sm:text-base text-gray-600">coverage period</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-4 sm:p-6 text-center">
-              <CardContent className="p-0">
-                <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-2">70%</div>
-                <p className="text-sm sm:text-base text-gray-600">maximum claim value</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="p-4 sm:p-6 text-center">
-              <CardContent className="p-0">
-                <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-2">100%</div>
-                <p className="text-sm sm:text-base text-gray-600">transparent pricing</p>
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </section>
       {/* FAQ Section */}

@@ -165,9 +165,9 @@ export default function Home() {
           <div className="space-y-8 sm:space-y-12">
             
             {/* Step 1 - Icon Left */}
-            <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
-              <div className="flex-shrink-0 order-1 md:order-1">
-                <div className="w-32 h-32 sm:w-40 sm:h-40 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
+            <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-8">
+              <div className="flex-shrink-0 order-1 md:order-1 md:absolute md:left-0 md:z-10">
+                <div className="w-40 h-40 sm:w-48 sm:h-48 lg:w-56 lg:h-56 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
                   <img 
                     src={deviceRegistrationImg} 
                     alt="Device registration illustration" 
@@ -175,9 +175,9 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <div className="flex-1 order-2 md:order-2">
+              <div className="flex-1 order-2 md:order-2 md:ml-28 lg:ml-32">
                 <div className="bg-white rounded-3xl px-6 sm:px-8 py-4 sm:py-6 shadow-lg">
-                  <h4 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 text-center md:text-left">
+                  <h4 className="text-lg sm:text-xl lg:text-3xl xl:text-4xl font-bold text-gray-900 text-center md:text-left">
                     You register your device once
                   </h4>
                 </div>

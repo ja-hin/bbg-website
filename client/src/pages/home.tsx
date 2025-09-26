@@ -249,18 +249,25 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             
             {/* Laptop BBG Card */}
-            <div className="relative ml-8">
-              <div className="bg-xtra-primary rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-                {/* Header */}
-                <div className="text-center mb-16">
-                  <h3 className="text-2xl sm:text-3xl font-bold mb-4">Laptop BBG</h3>
-                  <div className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">
-                    {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
-                  </div>
-                  <p className="text-white/90 text-base">(inclusive of GST)</p>
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              {/* White Header Section */}
+              <div className="bg-xtra-primary rounded-t-2xl p-6 sm:p-8 text-white text-center">
+                <h3 className="text-2xl sm:text-3xl font-bold mb-4">Laptop BBG</h3>
+                <div className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">
+                  {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
                 </div>
-
-                {/* Features List */}
+                <p className="text-white/90 text-base">(inclusive of GST)</p>
+              </div>
+              
+              {/* Light Blue Banner */}
+              <div className="bg-blue-200 py-4 px-6 text-center">
+                <p className="text-gray-800 font-bold text-base sm:text-lg">
+                  Assured buyback value for your Laptop
+                </p>
+              </div>
+              
+              {/* Blue Features Section */}
+              <div className="bg-xtra-primary p-6 sm:p-8 rounded-b-2xl">
                 <ul className="space-y-4 text-white">
                   <li className="flex items-start">
                     <span className="text-white mr-3 mt-1 text-lg">•</span>
@@ -280,28 +287,28 @@ export default function Home() {
                   </li>
                 </ul>
               </div>
-              
-              {/* Gray Ribbon/Banner */}
-              <div className="absolute top-32 -left-8 bg-blue-200 py-3 px-8 pr-12 rounded-r-xl shadow-lg z-10">
-                <p className="text-gray-800 font-bold text-sm sm:text-base text-center">
-                  Assured buyback value for<br />your Laptop
-                </p>
-              </div>
             </div>
 
             {/* Mobile BBG Card */}
-            <div className="relative ml-8">
-              <div className="bg-xtra-primary rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-                {/* Header */}
-                <div className="text-center mb-16">
-                  <h3 className="text-2xl sm:text-3xl font-bold mb-4">Mobile BBG</h3>
-                  <div className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">
-                    {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
-                  </div>
-                  <p className="text-white/90 text-base">(inclusive of GST)</p>
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              {/* White Header Section */}
+              <div className="bg-xtra-primary rounded-t-2xl p-6 sm:p-8 text-white text-center">
+                <h3 className="text-2xl sm:text-3xl font-bold mb-4">Mobile BBG</h3>
+                <div className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">
+                  {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
                 </div>
-
-                {/* Features List */}
+                <p className="text-white/90 text-base">(inclusive of GST)</p>
+              </div>
+              
+              {/* Light Blue Banner */}
+              <div className="bg-blue-200 py-4 px-6 text-center">
+                <p className="text-gray-800 font-bold text-base sm:text-lg">
+                  Assured buyback value for your Mobile
+                </p>
+              </div>
+              
+              {/* Blue Features Section */}
+              <div className="bg-xtra-primary p-6 sm:p-8 rounded-b-2xl">
                 <ul className="space-y-4 text-white">
                   <li className="flex items-start">
                     <span className="text-white mr-3 mt-1 text-lg">•</span>
@@ -320,13 +327,6 @@ export default function Home() {
                     <span className="text-base sm:text-lg">Instant payouts at the time of device handover</span>
                   </li>
                 </ul>
-              </div>
-              
-              {/* Gray Ribbon/Banner */}
-              <div className="absolute top-32 -left-8 bg-blue-200 py-3 px-8 pr-12 rounded-r-xl shadow-lg z-10">
-                <p className="text-gray-800 font-bold text-sm sm:text-base text-center">
-                  Assured buyback value for<br />your Mobile
-                </p>
               </div>
             </div>
 

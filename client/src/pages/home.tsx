@@ -138,6 +138,25 @@ export default function Home() {
         </div>
       </section>
       
+      {/* Title Sections */}
+      <section className="py-8 sm:py-12 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          {/* First Title */}
+          <div className="bg-xtra-primary rounded-2xl py-6 sm:py-8 px-6 sm:px-8 text-center">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white leading-relaxed">
+              Your device starts losing value the moment you buy it. BBG protects you from that.
+            </h3>
+          </div>
+          
+          {/* Second Title */}
+          <div className="bg-xtra-primary rounded-2xl py-6 sm:py-8 px-6 sm:px-8 text-center">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
+              What BBG Does ?
+            </h3>
+          </div>
+        </div>
+      </section>
+      
       {/* Hero Section */}
       <section className="py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

@@ -551,55 +551,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* Features Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">Why Choose <span className="text-xtra-primary">XtraCover BBG?</span></h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto px-4 sm:px-0">
-              We provide the most comprehensive and reliable buyback guarantee program in the market
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            <Card className="p-6 sm:p-8 text-center hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-xtra-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-xtra-primary" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Guaranteed Returns</h3>
-                <p className="text-gray-600 text-sm sm:text-base">
-                  Get assured returns based on your device condition and age. No hidden terms or conditions.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="p-6 sm:p-8 text-center hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-xtra-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-xtra-primary" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Best Market Value</h3>
-                <p className="text-gray-600 text-sm sm:text-base">
-                  We offer the highest buyback percentages in the market with transparent pricing slabs.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="p-6 sm:p-8 text-center hover:shadow-lg transition-shadow">
-              <CardContent className="p-0">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-xtra-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <Users className="h-6 w-6 sm:h-8 sm:w-8 text-xtra-primary" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Trusted Network</h3>
-                <p className="text-gray-600 text-sm sm:text-base">
-                  Join our network of verified referral partners and satisfied customers across the country.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
       {/* BBG Depreciation Slabs Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

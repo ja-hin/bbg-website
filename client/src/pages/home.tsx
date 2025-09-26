@@ -23,6 +23,7 @@ import {
 import { HomepageCarousel } from "@/components/homepage-carousel";
 import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png";
 import resaleValueImg from "@assets/Untitled design (4)_1758890353128.png";
+import doorstepPickupImg from "@assets/Untitled design (3) (1)_1758892330102.png";
 
 export default function Home() {
   // Fetch theme for dynamic coloring
@@ -202,20 +203,19 @@ export default function Home() {
             </div>
 
             {/* Step 3 - Icon Left */}
-            <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
-              <div className="flex-shrink-0 order-1 md:order-1">
-                <div className="w-32 h-32 sm:w-40 sm:h-40 bg-xtra-primary/20 rounded-3xl flex items-center justify-center">
-                  <div className="text-center">
-                    <Smartphone className="w-12 h-12 sm:w-16 sm:h-16 text-xtra-primary mx-auto mb-2" />
-                    <div className="w-8 h-8 bg-xtra-primary/30 rounded-lg mx-auto"></div>
+            <div className="relative max-w-4xl mx-auto">
+              <div className="relative bg-white rounded-full w-full py-3 sm:py-4 pr-8 sm:pr-12 pl-24 sm:pl-32 md:pl-40">
+                <h4 className="text-lg sm:text-xl lg:text-3xl xl:text-4xl font-bold text-gray-900 text-right">
+                  We pick it up right from your doorstep
+                </h4>
+                <div className="absolute left-10 top-1/2 -translate-y-1/2 z-10">
+                  <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
+                    <img 
+                      src={doorstepPickupImg} 
+                      alt="Doorstep pickup illustration" 
+                      className="w-full h-full object-contain"
+                    />
                   </div>
-                </div>
-              </div>
-              <div className="flex-1 order-2 md:order-2">
-                <div className="bg-white rounded-3xl px-6 sm:px-8 py-4 sm:py-6 shadow-lg">
-                  <h4 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 text-center md:text-left">
-                    We pick it up right from your doorstep
-                  </h4>
                 </div>
               </div>
             </div>

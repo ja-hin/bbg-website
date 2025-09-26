@@ -72,9 +72,9 @@ export default function Home() {
       {/* What is XtraCover BBG Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
             {/* Left Content */}
-            <div className="order-2 lg:order-1">
+            <div className="order-2 lg:order-1 flex flex-col justify-center">
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-xtra-primary mb-6">
                 What is XtraCover Buyback Guarantee (BBG)?
               </h2>
@@ -114,8 +114,8 @@ export default function Home() {
             </div>
             
             {/* Right Video */}
-            <div className="order-1 lg:order-2">
-              <div className="relative rounded-xl overflow-hidden shadow-2xl bg-gray-100">
+            <div className="order-1 lg:order-2 flex items-center">
+              <div className="relative rounded-xl overflow-hidden shadow-2xl bg-gray-100 w-full">
                 {/* Video placeholder - you can replace this with an actual video element */}
                 <div className="aspect-video bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
                   <div className="text-center">

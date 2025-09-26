@@ -166,11 +166,11 @@ export default function Home() {
             
             {/* Step 1 - Icon Left */}
             <div className="relative max-w-4xl mx-auto">
-              <div className="relative bg-white rounded-full w-full py-4 sm:py-6 pr-8 sm:pr-12 pl-24 sm:pl-32 md:pl-40">
+              <div className="relative bg-white rounded-full w-full py-3 sm:py-4 pr-8 sm:pr-12 pl-24 sm:pl-32 md:pl-40">
                 <h4 className="text-lg sm:text-xl lg:text-3xl xl:text-4xl font-bold text-gray-900 text-right">
                   You register your device once
                 </h4>
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/8 z-10">
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/12 z-10">
                   <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
                     <img 
                       src={deviceRegistrationImg} 

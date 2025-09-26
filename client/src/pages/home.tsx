@@ -245,25 +245,31 @@ export default function Home() {
       
       {/* BBG Pricing Cards Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
             
             {/* Laptop BBG Card */}
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-              {/* White Header Section */}
-              <div className="bg-xtra-primary rounded-t-2xl p-6 sm:p-8 text-white text-center">
-                <h3 className="text-2xl sm:text-3xl font-bold mb-4">Laptop BBG</h3>
-                <div className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-md mx-auto lg:max-w-none">
+              {/* Blue Header Section */}
+              <div className="bg-xtra-primary rounded-t-2xl p-8 sm:p-10 text-white text-center">
+                <h3 className="text-3xl sm:text-4xl font-bold mb-6">Laptop BBG</h3>
+                <div className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4">
                   {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
                 </div>
-                <p className="text-white/90 text-base">(inclusive of GST)</p>
+                <p className="text-white/90 text-lg">(inclusive of GST)</p>
               </div>
               
-              {/* Light Blue Banner */}
-              <div className="bg-blue-200 py-4 px-6 text-center">
-                <p className="text-gray-800 font-bold text-base sm:text-lg">
-                  Assured buyback value for your Laptop
-                </p>
+              {/* 3D Ribbon Banner */}
+              <div className="relative">
+                <div className="bg-blue-200 py-5 px-8 text-center relative">
+                  {/* 3D Left Triangle */}
+                  <div className="absolute left-0 top-0 w-0 h-0 border-t-[30px] border-t-blue-300 border-l-[20px] border-l-transparent border-b-[30px] border-b-blue-300"></div>
+                  <div className="absolute left-0 top-0 w-0 h-0 border-t-[30px] border-t-blue-200 border-l-[15px] border-l-transparent border-b-[30px] border-b-blue-200 ml-1"></div>
+                  
+                  <p className="text-gray-800 font-bold text-lg sm:text-xl relative z-10 ml-6">
+                    Assured buyback value for<br />your Laptop
+                  </p>
+                </div>
               </div>
               
               {/* Blue Features Section */}
@@ -290,21 +296,27 @@ export default function Home() {
             </div>
 
             {/* Mobile BBG Card */}
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-              {/* White Header Section */}
-              <div className="bg-xtra-primary rounded-t-2xl p-6 sm:p-8 text-white text-center">
-                <h3 className="text-2xl sm:text-3xl font-bold mb-4">Mobile BBG</h3>
-                <div className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-md mx-auto lg:max-w-none">
+              {/* Blue Header Section */}
+              <div className="bg-xtra-primary rounded-t-2xl p-8 sm:p-10 text-white text-center">
+                <h3 className="text-3xl sm:text-4xl font-bold mb-6">Mobile BBG</h3>
+                <div className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4">
                   {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
                 </div>
-                <p className="text-white/90 text-base">(inclusive of GST)</p>
+                <p className="text-white/90 text-lg">(inclusive of GST)</p>
               </div>
               
-              {/* Light Blue Banner */}
-              <div className="bg-blue-200 py-4 px-6 text-center">
-                <p className="text-gray-800 font-bold text-base sm:text-lg">
-                  Assured buyback value for your Mobile
-                </p>
+              {/* 3D Ribbon Banner */}
+              <div className="relative">
+                <div className="bg-blue-200 py-5 px-8 text-center relative">
+                  {/* 3D Left Triangle */}
+                  <div className="absolute left-0 top-0 w-0 h-0 border-t-[30px] border-t-blue-300 border-l-[20px] border-l-transparent border-b-[30px] border-b-blue-300"></div>
+                  <div className="absolute left-0 top-0 w-0 h-0 border-t-[30px] border-t-blue-200 border-l-[15px] border-l-transparent border-b-[30px] border-b-blue-200 ml-1"></div>
+                  
+                  <p className="text-gray-800 font-bold text-lg sm:text-xl relative z-10 ml-6">
+                    Assured buyback value for<br />your Mobile
+                  </p>
+                </div>
               </div>
               
               {/* Blue Features Section */}

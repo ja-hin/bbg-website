@@ -183,19 +183,17 @@ export default function Home() {
             </div>
 
             {/* Step 2 - Icon Right */}
-            <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
-              <div className="flex-1 order-2 md:order-1">
-                <div className="bg-white rounded-3xl px-6 sm:px-8 py-4 sm:py-6 shadow-lg">
-                  <h4 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 text-center md:text-right">
-                    Your resale value is upfront
-                  </h4>
-                </div>
-              </div>
-              <div className="flex-shrink-0 order-1 md:order-2">
-                <div className="w-32 h-32 sm:w-40 sm:h-40 bg-xtra-primary/20 rounded-3xl flex items-center justify-center">
-                  <div className="text-center">
-                    <TrendingUp className="w-12 h-12 sm:w-16 sm:h-16 text-xtra-primary mx-auto mb-2" />
-                    <div className="w-8 h-8 bg-xtra-primary/30 rounded-lg mx-auto"></div>
+            <div className="relative max-w-4xl mx-auto">
+              <div className="relative bg-white rounded-full w-full py-3 sm:py-4 pl-8 sm:pl-12 pr-24 sm:pr-32 md:pr-40">
+                <h4 className="text-lg sm:text-xl lg:text-3xl xl:text-4xl font-bold text-gray-900 text-left">
+                  Your resale value is upfront
+                </h4>
+                <div className="absolute right-10 top-1/2 -translate-y-1/2 z-10">
+                  <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
+                    <div className="text-center">
+                      <TrendingUp className="w-12 h-12 sm:w-16 sm:h-16 text-xtra-primary mx-auto mb-2" />
+                      <div className="w-8 h-8 bg-xtra-primary/30 rounded-lg mx-auto"></div>
+                    </div>
                   </div>
                 </div>
               </div>

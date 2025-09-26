@@ -163,7 +163,7 @@ export default function Home() {
       {/* Process Flow Section */}
       <section className="py-12 sm:py-16 lg:py-20" style={{backgroundColor: "rgba(117, 157, 245, 0.27)"}}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-20">
+          <div className="space-y-24">
             
             {/* Step 1 - Icon Left */}
             <div className="relative max-w-4xl mx-auto">

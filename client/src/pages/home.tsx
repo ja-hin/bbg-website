@@ -379,6 +379,54 @@ export default function Home() {
         </div>
       </section>
       
+      {/* Why People Choose BBG Section */}
+      <section className="py-12 sm:py-16 lg:py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-8 sm:gap-12 lg:gap-16 mb-6">
+              
+              {/* Left Question Mark */}
+              <div className="flex-shrink-0">
+                <HelpCircle className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 text-gray-300 stroke-1" />
+              </div>
+              
+              {/* Center People Icon */}
+              <div className="flex-shrink-0">
+                <div className="relative">
+                  {/* Group of people icon */}
+                  <div className="flex items-center justify-center">
+                    <div className="relative">
+                      {/* Main center person */}
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-xtra-primary rounded-full flex items-center justify-center relative z-10">
+                        <Users className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+                      </div>
+                      {/* Left person */}
+                      <div className="absolute -left-6 sm:-left-8 top-2 w-12 h-12 sm:w-16 sm:h-16 bg-xtra-primary rounded-full opacity-80"></div>
+                      {/* Right person */}
+                      <div className="absolute -right-6 sm:-right-8 top-2 w-12 h-12 sm:w-16 sm:h-16 bg-xtra-primary rounded-full opacity-80"></div>
+                      {/* Back left person */}
+                      <div className="absolute -left-3 sm:-left-4 -top-2 w-10 h-10 sm:w-12 sm:h-12 bg-xtra-primary rounded-full opacity-60"></div>
+                      {/* Back right person */}
+                      <div className="absolute -right-3 sm:-right-4 -top-2 w-10 h-10 sm:w-12 sm:h-12 bg-xtra-primary rounded-full opacity-60"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Right Question Mark */}
+              <div className="flex-shrink-0">
+                <HelpCircle className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 text-gray-300 stroke-1" />
+              </div>
+            </div>
+            
+            {/* Title */}
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-xtra-primary leading-tight">
+              Why People<br />Choose BBG?
+            </h2>
+          </div>
+        </div>
+      </section>
+      
       {/* Hero Section */}
       <section className="py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

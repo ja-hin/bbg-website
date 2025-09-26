@@ -334,6 +334,51 @@ export default function Home() {
         </div>
       </section>
       
+      {/* Acer Special Offer Section */}
+      <section className="py-12 sm:py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative">
+            <div className="bg-xtra-primary rounded-2xl p-6 sm:p-8 lg:p-10 text-white shadow-xl overflow-hidden">
+              
+              {/* Golden Special Offer Ribbon */}
+              <div className="absolute top-0 left-0 bg-gradient-to-br from-yellow-400 to-yellow-600 text-black font-bold px-6 py-3 transform -rotate-45 -translate-x-4 -translate-y-2 origin-top-left shadow-lg">
+                <div className="transform rotate-45 text-xs sm:text-sm whitespace-nowrap">
+                  SPECIAL<br />OFFER
+                </div>
+              </div>
+
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+                
+                {/* Left Content - Features */}
+                <div className="flex-1 lg:ml-8">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0" />
+                      <span className="text-lg sm:text-xl font-medium">Same assured buyback protection</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0" />
+                      <span className="text-lg sm:text-xl font-medium">Coverage for up to 5 years</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0" />
+                      <span className="text-lg sm:text-xl font-medium">Quick settlement on claim</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Content - For Acer Users */}
+                <div className="text-center lg:text-right">
+                  <div className="text-xl sm:text-2xl font-medium mb-2">For</div>
+                  <div className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-1">acer</div>
+                  <div className="text-xl sm:text-2xl font-medium">Users</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* Hero Section */}
       <section className="py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

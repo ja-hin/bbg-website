@@ -460,19 +460,6 @@ export default function Home() {
         </div>
       </section>
       
-      {/* How Much You'll Get Back Section */}
-      <section className="py-12 sm:py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="inline-block border-2 border-xtra-primary rounded-3xl py-4 px-8 sm:px-12">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-xtra-primary">
-                How Much You'll Get Back
-              </h2>
-            </div>
-          </div>
-        </div>
-      </section>
-      
       {/* Hero Section */}
       <section className="py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -678,12 +665,11 @@ export default function Home() {
       <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
-              BBG Claim Value Slabs
-            </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4 sm:px-0">
-              Transparent pricing based on your device age. Know exactly what you'll get when you claim your BBG.
-            </p>
+            <div className="inline-block border-2 border-xtra-primary rounded-3xl py-4 px-8 sm:px-12 mb-8">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-xtra-primary">
+                How Much You'll Get Back
+              </h2>
+            </div>
           </div>
 
           {isSlabsLoading ? (

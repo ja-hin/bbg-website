@@ -25,7 +25,7 @@ import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png
 import resaleValueImg from "@assets/Untitled design (4)_1758890353128.png";
 import doorstepPickupImg from "@assets/1_1758893676653.png";
 import instantPaymentImg from "@assets/2_1758893843696.png";
-import bbgVideoFile from "@assets/Video final BBG ky hota_1758894912803.mp4";
+import bbgVideoFile from "@assets/A_cinematic_hightech_202509271550_97ecx_1758972698482.mp4";
 
 export default function Home() {
   // Fetch theme for dynamic coloring

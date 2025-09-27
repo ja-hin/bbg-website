@@ -246,99 +246,107 @@ export default function Home() {
       
       {/* BBG Pricing Cards Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 justify-items-center">
             
             {/* Laptop BBG Card */}
-            <div className="relative">
-              <div className="rounded-2xl shadow-xl overflow-hidden">
-                {/* Blue Header Section */}
-                <div className="bg-xtra-primary p-8 sm:p-10 text-white text-center">
-                  <h3 className="text-3xl sm:text-4xl font-bold mb-6">Laptop BBG</h3>
-                  <div className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4">
-                    {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
-                    </div>
-                  <p className="text-white/90 text-lg">(inclusive of GST)</p>
+            <div className="relative w-full max-w-xs">
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10">
+                {/* Blue Header Section with text shadow */}
+                <div className="bg-xtra-primary p-6 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                  <h3 className="text-2xl font-bold mb-4">Laptop BBG</h3>
+                  <div className="text-4xl font-bold mb-2">
+                    {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
+                  </div>
+                  <p className="text-white/90 text-sm">(inclusive of GST)</p>
                 </div>
               
-                {/* Light Blue/Gray Assured Value Section */}
-                <div className="bg-blue-100 py-6 text-center">
-                  <p className="text-gray-800 font-bold text-lg">
-                    Assured buyback value for<br />your Laptop
-                  </p>
-                </div>
-              
-                {/* Blue Features Section */}
-                <div className="bg-xtra-primary p-8 sm:p-10">
-                  <ul className="space-y-4 text-white">
+                {/* Blue Features Section with text shadow */}
+                <div className="bg-xtra-primary p-6 rounded-b-2xl" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <ul className="space-y-3 text-white">
                     <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1 text-lg">•</span>
-                      <span className="text-base sm:text-lg">Up to 70% payout value</span>
+                      <span className="text-white mr-3 mt-1">•</span>
+                      <span className="text-sm">Up to 70% payout value</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1 text-lg">•</span>
-                      <span className="text-base sm:text-lg">Coverage for up to 36 months</span>
+                      <span className="text-white mr-3 mt-1">•</span>
+                      <span className="text-sm">Coverage for up to 36 months</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1 text-lg">•</span>
-                      <span className="text-base sm:text-lg">Free doorstep pickup for claims</span>
+                      <span className="text-white mr-3 mt-1">•</span>
+                      <span className="text-sm">Free doorstep pickup for claims</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1 text-lg">•</span>
-                      <span className="text-base sm:text-lg">Instant payouts at the time of device handover</span>
+                      <span className="text-white mr-3 mt-1">•</span>
+                      <span className="text-sm">Instant payouts at the time of device handover</span>
                     </li>
                   </ul>
+                </div>
+              </div>
+              
+              {/* 3D Ribbon for Assured Value */}
+              <div className="absolute top-16 -left-8 right-6 z-20">
+                <div className="relative">
+                  {/* Main ribbon extending left */}
+                  <div className="bg-blue-200 py-3 pl-10 pr-4 rounded-r-xl shadow-lg relative">
+                    <p className="text-gray-800 font-bold text-sm text-center">
+                      Assured buyback value for<br />your Laptop
+                    </p>
+                  </div>
+                  
+                  {/* 3D triangle fold effect on bottom left */}
+                  <div className="absolute -bottom-2 left-0 w-0 h-0 border-l-[12px] border-l-blue-300 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent transform rotate-45 shadow-sm"></div>
                 </div>
               </div>
             </div>
 
             {/* Mobile BBG Card */}
-            <div className="relative ml-12">
-              <div className="bg-xtra-primary rounded-2xl shadow-xl overflow-hidden">
-                {/* Blue Header Section */}
-                <div className="bg-xtra-primary rounded-t-2xl p-8 sm:p-10 text-white text-center">
-                  <h3 className="text-3xl sm:text-4xl font-bold mb-6">Mobile BBG</h3>
-                  <div className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4">
-                    {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
+            <div className="relative w-full max-w-xs">
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10">
+                {/* Blue Header Section with text shadow */}
+                <div className="bg-xtra-primary p-6 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                  <h3 className="text-2xl font-bold mb-4">Mobile BBG</h3>
+                  <div className="text-4xl font-bold mb-2">
+                    {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
                   </div>
-                  <p className="text-white/90 text-lg">(inclusive of GST)</p>
+                  <p className="text-white/90 text-sm">(inclusive of GST)</p>
                 </div>
               
-                {/* Blue Features Section */}
-                <div className="bg-xtra-primary p-8 sm:p-10 rounded-b-2xl">
-                  <ul className="space-y-4 text-white">
+                {/* Blue Features Section with text shadow */}
+                <div className="bg-xtra-primary p-6 rounded-b-2xl" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <ul className="space-y-3 text-white">
                     <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1 text-lg">•</span>
-                      <span className="text-base sm:text-lg">Up to 70% payout value</span>
+                      <span className="text-white mr-3 mt-1">•</span>
+                      <span className="text-sm">Up to 70% payout value</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1 text-lg">•</span>
-                      <span className="text-base sm:text-lg">Coverage for up to 18 months</span>
+                      <span className="text-white mr-3 mt-1">•</span>
+                      <span className="text-sm">Coverage for up to 18 months</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1 text-lg">•</span>
-                      <span className="text-base sm:text-lg">Free doorstep pickup for claims</span>
+                      <span className="text-white mr-3 mt-1">•</span>
+                      <span className="text-sm">Free doorstep pickup for claims</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1 text-lg">•</span>
-                      <span className="text-base sm:text-lg">Instant payouts at the time of device handover</span>
+                      <span className="text-white mr-3 mt-1">•</span>
+                      <span className="text-sm">Instant payouts at the time of device handover</span>
                     </li>
                   </ul>
                 </div>
               </div>
               
-              {/* 3D Ribbon positioned absolutely */}
-              <div className="absolute top-48 -left-12 z-20">
+              {/* 3D Ribbon for Assured Value */}
+              <div className="absolute top-16 -left-8 right-6 z-20">
                 <div className="relative">
-                  {/* Main ribbon */}
-                  <div className="bg-blue-200 py-4 px-8 pr-12 rounded-r-2xl shadow-lg">
-                    <p className="text-gray-800 font-bold text-base sm:text-lg text-center whitespace-nowrap">
+                  {/* Main ribbon extending left */}
+                  <div className="bg-blue-200 py-3 pl-10 pr-4 rounded-r-xl shadow-lg relative">
+                    <p className="text-gray-800 font-bold text-sm text-center">
                       Assured buyback value for<br />your Mobile
                     </p>
                   </div>
                   
-                  {/* 3D fold effect */}
-                  <div className="absolute -bottom-2 -left-2 w-0 h-0 border-l-[16px] border-l-blue-300 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent"></div>
+                  {/* 3D triangle fold effect on bottom left */}
+                  <div className="absolute -bottom-2 left-0 w-0 h-0 border-l-[12px] border-l-blue-300 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent transform rotate-45 shadow-sm"></div>
                 </div>
               </div>
             </div>

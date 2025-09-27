@@ -285,17 +285,17 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute top-24 -left-8 right-6 z-20">
+              <div className="absolute top-32 -left-12 right-6 z-20">
                 <div className="relative">
                   {/* Main ribbon extending left */}
-                  <div className="bg-blue-200 py-3 pl-10 pr-4 rounded-r-xl shadow-lg relative">
+                  <div className="bg-blue-200 py-3 pl-14 pr-4 rounded-r-xl shadow-lg relative">
                     <p className="text-gray-800 font-bold text-sm text-center">
                       Assured buyback value for<br />your Laptop
                     </p>
                   </div>
                   
-                  {/* 3D triangle fold effect on bottom left */}
-                  <div className="absolute -bottom-2 left-0 w-0 h-0 border-l-[8px] border-l-blue-300 border-b-[8px] border-b-transparent"></div>
+                  {/* 3D triangle fold effect on bottom left - bigger triangle with flat side against card */}
+                  <div className="absolute -bottom-3 left-0 w-0 h-0 border-t-[15px] border-t-blue-300 border-r-[15px] border-r-transparent"></div>
                 </div>
               </div>
             </div>
@@ -336,17 +336,17 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute top-24 -left-8 right-6 z-20">
+              <div className="absolute top-32 -left-12 right-6 z-20">
                 <div className="relative">
                   {/* Main ribbon extending left */}
-                  <div className="bg-blue-200 py-3 pl-10 pr-4 rounded-r-xl shadow-lg relative">
+                  <div className="bg-blue-200 py-3 pl-14 pr-4 rounded-r-xl shadow-lg relative">
                     <p className="text-gray-800 font-bold text-sm text-center">
                       Assured buyback value for<br />your Mobile
                     </p>
                   </div>
                   
-                  {/* 3D triangle fold effect on bottom left */}
-                  <div className="absolute -bottom-2 left-0 w-0 h-0 border-l-[8px] border-l-blue-300 border-b-[8px] border-b-transparent"></div>
+                  {/* 3D triangle fold effect on bottom left - bigger triangle with flat side against card */}
+                  <div className="absolute -bottom-3 left-0 w-0 h-0 border-t-[15px] border-t-blue-300 border-r-[15px] border-r-transparent"></div>
                 </div>
               </div>
             </div>

@@ -99,20 +99,19 @@ export default function Home() {
                 <Link href="/buy-bbg" className="w-full sm:w-auto">
                   <Button 
                     size="lg" 
-                    className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white px-8 py-3 text-lg font-semibold"
+                    className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white px-8 py-3 text-lg font-semibold rounded-lg"
                     data-testid="button-buy-bbg"
                   >
-                    Buy
+                    Buy BBG
                   </Button>
                 </Link>
                 <Link href="/claim-bbg" className="w-full sm:w-auto">
                   <Button 
-                    variant="outline" 
                     size="lg" 
-                    className="w-full sm:w-auto border-xtra-primary text-xtra-primary hover:bg-xtra-primary/5 px-8 py-3 text-lg font-semibold"
+                    className="w-full sm:w-auto bg-xtra-primary hover:bg-xtra-primary/90 text-white px-8 py-3 text-lg font-semibold rounded-lg"
                     data-testid="button-claim-bbg"
                   >
-                    Claim
+                    Claim BBG
                   </Button>
                 </Link>
               </div>

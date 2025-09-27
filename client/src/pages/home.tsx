@@ -253,16 +253,16 @@ export default function Home() {
             <div className="relative w-full max-w-xs">
               <div className="rounded-2xl shadow-xl overflow-hidden relative z-10">
                 {/* Blue Header Section with text shadow */}
-                <div className="bg-xtra-primary p-6 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                <div className="bg-xtra-primary p-6 pb-8 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-2xl font-bold mb-4">Laptop BBG</h3>
                   <div className="text-4xl font-bold mb-2">
                     {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
                   </div>
-                  <p className="text-white/90 text-sm">(inclusive of GST)</p>
+                  <p className="text-white/90 text-sm mb-4">(inclusive of GST)</p>
                 </div>
               
                 {/* Blue Features Section with text shadow */}
-                <div className="bg-xtra-primary p-6 rounded-b-2xl" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                <div className="bg-xtra-primary p-6 pt-8 rounded-b-2xl" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                   <ul className="space-y-3 text-white">
                     <li className="flex items-start">
                       <span className="text-white mr-3 mt-1">•</span>
@@ -285,7 +285,7 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute top-32 -left-12 right-6 z-20">
+              <div className="absolute top-36 -left-12 right-6 z-20">
                 <div className="relative">
                   {/* Main ribbon extending left */}
                   <div className="bg-blue-200 py-3 pl-14 pr-4 rounded-r-xl shadow-lg relative">
@@ -294,8 +294,8 @@ export default function Home() {
                     </p>
                   </div>
                   
-                  {/* 3D triangle fold effect on bottom left - bigger triangle with flat side against card */}
-                  <div className="absolute -bottom-3 left-0 w-0 h-0 border-t-[15px] border-t-blue-300 border-r-[15px] border-r-transparent"></div>
+                  {/* Reversed triangle attached to left side of main card */}
+                  <div className="absolute top-0 right-0 w-0 h-0 border-b-[15px] border-b-blue-300 border-l-[15px] border-l-transparent"></div>
                 </div>
               </div>
             </div>
@@ -304,16 +304,16 @@ export default function Home() {
             <div className="relative w-full max-w-xs">
               <div className="rounded-2xl shadow-xl overflow-hidden relative z-10">
                 {/* Blue Header Section with text shadow */}
-                <div className="bg-xtra-primary p-6 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                <div className="bg-xtra-primary p-6 pb-8 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-2xl font-bold mb-4">Mobile BBG</h3>
                   <div className="text-4xl font-bold mb-2">
                     {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
                   </div>
-                  <p className="text-white/90 text-sm">(inclusive of GST)</p>
+                  <p className="text-white/90 text-sm mb-4">(inclusive of GST)</p>
                 </div>
               
                 {/* Blue Features Section with text shadow */}
-                <div className="bg-xtra-primary p-6 rounded-b-2xl" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                <div className="bg-xtra-primary p-6 pt-8 rounded-b-2xl" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                   <ul className="space-y-3 text-white">
                     <li className="flex items-start">
                       <span className="text-white mr-3 mt-1">•</span>
@@ -336,7 +336,7 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute top-32 -left-12 right-6 z-20">
+              <div className="absolute top-36 -left-12 right-6 z-20">
                 <div className="relative">
                   {/* Main ribbon extending left */}
                   <div className="bg-blue-200 py-3 pl-14 pr-4 rounded-r-xl shadow-lg relative">
@@ -345,8 +345,8 @@ export default function Home() {
                     </p>
                   </div>
                   
-                  {/* 3D triangle fold effect on bottom left - bigger triangle with flat side against card */}
-                  <div className="absolute -bottom-3 left-0 w-0 h-0 border-t-[15px] border-t-blue-300 border-r-[15px] border-r-transparent"></div>
+                  {/* Reversed triangle attached to left side of main card */}
+                  <div className="absolute top-0 right-0 w-0 h-0 border-b-[15px] border-b-blue-300 border-l-[15px] border-l-transparent"></div>
                 </div>
               </div>
             </div>

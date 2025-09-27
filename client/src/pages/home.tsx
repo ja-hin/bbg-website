@@ -255,7 +255,7 @@ export default function Home() {
                 {/* Header Section with text shadow */}
                 <div className="p-6 pb-8 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-2xl font-bold mb-4">Laptop BBG</h3>
-                  <div className="text-4xl font-bold mb-2">
+                  <div className="text-6xl font-bold mb-2">
                     {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
                   </div>
                   <p className="text-white/90 text-sm mb-4">(inclusive of GST)</p>
@@ -306,7 +306,7 @@ export default function Home() {
                 {/* Header Section with text shadow */}
                 <div className="p-6 pb-8 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-2xl font-bold mb-4">Mobile BBG</h3>
-                  <div className="text-4xl font-bold mb-2">
+                  <div className="text-6xl font-bold mb-2">
                     {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
                   </div>
                   <p className="text-white/90 text-sm mb-4">(inclusive of GST)</p>

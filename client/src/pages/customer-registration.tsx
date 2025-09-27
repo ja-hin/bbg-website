@@ -413,9 +413,7 @@ function PayUPaymentForm({
 
   return (
     <div className="space-y-6">
-      {/* Show Brand-Specific Claim Values during checkout */}
-      <DepreciationSlabs customerData={customerData} />
-      
+      {/* Payment Details at Top */}
       <div className="bg-gray-50 rounded-lg p-4">
         <div className="flex items-center justify-between mb-4">
           <span className="text-lg font-semibold">BBG for {deviceType}</span>
@@ -453,6 +451,7 @@ function PayUPaymentForm({
         onClick={handlePayUPayment}
         className="w-full bg-blue-600 hover:bg-blue-700"
         disabled={isProcessing || (!canRetry && retryCount >= 2) || countdown > 0}
+        data-testid="button-pay-bbg"
       >
         {isProcessing 
           ? "Redirecting to PayU..." 
@@ -485,6 +484,9 @@ function PayUPaymentForm({
           </p>
         </div>
       )}
+      
+      {/* Device Value Slabs at Bottom */}
+      <DepreciationSlabs customerData={customerData} />
     </div>
   );
 }

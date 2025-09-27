@@ -351,6 +351,100 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Laptop Extend+ Card */}
+            <div className="relative w-full max-w-xs">
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+                {/* Header Section with text shadow */}
+                <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                  <h3 className="text-2xl font-bold mb-2">Laptop Extend+</h3>
+                  <div className="text-6xl font-bold mb-3">
+                    {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
+                  </div>
+                  <p className="text-white/90 text-sm">(inclusive of GST)</p>
+                </div>
+              
+                {/* Features Section with text shadow */}
+                <div className="p-6 pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <ul className="space-y-3 text-white">
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
+                      <span className="text-sm">Free Auction Service → 10-20% higher resale than market</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
+                      <span className="text-sm">1 Free Device Repair (service charges waived, parts chargeable)</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
+                      <span className="text-sm">Validity: 24 months</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* 3D Ribbon for Assured Value */}
+              <div className="absolute right-6 z-20" style={{top: '10.5rem', left: '-1.5rem'}}>
+                <div className="relative">
+                  {/* Main ribbon extending left - completely rectangular */}
+                  <div className="bg-blue-200 py-3 pl-14 pr-4 shadow-lg relative">
+                    <p className="text-gray-800 font-bold text-sm text-center">
+                      Extended protection for<br />your Laptop
+                    </p>
+                  </div>
+                  
+                  {/* Perfect triangle positioned below ribbon */}
+                  <div className="absolute -bottom-[20px] left-0 w-0 h-0 border-t-[20px] border-t-blue-300 border-l-[24px] border-l-transparent"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Extend+ Card */}
+            <div className="relative w-full max-w-xs">
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+                {/* Header Section with text shadow */}
+                <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                  <h3 className="text-2xl font-bold mb-2">Mobile Extend+</h3>
+                  <div className="text-6xl font-bold mb-3">
+                    {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
+                  </div>
+                  <p className="text-white/90 text-sm">(inclusive of GST)</p>
+                </div>
+              
+                {/* Features Section with text shadow */}
+                <div className="p-6 pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <ul className="space-y-3 text-white">
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
+                      <span className="text-sm">Free Auction Service → 10-20% higher resale than market</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
+                      <span className="text-sm">1 Free Device Repair (service charges waived, parts chargeable)</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
+                      <span className="text-sm">Validity: 24 months</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* 3D Ribbon for Assured Value */}
+              <div className="absolute right-6 z-20" style={{top: '10.5rem', left: '-1.5rem'}}>
+                <div className="relative">
+                  {/* Main ribbon extending left - completely rectangular */}
+                  <div className="bg-blue-200 py-3 pl-14 pr-4 shadow-lg relative">
+                    <p className="text-gray-800 font-bold text-sm text-center">
+                      Extended protection for<br />your Mobile
+                    </p>
+                  </div>
+                  
+                  {/* Perfect triangle positioned below ribbon */}
+                  <div className="absolute -bottom-[20px] left-0 w-0 h-0 border-t-[20px] border-t-blue-300 border-l-[24px] border-l-transparent"></div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

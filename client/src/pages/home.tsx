@@ -294,8 +294,8 @@ export default function Home() {
                     </p>
                   </div>
                   
-                  {/* Small triangle fold at bottom-left corner */}
-                  <div className="absolute -bottom-2 left-0 w-0 h-0 border-t-[10px] border-t-blue-300 border-r-[10px] border-r-transparent"></div>
+                  {/* Triangle flipped horizontally matching left extension width */}
+                  <div className="absolute -bottom-2 left-0 w-0 h-0 border-t-[10px] border-t-blue-300 border-l-[24px] border-l-transparent"></div>
                 </div>
               </div>
             </div>
@@ -345,8 +345,8 @@ export default function Home() {
                     </p>
                   </div>
                   
-                  {/* Small triangle fold at bottom-left corner */}
-                  <div className="absolute -bottom-2 left-0 w-0 h-0 border-t-[10px] border-t-blue-300 border-r-[10px] border-r-transparent"></div>
+                  {/* Triangle flipped horizontally matching left extension width */}
+                  <div className="absolute -bottom-2 left-0 w-0 h-0 border-t-[10px] border-t-blue-300 border-l-[24px] border-l-transparent"></div>
                 </div>
               </div>
             </div>

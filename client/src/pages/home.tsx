@@ -285,7 +285,7 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute top-40 right-6 z-20" style={{left: '-1.5rem'}}>
+              <div className="absolute right-6 z-20" style={{top: '10.5rem', left: '-1.5rem'}}>
                 <div className="relative">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-3 pl-14 pr-4 shadow-lg relative">
@@ -336,7 +336,7 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute top-40 right-6 z-20" style={{left: '-1.5rem'}}>
+              <div className="absolute right-6 z-20" style={{top: '10.5rem', left: '-1.5rem'}}>
                 <div className="relative">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-3 pl-14 pr-4 shadow-lg relative">

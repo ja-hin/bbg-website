@@ -294,8 +294,8 @@ export default function Home() {
                     </p>
                   </div>
                   
-                  {/* Perfect triangle positioned lower below ribbon */}
-                  <div className="absolute -bottom-4 left-0 w-0 h-0 border-t-[15px] border-t-blue-300 border-l-[24px] border-l-transparent"></div>
+                  {/* Perfect triangle attached directly to ribbon */}
+                  <div className="absolute -bottom-0 left-0 w-0 h-0 border-t-[12px] border-t-blue-300 border-l-[24px] border-l-transparent"></div>
                 </div>
               </div>
             </div>
@@ -345,8 +345,8 @@ export default function Home() {
                     </p>
                   </div>
                   
-                  {/* Perfect triangle positioned lower below ribbon */}
-                  <div className="absolute -bottom-4 left-0 w-0 h-0 border-t-[15px] border-t-blue-300 border-l-[24px] border-l-transparent"></div>
+                  {/* Perfect triangle attached directly to ribbon */}
+                  <div className="absolute -bottom-0 left-0 w-0 h-0 border-t-[12px] border-t-blue-300 border-l-[24px] border-l-transparent"></div>
                 </div>
               </div>
             </div>

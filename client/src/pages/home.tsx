@@ -294,8 +294,13 @@ export default function Home() {
                     </p>
                   </div>
                   
-                  {/* Triangle at bottom-left creating proper fold underneath */}
-                  <div className="absolute -bottom-2 left-2 w-0 h-0 border-l-[12px] border-l-blue-300 border-t-[12px] border-t-transparent"></div>
+                  {/* Triangle spanning the left extension width with inverted left side */}
+                  <div className="absolute -bottom-3 left-0 w-14 h-0">
+                    {/* Main triangle fold */}
+                    <div className="absolute left-0 w-0 h-0 border-t-[12px] border-t-blue-300 border-r-[56px] border-r-transparent"></div>
+                    {/* Inverted left triangle */}
+                    <div className="absolute left-0 w-0 h-0 border-b-[12px] border-b-blue-300 border-l-[8px] border-l-transparent"></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -345,8 +350,13 @@ export default function Home() {
                     </p>
                   </div>
                   
-                  {/* Triangle at bottom-left creating proper fold underneath */}
-                  <div className="absolute -bottom-2 left-2 w-0 h-0 border-l-[12px] border-l-blue-300 border-t-[12px] border-t-transparent"></div>
+                  {/* Triangle spanning the left extension width with inverted left side */}
+                  <div className="absolute -bottom-3 left-0 w-14 h-0">
+                    {/* Main triangle fold */}
+                    <div className="absolute left-0 w-0 h-0 border-t-[12px] border-t-blue-300 border-r-[56px] border-r-transparent"></div>
+                    {/* Inverted left triangle */}
+                    <div className="absolute left-0 w-0 h-0 border-b-[12px] border-b-blue-300 border-l-[8px] border-l-transparent"></div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -287,15 +287,15 @@ export default function Home() {
               {/* 3D Ribbon for Assured Value */}
               <div className="absolute top-36 -left-12 right-6 z-20">
                 <div className="relative">
-                  {/* Main ribbon extending left */}
-                  <div className="bg-blue-200 py-3 pl-14 pr-4 rounded-r-xl shadow-lg relative">
+                  {/* Main ribbon extending left with flat right side */}
+                  <div className="bg-blue-200 py-3 pl-14 pr-4 rounded-l-xl shadow-lg relative">
                     <p className="text-gray-800 font-bold text-sm text-center">
                       Assured buyback value for<br />your Laptop
                     </p>
                   </div>
                   
-                  {/* Reversed triangle attached to left side of main card */}
-                  <div className="absolute top-0 right-0 w-0 h-0 border-b-[15px] border-b-blue-300 border-l-[15px] border-l-transparent"></div>
+                  {/* Triangle at bottom-left corner creating fold effect */}
+                  <div className="absolute bottom-0 left-0 w-0 h-0 border-t-[15px] border-t-blue-300 border-r-[15px] border-r-transparent"></div>
                 </div>
               </div>
             </div>
@@ -338,15 +338,15 @@ export default function Home() {
               {/* 3D Ribbon for Assured Value */}
               <div className="absolute top-36 -left-12 right-6 z-20">
                 <div className="relative">
-                  {/* Main ribbon extending left */}
-                  <div className="bg-blue-200 py-3 pl-14 pr-4 rounded-r-xl shadow-lg relative">
+                  {/* Main ribbon extending left with flat right side */}
+                  <div className="bg-blue-200 py-3 pl-14 pr-4 rounded-l-xl shadow-lg relative">
                     <p className="text-gray-800 font-bold text-sm text-center">
                       Assured buyback value for<br />your Mobile
                     </p>
                   </div>
                   
-                  {/* Reversed triangle attached to left side of main card */}
-                  <div className="absolute top-0 right-0 w-0 h-0 border-b-[15px] border-b-blue-300 border-l-[15px] border-l-transparent"></div>
+                  {/* Triangle at bottom-left corner creating fold effect */}
+                  <div className="absolute bottom-0 left-0 w-0 h-0 border-t-[15px] border-t-blue-300 border-r-[15px] border-r-transparent"></div>
                 </div>
               </div>
             </div>

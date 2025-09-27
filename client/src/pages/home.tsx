@@ -250,10 +250,10 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
             
             {/* Laptop BBG Card */}
-            <div className="relative ml-12">
-              <div className="bg-xtra-primary rounded-2xl shadow-xl overflow-hidden">
+            <div className="relative">
+              <div className="rounded-2xl shadow-xl overflow-hidden">
                 {/* Blue Header Section */}
-                <div className="bg-xtra-primary rounded-t-2xl p-8 sm:p-10 text-white text-center">
+                <div className="bg-xtra-primary p-8 sm:p-10 text-white text-center">
                   <h3 className="text-3xl sm:text-4xl font-bold mb-6">Laptop BBG</h3>
                   <div className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4">
                     {pricesLoading ? <Loader2 className="h-12 w-12 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
@@ -261,8 +261,15 @@ export default function Home() {
                   <p className="text-white/90 text-lg">(inclusive of GST)</p>
                 </div>
               
+                {/* Light Blue/Gray Assured Value Section */}
+                <div className="bg-blue-100 py-6 text-center">
+                  <p className="text-gray-800 font-bold text-lg">
+                    Assured buyback value for<br />your Laptop
+                  </p>
+                </div>
+              
                 {/* Blue Features Section */}
-                <div className="bg-xtra-primary p-8 sm:p-10 rounded-b-2xl">
+                <div className="bg-xtra-primary p-8 sm:p-10">
                   <ul className="space-y-4 text-white">
                     <li className="flex items-start">
                       <span className="text-white mr-3 mt-1 text-lg">•</span>
@@ -281,21 +288,6 @@ export default function Home() {
                       <span className="text-base sm:text-lg">Instant payouts at the time of device handover</span>
                     </li>
                   </ul>
-                </div>
-              </div>
-              
-              {/* 3D Ribbon positioned absolutely */}
-              <div className="absolute top-48 -left-12 z-20">
-                <div className="relative">
-                  {/* Main ribbon */}
-                  <div className="bg-blue-200 py-4 px-8 pr-12 rounded-r-2xl shadow-lg">
-                    <p className="text-gray-800 font-bold text-base sm:text-lg text-center whitespace-nowrap">
-                      Assured buyback value for<br />your Laptop
-                    </p>
-                  </div>
-                  
-                  {/* 3D fold effect */}
-                  <div className="absolute -bottom-2 -left-2 w-0 h-0 border-l-[16px] border-l-blue-300 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent"></div>
                 </div>
               </div>
             </div>

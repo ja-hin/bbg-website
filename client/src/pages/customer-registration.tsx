@@ -977,22 +977,23 @@ function BuyBBGContent() {
   }
 
   return (
-    <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
-      {/* Header Section */}
-      <div className="text-center mb-6">
-        <Button
-          variant="outline"
-          onClick={() => setPurchaseTiming(null)}
-          className="mb-4"
-          data-testid="button-back-to-timing-selection"
-        >
-          ← Back to Purchase Timing
-        </Button>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Buy BuyBack Guarantee</h1>
-        <p className="text-lg text-gray-600">
-          Secure your device investment with our comprehensive BuyBack Guarantee program
-        </p>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <Button
+            variant="outline"
+            onClick={() => setPurchaseTiming(null)}
+            className="mb-6 rounded-full px-6 py-2 border-gray-300 hover:border-gray-400 transition-all duration-200"
+            data-testid="button-back-to-timing-selection"
+          >
+            ← Back to Purchase Timing
+          </Button>
+          <h1 className="text-3xl font-bold text-gray-900 mb-3">Buy BuyBack Guarantee</h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Secure your device investment with our comprehensive BuyBack Guarantee program
+          </p>
+        </div>
 
 
 
@@ -1022,27 +1023,22 @@ function BuyBBGContent() {
           </CardContent>
         </Card>
       ) : (
-        <Card className="w-full">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center text-lg">
-              <ShoppingCart className="h-5 w-5 mr-2" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
+        <div className="max-w-4xl mx-auto">
+          <Card className="w-full bg-white shadow-xl rounded-2xl border-0">
+            <CardContent className="p-8">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 
                 {/* Device Details Section */}
-                <div className="space-y-4">
+                <div className="space-y-6">
                   
-                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="deviceType"
                       render={({ field }) => (
                         <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <Smartphone className="h-4 w-4 mr-2" />
+                          <FormLabel className="block text-sm font-medium text-gray-700 mb-2">
                             Device Type *
                           </FormLabel>
                           <Select onValueChange={(value) => {
@@ -1050,7 +1046,7 @@ function BuyBBGContent() {
                             handleDeviceTypeChange(value);
                           }} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger>
+                              <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                                 <SelectValue placeholder="Select device type" />
                               </SelectTrigger>
                             </FormControl>
@@ -1087,13 +1083,12 @@ function BuyBBGContent() {
                       name="brand"
                       render={({ field }) => (
                         <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <Building className="h-4 w-4 mr-2" />
+                          <FormLabel className="block text-sm font-medium text-gray-700 mb-2">
                             Brand *
                           </FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger>
+                              <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                                 <SelectValue placeholder="Select device brand" />
                               </SelectTrigger>
                             </FormControl>
@@ -1121,13 +1116,12 @@ function BuyBBGContent() {
                       name="modelName"
                       render={({ field }) => (
                         <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <span className="h-4 w-4 mr-2"></span>
+                          <FormLabel className="block text-sm font-medium text-gray-700 mb-2">
                             Model Name *
                           </FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!selectedBrand}>
                             <FormControl>
-                              <SelectTrigger>
+                              <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100">
                                 <SelectValue placeholder={selectedBrand ? "Select model" : "Select brand first"} />
                               </SelectTrigger>
                             </FormControl>
@@ -1155,12 +1149,15 @@ function BuyBBGContent() {
                       name="invoiceValue"
                       render={({ field }) => (
                         <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <IndianRupee className="h-4 w-4 mr-2" />
+                          <FormLabel className="block text-sm font-medium text-gray-700 mb-2">
                             Device Purchase Price (Inclusive of GST) *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter invoice amount" {...field} />
+                            <Input 
+                              placeholder="Enter invoice amount" 
+                              className="h-12 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                              {...field} 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1168,18 +1165,21 @@ function BuyBBGContent() {
                     />
                   </div>
 
-                  <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
                     <FormField
                       control={form.control}
                       name="dateOfPurchase"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="flex items-center">
-                            <Calendar className="h-4 w-4 mr-2" />
+                          <FormLabel className="block text-sm font-medium text-gray-700 mb-2">
                             Device Purchase Date *
                           </FormLabel>
                           <FormControl>
-                            <Input type="date" {...field} />
+                            <Input 
+                              type="date" 
+                              className="h-12 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                              {...field} 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1202,20 +1202,23 @@ function BuyBBGContent() {
                 )}
 
                 {/* Customer Details Section */}
-                <div className="space-y-4">
+                <div className="space-y-6">
                   
-                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="name"
                       render={({ field }) => (
                         <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <User className="h-4 w-4 mr-2" />
+                          <FormLabel className="block text-sm font-medium text-gray-700 mb-2">
                             Customer Name *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter your full name" {...field} />
+                            <Input 
+                              placeholder="Enter your full name" 
+                              className="h-12 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                              {...field} 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1227,14 +1230,14 @@ function BuyBBGContent() {
                       name="contact"
                       render={({ field }) => (
                         <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <Phone className="h-4 w-4 mr-2" />
+                          <FormLabel className="block text-sm font-medium text-gray-700 mb-2">
                             Contact Number *
                           </FormLabel>
                           <FormControl>
                             <Input 
                               placeholder="Enter 10-digit mobile number" 
                               maxLength={10}
+                              className="h-12 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                               {...field} 
                             />
                           </FormControl>
@@ -1248,12 +1251,16 @@ function BuyBBGContent() {
                       name="email"
                       render={({ field }) => (
                         <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <Mail className="h-4 w-4 mr-2" />
+                          <FormLabel className="block text-sm font-medium text-gray-700 mb-2">
                             Email ID *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter your email address" type="email" {...field} />
+                            <Input 
+                              placeholder="Enter your email address" 
+                              type="email" 
+                              className="h-12 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                              {...field} 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1265,12 +1272,16 @@ function BuyBBGContent() {
                       name="pincode"
                       render={({ field }) => (
                         <FormItem className="h-full">
-                          <FormLabel className="flex items-center h-6 mb-2">
-                            <MapPin className="h-4 w-4 mr-2" />
+                          <FormLabel className="block text-sm font-medium text-gray-700 mb-2">
                             Pincode *
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter 6-digit pincode" maxLength={6} {...field} />
+                            <Input 
+                              placeholder="Enter 6-digit pincode" 
+                              maxLength={6} 
+                              className="h-12 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                              {...field} 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1280,44 +1291,48 @@ function BuyBBGContent() {
                 </div>
 
                 {/* Verification & Seller Details Section */}
-                <div className="space-y-4">
+                <div className="space-y-6">
                   
                   {/* OTP Verification and Referral Code in same row */}
-                  <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">OTP Verification *</label>
-                      <div className="flex gap-2">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          onClick={handleSendOtp}
-                          disabled={otpSent || otpVerified || sendOtpMutation.isPending}
-                          className="flex-shrink-0 text-xs px-3"
-                        >
-                          {sendOtpMutation.isPending ? "Sending..." : otpVerified ? "Verified" : "Send OTP"}
-                        </Button>
-                        <div className="flex-1">
-                          <Input 
-                            placeholder="Enter 6-digit OTP" 
-                            maxLength={6}
-                            value={otp}
-                            onChange={(e) => setOtp(e.target.value)}
-                            disabled={!otpSent || otpVerified}
-                          />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-gray-700">OTP Verification *</label>
+                      <div className="space-y-3">
+                        <div className="flex gap-3">
+                          <Button 
+                            type="button" 
+                            onClick={handleSendOtp}
+                            disabled={otpSent || otpVerified || sendOtpMutation.isPending}
+                            className="flex-shrink-0 h-12 px-6 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
+                          >
+                            {sendOtpMutation.isPending ? "Sending..." : otpVerified ? "✓ Verified" : "Send OTP"}
+                          </Button>
+                          <div className="flex-1">
+                            <Input 
+                              placeholder="Enter 6-digit OTP" 
+                              maxLength={6}
+                              value={otp}
+                              onChange={(e) => setOtp(e.target.value)}
+                              disabled={!otpSent || otpVerified}
+                              className="h-12 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            />
+                          </div>
                         </div>
-                        <Button 
-                          type="button" 
-                          onClick={handleVerifyOtp}
-                          disabled={!otpSent || otpVerified || verifyOtpMutation.isPending}
-                          className="flex-shrink-0 text-xs px-4 bg-green-600 hover:bg-green-700 text-white border-0"
-                        >
-                          {verifyOtpMutation.isPending ? "Verifying..." : "Verify"}
-                        </Button>
+                        {otpSent && !otpVerified && (
+                          <Button 
+                            type="button" 
+                            onClick={handleVerifyOtp}
+                            disabled={!otpSent || otpVerified || verifyOtpMutation.isPending}
+                            className="w-full h-12 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
+                          >
+                            {verifyOtpMutation.isPending ? "Verifying..." : "Verify OTP"}
+                          </Button>
+                        )}
                       </div>
                       {otpVerified && (
-                        <div className="flex items-center text-green-600 text-xs">
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                          Phone verified successfully
+                        <div className="flex items-center text-green-600 text-sm font-medium">
+                          <CheckCircle className="h-5 w-5 mr-2" />
+                          Phone verified successfully ✅
                         </div>
                       )}
                     </div>
@@ -1327,10 +1342,11 @@ function BuyBBGContent() {
                       name="sellerCode"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium">Referral Code (Optional)</FormLabel>
+                          <FormLabel className="block text-sm font-medium text-gray-700 mb-2">Referral Code (Optional)</FormLabel>
                           <FormControl>
                             <Input 
                               placeholder="Enter referral code" 
+                              className="h-12 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                               {...field}
                               onChange={(e) => {
                                 field.onChange(e);
@@ -1366,30 +1382,30 @@ function BuyBBGContent() {
                     control={form.control}
                     name="agreeToTerms"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-3">
+                      <FormItem className="flex flex-row items-start space-x-4 space-y-0 bg-gray-50 rounded-xl p-4">
                         <FormControl>
                           <input
                             type="checkbox"
                             checked={field.value}
                             onChange={field.onChange}
-                            className="mt-1"
+                            className="w-5 h-5 text-green-600 bg-white border-2 border-gray-300 rounded focus:ring-green-500 focus:ring-2 accent-green-600 mt-1"
                           />
                         </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>
+                        <div className="space-y-2 leading-relaxed">
+                          <FormLabel className="text-sm font-medium text-gray-700">
                             I agree to the{" "}
                             <a 
                               href="/terms-and-conditions" 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 underline inline-flex items-center"
+                              className="text-green-600 hover:text-green-700 underline font-semibold inline-flex items-center"
                             >
                               terms and conditions
                               <ExternalLink className="h-3 w-3 ml-1" />
                             </a>
                             {" *"}
                           </FormLabel>
-                          <p className="text-xs text-gray-600">
+                          <p className="text-xs text-gray-500">
                             By purchasing BBG, you agree to our BBG terms and conditions.
                           </p>
                         </div>
@@ -1399,25 +1415,43 @@ function BuyBBGContent() {
                 </div>
 
                 {/* Submit Button */}
-                <div className="pt-4 space-y-3">
+                <div className="pt-6 space-y-4">
                   
                   <Button 
                     type="submit" 
-                    className="w-full bg-green-600 hover:bg-green-700 py-2 text-md font-semibold"
-                    disabled={!otpVerified || mutation.isPending}
+                    className="w-full h-14 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-lg font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-lg"
+                    disabled={!otpVerified || mutation.isPending || !form.watch('agreeToTerms')}
+                    data-testid="button-buy-bbg-protection"
                   >
-                    {mutation.isPending ? "Processing..." : "Buy BBG Protection"}
+                    {mutation.isPending ? (
+                      <>
+                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                        Processing...
+                      </>
+                    ) : (
+                      "Buy BBG Protection 🔒"
+                    )}
                   </Button>
-                  {!otpVerified && (
-                    <p className="text-sm text-gray-500 text-center mt-2">
-                      Please verify your phone number with OTP first
-                    </p>
+                  {(!otpVerified || !form.watch('agreeToTerms')) && (
+                    <div className="text-center space-y-1">
+                      {!otpVerified && (
+                        <p className="text-sm text-amber-600 font-medium">
+                          ⚠️ Please verify your phone number with OTP first
+                        </p>
+                      )}
+                      {!form.watch('agreeToTerms') && (
+                        <p className="text-sm text-amber-600 font-medium">
+                          ⚠️ Please agree to the terms and conditions
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
               </form>
             </Form>
           </CardContent>
-        </Card>
+          </Card>
+        </div>
       )}
 
       {/* Success Confetti */}
@@ -1428,6 +1462,7 @@ function BuyBBGContent() {
         />
       )}
 
+      </div>
     </div>
   );
 }

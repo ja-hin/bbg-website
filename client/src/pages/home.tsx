@@ -126,6 +126,8 @@ export default function Home() {
                   src={bbgVideoFile}
                   className="w-full aspect-[3/4] object-cover"
                   controls
+                  autoPlay
+                  muted
                   preload="metadata"
                   data-testid="video-bbg-demo"
                 >

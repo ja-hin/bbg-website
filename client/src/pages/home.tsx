@@ -362,6 +362,7 @@ export default function Home() {
               
                 {/* Features Section with text shadow */}
                 <div className="p-6 pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <h4 className="text-white font-bold text-base mb-4 text-center">Extended protection for your Laptop</h4>
                   <ul className="space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
@@ -385,7 +386,7 @@ export default function Home() {
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-3 pl-14 pr-4 shadow-lg relative">
                     <p className="text-gray-800 font-bold text-sm text-center">
-                      Extended protection for<br />your Laptop<br />(inclusive of GST)
+                      (inclusive of GST)
                     </p>
                   </div>
                   
@@ -408,6 +409,7 @@ export default function Home() {
               
                 {/* Features Section with text shadow */}
                 <div className="p-6 pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <h4 className="text-white font-bold text-base mb-4 text-center">Extended protection for your Mobile</h4>
                   <ul className="space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
@@ -431,7 +433,7 @@ export default function Home() {
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-3 pl-14 pr-4 shadow-lg relative">
                     <p className="text-gray-800 font-bold text-sm text-center">
-                      Extended protection for<br />your Mobile<br />(inclusive of GST)
+                      (inclusive of GST)
                     </p>
                   </div>
                   

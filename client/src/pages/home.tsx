@@ -78,7 +78,7 @@ export default function Home() {
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Full Width Title */}
-          <div className="text-center mb-8 lg:mb-12">
+          <div className="text-left mb-8 lg:mb-12">
             <h2 className="text-[28px] sm:text-[32px] lg:text-[40px] font-bold text-xtra-primary leading-tight">
               What is XtraCover Buyback Guarantee (BBG)?
             </h2>

@@ -264,20 +264,20 @@ export default function Home() {
                 {/* Blue Features Section with text shadow */}
                 <div className="bg-xtra-primary p-6 pt-8 rounded-b-2xl" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                   <ul className="space-y-3 text-white">
-                    <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1">•</span>
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
                       <span className="text-sm">Up to 70% payout value</span>
                     </li>
-                    <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1">•</span>
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
                       <span className="text-sm">Coverage for up to 36 months</span>
                     </li>
-                    <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1">•</span>
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
                       <span className="text-sm">Free doorstep pickup for claims</span>
                     </li>
-                    <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1">•</span>
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
                       <span className="text-sm">Instant payouts at the time of device handover</span>
                     </li>
                   </ul>
@@ -315,20 +315,20 @@ export default function Home() {
                 {/* Blue Features Section with text shadow */}
                 <div className="bg-xtra-primary p-6 pt-8 rounded-b-2xl" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                   <ul className="space-y-3 text-white">
-                    <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1">•</span>
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
                       <span className="text-sm">Up to 70% payout value</span>
                     </li>
-                    <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1">•</span>
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
                       <span className="text-sm">Coverage for up to 18 months</span>
                     </li>
-                    <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1">•</span>
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
                       <span className="text-sm">Free doorstep pickup for claims</span>
                     </li>
-                    <li className="flex items-start">
-                      <span className="text-white mr-3 mt-1">•</span>
+                    <li className="flex items-center">
+                      <span className="text-white mr-3">•</span>
                       <span className="text-sm">Instant payouts at the time of device handover</span>
                     </li>
                   </ul>

@@ -4,6 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useTheme } from "@/hooks/useTheme";
+import bbgLogo from "@assets/BBG LOGO (1) (1)_1758964257135.png";
 
 export default function Header() {
   const [location] = useLocation();
@@ -76,24 +77,12 @@ export default function Header() {
             {/* Logo */}
             <div className="flex items-center space-x-3">
               {/* XTRACOVER Logo - External Link */}
-              <a
-                href="https://www.xtracover.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-80 transition-opacity"
-              >
+              <Link href="/" className="hover:opacity-80 transition-opacity">
                 <img
-                  src="https://images.xtracover.com/StaticImages/mobile_img/newui/logo.svg"
-                  alt="XTRACOVER Logo"
+                  src={bbgLogo}
+                  alt="BBG Logo"
                   className="h-12 w-auto"
                 />
-              </a>
-              {/* BBG Text - Internal Link */}
-              <Link href="/" className="hover:opacity-80 transition-opacity">
-                <span
-                  className="text-2xl font-bold"
-                  style={{ color: (theme as any)?.primaryColor || "#254696" }}
-                >| BuyBack Guarantee</span>
               </Link>
             </div>
 
@@ -122,13 +111,10 @@ export default function Header() {
                     {/* Mobile Logo */}
                     <div className="flex items-center space-x-3 pb-4 border-b border-gray-200">
                       <img
-                        src="https://images.xtracover.com/StaticImages/mobile_img/newui/logo.svg"
-                        alt="XTRACOVER Logo"
+                        src={bbgLogo}
+                        alt="BBG Logo"
                         className="h-10 w-auto"
                       />
-                      <span className="text-gray-800 text-xl font-bold">
-                        | BBG
-                      </span>
                     </div>
 
                     {/* Mobile Navigation */}

@@ -80,7 +80,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
             {/* Left Content */}
             <div className="order-2 lg:order-1 flex flex-col justify-center">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-xtra-primary mb-6">
+              <h2 className="text-[28px] sm:text-[32px] lg:text-[40px] font-bold text-xtra-primary mb-6 leading-tight">
                 What is XtraCover Buyback Guarantee (BBG)?
               </h2>
               <p className="text-base sm:text-lg text-gray-700 mb-8 leading-relaxed">

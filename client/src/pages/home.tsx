@@ -77,12 +77,17 @@ export default function Home() {
       {/* What is XtraCover BBG Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
-            {/* Left Content */}
-            <div className="order-2 lg:order-1 flex flex-col justify-center">
-              <h2 className="text-[28px] sm:text-[32px] lg:text-[40px] font-bold text-xtra-primary mb-6 leading-tight">
-                What is XtraCover Buyback Guarantee (BBG)?
-              </h2>
+          {/* Full Width Title */}
+          <div className="text-center mb-8 lg:mb-12">
+            <h2 className="text-[28px] sm:text-[32px] lg:text-[40px] font-bold text-xtra-primary leading-tight">
+              What is XtraCover Buyback Guarantee (BBG)?
+            </h2>
+          </div>
+          
+          {/* Two Column Layout: Text Left, Video Right */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Left Content - Text and Buttons */}
+            <div className="flex flex-col justify-center">
               <p className="text-base sm:text-lg text-gray-700 mb-8 leading-relaxed">
                 BuyBack Guarantee (BBG) is a plan that locks the future resale value of your phone or laptop at the time of purchase. Instead of losing money to fast depreciation, BBG secures up to 70% of your device's price upfront. When it's time to upgrade, you get instant cash to your bank or UPI after a simple quality check. BBG makes owning and upgrading your device smarter, safer, and worry-free.
               </p>
@@ -117,13 +122,13 @@ export default function Home() {
               </div>
             </div>
             
-            {/* Right Video */}
-            <div className="order-1 lg:order-2 flex items-center">
-              <div className="relative rounded-xl overflow-hidden shadow-2xl bg-gray-100 w-full max-w-md mx-auto lg:max-w-none">
-                {/* Actual Video Element */}
+            {/* Right Video - Square Aspect Ratio */}
+            <div className="flex items-center justify-center">
+              <div className="relative rounded-xl overflow-hidden shadow-2xl bg-gray-100 w-full max-w-md">
+                {/* Square Video Element */}
                 <video 
                   src={bbgVideoFile}
-                  className="w-full aspect-[3/4] object-cover"
+                  className="w-full aspect-square object-cover"
                   controls
                   autoPlay
                   muted

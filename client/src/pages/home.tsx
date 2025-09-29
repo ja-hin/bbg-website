@@ -248,7 +248,7 @@ export default function Home() {
       </section>
       
       {/* BBG Pricing Cards Section */}
-      <section className="py-6 sm:py-8 lg:py-10" style={{backgroundImage: `url('/attached_assets/(inclusive of GST) (4)_1759147213189.png'), url(${pricingCardBackground})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}>
+      <section className="py-6 sm:py-8 lg:py-10 pricing-cards-bg">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 justify-items-center">
             

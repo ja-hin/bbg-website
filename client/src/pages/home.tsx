@@ -525,22 +525,22 @@ export default function Home() {
               {/* BBG Benefits */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                 <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                  <p className="font-medium text-2xl whitespace-nowrap">
                     Assured returns - your payout is locked on day one
                   </p>
                 </div>
                 <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                  <p className="font-medium text-2xl whitespace-nowrap">
                     Best value in India - higher buyback than any other option
                   </p>
                 </div>
                 <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                  <p className="font-medium text-2xl whitespace-nowrap">
                     Simple process - claim is doorstep pickup + instant payment
                   </p>
                 </div>
                 <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                  <p className="font-medium text-2xl whitespace-nowrap">
                     Trusted brand - already chosen by thousands across the country
                   </p>
                 </div>
@@ -559,22 +559,22 @@ export default function Home() {
               {/* Extend+ Benefits */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                  <p className="font-medium text-2xl whitespace-nowrap">
                     Free Auction Service - get 10-20% higher resale value than market
                   </p>
                 </div>
                 <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                  <p className="font-medium text-2xl whitespace-nowrap">
                     1 Free Device Repair - service charges waived (parts chargeable)
                   </p>
                 </div>
                 <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                  <p className="font-medium text-2xl whitespace-nowrap">
                     Valid for 24 months, keeping older devices valuable longer
                   </p>
                 </div>
                 <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                  <p className="font-medium text-2xl whitespace-nowrap">
                     Hassle-free, designed to extend your device's life & value
                   </p>
                 </div>

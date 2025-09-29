@@ -248,16 +248,15 @@ export default function Home() {
       </section>
       
       {/* BBG Pricing Cards Section */}
-      <section className="py-6 sm:py-8 lg:py-10 bg-white">
+      <section className="py-6 sm:py-8 lg:py-10" style={{backgroundImage: `url(${pricingCardBackground})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 justify-items-center">
             
             {/* Laptop BBG Card */}
             <div className="relative w-full max-w-xs">
-              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10" style={{backgroundImage: `url(${pricingCardBackground})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                <div className="absolute inset-0 bg-gradient-to-b from-[#4A90E2]/90 to-[#1E3A8A]/90 rounded-2xl"></div>
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
                 {/* Header Section with text shadow */}
-                <div className="relative z-10 p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-2xl font-bold mb-2">Laptop BBG</h3>
                   <div className="text-6xl font-bold mb-3">
                     {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
@@ -266,7 +265,7 @@ export default function Home() {
                 </div>
               
                 {/* Features Section with text shadow */}
-                <div className="relative z-10 p-6 pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                <div className="p-6 pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                   <ul className="space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
@@ -306,10 +305,9 @@ export default function Home() {
 
             {/* Mobile BBG Card */}
             <div className="relative w-full max-w-xs">
-              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10" style={{backgroundImage: `url(${pricingCardBackground})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                <div className="absolute inset-0 bg-gradient-to-b from-[#4A90E2]/90 to-[#1E3A8A]/90 rounded-2xl"></div>
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
                 {/* Header Section with text shadow */}
-                <div className="relative z-10 p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-2xl font-bold mb-2">Mobile BBG</h3>
                   <div className="text-6xl font-bold mb-3">
                     {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
@@ -318,7 +316,7 @@ export default function Home() {
                 </div>
               
                 {/* Features Section with text shadow */}
-                <div className="relative z-10 p-6 pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                <div className="p-6 pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                   <ul className="space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
@@ -358,10 +356,9 @@ export default function Home() {
 
             {/* Laptop Extend+ Card */}
             <div className="relative w-full max-w-xs">
-              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10" style={{backgroundImage: `url(${pricingCardBackground})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                <div className="absolute inset-0 bg-gradient-to-b from-[#4A90E2]/90 to-[#1E3A8A]/90 rounded-2xl"></div>
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
                 {/* Header Section with text shadow */}
-                <div className="relative z-10 p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-2xl font-bold mb-2">Laptop Extend+</h3>
                   <div className="text-6xl font-bold mb-3">
                     {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
@@ -369,7 +366,7 @@ export default function Home() {
                 </div>
               
                 {/* Features Section with text shadow */}
-                <div className="relative z-10 p-6 pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                <div className="p-6 pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                   <ul className="space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
@@ -405,10 +402,9 @@ export default function Home() {
 
             {/* Mobile Extend+ Card */}
             <div className="relative w-full max-w-xs">
-              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10" style={{backgroundImage: `url(${pricingCardBackground})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                <div className="absolute inset-0 bg-gradient-to-b from-[#4A90E2]/90 to-[#1E3A8A]/90 rounded-2xl"></div>
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
                 {/* Header Section with text shadow */}
-                <div className="relative z-10 p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-2xl font-bold mb-2">Mobile Extend+</h3>
                   <div className="text-6xl font-bold mb-3">
                     {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
@@ -416,7 +412,7 @@ export default function Home() {
                 </div>
               
                 {/* Features Section with text shadow */}
-                <div className="relative z-10 p-6 pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                <div className="p-6 pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                   <ul className="space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>

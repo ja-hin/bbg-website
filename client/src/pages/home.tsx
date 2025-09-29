@@ -166,7 +166,7 @@ export default function Home() {
       </section>
       
       {/* Process Flow Section */}
-      <section className="py-6 sm:py-8 lg:py-10" style={{backgroundColor: "rgba(117, 157, 245, 0.27)"}}>
+      <section className="py-12 sm:py-16 lg:py-20" style={{backgroundColor: "rgba(117, 157, 245, 0.27)"}}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="space-y-24">
             

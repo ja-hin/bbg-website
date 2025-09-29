@@ -451,7 +451,7 @@ export default function Home() {
       <section className="py-12 sm:py-16 bg-gray-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative">
-            <div className="bg-xtra-primary rounded-2xl px-8 py-6 text-white shadow-xl overflow-hidden relative">
+            <div className="bg-xtra-primary rounded-2xl px-8 py-6 text-white shadow-xl overflow-hidden relative border-8" style={{borderColor: '#254595'}}>
               
               {/* Golden Special Offer Ribbon - Diagonal Top Left */}
               <div className="absolute top-0 left-0 w-32 h-32 overflow-hidden">

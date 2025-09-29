@@ -247,7 +247,7 @@ export default function Home() {
       {/* BBG Pricing Cards Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 justify-items-center">
+          <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:gap-12 justify-items-center">
             
             {/* Laptop BBG Card */}
             <div className="relative w-full max-w-xs">

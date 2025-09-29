@@ -26,6 +26,7 @@ import resaleValueImg from "@assets/Untitled design (4)_1758890353128.png";
 import doorstepPickupImg from "@assets/1_1758893676653.png";
 import instantPaymentImg from "@assets/2_1758893843696.png";
 import bbgVideoFile from "@assets/A_cinematic_hightech_202509271550_97ecx_1758972698482.mp4";
+import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.png";
 
 export default function Home() {
   // Fetch theme for dynamic coloring
@@ -456,7 +457,7 @@ export default function Home() {
               {/* Special Offer Ribbon Image */}
               <div className="absolute top-0 left-0 z-10">
                 <img 
-                  src="/attached_assets/(inclusive of GST) (1)_1759126276325.png" 
+                  src={specialOfferRibbon} 
                   alt="Special Offer" 
                   className="w-32 h-32 object-contain"
                 />

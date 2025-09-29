@@ -27,7 +27,7 @@ import doorstepPickupImg from "@assets/1_1758893676653.png";
 import instantPaymentImg from "@assets/2_1758893843696.png";
 import bbgVideoFile from "@assets/A_cinematic_hightech_202509271550_97ecx_1758972698482.mp4";
 import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.png";
-import whyChooseBbgIcon from "@assets/(inclusive of GST) (2)_1759127628723.png";
+import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.png";
 
 export default function Home() {
   // Fetch theme for dynamic coloring
@@ -504,7 +504,7 @@ export default function Home() {
               <img 
                 src={whyChooseBbgIcon} 
                 alt="Why Choose BBG Icons" 
-                className="w-64 h-auto object-contain"
+                className="w-96 h-auto object-contain"
               />
             </div>
             

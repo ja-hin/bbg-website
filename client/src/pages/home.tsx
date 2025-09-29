@@ -247,18 +247,18 @@ export default function Home() {
       {/* BBG Pricing Cards Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:gap-12 justify-items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 justify-items-center">
             
             {/* Laptop BBG Card */}
             <div className="relative w-full max-w-xs">
               <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
                 {/* Header Section with text shadow */}
                 <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
-                  <h3 className="text-lg sm:text-xl font-bold mb-2">Laptop BBG</h3>
-                  <div className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3">
-                    {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
+                  <h3 className="text-2xl font-bold mb-2">Laptop BBG</h3>
+                  <div className="text-6xl font-bold mb-3">
+                    {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
                   </div>
-                  <p className="text-white/80 text-xs sm:text-sm">(inclusive of GST)</p>
+                  <p className="text-white/80 text-sm">(inclusive of GST)</p>
                 </div>
               
                 {/* Features Section with text shadow */}
@@ -266,19 +266,19 @@ export default function Home() {
                   <ul className="space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">Up to 70% payout value</span>
+                      <span className="text-sm">Up to 70% payout value</span>
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">Coverage for up to 36 months</span>
+                      <span className="text-sm">Coverage for up to 36 months</span>
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">Free doorstep pickup for claims</span>
+                      <span className="text-sm">Free doorstep pickup for claims</span>
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">Instant payouts at the time of device handover</span>
+                      <span className="text-sm">Instant payouts at the time of device handover</span>
                     </li>
                   </ul>
                 </div>
@@ -289,7 +289,7 @@ export default function Home() {
                 <div className="relative">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-3 pl-14 pr-4 shadow-lg relative">
-                    <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
+                    <p className="text-gray-800 font-bold text-sm text-center">
                       Assured buyback value for<br />your Laptop
                     </p>
                   </div>
@@ -305,11 +305,11 @@ export default function Home() {
               <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
                 {/* Header Section with text shadow */}
                 <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
-                  <h3 className="text-lg sm:text-xl font-bold mb-2">Mobile BBG</h3>
-                  <div className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3">
-                    {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
+                  <h3 className="text-2xl font-bold mb-2">Mobile BBG</h3>
+                  <div className="text-6xl font-bold mb-3">
+                    {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
                   </div>
-                  <p className="text-white/80 text-xs sm:text-sm">(inclusive of GST)</p>
+                  <p className="text-white/80 text-sm">(inclusive of GST)</p>
                 </div>
               
                 {/* Features Section with text shadow */}
@@ -317,19 +317,19 @@ export default function Home() {
                   <ul className="space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">Up to 70% payout value</span>
+                      <span className="text-sm">Up to 70% payout value</span>
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">Coverage for up to 18 months</span>
+                      <span className="text-sm">Coverage for up to 18 months</span>
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">Free doorstep pickup for claims</span>
+                      <span className="text-sm">Free doorstep pickup for claims</span>
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">Instant payouts at the time of device handover</span>
+                      <span className="text-sm">Instant payouts at the time of device handover</span>
                     </li>
                   </ul>
                 </div>
@@ -340,7 +340,7 @@ export default function Home() {
                 <div className="relative">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-3 pl-14 pr-4 shadow-lg relative">
-                    <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
+                    <p className="text-gray-800 font-bold text-sm text-center">
                       Assured buyback value for<br />your Mobile
                     </p>
                   </div>
@@ -356,9 +356,9 @@ export default function Home() {
               <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
                 {/* Header Section with text shadow */}
                 <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
-                  <h3 className="text-lg sm:text-xl font-bold mb-2">Laptop Extend+</h3>
-                  <div className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3">
-                    {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
+                  <h3 className="text-2xl font-bold mb-2">Laptop Extend+</h3>
+                  <div className="text-6xl font-bold mb-3">
+                    {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
                   </div>
                 </div>
               
@@ -367,15 +367,15 @@ export default function Home() {
                   <ul className="space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">Free Auction Service → 10-20% higher resale than market</span>
+                      <span className="text-sm">Free Auction Service → 10-20% higher resale than market</span>
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">1 Free Device Repair (service charges waived, parts chargeable)</span>
+                      <span className="text-sm">1 Free Device Repair (service charges waived, parts chargeable)</span>
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">Validity: 24 months</span>
+                      <span className="text-sm">Validity: 24 months</span>
                     </li>
                   </ul>
                 </div>
@@ -386,7 +386,7 @@ export default function Home() {
                 <div className="relative">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-3 pl-14 pr-4 shadow-lg relative">
-                    <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
+                    <p className="text-gray-800 font-bold text-sm text-center">
                       (inclusive of GST)
                     </p>
                   </div>
@@ -402,9 +402,9 @@ export default function Home() {
               <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
                 {/* Header Section with text shadow */}
                 <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
-                  <h3 className="text-lg sm:text-xl font-bold mb-2">Mobile Extend+</h3>
-                  <div className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3">
-                    {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
+                  <h3 className="text-2xl font-bold mb-2">Mobile Extend+</h3>
+                  <div className="text-6xl font-bold mb-3">
+                    {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
                   </div>
                 </div>
               
@@ -413,15 +413,15 @@ export default function Home() {
                   <ul className="space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">Free Auction Service → 10-20% higher resale than market</span>
+                      <span className="text-sm">Free Auction Service → 10-20% higher resale than market</span>
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">1 Free Device Repair (service charges waived, parts chargeable)</span>
+                      <span className="text-sm">1 Free Device Repair (service charges waived, parts chargeable)</span>
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-3">•</span>
-                      <span className="text-xs sm:text-sm">Validity: 24 months</span>
+                      <span className="text-sm">Validity: 24 months</span>
                     </li>
                   </ul>
                 </div>
@@ -432,7 +432,7 @@ export default function Home() {
                 <div className="relative">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-3 pl-14 pr-4 shadow-lg relative">
-                    <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
+                    <p className="text-gray-800 font-bold text-sm text-center">
                       (inclusive of GST)
                     </p>
                   </div>

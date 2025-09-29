@@ -485,9 +485,9 @@ export default function Home() {
 
                 {/* Right Content - For Acer Users */}
                 <div className="text-right" style={{fontFamily: 'Inter, sans-serif'}}>
-                  <div className="text-2xl font-medium mb-1">For</div>
+                  <div className="text-2xl font-bold mb-1">For</div>
                   <div className="text-5xl font-extrabold mb-1">ACER</div>
-                  <div className="text-2xl font-medium italic">Users</div>
+                  <div className="text-2xl font-bold italic">Users</div>
                 </div>
               </div>
             </div>

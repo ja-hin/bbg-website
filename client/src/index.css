@@ -38,13 +38,6 @@
   --xtra-primary: hsl(214, 54%, 37%); /* #254696 - default */
 }
 
-/* Pricing cards section background */
-.pricing-cards-bg {
-  background-image: url('/attached_assets/(inclusive of GST) (4)_1759147213189.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
 
 .dark {
   --background: hsl(240, 10%, 4%);

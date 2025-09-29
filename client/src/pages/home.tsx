@@ -28,7 +28,7 @@ import instantPaymentImg from "@assets/2_1758893843696.png";
 import bbgVideoFile from "@assets/A_cinematic_hightech_202509271550_97ecx_1758972698482.mp4";
 import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.png";
 import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.png";
-import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759146014585.png";
+import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147072036.png";
 
 export default function Home() {
   // Fetch theme for dynamic coloring
@@ -248,7 +248,7 @@ export default function Home() {
       </section>
       
       {/* BBG Pricing Cards Section */}
-      <section className="py-6 sm:py-8 lg:py-10" style={{backgroundImage: `url('/attached_assets/(inclusive of GST) (4)_1759146014585.png'), url(${pricingCardBackground})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#00B4D8', backgroundRepeat: 'no-repeat', minHeight: '600px'}}>
+      <section className="py-6 sm:py-8 lg:py-10" style={{backgroundImage: `url('/attached_assets/(inclusive of GST) (4)_1759147072036.png'), url(${pricingCardBackground})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: 'white', backgroundRepeat: 'no-repeat', minHeight: '600px'}}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 justify-items-center">
             

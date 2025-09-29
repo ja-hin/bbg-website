@@ -459,8 +459,7 @@ export default function Home() {
                 <img 
                   src={specialOfferRibbon} 
                   alt="Special Offer" 
-                  className="object-contain"
-                  style={{width: '10px', height: '10px'}}
+                  className="w-20 h-20 object-contain"
                 />
               </div>
 

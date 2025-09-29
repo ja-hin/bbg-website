@@ -258,6 +258,7 @@ export default function Home() {
                   <div className="text-6xl font-bold mb-3">
                     {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
                   </div>
+                  <p className="text-white/80 text-sm">(inclusive of GST)</p>
                 </div>
               
                 {/* Features Section with text shadow */}
@@ -289,7 +290,7 @@ export default function Home() {
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-3 pl-14 pr-4 shadow-lg relative">
                     <p className="text-gray-800 font-bold text-sm text-center">
-                      Assured buyback value for<br />your Laptop<br />(inclusive of GST)
+                      Assured buyback value for<br />your Laptop
                     </p>
                   </div>
                   
@@ -308,6 +309,7 @@ export default function Home() {
                   <div className="text-6xl font-bold mb-3">
                     {pricesLoading ? <Loader2 className="h-8 w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
                   </div>
+                  <p className="text-white/80 text-sm">(inclusive of GST)</p>
                 </div>
               
                 {/* Features Section with text shadow */}
@@ -339,7 +341,7 @@ export default function Home() {
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-3 pl-14 pr-4 shadow-lg relative">
                     <p className="text-gray-800 font-bold text-sm text-center">
-                      Assured buyback value for<br />your Mobile<br />(inclusive of GST)
+                      Assured buyback value for<br />your Mobile
                     </p>
                   </div>
                   

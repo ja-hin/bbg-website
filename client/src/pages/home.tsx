@@ -253,7 +253,7 @@ export default function Home() {
         <img 
           src={pricingCardBackground} 
           alt="Background pattern" 
-          className="absolute inset-0 w-full h-full object-cover z-0"
+          className="absolute inset-0 w-full h-full object-fill z-0"
         />
         {/* Content */}
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

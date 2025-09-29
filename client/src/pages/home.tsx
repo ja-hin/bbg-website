@@ -797,7 +797,7 @@ export default function Home() {
               Frequently Asked Questions
             </h2>
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto">
-              Everything you need to know about XtraCover's BuyBack Guarantee program.
+              Everything you need to know about BBG and Extend+ programs.
             </p>
           </div>
 
@@ -807,10 +807,10 @@ export default function Home() {
               <Accordion type="single" collapsible>
                 <AccordionItem value="item-1" className="border border-gray-200 rounded-lg px-6">
                   <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What is the BuyBack Guarantee (BBG)?
+                    What is BBG?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    BBG gives you a fixed, assured resale value for your mobile or laptop when you claim within the coverage period.
+                    BBG (BuyBack Guarantee) is for devices less than 6 months old. It locks your resale value upfront — up to 70% of your invoice price. When you sell, we pick it up and pay you instantly.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -818,10 +818,13 @@ export default function Home() {
               <Accordion type="single" collapsible>
                 <AccordionItem value="item-2" className="border border-gray-200 rounded-lg px-6">
                   <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    Who can buy BBG?
+                    What is Extend+?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    Only customers who purchased a new device from an authorized brand sales channel. Refurbished, open-box, second-hand, or grey-market devices are not eligible.
+                    Extend+ is for devices more than 6 months old. It gives:<br/>
+                    Free Auction Service → sell from home & get 10–20% higher resale value<br/>
+                    1 Free Repair → service charges waived (parts extra)<br/>
+                    Valid for 24 months.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -829,10 +832,12 @@ export default function Home() {
               <Accordion type="single" collapsible>
                 <AccordionItem value="item-3" className="border border-gray-200 rounded-lg px-6">
                   <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    How long after my device purchase can I buy BBG?
+                    Who can buy these plans?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    You can buy BBG within 5 years from your device purchase date.
+                    Anyone with a valid invoice for their phone or laptop.<br/>
+                    BBG → for new devices (&lt;6 months)<br/>
+                    Extend+ → for older devices (&gt;6 months)
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -840,10 +845,18 @@ export default function Home() {
               <Accordion type="single" collapsible>
                 <AccordionItem value="item-4" className="border border-gray-200 rounded-lg px-6">
                   <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What's the catch?
+                    How much will I get with BBG?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    There isn't one. Just buy BBG for your new mobile or laptop, and when it's time, we'll buy the device back at the assured value shown when you registered.
+                    It depends on how old the device is when you sell:<br/><br/>
+                    <strong>Mobiles</strong><br/>
+                    4–6 months → 70% back<br/>
+                    7–9 months → 60% back<br/>
+                    10–12 months → 50% back<br/>
+                    13–15 months → 40% back<br/>
+                    16–18 months → 30% back<br/><br/>
+                    <strong>Laptop</strong><br/>
+                    Similar percentages apply based on device age.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -851,21 +864,10 @@ export default function Home() {
               <Accordion type="single" collapsible>
                 <AccordionItem value="item-5" className="border border-gray-200 rounded-lg px-6">
                   <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    When can I claim BBG?
+                    What if my phone has scratches?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    You can claim BBG anytime after 3 months from your BBG purchase date, provided your claim period has begun as per your device's age in the depreciation slabs.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-6" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What condition does my device need to be in?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    Your device must be fully functional, with no major cracks, damage, missing parts, or screen issues. The screen and body should be intact, and all buttons should work.
+                    Small scratches are okay. The device just needs to be in working condition.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -874,12 +876,23 @@ export default function Home() {
             {/* Right Column */}
             <div className="space-y-4">
               <Accordion type="single" collapsible>
-                <AccordionItem value="item-7" className="border border-gray-200 rounded-lg px-6">
+                <AccordionItem value="item-6" className="border border-gray-200 rounded-lg px-6">
                   <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    Do I need to worry about normal wear & tear?
+                    What if my device fails BBG checks?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    No. Minor cosmetic wear is okay. The QC team just checks that it's still in good working order.
+                    No problem — you can still sell it through Extend+ Auction Service at market value.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-7" className="border border-gray-200 rounded-lg px-6">
+                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
+                    What repairs are included in Extend+?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
+                    One free repair service during plan validity. You only pay for parts if needed.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -887,10 +900,10 @@ export default function Home() {
               <Accordion type="single" collapsible>
                 <AccordionItem value="item-8" className="border border-gray-200 rounded-lg px-6">
                   <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What if I've damaged my device?
+                    How do I get my money?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    If there's major damage or it fails QC, your BBG value may be void and you'll get a market-based offer instead.
+                    We pay directly to your bank or UPI at the time of pickup/claim.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -898,14 +911,10 @@ export default function Home() {
               <Accordion type="single" collapsible>
                 <AccordionItem value="item-9" className="border border-gray-200 rounded-lg px-6">
                   <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What do I need at the time of claim?
+                    Can I transfer my plan to someone else?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>Original GST invoice of the device</li>
-                      <li>Valid Government ID in your name</li>
-                      <li>Original box, charger, and accessories in working condition</li>
-                    </ul>
+                    No, the plan stays with the device you registered.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -913,32 +922,12 @@ export default function Home() {
               <Accordion type="single" collapsible>
                 <AccordionItem value="item-10" className="border border-gray-200 rounded-lg px-6">
                   <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What if my device fails QC?
+                    Why should I choose BBG or Extend+?
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    If your device fails the quality check, BBG becomes void. You may still receive a re-evaluated device price based on market standards.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-11" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    What if I want to keep my device?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    That's fine. BBG is optional to claim — you can keep your device and skip the claim process.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-12" className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-base sm:text-lg text-gray-900 hover:text-xtra-primary">
-                    How will I receive payment?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 text-base pt-2 pb-4">
-                    Once QC is passed, payment will be made instantly after device handover.
+                    Because you either:<br/>
+                    Lock your resale value upfront (BBG)<br/>
+                    Or get better resale + free repair for older devices (Extend+)
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

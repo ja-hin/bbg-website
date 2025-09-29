@@ -500,6 +500,13 @@ export default function Home() {
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
+            <div className="flex justify-center mb-6">
+              <img 
+                src={whyChooseBbgIcon} 
+                alt="Why Choose BBG Icons" 
+                className="w-96 h-auto object-contain"
+              />
+            </div>
             
             {/* Title */}
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-xtra-primary leading-tight mb-12">

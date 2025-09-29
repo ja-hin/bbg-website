@@ -516,8 +516,8 @@ export default function Home() {
             {/* BBG Section */}
             <div className="mb-12">
               {/* BBG Header */}
-              <div className="border-2 border-gray-300 rounded-lg px-6 py-3 mb-6 inline-block">
-                <h3 className="text-lg sm:text-xl font-medium text-gray-700">
+              <div className="border-2 border-xtra-primary rounded-lg px-6 py-3 mb-6 w-full max-w-none">
+                <h3 className="text-lg sm:text-xl font-medium text-xtra-primary">
                   For BuyBack Guarantee (BBG - Devices &lt; 6 months)
                 </h3>
               </div>
@@ -550,8 +550,8 @@ export default function Home() {
             {/* Extend+ Section */}
             <div>
               {/* Extend+ Header */}
-              <div className="border-2 border-gray-300 rounded-lg px-6 py-3 mb-6 inline-block">
-                <h3 className="text-lg sm:text-xl font-medium text-gray-700">
+              <div className="border-2 border-xtra-primary rounded-lg px-6 py-3 mb-6 w-full max-w-none">
+                <h3 className="text-lg sm:text-xl font-medium text-xtra-primary">
                   For Extend+ (Devices &gt; 6 months)
                 </h3>
               </div>

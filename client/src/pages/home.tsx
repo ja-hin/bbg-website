@@ -453,45 +453,47 @@ export default function Home() {
       <section className="py-12 sm:py-16 bg-gray-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative">
-            <div className="rounded-2xl px-8 py-6 text-white shadow-xl overflow-hidden relative" style={{background: 'linear-gradient(180deg, #4A90E2 0%, #1E3A8A 100%)'}}>
-              
-              {/* Special Offer Ribbon Image */}
-              <div className="absolute top-0 left-0 z-10">
-                <img 
-                  src={specialOfferRibbon} 
-                  alt="Special Offer" 
-                  className="w-40 h-40 object-contain"
-                />
-              </div>
-
-              <div className="flex items-center justify-between pl-8">
+            <Link href="/acer" className="block">
+              <div className="rounded-2xl px-8 py-6 text-white shadow-xl overflow-hidden relative cursor-pointer transition-transform hover:scale-105" style={{background: 'linear-gradient(180deg, #4A90E2 0%, #1E3A8A 100%)'}}>
                 
-                {/* Center Content - Features */}
-                <div className="flex-1 flex justify-center">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-                      <span className="text-lg font-medium">Same assured buyback protection</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-                      <span className="text-lg font-medium">Coverage for up to 5 years</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-                      <span className="text-lg font-medium">Quick settlement on claim</span>
+                {/* Special Offer Ribbon Image */}
+                <div className="absolute top-0 left-0 z-10">
+                  <img 
+                    src={specialOfferRibbon} 
+                    alt="Special Offer" 
+                    className="w-40 h-40 object-contain"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between pl-8">
+                  
+                  {/* Center Content - Features */}
+                  <div className="flex-1 flex justify-center">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-lg font-medium">Same assured buyback protection</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-lg font-medium">Coverage for up to 5 years</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-lg font-medium">Quick settlement on claim</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Center Content - For Acer Users */}
-                <div className="text-center mr-5" style={{fontFamily: 'Inter, sans-serif'}}>
-                  <div className="text-2xl font-bold mb-1">For</div>
-                  <div className="text-5xl font-extrabold mb-1">ACER</div>
-                  <div className="text-2xl font-bold italic">Users</div>
+                  {/* Center Content - For Acer Users */}
+                  <div className="text-center mr-5" style={{fontFamily: 'Inter, sans-serif'}}>
+                    <div className="text-2xl font-bold mb-1">For</div>
+                    <div className="text-5xl font-extrabold mb-1">ACER</div>
+                    <div className="text-2xl font-bold italic">Users</div>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </section>

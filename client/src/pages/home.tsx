@@ -524,23 +524,23 @@ export default function Home() {
               
               {/* BBG Benefits */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                <div className="bg-xtra-primary text-white px-8 py-5 rounded-lg">
+                  <p className="font-medium text-lg">
                     Assured returns - your payout is locked on day one
                   </p>
                 </div>
-                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                <div className="bg-xtra-primary text-white px-8 py-5 rounded-lg">
+                  <p className="font-medium text-lg">
                     Best value in India - higher buyback than any other option
                   </p>
                 </div>
-                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                <div className="bg-xtra-primary text-white px-8 py-5 rounded-lg">
+                  <p className="font-medium text-lg">
                     Simple process - claim is doorstep pickup + instant payment
                   </p>
                 </div>
-                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                <div className="bg-xtra-primary text-white px-8 py-5 rounded-lg">
+                  <p className="font-medium text-lg">
                     Trusted brand - already chosen by thousands across the country
                   </p>
                 </div>
@@ -558,23 +558,23 @@ export default function Home() {
               
               {/* Extend+ Benefits */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                <div className="bg-xtra-primary text-white px-8 py-5 rounded-lg">
+                  <p className="font-medium text-lg">
                     Free Auction Service - get 10-20% higher resale value than market
                   </p>
                 </div>
-                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                <div className="bg-xtra-primary text-white px-8 py-5 rounded-lg">
+                  <p className="font-medium text-lg">
                     1 Free Device Repair - service charges waived (parts chargeable)
                   </p>
                 </div>
-                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                <div className="bg-xtra-primary text-white px-8 py-5 rounded-lg">
+                  <p className="font-medium text-lg">
                     Valid for 24 months, keeping older devices valuable longer
                   </p>
                 </div>
-                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
-                  <p className="font-medium text-sm sm:text-base">
+                <div className="bg-xtra-primary text-white px-8 py-5 rounded-lg">
+                  <p className="font-medium text-lg">
                     Hassle-free, designed to extend your device's life & value
                   </p>
                 </div>

@@ -496,55 +496,84 @@ export default function Home() {
         </div>
       </section>
       
-      {/* Why People Choose BBG Section */}
+      {/* Why People Choose BBG & Extend+ Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <img 
-                src={whyChooseBbgIcon} 
-                alt="Why Choose BBG Icons" 
-                className="w-96 h-auto object-contain"
-              />
-            </div>
             
             {/* Title */}
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-xtra-primary leading-tight mb-12">
-              Why People<br />Choose BBG?
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-xtra-primary leading-tight mb-12">
+              Why People Choose BBG & Extend+?
             </h2>
-
-            {/* Benefits List */}
-            <div className="space-y-6 max-w-4xl mx-auto">
-              
-              {/* Benefit 1 */}
-              <div className="bg-xtra-primary rounded-2xl py-6 sm:py-8 px-6 sm:px-8 text-center">
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-                  Assured returns – your payout is locked on day one
+            
+            {/* BBG Section */}
+            <div className="mb-12">
+              {/* BBG Header */}
+              <div className="border-2 border-gray-300 rounded-lg px-6 py-3 mb-6 inline-block">
+                <h3 className="text-lg sm:text-xl font-medium text-gray-700">
+                  For BuyBack Guarantee (BBG - Devices &lt; 6 months)
                 </h3>
               </div>
               
-              {/* Benefit 2 */}
-              <div className="bg-xtra-primary rounded-2xl py-6 sm:py-8 px-6 sm:px-8 text-center">
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-                  Best value in India – higher buyback than any other option
-                </h3>
+              {/* BBG Benefits */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
+                  <p className="font-medium text-sm sm:text-base">
+                    Assured returns - your payout is locked on day one
+                  </p>
+                </div>
+                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
+                  <p className="font-medium text-sm sm:text-base">
+                    Best value in India - higher buyback than any other option
+                  </p>
+                </div>
+                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
+                  <p className="font-medium text-sm sm:text-base">
+                    Simple process - claim is doorstep pickup + instant payment
+                  </p>
+                </div>
+                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
+                  <p className="font-medium text-sm sm:text-base">
+                    Trusted brand - already chosen by thousands across the country
+                  </p>
+                </div>
               </div>
-              
-              {/* Benefit 3 */}
-              <div className="bg-xtra-primary rounded-2xl py-6 sm:py-8 px-6 sm:px-8 text-center">
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-                  Simple process – claim is doorstep pickup + instant payment
-                </h3>
-              </div>
-              
-              {/* Benefit 4 */}
-              <div className="bg-xtra-primary rounded-2xl py-6 sm:py-8 px-6 sm:px-8 text-center">
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-                  Trusted brand – already chosen by thousands across the country
-                </h3>
-              </div>
-              
             </div>
+            
+            {/* Extend+ Section */}
+            <div>
+              {/* Extend+ Header */}
+              <div className="border-2 border-gray-300 rounded-lg px-6 py-3 mb-6 inline-block">
+                <h3 className="text-lg sm:text-xl font-medium text-gray-700">
+                  For Extend+ (Devices &gt; 6 months)
+                </h3>
+              </div>
+              
+              {/* Extend+ Benefits */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
+                  <p className="font-medium text-sm sm:text-base">
+                    Free Auction Service - get 10-20% higher resale value than market
+                  </p>
+                </div>
+                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
+                  <p className="font-medium text-sm sm:text-base">
+                    1 Free Device Repair - service charges waived (parts chargeable)
+                  </p>
+                </div>
+                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
+                  <p className="font-medium text-sm sm:text-base">
+                    Valid for 24 months, keeping older devices valuable longer
+                  </p>
+                </div>
+                <div className="bg-xtra-primary text-white px-6 py-4 rounded-lg">
+                  <p className="font-medium text-sm sm:text-base">
+                    Hassle-free, designed to extend your device's life & value
+                  </p>
+                </div>
+              </div>
+            </div>
+            
           </div>
         </div>
       </section>

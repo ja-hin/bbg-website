@@ -27,6 +27,7 @@ import doorstepPickupImg from "@assets/1_1758893676653.png";
 import instantPaymentImg from "@assets/2_1758893843696.png";
 import bbgVideoFile from "@assets/A_cinematic_hightech_202509271550_97ecx_1758972698482.mp4";
 import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.png";
+import whyChooseBbgIcon from "@assets/(inclusive of GST) (2)_1759127628723.png";
 
 export default function Home() {
   // Fetch theme for dynamic coloring
@@ -499,40 +500,12 @@ export default function Home() {
       <section className="py-12 sm:py-16 lg:py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="flex items-center justify-center gap-8 sm:gap-12 lg:gap-16 mb-6">
-              
-              {/* Left Question Mark */}
-              <div className="flex-shrink-0">
-                <HelpCircle className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 text-gray-300 stroke-1" />
-              </div>
-              
-              {/* Center People Icon */}
-              <div className="flex-shrink-0">
-                <div className="relative">
-                  {/* Group of people icon */}
-                  <div className="flex items-center justify-center">
-                    <div className="relative">
-                      {/* Main center person */}
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-xtra-primary rounded-full flex items-center justify-center relative z-10">
-                        <Users className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
-                      </div>
-                      {/* Left person */}
-                      <div className="absolute -left-6 sm:-left-8 top-2 w-12 h-12 sm:w-16 sm:h-16 bg-xtra-primary rounded-full opacity-80"></div>
-                      {/* Right person */}
-                      <div className="absolute -right-6 sm:-right-8 top-2 w-12 h-12 sm:w-16 sm:h-16 bg-xtra-primary rounded-full opacity-80"></div>
-                      {/* Back left person */}
-                      <div className="absolute -left-3 sm:-left-4 -top-2 w-10 h-10 sm:w-12 sm:h-12 bg-xtra-primary rounded-full opacity-60"></div>
-                      {/* Back right person */}
-                      <div className="absolute -right-3 sm:-right-4 -top-2 w-10 h-10 sm:w-12 sm:h-12 bg-xtra-primary rounded-full opacity-60"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Right Question Mark */}
-              <div className="flex-shrink-0">
-                <HelpCircle className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 text-gray-300 stroke-1" />
-              </div>
+            <div className="flex justify-center mb-6">
+              <img 
+                src={whyChooseBbgIcon} 
+                alt="Why Choose BBG Icons" 
+                className="w-64 h-auto object-contain"
+              />
             </div>
             
             {/* Title */}

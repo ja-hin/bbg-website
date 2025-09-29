@@ -28,6 +28,7 @@ import instantPaymentImg from "@assets/2_1758893843696.png";
 import bbgVideoFile from "@assets/A_cinematic_hightech_202509271550_97ecx_1758972698482.mp4";
 import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.png";
 import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.png";
+import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759146014585.png";
 
 export default function Home() {
   // Fetch theme for dynamic coloring
@@ -253,7 +254,7 @@ export default function Home() {
             
             {/* Laptop BBG Card */}
             <div className="relative w-full max-w-xs">
-              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]" style={{backgroundImage: `url(${pricingCardBackground})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundBlendMode: 'overlay'}}>
                 {/* Header Section with text shadow */}
                 <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-2xl font-bold mb-2">Laptop BBG</h3>
@@ -304,7 +305,7 @@ export default function Home() {
 
             {/* Mobile BBG Card */}
             <div className="relative w-full max-w-xs">
-              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]" style={{backgroundImage: `url(${pricingCardBackground})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundBlendMode: 'overlay'}}>
                 {/* Header Section with text shadow */}
                 <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-2xl font-bold mb-2">Mobile BBG</h3>
@@ -355,7 +356,7 @@ export default function Home() {
 
             {/* Laptop Extend+ Card */}
             <div className="relative w-full max-w-xs">
-              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]" style={{backgroundImage: `url(${pricingCardBackground})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundBlendMode: 'overlay'}}>
                 {/* Header Section with text shadow */}
                 <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-2xl font-bold mb-2">Laptop Extend+</h3>
@@ -401,7 +402,7 @@ export default function Home() {
 
             {/* Mobile Extend+ Card */}
             <div className="relative w-full max-w-xs">
-              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]" style={{backgroundImage: `url(${pricingCardBackground})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundBlendMode: 'overlay'}}>
                 {/* Header Section with text shadow */}
                 <div className="p-6 pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-2xl font-bold mb-2">Mobile Extend+</h3>

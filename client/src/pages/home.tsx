@@ -77,7 +77,7 @@ export default function Home() {
       <HomepageCarousel />
       
       {/* What is XtraCover BBG Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white">
+      <section className="py-6 sm:py-8 lg:py-10 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Full Width Title */}
           <div className="text-left mb-8 lg:mb-12">
@@ -146,7 +146,7 @@ export default function Home() {
       </section>
       
       {/* Title Sections */}
-      <section className="py-8 sm:py-12 bg-gray-50">
+      <section className="py-4 sm:py-6 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           {/* First Title */}
           <div className="bg-xtra-primary rounded-2xl py-6 sm:py-8 px-6 sm:px-8 text-center">
@@ -166,7 +166,7 @@ export default function Home() {
       </section>
       
       {/* Process Flow Section */}
-      <section className="py-12 sm:py-16 lg:py-20" style={{backgroundColor: "rgba(117, 157, 245, 0.27)"}}>
+      <section className="py-6 sm:py-8 lg:py-10" style={{backgroundColor: "rgba(117, 157, 245, 0.27)"}}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="space-y-24">
             
@@ -247,7 +247,7 @@ export default function Home() {
       </section>
       
       {/* BBG Pricing Cards Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white">
+      <section className="py-6 sm:py-8 lg:py-10 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 justify-items-center">
             
@@ -497,7 +497,7 @@ export default function Home() {
       </section>
       
       {/* Why People Choose BBG & Extend+ Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white">
+      <section className="py-6 sm:py-8 lg:py-10 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex justify-center mb-6">
@@ -586,7 +586,7 @@ export default function Home() {
       </section>
       
       {/* BBG Depreciation Slabs Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
+      <section className="py-6 sm:py-8 lg:py-10 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
           </div>
@@ -790,7 +790,7 @@ export default function Home() {
         </div>
       </section>
       {/* FAQ Section */}
-      <section className="py-8 sm:py-12 lg:py-16 bg-white">
+      <section className="py-4 sm:py-6 lg:py-8 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-6 sm:mb-8">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
@@ -947,7 +947,7 @@ export default function Home() {
         </div>
       </section>
       {/* Distributor CTA Section */}
-      <section className="py-8 sm:py-12 bg-gray-50">
+      <section className="py-4 sm:py-6 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 border-l-4" style={{ borderLeftColor: (theme as any)?.primaryColor || '#254696' }}>
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">

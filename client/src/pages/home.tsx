@@ -453,14 +453,13 @@ export default function Home() {
           <div className="relative">
             <div className="rounded-2xl px-8 py-6 text-white shadow-xl overflow-hidden relative" style={{background: 'linear-gradient(180deg, #4A90E2 0%, #1E3A8A 100%)'}}>
               
-              {/* Golden Special Offer Ribbon - Diagonal Top Left */}
-              <div className="absolute top-0 left-0 w-24 h-24 overflow-hidden">
-                <div className="bg-gradient-to-br from-yellow-400 to-yellow-600 text-black font-bold transform rotate-[-45deg] origin-center absolute -top-3 -left-3 px-8 py-1 shadow-lg z-10">
-                  <div className="text-center text-xs whitespace-nowrap" style={{fontFamily: 'Nunito Sans, sans-serif'}}>
-                    <div className="font-bold leading-tight">SPECIAL</div>
-                    <div className="font-bold leading-tight">OFFER</div>
-                  </div>
-                </div>
+              {/* Special Offer Ribbon Image */}
+              <div className="absolute top-0 left-0 z-10">
+                <img 
+                  src="/attached_assets/(inclusive of GST) (1)_1759126276325.png" 
+                  alt="Special Offer" 
+                  className="w-32 h-32 object-contain"
+                />
               </div>
 
               <div className="flex items-center justify-between pl-8">

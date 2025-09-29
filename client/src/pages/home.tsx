@@ -459,7 +459,7 @@ export default function Home() {
                 <img 
                   src={specialOfferRibbon} 
                   alt="Special Offer" 
-                  className="w-20 h-20 object-contain"
+                  className="w-40 h-40 object-contain"
                 />
               </div>
 

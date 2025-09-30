@@ -173,8 +173,8 @@ export default function Home() {
             
             {/* Step 1 - Icon Left */}
             <div className="relative max-w-4xl mx-auto">
-              <div className="relative bg-white rounded-full w-full py-3 sm:py-4 pr-8 sm:pr-12 pl-24 sm:pl-32 md:pl-40">
-                <h4 className="text-base sm:text-lg lg:text-2xl xl:text-3xl font-bold text-gray-900 text-right">
+              <div className="relative bg-white rounded-full w-full py-3 sm:py-4 pr-10 sm:pr-12 pl-28 sm:pl-32 md:pl-40">
+                <h4 className="font-bold text-gray-900 text-right" style={{fontSize: 'calc(1rem - 0.1rem)'}}>
                   You register your device once
                 </h4>
                 <div className="absolute left-10 top-1/2 -translate-y-1/2 z-10">

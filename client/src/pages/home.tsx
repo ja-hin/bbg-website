@@ -474,7 +474,7 @@ export default function Home() {
                 </div>
 
                 {/* Mobile Layout */}
-                <div className="flex flex-col sm:hidden pl-8 space-y-4">
+                <div className="flex flex-col sm:hidden pl-16 space-y-4">
                   {/* For Acer Users - Top */}
                   <div className="text-center" style={{fontFamily: 'Inter, sans-serif'}}>
                     <span className="text-xl font-bold">For </span>

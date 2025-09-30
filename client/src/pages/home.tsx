@@ -473,7 +473,34 @@ export default function Home() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between pl-8">
+                {/* Mobile Layout */}
+                <div className="flex flex-col sm:hidden pl-8 space-y-4">
+                  {/* For Acer Users - Top */}
+                  <div className="text-center" style={{fontFamily: 'Inter, sans-serif'}}>
+                    <span className="text-xl font-bold">For </span>
+                    <span className="text-3xl font-extrabold">ACER </span>
+                    <span className="text-xl font-bold italic">Users</span>
+                  </div>
+                  
+                  {/* Features - Below */}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
+                      <span className="text-sm font-medium">Same assured buyback protection</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
+                      <span className="text-sm font-medium">Coverage for up to 5 years</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
+                      <span className="text-sm font-medium">Quick settlement on claim</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Desktop Layout */}
+                <div className="hidden sm:flex items-center justify-between pl-8">
                   
                   {/* Center Content - Features */}
                   <div className="flex-1 flex justify-center">

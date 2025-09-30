@@ -173,12 +173,12 @@ export default function Home() {
             
             {/* Step 1 - Icon Left */}
             <div className="relative max-w-4xl mx-auto">
-              <div className="relative bg-white rounded-full w-full py-3 sm:py-4 pr-10 sm:pr-12 pl-28 sm:pl-32 md:pl-40">
-                <h4 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-gray-900 text-right">
+              <div className="relative bg-white rounded-full w-full py-3 sm:py-4 pr-8 sm:pr-12 pl-24 sm:pl-32 md:pl-40">
+                <h4 className="text-xs sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-gray-900 text-right">
                   You register your device once
                 </h4>
                 <div className="absolute top-1/2 -translate-y-1/2 z-10" style={{left: '-0.1rem'}}>
-                  <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
+                  <div className="w-28 h-28 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
                     <img 
                       src={deviceRegistrationImg} 
                       alt="Device registration illustration" 
@@ -191,12 +191,12 @@ export default function Home() {
 
             {/* Step 2 - Icon Right */}
             <div className="relative max-w-4xl mx-auto">
-              <div className="relative bg-white rounded-full w-full py-3 sm:py-4 pl-10 sm:pl-12 pr-28 sm:pr-32 md:pr-40">
-                <h4 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-gray-900 text-left">
+              <div className="relative bg-white rounded-full w-full py-3 sm:py-4 pl-8 sm:pl-12 pr-24 sm:pr-32 md:pr-40">
+                <h4 className="text-xs sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-gray-900 text-left">
                   Your resale value is upfront
                 </h4>
                 <div className="absolute top-1/2 -translate-y-1/2 z-10" style={{right: '1rem'}}>
-                  <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
+                  <div className="w-28 h-28 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
                     <img 
                       src={resaleValueImg} 
                       alt="Upfront resale value illustration" 
@@ -209,12 +209,12 @@ export default function Home() {
 
             {/* Step 3 - Icon Left */}
             <div className="relative max-w-4xl mx-auto">
-              <div className="relative bg-white rounded-full w-full py-3 sm:py-4 pr-10 sm:pr-12 pl-28 sm:pl-32 md:pl-40">
-                <h4 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-gray-900 text-right">
+              <div className="relative bg-white rounded-full w-full py-3 sm:py-4 pr-8 sm:pr-12 pl-24 sm:pl-32 md:pl-40">
+                <h4 className="text-xs sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-gray-900 text-right">
                   We pick it up right from your doorstep
                 </h4>
                 <div className="absolute top-1/2 -translate-y-1/2 z-10" style={{left: '-0.1rem'}}>
-                  <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
+                  <div className="w-28 h-28 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
                     <img 
                       src={doorstepPickupImg} 
                       alt="Doorstep pickup illustration" 
@@ -228,11 +228,11 @@ export default function Home() {
             {/* Step 4 - Icon Right */}
             <div className="relative max-w-4xl mx-auto">
               <div className="relative bg-white rounded-full w-full py-3 sm:py-4 pl-8 sm:pl-12 pr-24 sm:pr-32 md:pr-40">
-                <h4 className="text-base sm:text-lg lg:text-2xl xl:text-3xl font-bold text-gray-900 text-left">
+                <h4 className="text-xs sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-gray-900 text-left">
                   You get paid instantly
                 </h4>
                 <div className="absolute top-1/2 -translate-y-1/2 z-10" style={{right: '0.5rem'}}>
-                  <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
+                  <div className="w-28 h-28 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
                     <img 
                       src={instantPaymentImg} 
                       alt="Instant payment illustration" 

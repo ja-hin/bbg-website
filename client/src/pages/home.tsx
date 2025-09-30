@@ -177,7 +177,7 @@ export default function Home() {
                 <h4 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-gray-900 text-right">
                   You register your device once
                 </h4>
-                <div className="absolute left-10 top-1/2 -translate-y-1/2 z-10">
+                <div className="absolute top-1/2 -translate-y-1/2 z-10" style={{left: '-0.1rem'}}>
                   <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
                     <img 
                       src={deviceRegistrationImg} 
@@ -195,7 +195,7 @@ export default function Home() {
                 <h4 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-gray-900 text-left">
                   Your resale value is upfront
                 </h4>
-                <div className="absolute right-16 top-1/2 -translate-y-1/2 z-10">
+                <div className="absolute top-1/2 -translate-y-1/2 z-10" style={{right: '1rem'}}>
                   <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
                     <img 
                       src={resaleValueImg} 
@@ -213,7 +213,7 @@ export default function Home() {
                 <h4 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-gray-900 text-right">
                   We pick it up right from your doorstep
                 </h4>
-                <div className="absolute left-10 top-1/2 -translate-y-1/2 z-10">
+                <div className="absolute top-1/2 -translate-y-1/2 z-10" style={{left: '-0.1rem'}}>
                   <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
                     <img 
                       src={doorstepPickupImg} 
@@ -231,7 +231,7 @@ export default function Home() {
                 <h4 className="text-base sm:text-lg lg:text-2xl xl:text-3xl font-bold text-gray-900 text-left">
                   You get paid instantly
                 </h4>
-                <div className="absolute right-10 top-1/2 -translate-y-1/2 z-10">
+                <div className="absolute top-1/2 -translate-y-1/2 z-10" style={{right: '0.5rem'}}>
                   <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 bg-xtra-primary/20 rounded-3xl flex items-center justify-center p-2">
                     <img 
                       src={instantPaymentImg} 

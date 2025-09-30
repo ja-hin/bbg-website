@@ -295,7 +295,7 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute right-6 z-20 top-[9.5rem] sm:top-[11rem]" style={{left: '-1.5rem'}}>
+              <div className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]" style={{left: '-1.5rem'}}>
                 <div className="relative sm:block">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
@@ -346,7 +346,7 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute right-6 z-20 top-[9.5rem] sm:top-[11rem]" style={{left: '-1.5rem'}}>
+              <div className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]" style={{left: '-1.5rem'}}>
                 <div className="relative sm:block">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
@@ -392,7 +392,7 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute right-6 z-20 top-[9.5rem] sm:top-[11rem]" style={{left: '-1.5rem'}}>
+              <div className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]" style={{left: '-1.5rem'}}>
                 <div className="relative sm:block">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
@@ -438,7 +438,7 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute right-6 z-20 top-[9.5rem] sm:top-[11rem]" style={{left: '-1.5rem'}}>
+              <div className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]" style={{left: '-1.5rem'}}>
                 <div className="relative sm:block">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">

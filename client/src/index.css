@@ -102,6 +102,14 @@
     background-color: color-mix(in srgb, var(--xtra-primary) 90%, transparent);
   }
   
+  .force-bold-android {
+    font-weight: 900 !important;
+    font-family: Inter, sans-serif !important;
+    font-feature-settings: 'liga' 1, 'calt' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
   /* Dynamic color utilities */
   .bg-xtra-primary\/10 {
     background-color: color-mix(in srgb, var(--xtra-primary) 10%, transparent);

@@ -478,7 +478,7 @@ export default function Home() {
                   {/* For Acer Users - Top */}
                   <div className="text-center" style={{fontFamily: 'Inter, sans-serif'}}>
                     <span className="text-xl font-bold">For </span>
-                    <span className="text-3xl font-extrabold">ACER </span>
+                    <span className="text-3xl force-bold-android">ACER </span>
                     <span className="text-xl font-bold italic">Users</span>
                   </div>
                   
@@ -486,7 +486,7 @@ export default function Home() {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-                      <span className="text-sm font-medium">Same assured buyback protection</span>
+                      <span className="text-sm font-medium whitespace-nowrap">Same assured buyback protection</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
@@ -507,7 +507,7 @@ export default function Home() {
                     <div className="space-y-3">
                       <div className="flex items-center gap-3">
                         <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-                        <span className="text-lg font-medium">Same assured buyback protection</span>
+                        <span className="text-lg font-medium whitespace-nowrap">Same assured buyback protection</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
@@ -523,7 +523,7 @@ export default function Home() {
                   {/* Center Content - For Acer Users */}
                   <div className="text-center mr-5" style={{fontFamily: 'Inter, sans-serif'}}>
                     <div className="text-2xl font-bold mb-1">For</div>
-                    <div className="text-5xl font-extrabold mb-1">ACER</div>
+                    <div className="text-5xl force-bold-android mb-1">ACER</div>
                     <div className="text-2xl font-bold italic">Users</div>
                   </div>
                 </div>

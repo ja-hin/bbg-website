@@ -272,7 +272,7 @@ export default function Home() {
                 </div>
               
                 {/* Features Section with text shadow */}
-                <div className="p-4 sm:p-6 pt-6 sm:pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                <div className="p-4 sm:p-6 pt-12 sm:pt-14 mt-8 sm:mt-4" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                   <ul className="space-y-2 sm:space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-2 sm:mr-3">•</span>
@@ -295,7 +295,7 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute right-6 z-20" style={{top: '8.5rem', left: '-1.5rem'}}>
+              <div className="absolute right-6 z-20" style={{top: '11rem', left: '-1.5rem'}}>
                 <div className="relative sm:block">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
@@ -323,7 +323,7 @@ export default function Home() {
                 </div>
               
                 {/* Features Section with text shadow */}
-                <div className="p-4 sm:p-6 pt-6 sm:pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                <div className="p-4 sm:p-6 pt-12 sm:pt-14 mt-8 sm:mt-4" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                   <ul className="space-y-2 sm:space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-2 sm:mr-3">•</span>
@@ -346,7 +346,7 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute right-6 z-20" style={{top: '8.5rem', left: '-1.5rem'}}>
+              <div className="absolute right-6 z-20" style={{top: '11rem', left: '-1.5rem'}}>
                 <div className="relative sm:block">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
@@ -373,7 +373,7 @@ export default function Home() {
                 </div>
               
                 {/* Features Section with text shadow */}
-                <div className="p-4 sm:p-6 pt-6 sm:pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                <div className="p-4 sm:p-6 pt-12 sm:pt-14 mt-8 sm:mt-4" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                   <ul className="space-y-2 sm:space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-2 sm:mr-3">•</span>
@@ -392,7 +392,7 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute right-6 z-20" style={{top: '8.5rem', left: '-1.5rem'}}>
+              <div className="absolute right-6 z-20" style={{top: '11rem', left: '-1.5rem'}}>
                 <div className="relative sm:block">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
@@ -419,7 +419,7 @@ export default function Home() {
                 </div>
               
                 {/* Features Section with text shadow */}
-                <div className="p-4 sm:p-6 pt-6 sm:pt-8" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                <div className="p-4 sm:p-6 pt-12 sm:pt-14 mt-8 sm:mt-4" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                   <ul className="space-y-2 sm:space-y-3 text-white">
                     <li className="flex items-center">
                       <span className="text-white mr-2 sm:mr-3">•</span>
@@ -438,7 +438,7 @@ export default function Home() {
               </div>
               
               {/* 3D Ribbon for Assured Value */}
-              <div className="absolute right-6 z-20" style={{top: '8.5rem', left: '-1.5rem'}}>
+              <div className="absolute right-6 z-20" style={{top: '11rem', left: '-1.5rem'}}>
                 <div className="relative sm:block">
                   {/* Main ribbon extending left - completely rectangular */}
                   <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">

@@ -6877,7 +6877,7 @@ Required: GUPSHUP_API_KEY environment variable
         licenseRequest.input("licenseCode", sql.VarChar, licenseCode.toUpperCase());
 
         const licenseResult = await licenseRequest.query(`
-          SELECT license_code, is_used, used_by_customer_id FROM amazon_license_codes 
+          SELECT license_code, device_type, is_used, used_by_customer_id FROM amazon_license_codes 
           WHERE license_code = @licenseCode
         `);
 
@@ -6889,11 +6889,22 @@ Required: GUPSHUP_API_KEY environment variable
           });
         }
 
-        if (licenseResult.recordset[0].is_used) {
+        const licenseData = licenseResult.recordset[0];
+
+        if (licenseData.is_used) {
           return res.status(400).json({
             success: false,
             message:
               "This license code has already been used. Please contact support if you believe this is an error.",
+          });
+        }
+
+        // Validate that the submitted device type matches the license code's device type
+        if (licenseData.device_type.toLowerCase() !== deviceType.toLowerCase()) {
+          return res.status(400).json({
+            success: false,
+            message:
+              `This license code is valid for ${licenseData.device_type} devices only. Please use the correct device type.`,
           });
         }
 

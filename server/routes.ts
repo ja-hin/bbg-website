@@ -6909,15 +6909,45 @@ Required: GUPSHUP_API_KEY environment variable
         }
 
         // Get active claim value slab for registration time
-        const activeClaimValueSlab =
-          await storage.getActiveClaimValueSlabByDeviceAndPrice(
-            deviceType,
-            purchasePrice,
-            "amazon_bbg", // Amazon BBG registration source
+        let activeClaimValueSlab = null;
+        try {
+          console.log("Finding claim value slab for Amazon BBG registration:", {
+            deviceType: deviceType.toLowerCase(),
+            brand,
+            registrationSource: "amazon_bbg",
+          });
+
+          // Get Amazon BBG-specific slabs
+          const activeSlabs =
+            await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(
+              deviceType.toLowerCase(),
+              "amazon_bbg",
+            );
+
+          // Find brand-specific slab first
+          activeClaimValueSlab = activeSlabs.find(
+            (slab) =>
+              slab.deviceType === deviceType.toLowerCase() &&
+              slab.brand === brand
           );
 
-        if (!activeClaimValueSlab) {
-          console.error("No active claim value slab found for Amazon BBG registration");
+          // If no brand-specific slab, try generic slab
+          if (!activeClaimValueSlab) {
+            activeClaimValueSlab = activeSlabs.find(
+              (slab) =>
+                slab.deviceType === deviceType.toLowerCase() &&
+                (!slab.brand || slab.brand === '')
+            );
+          }
+
+          if (!activeClaimValueSlab) {
+            console.warn("No active claim value slab found for Amazon BBG registration");
+          } else {
+            console.log("Found active claim value slab for Amazon BBG:", activeClaimValueSlab);
+          }
+        } catch (error: any) {
+          console.error("Error fetching claim value slab for Amazon BBG:", error);
+          activeClaimValueSlab = null;
         }
 
         // Create unified customer data structure for Amazon registration

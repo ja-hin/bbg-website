@@ -73,6 +73,7 @@ export default function AmazonBBG() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [licenseCodeValidated, setLicenseCodeValidated] = useState(false);
   const [licenseCode, setLicenseCode] = useState("");
+  const [validatedDeviceType, setValidatedDeviceType] = useState<"mobile" | "laptop" | null>(null);
   const { toast } = useToast();
 
   const form = useForm<AmazonRegistrationData>({
@@ -90,15 +91,29 @@ export default function AmazonBBG() {
         body: { licenseCode: code },
       });
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       setLicenseCodeValidated(true);
-      toast({
-        title: "License Code Validated!",
-        description: "Your Amazon BBG license code is valid. Please proceed with device registration.",
-      });
+      
+      // Auto-populate device type from license code validation
+      if (data.data?.deviceType) {
+        const deviceType = data.data.deviceType as "mobile" | "laptop";
+        setValidatedDeviceType(deviceType);
+        form.setValue("deviceType", deviceType);
+        
+        toast({
+          title: "License Code Validated!",
+          description: `Valid ${deviceType} license code. Please proceed with device registration.`,
+        });
+      } else {
+        toast({
+          title: "License Code Validated!",
+          description: "Your Amazon BBG license code is valid. Please proceed with device registration.",
+        });
+      }
     },
     onError: (error: any) => {
       setLicenseCodeValidated(false);
+      setValidatedDeviceType(null);
       toast({
         title: "Invalid License Code",
         description: error.message || "Please check your license code and try again",
@@ -197,6 +212,7 @@ export default function AmazonBBG() {
   const handleStartOver = () => {
     setLicenseCodeValidated(false);
     setLicenseCode("");
+    setValidatedDeviceType(null);
     form.reset();
   };
 
@@ -344,8 +360,10 @@ export default function AmazonBBG() {
                               <Button
                                 type="button"
                                 variant={field.value === "mobile" ? "default" : "outline"}
-                                onClick={() => field.onChange("mobile")}
+                                onClick={() => !validatedDeviceType && field.onChange("mobile")}
                                 className="flex-1"
+                                disabled={!!validatedDeviceType}
+                                data-testid="button-device-mobile"
                               >
                                 <Smartphone className="h-4 w-4 mr-2" />
                                 Mobile
@@ -353,14 +371,22 @@ export default function AmazonBBG() {
                               <Button
                                 type="button"
                                 variant={field.value === "laptop" ? "default" : "outline"}
-                                onClick={() => field.onChange("laptop")}
+                                onClick={() => !validatedDeviceType && field.onChange("laptop")}
                                 className="flex-1"
+                                disabled={!!validatedDeviceType}
+                                data-testid="button-device-laptop"
                               >
                                 <Laptop className="h-4 w-4 mr-2" />
                                 Laptop
                               </Button>
                             </div>
                           </FormControl>
+                          {validatedDeviceType && (
+                            <p className="text-xs text-green-600 mt-2 flex items-center">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Device type determined by license code
+                            </p>
+                          )}
                           <FormMessage />
                         </FormItem>
                       )}

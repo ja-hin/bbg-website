@@ -3557,6 +3557,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     },
   );
 
+  // Create Amazon BBG slabs (brand-agnostic, uniform rates for all brands)
+  app.post(
+    "/api/admin/create-amazon-bbg-slabs",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        console.log("📦 Creating Amazon BBG slabs with brand-agnostic rates...");
+
+        // Check if Amazon BBG slabs already exist
+        const existingAmazonBbgSlabs =
+          await storage.getClaimValueSlabsByRegistrationSource("amazon_bbg");
+
+        if (existingAmazonBbgSlabs.length > 0) {
+          return res.json({
+            success: true,
+            message: `Amazon BBG slabs already exist (${existingAmazonBbgSlabs.length} slabs)`,
+            created: 0,
+            existing: existingAmazonBbgSlabs.length,
+          });
+        }
+
+        // Define Amazon BBG slabs (brand-agnostic)
+        const amazonLaptopSlabs = [
+          { minMonths: 4, maxMonths: 6, percentage: 70 },
+          { minMonths: 7, maxMonths: 12, percentage: 50 },
+          { minMonths: 13, maxMonths: 18, percentage: 45 },
+          { minMonths: 19, maxMonths: 24, percentage: 40 },
+          { minMonths: 25, maxMonths: 30, percentage: 30 },
+          { minMonths: 31, maxMonths: 36, percentage: 25 },
+        ];
+
+        const amazonMobileSlabs = [
+          { minMonths: 4, maxMonths: 6, percentage: 70 },
+          { minMonths: 7, maxMonths: 9, percentage: 60 },
+          { minMonths: 10, maxMonths: 12, percentage: 50 },
+          { minMonths: 13, maxMonths: 15, percentage: 40 },
+          { minMonths: 16, maxMonths: 18, percentage: 30 },
+        ];
+
+        let createdCount = 0;
+
+        // Create laptop slabs (no brand - generic/uniform for all brands)
+        for (const slab of amazonLaptopSlabs) {
+          await storage.createClaimValueSlab({
+            deviceType: "laptop",
+            brand: null, // Brand-agnostic
+            minMonths: slab.minMonths,
+            maxMonths: slab.maxMonths,
+            percentage: slab.percentage,
+            isActive: true,
+            registrationSource: "amazon_bbg",
+          });
+
+          console.log(
+            `✅ Created Amazon BBG laptop slab: ${slab.minMonths}-${slab.maxMonths} months, ${slab.percentage}%`,
+          );
+          createdCount++;
+        }
+
+        // Create mobile slabs (no brand - generic/uniform for all brands)
+        for (const slab of amazonMobileSlabs) {
+          await storage.createClaimValueSlab({
+            deviceType: "mobile",
+            brand: null, // Brand-agnostic
+            minMonths: slab.minMonths,
+            maxMonths: slab.maxMonths,
+            percentage: slab.percentage,
+            isActive: true,
+            registrationSource: "amazon_bbg",
+          });
+
+          console.log(
+            `✅ Created Amazon BBG mobile slab: ${slab.minMonths}-${slab.maxMonths} months, ${slab.percentage}%`,
+          );
+          createdCount++;
+        }
+
+        console.log(`🎉 Created ${createdCount} Amazon BBG slabs successfully!`);
+
+        res.json({
+          success: true,
+          message: `Successfully created ${createdCount} Amazon BBG slabs`,
+          created: createdCount,
+          existing: 0,
+        });
+      } catch (error) {
+        console.error("Error creating Amazon BBG slabs:", error);
+        res.status(500).json({ error: "Failed to create Amazon BBG slabs" });
+      }
+    },
+  );
+
   // Fix Acer registration sources (one-time admin utility)
   app.post(
     "/api/admin/fix-acer-registration-sources",

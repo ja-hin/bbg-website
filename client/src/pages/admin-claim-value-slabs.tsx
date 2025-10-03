@@ -101,6 +101,31 @@ export default function AdminClaimValueSlabs() {
     }
   });
 
+  // Create Amazon BBG slabs mutation
+  const createAmazonBbgSlabsMutation = useMutation({
+    mutationFn: () => apiRequest('/api/admin/create-amazon-bbg-slabs', {
+      method: 'POST',
+    }),
+    onSuccess: (data) => {
+      toast({ 
+        title: "Success", 
+        description: `${data.created} Amazon BBG slabs created successfully!`
+      });
+      // Force hard refresh of slabs data
+      queryClient.removeQueries({ queryKey: ['/api/admin/claim-value-slabs'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/claim-value-slabs'] });
+      // Force refetch immediately
+      setTimeout(() => refetch(), 500);
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to create Amazon BBG slabs",
+        variant: "destructive" 
+      });
+    }
+  });
+
   // Add registration slab columns mutation
   const addRegistrationSlabColumnsMutation = useMutation({
     mutationFn: () => apiRequest('/api/admin/add-registration-slab-columns', {
@@ -403,11 +428,13 @@ export default function AdminClaimValueSlabs() {
     (s.registrationSource === 'regular' || s.registrationSource === null || s.registrationSource === undefined)
   ) : [];
   const acerBbgSlabs = Array.isArray(slabs) ? slabs.filter(s => s.registrationSource === 'acer_bbg') : [];
+  const amazonBbgSlabs = Array.isArray(slabs) ? slabs.filter(s => s.registrationSource === 'amazon_bbg') : [];
   
   console.log('After filtering:');
   console.log('Regular Laptop Slabs:', regularLaptopSlabs.length);
   console.log('Regular Mobile Slabs:', regularMobileSlabs.length);
   console.log('Acer BBG Slabs:', acerBbgSlabs.length);
+  console.log('Amazon BBG Slabs:', amazonBbgSlabs.length);
 
   return (
     <AdminLayout>
@@ -452,6 +479,24 @@ export default function AdminClaimValueSlabs() {
               ) : (
                 <>
                   🚀 Create Acer BBG Slabs
+                </>
+              )}
+            </Button>
+            
+            <Button
+              onClick={() => createAmazonBbgSlabsMutation.mutate()}
+              disabled={createAmazonBbgSlabsMutation.isPending}
+              variant="outline"
+              className="text-purple-600 border-purple-600 hover:bg-purple-50"
+            >
+              {createAmazonBbgSlabsMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Creating Amazon Slabs...
+                </>
+              ) : (
+                <>
+                  📦 Create Amazon BBG Slabs
                 </>
               )}
             </Button>
@@ -628,10 +673,11 @@ export default function AdminClaimValueSlabs() {
         </div>
 
         <Tabs defaultValue="laptop" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="laptop">Laptop Slabs</TabsTrigger>
             <TabsTrigger value="mobile">Mobile Slabs</TabsTrigger>
             <TabsTrigger value="acer-bbg">Acer BBG Slabs</TabsTrigger>
+            <TabsTrigger value="amazon-bbg">Amazon BBG Slabs</TabsTrigger>
           </TabsList>
 
           <TabsContent value="laptop">
@@ -806,6 +852,96 @@ export default function AdminClaimValueSlabs() {
                                 {slab.percentage}%
                               </span>
                               <span className="text-xs text-purple-500 ml-1">(Acer BBG)</span>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex space-x-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => startEdit(slab)}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => deleteMutation.mutate(slab.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="amazon-bbg">
+            <Card>
+              <CardHeader>
+                <CardTitle>Amazon BBG Claim Rates</CardTitle>
+                <p className="text-sm text-gray-600">
+                  Brand-agnostic claim percentages for Amazon BBG customers (uniform rates for all brands)
+                </p>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  </div>
+                ) : amazonBbgSlabs.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500 mb-4">No Amazon BBG slabs found</p>
+                    <Button
+                      onClick={() => createAmazonBbgSlabsMutation.mutate()}
+                      disabled={createAmazonBbgSlabsMutation.isPending}
+                      className="text-purple-600 border-purple-600 hover:bg-purple-50"
+                      variant="outline"
+                    >
+                      {createAmazonBbgSlabsMutation.isPending ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Creating Amazon BBG Slabs...
+                        </>
+                      ) : (
+                        <>
+                          📦 Create Amazon BBG Slabs
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Device Type</TableHead>
+                          <TableHead>Age Range</TableHead>
+                          <TableHead>Percentage</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {amazonBbgSlabs.map((slab) => (
+                          <TableRow key={slab.id}>
+                            <TableCell className="font-medium">
+                              <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">
+                                {slab.deviceType}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              {slab.minMonths}-{slab.maxMonths} months
+                            </TableCell>
+                            <TableCell>
+                              <span className="font-semibold text-orange-600">
+                                {slab.percentage}%
+                              </span>
+                              <span className="text-xs text-orange-500 ml-1">(Amazon BBG)</span>
                             </TableCell>
                             <TableCell>
                               <div className="flex space-x-2">

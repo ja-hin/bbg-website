@@ -7035,6 +7035,41 @@ Required: GUPSHUP_API_KEY environment variable
     },
   );
 
+  // Admin endpoint to insert test Amazon license codes
+  app.post("/api/admin/insert-amazon-license", async (req, res) => {
+    try {
+      const { licenseCode } = req.body;
+
+      if (!licenseCode) {
+        return res.status(400).json({ message: "License code is required" });
+      }
+
+      await db.connectDB();
+      const request = db.pool.request();
+      request.input("licenseCode", sql.VarChar, licenseCode.toUpperCase());
+
+      const insertQuery = `
+        INSERT INTO amazon_license_codes (license_code, is_used, uploaded_at, created_at)
+        VALUES (@licenseCode, 0, GETDATE(), GETDATE())
+      `;
+
+      await request.query(insertQuery);
+
+      res.json({
+        success: true,
+        message: "Test Amazon license code inserted successfully",
+        licenseCode: licenseCode.toUpperCase(),
+      });
+    } catch (error) {
+      console.error("Failed to insert Amazon license code:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to insert license code",
+        error: error.message,
+      });
+    }
+  });
+
   // Database Migration: Add registration_source column and create Acer BBG slabs
   app.post("/api/admin/setup-acer-bbg-slabs", async (req, res) => {
     try {

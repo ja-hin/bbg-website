@@ -9167,6 +9167,15 @@ Required: GUPSHUP_API_KEY environment variable
           parentId: null,
         },
         {
+          id: "amazon-license",
+          label: "Amazon License Codes",
+          href: "/admin/amazon-license",
+          icon: "Shield",
+          order: 7.5,
+          type: "item",
+          parentId: null,
+        },
+        {
           id: "claim-slabs",
           label: "Claim Value Slabs",
           href: "/admin/claim-value-slabs",

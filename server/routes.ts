@@ -6757,7 +6757,7 @@ Required: GUPSHUP_API_KEY environment variable
       request.input("licenseCode", sql.VarChar, licenseCode.toUpperCase());
 
       const result = await request.query(`
-        SELECT license_code, is_used, used_by_customer_id, uploaded_at 
+        SELECT license_code, device_type, is_used, used_by_customer_id, uploaded_at 
         FROM amazon_license_codes 
         WHERE license_code = @licenseCode
       `);
@@ -6783,6 +6783,7 @@ Required: GUPSHUP_API_KEY environment variable
         message: "Valid license code",
         data: {
           licenseCode: licenseData.license_code,
+          deviceType: licenseData.device_type,
           uploadedAt: licenseData.uploaded_at,
         },
       });
@@ -7035,38 +7036,145 @@ Required: GUPSHUP_API_KEY environment variable
     },
   );
 
-  // Admin endpoint to insert test Amazon license codes
-  app.post("/api/admin/insert-amazon-license", async (req, res) => {
-    try {
-      const { licenseCode } = req.body;
+  // Admin endpoint to bulk upload Amazon license codes via Excel
+  const amazonLicenseUpload = createS3Upload('bulk-uploads', false, true);
+  
+  app.post(
+    "/api/admin/amazon-license/upload",
+    isAdminAuthenticated,
+    amazonLicenseUpload.single("file"),
+    async (req, res) => {
+      try {
+        if (!req.file) {
+          return res.status(400).json({ message: "No file uploaded" });
+        }
 
-      if (!licenseCode) {
-        return res.status(400).json({ message: "License code is required" });
+        // Download and read the Excel/CSV file from S3
+        const s3Key = (req.file as any).key;
+        const signedUrl = await s3Service.getSignedUrl(s3Key);
+
+        // Download file content
+        const response = await fetch(signedUrl);
+        const buffer = await response.arrayBuffer();
+
+        // Read the Excel file from buffer
+        const workbook = XLSX.read(buffer, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const data = XLSX.utils.sheet_to_json(worksheet);
+
+        if (!Array.isArray(data) || data.length === 0) {
+          return res
+            .status(400)
+            .json({ message: "File is empty or invalid format" });
+        }
+
+        // Normalize license code data from Excel file
+        const normalizedData = data.map((row: any, index: number) => {
+          const keys = Object.keys(row);
+          const licenseCodeKey = keys.find(
+            (k) =>
+              k.toLowerCase().includes("license") ||
+              k.toLowerCase().includes("code"),
+          );
+          const deviceTypeKey = keys.find(
+            (k) =>
+              k.toLowerCase().includes("device") ||
+              k.toLowerCase().includes("type"),
+          );
+
+          if (!licenseCodeKey) {
+            throw new Error(`Row ${index + 1}: Missing License Code column`);
+          }
+
+          if (!deviceTypeKey) {
+            throw new Error(`Row ${index + 1}: Missing Device Type column`);
+          }
+
+          const licenseCode = row[licenseCodeKey]?.toString().trim().toUpperCase();
+          const deviceType = row[deviceTypeKey]?.toString().trim().toLowerCase();
+
+          if (!licenseCode) {
+            throw new Error(`Row ${index + 1}: License code is empty`);
+          }
+
+          if (!deviceType || !['mobile', 'laptop'].includes(deviceType)) {
+            throw new Error(`Row ${index + 1}: Device type must be 'mobile' or 'laptop'`);
+          }
+
+          return {
+            licenseCode,
+            deviceType,
+          };
+        });
+
+        // Insert into database
+        await db.connectDB();
+        let successfulRows = 0;
+        const errors: string[] = [];
+
+        for (let i = 0; i < normalizedData.length; i++) {
+          const { licenseCode, deviceType } = normalizedData[i];
+
+          try {
+            const request = db.pool.request();
+            request.input("licenseCode", sql.VarChar, licenseCode);
+            request.input("deviceType", sql.VarChar, deviceType);
+
+            await request.query(`
+              IF NOT EXISTS (SELECT 1 FROM amazon_license_codes WHERE license_code = @licenseCode)
+              INSERT INTO amazon_license_codes (license_code, device_type, is_used, uploaded_at, created_at) 
+              VALUES (@licenseCode, @deviceType, 0, GETDATE(), GETDATE())
+            `);
+            successfulRows++;
+          } catch (dbError: any) {
+            errors.push(`Row ${i + 1}: Database error - ${dbError.message}`);
+          }
+        }
+
+        res.json({
+          message: "Amazon license codes uploaded successfully",
+          totalRows: normalizedData.length,
+          successfulRows,
+          errors,
+        });
+      } catch (error: any) {
+        console.error("Amazon license upload error:", error);
+        res
+          .status(500)
+          .json({
+            message: error.message || "Failed to upload Amazon license codes",
+          });
       }
+    },
+  );
 
+  // Admin endpoint to view uploaded Amazon license codes
+  app.get("/api/admin/amazon-license", isAdminAuthenticated, async (req, res) => {
+    try {
       await db.connectDB();
-      const request = db.pool.request();
-      request.input("licenseCode", sql.VarChar, licenseCode.toUpperCase());
+      const result = await db.pool.request().query(`
+        SELECT license_code, device_type, is_used, used_by_customer_id, uploaded_at,
+               ROW_NUMBER() OVER (ORDER BY uploaded_at DESC) as row_num
+        FROM amazon_license_codes 
+        ORDER BY uploaded_at DESC
+      `);
 
-      const insertQuery = `
-        INSERT INTO amazon_license_codes (license_code, is_used, uploaded_at, created_at)
-        VALUES (@licenseCode, 0, GETDATE(), GETDATE())
-      `;
-
-      await request.query(insertQuery);
+      // Prevent caching to ensure fresh data
+      res.set({
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      });
 
       res.json({
-        success: true,
-        message: "Test Amazon license code inserted successfully",
-        licenseCode: licenseCode.toUpperCase(),
+        data: result.recordset,
+        total: result.recordset.length,
+        timestamp: new Date().toISOString(),
       });
-    } catch (error) {
-      console.error("Failed to insert Amazon license code:", error);
-      res.status(500).json({
-        success: false,
-        message: "Failed to insert license code",
-        error: error.message,
-      });
+    } catch (error: any) {
+      console.error("Error fetching Amazon license data:", error);
+      res.status(500).json({ message: "Failed to fetch Amazon license data" });
     }
   });
 

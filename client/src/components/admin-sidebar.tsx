@@ -114,6 +114,7 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
     { id: "cart", label: "Cart Tracking", href: "/admin/cart-abandonments", icon: "ShoppingCart", order: 5, type: "item", parentId: null },
     { id: "acer-reg", label: "Acer Registrations", href: "/admin/acer-registrations", icon: "Laptop", order: 6, type: "item", parentId: null },
     { id: "acer-imei", label: "Acer IMEI Management", href: "/admin/acer-imei", icon: "Shield", order: 7, type: "item", parentId: null },
+    { id: "amazon-license", label: "Amazon License Codes", href: "/admin/amazon-license", icon: "Shield", order: 7.5, type: "item", parentId: null },
     { id: "claim-slabs", label: "Claim Value Slabs", href: "/admin/claim-value-slabs", icon: "Calculator", order: 8, type: "item", parentId: null },
     { id: "bbg-settings", label: "BBG Price Settings", href: "/admin/bbg-settings", icon: "Settings", order: 9, type: "item", parentId: null },
     { id: "referral-discount-settings", label: "Referral Discount Settings", href: "/admin/referral-discount-settings", icon: "Percent", order: 9.5, type: "item", parentId: null },

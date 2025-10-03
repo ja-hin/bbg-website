@@ -910,6 +910,7 @@ export class SqlServerStorage implements IStorage {
         CREATE TABLE amazon_license_codes (
           id INT IDENTITY(1,1) PRIMARY KEY,
           license_code NVARCHAR(255) NOT NULL UNIQUE,
+          device_type NVARCHAR(20) NOT NULL,
           is_used BIT DEFAULT 0,
           used_by_customer_id INT NULL,
           uploaded_at DATETIME2 DEFAULT GETDATE(),
@@ -918,6 +919,14 @@ export class SqlServerStorage implements IStorage {
         
         -- Create index for faster license code lookups
         CREATE INDEX IX_amazon_license_codes_code ON amazon_license_codes(license_code);
+      END
+      ELSE
+      BEGIN
+        -- Add device_type column if table exists but column doesn't
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('amazon_license_codes') AND name = 'device_type')
+        BEGIN
+          ALTER TABLE amazon_license_codes ADD device_type NVARCHAR(20) DEFAULT 'mobile';
+        END
       END
 
 

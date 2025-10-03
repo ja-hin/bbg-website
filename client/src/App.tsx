@@ -34,6 +34,7 @@ import AdminCartAbandonments from "@/pages/admin-cart-abandonments";
 
 import AdminAcerRegistrations from "@/pages/admin-acer-registrations";
 import AdminAcerImei from "@/pages/admin-acer-imei";
+import AdminAmazonLicense from "@/pages/admin-amazon-license";
 import AdminClaimSlabs from "@/pages/admin-claim-slabs";
 import AdminClaimValueSlabs from "@/pages/admin-claim-value-slabs";
 
@@ -98,6 +99,11 @@ function Router() {
       <Route path="/admin/acer-imei">
         <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
           <AdminAcerImei />
+        </Suspense>
+      </Route>
+      <Route path="/admin/amazon-license">
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+          <AdminAmazonLicense />
         </Suspense>
       </Route>
       <Route path="/admin/claim-slabs" component={AdminClaimSlabs} />

@@ -50,7 +50,7 @@ const postPurchaseRegistrationSchema = z.object({
 type PostPurchaseRegistrationData = z.infer<typeof postPurchaseRegistrationSchema>;
 
 export default function Register() {
-  const [registrationType, setRegistrationType] = useState<'acer' | 'website' | null>(null);
+  const [registrationType, setRegistrationType] = useState<'acer' | 'website' | 'amazon' | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [voucherValidated, setVoucherValidated] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<any>(null);
@@ -157,9 +157,11 @@ export default function Register() {
     registrationMutation.mutate(data);
   };
 
-  const handleRegistrationTypeSelect = (type: 'acer' | 'website') => {
+  const handleRegistrationTypeSelect = (type: 'acer' | 'website' | 'amazon') => {
     if (type === 'acer') {
       window.location.href = '/acer';
+    } else if (type === 'amazon') {
+      window.location.href = '/amazon';
     } else {
       setRegistrationType(type);
     }
@@ -208,6 +210,13 @@ export default function Register() {
                   data-testid="button-website-selection"
                 >
                   Website Purchase
+                </Button>
+                <Button
+                  onClick={() => handleRegistrationTypeSelect('amazon')}
+                  className="w-full h-16 text-lg bg-[#FF9900] hover:bg-[#E88B00]"
+                  data-testid="button-amazon-selection"
+                >
+                  Amazon
                 </Button>
               </div>
             </CardContent>

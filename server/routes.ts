@@ -6743,6 +6743,298 @@ Required: GUPSHUP_API_KEY environment variable
     },
   );
 
+  // Amazon BBG License Validation endpoint
+  app.post("/api/validate-amazon-license", async (req, res) => {
+    try {
+      const { licenseCode } = req.body;
+
+      if (!licenseCode) {
+        return res.status(400).json({ message: "License code is required" });
+      }
+
+      await db.connectDB();
+      const request = db.pool.request();
+      request.input("licenseCode", sql.VarChar, licenseCode.toUpperCase());
+
+      const result = await request.query(`
+        SELECT license_code, is_used, used_by_customer_id, uploaded_at 
+        FROM amazon_license_codes 
+        WHERE license_code = @licenseCode
+      `);
+
+      if (result.recordset.length === 0) {
+        return res.status(400).json({
+          valid: false,
+          message: "Invalid license code. Please check and try again.",
+        });
+      }
+
+      const licenseData = result.recordset[0];
+      
+      if (licenseData.is_used) {
+        return res.status(400).json({
+          valid: false,
+          message: "This license code has already been used.",
+        });
+      }
+
+      res.json({
+        valid: true,
+        message: "Valid license code",
+        data: {
+          licenseCode: licenseData.license_code,
+          uploadedAt: licenseData.uploaded_at,
+        },
+      });
+    } catch (error) {
+      console.error("Amazon license validation error:", error);
+      res.status(500).json({ message: "License validation failed" });
+    }
+  });
+
+  // Amazon BBG Registration endpoint
+  app.post(
+    "/api/amazon-bbg/register",
+    upload.single("invoice"),
+    async (req, res) => {
+      try {
+        console.log("Amazon BBG registration request received:");
+        console.log("Body:", req.body);
+        console.log("File:", req.file);
+
+        const {
+          licenseCode,
+          deviceType,
+          imeiSerial,
+          brand,
+          name,
+          model,
+          email,
+          phone,
+          pincode,
+          purchasePrice,
+          purchaseDate,
+        } = req.body;
+
+        // Validate required fields
+        if (
+          !licenseCode ||
+          !deviceType ||
+          !imeiSerial ||
+          !brand ||
+          !name ||
+          !model ||
+          !email ||
+          !phone ||
+          !pincode ||
+          !purchasePrice ||
+          !purchaseDate
+        ) {
+          return res.status(400).json({
+            success: false,
+            message: "All required fields must be provided",
+          });
+        }
+
+        // Validate phone number format
+        const phoneRegex = /^[6-9]\d{9}$/;
+        if (!phoneRegex.test(phone)) {
+          return res.status(400).json({
+            success: false,
+            message: "Please provide a valid 10-digit Indian mobile number",
+          });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          return res.status(400).json({
+            success: false,
+            message: "Please provide a valid email address",
+          });
+        }
+
+        // Validate pincode format
+        const pincodeRegex = /^[1-9][0-9]{5}$/;
+        if (!pincodeRegex.test(pincode)) {
+          return res.status(400).json({
+            success: false,
+            message:
+              "Please provide a valid 6-digit pincode that cannot start with 0",
+          });
+        }
+
+        // Handle S3 file upload path
+        let invoiceFilePath = null;
+        if (req.file) {
+          invoiceFilePath = (req.file as any).location || (req.file as any).key;
+        }
+
+        // Validate license code and check if it's already used
+        await db.connectDB();
+        const licenseRequest = db.pool.request();
+        licenseRequest.input("licenseCode", sql.VarChar, licenseCode.toUpperCase());
+
+        const licenseResult = await licenseRequest.query(`
+          SELECT license_code, is_used, used_by_customer_id FROM amazon_license_codes 
+          WHERE license_code = @licenseCode
+        `);
+
+        if (licenseResult.recordset.length === 0) {
+          return res.status(400).json({
+            success: false,
+            message:
+              "Invalid license code. Please verify your Amazon BBG license code.",
+          });
+        }
+
+        if (licenseResult.recordset[0].is_used) {
+          return res.status(400).json({
+            success: false,
+            message:
+              "This license code has already been used. Please contact support if you believe this is an error.",
+          });
+        }
+
+        // Get active claim value slab for registration time
+        const activeClaimValueSlab =
+          await storage.getActiveClaimValueSlabByDeviceAndPrice(
+            deviceType,
+            purchasePrice,
+            "amazon_bbg", // Amazon BBG registration source
+          );
+
+        if (!activeClaimValueSlab) {
+          console.error("No active claim value slab found for Amazon BBG registration");
+        }
+
+        // Create unified customer data structure for Amazon registration
+        const customerData = {
+          name,
+          contact: phone,
+          email,
+          pincode,
+          deviceType: deviceType.toLowerCase(),
+          serialNumber: imeiSerial,
+          brand,
+          modelName: model,
+          invoiceValue: purchasePrice.toString(),
+          dateOfPurchase: purchaseDate,
+          sellerCode: null, // No seller code for Amazon registrations
+          isVerified: true, // Auto-verify Amazon registrations
+          invoiceFile: invoiceFilePath,
+          registrationSource: "amazon_bbg", // Mark as Amazon BBG registration
+          claimValueSlabId: activeClaimValueSlab?.id || null,
+          registrationSlabData: activeClaimValueSlab
+            ? JSON.stringify({
+                deviceType: activeClaimValueSlab.deviceType,
+                brand: activeClaimValueSlab.brand,
+                registrationSource: "amazon_bbg",
+                slabs:
+                  await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(
+                    activeClaimValueSlab.deviceType,
+                    "amazon_bbg",
+                  ),
+              })
+            : null,
+        };
+
+        // Create customer with unified voucher code
+        const customer = await storage.createCustomer(customerData);
+
+        console.log(
+          "Amazon BBG customer created successfully with voucher code:",
+          customer.voucherCode,
+        );
+
+        // Mark license code as used in Amazon database
+        try {
+          const updateLicenseRequest = db.pool.request();
+          updateLicenseRequest.input("licenseCode", sql.VarChar, licenseCode.toUpperCase());
+          updateLicenseRequest.input("customerId", sql.Int, customer.id);
+
+          await updateLicenseRequest.query(`
+            UPDATE amazon_license_codes 
+            SET is_used = 1, 
+                used_by_customer_id = @customerId
+            WHERE license_code = @licenseCode
+          `);
+
+          console.log("✅ License code marked as used in Amazon database:", licenseCode);
+        } catch (updateError) {
+          console.error("Warning: Failed to update license code status:", updateError);
+          // Don't fail registration if license update fails
+        }
+
+        // Send welcome notification using unified voucher code
+        try {
+          console.log("🔔 Starting Amazon BBG registration notifications...");
+          
+          const notificationResults =
+            await communicationService.sendRegistrationConfirmation({
+              name: customer.name,
+              email: customer.email,
+              contact: customer.contact,
+              voucherCode: customer.voucherCode,
+              deviceType: customer.deviceType,
+              brand: customer.brand,
+              modelName: customer.modelName,
+              registrationSource: "amazon_bbg",
+              serialNumber: customer.serialNumber,
+              devicePurchaseDate: customer.dateOfPurchase,
+              bbgPurchaseDate: customer.createdAt?.toLocaleDateString('en-IN', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }) || new Date().toLocaleDateString('en-IN', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }),
+              termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
+            });
+
+          console.log("🔔 Amazon BBG registration notifications complete:", {
+            email: notificationResults.email?.success
+              ? "✅ Sent"
+              : `❌ Failed: ${notificationResults.email?.error}`,
+            sms: notificationResults.sms?.success
+              ? "✅ Sent"
+              : `❌ Failed: ${notificationResults.sms?.error}`,
+            whatsapp: notificationResults.whatsapp?.success
+              ? "✅ Sent"
+              : `❌ Failed: ${notificationResults.whatsapp?.error}`,
+          });
+        } catch (notificationError) {
+          console.error(
+            "❌ Failed to send Amazon BBG notifications:",
+            notificationError.message,
+          );
+          // Don't fail the registration if notification fails
+        }
+
+        res.json({
+          success: true,
+          message: "Amazon BBG registration completed successfully",
+          registrationId: customer.voucherCode,
+          voucherCode: customer.voucherCode,
+          name,
+          deviceType,
+          brand,
+          model,
+          gstInclusivePrice: parseFloat(purchasePrice),
+        });
+      } catch (error) {
+        console.error("Amazon BBG registration error:", error);
+        res.status(500).json({
+          success: false,
+          message: "Registration failed. Please try again.",
+          error: error.message,
+        });
+      }
+    },
+  );
+
   // Database Migration: Add registration_source column and create Acer BBG slabs
   app.post("/api/admin/setup-acer-bbg-slabs", async (req, res) => {
     try {

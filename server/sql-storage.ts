@@ -904,6 +904,22 @@ export class SqlServerStorage implements IStorage {
         CREATE INDEX IX_acer_imei_validation_imei ON acer_imei_validation(imei);
       END
 
+      -- Create amazon_license_codes table for Amazon BBG license validation
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'amazon_license_codes')
+      BEGIN
+        CREATE TABLE amazon_license_codes (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          license_code NVARCHAR(255) NOT NULL UNIQUE,
+          is_used BIT DEFAULT 0,
+          used_by_customer_id INT NULL,
+          uploaded_at DATETIME2 DEFAULT GETDATE(),
+          created_at DATETIME2 DEFAULT GETDATE()
+        );
+        
+        -- Create index for faster license code lookups
+        CREATE INDEX IX_amazon_license_codes_code ON amazon_license_codes(license_code);
+      END
+
 
 
       -- Create claim_value_slabs table for dynamic claim percentage management

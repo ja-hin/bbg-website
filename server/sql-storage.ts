@@ -2993,12 +2993,12 @@ export class SqlServerStorage implements IStorage {
   async createClaimValueSlab(slab: InsertClaimValueSlab): Promise<ClaimValueSlab> {
     await db.connectDB();
     
-    // Try modern query with device_type and brand columns
+    // Try modern query with device_type, brand, and registration_source columns
     try {
       const query = `
-        INSERT INTO claim_value_slabs (device_type, brand, min_months, max_months, percentage, is_active)
+        INSERT INTO claim_value_slabs (device_type, brand, min_months, max_months, percentage, is_active, registration_source)
         OUTPUT INSERTED.*
-        VALUES (@deviceType, @brand, @minMonths, @maxMonths, @percentage, @isActive)
+        VALUES (@deviceType, @brand, @minMonths, @maxMonths, @percentage, @isActive, @registrationSource)
       `;
 
       const request = db.pool.request();
@@ -3008,22 +3008,24 @@ export class SqlServerStorage implements IStorage {
       request.input('maxMonths', sql.Int, slab.maxMonths);
       request.input('percentage', sql.Int, slab.percentage);
       request.input('isActive', sql.Bit, slab.isActive ?? true);
+      request.input('registrationSource', sql.NVarChar, slab.registrationSource || 'regular');
 
       const result = await request.query(query);
       return this.mapClaimValueSlabFromDb(result.recordset[0]);
     } catch (error: any) {
-      console.log('Modern insert failed, attempting fallback without brand:', error.message);
+      console.log('Modern insert failed, attempting fallback without registration_source:', error.message);
       
-      // Fallback to insert without brand column
+      // Fallback to insert without registration_source column
       try {
         const fallbackQuery = `
-          INSERT INTO claim_value_slabs (device_type, min_months, max_months, percentage, is_active)
+          INSERT INTO claim_value_slabs (device_type, brand, min_months, max_months, percentage, is_active)
           OUTPUT INSERTED.*
-          VALUES (@deviceType, @minMonths, @maxMonths, @percentage, @isActive)
+          VALUES (@deviceType, @brand, @minMonths, @maxMonths, @percentage, @isActive)
         `;
 
         const fallbackRequest = db.pool.request();
         fallbackRequest.input('deviceType', sql.NVarChar, slab.deviceType || 'mobile');
+        fallbackRequest.input('brand', sql.NVarChar, slab.brand || null);
         fallbackRequest.input('minMonths', sql.Int, slab.minMonths);
         fallbackRequest.input('maxMonths', sql.Int, slab.maxMonths);
         fallbackRequest.input('percentage', sql.Int, slab.percentage);
@@ -3052,6 +3054,7 @@ export class SqlServerStorage implements IStorage {
         // Preserve the original values from the request
         mappedResult.deviceType = slab.deviceType || 'mobile';
         mappedResult.brand = slab.brand || null;
+        mappedResult.registrationSource = slab.registrationSource || 'regular';
         return mappedResult;
       }
     }

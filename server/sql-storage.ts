@@ -2077,7 +2077,7 @@ export class SqlServerStorage implements IStorage {
       brand: row.brand,
       modelName: row.model_name,
       invoiceValue: parseFloat(row.invoice_value),
-      dateOfPurchase: row.purchase_date, // Fixed: was row.date_of_purchase, should be row.purchase_date
+      dateOfPurchase: row.date_of_purchase, // Correct: database column is date_of_purchase
       sellerCode: row.seller_code,
       voucherCode: row.voucher_code,
       paymentIntentId: row.payment_intent_id,

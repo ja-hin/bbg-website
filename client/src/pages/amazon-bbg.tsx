@@ -237,10 +237,6 @@ export default function AmazonBBG() {
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Amazon BBG Registration
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Register your device purchased with Amazon BBG protection. Get up
-            to 70% of your device value back!
-          </p>
         </div>
 
         {/* License Code Validation or Registration Form */}

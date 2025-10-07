@@ -215,23 +215,6 @@ export default function AcerBBG() {
           </Alert>
         )}
 
-        {/* Important Registration Notice */}
-        <Alert className="mb-6 border-blue-200 bg-blue-50">
-          <Info className="h-4 w-4 text-blue-600" />
-          <AlertDescription className="text-blue-800">
-            <div className="flex items-center space-x-2">
-              <Clock className="h-4 w-4" />
-              <span className="font-medium">
-                ⏰ Register within 72 hours of BBG purchase
-              </span>
-            </div>
-            <p className="mt-1 text-sm">
-              For fastest processing, complete your registration within 72 hours
-              of purchasing your BBG protection.
-            </p>
-          </AlertDescription>
-        </Alert>
-
         {/* Registration Form */}
         <Card className="shadow-xl">
           <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">

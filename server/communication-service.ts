@@ -244,12 +244,22 @@ export class CommunicationService {
           slabRegistrationSource = 'regular'; // Website device registrations use regular claim slabs
         }
         
-        console.log(`📊 Fetching claim value slabs for: ${customerData.deviceType}/${customerData.brand}/${slabRegistrationSource}`);
-        claimValueSlabs = await storage.getClaimValueSlabsByTypeAndBrand(
-          customerData.deviceType, 
-          customerData.brand, 
-          slabRegistrationSource
-        );
+        // Amazon BBG and Acer BBG slabs are brand-agnostic (brand = NULL)
+        // Use getActiveClaimValueSlabsByDeviceTypeAndSource instead of getClaimValueSlabsByTypeAndBrand
+        if (customerData.registrationSource === 'amazon_bbg' || customerData.registrationSource === 'acer_bbg') {
+          console.log(`📊 Fetching ${slabRegistrationSource} claim value slabs for: ${customerData.deviceType} (brand-agnostic)`);
+          claimValueSlabs = await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(
+            customerData.deviceType, 
+            slabRegistrationSource
+          );
+        } else {
+          console.log(`📊 Fetching claim value slabs for: ${customerData.deviceType}/${customerData.brand}/${slabRegistrationSource}`);
+          claimValueSlabs = await storage.getClaimValueSlabsByTypeAndBrand(
+            customerData.deviceType, 
+            customerData.brand, 
+            slabRegistrationSource
+          );
+        }
         console.log(`📊 Fetched ${claimValueSlabs.length} claim value slabs for email`);
       } catch (error) {
         console.error('❌ Error fetching claim value slabs for email:', error);

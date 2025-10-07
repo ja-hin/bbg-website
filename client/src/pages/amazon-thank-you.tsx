@@ -18,6 +18,7 @@ import {
 
 interface AmazonRegistrationData {
   registrationId: string;
+  voucherCode?: string;
   licenseCode?: string;
   name: string;
   deviceType: string;
@@ -115,9 +116,9 @@ export default function AmazonThankYou() {
                   <h3 className="text-xl font-semibold mb-4 text-gray-900">Registration Details</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border-2 border-green-200">
-                      <span className="font-medium text-green-700">License Code:</span>
+                      <span className="font-medium text-green-700">BBG Voucher Code:</span>
                       <Badge variant="outline" className="font-mono text-sm px-3 py-1 bg-green-100 border-green-300">
-                        {registrationData.licenseCode || registrationData.registrationId}
+                        {registrationData.voucherCode || registrationData.registrationId}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
@@ -141,7 +142,7 @@ export default function AmazonThankYou() {
                   <ul className="space-y-2 text-gray-600">
                     <li className="flex items-center">
                       <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                      Keep your license code safe for claims
+                      Keep your BBG voucher code safe for claims
                     </li>
                     <li className="flex items-center">
                       <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
@@ -149,7 +150,7 @@ export default function AmazonThankYou() {
                     </li>
                     <li className="flex items-center">
                       <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                      Use your license code to claim BBG
+                      Use your BBG voucher code to claim BBG
                     </li>
                   </ul>
                 </div>
@@ -225,7 +226,7 @@ export default function AmazonThankYou() {
         <div className="text-center mt-8">
           <p className="text-sm text-gray-500">
             Thank you for choosing XtraCover BBG protection for your device purchased from Amazon. 
-            Save your License Code for future reference.
+            Save your BBG Voucher Code for future reference.
           </p>
         </div>
       </div>

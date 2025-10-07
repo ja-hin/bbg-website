@@ -177,6 +177,7 @@ export default function AmazonBBG() {
         "amazonRegistrationSuccess",
         JSON.stringify({
           registrationId: data.registrationId,
+          voucherCode: data.voucherCode,
           licenseCode: licenseCode,
           name: data.name,
           deviceType: data.deviceType,

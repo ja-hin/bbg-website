@@ -288,7 +288,8 @@ export class CommunicationService {
       
       // Determine the appropriate template based on registration source:
       // - Website registrations = device registration templates
-      // - Acer BBG registrations = Acer-specific templates  
+      // - Acer BBG registrations = Acer-specific templates
+      // - Amazon BBG registrations = Amazon-specific template
       // - Regular registrations = BBG purchase templates
       
       let eventType: string;
@@ -300,6 +301,10 @@ export class CommunicationService {
         // Acer BBG registrations - use dedicated Acer templates
         eventType = isWithin6Months ? 'acer_registration_within_6_months' : 'acer_registration_over_6_months';
         console.log(`📧 Acer Registration - Device age: ${deviceAgeInMonths} months, using template: ${eventType}`);
+      } else if (customerData.registrationSource === 'amazon_bbg') {
+        // Amazon BBG registrations - use dedicated Amazon template
+        eventType = 'amazon_bbg_registration';
+        console.log(`📧 Amazon BBG Registration - using template: ${eventType}`);
       } else {
         // Regular BBG purchases
         eventType = isWithin6Months ? 'bbg_purchase_within_6_months' : 'bbg_purchase_over_6_months';

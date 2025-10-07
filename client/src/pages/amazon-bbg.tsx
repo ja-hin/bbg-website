@@ -294,7 +294,6 @@ export default function AmazonBBG() {
                       <p className="font-medium mb-2">Where to find your license code:</p>
                       <ul className="space-y-1 text-xs">
                         <li>📧 <strong>Email:</strong> Check your Amazon BBG purchase confirmation email</li>
-                        <li>📦 <strong>Package:</strong> License code card included with your Amazon delivery</li>
                       </ul>
                     </div>
                   </div>

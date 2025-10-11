@@ -1179,6 +1179,7 @@ function BuyBBGContent() {
                               type="date" 
                               className="h-12 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                               {...field} 
+                              max={new Date().toISOString().split('T')[0]}
                             />
                           </FormControl>
                           <FormMessage />

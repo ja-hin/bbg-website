@@ -183,6 +183,7 @@ export default function CustomerRegistrations() {
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
                 placeholder="Leave empty for current date"
+                max={new Date().toISOString().split('T')[0]}
               />
               <p className="text-xs text-gray-500">
                 Shows payouts as they would be on this date (based on device age)

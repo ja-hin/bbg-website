@@ -210,6 +210,7 @@ export default function AdminTransactionHistory() {
                 type="date"
                 value={filters.dateFrom}
                 onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
+                max={new Date().toISOString().split('T')[0]}
               />
             </div>
 
@@ -219,6 +220,7 @@ export default function AdminTransactionHistory() {
                 type="date"
                 value={filters.dateTo}
                 onChange={(e) => setFilters({ ...filters, dateTo: e.target.value })}
+                max={new Date().toISOString().split('T')[0]}
               />
             </div>
           </div>

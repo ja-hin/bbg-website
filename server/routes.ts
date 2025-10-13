@@ -7125,7 +7125,7 @@ Required: GUPSHUP_API_KEY environment variable
                 month: 'long', 
                 day: 'numeric' 
               }),
-              termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
+              termsAndConditionsUrl: `https://www.xtracover.com/files/xtracover-tnc-bbg-amazon.pdf`,
             });
 
           console.log("🔔 Amazon BBG registration notifications complete:", {

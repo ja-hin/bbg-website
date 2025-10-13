@@ -156,32 +156,8 @@ export default function AmazonThankYou() {
                 </div>
               </div>
 
-              {/* BBG Benefits */}
+              {/* Contact Support */}
               <div className="space-y-6">
-                <div>
-                  <h3 className="text-xl font-semibold mb-4 text-gray-900">Your BBG Benefits</h3>
-                  <div className="space-y-4">
-                    <div className="p-4 border-2 border-green-200 rounded-lg bg-green-50">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-green-600 mb-1">Up to 70%</div>
-                        <div className="text-sm text-green-700">Maximum buyback value</div>
-                      </div>
-                    </div>
-                    <div className="p-4 border-2 border-blue-200 rounded-lg bg-blue-50">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-blue-600 mb-1">Upto 36 Months</div>
-                        <div className="text-sm text-blue-700">Coverage period</div>
-                      </div>
-                    </div>
-                    <div className="p-4 border-2 border-purple-200 rounded-lg bg-purple-50">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-purple-600 mb-1">Free</div>
-                        <div className="text-sm text-purple-700">Pickup service</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="border-t pt-6">
                   <h3 className="text-lg font-semibold mb-3 text-gray-900">Contact Support</h3>
                   <div className="space-y-2">

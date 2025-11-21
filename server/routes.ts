@@ -4515,6 +4515,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
     },
   );
 
+  // Partner Commission Settings Management API routes
+  // Get current partner commission settings (admin endpoint)
+  app.get(
+    "/api/admin/partner-commission/current",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        const commissionSettings = await storage.getPartnerCommissionSettings();
+        res.json(commissionSettings || {
+          isActive: true,
+          commissionType: 'flat',
+          commissionValue: 25.00
+        });
+      } catch (error: any) {
+        console.error("Failed to get partner commission settings:", error);
+        res.status(500).json({ message: "Failed to get partner commission settings" });
+      }
+    },
+  );
+
+  // Update partner commission settings (admin only)
+  app.post(
+    "/api/admin/partner-commission/update",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        console.log("Updating partner commission settings:", req.body);
+
+        const { isActive, commissionType, commissionValue } = req.body;
+
+        // Validate required fields
+        if (typeof isActive !== 'boolean') {
+          return res
+            .status(400)
+            .json({ message: "isActive field is required and must be boolean" });
+        }
+
+        if (!commissionType || !['percentage', 'flat'].includes(commissionType)) {
+          return res
+            .status(400)
+            .json({ message: "commissionType must be either 'percentage' or 'flat'" });
+        }
+
+        // Validate commission value
+        const commissionNum = parseFloat(commissionValue);
+        if (isNaN(commissionNum) || commissionNum < 0) {
+          return res
+            .status(400)
+            .json({
+              message: "Invalid commission value. Must be a non-negative number.",
+            });
+        }
+
+        // Additional validation for percentage
+        if (commissionType === 'percentage' && commissionNum > 100) {
+          return res
+            .status(400)
+            .json({
+              message: "Percentage commission cannot exceed 100%.",
+            });
+        }
+
+        const updatedSettings = await storage.updatePartnerCommissionSettings({
+          isActive,
+          commissionType,
+          commissionValue: commissionNum,
+        });
+
+        console.log("Partner commission settings updated successfully");
+
+        res.json({
+          message: "Partner commission settings updated successfully",
+          settings: updatedSettings,
+        });
+      } catch (error: any) {
+        console.error("Failed to update partner commission settings:", error);
+        res
+          .status(500)
+          .json({
+            message: "Failed to update partner commission settings",
+            error: error.message,
+          });
+      }
+    },
+  );
+
   // Waiting Period Settings Routes (admin only)
   app.get(
     "/api/admin/waiting-period/current",

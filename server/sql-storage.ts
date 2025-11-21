@@ -140,6 +140,10 @@ export interface IStorage {
   getReferralDiscountSettings(): Promise<ReferralDiscountSettings | undefined>;
   updateReferralDiscountSettings(settings: InsertReferralDiscountSettings): Promise<ReferralDiscountSettings>;
   
+  // Partner Commission Settings operations
+  getPartnerCommissionSettings(): Promise<any>;
+  updatePartnerCommissionSettings(settings: any): Promise<any>;
+  
   // Homepage Banner operations
   getAllHomepageBanners(): Promise<HomepageBanner[]>;
   getActiveHomepageBanners(): Promise<HomepageBanner[]>;
@@ -300,6 +304,34 @@ export class SqlServerStorage implements IStorage {
       const referralDiscountRequest = db.pool.request();
       await referralDiscountRequest.query(referralDiscountTableQuery);
       console.log('✅ REFERRAL_DISCOUNT_SETTINGS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+      
+      // Create PARTNER_COMMISSION_SETTINGS table
+      console.log('🔥 ENSURING PARTNER_COMMISSION_SETTINGS TABLE EXISTS IN DATABASE...');
+      const partnerCommissionTableQuery = `
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'partner_commission_settings')
+        BEGIN
+          CREATE TABLE partner_commission_settings (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            is_active BIT DEFAULT 1,
+            commission_type NVARCHAR(20) NOT NULL DEFAULT 'flat',
+            commission_value DECIMAL(10,2) NOT NULL DEFAULT 25.00,
+            created_at DATETIME2 DEFAULT GETDATE(),
+            updated_at DATETIME2 DEFAULT GETDATE()
+          );
+          
+          INSERT INTO partner_commission_settings (is_active, commission_type, commission_value) 
+          VALUES (1, 'flat', 25.00);
+          PRINT 'Partner commission settings table created with default 25 flat commission';
+        END
+        ELSE
+        BEGIN
+          PRINT 'Partner commission settings table already exists, preserving current data';
+        END
+      `;
+      
+      const partnerCommissionRequest = db.pool.request();
+      await partnerCommissionRequest.query(partnerCommissionTableQuery);
+      console.log('✅ PARTNER_COMMISSION_SETTINGS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
       
       // Create transaction_history table
       console.log('🔥 ENSURING TRANSACTION_HISTORY TABLE EXISTS IN DATABASE...');
@@ -1696,29 +1728,47 @@ export class SqlServerStorage implements IStorage {
 
     // Update distributor commission and create payout if seller code provided
     if (insertCustomer.sellerCode) {
-      const updateQuery = `
-        UPDATE distributors 
-        SET total_customers = total_customers + 1, 
-            commission_earned = commission_earned + 25 
-        WHERE seller_code = @sellerCode
-      `;
-      const updateRequest = db.pool.request();
-      updateRequest.input('sellerCode', sql.NVarChar, insertCustomer.sellerCode);
-      await updateRequest.query(updateQuery);
-
-      // Create commission payout record
-      const distributor = await this.getDistributorBySellerCode(insertCustomer.sellerCode);
-      if (distributor) {
-        const payoutQuery = `
-          INSERT INTO commission_payouts (distributor_id, customer_id, amount, status)
-          VALUES (@distributorId, @customerId, @amount, @status)
+      try {
+        // Get partner commission settings
+        const commissionSettings = await this.getPartnerCommissionSettings();
+        let commissionAmount = 25.00; // default fallback
+        
+        if (commissionSettings && commissionSettings.isActive) {
+          if (commissionSettings.commissionType === 'percentage') {
+            commissionAmount = (insertCustomer.invoiceValue * commissionSettings.commissionValue) / 100;
+          } else if (commissionSettings.commissionType === 'flat') {
+            commissionAmount = commissionSettings.commissionValue;
+          }
+        }
+        
+        const updateQuery = `
+          UPDATE distributors 
+          SET total_customers = total_customers + 1, 
+              commission_earned = commission_earned + @commissionAmount 
+          WHERE seller_code = @sellerCode
         `;
-        const payoutRequest = db.pool.request();
-        payoutRequest.input('distributorId', sql.Int, distributor.id);
-        payoutRequest.input('customerId', sql.Int, result.recordset[0].id);
-        payoutRequest.input('amount', sql.Decimal(10, 2), 25.00);
-        payoutRequest.input('status', sql.NVarChar, 'pending');
-        await payoutRequest.query(payoutQuery);
+        const updateRequest = db.pool.request();
+        updateRequest.input('sellerCode', sql.NVarChar, insertCustomer.sellerCode);
+        updateRequest.input('commissionAmount', sql.Decimal(10, 2), commissionAmount);
+        await updateRequest.query(updateQuery);
+
+        // Create commission payout record
+        const distributor = await this.getDistributorBySellerCode(insertCustomer.sellerCode);
+        if (distributor) {
+          const payoutQuery = `
+            INSERT INTO commission_payouts (distributor_id, customer_id, amount, status)
+            VALUES (@distributorId, @customerId, @amount, @status)
+          `;
+          const payoutRequest = db.pool.request();
+          payoutRequest.input('distributorId', sql.Int, distributor.id);
+          payoutRequest.input('customerId', sql.Int, result.recordset[0].id);
+          payoutRequest.input('amount', sql.Decimal(10, 2), commissionAmount);
+          payoutRequest.input('status', sql.NVarChar, 'pending');
+          await payoutRequest.query(payoutQuery);
+        }
+      } catch (commissionError) {
+        console.error("Error calculating commission:", commissionError);
+        // Continue with default ₹25 commission on error
       }
     }
 
@@ -3768,6 +3818,76 @@ export class SqlServerStorage implements IStorage {
       isActive: row.is_active,
       discountType: row.discount_type,
       discountValue: parseFloat(row.discount_value),
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  // Partner Commission Settings operations
+  async getPartnerCommissionSettings(): Promise<any> {
+    await db.connectDB();
+    
+    const query = `SELECT TOP 1 * FROM partner_commission_settings ORDER BY id DESC`;
+    const request = db.pool.request();
+    const result = await request.query(query);
+    
+    if (result.recordset.length === 0) {
+      return undefined;
+    }
+    
+    const row = result.recordset[0];
+    return {
+      id: row.id,
+      isActive: row.is_active,
+      commissionType: row.commission_type,
+      commissionValue: parseFloat(row.commission_value),
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  async updatePartnerCommissionSettings(settings: any): Promise<any> {
+    await db.connectDB();
+    
+    // Check if settings exist
+    const existingQuery = `SELECT TOP 1 id FROM partner_commission_settings`;
+    const existingResult = await db.pool.request().query(existingQuery);
+    
+    let query: string;
+    let request = db.pool.request();
+    
+    if (existingResult.recordset.length > 0) {
+      // Update existing settings
+      query = `
+        UPDATE partner_commission_settings 
+        SET is_active = @isActive, 
+            commission_type = @commissionType, 
+            commission_value = @commissionValue,
+            updated_at = GETDATE()
+        OUTPUT INSERTED.*
+        WHERE id = (SELECT TOP 1 id FROM partner_commission_settings ORDER BY id DESC)
+      `;
+    } else {
+      // Insert new settings
+      query = `
+        INSERT INTO partner_commission_settings (is_active, commission_type, commission_value)
+        OUTPUT INSERTED.*
+        VALUES (@isActive, @commissionType, @commissionValue)
+      `;
+    }
+    
+    request.input('isActive', sql.Bit, settings.isActive);
+    request.input('commissionType', sql.NVarChar, settings.commissionType);
+    request.input('commissionValue', sql.Decimal(10, 2), settings.commissionValue);
+    
+    const result = await request.query(query);
+    const row = result.recordset[0];
+    
+    return {
+      id: row.id,
+      isActive: row.is_active,
+      commissionType: row.commission_type,
+      commissionValue: parseFloat(row.commission_value),
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };

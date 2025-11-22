@@ -16,14 +16,15 @@
 3. [Complete Feature List](#3-complete-feature-list)
 4. [Database Architecture](#4-database-architecture)
 5. [System Architecture](#5-system-architecture)
-6. [User Workflows](#6-user-workflows)
-7. [End-to-End Process Flows](#7-end-to-end-process-flows)
-8. [API Endpoints Reference](#8-api-endpoints-reference)
-9. [Data Lifecycle Management](#9-data-lifecycle-management)
-10. [Integration Details](#10-integration-details)
-11. [Error Handling & Validation](#11-error-handling--validation)
-12. [Security & Compliance](#12-security--compliance)
-13. [Limitations & Future Improvements](#13-limitations--future-improvements)
+6. [Visual Flow Diagrams](#6-visual-flow-diagrams)
+7. [User Workflows](#7-user-workflows)
+8. [End-to-End Process Flows](#8-end-to-end-process-flows)
+9. [API Endpoints Reference](#9-api-endpoints-reference)
+10. [Data Lifecycle Management](#10-data-lifecycle-management)
+11. [Integration Details](#11-integration-details)
+12. [Error Handling & Validation](#12-error-handling--validation)
+13. [Security & Compliance](#13-security--compliance)
+14. [Limitations & Future Improvements](#14-limitations--future-improvements)
 
 ---
 
@@ -967,7 +968,822 @@ message_templates
 
 ---
 
-## 6. USER WORKFLOWS
+## 6. VISUAL FLOW DIAGRAMS
+
+### A. DATABASE FLOW ARCHITECTURE
+
+```
+┌────────────────────────────────────────────────────────────────────────────┐
+│                      MICROSOFT SQL SERVER DATABASE                         │
+│                                                                            │
+│  ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐│
+│  │   CORE TABLES       │  │  CONFIGURATION      │  │  OPERATIONAL        ││
+│  │                     │  │  TABLES             │  │  TABLES             ││
+│  ├─────────────────────┤  ├─────────────────────┤  ├─────────────────────┤│
+│  │ • customers         │  │ • bbg_price_        │  │ • claims            ││
+│  │ • distributors      │  │   settings          │  │ • otp_               ││
+│  │ • claims            │  │ • claim_value_      │  │   verifications     ││
+│  │ • commission_       │  │   slabs             │  │ • transaction_      ││
+│  │   payouts           │  │ • plan_             │  │   history           ││
+│  │ • customers         │  │   configurations    │  │ • commission_       ││
+│  │ • device_           │  │ • partner_          │  │   payouts           ││
+│  │   registrations     │  │   commission_       │  │ • pending_          ││
+│  │                     │  │   settings          │  │   payments          ││
+│  │                     │  │ • referral_         │  │ • cart_             ││
+│  │                     │  │   discount_         │  │   abandonments      ││
+│  │                     │  │   settings          │  │                     ││
+│  │                     │  │ • waiting_period_   │  │                     ││
+│  │                     │  │   settings          │  │                     ││
+│  │                     │  │ • theme_settings    │  │                     ││
+│  │                     │  │ • smtp_settings     │  │                     ││
+│  └─────────────────────┘  └─────────────────────┘  └─────────────────────┘│
+│          ↓                        ↓                         ↓              │
+│  ┌─────────────────────────────────────────────────────────────────────┐  │
+│  │              RELATIONSHIP CONNECTIONS                               │  │
+│  ├─────────────────────────────────────────────────────────────────────┤  │
+│  │ customers.sellerCode ──→ distributors.sellerCode                    │  │
+│  │ claims.customerId ──→ customers.id                                  │  │
+│  │ claims.voucherCode ──→ customers.voucherCode                        │  │
+│  │ commission_payouts.customerId ──→ customers.id                      │  │
+│  │ commission_payouts.distributorId ──→ distributors.id                │  │
+│  │ admin_users.roleId ──→ user_roles.id                                │  │
+│  │ device_registrations.voucherCode ──→ customers.voucherCode (optional)│  │
+│  │ customers.registrationSlabData ←→ claim_value_slabs (JSON snapshot) │  │
+│  │ customers.emailTemplateKey ←→ message_templates.eventType           │  │
+│  └─────────────────────────────────────────────────────────────────────┘  │
+│          ↓                        ↓                         ↓              │
+│  ┌──────────────────────┐  ┌──────────────────────┐  ┌──────────────────┐ │
+│  │   MASTER TABLES      │  │  COMMUNICATION       │  │  SECURITY        │ │
+│  │                      │  │  TABLES              │  │  TABLES          │ │
+│  ├──────────────────────┤  ├──────────────────────┤  ├──────────────────┤ │
+│  │ • brands             │  │ • message_templates  │  │ • admin_users    │ │
+│  │ • device_models      │  │ • transaction_       │  │ • user_roles     │ │
+│  │ • user_roles         │  │   history            │  │ • distributor_   │ │
+│  │ • homepage_banners   │  │ • acer_imei_         │  │   sessions       │ │
+│  │                      │  │   validation         │  │                  │ │
+│  │                      │  │                      │  │                  │ │
+│  └──────────────────────┘  └──────────────────────┘  └──────────────────┘ │
+│          ↓                        ↓                         ↓              │
+└─────────────────────────────────────────────────────────────────────────────┘
+         ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+         ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+┌────────────────────────────────────────────────────────────────────────────┐
+│                      DATA FLOW WITHIN DATABASE                             │
+│                                                                            │
+│  CUSTOMER REGISTRATION FLOW:                                               │
+│  ┌──────────────┐    ┌─────────────┐    ┌──────────────┐                  │
+│  │ customers    │───→│ commission_ │───→│ transaction_ │                  │
+│  │ (insert)     │    │ payouts     │    │ history      │                  │
+│  │              │    │ (insert)    │    │ (insert)     │                  │
+│  └──────────────┘    └─────────────┘    └──────────────┘                  │
+│                            ↓                                               │
+│  CLAIM FILING FLOW:        ↓                                               │
+│  ┌──────────────┐    ┌─────────────┐    ┌──────────────┐                  │
+│  │ claims       │───→│ message_    │───→│ transaction_ │                  │
+│  │ (insert)     │    │ templates   │    │ history      │                  │
+│  │              │    │ (select)    │    │ (insert)     │                  │
+│  └──────────────┘    └─────────────┘    └──────────────┘                  │
+│                                                                            │
+│  PRICE UPDATE FLOW:                                                        │
+│  ┌─────────────────────┐                                                   │
+│  │ admin_users         │                                                   │
+│  │ (authenticated)     │                                                   │
+│  └──────────┬──────────┘                                                   │
+│             ↓                                                              │
+│  ┌──────────────────────────────┐    ┌──────────────┐                     │
+│  │ bbg_price_settings           │───→│ transaction_ │                     │
+│  │ (update)                     │    │ history      │                     │
+│  └──────────────────────────────┘    │ (insert)     │                     │
+│                                       └──────────────┘                     │
+│                                                                            │
+│  TEMPLATE MANAGEMENT FLOW:                                                 │
+│  ┌──────────────┐    ┌─────────────────────┐    ┌──────────────┐         │
+│  │ admin_users  │───→│ message_templates   │───→│ transaction_ │         │
+│  │ (auth)       │    │ (create/update)     │    │ history      │         │
+│  └──────────────┘    └─────────────────────┘    └──────────────┘         │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Key Data Flows**:
+- **Registration Flow**: customers → commission_payouts → transaction_history
+- **Claim Flow**: claims → message_templates → transaction_history
+- **Admin Updates**: admin action → target table (bbg_prices, templates, etc.) → transaction_history
+- **Real-time Sync**: claim_value_slabs snapshot stored in customers.registrationSlabData
+
+---
+
+### B. FRONTEND FLOW ARCHITECTURE
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           REACT FRONTEND (0.0.0.0:5000)                    │
+│                                                                             │
+│  ┌────────────────────────────────────────────────────────────────────────┐ │
+│  │                        ROUTING LAYER (Wouter)                          │ │
+│  │                                                                        │ │
+│  │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐    │ │
+│  │  │ PUBLIC ROUTES    │  │ CUSTOMER ROUTES  │  │ ADMIN ROUTES     │    │ │
+│  │  │                  │  │                  │  │                  │    │ │
+│  │  │ • /              │  │ • /customer-     │  │ • /admin/*       │    │ │
+│  │  │ • /register      │  │   registration   │  │ • /admin/bbg-    │    │ │
+│  │  │ • /acer-bbg      │  │ • /customer-     │  │   settings       │    │ │
+│  │  │ • /amazon-bbg    │  │   login          │  │ • /admin/claim-  │    │ │
+│  │  │ • /claim-bbg     │  │ • /customer-     │  │   slabs          │    │ │
+│  │  │ • /terms         │  │   dashboard      │  │ • /admin/        │    │ │
+│  │  │                  │  │ • /thank-you     │  │   templates      │    │ │
+│  │  │                  │  │                  │  │ • /admin/users   │    │ │
+│  │  │                  │  │ DISTRIBUTOR:     │  │ • /admin/        │    │ │
+│  │  │                  │  │ • /distributor-  │  │   plan-config    │    │ │
+│  │  │                  │  │   registration   │  │ • 20+ more pages │    │ │
+│  │  │                  │  │ • /distributor-  │  │                  │    │ │
+│  │  │                  │  │   login          │  │                  │    │ │
+│  │  │                  │  │ • /distributor-  │  │                  │    │ │
+│  │  │                  │  │   dashboard      │  │                  │    │ │
+│  │  └──────────────────┘  └──────────────────┘  └──────────────────┘    │ │
+│  │                                                                        │ │
+│  └────────────────────────────────────────────────────────────────────────┘ │
+│                                   ↓↓↓                                       │
+│  ┌────────────────────────────────────────────────────────────────────────┐ │
+│  │              PAGE COMPONENT TREE (client/src/pages)                   │ │
+│  │                                                                        │ │
+│  │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐    │ │
+│  │  │  FORM PAGES      │  │  DATA VIEW PAGES │  │  ADMIN PAGES     │    │ │
+│  │  │                  │  │                  │  │                  │    │ │
+│  │  │ • customer-      │  │ • customer-      │  │ • admin-         │    │ │
+│  │  │   registration   │  │   dashboard      │  │   dashboard      │    │ │
+│  │  │ • acer-bbg       │  │ • distributor-   │  │ • admin-         │    │ │
+│  │  │ • amazon-bbg     │  │   dashboard      │  │   distributors   │    │ │
+│  │  │ • claim-bbg      │  │ • thank-you      │  │ • admin-claims   │    │ │
+│  │  │ • distributor-   │  │                  │  │ • admin-         │    │ │
+│  │  │   registration   │  │                  │  │   customers      │    │ │
+│  │  │                  │  │                  │  │ • admin-         │    │ │
+│  │  │                  │  │                  │  │   templates      │    │ │
+│  │  │                  │  │                  │  │ • admin-plan-    │    │ │
+│  │  │                  │  │                  │  │   config         │    │ │
+│  │  │                  │  │                  │  │ • 20+ more       │    │ │
+│  │  └──────────────────┘  └──────────────────┘  └──────────────────┘    │ │
+│  │                                                                        │ │
+│  └────────────────────────────────────────────────────────────────────────┘ │
+│                                   ↓↓↓                                       │
+│  ┌────────────────────────────────────────────────────────────────────────┐ │
+│  │           COMPONENT LAYER (client/src/components)                     │ │
+│  │                                                                        │ │
+│  │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐    │ │
+│  │  │ UI COMPONENTS    │  │ FORM COMPONENTS  │  │ LAYOUT COMPONENTS│    │ │
+│  │  │ (shadcn/ui)      │  │ (React Hook Form)│  │                  │    │ │
+│  │  │                  │  │                  │  │                  │    │ │
+│  │  │ • Button         │  │ • Form           │  │ • AdminLayout    │    │ │
+│  │  │ • Input          │  │ • FormField      │  │ • AdminSidebar   │    │ │
+│  │  │ • Select         │  │ • useForm        │  │ • Navbar         │    │ │
+│  │  │ • Dialog         │  │ • zodResolver    │  │ • Footer         │    │ │
+│  │  │ • Alert          │  │                  │  │                  │    │ │
+│  │  │ • Table          │  │                  │  │                  │    │ │
+│  │  │ • Card           │  │                  │  │                  │    │ │
+│  │  │ • Tabs           │  │                  │  │                  │    │ │
+│  │  │ • Toast          │  │                  │  │                  │    │ │
+│  │  │ • 50+ more       │  │                  │  │                  │    │ │
+│  │  └──────────────────┘  └──────────────────┘  └──────────────────┘    │ │
+│  │                                                                        │ │
+│  └────────────────────────────────────────────────────────────────────────┘ │
+│                                   ↓↓↓                                       │
+│  ┌────────────────────────────────────────────────────────────────────────┐ │
+│  │        STATE MANAGEMENT (TanStack Query + Local State)                │ │
+│  │                                                                        │ │
+│  │  ┌──────────────────┐  ┌──────────────────┐                          │ │
+│  │  │ QUERIES          │  │ MUTATIONS        │                          │ │
+│  │  │ (useQuery)       │  │ (useMutation)    │                          │ │
+│  │  │                  │  │                  │                          │ │
+│  │  │ • Fetch customers│  │ • Register       │                          │ │
+│  │  │ • Fetch claims   │  │ • File claim     │                          │ │
+│  │  │ • Fetch settings │  │ • Update profile │                          │ │
+│  │  │ • Fetch templates│  │ • Create template│                          │ │
+│  │  │ • Fetch slabs    │  │ • Update prices  │                          │ │
+│  │  │                  │  │ • Login          │                          │ │
+│  │  │                  │  │ • Logout         │                          │ │
+│  │  │                  │  │                  │                          │ │
+│  │  └──────────────────┘  └──────────────────┘                          │ │
+│  │           ↓                     ↓                                     │ │
+│  │  ┌─────────────────────────────────────┐                             │ │
+│  │  │    QUERY CLIENT (Cache Manager)     │                             │ │
+│  │  │  • invalidateQueries()              │                             │ │
+│  │  │  • refetchQueries()                 │                             │ │
+│  │  │  • setQueryData()                   │                             │ │
+│  │  └─────────────────────────────────────┘                             │ │
+│  │                                                                        │ │
+│  └────────────────────────────────────────────────────────────────────────┘ │
+│                                   ↓↓↓                                       │
+│  ┌────────────────────────────────────────────────────────────────────────┐ │
+│  │              API LAYER (lib/queryClient.ts)                           │ │
+│  │                                                                        │ │
+│  │  ┌──────────────────┐  ┌──────────────────┐                          │ │
+│  │  │ HTTP Methods     │  │ Error Handling   │                          │ │
+│  │  │                  │  │                  │                          │ │
+│  │  │ • GET            │  │ • Network errors │                          │ │
+│  │  │ • POST           │  │ • Validation     │                          │ │
+│  │  │ • PUT            │  │ • Auth errors    │                          │ │
+│  │  │ • DELETE         │  │ • Server errors  │                          │ │
+│  │  │                  │  │ • Toast messages │                          │ │
+│  │  └──────────────────┘  └──────────────────┘                          │ │
+│  │                                                                        │ │
+│  └────────────────────────────────────────────────────────────────────────┘ │
+│                                   ↓↓↓                                       │
+│  ┌────────────────────────────────────────────────────────────────────────┐ │
+│  │              STYLING (Tailwind CSS + Custom CSS)                      │ │
+│  │                                                                        │ │
+│  │  • Design system: Primary #254696, Secondary #E72829                 │ │
+│  │  • Dark mode support with CSS variables                              │ │
+│  │  • Responsive design (mobile, tablet, desktop)                       │ │
+│  │  • Animation & transitions (Framer Motion)                           │ │
+│  │  • Custom properties in index.css                                    │ │
+│  │                                                                        │ │
+│  └────────────────────────────────────────────────────────────────────────┘ │
+│                                   ↓↓↓                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓↓↓
+                          (HTTP REST API Calls)
+                                    ↓↓↓
+                    EXPRESS BACKEND (Port 5000)
+```
+
+**Frontend Data Flow**:
+1. User interacts with component → Event handler triggered
+2. Component calls useQuery/useMutation → API Layer makes HTTP request
+3. Backend processes → Returns JSON response
+4. Query client caches → Component re-renders with new data
+5. User sees updated UI with toast notifications
+
+---
+
+### C. BACKEND FLOW ARCHITECTURE
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    EXPRESS.JS BACKEND (server/index.ts)                      │
+│                            Port: 0.0.0.0:5000                                │
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────────┐  │
+│  │                      MIDDLEWARE CHAIN                                  │  │
+│  │                                                                        │  │
+│  │  1. Body Parser (JSON)                                                 │  │
+│  │  ↓                                                                     │  │
+│  │  2. CORS & Security Headers                                            │  │
+│  │  ↓                                                                     │  │
+│  │  3. Request Logging                                                    │  │
+│  │  ↓                                                                     │  │
+│  │  4. Session Middleware                                                 │  │
+│  │  ↓                                                                     │  │
+│  │  5. Static File Serving                                                │  │
+│  │                                                                        │  │
+│  └────────────────────────────────────────────────────────────────────────┘  │
+│                                   ↓                                          │
+│  ┌────────────────────────────────────────────────────────────────────────┐  │
+│  │              ROUTE HANDLERS (server/routes.ts)                        │  │
+│  │                                                                        │  │
+│  │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐    │  │
+│  │  │ AUTH ROUTES      │  │ CUSTOMER ROUTES  │  │ ADMIN ROUTES     │    │  │
+│  │  │                  │  │                  │  │                  │    │  │
+│  │  │ • /api/send-otp  │  │ • /api/          │  │ • /api/admin/    │    │  │
+│  │  │ • /api/verify-otp│  │   customers/     │  │   bbg-settings   │    │  │
+│  │  │ • /api/customer/ │  │   register       │  │ • /api/admin/    │    │  │
+│  │  │   login          │  │ • /api/          │  │   claim-slabs    │    │  │
+│  │  │ • /api/          │  │   claims/check   │  │ • /api/admin/    │    │  │
+│  │  │   distributor/   │  │ • /api/claims/   │  │   templates      │    │  │
+│  │  │   login          │  │   file           │  │ • /api/admin/    │    │  │
+│  │  │                  │  │ • /api/          │  │   customers      │    │  │
+│  │  │                  │  │   validate-      │  │ • /api/admin/    │    │  │
+│  │  │                  │  │   voucher        │  │   distributors   │    │  │
+│  │  │                  │  │ • /api/verify-   │  │ • /api/admin/    │    │  │
+│  │  │                  │  │   voucher        │  │   export/*       │    │  │
+│  │  │                  │  │                  │  │ • 50+ more       │    │  │
+│  │  │ PAYMENT ROUTES:  │  │                  │  │                  │    │  │
+│  │  │ • /api/create-   │  │ DISTRIBUTOR:     │  │                  │    │  │
+│  │  │   payu-payment   │  │ • /api/          │  │                  │    │  │
+│  │  │ • /api/payu/     │  │   distributor/   │  │                  │    │  │
+│  │  │   success        │  │   register       │  │                  │    │  │
+│  │  │ • /api/payu/     │  │ • /api/          │  │                  │    │  │
+│  │  │   failure        │  │   distributor/   │  │                  │    │  │
+│  │  │                  │  │   customers      │  │                  │    │  │
+│  │  │                  │  │ • /api/          │  │                  │    │  │
+│  │  │                  │  │   distributor/   │  │                  │    │  │
+│  │  │                  │  │   commissions    │  │                  │    │  │
+│  │  └──────────────────┘  └──────────────────┘  └──────────────────┘    │  │
+│  │                                                                        │  │
+│  └────────────────────────────────────────────────────────────────────────┘  │
+│                                   ↓                                          │
+│  ┌────────────────────────────────────────────────────────────────────────┐  │
+│  │           REQUEST PROCESSING PER ROUTE                                │  │
+│  │                                                                        │  │
+│  │  1. Authentication Check (isAdminAuthenticated, isDistAuthent...)     │  │
+│  │  ↓                                                                    │  │
+│  │  2. Input Validation (Zod schemas)                                    │  │
+│  │  ↓                                                                    │  │
+│  │  3. Business Logic Execution                                          │  │
+│  │  ↓                                                                    │  │
+│  │  4. Storage Layer Call                                                │  │
+│  │  ↓                                                                    │  │
+│  │  5. Service Layer Call (if needed)                                    │  │
+│  │  ↓                                                                    │  │
+│  │  6. Response Formatting & Sending                                     │  │
+│  │  ↓                                                                    │  │
+│  │  7. Error Handling & Logging                                          │  │
+│  │                                                                        │  │
+│  └────────────────────────────────────────────────────────────────────────┘  │
+│                                   ↓                                          │
+│  ┌────────────────────────────────────────────────────────────────────────┐  │
+│  │         SERVICE LAYER (Business Logic)                                │  │
+│  │                                                                        │  │
+│  │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐    │  │
+│  │  │ Communication    │  │ Template Service │  │ Plan Service     │    │  │
+│  │  │ Service          │  │                  │  │                  │    │  │
+│  │  │                  │  │ • getTemplate    │  │ • getPlanFor     │    │  │
+│  │  │ • sendEmail()    │  │ • renderTemplate │  │   DeviceAge()    │    │  │
+│  │  │ • sendSMS()      │  │ • replaceVars()  │  │ • calculateBe    │    │  │
+│  │  │ • sendWhatsApp() │  │ • ensureDefaults │  │   nefits()       │    │  │
+│  │  │ • calcDeviceAge()│  │ • createTemplate │  │                  │    │  │
+│  │  │ • selectTemplate │  │ • updateTemplate │  │                  │    │  │
+│  │  │   ByAge()        │  │ • deleteTemplate │  │                  │    │  │
+│  │  │                  │  │                  │  │                  │    │  │
+│  │  └──────────────────┘  └──────────────────┘  └──────────────────┘    │  │
+│  │                                                                        │  │
+│  │  ┌──────────────────┐  ┌──────────────────┐                          │  │
+│  │  │ S3 Service       │  │ External Services│                          │  │
+│  │  │                  │  │                  │                          │  │
+│  │  │ • uploadFile()   │  │ • Kaleyra SMS    │                          │  │
+│  │  │ • deleteFile()   │  │ • Gupshup        │                          │  │
+│  │  │ • generateURL()  │  │   WhatsApp       │                          │  │
+│  │  │                  │  │ • PayU Gateway   │                          │  │
+│  │  │                  │  │ • Nodemailer     │                          │  │
+│  │  │                  │  │   SMTP           │                          │  │
+│  │  └──────────────────┘  └──────────────────┘                          │  │
+│  │                                                                        │  │
+│  └────────────────────────────────────────────────────────────────────────┘  │
+│                                   ↓                                          │
+│  ┌────────────────────────────────────────────────────────────────────────┐  │
+│  │      STORAGE LAYER (server/sql-storage.ts)                            │  │
+│  │             IStorage Interface Implementation                          │  │
+│  │                                                                        │  │
+│  │  ┌────────────────────────────────────────────────────────────────┐   │  │
+│  │  │  Core Methods (CRUD Operations)                                │   │  │
+│  │  ├────────────────────────────────────────────────────────────────┤   │  │
+│  │  │  getCustomers()         → SELECT * FROM customers             │   │  │
+│  │  │  getCustomerById()      → SELECT * FROM customers WHERE id=?  │   │  │
+│  │  │  createCustomer()       → INSERT INTO customers               │   │  │
+│  │  │  updateCustomer()       → UPDATE customers SET...             │   │  │
+│  │  │                                                                │   │  │
+│  │  │  getClaims()            → SELECT * FROM claims                │   │  │
+│  │  │  getClaimById()         → SELECT * FROM claims WHERE id=?     │   │  │
+│  │  │  createClaim()          → INSERT INTO claims                  │   │  │
+│  │  │  updateClaimStatus()    → UPDATE claims SET status=?          │   │  │
+│  │  │                                                                │   │  │
+│  │  │  getDistributors()      → SELECT * FROM distributors          │   │  │
+│  │  │  getDistributorById()   → SELECT * FROM distributors WHERE id │   │  │
+│  │  │  createDistributor()    → INSERT INTO distributors            │   │  │
+│  │  │  updateDistributor()    → UPDATE distributors SET...          │   │  │
+│  │  │                                                                │   │  │
+│  │  │  getClaimValueSlabs()   → SELECT * FROM claim_value_slabs     │   │  │
+│  │  │  createClaimSlab()      → INSERT INTO claim_value_slabs       │   │  │
+│  │  │  updateClaimSlab()      → UPDATE claim_value_slabs SET...     │   │  │
+│  │  │                                                                │   │  │
+│  │  │  getPlanConfigurations()→ SELECT * FROM plan_configurations   │   │  │
+│  │  │  createPlanConfig()     → INSERT INTO plan_configurations     │   │  │
+│  │  │  updatePlanConfig()     → UPDATE plan_configurations SET...   │   │  │
+│  │  │                                                                │   │  │
+│  │  │  getMessageTemplates()  → SELECT * FROM message_templates     │   │  │
+│  │  │  createTemplate()       → INSERT INTO message_templates       │   │  │
+│  │  │  updateTemplate()       → UPDATE message_templates SET...     │   │  │
+│  │  │                                                                │   │  │
+│  │  │  getAdminUsers()        → SELECT * FROM admin_users           │   │  │
+│  │  │  createAdminUser()      → INSERT INTO admin_users             │   │  │
+│  │  │                                                                │   │  │
+│  │  │  getBBGPrices()         → SELECT * FROM bbg_price_settings    │   │  │
+│  │  │  updateBBGPrices()      → UPDATE bbg_price_settings SET...    │   │  │
+│  │  │                                                                │   │  │
+│  │  │  + 50+ more methods                                            │   │  │
+│  │  │                                                                │   │  │
+│  │  └────────────────────────────────────────────────────────────────┘   │  │
+│  │                                                                        │  │
+│  └────────────────────────────────────────────────────────────────────────┘  │
+│                                   ↓↓↓                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
+                                   ↓↓↓
+                          SQL QUERY EXECUTION
+                                   ↓↓↓
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    MICROSOFT SQL SERVER DATABASE                             │
+│                                                                              │
+│  SQL Query Types:                                                            │
+│  • SELECT queries (READ)     → fetch data                                   │
+│  • INSERT queries (CREATE)   → add new records                              │
+│  • UPDATE queries (UPDATE)   → modify existing records                      │
+│  • DELETE queries (DELETE)   → soft delete via isActive flag                │
+│  • JOINs                     → combine data from multiple tables            │
+│  • Transactions              → ensure data consistency                      │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Backend Request Processing Flow**:
+```
+Incoming HTTP Request
+        ↓
+Route Handler Identification
+        ↓
+Middleware Execution (Auth, Validation)
+        ↓
+Business Logic Execution
+        ↓
+Storage Layer (CRUD)
+        ↓
+Service Layer (Communications, etc.)
+        ↓
+External APIs (PayU, SMS, Email)
+        ↓
+Response Formatting
+        ↓
+HTTP Response Sent
+        ↓
+Request Logging
+```
+
+---
+
+### D. COMPLETE SYSTEM INTEGRATION FLOW
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    COMPLETE XTRACOVER BBG SYSTEM ARCHITECTURE                ║
+║                                                                              ║
+║           FRONTEND (React)        →        BACKEND (Express)        →        ║
+║        client/src/*                      server/                          ║
+║                                                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║     USER BROWSER (0.0.0.0:5000)                                             ║
+║     ┌─────────────────────────────┐                                         ║
+║     │  React Application          │                                         ║
+║     │                             │                                         ║
+║     │  ┌─────────────────────────┐│                                         ║
+║     │  │ Page Components         ││  ──HTTP GET/POST──→  API Endpoints     ║
+║     │  │ (45+ pages)             ││                      (50+ routes)       ║
+║     │  └─────────────────────────┘│                                         ║
+║     │           ↓                  │                                         ║
+║     │  ┌─────────────────────────┐│                                         ║
+║     │  │ UI Components           ││                                         ║
+║     │  │ (shadcn/ui)             ││                                         ║
+║     │  └─────────────────────────┘│                                         ║
+║     │           ↓                  │                                         ║
+║     │  ┌─────────────────────────┐│                                         ║
+║     │  │ State Management        ││                                         ║
+║     │  │ (TanStack Query)        ││                                         ║
+║     │  │ useQuery/useMutation    ││                                         ║
+║     │  └─────────────────────────┘│                                         ║
+║     │           ↓                  │                                         ║
+║     │  ┌─────────────────────────┐│                                         ║
+║     │  │ API Layer               ││  ←─JSON Response─── Route Handler      ║
+║     │  │ (lib/queryClient)       ││                      Executes Logic    ║
+║     │  └─────────────────────────┘│                                         ║
+║     └─────────────────────────────┘                                         ║
+║                                                                              ║
+║     BACKEND PROCESSING (0.0.0.0:5000)                                       ║
+║     ┌───────────────────────────────────────────────────────────────────┐   ║
+║     │ Express Application (server/index.ts)                            │   ║
+║     │                                                                   │   ║
+║     │ ┌─────────────────────────────────────────────────────────────┐  │   ║
+║     │ │ Middleware Stack                                            │  │   ║
+║     │ │ ├─ Body Parser (JSON)                                       │  │   ║
+║     │ │ ├─ Authentication Middleware                                │  │   ║
+║     │ │ ├─ Session Management                                       │  │   ║
+║     │ │ └─ Error Handling                                           │  │   ║
+║     │ └─────────────────────────────────────────────────────────────┘  │   ║
+║     │              ↓                                                    │   ║
+║     │ ┌─────────────────────────────────────────────────────────────┐  │   ║
+║     │ │ Route Handlers (server/routes.ts)                           │  │   ║
+║     │ │ ├─ POST /api/customers/register                            │  │   ║
+║     │ │ ├─ POST /api/create-payu-payment                           │  │   ║
+║     │ │ ├─ POST /api/payu/success                                  │  │   ║
+║     │ │ ├─ POST /api/claims/file                                   │  │   ║
+║     │ │ ├─ GET /api/admin/claim-value-slabs                        │  │   ║
+║     │ │ ├─ POST /api/admin/bbg-settings                            │  │   ║
+║     │ │ ├─ GET /api/admin/plan-configurations                      │  │   ║
+║     │ │ └─ 45+ more routes                                         │  │   ║
+║     │ └─────────────────────────────────────────────────────────────┘  │   ║
+║     │              ↓                                                    │   ║
+║     │ ┌─────────────────────────────────────────────────────────────┐  │   ║
+║     │ │ Business Logic & Validation                                 │  │   ║
+║     │ │ ├─ Price calculation (server-side)                          │  │   ║
+║     │ │ ├─ Commission calculation                                   │  │   ║
+║     │ │ ├─ Device age validation                                    │  │   ║
+║     │ │ ├─ Waiting period checks                                    │  │   ║
+║     │ │ ├─ Slab selection logic                                     │  │   ║
+║     │ │ └─ Hash verification (PayU)                                 │  │   ║
+║     │ └─────────────────────────────────────────────────────────────┘  │   ║
+║     │              ↓                                                    │   ║
+║     │ ┌─────────────────────────────────────────────────────────────┐  │   ║
+║     │ │ Service Layer                                               │  │   ║
+║     │ │ ┌─────────────────────────────────────────────────────────┐ │  │   ║
+║     │ │ │ Communication Service                                   │ │  │   ║
+║     │ │ │ ├─ Select email template                                │ │  │   ║
+║     │ │ │ ├─ Replace template variables                           │ │  │   ║
+║     │ │ │ ├─ Send via SMTP/SMS/WhatsApp                           │ │  │   ║
+║     │ │ │ └─ Log email/SMS delivery                               │ │  │   ║
+║     │ │ └─────────────────────────────────────────────────────────┘ │  │   ║
+║     │ │ ┌─────────────────────────────────────────────────────────┐ │  │   ║
+║     │ │ │ Template Service                                        │ │  │   ║
+║     │ │ │ ├─ Fetch templates from database                        │ │  │   ║
+║     │ │ │ ├─ Render with variables                                │ │  │   ║
+║     │ │ │ ├─ Create/update templates                              │ │  │   ║
+║     │ │ │ └─ Live preview generation                              │ │  │   ║
+║     │ │ └─────────────────────────────────────────────────────────┘ │  │   ║
+║     │ │ ┌─────────────────────────────────────────────────────────┐ │  │   ║
+║     │ │ │ S3 Service                                              │ │  │   ║
+║     │ │ │ ├─ Upload files to AWS S3                               │ │  │   ║
+║     │ │ │ ├─ Generate signed URLs                                 │ │  │   ║
+║     │ │ │ └─ Handle file deletions                                │ │  │   ║
+║     │ │ └─────────────────────────────────────────────────────────┘ │  │   ║
+║     │ │ ┌─────────────────────────────────────────────────────────┐ │  │   ║
+║     │ │ │ External Services                                       │ │  │   ║
+║     │ │ │ ├─ PayU Payment Gateway                                 │ │  │   ║
+║     │ │ │ ├─ Kaleyra SMS                                          │ │  │   ║
+║     │ │ │ ├─ Gupshup WhatsApp                                     │ │  │   ║
+║     │ │ │ └─ Nodemailer SMTP                                      │ │  │   ║
+║     │ │ └─────────────────────────────────────────────────────────┘ │  │   ║
+║     │ └─────────────────────────────────────────────────────────────┘  │   ║
+║     │              ↓                                                    │   ║
+║     │ ┌─────────────────────────────────────────────────────────────┐  │   ║
+║     │ │ Storage Layer (SQL Server Interface)                        │  │   ║
+║     │ │ ├─ CRUD operations for all tables                          │  │   ║
+║     │ │ ├─ Query construction & execution                          │  │   ║
+║     │ │ ├─ Error handling & retries                                │  │   ║
+║     │ │ ├─ Connection pooling                                      │  │   ║
+║     │ │ └─ Transaction management                                  │  │   ║
+║     │ └─────────────────────────────────────────────────────────────┘  │   ║
+║     └───────────────────────────────────────────────────────────────────┘   ║
+║                                                                              ║
+║                                   ↓↓↓                                       ║
+║                         SQL QUERY EXECUTION                                 ║
+║                                   ↓↓↓                                       ║
+║                                                                              ║
+║     DATABASE LAYER (Microsoft SQL Server)                                   ║
+║     ┌─────────────────────────────────────────────────────────────────┐   ║
+║     │                                                                 │   ║
+║     │  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐   │   ║
+║     │  │ Core Tables    │  │ Config Tables  │  │ Ops Tables     │   │   ║
+║     │  ├────────────────┤  ├────────────────┤  ├────────────────┤   │   ║
+║     │  │ • customers    │  │ • bbg_price_   │  │ • claims       │   │   ║
+║     │  │ • distributors │  │   settings     │  │ • transaction_ │   │   ║
+║     │  │ • claims       │  │ • claim_value_ │  │   history      │   │   ║
+║     │  │ • commission_  │  │   slabs        │  │ • commission_  │   │   ║
+║     │  │   payouts      │  │ • plan_        │  │   payouts      │   │   ║
+║     │  │                │  │   configurations│ │ • pending_     │   │   ║
+║     │  │                │  │ • partner_     │  │   payments     │   │   ║
+║     │  │                │  │   commission_  │  │                │   │   ║
+║     │  │                │  │   settings     │  │                │   │   ║
+║     │  │                │  │ • referral_    │  │                │   │   ║
+║     │  │                │  │   discount_    │  │                │   │   ║
+║     │  │                │  │   settings     │  │                │   │   ║
+║     │  │                │  │ • message_     │  │                │   │   ║
+║     │  │                │  │   templates    │  │                │   │   ║
+║     │  │                │  │ • admin_users  │  │                │   │   ║
+║     │  │                │  │ • theme_       │  │                │   │   ║
+║     │  │                │  │   settings     │  │                │   │   ║
+║     │  │                │  │ • smtp_settings│  │                │   │   ║
+║     │  └────────────────┘  └────────────────┘  └────────────────┘   │   ║
+║     │                                                                 │   ║
+║     │  All tables interconnected via relationships:                   │   ║
+║     │  • Foreign Keys enforce referential integrity                   │   ║
+║     │  • Indexes optimize query performance                           │   ║
+║     │  • Constraints ensure data validity                             │   ║
+║     │  • Transactions maintain ACID properties                        │   ║
+║     │                                                                 │   ║
+║     └─────────────────────────────────────────────────────────────────┘   ║
+║                                   ↑↑↑                                       ║
+║                       SQL Response Returns to Backend                       ║
+║                                   ↑↑↑                                       ║
+║                                                                              ║
+║     EXTERNAL INTEGRATIONS (Parallel Execution)                              ║
+║     ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐      ║
+║     │ PAYU GATEWAY     │  │ COMMUNICATION    │  │ FILE STORAGE     │      ║
+║     │                  │  │ SERVICES         │  │                  │      ║
+║     │ ├─ Payment Hash  │  │ ├─ Kaleyra SMS   │  │ ├─ AWS S3        │      ║
+║     │ │   Verification │  │ │ ├─ HTTP POST   │  │ │ ├─ Upload Files│      ║
+║     │ ├─ Amount        │  │ │ │   API Call   │  │ │ ├─ Signed URLs │      ║
+║     │ │   Validation   │  │ ├─ Gupshup      │  │ │ └─ Delete Files│      ║
+║     │ ├─ Payment       │  │ │   WhatsApp     │  │ └─ AWS S3 Bucket│      ║
+║     │ │   Processing   │  │ │ ├─ HTTP POST   │  │    (bbg-assets) │      ║
+║     │ │   (Card/UPI)   │  │ │ │   API Call   │  │                 │      ║
+║     │ └─ Success/      │  │ ├─ Nodemailer   │  │                 │      ║
+║     │   Failure        │  │ │   (SMTP)       │  │                 │      ║
+║     │   Callback       │  │ │ ├─ DB Config   │  │                 │      ║
+║     │                  │  │ │ ├─ Template    │  │                 │      ║
+║     │                  │  │ │ │   Rendering │  │                 │      ║
+║     │                  │  │ │ └─ Send via    │  │                 │      ║
+║     │                  │  │ │   SMTP Server │  │                 │      ║
+║     │                  │  │ └─ Delivery     │  │                 │      ║
+║     │                  │  │    Logging      │  │                 │      ║
+║     └──────────────────┘  └──────────────────┘  └──────────────────┘      ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+DATA FLOW TIMELINE EXAMPLE - CUSTOMER REGISTRATION:
+
+┌──────────┐
+│ BROWSER  │
+└────┬─────┘
+     │ 1. User fills form & clicks "Register"
+     │
+     ├───HTTP POST /api/customers/register──→ ┌──────────────────┐
+     │   {customerData}                       │ ROUTE HANDLER    │
+     │                                        │ (Authentication) │
+     │                                        └────────┬─────────┘
+     │                                                 │
+     │                                                 │ 2. Validate input
+     │                                                 │    (Zod schema)
+     │                                                 ↓
+     │                                        ┌──────────────────┐
+     │                                        │ BUSINESS LOGIC   │
+     │                                        │ • Calc device age│
+     │                                        │ • Verify BBG age │
+     │                                        │ • Select plan    │
+     │                                        │ • Calc commission│
+     │                                        └────────┬─────────┘
+     │                                                 │
+     │                                                 │ 3. Fetch data
+     │                                                 ↓
+     │                                        ┌──────────────────┐
+     │                                        │ STORAGE LAYER    │
+     │                                        │ → bbg_price_     │
+     │                                        │   settings       │
+     │                                        │ → claim_value_   │
+     │                                        │   slabs          │
+     │                                        │ → insert customer│
+     │                                        │ → insert         │
+     │                                        │   commission_    │
+     │                                        │   payout         │
+     │                                        └────────┬─────────┘
+     │                                                 │
+     │                                                 │ 4. Execute SQL
+     │                                                 ↓
+     │                                        ┌──────────────────┐
+     │                                        │ SQL SERVER       │
+     │                                        │ (Database)       │
+     │                                        │ ✓ Records        │
+     │                                        │   created        │
+     │                                        └────────┬─────────┘
+     │                                                 │
+     │                                                 │ 5. Call services
+     │                                                 ↓
+     │     ┌─────────────────────────────────┌──────────────────┐
+     │     │                                 │ SERVICE LAYER    │
+     │     ↓                                 │ (Parallel calls) │
+     │  ┌──────────────┐   ┌──────────────┐ │                  │
+     │  │ NODEMAILER   │   │ KALEYRA      │ │ • Send Email     │
+     │  │ SMTP Service │   │ SMS Service  │ │ • Send SMS       │
+     │  │              │   │              │ │ • Log to DB      │
+     │  │ GET SMTP     │   │ Call SMS     │ │                  │
+     │  │ Settings     │   │ API          │ └──────────┬───────┘
+     │  │ Render       │   │ Delivery     │           │
+     │  │ Template     │   │ Confirmation │           │ 6. Return response
+     │  │ Send Email   │   │              │           │
+     │  │ to customer  │   │              │           │
+     │  └──────────────┘   └──────────────┘           │
+     │                                                 │
+     │ 7. JSON Response──────────────────────────────←┘
+     │    {voucherCode, customerId, message}
+     │
+     ↓
+  ┌─────────────────┐
+  │ FRONTEND        │
+  │ ├─ Parse JSON   │
+  │ ├─ Store voucher│
+  │ ├─ Invalidate   │
+  │ │  TanStack     │
+  │ │  Query cache  │
+  │ ├─ Show success │
+  │ │  toast        │
+  │ └─ Redirect to  │
+  │    thank-you    │
+  │    page         │
+  └─────────────────┘
+```
+
+---
+
+### E. REQUEST-RESPONSE CYCLE DIAGRAM
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              HTTP REQUEST-RESPONSE CYCLE                        │
+└─────────────────────────────────────────────────────────────────┘
+
+FRONTEND                          BACKEND                  DATABASE
+┌─────────────┐                ┌────────────┐            ┌────────┐
+│   BROWSER   │                │  EXPRESS   │            │ SQL    │
+└─────┬───────┘                └────────────┘            │ SERVER │
+      │                                                  └────────┘
+      │ 1. User Action
+      │    (Click Button)
+      │
+      ├─→ useState update
+      │
+      ├─→ Form validation
+      │    (Zod schema)
+      │
+      ├─→ API Layer Call
+      │    (TanStack Query)
+      │
+      ├─→ HTTP REQUEST
+      │   ├─ Method: POST
+      │   ├─ URL: /api/customers/register
+      │   ├─ Headers: Content-Type: application/json
+      │   ├─ Body: {customerData}
+      │   └─ Timestamp: [ISO 8601]
+      │
+      ├──────────────────────→ Router Match
+      │                       │
+      │                       ├─→ Route Handler: /api/customers/register
+      │                       │
+      │                       ├─→ Middleware
+      │                       │   ├─ Body Parser (✓)
+      │                       │   ├─ CORS Check (✓)
+      │                       │   └─ Logging (✓)
+      │                       │
+      │                       ├─→ Authentication
+      │                       │   └─ Optional (public route)
+      │                       │
+      │                       ├─→ Input Validation
+      │                       │   ├─ Zod.parse(body)
+      │                       │   └─ If invalid:
+      │                       │      └─ Return 400 error
+      │                       │
+      │                       ├─→ Business Logic
+      │                       │   ├─ Calculate device age
+      │                       │   ├─ Verify constraints
+      │                       │   ├─ Fetch settings
+      │                       │   └─ Prepare data
+      │                       │
+      │                       ├─→ Storage Layer
+      │                       │   ├─ connection.request()
+      │                       │   ├─ .input('name', name)
+      │                       │   ├─ .query(sql)
+      │                       │   └─ Returns result
+      │                       │
+      │                       ├─────────────────→ SQL Query:
+      │                       │                  INSERT INTO
+      │                       │                  customers (...)
+      │                       │                  VALUES (...)
+      │                       │
+      │                       │ ←─────────────── ✓ 1 row affected
+      │                       │
+      │                       ├─→ Service Layer
+      │                       │   ├─ Communication
+      │                       │   │  └─ Send Email/SMS
+      │                       │   ├─ Template Render
+      │                       │   └─ External APIs
+      │                       │      (Parallel)
+      │                       │
+      │                       ├─→ Response Prep
+      │                       │   ├─ {
+      │                       │   │   "success": true,
+      │                       │   │   "voucherCode": "ABC123",
+      │                       │   │   "customerId": 42
+      │                       │   │ }
+      │                       │   └─ Status: 201 Created
+      │                       │
+      │                       └─→ Error Handling
+      │                          (if any step fails)
+      │
+      │ HTTP RESPONSE
+      │ ├─ Status: 201 / 400 / 500
+      │ ├─ Headers: Content-Type: application/json
+      │ ├─ Body: JSON response
+      │ └─ Timestamp: [ISO 8601]
+      │
+      ←──────────────────────┘
+      │
+      ├─→ Parse Response
+      │
+      ├─→ Update TanStack Query
+      │   ├─ Set query data
+      │   └─ Update cache
+      │
+      ├─→ State Update
+      │
+      ├─→ Show Toast
+      │   └─ Success message
+      │
+      ├─→ Component Re-render
+      │
+      └─→ Redirect to
+         Thank You Page
+
+END OF REQUEST-RESPONSE CYCLE
+```
+
+---
+
+
 
 ### A. CUSTOMER WORKFLOWS
 

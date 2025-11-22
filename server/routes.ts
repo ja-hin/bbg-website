@@ -4601,6 +4601,114 @@ export async function registerRoutes(app: Express): Promise<Server> {
     },
   );
 
+  // Plan Configurations Routes (admin only)
+  app.get(
+    "/api/admin/plan-configurations",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        const configurations = await storage.getAllPlanConfigurations();
+        res.json(configurations);
+      } catch (error: any) {
+        console.error("Failed to get plan configurations:", error);
+        res.status(500).json({ message: "Failed to get plan configurations" });
+      }
+    },
+  );
+
+  app.post(
+    "/api/admin/plan-configurations",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        const { label, description, maxMonths, templateIdentifier, sortOrder } = req.body;
+
+        if (!label || maxMonths === undefined || !templateIdentifier) {
+          return res.status(400).json({
+            message: "label, maxMonths, and templateIdentifier are required",
+          });
+        }
+
+        const config = await storage.createPlanConfiguration({
+          label,
+          description,
+          maxMonths: parseInt(maxMonths),
+          templateIdentifier,
+          sortOrder: sortOrder || 0,
+        });
+
+        res.status(201).json({
+          message: "Plan configuration created successfully",
+          config,
+        });
+      } catch (error: any) {
+        console.error("Failed to create plan configuration:", error);
+        res.status(500).json({
+          message: "Failed to create plan configuration",
+          error: error.message,
+        });
+      }
+    },
+  );
+
+  app.put(
+    "/api/admin/plan-configurations/:id",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        const id = parseInt(req.params.id);
+        const { label, description, maxMonths, templateIdentifier, isActive, sortOrder } = req.body;
+
+        if (!label || maxMonths === undefined || !templateIdentifier) {
+          return res.status(400).json({
+            message: "label, maxMonths, and templateIdentifier are required",
+          });
+        }
+
+        const config = await storage.updatePlanConfiguration(id, {
+          label,
+          description,
+          maxMonths: parseInt(maxMonths),
+          templateIdentifier,
+          isActive,
+          sortOrder: sortOrder || 0,
+        });
+
+        res.json({
+          message: "Plan configuration updated successfully",
+          config,
+        });
+      } catch (error: any) {
+        console.error("Failed to update plan configuration:", error);
+        res.status(500).json({
+          message: "Failed to update plan configuration",
+          error: error.message,
+        });
+      }
+    },
+  );
+
+  app.delete(
+    "/api/admin/plan-configurations/:id",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        const id = parseInt(req.params.id);
+        await storage.deletePlanConfiguration(id);
+
+        res.json({
+          message: "Plan configuration deleted successfully",
+        });
+      } catch (error: any) {
+        console.error("Failed to delete plan configuration:", error);
+        res.status(500).json({
+          message: "Failed to delete plan configuration",
+          error: error.message,
+        });
+      }
+    },
+  );
+
   // Waiting Period Settings Routes (admin only)
   app.get(
     "/api/admin/waiting-period/current",

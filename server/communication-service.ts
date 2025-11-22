@@ -293,31 +293,51 @@ export class CommunicationService {
       
       // Calculate device age in months to determine template
       const deviceAgeInMonths = this.calculateDeviceAgeInMonths(customerData.devicePurchaseDate);
-      const isWithin6Months = deviceAgeInMonths <= 6;
       
-      // Determine the appropriate template based on registration source:
+      // Get plan configurations from database
+      const plans = await storage.getAllPlanConfigurations();
+      let selectedPlan: any = null;
+      
+      // Find the appropriate plan based on device age
+      for (const plan of plans) {
+        if (deviceAgeInMonths <= plan.maxMonths) {
+          selectedPlan = plan;
+          break;
+        }
+      }
+      
+      // Fallback to last plan if age exceeds all thresholds
+      if (!selectedPlan && plans.length > 0) {
+        selectedPlan = plans[plans.length - 1];
+      }
+      
+      console.log(`📅 Device age: ${deviceAgeInMonths} months, selected plan: ${selectedPlan?.label || 'Unknown'}`);
+      
+      // Determine the appropriate template based on registration source and plan:
       // - Website registrations = device registration templates
       // - Acer BBG registrations = Acer-specific templates
       // - Amazon BBG registrations = Amazon-specific template
       // - Regular registrations = BBG purchase templates
       
       let eventType: string;
+      const planIdentifier = selectedPlan?.templateIdentifier || (deviceAgeInMonths <= 6 ? 'within_6_months' : 'over_6_months');
+      
       if (customerData.registrationSource === 'website') {
         // Website device registrations
-        eventType = isWithin6Months ? 'device_registration_within_6_months' : 'device_registration_over_6_months';
-        console.log(`📧 Device Registration - Device age: ${deviceAgeInMonths} months, using template: ${eventType}`);
+        eventType = planIdentifier === 'within_6_months' ? 'device_registration_within_6_months' : 'device_registration_over_6_months';
+        console.log(`📧 Device Registration - Plan: ${selectedPlan?.label}, using template: ${eventType}`);
       } else if (customerData.registrationSource === 'acer_bbg') {
         // Acer BBG registrations - use dedicated Acer templates
-        eventType = isWithin6Months ? 'acer_registration_within_6_months' : 'acer_registration_over_6_months';
-        console.log(`📧 Acer Registration - Device age: ${deviceAgeInMonths} months, using template: ${eventType}`);
+        eventType = planIdentifier === 'within_6_months' ? 'acer_registration_within_6_months' : 'acer_registration_over_6_months';
+        console.log(`📧 Acer Registration - Plan: ${selectedPlan?.label}, using template: ${eventType}`);
       } else if (customerData.registrationSource === 'amazon_bbg') {
         // Amazon BBG registrations - use dedicated Amazon template
         eventType = 'amazon_bbg_registration';
         console.log(`📧 Amazon BBG Registration - using template: ${eventType}`);
       } else {
         // Regular BBG purchases
-        eventType = isWithin6Months ? 'bbg_purchase_within_6_months' : 'bbg_purchase_over_6_months';
-        console.log(`📧 BBG Purchase - Device age: ${deviceAgeInMonths} months, using template: ${eventType}`);
+        eventType = planIdentifier === 'within_6_months' ? 'bbg_purchase_within_6_months' : 'bbg_purchase_over_6_months';
+        console.log(`📧 BBG Purchase - Plan: ${selectedPlan?.label}, using template: ${eventType}`);
       }
       
       emailTemplate = await templateService.getTemplateByTypeEventAndDevice('email', eventType, undefined);

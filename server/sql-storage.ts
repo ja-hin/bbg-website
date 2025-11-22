@@ -144,6 +144,14 @@ export interface IStorage {
   getPartnerCommissionSettings(): Promise<any>;
   updatePartnerCommissionSettings(settings: any): Promise<any>;
   
+  // Plan Configurations operations
+  getAllPlanConfigurations(): Promise<any[]>;
+  getPlanConfigurationById(id: number): Promise<any>;
+  createPlanConfiguration(config: any): Promise<any>;
+  updatePlanConfiguration(id: number, config: any): Promise<any>;
+  deletePlanConfiguration(id: number): Promise<void>;
+  getPlanConfigurationByLabel(label: string): Promise<any>;
+  
   // Homepage Banner operations
   getAllHomepageBanners(): Promise<HomepageBanner[]>;
   getActiveHomepageBanners(): Promise<HomepageBanner[]>;
@@ -429,6 +437,39 @@ export class SqlServerStorage implements IStorage {
       const deviceRegistrationsRequest = db.pool.request();
       await deviceRegistrationsRequest.query(deviceRegistrationsTableQuery);
       console.log('✅ DEVICE_REGISTRATIONS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+      
+      // Create PLAN_CONFIGURATIONS table
+      console.log('🔥 ENSURING PLAN_CONFIGURATIONS TABLE EXISTS IN DATABASE...');
+      const planConfigurationsTableQuery = `
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'plan_configurations')
+        BEGIN
+          CREATE TABLE plan_configurations (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            label NVARCHAR(100) NOT NULL UNIQUE,
+            description NVARCHAR(500),
+            max_months INT NOT NULL,
+            template_identifier NVARCHAR(100) NOT NULL,
+            is_active BIT DEFAULT 1,
+            sort_order INT DEFAULT 0,
+            created_at DATETIME2 DEFAULT GETDATE(),
+            updated_at DATETIME2 DEFAULT GETDATE()
+          );
+          
+          INSERT INTO plan_configurations (label, description, max_months, template_identifier, sort_order) 
+          VALUES 
+            ('Within 6 Months', 'BBG plan for devices purchased within 6 months - includes claim coverage based on device age slabs', 6, 'within_6_months', 1),
+            ('Over 6 Months', 'BBG plan for devices purchased over 6 months - includes auction and repair benefits', 999, 'over_6_months', 2);
+          PRINT 'Plan configurations table created with default plans';
+        END
+        ELSE
+        BEGIN
+          PRINT 'Plan configurations table already exists, preserving current data';
+        END
+      `;
+      
+      const planConfigurationsRequest = db.pool.request();
+      await planConfigurationsRequest.query(planConfigurationsTableQuery);
+      console.log('✅ PLAN_CONFIGURATIONS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
       
     } catch (themeError) {
       console.error('❌ TABLE CREATION FAILED:', themeError);
@@ -3891,6 +3932,162 @@ export class SqlServerStorage implements IStorage {
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };
+  }
+
+  // Plan Configurations operations
+  async getAllPlanConfigurations(): Promise<any[]> {
+    await db.connectDB();
+    
+    const query = `SELECT * FROM plan_configurations ORDER BY sort_order ASC`;
+    const request = db.pool.request();
+    const result = await request.query(query);
+    
+    return result.recordset.map((row: any) => ({
+      id: row.id,
+      label: row.label,
+      description: row.description,
+      maxMonths: row.max_months,
+      templateIdentifier: row.template_identifier,
+      isActive: row.is_active,
+      sortOrder: row.sort_order,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    }));
+  }
+
+  async getPlanConfigurationById(id: number): Promise<any> {
+    await db.connectDB();
+    
+    const query = `SELECT * FROM plan_configurations WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    const result = await request.query(query);
+    
+    if (result.recordset.length === 0) {
+      return undefined;
+    }
+    
+    const row = result.recordset[0];
+    return {
+      id: row.id,
+      label: row.label,
+      description: row.description,
+      maxMonths: row.max_months,
+      templateIdentifier: row.template_identifier,
+      isActive: row.is_active,
+      sortOrder: row.sort_order,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  async getPlanConfigurationByLabel(label: string): Promise<any> {
+    await db.connectDB();
+    
+    const query = `SELECT * FROM plan_configurations WHERE label = @label AND is_active = 1`;
+    const request = db.pool.request();
+    request.input('label', sql.NVarChar, label);
+    const result = await request.query(query);
+    
+    if (result.recordset.length === 0) {
+      return undefined;
+    }
+    
+    const row = result.recordset[0];
+    return {
+      id: row.id,
+      label: row.label,
+      description: row.description,
+      maxMonths: row.max_months,
+      templateIdentifier: row.template_identifier,
+      isActive: row.is_active,
+      sortOrder: row.sort_order,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  async createPlanConfiguration(config: any): Promise<any> {
+    await db.connectDB();
+    
+    const query = `
+      INSERT INTO plan_configurations (label, description, max_months, template_identifier, sort_order)
+      OUTPUT INSERTED.*
+      VALUES (@label, @description, @maxMonths, @templateIdentifier, @sortOrder)
+    `;
+    
+    const request = db.pool.request();
+    request.input('label', sql.NVarChar, config.label);
+    request.input('description', sql.NVarChar, config.description || null);
+    request.input('maxMonths', sql.Int, config.maxMonths);
+    request.input('templateIdentifier', sql.NVarChar, config.templateIdentifier);
+    request.input('sortOrder', sql.Int, config.sortOrder || 0);
+    
+    const result = await request.query(query);
+    const row = result.recordset[0];
+    
+    return {
+      id: row.id,
+      label: row.label,
+      description: row.description,
+      maxMonths: row.max_months,
+      templateIdentifier: row.template_identifier,
+      isActive: row.is_active,
+      sortOrder: row.sort_order,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  async updatePlanConfiguration(id: number, config: any): Promise<any> {
+    await db.connectDB();
+    
+    const query = `
+      UPDATE plan_configurations 
+      SET label = @label,
+          description = @description,
+          max_months = @maxMonths,
+          template_identifier = @templateIdentifier,
+          is_active = @isActive,
+          sort_order = @sortOrder,
+          updated_at = GETDATE()
+      OUTPUT INSERTED.*
+      WHERE id = @id
+    `;
+    
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    request.input('label', sql.NVarChar, config.label);
+    request.input('description', sql.NVarChar, config.description || null);
+    request.input('maxMonths', sql.Int, config.maxMonths);
+    request.input('templateIdentifier', sql.NVarChar, config.templateIdentifier);
+    request.input('isActive', sql.Bit, config.isActive !== false);
+    request.input('sortOrder', sql.Int, config.sortOrder || 0);
+    
+    const result = await request.query(query);
+    const row = result.recordset[0];
+    
+    return {
+      id: row.id,
+      label: row.label,
+      description: row.description,
+      maxMonths: row.max_months,
+      templateIdentifier: row.template_identifier,
+      isActive: row.is_active,
+      sortOrder: row.sort_order,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  async deletePlanConfiguration(id: number): Promise<void> {
+    await db.connectDB();
+    
+    const query = `DELETE FROM plan_configurations WHERE id = @id`;
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    
+    await request.query(query);
   }
 
   // WhatsApp Configuration implementations

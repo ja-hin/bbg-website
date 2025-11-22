@@ -119,6 +119,7 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
     { id: "bbg-settings", label: "BBG Price Settings", href: "/admin/bbg-settings", icon: "Settings", order: 9, type: "item", parentId: null },
     { id: "referral-discount-settings", label: "Referral Discount Settings", href: "/admin/referral-discount-settings", icon: "Percent", order: 9.5, type: "item", parentId: null },
     { id: "partner-commission-settings", label: "Partner Commission Settings", href: "/admin/partner-commission-settings", icon: "Settings", order: 9.7, type: "item", parentId: null },
+    { id: "plan-configurations", label: "Plan Configurations", href: "/admin/plan-configurations", icon: "Settings", order: 9.8, type: "item", parentId: null },
     { id: "waiting-period", label: "Waiting Period Settings", href: "/admin/waiting-period-settings", icon: "Clock", order: 10, type: "item", parentId: null },
     { id: "smtp", label: "SMTP Settings", href: "/admin/smtp-settings", icon: "Mail", order: 11, type: "item", parentId: null },
     { id: "whatsapp", label: "WhatsApp Settings", href: "/admin/whatsapp-settings", icon: "MessageCircle", order: 12, type: "item", parentId: null },

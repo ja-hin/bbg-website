@@ -458,7 +458,7 @@ export class SqlServerStorage implements IStorage {
           INSERT INTO plan_configurations (label, description, max_months, template_identifier, sort_order) 
           VALUES 
             ('Within 6 Months', 'BBG plan for devices purchased within 6 months - includes claim coverage based on device age slabs', 6, 'within_6_months', 1),
-            ('Over 6 Months', 'BBG plan for devices purchased over 6 months - includes auction and repair benefits', 999, 'over_6_months', 2);
+            ('Over 6 Months', 'BBG plan for devices purchased over 6 months up to 3 years - includes auction and repair benefits', 36, 'over_6_months', 2);
           PRINT 'Plan configurations table created with default plans';
         END
         ELSE

@@ -196,14 +196,13 @@ export class CommunicationService {
       const purchaseDate = new Date(devicePurchaseDate);
       const currentDate = new Date();
       
-      // Calculate difference in months
-      const yearDiff = currentDate.getFullYear() - purchaseDate.getFullYear();
-      const monthDiff = currentDate.getMonth() - purchaseDate.getMonth();
+      // Calculate difference in actual months using days (accounts for day of month)
+      const timeDifference = currentDate.getTime() - purchaseDate.getTime();
+      const monthsDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24 * 30.44));
       
-      const totalMonths = yearDiff * 12 + monthDiff;
-      console.log(`📅 Device age calculation: Purchase date ${devicePurchaseDate} is ${totalMonths} months old`);
+      console.log(`📅 Device age calculation: Purchase date ${devicePurchaseDate} is ${monthsDifference} months old`);
       
-      return Math.max(0, totalMonths); // Ensure non-negative
+      return Math.max(0, monthsDifference); // Ensure non-negative
     } catch (error) {
       console.error('❌ Error calculating device age:', error);
       return 0; // Default to within 6 months on error
@@ -294,7 +293,7 @@ export class CommunicationService {
       
       // Calculate device age in months to determine template
       const deviceAgeInMonths = this.calculateDeviceAgeInMonths(customerData.devicePurchaseDate);
-      const isWithin6Months = deviceAgeInMonths < 6;
+      const isWithin6Months = deviceAgeInMonths <= 6;
       
       // Determine the appropriate template based on registration source:
       // - Website registrations = device registration templates

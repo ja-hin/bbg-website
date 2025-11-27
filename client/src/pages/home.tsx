@@ -77,6 +77,41 @@ export default function Home() {
       {/* Homepage Carousel */}
       <HomepageCarousel />
       
+      {/* BBG Guarantee Cards Section */}
+      <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            {/* BBG BuyBack Guarantee Card */}
+            <div className="border border-gray-300 rounded-lg overflow-hidden shadow-md">
+              <div className="bg-gray-700 text-white px-6 sm:px-8 py-4 sm:py-6">
+                <h3 className="text-xl sm:text-2xl font-bold tracking-wide" data-testid="heading-bbg-buyback">
+                  BBG BuyBack Guarantee
+                </h3>
+              </div>
+              <div className="bg-white px-6 sm:px-8 py-5 sm:py-7">
+                <p className="text-gray-700 text-sm sm:text-base leading-relaxed" data-testid="text-bbg-buyback-desc">
+                  Guarantees your new device's future resale value, activated within 6 months for predictable, assured upgrades.
+                </p>
+              </div>
+            </div>
+
+            {/* Extend+ Value Protection Card */}
+            <div className="border border-gray-300 rounded-lg overflow-hidden shadow-md">
+              <div className="bg-gray-700 text-white px-6 sm:px-8 py-4 sm:py-6">
+                <h3 className="text-xl sm:text-2xl font-bold tracking-wide" data-testid="heading-extend-protection">
+                  Extend+ Value Protection
+                </h3>
+              </div>
+              <div className="bg-white px-6 sm:px-8 py-5 sm:py-7">
+                <p className="text-gray-700 text-sm sm:text-base leading-relaxed" data-testid="text-extend-protection-desc">
+                  Protects used devices with one free repair plus doorstep auction support for higher resale returns.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* What is XtraCover BBG Section */}
       <section className="py-6 sm:py-8 lg:py-10 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

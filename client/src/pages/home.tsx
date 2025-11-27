@@ -275,14 +275,14 @@ export default function Home() {
       </section>
 
       {/* How the plan works? Section */}
-      <section className="bg-white py-8 sm:py-12 lg:py-16">
+      <section className="bg-white" style={{paddingTop: '0.5rem', paddingBottom: '0.5rem'}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4 sm:gap-6 lg:gap-8 mb-12">
-            <div className="flex-1 h-px bg-gray-300"></div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 whitespace-nowrap">
-              How the plan works?
+          <div className="flex items-center justify-center gap-4 sm:gap-6 lg:gap-8">
+            <div className="w-48" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
+            <h2 className="text-center whitespace-nowrap" style={{fontSize: '50px', color: '#303e58', fontFamily: 'Poppins, sans-serif', fontWeight: '900', letterSpacing: '-0.42px', lineHeight: '1.22'}}>
+              How the plan<br />works?
             </h2>
-            <div className="flex-1 h-px bg-gray-300"></div>
+            <div className="w-48" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
           </div>
         </div>
       </section>

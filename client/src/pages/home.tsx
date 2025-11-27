@@ -82,28 +82,28 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
             {/* BBG BuyBack Guarantee Card */}
-            <div className="border-2 border-gray-400 rounded-t-3xl overflow-hidden">
+            <div className="border border-gray-400 rounded-t-4xl overflow-hidden">
               <div className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 sm:px-8 py-6 sm:py-8">
                 <h3 className="text-2xl sm:text-3xl font-bold italic text-center" data-testid="heading-bbg-buyback">
                   BBG BuyBack Guarantee
                 </h3>
               </div>
-              <div className="bg-white px-6 sm:px-8 py-6 sm:py-8">
-                <p className="text-gray-800 text-base sm:text-lg leading-relaxed text-center" data-testid="text-bbg-buyback-desc">
+              <div className="bg-white px-6 sm:px-8 py-4 sm:py-5">
+                <p className="text-gray-800 text-lg leading-relaxed text-center" data-testid="text-bbg-buyback-desc">
                   Guarantees your new device's future resale value, activated within 6 months for predictable, assured upgrades.
                 </p>
               </div>
             </div>
 
             {/* Extend+ Value Protection Card */}
-            <div className="border-2 border-gray-400 rounded-t-3xl overflow-hidden">
+            <div className="border border-gray-400 rounded-t-4xl overflow-hidden">
               <div className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 sm:px-8 py-6 sm:py-8">
                 <h3 className="text-2xl sm:text-3xl font-bold italic text-center" data-testid="heading-extend-protection">
                   Extend+ Value Protection
                 </h3>
               </div>
-              <div className="bg-white px-6 sm:px-8 py-6 sm:py-8">
-                <p className="text-gray-800 text-base sm:text-lg leading-relaxed text-center" data-testid="text-extend-protection-desc">
+              <div className="bg-white px-6 sm:px-8 py-4 sm:py-5">
+                <p className="text-gray-800 text-lg leading-relaxed text-center" data-testid="text-extend-protection-desc">
                   Protects used devices with one free repair plus doorstep auction support for higher resale returns.
                 </p>
               </div>

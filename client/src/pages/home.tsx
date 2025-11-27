@@ -201,7 +201,7 @@ export default function Home() {
                   </div>
                 </>
               )}
-            </div>
+              </div>
             </div>
 
             {/* Extend+ Card */}
@@ -268,7 +268,7 @@ export default function Home() {
                   </div>
                 </>
               )}
-            </div>
+              </div>
             </div>
           </div>
         </div>

@@ -143,7 +143,7 @@ export default function Home() {
               <Link href="/know-more-bbg">
                 <Button 
                   className="text-white px-6 py-2 rounded-full font-semibold mb-6"
-                  style={{backgroundColor: '#0571de'}}
+                  style={{background: 'linear-gradient(90deg, #1F4B88, #245AA3)'}}
                   data-testid="button-know-more-bbg"
                 >
                   Know More
@@ -204,7 +204,7 @@ export default function Home() {
               <Link href="/know-more-extend">
                 <Button 
                   className="text-white px-6 py-2 rounded-full font-semibold mb-6"
-                  style={{backgroundColor: '#0571de'}}
+                  style={{background: 'linear-gradient(90deg, #1F4B88, #245AA3)'}}
                   data-testid="button-know-more-extend"
                 >
                   Know More

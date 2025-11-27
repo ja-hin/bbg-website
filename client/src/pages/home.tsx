@@ -142,7 +142,8 @@ export default function Home() {
               
               <Link href="/know-more-bbg">
                 <Button 
-                  className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2 rounded-full font-semibold mb-6"
+                  className="text-white px-6 py-2 rounded-full font-semibold mb-6"
+                  style={{backgroundColor: '#0571de'}}
                   data-testid="button-know-more-bbg"
                 >
                   Know More
@@ -202,7 +203,8 @@ export default function Home() {
               
               <Link href="/know-more-extend">
                 <Button 
-                  className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2 rounded-full font-semibold mb-6"
+                  className="text-white px-6 py-2 rounded-full font-semibold mb-6"
+                  style={{backgroundColor: '#0571de'}}
                   data-testid="button-know-more-extend"
                 >
                   Know More

@@ -273,6 +273,19 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* How the plan works? Section */}
+      <section className="bg-white py-8 sm:py-12 lg:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-4 sm:gap-6 lg:gap-8 mb-12">
+            <div className="flex-1 h-px bg-gray-300"></div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 whitespace-nowrap">
+              How the plan works?
+            </h2>
+            <div className="flex-1 h-px bg-gray-300"></div>
+          </div>
+        </div>
+      </section>
       
       {/* What is XtraCover BBG Section */}
       <section className="py-6 sm:py-8 lg:py-10 bg-white">

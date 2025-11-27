@@ -80,30 +80,30 @@ export default function Home() {
       {/* BBG Guarantee Cards Section */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
             {/* BBG BuyBack Guarantee Card */}
-            <div className="border border-gray-300 rounded-lg overflow-hidden shadow-md">
-              <div className="bg-gray-700 text-white px-6 sm:px-8 py-4 sm:py-6">
-                <h3 className="text-xl sm:text-2xl font-bold tracking-wide" data-testid="heading-bbg-buyback">
+            <div className="border-2 border-gray-400 rounded-3xl overflow-hidden">
+              <div className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 sm:px-8 py-5 sm:py-6">
+                <h3 className="text-lg sm:text-xl font-bold italic" data-testid="heading-bbg-buyback">
                   BBG BuyBack Guarantee
                 </h3>
               </div>
-              <div className="bg-white px-6 sm:px-8 py-5 sm:py-7">
-                <p className="text-gray-700 text-sm sm:text-base leading-relaxed" data-testid="text-bbg-buyback-desc">
+              <div className="bg-white px-6 sm:px-8 py-5 sm:py-6">
+                <p className="text-gray-800 text-sm sm:text-base leading-relaxed text-center" data-testid="text-bbg-buyback-desc">
                   Guarantees your new device's future resale value, activated within 6 months for predictable, assured upgrades.
                 </p>
               </div>
             </div>
 
             {/* Extend+ Value Protection Card */}
-            <div className="border border-gray-300 rounded-lg overflow-hidden shadow-md">
-              <div className="bg-gray-700 text-white px-6 sm:px-8 py-4 sm:py-6">
-                <h3 className="text-xl sm:text-2xl font-bold tracking-wide" data-testid="heading-extend-protection">
+            <div className="border-2 border-gray-400 rounded-3xl overflow-hidden">
+              <div className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 sm:px-8 py-5 sm:py-6">
+                <h3 className="text-lg sm:text-xl font-bold italic" data-testid="heading-extend-protection">
                   Extend+ Value Protection
                 </h3>
               </div>
-              <div className="bg-white px-6 sm:px-8 py-5 sm:py-7">
-                <p className="text-gray-700 text-sm sm:text-base leading-relaxed" data-testid="text-extend-protection-desc">
+              <div className="bg-white px-6 sm:px-8 py-5 sm:py-6">
+                <p className="text-gray-800 text-sm sm:text-base leading-relaxed text-center" data-testid="text-extend-protection-desc">
                   Protects used devices with one free repair plus doorstep auction support for higher resale returns.
                 </p>
               </div>

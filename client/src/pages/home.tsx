@@ -299,7 +299,7 @@ export default function Home() {
               </h3>
               <div className="space-y-4">
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.94}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#0771de', opacity: 0.94}}></div>
                   <p className="text-base sm:text-lg relative z-10">
                     <span className="font-bold">1. Buy BBG:</span> <span className="font-normal">Activate BBG within 6 months of purchasing your mobile or laptop.</span>
                   </p>
@@ -311,7 +311,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.94}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#0771de', opacity: 0.94}}></div>
                   <p className="text-base sm:text-lg relative z-10">
                     <span className="font-bold">3. Usage:</span> <span className="font-normal">Keep the device functional and retain the box and basic accessories.</span>
                   </p>
@@ -338,7 +338,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.94}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#0771de', opacity: 0.94}}></div>
                   <p className="text-base sm:text-lg relative z-10">
                     <span className="font-bold">2. Register device:</span> <span className="font-normal">Upload device details, invoice, and ID proof on the portal to activate coverage.</span>
                   </p>
@@ -350,7 +350,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.94}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#0771de', opacity: 0.94}}></div>
                   <p className="text-base sm:text-lg relative z-10">
                     <span className="font-bold">4. Use auction support:</span> <span className="font-normal">Request doorstep auction help and secure a 10-20% better resale price.</span>
                   </p>

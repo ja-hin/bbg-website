@@ -387,12 +387,12 @@ export default function Home() {
             </div>
 
             {/* Pricing Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 flex-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 flex-1 max-w-lg">
               {/* Mobile BBG Card */}
               <div className="rounded-2xl p-8 sm:p-10 text-center text-white" style={{backgroundColor: '#3d4d63'}}>
-                <h3 className="text-xl sm:text-2xl font-bold mb-4">Mobile BBG</h3>
-                <div className="text-4xl sm:text-5xl font-bold mb-2">₹299</div>
-                <p className="text-sm sm:text-base mb-8" style={{color: '#b0bcc8'}}>
+                <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Mobile BBG</h3>
+                <div className="text-4xl sm:text-5xl font-bold mb-2" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>₹299</div>
+                <p className="text-sm sm:text-base mb-8" style={{color: '#b0bcc8', textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>
                   (inclusive of GST)
                 </p>
                 <img src={learnMoreBtn} alt="Learn More" className="w-48 h-auto mx-auto cursor-pointer" />
@@ -400,9 +400,9 @@ export default function Home() {
 
               {/* Laptop BBG Card */}
               <div className="rounded-2xl p-8 sm:p-10 text-center text-white" style={{backgroundColor: '#0066ff'}}>
-                <h3 className="text-xl sm:text-2xl font-bold mb-4">Laptop BBG</h3>
-                <div className="text-4xl sm:text-5xl font-bold mb-2">₹499</div>
-                <p className="text-sm sm:text-base mb-8" style={{color: '#b0d9ff'}}>
+                <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Laptop BBG</h3>
+                <div className="text-4xl sm:text-5xl font-bold mb-2" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>₹499</div>
+                <p className="text-sm sm:text-base mb-8" style={{color: '#b0d9ff', textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>
                   (inclusive of GST)
                 </p>
                 <img src={learnMoreBtn} alt="Learn More" className="w-48 h-auto mx-auto cursor-pointer" />
@@ -424,12 +424,12 @@ export default function Home() {
             </div>
 
             {/* Pricing Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 flex-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 flex-1 max-w-lg">
               {/* Mobile Extend+ Card 1 */}
               <div className="rounded-2xl p-8 sm:p-10 text-center text-white" style={{backgroundColor: '#3d4d63'}}>
-                <h3 className="text-xl sm:text-2xl font-bold mb-4">Mobile Extend+</h3>
-                <div className="text-4xl sm:text-5xl font-bold mb-2">₹299</div>
-                <p className="text-sm sm:text-base mb-8" style={{color: '#b0bcc8'}}>
+                <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Mobile Extend+</h3>
+                <div className="text-4xl sm:text-5xl font-bold mb-2" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>₹299</div>
+                <p className="text-sm sm:text-base mb-8" style={{color: '#b0bcc8', textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>
                   (inclusive of GST)
                 </p>
                 <img src={learnMoreBtn} alt="Learn More" className="w-48 h-auto mx-auto cursor-pointer" />
@@ -437,9 +437,9 @@ export default function Home() {
 
               {/* Mobile Extend+ Card 2 */}
               <div className="rounded-2xl p-8 sm:p-10 text-center text-white" style={{backgroundColor: '#0066ff'}}>
-                <h3 className="text-xl sm:text-2xl font-bold mb-4">Mobile Extend+</h3>
-                <div className="text-4xl sm:text-5xl font-bold mb-2">₹299</div>
-                <p className="text-sm sm:text-base mb-8" style={{color: '#b0d9ff'}}>
+                <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Mobile Extend+</h3>
+                <div className="text-4xl sm:text-5xl font-bold mb-2" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>₹299</div>
+                <p className="text-sm sm:text-base mb-8" style={{color: '#b0d9ff', textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>
                   (inclusive of GST)
                 </p>
                 <img src={learnMoreBtn} alt="Learn More" className="w-48 h-auto mx-auto cursor-pointer" />

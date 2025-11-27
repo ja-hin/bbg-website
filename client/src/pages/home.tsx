@@ -181,7 +181,7 @@ export default function Home() {
                     </li>
                   </ul>
 
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <div className="flex flex-col sm:flex-row gap-8 justify-center">
                     <Link href="/buy-bbg">
                       <Button 
                         className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"
@@ -248,7 +248,7 @@ export default function Home() {
                     </li>
                   </ul>
 
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <div className="flex flex-col sm:flex-row gap-8 justify-center">
                     <Link href="/buy-extend">
                       <Button 
                         className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"

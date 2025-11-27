@@ -299,25 +299,25 @@ export default function Home() {
               </h3>
               <div className="space-y-4">
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.7}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.9}}></div>
                   <p className="font-semibold text-base sm:text-lg relative z-10">
                     <span className="font-bold">1. Buy BBG:</span> Activate BBG within 6 months of purchasing your mobile or laptop.
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.7}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.9}}></div>
                   <p className="font-semibold text-base sm:text-lg relative z-10">
                     <span className="font-bold">2. Register device:</span> Enter voucher code, IMEI or serial number, and upload your invoice on the BBG portal.
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.7}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.9}}></div>
                   <p className="font-semibold text-base sm:text-lg relative z-10">
                     <span className="font-bold">3. Usage:</span> Keep the device functional and retain the box and basic accessories.
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.7}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.9}}></div>
                   <p className="font-semibold text-base sm:text-lg relative z-10">
                     <span className="font-bold">4. Raise claim:</span> When upgrading, log in, request a claim, complete doorstep QC, and receive your assured value.
                   </p>
@@ -332,25 +332,25 @@ export default function Home() {
               </h3>
               <div className="space-y-4">
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.7}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.9}}></div>
                   <p className="font-semibold text-base sm:text-lg relative z-10">
                     <span className="font-bold">1. Buy Extend+:</span> Choose Extend+ for your mobile or laptop up to 3 years old.
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.7}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.9}}></div>
                   <p className="font-semibold text-base sm:text-lg relative z-10">
                     <span className="font-bold">2. Register device:</span> Upload device details, invoice, and ID proof on the portal to activate coverage.
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.7}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.9}}></div>
                   <p className="font-semibold text-base sm:text-lg relative z-10">
                     <span className="font-bold">3. Use free repair:</span> Book a visit when needed and get service charges waived as per the plan.
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.7}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.9}}></div>
                   <p className="font-semibold text-base sm:text-lg relative z-10">
                     <span className="font-bold">4. Use auction support:</span> Request doorstep auction help and secure a 10-20% better resale price.
                   </p>

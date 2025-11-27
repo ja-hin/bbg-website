@@ -82,7 +82,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
             {/* BBG BuyBack Guarantee Card */}
-            <div className="border border-gray-400 rounded-t-4xl overflow-hidden">
+            <div className="border border-gray-400" style={{borderRadius: '24px 24px 0 0', overflow: 'hidden'}}>
               <div className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 sm:px-8 py-6 sm:py-8">
                 <h3 className="text-2xl sm:text-3xl font-bold italic text-center" data-testid="heading-bbg-buyback">
                   BBG BuyBack Guarantee
@@ -96,7 +96,7 @@ export default function Home() {
             </div>
 
             {/* Extend+ Value Protection Card */}
-            <div className="border border-gray-400 rounded-t-4xl overflow-hidden">
+            <div className="border border-gray-400" style={{borderRadius: '24px 24px 0 0', overflow: 'hidden'}}>
               <div className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 sm:px-8 py-6 sm:py-8">
                 <h3 className="text-2xl sm:text-3xl font-bold italic text-center" data-testid="heading-extend-protection">
                   Extend+ Value Protection

@@ -360,6 +360,19 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Plan pricing and coverage Section */}
+      <section className="bg-white" style={{paddingTop: '0.5rem', paddingBottom: '0.5rem'}}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center gap-4 sm:gap-6 lg:gap-8">
+            <div className="w-48" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
+            <h2 className="text-center whitespace-nowrap" style={{fontSize: '50px', color: '#303e58', fontFamily: 'Poppins, sans-serif', fontWeight: '900', letterSpacing: '-0.42px', lineHeight: '1.22'}}>
+              Plan pricing and<br />coverage
+            </h2>
+            <div className="w-48" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
+          </div>
+        </div>
+      </section>
       
       {/* What is XtraCover BBG Section */}
       <section className="py-6 sm:py-8 lg:py-10 bg-white">

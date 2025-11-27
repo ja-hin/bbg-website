@@ -182,17 +182,17 @@ export default function Home() {
                   </ul>
 
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <Link href="/buy-bbg" className="flex-1">
+                    <Link href="/buy-bbg">
                       <Button 
-                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-4 rounded-lg font-semibold text-sm"
+                        className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"
                         data-testid="button-buy-bbg-card"
                       >
                         Buy BBG
                       </Button>
                     </Link>
-                    <Link href="/claim-bbg" className="flex-1">
+                    <Link href="/claim-bbg">
                       <Button 
-                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-4 rounded-lg font-semibold text-sm"
+                        className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"
                         data-testid="button-claim-bbg-card"
                       >
                         Claim BBG
@@ -249,17 +249,17 @@ export default function Home() {
                   </ul>
 
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <Link href="/buy-extend" className="flex-1">
+                    <Link href="/buy-extend">
                       <Button 
-                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-4 rounded-lg font-semibold text-sm"
+                        className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"
                         data-testid="button-buy-extend-card"
                       >
                         Buy Extend+
                       </Button>
                     </Link>
-                    <Link href="/claim-extend" className="flex-1">
+                    <Link href="/claim-extend">
                       <Button 
-                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-4 rounded-lg font-semibold text-sm"
+                        className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"
                         data-testid="button-claim-extend-card"
                       >
                         Claim Extend+

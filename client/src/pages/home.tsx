@@ -420,6 +420,53 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Extend+ Pricing Section */}
+      <section className="bg-white py-8 sm:py-12 lg:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+            {/* Vertical Text */}
+            <div className="hidden lg:flex items-center justify-center">
+              <div style={{writingMode: 'vertical-rl', textOrientation: 'mixed', transform: 'rotate(180deg)', fontSize: '18px', fontWeight: 'bold', color: '#245AA3', letterSpacing: '2px'}}>
+                EXTEND+ PRICING
+              </div>
+            </div>
+
+            {/* Pricing Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 flex-1">
+              {/* Mobile Extend+ Card 1 */}
+              <div className="rounded-2xl p-8 sm:p-10 text-center text-white" style={{backgroundColor: '#3d4d63'}}>
+                <h3 className="text-xl sm:text-2xl font-bold mb-4">Mobile Extend+</h3>
+                <div className="text-4xl sm:text-5xl font-bold mb-2">₹299</div>
+                <p className="text-sm sm:text-base mb-8" style={{color: '#b0bcc8'}}>
+                  (inclusive of GST)
+                </p>
+                <button 
+                  className="px-8 py-3 rounded-full font-bold text-white text-sm sm:text-base"
+                  style={{backgroundColor: '#0066ff'}}
+                >
+                  LEARN MORE
+                </button>
+              </div>
+
+              {/* Mobile Extend+ Card 2 */}
+              <div className="rounded-2xl p-8 sm:p-10 text-center text-white" style={{backgroundColor: '#0066ff'}}>
+                <h3 className="text-xl sm:text-2xl font-bold mb-4">Mobile Extend+</h3>
+                <div className="text-4xl sm:text-5xl font-bold mb-2">₹299</div>
+                <p className="text-sm sm:text-base mb-8" style={{color: '#b0d9ff'}}>
+                  (inclusive of GST)
+                </p>
+                <button 
+                  className="px-8 py-3 rounded-full font-bold text-white text-sm sm:text-base"
+                  style={{backgroundColor: '#0055cc'}}
+                >
+                  LEARN MORE
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       
       {/* What is XtraCover BBG Section */}
       <section className="py-6 sm:py-8 lg:py-10 bg-white">

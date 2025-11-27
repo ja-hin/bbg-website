@@ -120,11 +120,11 @@ export default function Home() {
       <section className="bg-white" style={{paddingTop: '0.5rem', paddingBottom: '0.5rem'}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center gap-4 sm:gap-6 lg:gap-8">
-            <div className="flex-1" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
+            <div className="w-48" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
             <h2 className="text-center whitespace-nowrap" style={{fontSize: '50px', color: '#303e58', fontFamily: 'Poppins, sans-serif', fontWeight: '900', letterSpacing: '-0.42px', lineHeight: '1.22'}} data-testid="heading-which-plan">
               Which plan is right<br />for my device?
             </h2>
-            <div className="flex-1" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
+            <div className="w-48" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
           </div>
         </div>
       </section>

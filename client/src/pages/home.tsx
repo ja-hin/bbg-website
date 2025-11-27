@@ -135,17 +135,17 @@ export default function Home() {
 
       {/* BBG vs Extend+ Comparison Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
             {/* BBG Card */}
             <div style={{borderRadius: '35px', padding: '1px', background: 'radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)'}}>
-              <div className="p-6 sm:p-8 bg-white h-full" style={{borderRadius: '35px'}}>
-              <p className="text-gray-900 text-base sm:text-lg font-normal mb-6 leading-relaxed">
+              <div className="p-4 sm:p-6 bg-white h-full" style={{borderRadius: '35px'}}>
+              <p className="text-gray-900 text-base sm:text-lg font-normal mb-4 leading-relaxed">
                 <strong>BBG</strong> is for new devices only. It locks your future resale value on the day you buy your mobile or laptop so you already know what you will get back when you upgrade.
               </p>
               
               <Button 
-                className="text-white px-6 py-2 rounded-full font-semibold mb-6"
+                className="text-white px-6 py-2 rounded-full font-semibold mb-4"
                 style={{background: 'linear-gradient(90deg, #1F4B88, #245AA3)'}}
                 onClick={() => setExpandedBBG(!expandedBBG)}
                 data-testid="button-know-more-bbg"
@@ -155,7 +155,7 @@ export default function Home() {
 
               {expandedBBG && (
                 <>
-                  <ul className="space-y-3 mb-8 text-sm sm:text-base text-gray-800">
+                  <ul className="space-y-2 mb-4 text-sm sm:text-base text-gray-800">
                     <li className="flex items-start">
                       <span className="mr-3">•</span>
                       <span>For brand new mobiles and laptops</span>
@@ -203,13 +203,13 @@ export default function Home() {
 
             {/* Extend+ Card */}
             <div style={{borderRadius: '35px', padding: '1px', background: 'radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)'}}>
-              <div className="p-6 sm:p-8 bg-white h-full" style={{borderRadius: '35px'}}>
-              <p className="text-gray-900 text-base sm:text-lg font-normal mb-6 leading-relaxed">
+              <div className="p-4 sm:p-6 bg-white h-full" style={{borderRadius: '35px'}}>
+              <p className="text-gray-900 text-base sm:text-lg font-normal mb-4 leading-relaxed">
                 <strong>Extend+</strong> is for devices that are already in use. It gives you one free repair on service charges and doorstep auction support so that when you sell, you get a better price than local offers.
               </p>
               
               <Button 
-                className="text-white px-6 py-2 rounded-full font-semibold mb-6"
+                className="text-white px-6 py-2 rounded-full font-semibold mb-4"
                 style={{background: 'linear-gradient(90deg, #1F4B88, #245AA3)'}}
                 onClick={() => setExpandedExtend(!expandedExtend)}
                 data-testid="button-know-more-extend"
@@ -219,7 +219,7 @@ export default function Home() {
 
               {expandedExtend && (
                 <>
-                  <ul className="space-y-3 mb-8 text-sm sm:text-base text-gray-800">
+                  <ul className="space-y-2 mb-4 text-sm sm:text-base text-gray-800">
                     <li className="flex items-start">
                       <span className="mr-3">•</span>
                       <span>For mobiles and laptops already in use</span>

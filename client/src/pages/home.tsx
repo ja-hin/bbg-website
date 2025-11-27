@@ -138,7 +138,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
             {/* BBG Card */}
-            <div className="flex-1" style={{borderRadius: '35px', padding: '1px', background: 'radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)'}}>
+            <div className="flex-1" style={{borderRadius: '35px', padding: '1px', background: 'radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)', height: 'fit-content'}}>
               <div className="p-4 sm:p-6 bg-white" style={{borderRadius: '35px'}}>
               <p className="text-gray-900 text-base sm:text-lg font-normal mb-4 leading-relaxed">
                 <strong>BBG</strong> is for new devices only. It locks your future resale value on the day you buy your mobile or laptop so you already know what you will get back when you upgrade.
@@ -205,7 +205,7 @@ export default function Home() {
             </div>
 
             {/* Extend+ Card */}
-            <div className="flex-1" style={{borderRadius: '35px', padding: '1px', background: 'radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)'}}>
+            <div className="flex-1" style={{borderRadius: '35px', padding: '1px', background: 'radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)', height: 'fit-content'}}>
               <div className="p-4 sm:p-6 bg-white" style={{borderRadius: '35px'}}>
               <p className="text-gray-900 text-base sm:text-lg font-normal mb-4 leading-relaxed">
                 <strong>Extend+</strong> is for devices that are already in use. It gives you one free repair on service charges and doorstep auction support so that when you sell, you get a better price than local offers.

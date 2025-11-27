@@ -31,6 +31,7 @@ import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.png
 import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.png";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
 import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_1764254452404.png";
+import learnMoreBtn from "@assets/Untitled design (16) (1)_1764258054222.png";
 
 export default function Home() {
   const [isBBGExpanded, setIsBBGExpanded] = useState(false);
@@ -394,12 +395,7 @@ export default function Home() {
                 <p className="text-sm sm:text-base mb-8" style={{color: '#b0bcc8'}}>
                   (inclusive of GST)
                 </p>
-                <button 
-                  className="px-8 py-3 rounded-full font-bold text-white text-sm sm:text-base"
-                  style={{backgroundColor: '#0066ff'}}
-                >
-                  LEARN MORE
-                </button>
+                <img src={learnMoreBtn} alt="Learn More" className="w-48 h-auto mx-auto cursor-pointer" />
               </div>
 
               {/* Laptop BBG Card */}
@@ -409,12 +405,7 @@ export default function Home() {
                 <p className="text-sm sm:text-base mb-8" style={{color: '#b0d9ff'}}>
                   (inclusive of GST)
                 </p>
-                <button 
-                  className="px-8 py-3 rounded-full font-bold text-white text-sm sm:text-base"
-                  style={{backgroundColor: '#0055cc'}}
-                >
-                  LEARN MORE
-                </button>
+                <img src={learnMoreBtn} alt="Learn More" className="w-48 h-auto mx-auto cursor-pointer" />
               </div>
             </div>
           </div>
@@ -441,12 +432,7 @@ export default function Home() {
                 <p className="text-sm sm:text-base mb-8" style={{color: '#b0bcc8'}}>
                   (inclusive of GST)
                 </p>
-                <button 
-                  className="px-8 py-3 rounded-full font-bold text-white text-sm sm:text-base"
-                  style={{backgroundColor: '#0066ff'}}
-                >
-                  LEARN MORE
-                </button>
+                <img src={learnMoreBtn} alt="Learn More" className="w-48 h-auto mx-auto cursor-pointer" />
               </div>
 
               {/* Mobile Extend+ Card 2 */}
@@ -456,12 +442,7 @@ export default function Home() {
                 <p className="text-sm sm:text-base mb-8" style={{color: '#b0d9ff'}}>
                   (inclusive of GST)
                 </p>
-                <button 
-                  className="px-8 py-3 rounded-full font-bold text-white text-sm sm:text-base"
-                  style={{backgroundColor: '#0055cc'}}
-                >
-                  LEARN MORE
-                </button>
+                <img src={learnMoreBtn} alt="Learn More" className="w-48 h-auto mx-auto cursor-pointer" />
               </div>
             </div>
           </div>

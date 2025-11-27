@@ -190,10 +190,9 @@ export default function Home() {
                         Buy BBG
                       </Button>
                     </Link>
-                    <Link href="/claim-bbg">
+                    <Link href="/claim-bbg" className="flex-1">
                       <Button 
-                        className="px-6 py-2 rounded-full font-semibold text-white"
-                        style={{background: 'linear-gradient(90deg, #1F4B88, #245AA3)'}}
+                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-full font-semibold"
                         data-testid="button-claim-bbg-card"
                       >
                         Claim BBG
@@ -258,10 +257,9 @@ export default function Home() {
                         Buy Extend+
                       </Button>
                     </Link>
-                    <Link href="/claim-extend">
+                    <Link href="/claim-extend" className="flex-1">
                       <Button 
-                        className="px-6 py-2 rounded-full font-semibold text-white"
-                        style={{background: 'linear-gradient(90deg, #1F4B88, #245AA3)'}}
+                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-full font-semibold"
                         data-testid="button-claim-extend-card"
                       >
                         Claim Extend+

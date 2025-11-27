@@ -80,7 +80,7 @@ export default function Home() {
       {/* BBG Guarantee Cards Section */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto">
             {/* BBG BuyBack Guarantee Card */}
             <div style={{borderRadius: '24px 24px 0 0', overflow: 'hidden', background: 'radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)', padding: '1px'}}>
               <div style={{borderRadius: '24px 24px 0 0', overflow: 'hidden', background: 'white'}}>
@@ -89,7 +89,7 @@ export default function Home() {
                     BBG BuyBack Guarantee
                   </h3>
                 </div>
-                <div className="bg-white px-6 sm:px-8 py-3 sm:py-4">
+                <div className="bg-white py-3 sm:py-4" style={{paddingLeft: '0.5rem', paddingRight: '0.5rem'}}>
                   <p className="text-gray-800 text-lg leading-relaxed text-center font-normal" style={{fontFamily: 'Inter, sans-serif'}} data-testid="text-bbg-buyback-desc">
                     Guarantees your new device's future resale value, activated within 6 months for predictable, assured upgrades.
                   </p>
@@ -105,7 +105,7 @@ export default function Home() {
                     Extend+ Value Protection
                   </h3>
                 </div>
-                <div className="bg-white px-6 sm:px-8 py-3 sm:py-4">
+                <div className="bg-white py-3 sm:py-4" style={{paddingLeft: '0.5rem', paddingRight: '0.5rem'}}>
                   <p className="text-gray-800 text-lg leading-relaxed text-center font-normal" style={{fontFamily: 'Inter, sans-serif'}} data-testid="text-extend-protection-desc">
                     Protects used devices with one free repair plus doorstep auction support for higher resale returns.
                   </p>

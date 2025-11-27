@@ -31,7 +31,7 @@ import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.png
 import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.png";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
 import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_1764254452404.png";
-import learnMoreBtn from "@assets/Untitled design (16) (1)_1764258054222.png";
+import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.png";
 
 export default function Home() {
   const [isBBGExpanded, setIsBBGExpanded] = useState(false);

@@ -80,32 +80,36 @@ export default function Home() {
       {/* BBG Guarantee Cards Section */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-6xl mx-auto">
             {/* BBG BuyBack Guarantee Card */}
-            <div className="border border-gray-400" style={{borderRadius: '24px 24px 0 0', overflow: 'hidden'}}>
-              <div className="text-white px-6 sm:px-8 py-3 sm:py-4" style={{background: 'linear-gradient(-90deg, #232d35, #5e6271)'}}>
-                <h3 className="text-2xl sm:text-3xl font-bold italic text-center" data-testid="heading-bbg-buyback">
-                  BBG BuyBack Guarantee
-                </h3>
-              </div>
-              <div className="bg-white px-6 sm:px-8 py-4 sm:py-5">
-                <p className="text-gray-800 text-lg leading-relaxed text-center" data-testid="text-bbg-buyback-desc">
-                  Guarantees your new device's future resale value, activated within 6 months for predictable, assured upgrades.
-                </p>
+            <div style={{borderRadius: '24px 24px 0 0', overflow: 'hidden', background: 'radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)', padding: '1px'}}>
+              <div style={{borderRadius: '24px 24px 0 0', overflow: 'hidden', background: 'white'}}>
+                <div className="text-white px-6 sm:px-8 py-3 sm:py-4" style={{background: 'linear-gradient(-90deg, #232d35, #5e6271)'}}>
+                  <h3 className="text-2xl sm:text-3xl font-bold italic text-center" data-testid="heading-bbg-buyback">
+                    BBG BuyBack Guarantee
+                  </h3>
+                </div>
+                <div className="bg-white px-6 sm:px-8 py-4 sm:py-5">
+                  <p className="text-gray-800 text-lg font-semibold leading-relaxed text-center" data-testid="text-bbg-buyback-desc">
+                    Guarantees your new device's future resale value, activated within 6 months for predictable, assured upgrades.
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* Extend+ Value Protection Card */}
-            <div className="border border-gray-400" style={{borderRadius: '24px 24px 0 0', overflow: 'hidden'}}>
-              <div className="text-white px-6 sm:px-8 py-3 sm:py-4" style={{background: 'linear-gradient(-90deg, #232d35, #5e6271)'}}>
-                <h3 className="text-2xl sm:text-3xl font-bold italic text-center" data-testid="heading-extend-protection">
-                  Extend+ Value Protection
-                </h3>
-              </div>
-              <div className="bg-white px-6 sm:px-8 py-4 sm:py-5">
-                <p className="text-gray-800 text-lg leading-relaxed text-center" data-testid="text-extend-protection-desc">
-                  Protects used devices with one free repair plus doorstep auction support for higher resale returns.
-                </p>
+            <div style={{borderRadius: '24px 24px 0 0', overflow: 'hidden', background: 'radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)', padding: '1px'}}>
+              <div style={{borderRadius: '24px 24px 0 0', overflow: 'hidden', background: 'white'}}>
+                <div className="text-white px-6 sm:px-8 py-3 sm:py-4" style={{background: 'linear-gradient(-90deg, #232d35, #5e6271)'}}>
+                  <h3 className="text-2xl sm:text-3xl font-bold italic text-center" data-testid="heading-extend-protection">
+                    Extend+ Value Protection
+                  </h3>
+                </div>
+                <div className="bg-white px-6 sm:px-8 py-4 sm:py-5">
+                  <p className="text-gray-800 text-lg font-semibold leading-relaxed text-center" data-testid="text-extend-protection-desc">
+                    Protects used devices with one free repair plus doorstep auction support for higher resale returns.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

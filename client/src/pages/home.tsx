@@ -80,10 +80,10 @@ export default function Home() {
       {/* BBG Guarantee Cards Section */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto">
             {/* BBG BuyBack Guarantee Card */}
             <div className="border border-gray-400" style={{borderRadius: '24px 24px 0 0', overflow: 'hidden'}}>
-              <div className="text-white px-6 sm:px-8 py-3 sm:py-4" style={{background: 'linear-gradient(-90deg, #5e6271, #232d35)'}}>
+              <div className="text-white px-6 sm:px-8 py-3 sm:py-4" style={{background: 'linear-gradient(-90deg, #232d35, #5e6271)'}}>
                 <h3 className="text-2xl sm:text-3xl font-bold italic text-center" data-testid="heading-bbg-buyback">
                   BBG BuyBack Guarantee
                 </h3>
@@ -97,7 +97,7 @@ export default function Home() {
 
             {/* Extend+ Value Protection Card */}
             <div className="border border-gray-400" style={{borderRadius: '24px 24px 0 0', overflow: 'hidden'}}>
-              <div className="text-white px-6 sm:px-8 py-3 sm:py-4" style={{background: 'linear-gradient(-90deg, #5e6271, #232d35)'}}>
+              <div className="text-white px-6 sm:px-8 py-3 sm:py-4" style={{background: 'linear-gradient(-90deg, #232d35, #5e6271)'}}>
                 <h3 className="text-2xl sm:text-3xl font-bold italic text-center" data-testid="heading-extend-protection">
                   Extend+ Value Protection
                 </h3>

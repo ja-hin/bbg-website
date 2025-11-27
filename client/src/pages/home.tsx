@@ -32,7 +32,8 @@ import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.png";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
 
 export default function Home() {
-  const [expandedCard, setExpandedCard] = useState<'bbg' | 'extend' | null>(null);
+  const [isBBGExpanded, setIsBBGExpanded] = useState(false);
+  const [isExtendExpanded, setIsExtendExpanded] = useState(false);
 
   // Fetch theme for dynamic coloring
   const { data: theme } = useQuery({
@@ -146,13 +147,16 @@ export default function Home() {
               <Button 
                 className="text-white px-6 py-2 rounded-full font-semibold mb-4"
                 style={{background: 'linear-gradient(90deg, #1F4B88, #245AA3)'}}
-                onClick={() => setExpandedCard(expandedCard === 'bbg' ? null : 'bbg')}
+                onClick={() => {
+                  setIsBBGExpanded(!isBBGExpanded);
+                  setIsExtendExpanded(false);
+                }}
                 data-testid="button-know-more-bbg"
               >
                 Know More
               </Button>
 
-              {expandedCard === 'bbg' && (
+              {isBBGExpanded && (
                 <>
                   <ul className="space-y-2 mb-4 text-sm sm:text-base text-gray-800">
                     <li className="flex items-start">
@@ -210,13 +214,16 @@ export default function Home() {
               <Button 
                 className="text-white px-6 py-2 rounded-full font-semibold mb-4"
                 style={{background: 'linear-gradient(90deg, #1F4B88, #245AA3)'}}
-                onClick={() => setExpandedCard(expandedCard === 'extend' ? null : 'extend')}
+                onClick={() => {
+                  setIsExtendExpanded(!isExtendExpanded);
+                  setIsBBGExpanded(false);
+                }}
                 data-testid="button-know-more-extend"
               >
                 Know More
               </Button>
 
-              {expandedCard === 'extend' && (
+              {isExtendExpanded && (
                 <>
                   <ul className="space-y-2 mb-4 text-sm sm:text-base text-gray-800">
                     <li className="flex items-start">

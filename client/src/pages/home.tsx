@@ -387,25 +387,25 @@ export default function Home() {
             </div>
 
             {/* Pricing Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 flex-1 max-w-2xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 flex-1 max-w-4xl">
               {/* Mobile BBG Card */}
-              <div className="rounded-2xl p-8 sm:p-10 text-center text-white" style={{backgroundColor: '#3d4d63'}}>
-                <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Mobile BBG</h3>
-                <div className="text-4xl sm:text-5xl font-bold mb-2" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>₹299</div>
-                <p className="text-sm sm:text-base mb-8" style={{color: '#b0bcc8', textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>
+              <div className="rounded-3xl p-12 sm:p-16 text-center text-white" style={{backgroundColor: '#3d4d63'}}>
+                <h3 className="text-2xl sm:text-4xl font-bold mb-6" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Mobile BBG</h3>
+                <div className="text-5xl sm:text-7xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>₹299</div>
+                <p className="text-base sm:text-lg mb-10" style={{color: '#b0bcc8', textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>
                   (inclusive of GST)
                 </p>
-                <img src={learnMoreBtn} alt="Learn More" className="w-48 h-auto mx-auto cursor-pointer" />
+                <img src={learnMoreBtn} alt="Learn More" className="w-56 h-auto mx-auto cursor-pointer" />
               </div>
 
               {/* Laptop BBG Card */}
-              <div className="rounded-2xl p-8 sm:p-10 text-center text-white" style={{backgroundColor: '#0066ff'}}>
-                <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Laptop BBG</h3>
-                <div className="text-4xl sm:text-5xl font-bold mb-2" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>₹499</div>
-                <p className="text-sm sm:text-base mb-8" style={{color: '#b0d9ff', textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>
+              <div className="rounded-3xl p-12 sm:p-16 text-center text-white" style={{backgroundColor: '#0066ff'}}>
+                <h3 className="text-2xl sm:text-4xl font-bold mb-6" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Laptop BBG</h3>
+                <div className="text-5xl sm:text-7xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>₹499</div>
+                <p className="text-base sm:text-lg mb-10" style={{color: '#b0d9ff', textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>
                   (inclusive of GST)
                 </p>
-                <img src={learnMoreBtn} alt="Learn More" className="w-48 h-auto mx-auto cursor-pointer" />
+                <img src={learnMoreBtn} alt="Learn More" className="w-56 h-auto mx-auto cursor-pointer" />
               </div>
             </div>
           </div>
@@ -424,25 +424,25 @@ export default function Home() {
             </div>
 
             {/* Pricing Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 flex-1 max-w-2xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 flex-1 max-w-4xl">
               {/* Mobile Extend+ Card 1 */}
-              <div className="rounded-2xl p-8 sm:p-10 text-center text-white" style={{backgroundColor: '#3d4d63'}}>
-                <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Mobile Extend+</h3>
-                <div className="text-4xl sm:text-5xl font-bold mb-2" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>₹299</div>
-                <p className="text-sm sm:text-base mb-8" style={{color: '#b0bcc8', textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>
+              <div className="rounded-3xl p-12 sm:p-16 text-center text-white" style={{backgroundColor: '#3d4d63'}}>
+                <h3 className="text-2xl sm:text-4xl font-bold mb-6" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Mobile Extend+</h3>
+                <div className="text-5xl sm:text-7xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>₹299</div>
+                <p className="text-base sm:text-lg mb-10" style={{color: '#b0bcc8', textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>
                   (inclusive of GST)
                 </p>
-                <img src={learnMoreBtn} alt="Learn More" className="w-48 h-auto mx-auto cursor-pointer" />
+                <img src={learnMoreBtn} alt="Learn More" className="w-56 h-auto mx-auto cursor-pointer" />
               </div>
 
               {/* Mobile Extend+ Card 2 */}
-              <div className="rounded-2xl p-8 sm:p-10 text-center text-white" style={{backgroundColor: '#0066ff'}}>
-                <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Mobile Extend+</h3>
-                <div className="text-4xl sm:text-5xl font-bold mb-2" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>₹299</div>
-                <p className="text-sm sm:text-base mb-8" style={{color: '#b0d9ff', textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>
+              <div className="rounded-3xl p-12 sm:p-16 text-center text-white" style={{backgroundColor: '#0066ff'}}>
+                <h3 className="text-2xl sm:text-4xl font-bold mb-6" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Mobile Extend+</h3>
+                <div className="text-5xl sm:text-7xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>₹299</div>
+                <p className="text-base sm:text-lg mb-10" style={{color: '#b0d9ff', textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>
                   (inclusive of GST)
                 </p>
-                <img src={learnMoreBtn} alt="Learn More" className="w-48 h-auto mx-auto cursor-pointer" />
+                <img src={learnMoreBtn} alt="Learn More" className="w-56 h-auto mx-auto cursor-pointer" />
               </div>
             </div>
           </div>

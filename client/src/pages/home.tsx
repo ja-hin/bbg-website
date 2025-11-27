@@ -80,7 +80,7 @@ export default function Home() {
       {/* BBG Guarantee Cards Section */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto">
             {/* BBG BuyBack Guarantee Card */}
             <div style={{borderRadius: '24px 24px 0 0', overflow: 'hidden', background: 'radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)', padding: '1px'}}>
               <div style={{borderRadius: '24px 24px 0 0', overflow: 'hidden', background: 'white'}}>

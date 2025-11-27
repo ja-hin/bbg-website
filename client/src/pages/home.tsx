@@ -378,7 +378,7 @@ export default function Home() {
       {/* BBG Pricing Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12">
             {/* Vertical Text */}
             <div className="hidden lg:flex items-center justify-center">
               <div style={{writingMode: 'vertical-rl', textOrientation: 'mixed', transform: 'rotate(180deg)', fontSize: '18px', fontWeight: 'bold', color: '#0771de', letterSpacing: '2px'}}>
@@ -387,7 +387,7 @@ export default function Home() {
             </div>
 
             {/* Pricing Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 flex-1 max-w-lg">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 flex-1 max-w-2xl">
               {/* Mobile BBG Card */}
               <div className="rounded-2xl p-8 sm:p-10 text-center text-white" style={{backgroundColor: '#3d4d63'}}>
                 <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Mobile BBG</h3>
@@ -415,7 +415,7 @@ export default function Home() {
       {/* Extend+ Pricing Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12">
             {/* Vertical Text */}
             <div className="hidden lg:flex items-center justify-center">
               <div style={{writingMode: 'vertical-rl', textOrientation: 'mixed', transform: 'rotate(180deg)', fontSize: '18px', fontWeight: 'bold', color: '#245AA3', letterSpacing: '2px'}}>
@@ -424,7 +424,7 @@ export default function Home() {
             </div>
 
             {/* Pricing Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 flex-1 max-w-lg">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 flex-1 max-w-2xl">
               {/* Mobile Extend+ Card 1 */}
               <div className="rounded-2xl p-8 sm:p-10 text-center text-white" style={{backgroundColor: '#3d4d63'}}>
                 <h3 className="text-xl sm:text-2xl font-bold mb-4" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'}}>Mobile Extend+</h3>

@@ -140,7 +140,7 @@ export default function Home() {
             {/* BBG Card */}
             <div style={{borderRadius: '35px', padding: '1px', background: 'radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)'}}>
               <div className="p-6 sm:p-8 bg-white h-full" style={{borderRadius: '35px'}}>
-              <p className="text-gray-900 text-base sm:text-lg font-normal mb-6 leading-relaxed" style={{display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>
+              <p className="text-gray-900 text-base sm:text-lg font-normal mb-6 leading-relaxed">
                 <strong>BBG</strong> is for new devices only. It locks your future resale value on the day you buy your mobile or laptop so you already know what you will get back when you upgrade.
               </p>
               
@@ -204,7 +204,7 @@ export default function Home() {
             {/* Extend+ Card */}
             <div style={{borderRadius: '35px', padding: '1px', background: 'radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)'}}>
               <div className="p-6 sm:p-8 bg-white h-full" style={{borderRadius: '35px'}}>
-              <p className="text-gray-900 text-base sm:text-lg font-normal mb-6 leading-relaxed" style={{display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>
+              <p className="text-gray-900 text-base sm:text-lg font-normal mb-6 leading-relaxed">
                 <strong>Extend+</strong> is for devices that are already in use. It gives you one free repair on service charges and doorstep auction support so that when you sell, you get a better price than local offers.
               </p>
               

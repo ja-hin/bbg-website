@@ -89,7 +89,7 @@ export default function Home() {
                     BBG BuyBack Guarantee
                   </h3>
                 </div>
-                <div className="bg-white px-6 sm:px-8 py-4 sm:py-5">
+                <div className="bg-white px-6 sm:px-8 py-3 sm:py-4">
                   <p className="text-gray-800 text-lg leading-relaxed text-center font-normal" style={{fontFamily: 'Inter, sans-serif'}} data-testid="text-bbg-buyback-desc">
                     Guarantees your new device's future resale value, activated within 6 months for predictable, assured upgrades.
                   </p>
@@ -105,7 +105,7 @@ export default function Home() {
                     Extend+ Value Protection
                   </h3>
                 </div>
-                <div className="bg-white px-6 sm:px-8 py-4 sm:py-5">
+                <div className="bg-white px-6 sm:px-8 py-3 sm:py-4">
                   <p className="text-gray-800 text-lg leading-relaxed text-center font-normal" style={{fontFamily: 'Inter, sans-serif'}} data-testid="text-extend-protection-desc">
                     Protects used devices with one free repair plus doorstep auction support for higher resale returns.
                   </p>

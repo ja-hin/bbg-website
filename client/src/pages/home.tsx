@@ -184,7 +184,7 @@ export default function Home() {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <Link href="/buy-bbg" className="flex-1">
                       <Button 
-                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-full font-semibold"
+                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-4 rounded-lg font-semibold text-sm"
                         data-testid="button-buy-bbg-card"
                       >
                         Buy BBG
@@ -192,7 +192,7 @@ export default function Home() {
                     </Link>
                     <Link href="/claim-bbg" className="flex-1">
                       <Button 
-                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-full font-semibold"
+                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-4 rounded-lg font-semibold text-sm"
                         data-testid="button-claim-bbg-card"
                       >
                         Claim BBG
@@ -251,7 +251,7 @@ export default function Home() {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <Link href="/buy-extend" className="flex-1">
                       <Button 
-                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-full font-semibold"
+                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-4 rounded-lg font-semibold text-sm"
                         data-testid="button-buy-extend-card"
                       >
                         Buy Extend+
@@ -259,7 +259,7 @@ export default function Home() {
                     </Link>
                     <Link href="/claim-extend" className="flex-1">
                       <Button 
-                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-full font-semibold"
+                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-4 rounded-lg font-semibold text-sm"
                         data-testid="button-claim-extend-card"
                       >
                         Claim Extend+

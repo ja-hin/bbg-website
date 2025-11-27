@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { 
   Smartphone, 
   Laptop, 
@@ -31,6 +32,9 @@ import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.png";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
 
 export default function Home() {
+  const [expandedBBG, setExpandedBBG] = useState(false);
+  const [expandedExtend, setExpandedExtend] = useState(false);
+
   // Fetch theme for dynamic coloring
   const { data: theme } = useQuery({
     queryKey: ['/api/theme/current'],
@@ -140,57 +144,60 @@ export default function Home() {
                 <strong>BBG</strong> is for new devices only. It locks your future resale value on the day you buy your mobile or laptop so you already know what you will get back when you upgrade.
               </p>
               
-              <Link href="/know-more-bbg">
-                <Button 
-                  className="text-white px-6 py-2 rounded-full font-semibold mb-6"
-                  style={{background: 'linear-gradient(90deg, #1F4B88, #245AA3)'}}
-                  data-testid="button-know-more-bbg"
-                >
-                  Know More
-                </Button>
-              </Link>
+              <Button 
+                className="text-white px-6 py-2 rounded-full font-semibold mb-6"
+                style={{background: 'linear-gradient(90deg, #1F4B88, #245AA3)'}}
+                onClick={() => setExpandedBBG(!expandedBBG)}
+                data-testid="button-know-more-bbg"
+              >
+                Know More
+              </Button>
 
-              <ul className="space-y-3 mb-8 text-sm sm:text-base text-gray-800">
-                <li className="flex items-start">
-                  <span className="mr-3">•</span>
-                  <span>For brand new mobiles and laptops</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-3">•</span>
-                  <span>Device purchase must be from an authorised channel</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-3">•</span>
-                  <span>Device age at activation: up to 6 months</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-3">•</span>
-                  <span>Guaranteed buyback value up to 70% as per slabs</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-3">•</span>
-                  <span>Claim journey is fully digital with doorstep pickup</span>
-                </li>
-              </ul>
+              {expandedBBG && (
+                <>
+                  <ul className="space-y-3 mb-8 text-sm sm:text-base text-gray-800">
+                    <li className="flex items-start">
+                      <span className="mr-3">•</span>
+                      <span>For brand new mobiles and laptops</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-3">•</span>
+                      <span>Device purchase must be from an authorised channel</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-3">•</span>
+                      <span>Device age at activation: up to 6 months</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-3">•</span>
+                      <span>Guaranteed buyback value up to 70% as per slabs</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-3">•</span>
+                      <span>Claim journey is fully digital with doorstep pickup</span>
+                    </li>
+                  </ul>
 
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/buy-bbg" className="flex-1">
-                  <Button 
-                    className="w-full bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-full font-semibold"
-                    data-testid="button-buy-bbg-card"
-                  >
-                    Buy BBG
-                  </Button>
-                </Link>
-                <Link href="/claim-bbg" className="flex-1">
-                  <Button 
-                    className="w-full bg-gray-700 hover:bg-gray-800 text-white py-2 rounded-full font-semibold"
-                    data-testid="button-claim-bbg-card"
-                  >
-                    Claim BBG
-                  </Button>
-                </Link>
-              </div>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Link href="/buy-bbg" className="flex-1">
+                      <Button 
+                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-full font-semibold"
+                        data-testid="button-buy-bbg-card"
+                      >
+                        Buy BBG
+                      </Button>
+                    </Link>
+                    <Link href="/claim-bbg" className="flex-1">
+                      <Button 
+                        className="w-full bg-gray-700 hover:bg-gray-800 text-white py-2 rounded-full font-semibold"
+                        data-testid="button-claim-bbg-card"
+                      >
+                        Claim BBG
+                      </Button>
+                    </Link>
+                  </div>
+                </>
+              )}
             </div>
             </div>
 
@@ -201,57 +208,60 @@ export default function Home() {
                 <strong>Extend+</strong> is for devices that are already in use. It gives you one free repair on service charges and doorstep auction support so that when you sell, you get a better price than local offers.
               </p>
               
-              <Link href="/know-more-extend">
-                <Button 
-                  className="text-white px-6 py-2 rounded-full font-semibold mb-6"
-                  style={{background: 'linear-gradient(90deg, #1F4B88, #245AA3)'}}
-                  data-testid="button-know-more-extend"
-                >
-                  Know More
-                </Button>
-              </Link>
+              <Button 
+                className="text-white px-6 py-2 rounded-full font-semibold mb-6"
+                style={{background: 'linear-gradient(90deg, #1F4B88, #245AA3)'}}
+                onClick={() => setExpandedExtend(!expandedExtend)}
+                data-testid="button-know-more-extend"
+              >
+                Know More
+              </Button>
 
-              <ul className="space-y-3 mb-8 text-sm sm:text-base text-gray-800">
-                <li className="flex items-start">
-                  <span className="mr-3">•</span>
-                  <span>For mobiles and laptops already in use</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-3">•</span>
-                  <span>Device age at activation: up to 3 years</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-3">•</span>
-                  <span>One free device repair where service charges are waived</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-3">•</span>
-                  <span>Doorstep auction help with 10 to 20% better price than competition</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-3">•</span>
-                  <span>Designed to extend life and boost resale value</span>
-                </li>
-              </ul>
+              {expandedExtend && (
+                <>
+                  <ul className="space-y-3 mb-8 text-sm sm:text-base text-gray-800">
+                    <li className="flex items-start">
+                      <span className="mr-3">•</span>
+                      <span>For mobiles and laptops already in use</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-3">•</span>
+                      <span>Device age at activation: up to 3 years</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-3">•</span>
+                      <span>One free device repair where service charges are waived</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-3">•</span>
+                      <span>Doorstep auction help with 10 to 20% better price than competition</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="mr-3">•</span>
+                      <span>Designed to extend life and boost resale value</span>
+                    </li>
+                  </ul>
 
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/buy-extend" className="flex-1">
-                  <Button 
-                    className="w-full bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-full font-semibold"
-                    data-testid="button-buy-extend-card"
-                  >
-                    Buy Extend+
-                  </Button>
-                </Link>
-                <Link href="/claim-extend" className="flex-1">
-                  <Button 
-                    className="w-full bg-gray-700 hover:bg-gray-800 text-white py-2 rounded-full font-semibold"
-                    data-testid="button-claim-extend-card"
-                  >
-                    Claim Extend+
-                  </Button>
-                </Link>
-              </div>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Link href="/buy-extend" className="flex-1">
+                      <Button 
+                        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-full font-semibold"
+                        data-testid="button-buy-extend-card"
+                      >
+                        Buy Extend+
+                      </Button>
+                    </Link>
+                    <Link href="/claim-extend" className="flex-1">
+                      <Button 
+                        className="w-full bg-gray-700 hover:bg-gray-800 text-white py-2 rounded-full font-semibold"
+                        data-testid="button-claim-extend-card"
+                      >
+                        Claim Extend+
+                      </Button>
+                    </Link>
+                  </div>
+                </>
+              )}
             </div>
             </div>
           </div>

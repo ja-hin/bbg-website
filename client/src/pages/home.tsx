@@ -286,6 +286,71 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* How the plan works - Steps Section */}
+      <section className="bg-white py-8 sm:py-12 lg:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            {/* BBG Column */}
+            <div>
+              <h3 className="text-center lg:text-left text-2xl sm:text-3xl font-bold text-blue-700 mb-6" style={{color: '#1F4B88'}}>
+                BUY BACK GUARANTEE
+              </h3>
+              <div className="space-y-4">
+                <div className="p-4 sm:p-6 rounded-2xl text-white" style={{backgroundColor: '#1F4B88'}}>
+                  <p className="font-semibold text-base sm:text-lg">
+                    <span className="font-bold">1. Buy BBG:</span> Activate BBG within 6 months of purchasing your mobile or laptop.
+                  </p>
+                </div>
+                <div className="p-4 sm:p-6 rounded-2xl text-white" style={{backgroundColor: '#1F4B88'}}>
+                  <p className="font-semibold text-base sm:text-lg">
+                    <span className="font-bold">2. Register device:</span> Enter voucher code, IMEI or serial number, and upload your invoice on the BBG portal.
+                  </p>
+                </div>
+                <div className="p-4 sm:p-6 rounded-2xl text-white" style={{backgroundColor: '#1F4B88'}}>
+                  <p className="font-semibold text-base sm:text-lg">
+                    <span className="font-bold">3. Usage:</span> Keep the device functional and retain the box and basic accessories.
+                  </p>
+                </div>
+                <div className="p-4 sm:p-6 rounded-2xl text-white" style={{backgroundColor: '#1F4B88'}}>
+                  <p className="font-semibold text-base sm:text-lg">
+                    <span className="font-bold">4. Raise claim:</span> When upgrading, log in, request a claim, complete doorstep QC, and receive your assured value.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Extend+ Column */}
+            <div>
+              <h3 className="text-center lg:text-left text-2xl sm:text-3xl font-bold text-blue-700 mb-6" style={{color: '#245AA3'}}>
+                EXTEND+
+              </h3>
+              <div className="space-y-4">
+                <div className="p-4 sm:p-6 rounded-2xl text-white" style={{backgroundColor: '#245AA3'}}>
+                  <p className="font-semibold text-base sm:text-lg">
+                    <span className="font-bold">1. Buy Extend+:</span> Choose Extend+ for your mobile or laptop up to 3 years old.
+                  </p>
+                </div>
+                <div className="p-4 sm:p-6 rounded-2xl text-white" style={{backgroundColor: '#245AA3'}}>
+                  <p className="font-semibold text-base sm:text-lg">
+                    <span className="font-bold">2. Register device:</span> Upload device details, invoice, and ID proof on the portal to activate coverage.
+                  </p>
+                </div>
+                <div className="p-4 sm:p-6 rounded-2xl text-white" style={{backgroundColor: '#245AA3'}}>
+                  <p className="font-semibold text-base sm:text-lg">
+                    <span className="font-bold">3. Use free repair:</span> Book a visit when needed and get service charges waived as per the plan.
+                  </p>
+                </div>
+                <div className="p-4 sm:p-6 rounded-2xl text-white" style={{backgroundColor: '#245AA3'}}>
+                  <p className="font-semibold text-base sm:text-lg">
+                    <span className="font-bold">4. Use auction support:</span> Request doorstep auction help and secure a 10-20% better resale price.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       
       {/* What is XtraCover BBG Section */}
       <section className="py-6 sm:py-8 lg:py-10 bg-white">

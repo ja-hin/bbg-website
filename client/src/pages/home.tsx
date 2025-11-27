@@ -294,7 +294,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* BBG Column */}
             <div>
-              <h3 className="text-center lg:text-left text-2xl sm:text-3xl font-bold text-blue-700 mb-6" style={{color: '#1F4B88'}}>
+              <h3 className="text-center text-4xl sm:text-5xl font-bold text-blue-700 mb-6" style={{color: '#1F4B88'}}>
                 BUY BACK GUARANTEE
               </h3>
               <div className="space-y-4">
@@ -327,7 +327,7 @@ export default function Home() {
 
             {/* Extend+ Column */}
             <div>
-              <h3 className="text-center lg:text-left text-2xl sm:text-3xl font-bold text-blue-700 mb-6" style={{color: '#245AA3'}}>
+              <h3 className="text-center text-4xl sm:text-5xl font-bold text-blue-700 mb-6" style={{color: '#245AA3'}}>
                 EXTEND+
               </h3>
               <div className="space-y-4">

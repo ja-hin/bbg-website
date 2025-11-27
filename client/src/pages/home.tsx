@@ -299,25 +299,25 @@ export default function Home() {
               </h3>
               <div className="space-y-12">
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#0771de', opacity: 0.84}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#0771de', opacity: 0.93}}></div>
                   <p className="text-lg sm:text-xl relative z-10" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'}}>
                     <span className="font-bold">1. Buy BBG:</span> <span className="font-normal">Activate BBG within 6 months of purchasing your mobile or laptop.</span>
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.84}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.93}}></div>
                   <p className="text-lg sm:text-xl relative z-10" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'}}>
                     <span className="font-bold">2. Register device:</span> <span className="font-normal">Enter voucher code, IMEI or serial number, and upload your invoice on the BBG portal.</span>
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#0771de', opacity: 0.84}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#0771de', opacity: 0.93}}></div>
                   <p className="text-lg sm:text-xl relative z-10" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'}}>
                     <span className="font-bold">3. Usage:</span> <span className="font-normal">Keep the device functional and retain the box and basic accessories.</span>
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.84}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#1F4B88', opacity: 0.93}}></div>
                   <p className="text-lg sm:text-xl relative z-10" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'}}>
                     <span className="font-bold">4. Raise claim:</span> <span className="font-normal">When upgrading, log in, request a claim, complete doorstep QC, and receive your assured value.</span>
                   </p>
@@ -332,25 +332,25 @@ export default function Home() {
               </h3>
               <div className="space-y-12">
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.84}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.93}}></div>
                   <p className="text-lg sm:text-xl relative z-10" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'}}>
                     <span className="font-bold">1. Buy Extend+:</span> <span className="font-normal">Choose Extend+ for your mobile or laptop up to 3 years old.</span>
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#0771de', opacity: 0.84}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#0771de', opacity: 0.93}}></div>
                   <p className="text-lg sm:text-xl relative z-10" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'}}>
                     <span className="font-bold">2. Register device:</span> <span className="font-normal">Upload device details, invoice, and ID proof on the portal to activate coverage.</span>
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.84}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#245AA3', opacity: 0.93}}></div>
                   <p className="text-lg sm:text-xl relative z-10" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'}}>
                     <span className="font-bold">3. Use free repair:</span> <span className="font-normal">Book a visit when needed and get service charges waived as per the plan.</span>
                   </p>
                 </div>
                 <div className="relative p-4 sm:p-6 rounded-2xl text-white overflow-hidden bg-cover bg-center" style={{backgroundImage: `url('${planWorksBackgroundImg}')`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
-                  <div className="absolute inset-0" style={{backgroundColor: '#0771de', opacity: 0.84}}></div>
+                  <div className="absolute inset-0" style={{backgroundColor: '#0771de', opacity: 0.93}}></div>
                   <p className="text-lg sm:text-xl relative z-10" style={{textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'}}>
                     <span className="font-bold">4. Use auction support:</span> <span className="font-normal">Request doorstep auction help and secure a 10-20% better resale price.</span>
                   </p>

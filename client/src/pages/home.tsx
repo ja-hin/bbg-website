@@ -1823,6 +1823,95 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Eligibility Requirements Section */}
+      <section className="bg-white py-12 sm:py-16 lg:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            {/* BBG Column */}
+            <div 
+              className="rounded-3xl p-8 sm:p-10 lg:p-12"
+              style={{ backgroundImage: "linear-gradient(to top, #0052cc 0%, #0066ff 100%)" }}
+            >
+              <h3 className="text-white font-bold text-2xl sm:text-3xl mb-6">Buy Back Guarantee</h3>
+              <ul className="space-y-3 sm:space-y-4">
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">Only for brand-new mobiles and laptops.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">Must be purchased from an authorised retailer or marketplace.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">Registration must match the original buyer's name and government ID.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">Device should be fully functional with no major damage.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">IMEI/serial must match the registered details.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">Original invoice, box, and basic accessories required.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">Device must be factory-reset before pickup.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">BBG is not transferable or refundable.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">Assured value is given only during an upgrade or purchase, not as cash.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Extend+ Column */}
+            <div 
+              className="rounded-3xl p-8 sm:p-10 lg:p-12"
+              style={{ backgroundImage: "linear-gradient(to top, #0052cc 0%, #0066ff 100%)" }}
+            >
+              <h3 className="text-white font-bold text-2xl sm:text-3xl mb-6">Extend+</h3>
+              <ul className="space-y-3 sm:space-y-4">
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">Device can be up to 3 years old with a valid invoice.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">Device must not be stolen, blocked, or flagged.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">Free repair covers service charges; parts may be chargeable.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">Auction support applies only if the device passes quality checks.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">Final offer depends on live bids and actual device condition.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-sm sm:text-base">Plan remains in the registered user's name and cannot be transferred.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* What happens when you raise a request Section */}
       <section className="bg-white py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

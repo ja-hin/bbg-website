@@ -201,7 +201,7 @@ export default function Home() {
             <h2
               className="text-center"
               style={{
-                fontSize: "clamp(20px, 5vw, 50px)",
+                fontSize: "clamp(28px, 6vw, 50px)",
                 color: "#303e58",
                 fontFamily: "Poppins, sans-serif",
                 fontWeight: "900",
@@ -422,7 +422,7 @@ export default function Home() {
             <h2
               className="text-center"
               style={{
-                fontSize: "clamp(20px, 5vw, 50px)",
+                fontSize: "clamp(28px, 6vw, 50px)",
                 color: "#303e58",
                 fontFamily: "Poppins, sans-serif",
                 fontWeight: "900",
@@ -450,7 +450,7 @@ export default function Home() {
                 className="text-center font-black text-blue-700 mb-6"
                 style={{
                   color: "#274797",
-                  fontSize: "2.4rem",
+                  fontSize: "clamp(24px, 6vw, 2.4rem)",
                   lineHeight: "2",
                 }}
               >
@@ -470,7 +470,7 @@ export default function Home() {
                     style={{ backgroundColor: "#0771de", opacity: 0.93 }}
                   ></div>
                   <p
-                    className="text-lg sm:text-xl relative z-10"
+                    className="text-base sm:text-lg lg:text-xl relative z-10"
                     style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)" }}
                   >
                     <span className="font-bold">1. Buy BBG:</span>{" "}
@@ -493,7 +493,7 @@ export default function Home() {
                     style={{ backgroundColor: "#1F4B88", opacity: 0.93 }}
                   ></div>
                   <p
-                    className="text-lg sm:text-xl relative z-10"
+                    className="text-base sm:text-lg lg:text-xl relative z-10"
                     style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)" }}
                   >
                     <span className="font-bold">2. Register device:</span>{" "}
@@ -516,7 +516,7 @@ export default function Home() {
                     style={{ backgroundColor: "#0771de", opacity: 0.93 }}
                   ></div>
                   <p
-                    className="text-lg sm:text-xl relative z-10"
+                    className="text-base sm:text-lg lg:text-xl relative z-10"
                     style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)" }}
                   >
                     <span className="font-bold">3. Usage:</span>{" "}
@@ -539,7 +539,7 @@ export default function Home() {
                     style={{ backgroundColor: "#1F4B88", opacity: 0.93 }}
                   ></div>
                   <p
-                    className="text-lg sm:text-xl relative z-10"
+                    className="text-base sm:text-lg lg:text-xl relative z-10"
                     style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)" }}
                   >
                     <span className="font-bold">4. Raise claim:</span>{" "}
@@ -558,7 +558,7 @@ export default function Home() {
                 className="text-center font-black text-blue-700 mb-6"
                 style={{
                   color: "#274797",
-                  fontSize: "2.4rem",
+                  fontSize: "clamp(24px, 6vw, 2.4rem)",
                   lineHeight: "2",
                 }}
               >
@@ -601,7 +601,7 @@ export default function Home() {
                     style={{ backgroundColor: "#0771de", opacity: 0.93 }}
                   ></div>
                   <p
-                    className="text-lg sm:text-xl relative z-10"
+                    className="text-base sm:text-lg lg:text-xl relative z-10"
                     style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)" }}
                   >
                     <span className="font-bold">2. Register device:</span>{" "}
@@ -677,7 +677,7 @@ export default function Home() {
             <h2
               className="text-center"
               style={{
-                fontSize: "clamp(18px, 5vw, 48px)",
+                fontSize: "clamp(26px, 6vw, 48px)",
                 color: "#303e58",
                 fontFamily: "Poppins, sans-serif",
                 fontWeight: "900",

@@ -727,7 +727,7 @@ export default function Home() {
               {/* Mobile BBG Card */}
               <div
                 className="rounded-3xl p-10 sm:p-12 text-center text-white"
-                style={{ backgroundImage: "linear-gradient(135deg, #2c3e50 0%, #3d4d63 100%)" }}
+                style={{ backgroundImage: "linear-gradient(to top, #2c3e50 0%, #3d4d63 100%)" }}
               >
                 <h3
                   className="text-xl sm:text-3xl font-bold mb-4"
@@ -760,7 +760,7 @@ export default function Home() {
               {/* Laptop BBG Card */}
               <div
                 className="rounded-3xl p-10 sm:p-12 text-center text-white"
-                style={{ backgroundImage: "linear-gradient(135deg, #0052cc 0%, #0066ff 100%)" }}
+                style={{ backgroundImage: "linear-gradient(to top, #0052cc 0%, #0066ff 100%)" }}
               >
                 <h3
                   className="text-xl sm:text-3xl font-bold mb-4"
@@ -823,7 +823,7 @@ export default function Home() {
               {/* Mobile Extend+ Card 1 */}
               <div
                 className="rounded-3xl p-10 sm:p-12 text-center text-white"
-                style={{ backgroundImage: "linear-gradient(135deg, #2c3e50 0%, #3d4d63 100%)" }}
+                style={{ backgroundImage: "linear-gradient(to top, #2c3e50 0%, #3d4d63 100%)" }}
               >
                 <h3
                   className="text-xl sm:text-3xl font-bold mb-4"
@@ -856,7 +856,7 @@ export default function Home() {
               {/* Mobile Extend+ Card 2 */}
               <div
                 className="rounded-3xl p-10 sm:p-12 text-center text-white"
-                style={{ backgroundImage: "linear-gradient(135deg, #0052cc 0%, #0066ff 100%)" }}
+                style={{ backgroundImage: "linear-gradient(to top, #0052cc 0%, #0066ff 100%)" }}
               >
                 <h3
                   className="text-xl sm:text-3xl font-bold mb-4"

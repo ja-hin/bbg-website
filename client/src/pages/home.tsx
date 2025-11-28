@@ -898,7 +898,7 @@ export default function Home() {
             {/* BBG Column */}
             <div 
               className="rounded-3xl p-8 sm:p-10 lg:p-12"
-              style={{ backgroundImage: "linear-gradient(to top, #0052cc 0%, #0066ff 100%)" }}
+              style={{ backgroundImage: "linear-gradient(135deg, #3B5998 0%, #5B8FD3 100%)" }}
             >
               <h3 className="text-white font-bold text-2xl sm:text-3xl mb-6">Buy Back Guarantee</h3>
               <ul className="space-y-3 sm:space-y-4">
@@ -944,7 +944,7 @@ export default function Home() {
             {/* Extend+ Column */}
             <div 
               className="rounded-3xl p-8 sm:p-10 lg:p-12"
-              style={{ backgroundImage: "linear-gradient(to top, #0052cc 0%, #0066ff 100%)" }}
+              style={{ backgroundImage: "linear-gradient(135deg, #3B5998 0%, #5B8FD3 100%)" }}
             >
               <h3 className="text-white font-bold text-2xl sm:text-3xl mb-6">Extend+</h3>
               <ul className="space-y-3 sm:space-y-4">
@@ -996,7 +996,7 @@ export default function Home() {
             <div>
               <div 
                 className="rounded-3xl px-6 sm:px-10 py-4 sm:py-5 text-center text-white font-bold text-lg sm:text-2xl mb-8"
-                style={{ backgroundImage: "linear-gradient(to top, #0052cc 0%, #0066ff 100%)" }}
+                style={{ backgroundImage: "linear-gradient(135deg, #3B5998 0%, #5B8FD3 100%)" }}
               >
                 BUY BACK GUARANTEE
               </div>
@@ -1028,7 +1028,7 @@ export default function Home() {
             <div>
               <div 
                 className="rounded-3xl px-6 sm:px-10 py-4 sm:py-5 text-center text-white font-bold text-lg sm:text-2xl mb-8"
-                style={{ backgroundImage: "linear-gradient(to top, #0052cc 0%, #0066ff 100%)" }}
+                style={{ backgroundImage: "linear-gradient(135deg, #3B5998 0%, #5B8FD3 100%)" }}
               >
                 EXTEND+
               </div>

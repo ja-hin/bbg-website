@@ -891,38 +891,12 @@ export default function Home() {
       {/* Who Can Use These Plans Banner Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12">
-            {/* Text Content */}
-            <div className="flex-1">
-              <h2
-                className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4"
-                style={{
-                  color: "#1a2a4a",
-                  fontFamily: "Poppins, sans-serif",
-                }}
-                data-testid="heading-who-can-use"
-              >
-                Who can use these plans?
-              </h2>
-              <p
-                className="text-base sm:text-lg text-gray-700"
-                style={{ fontFamily: "Inter, sans-serif" }}
-                data-testid="text-who-can-use-desc"
-              >
-                Check these points before you buy or claim BBG.
-              </p>
-            </div>
-
-            {/* Image Content */}
-            <div className="flex-1">
-              <img
-                src={bannerImg}
-                alt="Woman with laptop"
-                className="w-full h-auto"
-                data-testid="image-who-can-use"
-              />
-            </div>
-          </div>
+          <img
+            src={bannerImg}
+            alt="Woman with laptop"
+            className="w-full h-auto rounded-lg"
+            data-testid="image-who-can-use"
+          />
         </div>
       </section>
 

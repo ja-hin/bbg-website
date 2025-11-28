@@ -88,7 +88,6 @@ export default function Home() {
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Homepage Carousel */}
       <HomepageCarousel />
-
       {/* BBG Guarantee Cards Section */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
@@ -187,7 +186,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Which plan is right section */}
       <section
         className="bg-white"
@@ -220,7 +218,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* BBG vs Extend+ Comparison Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -408,7 +405,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* How the plan works? Section */}
       <section
         className="bg-white"
@@ -440,7 +436,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* How the plan works - Steps Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -663,7 +658,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Plan pricing and coverage Section */}
       <section
         className="bg-white"
@@ -695,7 +689,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* BBG Pricing Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -791,7 +784,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Extend+ Pricing Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -887,7 +879,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Who Can Use These Plans Banner Section */}
       <section className="bg-white">
         <img
@@ -897,7 +888,6 @@ export default function Home() {
           data-testid="image-who-can-use"
         />
       </section>
-
       {/* Eligibility Requirements Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -985,7 +975,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* What happens when you raise a request Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1066,7 +1055,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* FAQ Section */}
       <section className="py-4 sm:py-6 lg:py-8 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1270,7 +1258,7 @@ export default function Home() {
         </div>
       </section>
       {/* Distributor CTA Section */}
-      <section className="py-4 sm:py-6 bg-gray-50">
+      <section className="py-4 sm:py-6 bg-[#ffffff]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
             className="bg-white rounded-xl shadow-lg p-4 sm:p-8 border-l-4"

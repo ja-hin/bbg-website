@@ -889,15 +889,13 @@ export default function Home() {
       </section>
 
       {/* Who Can Use These Plans Banner Section */}
-      <section className="bg-white py-8 sm:py-12 lg:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <img
-            src={bannerImg}
-            alt="Woman with laptop"
-            className="w-full h-auto rounded-lg"
-            data-testid="image-who-can-use"
-          />
-        </div>
+      <section className="bg-white">
+        <img
+          src={bannerImg}
+          alt="Woman with laptop"
+          className="w-full h-auto"
+          data-testid="image-who-can-use"
+        />
       </section>
 
       {/* Eligibility Requirements Section */}

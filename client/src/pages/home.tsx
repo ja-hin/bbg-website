@@ -36,7 +36,6 @@ import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.png";
 export default function Home() {
   const [isBBGExpanded, setIsBBGExpanded] = useState(false);
   const [isExtendExpanded, setIsExtendExpanded] = useState(false);
-  const [activeTab, setActiveTab] = useState('bbg');
 
   // Fetch theme for dynamic coloring
   const { data: theme } = useQuery({
@@ -1830,94 +1829,77 @@ export default function Home() {
           {/* Title with decorative lines */}
           <div className="flex items-center justify-center gap-4 sm:gap-6 lg:gap-8 mb-12">
             <div className="hidden sm:block w-32 lg:w-48" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
-            <h2 className="text-center whitespace-nowrap" style={{fontSize: '40px', color: '#303e58', fontFamily: 'Poppins, sans-serif', fontWeight: '900', letterSpacing: '-0.42px', lineHeight: '1.22'}}>
+            <h2 className="text-center" style={{fontSize: '40px', color: '#303e58', fontFamily: 'Poppins, sans-serif', fontWeight: '900', letterSpacing: '-0.42px', lineHeight: '1.22'}}>
               What happens when you<br />raise a request
             </h2>
             <div className="hidden sm:block w-32 lg:w-48" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
           </div>
 
-          {/* Tab Buttons */}
-          <div className="flex gap-4 sm:gap-6 justify-center mb-10">
-            <button
-              onClick={() => setActiveTab('bbg')}
-              className={`px-6 sm:px-10 py-3 sm:py-4 rounded-2xl font-bold text-base sm:text-lg transition-all ${
-                activeTab === 'bbg'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-              }`}
-            >
-              BUY BACK GUARANTEE
-            </button>
-            <button
-              onClick={() => setActiveTab('extend')}
-              className={`px-6 sm:px-10 py-3 sm:py-4 rounded-2xl font-bold text-base sm:text-lg transition-all ${
-                activeTab === 'extend'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-              }`}
-            >
-              EXTEND+
-            </button>
-          </div>
-
-          {/* Content */}
+          {/* Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-            {activeTab === 'bbg' && (
-              <div className="space-y-4">
-                <ul className="space-y-3 sm:space-y-4">
-                  <li className="flex items-start gap-3">
-                    <span className="text-gray-800 font-bold text-lg sm:text-xl flex-shrink-0">•</span>
-                    <span className="text-gray-800 text-sm sm:text-base font-medium">Place claim request from your BBG account</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-gray-800 font-bold text-lg sm:text-xl flex-shrink-0">•</span>
-                    <span className="text-gray-800 text-sm sm:text-base font-medium">Pick a convenient slot for doorstep visit</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-gray-800 font-bold text-lg sm:text-xl flex-shrink-0">•</span>
-                    <span className="text-gray-800 text-sm sm:text-base font-medium">Technician visits, runs quality checks, verifies IMEI and documents</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-gray-800 font-bold text-lg sm:text-xl flex-shrink-0">•</span>
-                    <span className="text-gray-800 text-sm sm:text-base font-medium">Assured value is confirmed on screen</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-gray-800 font-bold text-lg sm:text-xl flex-shrink-0">•</span>
-                    <span className="text-gray-800 text-sm sm:text-base font-medium">Device is picked up and you receive the value as part of your new device upgrade or as per the channel journey</span>
-                  </li>
-                </ul>
+            {/* BBG Column */}
+            <div>
+              <div 
+                className="rounded-3xl px-6 sm:px-10 py-4 sm:py-5 text-center text-white font-bold text-lg sm:text-2xl mb-8"
+                style={{ backgroundImage: "linear-gradient(to top, #0052cc 0%, #0066ff 100%)" }}
+              >
+                BUY BACK GUARANTEE
               </div>
-            )}
+              <ul className="space-y-3 sm:space-y-4">
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-sm sm:text-base">Place claim request from your BBG account</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-sm sm:text-base">Pick a convenient slot for doorstep visit</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-sm sm:text-base">Technician visits, runs quality checks, verifies IMEI and documents</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-sm sm:text-base">Assured value is confirmed on screen</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-sm sm:text-base">Device is picked up and you receive the value as part of your new device upgrade or as per the channel journey</span>
+                </li>
+              </ul>
+            </div>
 
-            {activeTab === 'extend' && (
-              <div className="space-y-4">
-                <ul className="space-y-3 sm:space-y-4">
-                  <li className="flex items-start gap-3">
-                    <span className="text-gray-800 font-bold text-lg sm:text-xl flex-shrink-0">•</span>
-                    <span className="text-gray-800 text-sm sm:text-base font-medium">Book a repair or sell request from your Extend+ account</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-gray-800 font-bold text-lg sm:text-xl flex-shrink-0">•</span>
-                    <span className="text-gray-800 text-sm sm:text-base font-medium">Choose doorstep or partner center visit</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-gray-800 font-bold text-lg sm:text-xl flex-shrink-0">•</span>
-                    <span className="text-gray-800 text-sm sm:text-base font-medium">Technician checks the device and applies free repair on service charges where applicable</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-gray-800 font-bold text-lg sm:text-xl flex-shrink-0">•</span>
-                    <span className="text-gray-800 text-sm sm:text-base font-medium">For auction, multiple buyers bid on your device price</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-gray-800 font-bold text-lg sm:text-xl flex-shrink-0">•</span>
-                    <span className="text-gray-800 text-sm sm:text-base font-medium">You pick the final offer, device is picked up, and payment is processed as per the agreed mode</span>
-                  </li>
-                </ul>
+            {/* Extend+ Column */}
+            <div>
+              <div 
+                className="rounded-3xl px-6 sm:px-10 py-4 sm:py-5 text-center text-white font-bold text-lg sm:text-2xl mb-8"
+                style={{ backgroundImage: "linear-gradient(to top, #0052cc 0%, #0066ff 100%)" }}
+              >
+                EXTEND+
               </div>
-            )}
-
-            {/* Empty space for second column or visual element */}
-            <div className="hidden lg:block"></div>
+              <ul className="space-y-3 sm:space-y-4">
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-sm sm:text-base">Book a repair or sell request from your Extend+ account</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-sm sm:text-base">Choose doorstep or partner center visit</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-sm sm:text-base">Technician checks the device and applies free repair on service charges where applicable</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-sm sm:text-base">For auction, multiple buyers bid on your device price</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-sm sm:text-base">You pick the final offer, device is picked up, and payment is processed as per the agreed mode</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>

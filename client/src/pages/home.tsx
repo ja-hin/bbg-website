@@ -900,7 +900,7 @@ export default function Home() {
               className="rounded-3xl p-8 sm:p-10 lg:p-12"
               style={{ backgroundImage: "linear-gradient(to top, #2D5BA8 0%, #6B9FE8 100%)" }}
             >
-              <h3 className="text-white font-bold text-2xl sm:text-3xl mb-6">Buy Back Guarantee</h3>
+              <h3 className="text-white font-bold text-2xl sm:text-3xl mb-6 text-center">Buy Back Guarantee</h3>
               <ul className="space-y-3 sm:space-y-4">
                 <li className="flex items-start gap-3">
                   <span className="text-white font-bold text-lg flex-shrink-0">•</span>
@@ -946,7 +946,7 @@ export default function Home() {
               className="rounded-3xl p-8 sm:p-10 lg:p-12"
               style={{ backgroundImage: "linear-gradient(to top, #2D5BA8 0%, #6B9FE8 100%)" }}
             >
-              <h3 className="text-white font-bold text-2xl sm:text-3xl mb-6">Extend+</h3>
+              <h3 className="text-white font-bold text-2xl sm:text-3xl mb-6 text-center">Extend+</h3>
               <ul className="space-y-3 sm:space-y-4">
                 <li className="flex items-start gap-3">
                   <span className="text-white font-bold text-lg flex-shrink-0">•</span>

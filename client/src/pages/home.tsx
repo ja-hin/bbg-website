@@ -118,9 +118,7 @@ export default function Home() {
                   <h3
                     className="text-2xl sm:text-3xl font-bold italic text-center"
                     data-testid="heading-bbg-buyback"
-                  >
-                    BBG BuyBack Guarantee
-                  </h3>
+                  >BBG (BuyBack Guarantee)</h3>
                 </div>
                 <div
                   className="bg-white py-3 sm:py-4"
@@ -690,197 +688,216 @@ export default function Home() {
         </div>
       </section>
       {/* BBG Pricing Section */}
-      <section className="bg-white py-8 sm:py-12 lg:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12">
-            {/* Vertical Text */}
-            <div className="hidden lg:flex items-center justify-center">
-              <div
-                style={{
-                  writingMode: "vertical-rl",
-                  textOrientation: "mixed",
-                  transform: "rotate(180deg)",
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                  color: "#0771de",
-                  letterSpacing: "2px",
-                  backgroundColor: "#cce7ff",
-                  borderRadius: "16px",
-                  padding: "20px 8px",
-                }}
-              >
-                BUY BACK GUARANTEE
+      <section className="py-6 sm:py-8 lg:py-10 relative overflow-hidden">
+        {/* Background Image */}
+        <img 
+          src={pricingCardBackground} 
+          alt="Background pattern" 
+          className="absolute inset-0 w-full h-full object-fill z-0"
+        />
+        {/* Content */}
+        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 justify-items-center">
+
+            {/* Laptop BBG Card */}
+            <div className="relative w-full max-w-xs">
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+                {/* Header Section with text shadow */}
+                <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                  <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Laptop BBG</h3>
+                  <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
+                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
+                  </div>
+                  <p className="text-white/80 text-xs sm:text-sm">(inclusive of GST)</p>
+                </div>
+
+                {/* Features Section with text shadow */}
+                <div className="p-4 sm:p-6 pt-8 sm:pt-14 mt-4 sm:mt-4" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <ul className="space-y-2 sm:space-y-3 text-white">
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">Up to 70% payout value</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">Coverage for up to 36 months</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">Free doorstep pickup for claims</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">Instant payouts at the time of device handover</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* 3D Ribbon for Assured Value */}
+              <div className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]" style={{left: '-1.5rem'}}>
+                <div className="relative sm:block">
+                  {/* Main ribbon extending left - completely rectangular */}
+                  <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
+                    <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
+                      Assured buyback value for<br />your Laptop
+                    </p>
+                  </div>
+
+                  {/* Perfect triangle positioned below ribbon */}
+                  <div className="absolute -bottom-[15px] sm:-bottom-[20px] left-0 w-0 h-0 border-t-[15px] sm:border-t-[20px] border-t-blue-300 border-l-[18px] sm:border-l-[24px] border-l-transparent"></div>
+                </div>
               </div>
             </div>
 
-            {/* Pricing Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 flex-1 max-w-3xl">
-              {/* Mobile BBG Card */}
-              <div
-                className="rounded-3xl p-10 sm:p-12 text-center text-white"
-                style={{ backgroundImage: "linear-gradient(to top, #2c3e50 0%, #3d4d63 100%)" }}
-              >
-                <h3
-                  className="text-xl sm:text-3xl font-bold mb-4"
-                  style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)" }}
-                >
-                  Mobile BBG
-                </h3>
-                <div
-                  className="text-4xl sm:text-6xl font-bold mb-3"
-                  style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)" }}
-                >
-                  ₹299
+            {/* Mobile BBG Card */}
+            <div className="relative w-full max-w-xs">
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+                {/* Header Section with text shadow */}
+                <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                  <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Mobile BBG</h3>
+                  <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
+                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
+                  </div>
+                  <p className="text-white/80 text-xs sm:text-sm">(inclusive of GST)</p>
                 </div>
-                <p
-                  className="text-sm sm:text-base mb-8"
-                  style={{
-                    color: "#b0bcc8",
-                    textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
-                  }}
-                >
-                  (inclusive of GST)
-                </p>
-                <img
-                  src={learnMoreBtn}
-                  alt="Learn More"
-                  className="w-48 h-auto mx-auto cursor-pointer"
-                />
+
+                {/* Features Section with text shadow */}
+                <div className="p-4 sm:p-6 pt-8 sm:pt-14 mt-4 sm:mt-4" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <ul className="space-y-2 sm:space-y-3 text-white">
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">Up to 70% payout value</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">Coverage for up to 18 months</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">Free doorstep pickup for claims</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">Instant payouts at the time of device handover</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
 
-              {/* Laptop BBG Card */}
-              <div
-                className="rounded-3xl p-10 sm:p-12 text-center text-white"
-                style={{ backgroundImage: "linear-gradient(to top, #0052cc 0%, #0066ff 100%)" }}
-              >
-                <h3
-                  className="text-xl sm:text-3xl font-bold mb-4"
-                  style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)" }}
-                >
-                  Laptop BBG
-                </h3>
-                <div
-                  className="text-4xl sm:text-6xl font-bold mb-3"
-                  style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)" }}
-                >
-                  ₹499
+              {/* 3D Ribbon for Assured Value */}
+              <div className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]" style={{left: '-1.5rem'}}>
+                <div className="relative sm:block">
+                  {/* Main ribbon extending left - completely rectangular */}
+                  <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
+                    <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
+                      Assured buyback value for<br />your Mobile
+                    </p>
+                  </div>
+
+                  {/* Perfect triangle positioned below ribbon */}
+                  <div className="absolute -bottom-[15px] sm:-bottom-[20px] left-0 w-0 h-0 border-t-[15px] sm:border-t-[20px] border-t-blue-300 border-l-[18px] sm:border-l-[24px] border-l-transparent"></div>
                 </div>
-                <p
-                  className="text-sm sm:text-base mb-8"
-                  style={{
-                    color: "#b0d9ff",
-                    textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
-                  }}
-                >
-                  (inclusive of GST)
-                </p>
-                <img
-                  src={learnMoreBtn}
-                  alt="Learn More"
-                  className="w-48 h-auto mx-auto cursor-pointer"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* Extend+ Pricing Section */}
-      <section className="bg-white py-8 sm:py-12 lg:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12">
-            {/* Vertical Text */}
-            <div className="hidden lg:flex items-center justify-center">
-                <div
-                  style={{
-                    writingMode: "vertical-rl",
-                    textOrientation: "mixed",
-                    transform: "rotate(180deg)",
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    color: "#0771de",
-                    letterSpacing: "2px",
-                    backgroundColor: "#cce7ff",
-                    borderRadius: "16px",
-                    padding: "20px 8px",
-                  }}
-                >
-                EXTEND+ PRICING
               </div>
             </div>
 
-            {/* Pricing Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 flex-1 max-w-3xl">
-              {/* Mobile Extend+ Card 1 */}
-              <div
-                className="rounded-3xl p-10 sm:p-12 text-center text-white"
-                style={{ backgroundImage: "linear-gradient(to top, #2c3e50 0%, #3d4d63 100%)" }}
-              >
-                <h3
-                  className="text-xl sm:text-3xl font-bold mb-4"
-                  style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)" }}
-                >
-                  Mobile Extend+
-                </h3>
-                <div
-                  className="text-4xl sm:text-6xl font-bold mb-3"
-                  style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)" }}
-                >
-                  ₹299
+            {/* Laptop Extend+ Card */}
+            <div className="relative w-full max-w-xs">
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+                {/* Header Section with text shadow */}
+                <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                  <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Laptop Extend+</h3>
+                  <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
+                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
+                  </div>
                 </div>
-                <p
-                  className="text-sm sm:text-base mb-8"
-                  style={{
-                    color: "#b0bcc8",
-                    textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
-                  }}
-                >
-                  (inclusive of GST)
-                </p>
-                <img
-                  src={learnMoreBtn}
-                  alt="Learn More"
-                  className="w-48 h-auto mx-auto cursor-pointer"
-                />
+
+                {/* Features Section with text shadow */}
+                <div className="p-4 sm:p-6 pt-8 sm:pt-14 mt-4 sm:mt-4" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <ul className="space-y-2 sm:space-y-3 text-white">
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">Free Auction Service → 10-20% higher resale than market</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">1 Free Device Repair (service charges waived, parts chargeable)</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">Validity: 24 months</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
 
-              {/* Mobile Extend+ Card 2 */}
-              <div
-                className="rounded-3xl p-10 sm:p-12 text-center text-white"
-                style={{ backgroundImage: "linear-gradient(to top, #0052cc 0%, #0066ff 100%)" }}
-              >
-                <h3
-                  className="text-xl sm:text-3xl font-bold mb-4"
-                  style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)" }}
-                >
-                  Mobile Extend+
-                </h3>
-                <div
-                  className="text-4xl sm:text-6xl font-bold mb-3"
-                  style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)" }}
-                >
-                  ₹299
+              {/* 3D Ribbon for Assured Value */}
+              <div className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]" style={{left: '-1.5rem'}}>
+                <div className="relative sm:block">
+                  {/* Main ribbon extending left - completely rectangular */}
+                  <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
+                    <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
+                      (inclusive of GST)
+                    </p>
+                  </div>
+
+                  {/* Perfect triangle positioned below ribbon */}
+                  <div className="absolute -bottom-[15px] sm:-bottom-[20px] left-0 w-0 h-0 border-t-[15px] sm:border-t-[20px] border-t-blue-300 border-l-[18px] sm:border-l-[24px] border-l-transparent"></div>
                 </div>
-                <p
-                  className="text-sm sm:text-base mb-8"
-                  style={{
-                    color: "#b0d9ff",
-                    textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
-                  }}
-                >
-                  (inclusive of GST)
-                </p>
-                <img
-                  src={learnMoreBtn}
-                  alt="Learn More"
-                  className="w-48 h-auto mx-auto cursor-pointer"
-                />
               </div>
             </div>
+
+            {/* Mobile Extend+ Card */}
+            <div className="relative w-full max-w-xs">
+              <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+                {/* Header Section with text shadow */}
+                <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                  <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Mobile Extend+</h3>
+                  <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
+                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
+                  </div>
+                </div>
+
+                {/* Features Section with text shadow */}
+                <div className="p-4 sm:p-6 pt-8 sm:pt-14 mt-4 sm:mt-4" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <ul className="space-y-2 sm:space-y-3 text-white">
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">Free Auction Service → 10-20% higher resale than market</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">1 Free Device Repair (service charges waived, parts chargeable)</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-white mr-2 sm:mr-3">•</span>
+                      <span className="text-xs sm:text-sm">Validity: 24 months</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* 3D Ribbon for Assured Value */}
+              <div className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]" style={{left: '-1.5rem'}}>
+                <div className="relative sm:block">
+                  {/* Main ribbon extending left - completely rectangular */}
+                  <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
+                    <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
+                      (inclusive of GST)
+                    </p>
+                  </div>
+
+                  {/* Perfect triangle positioned below ribbon */}
+                  <div className="absolute -bottom-[15px] sm:-bottom-[20px] left-0 w-0 h-0 border-t-[15px] sm:border-t-[20px] border-t-blue-300 border-l-[18px] sm:border-l-[24px] border-l-transparent"></div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
       {/* Who Can Use These Plans Banner Section */}
-      <section className="bg-white">
+      <section className="bg-white pt-4">
         <img
           src={bannerImg}
           alt="Woman with laptop"

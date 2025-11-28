@@ -891,20 +891,20 @@ export default function Home() {
       </section>
 
       {/* Eligibility Requirements Section */}
-      <section className="bg-white py-12 sm:py-16 lg:py-20">
+      <section className="bg-white py-8 sm:py-12 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Two Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
             {/* BBG Column */}
             <div 
-              className="rounded-3xl p-8 sm:p-10 lg:p-12"
+              className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12"
               style={{ backgroundImage: "linear-gradient(to top, #123675 0%, #306FC0 100%)" }}
             >
-              <h3 className="text-white font-bold text-2xl sm:text-3xl mb-6 text-center">Buy Back Guarantee</h3>
-              <ul className="space-y-3 sm:space-y-4">
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">Only for brand-new mobiles and laptops.</span>
+              <h3 className="text-white font-bold text-lg sm:text-2xl lg:text-3xl mb-4 sm:mb-6 text-center">Buy Back Guarantee</h3>
+              <ul className="space-y-2 sm:space-y-3 lg:space-y-4">
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-white font-bold text-base sm:text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-xs sm:text-sm lg:text-base">Only for brand-new mobiles and laptops.</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-white font-bold text-lg flex-shrink-0">•</span>
@@ -943,14 +943,14 @@ export default function Home() {
 
             {/* Extend+ Column */}
             <div 
-              className="rounded-3xl p-8 sm:p-10 lg:p-12"
+              className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12"
               style={{ backgroundImage: "linear-gradient(to top, #123675 0%, #306FC0 100%)" }}
             >
-              <h3 className="text-white font-bold text-2xl sm:text-3xl mb-6 text-center">Extend+</h3>
-              <ul className="space-y-3 sm:space-y-4">
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">Device can be up to 3 years old with a valid invoice.</span>
+              <h3 className="text-white font-bold text-lg sm:text-2xl lg:text-3xl mb-4 sm:mb-6 text-center">Extend+</h3>
+              <ul className="space-y-2 sm:space-y-3 lg:space-y-4">
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-white font-bold text-base sm:text-lg flex-shrink-0">•</span>
+                  <span className="text-white text-xs sm:text-sm lg:text-base">Device can be up to 3 years old with a valid invoice.</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-white font-bold text-lg flex-shrink-0">•</span>
@@ -979,47 +979,47 @@ export default function Home() {
       </section>
 
       {/* What happens when you raise a request Section */}
-      <section className="bg-white py-12 sm:py-16 lg:py-20">
+      <section className="bg-white py-8 sm:py-12 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Title with decorative lines */}
-          <div className="flex items-center justify-center gap-4 sm:gap-6 lg:gap-8 mb-12">
-            <div className="hidden sm:block w-32 lg:w-48" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
-            <h2 className="text-center" style={{fontSize: '40px', color: '#303e58', fontFamily: 'Poppins, sans-serif', fontWeight: '900', letterSpacing: '-0.42px', lineHeight: '1.22'}}>
+          <div className="flex items-center justify-center gap-2 sm:gap-4 lg:gap-8 mb-8 sm:mb-12">
+            <div className="hidden sm:block w-16 lg:w-48" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
+            <h2 className="text-center" style={{fontSize: 'clamp(24px, 5vw, 40px)', color: '#303e58', fontFamily: 'Poppins, sans-serif', fontWeight: '900', letterSpacing: '-0.42px', lineHeight: '1.22'}}>
               What happens when you<br />raise a request
             </h2>
-            <div className="hidden sm:block w-32 lg:w-48" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
+            <div className="hidden sm:block w-16 lg:w-48" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
           </div>
 
           {/* Two Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
             {/* BBG Column */}
             <div>
               <div 
-                className="rounded-3xl px-6 sm:px-10 py-4 sm:py-5 text-center text-white font-bold text-lg sm:text-2xl mb-8"
+                className="rounded-2xl sm:rounded-3xl px-4 sm:px-8 py-3 sm:py-4 text-center text-white font-bold text-base sm:text-xl lg:text-2xl mb-6 sm:mb-8"
                 style={{ backgroundImage: "linear-gradient(to top, #123675 0%, #306FC0 100%)" }}
               >
                 BUY BACK GUARANTEE
               </div>
-              <ul className="space-y-3 sm:space-y-4">
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-gray-800 text-sm sm:text-base">Place claim request from your BBG account</span>
+              <ul className="space-y-2 sm:space-y-3 lg:space-y-4">
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-gray-800 font-bold text-base sm:text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-xs sm:text-sm lg:text-base">Place claim request from your BBG account</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-gray-800 text-sm sm:text-base">Pick a convenient slot for doorstep visit</span>
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-gray-800 font-bold text-base sm:text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-xs sm:text-sm lg:text-base">Pick a convenient slot for doorstep visit</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-gray-800 text-sm sm:text-base">Technician visits, runs quality checks, verifies IMEI and documents</span>
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-gray-800 font-bold text-base sm:text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-xs sm:text-sm lg:text-base">Technician visits, runs quality checks, verifies IMEI and documents</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-gray-800 text-sm sm:text-base">Assured value is confirmed on screen</span>
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-gray-800 font-bold text-base sm:text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-xs sm:text-sm lg:text-base">Assured value is confirmed on screen</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-gray-800 text-sm sm:text-base">Device is picked up and you receive the value as part of your new device upgrade or as per the channel journey</span>
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-gray-800 font-bold text-base sm:text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-xs sm:text-sm lg:text-base">Device is picked up and you receive the value as part of your new device upgrade or as per the channel journey</span>
                 </li>
               </ul>
             </div>
@@ -1027,31 +1027,31 @@ export default function Home() {
             {/* Extend+ Column */}
             <div>
               <div 
-                className="rounded-3xl px-6 sm:px-10 py-4 sm:py-5 text-center text-white font-bold text-lg sm:text-2xl mb-8"
+                className="rounded-2xl sm:rounded-3xl px-4 sm:px-8 py-3 sm:py-4 text-center text-white font-bold text-base sm:text-xl lg:text-2xl mb-6 sm:mb-8"
                 style={{ backgroundImage: "linear-gradient(to top, #123675 0%, #306FC0 100%)" }}
               >
                 EXTEND+
               </div>
-              <ul className="space-y-3 sm:space-y-4">
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-gray-800 text-sm sm:text-base">Book a repair or sell request from your Extend+ account</span>
+              <ul className="space-y-2 sm:space-y-3 lg:space-y-4">
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-gray-800 font-bold text-base sm:text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-xs sm:text-sm lg:text-base">Book a repair or sell request from your Extend+ account</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-gray-800 text-sm sm:text-base">Choose doorstep or partner center visit</span>
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-gray-800 font-bold text-base sm:text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-xs sm:text-sm lg:text-base">Choose doorstep or partner center visit</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-gray-800 text-sm sm:text-base">Technician checks the device and applies free repair on service charges where applicable</span>
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-gray-800 font-bold text-base sm:text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-xs sm:text-sm lg:text-base">Technician checks the device and applies free repair on service charges where applicable</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-gray-800 text-sm sm:text-base">For auction, multiple buyers bid on your device price</span>
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-gray-800 font-bold text-base sm:text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-xs sm:text-sm lg:text-base">For auction, multiple buyers bid on your device price</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-800 font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-gray-800 text-sm sm:text-base">You pick the final offer, device is picked up, and payment is processed as per the agreed mode</span>
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-gray-800 font-bold text-base sm:text-lg flex-shrink-0">•</span>
+                  <span className="text-gray-800 text-xs sm:text-sm lg:text-base">You pick the final offer, device is picked up, and payment is processed as per the agreed mode</span>
                 </li>
               </ul>
             </div>

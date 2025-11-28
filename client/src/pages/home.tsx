@@ -127,7 +127,7 @@ export default function Home() {
                   style={{ paddingLeft: "0.5rem", paddingRight: "0.5rem" }}
                 >
                   <p
-                    className="text-gray-800 text-lg leading-relaxed text-center font-normal"
+                    className="text-gray-800 text-sm sm:text-base lg:text-lg leading-relaxed text-center font-normal"
                     style={{ fontFamily: "Inter, sans-serif" }}
                     data-testid="text-bbg-buyback-desc"
                   >
@@ -173,7 +173,7 @@ export default function Home() {
                   style={{ paddingLeft: "0.5rem", paddingRight: "0.5rem" }}
                 >
                   <p
-                    className="text-gray-800 text-lg leading-relaxed text-center font-normal"
+                    className="text-gray-800 text-sm sm:text-base lg:text-lg leading-relaxed text-center font-normal"
                     style={{ fontFamily: "Inter, sans-serif" }}
                     data-testid="text-extend-protection-desc"
                   >
@@ -193,15 +193,15 @@ export default function Home() {
         style={{ paddingTop: "0.5rem", paddingBottom: "0.5rem" }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center gap-4 sm:gap-6 lg:gap-8">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 lg:gap-8">
             <div
-              className="w-48"
+              className="hidden sm:block w-16 lg:w-48"
               style={{ height: "0.125rem", backgroundColor: "#303e58" }}
             ></div>
             <h2
-              className="text-center whitespace-nowrap"
+              className="text-center"
               style={{
-                fontSize: "50px",
+                fontSize: "clamp(20px, 5vw, 50px)",
                 color: "#303e58",
                 fontFamily: "Poppins, sans-serif",
                 fontWeight: "900",
@@ -210,12 +210,10 @@ export default function Home() {
               }}
               data-testid="heading-which-plan"
             >
-              Which plan is right
-              <br />
-              for my device?
+              Which plan is right<br />for my device?
             </h2>
             <div
-              className="w-48"
+              className="hidden sm:block w-16 lg:w-48"
               style={{ height: "0.125rem", backgroundColor: "#303e58" }}
             ></div>
           </div>
@@ -241,7 +239,7 @@ export default function Home() {
                 className="p-4 sm:p-6 bg-white"
                 style={{ borderRadius: "35px" }}
               >
-                <p className="text-gray-900 text-base sm:text-lg font-normal mb-4 leading-relaxed">
+                <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal mb-4 leading-relaxed">
                   <strong>BBG</strong> is for new devices only. It locks your
                   future resale value on the day you buy your mobile or laptop
                   so you already know what you will get back when you upgrade.
@@ -263,7 +261,7 @@ export default function Home() {
 
                 {isBBGExpanded && (
                   <>
-                    <ul className="space-y-2 mb-4 text-sm sm:text-base text-gray-800">
+                    <ul className="space-y-1 sm:space-y-2 mb-4 text-xs sm:text-sm lg:text-base text-gray-800">
                       <li className="flex items-start">
                         <span className="mr-3">•</span>
                         <span>For brand new mobiles and laptops</span>
@@ -330,7 +328,7 @@ export default function Home() {
                 className="p-4 sm:p-6 bg-white"
                 style={{ borderRadius: "35px" }}
               >
-                <p className="text-gray-900 text-base sm:text-lg font-normal mb-4 leading-relaxed">
+                <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal mb-4 leading-relaxed">
                   <strong>Extend+</strong> is for devices that are already in
                   use. It gives you one free repair on service charges and
                   doorstep auction support so that when you sell, you get a
@@ -353,7 +351,7 @@ export default function Home() {
 
                 {isExtendExpanded && (
                   <>
-                    <ul className="space-y-2 mb-4 text-sm sm:text-base text-gray-800">
+                    <ul className="space-y-1 sm:space-y-2 mb-4 text-xs sm:text-sm lg:text-base text-gray-800">
                       <li className="flex items-start">
                         <span className="mr-3">•</span>
                         <span>For mobiles and laptops already in use</span>
@@ -416,15 +414,15 @@ export default function Home() {
         style={{ paddingTop: "0.5rem", paddingBottom: "0.5rem" }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center gap-4 sm:gap-6 lg:gap-8">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 lg:gap-8">
             <div
-              className="w-48"
+              className="hidden sm:block w-16 lg:w-48"
               style={{ height: "0.125rem", backgroundColor: "#303e58" }}
             ></div>
             <h2
-              className="text-center whitespace-nowrap"
+              className="text-center"
               style={{
-                fontSize: "50px",
+                fontSize: "clamp(20px, 5vw, 50px)",
                 color: "#303e58",
                 fontFamily: "Poppins, sans-serif",
                 fontWeight: "900",
@@ -432,12 +430,10 @@ export default function Home() {
                 lineHeight: "1.22",
               }}
             >
-              How the plan
-              <br />
-              works?
+              How the plan<br />works?
             </h2>
             <div
-              className="w-48"
+              className="hidden sm:block w-16 lg:w-48"
               style={{ height: "0.125rem", backgroundColor: "#303e58" }}
             ></div>
           </div>
@@ -673,14 +669,15 @@ export default function Home() {
         style={{ paddingTop: "0.5rem", paddingBottom: "0.5rem" }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center gap-4 sm:gap-6 lg:gap-8">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 lg:gap-8">
             <div
-              className="w-48"
+              className="hidden sm:block w-16 lg:w-48"
               style={{ height: "0.125rem", backgroundColor: "#303e58" }}
             ></div>
             <h2
-              className="text-center whitespace-nowrap text-xl lg:text-5xl"
+              className="text-center"
               style={{
+                fontSize: "clamp(18px, 5vw, 48px)",
                 color: "#303e58",
                 fontFamily: "Poppins, sans-serif",
                 fontWeight: "900",
@@ -691,7 +688,7 @@ export default function Home() {
               Plan pricing and coverage
             </h2>
             <div
-              className="w-48"
+              className="hidden sm:block w-16 lg:w-48"
               style={{ height: "0.125rem", backgroundColor: "#303e58" }}
             ></div>
           </div>

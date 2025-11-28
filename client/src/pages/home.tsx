@@ -32,6 +32,7 @@ import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.png";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
 import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_1764254452404.png";
 import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.png";
+import bannerImg from "@assets/BBG Banners Revised (1)_1764328416967.png";
 
 export default function Home() {
   const [isBBGExpanded, setIsBBGExpanded] = useState(false);
@@ -882,6 +883,44 @@ export default function Home() {
                   className="w-48 h-auto mx-auto cursor-pointer"
                 />
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Who Can Use These Plans Banner Section */}
+      <section className="bg-white py-8 sm:py-12 lg:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12">
+            {/* Text Content */}
+            <div className="flex-1">
+              <h2
+                className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4"
+                style={{
+                  color: "#1a2a4a",
+                  fontFamily: "Poppins, sans-serif",
+                }}
+                data-testid="heading-who-can-use"
+              >
+                Who can use these plans?
+              </h2>
+              <p
+                className="text-base sm:text-lg text-gray-700"
+                style={{ fontFamily: "Inter, sans-serif" }}
+                data-testid="text-who-can-use-desc"
+              >
+                Check these points before you buy or claim BBG.
+              </p>
+            </div>
+
+            {/* Image Content */}
+            <div className="flex-1">
+              <img
+                src={bannerImg}
+                alt="Woman with laptop"
+                className="w-full h-auto"
+                data-testid="image-who-can-use"
+              />
             </div>
           </div>
         </div>

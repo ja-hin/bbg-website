@@ -13,8 +13,8 @@ interface HomepageCarouselProps {
 export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: HomepageCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Fetch active homepage banners
-  const { data: banners = [], isLoading } = useQuery({
+  // Fetch active homepage banners (excluding special banners like "Who can use these plans")
+  const { data: allBanners = [], isLoading } = useQuery({
     queryKey: ['/api/homepage-banners'],
     queryFn: async () => {
       const response = await fetch('/api/homepage-banners', {
@@ -30,6 +30,11 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
     refetchOnMount: true,
     refetchOnWindowFocus: false
   });
+
+  // Filter out special banners that are displayed elsewhere
+  const banners = allBanners.filter((banner: HomepageBanner) => 
+    banner.title !== "Who can use these plans"
+  );
 
   // Auto-play functionality
   useEffect(() => {

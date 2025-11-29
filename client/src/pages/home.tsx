@@ -44,6 +44,12 @@ export default function Home() {
     retry: false,
   });
 
+  // Fetch "Who can use these plans?" banner
+  const { data: whoCanUseBanner } = useQuery({
+    queryKey: ["/api/homepage-banners/by-title/Who can use these plans"],
+    retry: false,
+  });
+
   // Fetch dynamic BBG prices
   const { data: bbgPrices, isLoading: pricesLoading } = useQuery({
     queryKey: ["/api/bbg-prices"],
@@ -898,12 +904,35 @@ export default function Home() {
       </section>
       {/* Who Can Use These Plans Banner Section */}
       <section className="bg-white pt-4">
-        <img
-          src={bannerImg}
-          alt="Woman with laptop"
-          className="w-full h-auto"
-          data-testid="image-who-can-use"
-        />
+        {whoCanUseBanner ? (
+          <>
+            {/* Desktop Image */}
+            <img
+              src={whoCanUseBanner.desktopImageUrl}
+              alt={whoCanUseBanner.title || "Who can use these plans"}
+              className="w-full h-auto hidden md:block"
+              data-testid="image-who-can-use-desktop"
+              onClick={() => whoCanUseBanner.linkUrl && (window.location.href = whoCanUseBanner.linkUrl)}
+              style={{ cursor: whoCanUseBanner.linkUrl ? 'pointer' : 'default' }}
+            />
+            {/* Mobile Image */}
+            <img
+              src={whoCanUseBanner.mobileImageUrl}
+              alt={whoCanUseBanner.title || "Who can use these plans"}
+              className="w-full h-auto md:hidden"
+              data-testid="image-who-can-use-mobile"
+              onClick={() => whoCanUseBanner.linkUrl && (window.location.href = whoCanUseBanner.linkUrl)}
+              style={{ cursor: whoCanUseBanner.linkUrl ? 'pointer' : 'default' }}
+            />
+          </>
+        ) : (
+          <img
+            src={bannerImg}
+            alt="Woman with laptop"
+            className="w-full h-auto"
+            data-testid="image-who-can-use"
+          />
+        )}
       </section>
       {/* Eligibility Requirements Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-20">

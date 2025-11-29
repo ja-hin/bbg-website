@@ -10085,6 +10085,24 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // Public endpoint - Get specific banner by title (e.g., "Who can use these plans")
+  app.get("/api/homepage-banners/by-title/:title", async (req, res) => {
+    try {
+      const { title } = req.params;
+      const banners = await storage.getActiveHomepageBanners();
+      const banner = banners.find(b => b.title === decodeURIComponent(title));
+      
+      if (!banner) {
+        return res.status(404).json({ message: "Banner not found" });
+      }
+      
+      res.json(banner);
+    } catch (error: any) {
+      console.error("Error fetching banner by title:", error);
+      res.status(500).json({ message: "Failed to get banner" });
+    }
+  });
+
   // Public endpoint - Redirect to S3 for images (S3-only implementation)
   app.get("/uploads/:filename", async (req, res) => {
     const filename = req.params.filename;

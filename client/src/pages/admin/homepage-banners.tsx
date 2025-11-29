@@ -257,11 +257,16 @@ const HomepageBannersPage = () => {
   const handleDesktopImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
+      // Validate file type (allow all image types and SVG)
+      const allowedTypes = ['image/', 'image/svg+xml'];
+      const isValid = allowedTypes.some(type => 
+        file.type.startsWith(type) || file.name.toLowerCase().endsWith('.svg')
+      );
+      
+      if (!isValid) {
         toast({
           title: "Invalid File",
-          description: "Please select an image file",
+          description: "Please select an image file (PNG, JPG, SVG, etc.)",
           variant: "destructive"
         });
         return;
@@ -284,11 +289,16 @@ const HomepageBannersPage = () => {
   const handleMobileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
+      // Validate file type (allow all image types and SVG)
+      const allowedTypes = ['image/', 'image/svg+xml'];
+      const isValid = allowedTypes.some(type => 
+        file.type.startsWith(type) || file.name.toLowerCase().endsWith('.svg')
+      );
+      
+      if (!isValid) {
         toast({
           title: "Invalid File",
-          description: "Please select an image file",
+          description: "Please select an image file (PNG, JPG, SVG, etc.)",
           variant: "destructive"
         });
         return;
@@ -455,7 +465,7 @@ const HomepageBannersPage = () => {
                 <input
                   ref={desktopFileInputRef}
                   type="file"
-                  accept="image/*"
+                  accept="image/*,.svg"
                   onChange={handleDesktopImageChange}
                   className="hidden"
                 />
@@ -501,7 +511,7 @@ const HomepageBannersPage = () => {
                 <input
                   ref={mobileFileInputRef}
                   type="file"
-                  accept="image/*"
+                  accept="image/*,.svg"
                   onChange={handleMobileImageChange}
                   className="hidden"
                 />

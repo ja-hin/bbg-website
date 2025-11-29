@@ -123,6 +123,7 @@ export const createS3Upload = (
         "image/jpeg",
         "image/png",
         "image/jpg",
+        "image/svg+xml",
         "application/pdf",
       ];
 

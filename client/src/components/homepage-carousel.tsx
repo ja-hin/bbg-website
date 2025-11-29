@@ -57,7 +57,7 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
   // Handle banner click
   const handleBannerClick = (banner: HomepageBanner) => {
     if (banner.linkUrl) {
-      window.open(banner.linkUrl, '_blank', 'noopener,noreferrer');
+      window.location.href = banner.linkUrl;
     }
   };
 

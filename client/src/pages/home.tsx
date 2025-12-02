@@ -242,7 +242,7 @@ export default function Home() {
                 style={{ borderRadius: "35px" }}
               >
                 <div className="mb-4">
-                  <h4 className="sm:text-base lg:text-lg font-bold mb-2 text-[24px] text-[#151519]">BuyBack Guarantee</h4>
+                  <h4 className="sm:text-base lg:text-lg font-bold mb-2 text-[24px]" style={{ color: "#1F4B88" }}>BuyBack Guarantee</h4>
                   <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal mb-2 leading-relaxed">For new mobiles and laptops</p>
                   <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal leading-relaxed">Locks your future resale value from day one</p>
                 </div>
@@ -311,7 +311,7 @@ export default function Home() {
                 style={{ borderRadius: "35px" }}
               >
                 <div className="mb-4">
-                  <h4 className="text-gray-900 sm:text-base lg:text-lg font-bold mb-2 text-[24px]">Extend+</h4>
+                  <h4 className="sm:text-base lg:text-lg font-bold mb-2 text-[24px]" style={{ color: "#1F4B88" }}>Extend+</h4>
                   <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal mb-2 leading-relaxed">For devices already in use</p>
                   <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal leading-relaxed">Adds protection, repairs, and better resale</p>
                 </div>

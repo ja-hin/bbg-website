@@ -241,11 +241,11 @@ export default function Home() {
                 className="p-4 sm:p-6 bg-white"
                 style={{ borderRadius: "35px" }}
               >
-                <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal mb-4 leading-relaxed">
-                  <strong>BBG</strong> is for new devices only. It locks your
-                  future resale value on the day you buy your mobile or laptop
-                  so you already know what you will get back when you upgrade.
-                </p>
+                <div className="mb-4">
+                  <h4 className="text-gray-900 text-sm sm:text-base lg:text-lg font-bold mb-2">BuyBack Guarantee</h4>
+                  <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal mb-2 leading-relaxed">For new mobiles and laptops</p>
+                  <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal leading-relaxed">Locks your future resale value from day one</p>
+                </div>
 
                 <Button
                   className="text-white px-6 py-2 rounded-full font-semibold mb-4"
@@ -263,52 +263,32 @@ export default function Home() {
 
                 {isBBGExpanded && (
                   <>
-                    <ul className="space-y-1 sm:space-y-2 mb-4 text-xs sm:text-sm lg:text-base text-gray-800">
+                    <ul className="space-y-2 sm:space-y-3 mb-4 text-xs sm:text-sm lg:text-base text-gray-800">
                       <li className="flex items-start">
-                        <span className="mr-3">•</span>
-                        <span>For brand new mobiles and laptops</span>
+                        <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
+                        <span>Covers mobiles and laptops up to 6 months old</span>
                       </li>
                       <li className="flex items-start">
-                        <span className="mr-3">•</span>
-                        <span>
-                          Device purchase must be from an authorised channel
-                        </span>
+                        <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
+                        <span>Guarantees up to 70 percent resale value</span>
                       </li>
                       <li className="flex items-start">
-                        <span className="mr-3">•</span>
-                        <span>Device age at activation: up to 6 months</span>
+                        <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
+                        <span>End-to-end digital claim with doorstep pickup</span>
                       </li>
                       <li className="flex items-start">
-                        <span className="mr-3">•</span>
-                        <span>
-                          Guaranteed buyback value up to 70% as per slabs
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="mr-3">•</span>
-                        <span>
-                          Claim journey is fully digital with doorstep pickup
-                        </span>
+                        <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
+                        <span>Up to 36 months coverage*</span>
                       </li>
                     </ul>
 
-                    <div className="flex flex-col sm:flex-row gap-8 justify-center">
-                      <Link href="/buy-bbg">
-                        <Button
-                          className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"
-                          data-testid="button-buy-bbg-card"
-                        >
-                          Buy BBG
-                        </Button>
-                      </Link>
-                      <Link href="/claim-bbg">
-                        <Button
-                          className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"
-                          data-testid="button-claim-bbg-card"
-                        >
-                          Claim BBG
-                        </Button>
-                      </Link>
+                    <div className="flex justify-center">
+                      <Button
+                        className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"
+                        data-testid="button-view-plans-bbg"
+                      >
+                        View Plans
+                      </Button>
                     </div>
                   </>
                 )}
@@ -330,12 +310,11 @@ export default function Home() {
                 className="p-4 sm:p-6 bg-white"
                 style={{ borderRadius: "35px" }}
               >
-                <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal mb-4 leading-relaxed">
-                  <strong>Extend+</strong> is for devices that are already in
-                  use. It gives you one free repair on service charges and
-                  doorstep auction support so that when you sell, you get a
-                  better price than local offers.
-                </p>
+                <div className="mb-4">
+                  <h4 className="text-gray-900 text-sm sm:text-base lg:text-lg font-bold mb-2">Extend+</h4>
+                  <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal mb-2 leading-relaxed">For devices already in use</p>
+                  <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal leading-relaxed">Adds protection, repairs, and better resale</p>
+                </div>
 
                 <Button
                   className="text-white px-6 py-2 rounded-full font-semibold mb-4"
@@ -353,54 +332,35 @@ export default function Home() {
 
                 {isExtendExpanded && (
                   <>
-                    <ul className="space-y-1 sm:space-y-2 mb-4 text-xs sm:text-sm lg:text-base text-gray-800">
-                      <li className="flex items-start">
-                        <span className="mr-3">•</span>
-                        <span>For mobiles and laptops already in use</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="mr-3">•</span>
-                        <span>Device age at activation: up to 3 years</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="mr-3">•</span>
-                        <span>
-                          One free device repair where service charges are
-                          waived
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="mr-3">•</span>
-                        <span>
-                          Doorstep auction help with 10 to 20% better price than
-                          competition
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="mr-3">•</span>
-                        <span>
-                          Designed to extend life and boost resale value
-                        </span>
-                      </li>
-                    </ul>
+                    <div className="mb-4">
+                      <h5 className="text-gray-900 text-xs sm:text-sm lg:text-base font-bold mb-3">What it does</h5>
+                      <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm lg:text-base text-gray-800">
+                        <li className="flex items-start">
+                          <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
+                          <span>Covers mobiles and laptops up to 3 years old</span>
+                        </li>
+                        <li className="flex items-start">
+                          <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
+                          <span>One free repair*</span>
+                        </li>
+                        <li className="flex items-start">
+                          <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
+                          <span>Doorstep auction service with 10-20 % higher resale value*</span>
+                        </li>
+                        <li className="flex items-start">
+                          <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
+                          <span>Up to 24 months of coverage*</span>
+                        </li>
+                      </ul>
+                    </div>
 
-                    <div className="flex flex-col sm:flex-row gap-8 justify-center">
-                      <Link href="/buy-extend">
-                        <Button
-                          className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"
-                          data-testid="button-buy-extend-card"
-                        >
-                          Buy Extend+
-                        </Button>
-                      </Link>
-                      <Link href="/claim-extend">
-                        <Button
-                          className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"
-                          data-testid="button-claim-extend-card"
-                        >
-                          Claim Extend+
-                        </Button>
-                      </Link>
+                    <div className="flex justify-center">
+                      <Button
+                        className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"
+                        data-testid="button-view-plans-extend"
+                      >
+                        View Plans
+                      </Button>
                     </div>
                   </>
                 )}

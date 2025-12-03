@@ -96,7 +96,7 @@ export default function Home() {
       <HomepageCarousel />
       
       {/* Smart Plans Section with Form */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: "white" }}>
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8" style={{ background: "linear-gradient(135deg, #e8f4f8 0%, #f0ede8 100%)" }}>
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left Side - Benefits */}
@@ -106,23 +106,23 @@ export default function Home() {
               </h2>
               <div className="space-y-5">
                 <div className="flex items-start">
-                  <span className="text-2xl text-green-500 mr-4 font-bold leading-none">✔</span>
+                  <span className="text-2xl mr-4 font-bold leading-none" style={{ color: "#16a34a" }}>✔</span>
                   <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>Assured resale value</span>
                 </div>
                 <div className="flex items-start">
-                  <span className="text-2xl text-green-500 mr-4 font-bold leading-none">✔</span>
+                  <span className="text-2xl mr-4 font-bold leading-none" style={{ color: "#16a34a" }}>✔</span>
                   <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>Free repair service</span>
                 </div>
                 <div className="flex items-start">
-                  <span className="text-2xl text-green-500 mr-4 font-bold leading-none">✔</span>
+                  <span className="text-2xl mr-4 font-bold leading-none" style={{ color: "#16a34a" }}>✔</span>
                   <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>Free Doorstep Pickup</span>
                 </div>
                 <div className="flex items-start">
-                  <span className="text-2xl text-green-500 mr-4 font-bold leading-none">✔</span>
+                  <span className="text-2xl mr-4 font-bold leading-none" style={{ color: "#16a34a" }}>✔</span>
                   <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>Supports all major mobile and laptop brands</span>
                 </div>
                 <div className="flex items-start">
-                  <span className="text-2xl text-green-500 mr-4 font-bold leading-none">✔</span>
+                  <span className="text-2xl mr-4 font-bold leading-none" style={{ color: "#16a34a" }}>✔</span>
                   <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>100% authorized services</span>
                 </div>
               </div>
@@ -149,7 +149,7 @@ export default function Home() {
                 {/* Device Purchase Date */}
                 <div>
                   <label className="block text-sm font-medium mb-2" style={{ color: "#1a1a1a" }}>Device Purchase Date</label>
-                  <input type="date" className="w-full px-4 py-3 border rounded" style={{ borderColor: "#d1d5db", backgroundColor: "white" }} placeholder="Select the date of purchase" data-testid="input-purchase-date" />
+                  <input type="date" className="w-full px-4 py-3 border rounded" style={{ borderColor: "#d1d5db", backgroundColor: "white", color: "#9ca3af" }} placeholder="Select the date of purchase" data-testid="input-purchase-date" />
                 </div>
                 
                 {/* Submit Button */}

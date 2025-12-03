@@ -96,47 +96,50 @@ export default function Home() {
       <HomepageCarousel />
       
       {/* Smart Plans Section with Form */}
-      <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: "#f5f1e8" }}>
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left Side - Benefits */}
             <div>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-6" style={{ color: "#303e58" }}>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-8 leading-tight" style={{ color: "#1a1a1a" }}>
                 Smart plans for stronger resale value and repair support
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div className="flex items-start">
-                  <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
-                  <span className="text-gray-900 text-sm sm:text-base">Assured resale value</span>
+                  <span className="text-2xl text-green-500 mr-4 font-bold leading-none">✔</span>
+                  <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>Assured resale value</span>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
-                  <span className="text-gray-900 text-sm sm:text-base">Free repair service</span>
+                  <span className="text-2xl text-green-500 mr-4 font-bold leading-none">✔</span>
+                  <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>Free repair service</span>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
-                  <span className="text-gray-900 text-sm sm:text-base">Free Doorstep Pickup</span>
+                  <span className="text-2xl text-green-500 mr-4 font-bold leading-none">✔</span>
+                  <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>Free Doorstep Pickup</span>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
-                  <span className="text-gray-900 text-sm sm:text-base">Supports all major mobile and laptop brands</span>
+                  <span className="text-2xl text-green-500 mr-4 font-bold leading-none">✔</span>
+                  <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>Supports all major mobile and laptop brands</span>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
-                  <span className="text-gray-900 text-sm sm:text-base">100% authorized services</span>
+                  <span className="text-2xl text-green-500 mr-4 font-bold leading-none">✔</span>
+                  <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>100% authorized services</span>
                 </div>
               </div>
             </div>
             
             {/* Right Side - Form */}
-            <div className="bg-white border-2 border-gray-200 rounded-lg p-6 sm:p-8" style={{ borderRadius: "12px" }}>
-              <h3 className="text-xl sm:text-2xl font-bold mb-6" style={{ color: "#1F4B88" }}>Find plans for your device</h3>
+            <div className="bg-white rounded-lg p-8 sm:p-10 shadow-sm" style={{ borderRadius: "12px", backgroundColor: "#f8f9fa" }}>
+              <div className="mb-8">
+                <h3 className="text-2xl font-bold" style={{ color: "#1a1a1a" }}>Find plans for your device</h3>
+                <div className="h-1 w-12 mt-2" style={{ backgroundColor: "#16a34a" }}></div>
+              </div>
               
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {/* Device Type */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">Device Type</label>
-                  <select className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" data-testid="select-device-type">
+                  <label className="block text-sm font-medium mb-2" style={{ color: "#1a1a1a" }}>Device Type</label>
+                  <select className="w-full px-4 py-3 border rounded text-gray-700" style={{ borderColor: "#d1d5db", color: "#6b7280", backgroundColor: "white" }} data-testid="select-device-type">
                     <option value="">Select device type</option>
                     <option value="mobile">Mobile</option>
                     <option value="laptop">Laptop</option>
@@ -145,13 +148,13 @@ export default function Home() {
                 
                 {/* Device Purchase Date */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">Device Purchase Date</label>
-                  <input type="date" className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Select the date of purchase" data-testid="input-purchase-date" />
+                  <label className="block text-sm font-medium mb-2" style={{ color: "#1a1a1a" }}>Device Purchase Date</label>
+                  <input type="date" className="w-full px-4 py-3 border rounded" style={{ borderColor: "#d1d5db", backgroundColor: "white" }} placeholder="Select the date of purchase" data-testid="input-purchase-date" />
                 </div>
                 
                 {/* Submit Button */}
                 <div className="pt-4">
-                  <Button className="w-full text-white font-semibold py-3 rounded-md" style={{ background: "linear-gradient(90deg, #1F4B88, #245AA3)" }} data-testid="button-find-plans">
+                  <Button className="w-full text-white font-bold py-3 rounded text-base" style={{ backgroundColor: "#0066cc" }} data-testid="button-find-plans">
                     Find Plans
                   </Button>
                 </div>

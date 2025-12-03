@@ -94,6 +94,73 @@ export default function Home() {
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Homepage Carousel */}
       <HomepageCarousel />
+      
+      {/* Smart Plans Section with Form */}
+      <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Left Side - Benefits */}
+            <div>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-6" style={{ color: "#303e58" }}>
+                Smart plans for stronger resale value and repair support
+              </h2>
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
+                  <span className="text-gray-900 text-sm sm:text-base">Assured resale value</span>
+                </div>
+                <div className="flex items-start">
+                  <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
+                  <span className="text-gray-900 text-sm sm:text-base">Free repair service</span>
+                </div>
+                <div className="flex items-start">
+                  <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
+                  <span className="text-gray-900 text-sm sm:text-base">Free Doorstep Pickup</span>
+                </div>
+                <div className="flex items-start">
+                  <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
+                  <span className="text-gray-900 text-sm sm:text-base">Supports all major mobile and laptop brands</span>
+                </div>
+                <div className="flex items-start">
+                  <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
+                  <span className="text-gray-900 text-sm sm:text-base">100% authorized services</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right Side - Form */}
+            <div className="bg-white border-2 border-gray-200 rounded-lg p-6 sm:p-8" style={{ borderRadius: "12px" }}>
+              <h3 className="text-xl sm:text-2xl font-bold mb-6" style={{ color: "#1F4B88" }}>Find plans for your device</h3>
+              
+              <div className="space-y-4">
+                {/* Device Type */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">Device Type</label>
+                  <select className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" data-testid="select-device-type">
+                    <option value="">Select device type</option>
+                    <option value="mobile">Mobile</option>
+                    <option value="laptop">Laptop</option>
+                  </select>
+                </div>
+                
+                {/* Device Purchase Date */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">Device Purchase Date</label>
+                  <input type="date" className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Select the date of purchase" data-testid="input-purchase-date" />
+                </div>
+                
+                {/* Submit Button */}
+                <div className="pt-4">
+                  <Button className="w-full text-white font-semibold py-3 rounded-md" style={{ background: "linear-gradient(90deg, #1F4B88, #245AA3)" }} data-testid="button-find-plans">
+                    Find Plans
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* BBG Guarantee Cards Section */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">

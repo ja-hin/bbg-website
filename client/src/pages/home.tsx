@@ -96,11 +96,11 @@ export default function Home() {
       <HomepageCarousel />
       
       {/* Smart Plans Section with Form */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: "#f5f1e8" }}>
+      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: "white" }}>
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left Side - Benefits */}
-            <div>
+            <div className="py-8 sm:py-12 px-6 sm:px-10" style={{ backgroundColor: "#f5f1e8", borderRadius: "12px" }}>
               <h2 className="text-3xl sm:text-4xl font-bold mb-8 leading-tight" style={{ color: "#1a1a1a" }}>
                 Smart plans for stronger resale value and repair support
               </h2>

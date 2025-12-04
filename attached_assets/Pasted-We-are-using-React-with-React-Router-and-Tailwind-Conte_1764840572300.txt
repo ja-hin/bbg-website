@@ -1,0 +1,89 @@
+We are using React (with React Router) and Tailwind.
+
+Context:
+On the homepage / landing section, there is a form titled “Find plans for your device” with:
+- Device Type (select: Mobile / Laptop)
+- Device Brand (select)
+- Device Purchase Date (dd-mm-yyyy)
+- Find Plans button
+
+On another section / page we already have 4 plan cards designed (do NOT change their visual design or copy):
+- Laptop BBG
+- Mobile BBG
+- Laptop Extend+
+- Mobile Extend+
+
+Requirement:
+When the user fills the form and clicks Find Plans:
+
+1) Navigation
+- Redirect the user to the URL `/plans`.
+- Pass all three values as part of the navigation payload:
+  - `deviceType`
+  - `deviceBrand`
+  - `devicePurchaseDate`
+- Use the existing routing setup (React Router or whatever is already in use). Prefer a pattern consistent with the current codebase:
+  - either query params, for example `/plans?type=mobile&brand=apple&date=2024-11-01`
+  - or `state` in `navigate("/plans", { state: { ... } })`.
+
+2) Date logic
+On the `/plans` page, read the values passed from the form and apply this rule based on `devicePurchaseDate`:
+
+- Compute whether the device purchase date is within 6 months from “today”.
+  - Take today’s date.
+  - Create a `cutoffDate` by subtracting 6 months from today.
+  - If `purchaseDate >= cutoffDate`, treat as “within 6 months”.
+  - Else treat as “older than 6 months”.
+
+3) Plan visibility rules
+On `/plans`, show only the plans that are applicable based on:
+- Device Type (mobile or laptop)
+- Whether the device is ≤ 6 months old or > 6 months old
+
+Exact rules:
+
+A) If device purchase date is within 6 months from today:
+   - If device type is Mobile:
+     - Show: Mobile BBG card AND Mobile Extend+ card
+     - Hide: both Laptop cards
+   - If device type is Laptop:
+     - Show: Laptop BBG card AND Laptop Extend+ card
+     - Hide: both Mobile cards
+
+B) If device purchase date is more than 6 months from today:
+   - If device type is Mobile:
+     - Show: ONLY Mobile Extend+ card
+     - Hide: Mobile BBG, Laptop BBG, Laptop Extend+
+   - If device type is Laptop:
+     - Show: ONLY Laptop Extend+ card
+     - Hide: Laptop BBG, Mobile BBG, Mobile Extend+
+
+Device Brand handling:
+- `deviceBrand` must be carried end to end as part of the state or query string.
+- Do not drop it anywhere in the flow.
+- For now the visibility rules depend only on device type and date, but the brand value should still be available on `/plans` so it can be logged, sent to APIs, or used later in the UI.
+- If there is already an API call on `/plans`, make sure `deviceBrand` is included in that payload as well.
+
+Important UI constraints:
+- Do NOT change any design, layout, typography, or colors of the cards.
+- Only control whether each of the four existing cards is rendered or hidden based on the rules above.
+- The existing background, headings, ribbons, bullet points, and prices must stay exactly the same.
+
+Implementation hints:
+- Keep the 4 cards as separate React components or JSX blocks.
+- Use simple conditions like:
+
+  - `isWithinSixMonths`
+  - `isMobile` / `isLaptop`
+
+  to decide which blocks to render.
+- Handle the case where `/plans` is opened directly without any state:
+  - Show a simple fallback like “Please go back and select your device details” instead of crashing.
+
+Output:
+- Updated code for:
+  1) The form submit handler that navigates to `/plans` and passes `deviceType`, `deviceBrand`, and `devicePurchaseDate`.
+  2) The `/plans` page/component that:
+     - reads those three values
+     - computes whether the device is within 6 months
+     - conditionally renders only the applicable plan cards while preserving the existing UI.

@@ -16,6 +16,7 @@ import AcerBBG from "@/pages/acer-bbg";
 import AcerThankYou from "@/pages/acer-thank-you";
 import AmazonBBG from "@/pages/amazon-bbg";
 import AmazonThankYou from "@/pages/amazon-thank-you";
+import Plans from "@/pages/plans";
 import Register from "@/pages/register";
 import RegistrationThankYou from "@/pages/registration-thank-you";
 import CustomerDashboard from "@/pages/customer-dashboard";
@@ -149,6 +150,7 @@ function Router() {
               <Route path="/registration-thank-you" component={RegistrationThankYou} />
               <Route path="/customer/login" component={CustomerLogin} />
               <Route path="/customer-dashboard" component={CustomerDashboard} />
+              <Route path="/plans" component={Plans} />
               <Route path="/terms-and-conditions" component={TermsAndConditions} />
               <Route component={NotFound} />
             </Switch>

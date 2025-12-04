@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useNavigate } from "wouter";
 import { Button } from "@/components/ui/button";
 import { FiCheck } from "react-icons/fi";
 import { BsCheckLg } from "react-icons/bs";
@@ -39,9 +39,12 @@ import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.png";
 import bannerImg from "@assets/BBG Banners Revised (1)_1764328416967.png";
 
 export default function Home() {
+  const navigate = useNavigate();
   const [isBBGExpanded, setIsBBGExpanded] = useState(false);
   const [isExtendExpanded, setIsExtendExpanded] = useState(false);
   const [selectedDeviceType, setSelectedDeviceType] = useState("");
+  const [selectedDeviceBrand, setSelectedDeviceBrand] = useState("");
+  const [purchaseDate, setPurchaseDate] = useState("");
 
   // Fetch theme for dynamic coloring
   const { data: theme } = useQuery({
@@ -230,6 +233,8 @@ export default function Home() {
                       }}
                       data-testid="select-device-brand"
                       disabled={!selectedDeviceType || brandsLoading}
+                      value={selectedDeviceBrand}
+                      onChange={(e) => setSelectedDeviceBrand(e.target.value)}
                     >
                       <option value="">
                         {brandsLoading ? "Loading brands…" : "Select device brand"}
@@ -261,6 +266,8 @@ export default function Home() {
                       color: "#4b5563",
                     }}
                     data-testid="input-purchase-date"
+                    value={purchaseDate}
+                    onChange={(e) => setPurchaseDate(e.target.value)}
                   />
                 </div>
 
@@ -270,6 +277,11 @@ export default function Home() {
                     className="w-full text-white font-semibold py-3 rounded-md text-base"
                     style={{ backgroundColor: "#0070f3" }}
                     data-testid="button-find-plans"
+                    onClick={() => {
+                      if (selectedDeviceType && selectedDeviceBrand && purchaseDate) {
+                        navigate(`/plans?type=${selectedDeviceType}&brand=${encodeURIComponent(selectedDeviceBrand)}&date=${purchaseDate}`);
+                      }
+                    }}
                   >View Plans</Button>
                 </div>
               </div>

@@ -270,9 +270,7 @@ export default function Home() {
                     className="w-full text-white font-semibold py-3 rounded-md text-base"
                     style={{ backgroundColor: "#0070f3" }}
                     data-testid="button-find-plans"
-                  >
-                    Find Plans
-                  </Button>
+                  >View Plans</Button>
                 </div>
               </div>
             </div>
@@ -450,10 +448,6 @@ export default function Home() {
                     <ul className="space-y-2 sm:space-y-3 mb-4 text-xs sm:text-sm lg:text-base text-gray-800">
                       <li className="flex items-start">
                         <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
-                        <span>Covers mobiles and laptops up to 6 months old</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
                         <span>Guarantees up to 70 percent resale value</span>
                       </li>
                       <li className="flex items-start">
@@ -517,10 +511,6 @@ export default function Home() {
                   <>
                     <div className="mb-4">
                       <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm lg:text-base text-gray-800">
-                        <li className="flex items-start">
-                          <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
-                          <span>Covers mobiles and laptops up to 3 years old</span>
-                        </li>
                         <li className="flex items-start">
                           <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
                           <span>One free repair*</span>

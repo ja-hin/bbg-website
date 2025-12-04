@@ -120,9 +120,7 @@ export default function Home() {
                 className="text-3xl sm:text-4xl font-bold leading-tight mb-6"
                 style={{ color: "#1a1a1a" }}
               >
-                Protection for your
-                <br /> phone, old or new, with
-                <br /> monthly/yearly plans
+                Smart plans for stronger resale value and repair support
               </h2>
 
               <div className="space-y-4 mt-4">
@@ -184,14 +182,11 @@ export default function Home() {
               <h3 className="text-lg sm:text-xl font-semibold mb-1" style={{ color: "#111827" }}>
                 Find plans for your device
               </h3>
-              <p className="text-sm mb-6" style={{ color: "#6b7280" }}>
-                Enter basic details to see available protection plans.
-              </p>
 
-              <div className="space-y-5">
+              <div className="space-y-5 space-">
                 {/* Unified form field classes */}
                 {/* Device Type */}
-                <div>
+                <div className="mt-4">
                   <label
                     className="block text-sm font-medium mb-2"
                     style={{ color: "#374151" }}
@@ -447,7 +442,6 @@ export default function Home() {
                   }}
                   onClick={() => {
                     setIsBBGExpanded(!isBBGExpanded);
-                    setIsExtendExpanded(false);
                   }}
                   data-testid="button-know-more-bbg"
                 >
@@ -516,7 +510,6 @@ export default function Home() {
                   }}
                   onClick={() => {
                     setIsExtendExpanded(!isExtendExpanded);
-                    setIsBBGExpanded(false);
                   }}
                   data-testid="button-know-more-extend"
                 >

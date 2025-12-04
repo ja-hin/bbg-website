@@ -23,7 +23,6 @@ import {
   CheckCircle,
   Loader2,
   HelpCircle,
-  ChevronDown,
 } from "lucide-react";
 import { HomepageCarousel } from "@/components/homepage-carousel";
 import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png";
@@ -79,13 +78,6 @@ export default function Home() {
     retry: 1,
     staleTime: 300000, // 5 minutes
     refetchOnMount: false,
-  });
-
-  // Fetch brands based on device type
-  const { data: brands = [], isLoading: brandsLoading } = useQuery({
-    queryKey: ["/api/brands", selectedDeviceType],
-    enabled: !!selectedDeviceType,
-    staleTime: 300000,
   });
 
   const activeMobileSlabs = Array.isArray(mobileSlabs)
@@ -189,7 +181,6 @@ export default function Home() {
               </p>
 
               <div className="space-y-5">
-                {/* Unified form field classes */}
                 {/* Device Type */}
                 <div>
                   <label
@@ -198,56 +189,19 @@ export default function Home() {
                   >
                     Device Type
                   </label>
-                  <div className="relative">
-                    <select
-                      className="w-full px-4 py-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 appearance-none pr-10"
-                      style={{
-                        borderColor: "#d1d5db",
-                        color: "#4b5563",
-                        backgroundColor: "#ffffff",
-                      }}
-                      data-testid="select-device-type"
-                      value={selectedDeviceType}
-                      onChange={(e) => setSelectedDeviceType(e.target.value)}
-                    >
-                      <option value="">Select device type</option>
-                      <option value="mobile">Mobile</option>
-                      <option value="laptop">Laptop</option>
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                  </div>
-                </div>
-
-                {/* Device Brand */}
-                <div>
-                  <label
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: "#374151" }}
+                  <select
+                    className="w-full px-4 py-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                    style={{
+                      borderColor: "#d1d5db",
+                      color: "#4b5563",
+                      backgroundColor: "#ffffff",
+                    }}
+                    data-testid="select-device-type"
                   >
-                    Device Brand
-                  </label>
-                  <div className="relative">
-                    <select
-                      className="w-full px-4 py-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 appearance-none pr-10 disabled:bg-gray-50 disabled:cursor-not-allowed"
-                      style={{
-                        borderColor: "#d1d5db",
-                        color: "#4b5563",
-                        backgroundColor: "#ffffff",
-                      }}
-                      data-testid="select-device-brand"
-                      disabled={!selectedDeviceType || brandsLoading}
-                    >
-                      <option value="">
-                        {brandsLoading ? "Loading brands…" : "Select device brand"}
-                      </option>
-                      {brands?.map((brand: any) => (
-                        <option key={brand.id} value={brand.name}>
-                          {brand.name}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                  </div>
+                    <option value="">Select device type</option>
+                    <option value="mobile">Mobile</option>
+                    <option value="laptop">Laptop</option>
+                  </select>
                 </div>
 
                 {/* Device Purchase Date */}

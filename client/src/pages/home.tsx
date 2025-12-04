@@ -106,7 +106,6 @@ export default function Home() {
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Homepage Carousel */}
       <HomepageCarousel />
-      
       {/* Smart Plans Section with Form */}
       <section
         className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8"
@@ -280,8 +279,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      
       {/* BBG Guarantee Cards Section */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
@@ -432,7 +429,7 @@ export default function Home() {
                 <div className="mb-4">
                   <h4 className="sm:text-base lg:text-lg font-bold mb-2 text-[24px]" style={{ color: "#1F4B88" }}>BuyBack Guarantee</h4>
                   <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal mb-2 leading-relaxed">For new mobiles and laptops</p>
-                  <p className="text-gray-900 text-xs sm:text-sm lg:text-base font-normal leading-relaxed">Locks your future resale value from day one</p>
+                  <p className="text-gray-900 text-xs sm:text-sm lg:text-base leading-relaxed font-medium">Locks your future resale value from day one</p>
                 </div>
 
                 <Button

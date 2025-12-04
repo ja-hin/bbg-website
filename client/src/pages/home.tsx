@@ -516,7 +516,6 @@ export default function Home() {
                 {isExtendExpanded && (
                   <>
                     <div className="mb-4">
-                      <h5 className="text-gray-900 text-xs sm:text-sm lg:text-base font-bold mb-3">What it does</h5>
                       <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm lg:text-base text-gray-800">
                         <li className="flex items-start">
                           <CheckCircle className="mr-3 flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />

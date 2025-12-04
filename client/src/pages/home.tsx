@@ -89,6 +89,11 @@ export default function Home() {
   // Fetch brands based on device type
   const { data: brands = [], isLoading: brandsLoading } = useQuery({
     queryKey: ["/api/brands", selectedDeviceType],
+    queryFn: async () => {
+      const response = await fetch(`/api/brands?deviceType=${selectedDeviceType}`);
+      if (!response.ok) throw new Error("Failed to fetch brands");
+      return response.json();
+    },
     enabled: !!selectedDeviceType,
     staleTime: 300000,
   });

@@ -184,11 +184,7 @@ export default function Plans() {
                     <ul className="space-y-2 sm:space-y-3 text-white">
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">Up to 70% payout value</span>
-                      </li>
-                      <li className="flex items-center">
-                        <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">Coverage for up to 18 months</span>
+                        <span className="text-xs sm:text-sm">70% payout value</span>
                       </li>
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
@@ -196,7 +192,11 @@ export default function Plans() {
                       </li>
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">Instant payouts at the time of device handover</span>
+                        <span className="text-xs sm:text-sm">Instant payouts</span>
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">Validity: 18 months</span>
                       </li>
                     </ul>
                   </div>
@@ -264,17 +264,18 @@ export default function Plans() {
                     <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
                       {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
                     </div>
+                    <p className="text-white/80 text-xs sm:text-sm">(inclusive of GST)</p>
                   </div>
 
                   <div className="p-4 sm:p-6 pt-8 sm:pt-14 mt-4 sm:mt-4" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                     <ul className="space-y-2 sm:space-y-3 text-white">
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">Free Auction Service → 10-20% higher resale than market</span>
+                        <span className="text-xs sm:text-sm">1 Free Device Repair*</span>
                       </li>
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">1 Free Device Repair (service charges waived, parts chargeable)</span>
+                        <span className="text-xs sm:text-sm">Auction Service → 10-20% higher resale than market*</span>
                       </li>
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
@@ -288,7 +289,7 @@ export default function Plans() {
                   <div className="relative sm:block">
                     <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
                       <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
-                        (inclusive of GST)
+                        Protection, repairs, and<br />better resale
                       </p>
                     </div>
                     <div className="absolute -bottom-[15px] sm:-bottom-[20px] left-0 w-0 h-0 border-t-[15px] sm:border-t-[20px] border-t-blue-300 border-l-[18px] sm:border-l-[24px] border-l-transparent"></div>

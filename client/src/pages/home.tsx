@@ -1,5 +1,8 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
+import { FiCheck } from "react-icons/fi";
+import { BsCheckLg } from "react-icons/bs";
+
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Accordion,
@@ -37,6 +40,7 @@ import bannerImg from "@assets/BBG Banners Revised (1)_1764328416967.png";
 export default function Home() {
   const [isBBGExpanded, setIsBBGExpanded] = useState(false);
   const [isExtendExpanded, setIsExtendExpanded] = useState(false);
+  const [selectedDeviceType, setSelectedDeviceType] = useState("");
 
   // Fetch theme for dynamic coloring
   const { data: theme } = useQuery({
@@ -76,6 +80,13 @@ export default function Home() {
     refetchOnMount: false,
   });
 
+  // Fetch brands based on device type
+  const { data: brands = [], isLoading: brandsLoading } = useQuery({
+    queryKey: ["/api/brands", selectedDeviceType],
+    enabled: !!selectedDeviceType,
+    staleTime: 300000,
+  });
+
   const activeMobileSlabs = Array.isArray(mobileSlabs)
     ? mobileSlabs.filter((slab: any) => slab.isActive)
     : [];
@@ -96,65 +107,168 @@ export default function Home() {
       <HomepageCarousel />
       
       {/* Smart Plans Section with Form */}
-      <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8" style={{ background: "linear-gradient(135deg, #e8f4f8 0%, #f0ede8 100%)" }}>
+      <section
+        className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8"
+        style={{ background: "linear-gradient(135deg, #e8f4f8 0%, #f0f7ff 50%, #f7f5ef 100%)" }}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Left Side - Benefits */}
-            <div className="py-8 sm:py-12 px-6 sm:px-10" style={{ backgroundColor: "#f5f1e8", borderRadius: "12px" }}>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-8 leading-tight" style={{ color: "#1a1a1a" }}>
-                Smart plans for stronger resale value and repair support
+            {/* Left Side - Text + Benefits */}
+            <div>
+              <h2
+                className="text-3xl sm:text-4xl font-bold leading-tight mb-6"
+                style={{ color: "#1a1a1a" }}
+              >
+                Protection for your
+                <br /> phone, old or new, with
+                <br /> monthly/yearly plans
               </h2>
-              <div className="space-y-5">
+
+              <div className="space-y-4 mt-4">
                 <div className="flex items-start">
-                  <span className="text-2xl mr-4 font-bold leading-none" style={{ color: "#16a34a" }}>✔</span>
-                  <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>Assured resale value</span>
+                  <BsCheckLg
+                    className="text-3xl mr-3 mt-1 font-bold"
+                    style={{ color: "#16a34a" }}
+                  />
+                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
+                  Assured resale value                  </p>
+                </div>
+
+                <div className="flex items-start">
+                  <BsCheckLg
+                    className="text-3xl mr-3 mt-1 font-bold"
+                    style={{ color: "#16a34a" }}
+                  />
+                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
+                    Free repair service
+                  </p>
+                </div>
+
+                <div className="flex items-start">
+                  <BsCheckLg
+                    className="text-3xl mr-3 mt-1 font-bold"
+                    style={{ color: "#16a34a" }}
+                  />
+
+                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
+                    Free Doorstep Pickup 
+                  </p>
                 </div>
                 <div className="flex items-start">
-                  <span className="text-2xl mr-4 font-bold leading-none" style={{ color: "#16a34a" }}>✔</span>
-                  <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>Free repair service</span>
+                  <BsCheckLg
+                    className="text-3xl mr-3 mt-1 font-bold"
+                    style={{ color: "#16a34a" }}
+                  />
+                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
+                    Supports all major mobile and laptop brands
+                  </p>
                 </div>
                 <div className="flex items-start">
-                  <span className="text-2xl mr-4 font-bold leading-none" style={{ color: "#16a34a" }}>✔</span>
-                  <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>Free Doorstep Pickup</span>
-                </div>
-                <div className="flex items-start">
-                  <span className="text-2xl mr-4 font-bold leading-none" style={{ color: "#16a34a" }}>✔</span>
-                  <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>Supports all major mobile and laptop brands</span>
-                </div>
-                <div className="flex items-start">
-                  <span className="text-2xl mr-4 font-bold leading-none" style={{ color: "#16a34a" }}>✔</span>
-                  <span className="text-gray-700 text-base sm:text-lg" style={{ color: "#667085" }}>100% authorized services</span>
+                  <BsCheckLg
+                    className="text-3xl mr-3 mt-1 font-bold"
+                    style={{ color: "#16a34a" }}
+                  />
+                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
+                    100% authorized services
+                  </p>
                 </div>
               </div>
             </div>
-            
-            {/* Right Side - Form */}
-            <div className="bg-white rounded-lg p-8 sm:p-10 shadow-sm" style={{ borderRadius: "12px", backgroundColor: "#f8f9fa" }}>
-              <div className="mb-8">
-                <h3 className="text-2xl font-bold" style={{ color: "#1a1a1a" }}>Find plans for your device</h3>
-                <div className="h-1 w-12 mt-2" style={{ backgroundColor: "#16a34a" }}></div>
-              </div>
-              
-              <div className="space-y-6">
+
+            {/* Right Side - Form Card */}
+            <div
+              className="bg-white rounded-xl p-6 sm:p-8 shadow-lg border"
+              style={{ borderColor: "#e5e7eb" }}
+            >
+              <h3 className="text-lg sm:text-xl font-semibold mb-1" style={{ color: "#111827" }}>
+                Find plans for your device
+              </h3>
+              <p className="text-sm mb-6" style={{ color: "#6b7280" }}>
+                Enter basic details to see available protection plans.
+              </p>
+
+              <div className="space-y-5">
                 {/* Device Type */}
                 <div>
-                  <label className="block text-sm font-medium mb-2" style={{ color: "#1a1a1a" }}>Device Type</label>
-                  <select className="w-full px-4 py-3 border rounded text-gray-700" style={{ borderColor: "#d1d5db", color: "#6b7280", backgroundColor: "white" }} data-testid="select-device-type">
+                  <label
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: "#374151" }}
+                  >
+                    Device Type
+                  </label>
+                  <select
+                    className="w-full px-4 py-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                    style={{
+                      borderColor: "#d1d5db",
+                      color: "#4b5563",
+                      backgroundColor: "#ffffff",
+                    }}
+                    data-testid="select-device-type"
+                    value={selectedDeviceType}
+                    onChange={(e) => setSelectedDeviceType(e.target.value)}
+                  >
                     <option value="">Select device type</option>
                     <option value="mobile">Mobile</option>
                     <option value="laptop">Laptop</option>
                   </select>
                 </div>
-                
+
+                {/* Device Brand */}
+                <div>
+                  <label
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: "#374151" }}
+                  >
+                    Device Brand
+                  </label>
+                  <select
+                    className="w-full px-4 py-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      borderColor: "#d1d5db",
+                      color: "#4b5563",
+                      backgroundColor: "#ffffff",
+                    }}
+                    data-testid="select-device-brand"
+                    disabled={!selectedDeviceType || brandsLoading}
+                  >
+                    <option value="">
+                      {brandsLoading ? "Loading brands…" : "Select device brand"}
+                    </option>
+                    {brands?.map((brand: any) => (
+                      <option key={brand.id} value={brand.name}>
+                        {brand.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 {/* Device Purchase Date */}
                 <div>
-                  <label className="block text-sm font-medium mb-2" style={{ color: "#1a1a1a" }}>Device Purchase Date</label>
-                  <input type="date" className="w-full px-4 py-3 border rounded" style={{ borderColor: "#d1d5db", backgroundColor: "white", color: "#9ca3af" }} placeholder="Select the date of purchase" data-testid="input-purchase-date" />
+                  <label
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: "#374151" }}
+                  >
+                    Device Purchase Date
+                  </label>
+                  <input
+                    type="date"
+                    className="w-full px-4 py-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                    style={{
+                      borderColor: "#d1d5db",
+                      backgroundColor: "#ffffff",
+                      color: "#4b5563",
+                    }}
+                    data-testid="input-purchase-date"
+                  />
                 </div>
-                
+
                 {/* Submit Button */}
-                <div className="pt-4">
-                  <Button className="w-full text-white font-bold py-3 rounded text-base" style={{ backgroundColor: "#0066cc" }} data-testid="button-find-plans">
+                <div className="pt-2">
+                  <Button
+                    className="w-full text-white font-semibold py-3 rounded-md text-base"
+                    style={{ backgroundColor: "#0070f3" }}
+                    data-testid="button-find-plans"
+                  >
                     Find Plans
                   </Button>
                 </div>
@@ -163,6 +277,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
       
       {/* BBG Guarantee Cards Section */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">

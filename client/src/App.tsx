@@ -53,7 +53,6 @@ import AdminTransactionHistory from "@/pages/admin/admin-transaction-history";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import TermsAndConditions from "@/pages/terms-and-conditions";
-import BuyBBG from "@/pages/buy-bbg";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { ScrollToTopButton } from "@/components/scroll-to-top-button";
@@ -137,7 +136,7 @@ function Router() {
             <Switch>
               <Route path="/" component={Home} />
               <Route path="/referral-partner-registration" component={DistributorRegistration} />
-              <Route path="/buy-bbg" component={BuyBBG} />
+              <Route path="/buy-bbg" component={CustomerRegistration} />
               <Route path="/claim-bbg" component={ClaimBBG} />
               <Route path="/thank-you" component={ThankYou} />
               <Route path="/acer" component={AcerBBG} />

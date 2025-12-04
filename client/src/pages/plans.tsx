@@ -121,11 +121,11 @@ export default function Plans() {
           className="absolute inset-0 w-full h-full object-fill z-0"
         />
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className={`grid grid-cols-1 ${visibleCards > 1 ? 'lg:grid-cols-2' : ''} gap-8 lg:gap-12 justify-items-center`}>
+          <div className={`grid grid-cols-1 ${visibleCards > 1 ? 'lg:grid-cols-2' : ''} gap-8 lg:gap-12 justify-items-center items-stretch`}>
 
             {showLaptopBBG && (
-              <div className="relative w-full max-w-xs" data-testid="card-laptop-bbg">
-                <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+              <div className="relative w-full max-w-xs h-full flex flex-col" data-testid="card-laptop-bbg">
+                <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
                   <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                     <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Laptop BBG</h3>
                     <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
@@ -170,8 +170,8 @@ export default function Plans() {
             )}
 
             {showMobileBBG && (
-              <div className="relative w-full max-w-xs" data-testid="card-mobile-bbg">
-                <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+              <div className="relative w-full max-w-xs h-full flex flex-col" data-testid="card-mobile-bbg">
+                <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
                   <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                     <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Mobile BBG</h3>
                     <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
@@ -216,8 +216,8 @@ export default function Plans() {
             )}
 
             {showLaptopExtend && (
-              <div className="relative w-full max-w-xs" data-testid="card-laptop-extend">
-                <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+              <div className="relative w-full max-w-xs h-full flex flex-col" data-testid="card-laptop-extend">
+                <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
                   <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                     <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Laptop Extend+</h3>
                     <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
@@ -257,8 +257,8 @@ export default function Plans() {
             )}
 
             {showMobileExtend && (
-              <div className="relative w-full max-w-xs" data-testid="card-mobile-extend">
-                <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+              <div className="relative w-full max-w-xs h-full flex flex-col" data-testid="card-mobile-extend">
+                <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
                   <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                     <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Mobile Extend+</h3>
                     <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">

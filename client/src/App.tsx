@@ -53,6 +53,7 @@ import AdminTransactionHistory from "@/pages/admin/admin-transaction-history";
 import DistributorLogin from "@/pages/distributor-login";
 import DistributorDashboard from "@/pages/distributor-dashboard";
 import TermsAndConditions from "@/pages/terms-and-conditions";
+import Plans from "@/pages/plans";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { ScrollToTopButton } from "@/components/scroll-to-top-button";
@@ -135,6 +136,7 @@ function Router() {
           <main className="flex-1">
             <Switch>
               <Route path="/" component={Home} />
+              <Route path="/plans" component={Plans} />
               <Route path="/referral-partner-registration" component={DistributorRegistration} />
               <Route path="/buy-bbg" component={CustomerRegistration} />
               <Route path="/claim-bbg" component={ClaimBBG} />

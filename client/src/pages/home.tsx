@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { FiCheck } from "react-icons/fi";
 import { BsCheckLg } from "react-icons/bs";
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/accordion";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import {
   Smartphone,
   Laptop,
@@ -42,6 +43,10 @@ export default function Home() {
   const [isBBGExpanded, setIsBBGExpanded] = useState(false);
   const [isExtendExpanded, setIsExtendExpanded] = useState(false);
   const [selectedDeviceType, setSelectedDeviceType] = useState("");
+  const [selectedDeviceBrand, setSelectedDeviceBrand] = useState("");
+  const [devicePurchaseDate, setDevicePurchaseDate] = useState("");
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   // Fetch theme for dynamic coloring
   const { data: theme } = useQuery({
@@ -101,6 +106,45 @@ export default function Home() {
     allSlabs.length > 0
       ? Math.max(...allSlabs.map((slab: any) => slab.percentage))
       : 70;
+
+  const handleFindPlans = () => {
+    if (!selectedDeviceType) {
+      toast({
+        title: "Please select device type",
+        description: "Device type is required to find plans",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (!selectedDeviceBrand) {
+      toast({
+        title: "Please select device brand",
+        description: "Device brand is required to find plans",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (!devicePurchaseDate) {
+      toast({
+        title: "Please select purchase date",
+        description: "Device purchase date is required to find plans",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const params = new URLSearchParams({
+      type: selectedDeviceType,
+      brand: selectedDeviceBrand,
+      date: devicePurchaseDate,
+    });
+    setLocation(`/plans?${params.toString()}`);
+  };
+
+  const handleDeviceTypeChange = (value: string) => {
+    setSelectedDeviceType(value);
+    setSelectedDeviceBrand("");
+  };
 
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
@@ -202,7 +246,7 @@ export default function Home() {
                       }}
                       data-testid="select-device-type"
                       value={selectedDeviceType}
-                      onChange={(e) => setSelectedDeviceType(e.target.value)}
+                      onChange={(e) => handleDeviceTypeChange(e.target.value)}
                     >
                       <option value="">Select device type</option>
                       <option value="mobile">Mobile</option>
@@ -230,11 +274,13 @@ export default function Home() {
                       }}
                       data-testid="select-device-brand"
                       disabled={!selectedDeviceType || brandsLoading}
+                      value={selectedDeviceBrand}
+                      onChange={(e) => setSelectedDeviceBrand(e.target.value)}
                     >
                       <option value="">
                         {brandsLoading ? "Loading brands…" : "Select device brand"}
                       </option>
-                      {brands?.map((brand: any) => (
+                      {Array.isArray(brands) && brands.map((brand: any) => (
                         <option key={brand.id} value={brand.name}>
                           {brand.name}
                         </option>
@@ -261,6 +307,8 @@ export default function Home() {
                       color: "#4b5563",
                     }}
                     data-testid="input-purchase-date"
+                    value={devicePurchaseDate}
+                    onChange={(e) => setDevicePurchaseDate(e.target.value)}
                   />
                 </div>
 
@@ -270,6 +318,7 @@ export default function Home() {
                     className="w-full text-white font-semibold py-3 rounded-md text-base"
                     style={{ backgroundColor: "#0070f3" }}
                     data-testid="button-find-plans"
+                    onClick={handleFindPlans}
                   >View Plans</Button>
                 </div>
               </div>

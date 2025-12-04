@@ -126,7 +126,7 @@ export default function Plans() {
             {showLaptopBBG && (
               <div className="relative w-full max-w-xs h-full flex flex-col" data-testid="card-laptop-bbg">
                 <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
-                  <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                  <div className="p-4 sm:p-6 pb-3 sm:pb-4 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                     <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Laptop BBG</h3>
                     <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
                       {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
@@ -134,7 +134,7 @@ export default function Plans() {
                     <p className="text-white/80 text-xs sm:text-sm">(inclusive of GST)</p>
                   </div>
 
-                  <div className="p-4 sm:p-6 pt-8 sm:pt-14 mt-4 sm:mt-4" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <div className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                     <ul className="space-y-2 sm:space-y-3 text-white">
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
@@ -154,6 +154,10 @@ export default function Plans() {
                       </li>
                     </ul>
                   </div>
+
+                  <div className="p-4 sm:p-6 pt-4 sm:pt-6">
+                    <Button className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold">Buy Now</Button>
+                  </div>
                 </div>
 
                 <div className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]" style={{left: '-1.5rem'}}>
@@ -172,7 +176,7 @@ export default function Plans() {
             {showMobileBBG && (
               <div className="relative w-full max-w-xs h-full flex flex-col" data-testid="card-mobile-bbg">
                 <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
-                  <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                  <div className="p-4 sm:p-6 pb-3 sm:pb-4 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                     <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Mobile BBG</h3>
                     <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
                       {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
@@ -180,7 +184,7 @@ export default function Plans() {
                     <p className="text-white/80 text-xs sm:text-sm">(inclusive of GST)</p>
                   </div>
 
-                  <div className="p-4 sm:p-6 pt-8 sm:pt-14 mt-4 sm:mt-4" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <div className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                     <ul className="space-y-2 sm:space-y-3 text-white">
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
@@ -200,6 +204,10 @@ export default function Plans() {
                       </li>
                     </ul>
                   </div>
+
+                  <div className="p-4 sm:p-6 pt-4 sm:pt-6">
+                    <Button className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold">Buy Now</Button>
+                  </div>
                 </div>
 
                 <div className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]" style={{left: '-1.5rem'}}>
@@ -218,14 +226,15 @@ export default function Plans() {
             {showLaptopExtend && (
               <div className="relative w-full max-w-xs h-full flex flex-col" data-testid="card-laptop-extend">
                 <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
-                  <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                  <div className="p-4 sm:p-6 pb-3 sm:pb-4 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                     <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Laptop Extend+</h3>
                     <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
                       {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
                     </div>
+                    <p className="text-white/80 text-xs sm:text-sm">(inclusive of GST)</p>
                   </div>
 
-                  <div className="p-4 sm:p-6 pt-8 sm:pt-14 mt-4 sm:mt-4" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <div className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                     <ul className="space-y-2 sm:space-y-3 text-white">
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
@@ -240,6 +249,10 @@ export default function Plans() {
                         <span className="text-xs sm:text-sm">Validity: 24 months</span>
                       </li>
                     </ul>
+                  </div>
+
+                  <div className="p-4 sm:p-6 pt-4 sm:pt-6">
+                    <Button className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold">Buy Now</Button>
                   </div>
                 </div>
 
@@ -259,7 +272,7 @@ export default function Plans() {
             {showMobileExtend && (
               <div className="relative w-full max-w-xs h-full flex flex-col" data-testid="card-mobile-extend">
                 <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
-                  <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
+                  <div className="p-4 sm:p-6 pb-3 sm:pb-4 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                     <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Mobile Extend+</h3>
                     <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
                       {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
@@ -267,7 +280,7 @@ export default function Plans() {
                     <p className="text-white/80 text-xs sm:text-sm">(inclusive of GST)</p>
                   </div>
 
-                  <div className="p-4 sm:p-6 pt-8 sm:pt-14 mt-4 sm:mt-4" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
+                  <div className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow" style={{textShadow: '0 1px 3px rgba(0,0,0,0.3)'}}>
                     <ul className="space-y-2 sm:space-y-3 text-white">
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
@@ -282,6 +295,10 @@ export default function Plans() {
                         <span className="text-xs sm:text-sm">Validity: 24 months</span>
                       </li>
                     </ul>
+                  </div>
+
+                  <div className="p-4 sm:p-6 pt-4 sm:pt-6">
+                    <Button className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold">Buy Now</Button>
                   </div>
                 </div>
 

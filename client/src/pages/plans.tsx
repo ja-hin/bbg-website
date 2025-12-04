@@ -1,16 +1,10 @@
-import { useState } from "react";
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, ArrowLeft, X } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
-import popupImage1 from "@assets/Screenshot_2025-12-04_at_6.30.14_PM_1764853219227.png";
-import popupImage2 from "@assets/Screenshot_2025-12-04_at_6.30.52_PM_1764853256199.png";
 
 export default function Plans() {
-  const [showPopup, setShowPopup] = useState(false);
-  const [, setLocation] = useLocation();
-  
   const searchParams = new URLSearchParams(window.location.search);
   const deviceType = searchParams.get("type");
   const deviceBrand = searchParams.get("brand");
@@ -79,15 +73,6 @@ export default function Plans() {
     showLaptopExtend,
     showMobileExtend,
   ].filter(Boolean).length;
-
-  const handleBuyNow = () => {
-    setShowPopup(true);
-  };
-
-  const handleProceed = () => {
-    setShowPopup(false);
-    setLocation("/buy-bbg");
-  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -184,7 +169,7 @@ export default function Plans() {
                   </div>
 
                   <div
-                    className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow mt-10 sm:mt-12"
+                    className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow"
                     style={{ textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
                   >
                     <ul className="space-y-2 sm:space-y-3 text-white">
@@ -216,11 +201,7 @@ export default function Plans() {
                   </div>
 
                   <div className="p-4 sm:p-6 pt-4 sm:pt-6">
-                    <Button 
-                      onClick={handleBuyNow}
-                      className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold"
-                      data-testid="button-buy-laptop-bbg"
-                    >
+                    <Button className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold">
                       Buy Now
                     </Button>
                   </div>
@@ -300,11 +281,7 @@ export default function Plans() {
 
 
                   <div className="p-4 sm:p-6 pt-4 sm:pt-6">
-                    <Button 
-                      onClick={handleBuyNow}
-                      className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold"
-                      data-testid="button-buy-mobile-bbg"
-                    >
+                    <Button className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold">
                       Buy Now
                     </Button>
                   </div>
@@ -354,7 +331,7 @@ export default function Plans() {
                   </div>
 
                   <div
-                    className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow mt-10 sm:mt-12"
+                    className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow"
                     style={{ textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
                   >
                     <ul className="space-y-2 sm:space-y-3 text-white">
@@ -481,56 +458,6 @@ export default function Plans() {
           </div>
         </div>
       </section>
-
-      {/* Popup Modal */}
-      {showPopup && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
-            <button
-              onClick={() => setShowPopup(false)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors z-10"
-              data-testid="button-close-popup"
-            >
-              <X className="w-6 h-6 text-gray-600" />
-            </button>
-            
-            <div className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-                Complete Your Purchase
-              </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="rounded-lg overflow-hidden shadow-md">
-                  <img 
-                    src={popupImage1} 
-                    alt="Buy BuyBack Guarantee" 
-                    className="w-full h-auto object-contain"
-                    data-testid="img-popup-1"
-                  />
-                </div>
-                <div className="rounded-lg overflow-hidden shadow-md">
-                  <img 
-                    src={popupImage2} 
-                    alt="Find Plans for Your Device" 
-                    className="w-full h-auto object-contain"
-                    data-testid="img-popup-2"
-                  />
-                </div>
-              </div>
-              
-              <div className="flex justify-center">
-                <Button 
-                  onClick={handleProceed}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold"
-                  data-testid="button-proceed-buy"
-                >
-                  Proceed to Buy
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

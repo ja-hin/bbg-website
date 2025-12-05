@@ -4,16 +4,18 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useTheme } from "@/hooks/useTheme";
+import { BuyModal } from "./buy-modal";
 import bbgLogo from "@assets/BBG LOGO (1) (1)_1758964257135.png";
 
 export default function Header() {
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const { theme } = useTheme();
 
   const navigationItems = [
     { href: "/", label: "Home" },
-    { href: "/buy-bbg", label: "Buy" },
+    { href: "#", label: "Buy", onClick: () => setIsBuyModalOpen(true) },
     { href: "/register", label: "Register" },
     { href: "/claim-bbg", label: "Claim" },
     { href: "/referral-partner-registration", label: "Join Referral Program" },
@@ -29,6 +31,29 @@ export default function Header() {
     <>
       {navigationItems.map((item) => {
         const isActive = isActiveLink(item.href);
+
+        if (item.onClick) {
+          return (
+            <button
+              key={item.label}
+              onClick={(e) => {
+                e.preventDefault();
+                onItemClick();
+                item.onClick();
+              }}
+              className={`
+                px-4 py-2 text-sm transition-colors rounded-full cursor-pointer
+                ${
+                  mobile
+                    ? "block text-base text-gray-800 hover:bg-gray-100 font-normal text-left w-full"
+                    : "bg-white text-black hover:bg-white/90 font-normal"
+                }
+              `}
+            >
+              {item.label}
+            </button>
+          );
+        }
 
         return (
           <Link
@@ -145,6 +170,7 @@ export default function Header() {
           </nav>
         </div>
       </div>
+      <BuyModal isOpen={isBuyModalOpen} onClose={() => setIsBuyModalOpen(false)} />
     </header>
   );
 }

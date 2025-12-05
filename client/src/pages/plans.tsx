@@ -189,7 +189,7 @@ export default function Plans() {
                   </div>
 
                   <div
-                    className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow"
+                    className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow mt-10 sm:mt-12"
                     style={{ textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
                   >
                     <ul className="space-y-2 sm:space-y-3 text-white">
@@ -351,7 +351,7 @@ export default function Plans() {
                   </div>
 
                   <div
-                    className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow"
+                    className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow mt-10 sm:mt-12"
                     style={{ textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
                   >
                     <ul className="space-y-2 sm:space-y-3 text-white">

@@ -37,6 +37,7 @@ import AdminAcerImei from "@/pages/admin-acer-imei";
 import AdminAmazonLicense from "@/pages/admin-amazon-license";
 import AdminClaimSlabs from "@/pages/admin-claim-slabs";
 import AdminClaimValueSlabs from "@/pages/admin-claim-value-slabs";
+import AdminPlans from "@/pages/admin-plans";
 
 import AdminSmtpSettings from "@/pages/admin-smtp-settings";
 import AdminWhatsAppSettings from "@/pages/admin-whatsapp-settings";
@@ -111,6 +112,7 @@ function Router() {
       </Route>
       <Route path="/admin/claim-slabs" component={AdminClaimSlabs} />
       <Route path="/admin/claim-value-slabs" component={AdminClaimValueSlabs} />
+      <Route path="/admin/plans" component={AdminPlans} />
 
       <Route path="/admin/smtp-settings" component={AdminSmtpSettings} />
       <Route path="/admin/whatsapp-settings" component={AdminWhatsAppSettings} />

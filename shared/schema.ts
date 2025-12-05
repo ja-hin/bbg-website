@@ -541,3 +541,28 @@ export type BenefitTypeValidation = z.infer<typeof benefitTypeSchema>;
 export type AuctionRepairBenefitsValidation = z.infer<typeof auctionRepairBenefitsSchema>;
 export type ClaimSlabsBenefitsValidation = z.infer<typeof claimSlabsBenefitsSchema>;
 export type BenefitsStructureValidation = z.infer<typeof benefitsStructureSchema>;
+
+// Plans table for managing BBG and Extend+ plans
+export const plans = pgTable("plans", {
+  id: serial("id").primaryKey(),
+  planName: text("plan_name").notNull().unique(),
+  planPrice: decimal("plan_price", { precision: 10, scale: 2 }).notNull(),
+  deviceType: text("device_type").notNull(), // 'mobile' or 'laptop'
+  planType: text("plan_type").notNull(), // 'bbg' or 'extend_plus'
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertPlanSchema = createInsertSchema(plans).omit({
+  id: true,
+  isActive: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  planPrice: z.string().or(z.number()).transform(val => String(val)),
+});
+
+// Plans types
+export type Plan = typeof plans.$inferSelect;
+export type InsertPlan = z.infer<typeof insertPlanSchema>;

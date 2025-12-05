@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, ShieldCheck, Truck, Wallet, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
 
@@ -76,9 +76,9 @@ export default function Plans() {
 
   return (
     <div className="min-h-screen bg-white">
-      <section className="py-8 px-4 sm:px-6 lg:px-8">
+      <section className="py-4 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-8">
+          <div className="mb-2">
             <Link href="/">
               <Button
                 variant="ghost"
@@ -91,9 +91,9 @@ export default function Plans() {
             </Link>
           </div>
 
-          <div className="text-center mb-8">
+          <div className="text-center mb-4">
             <h1
-              className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4"
+              className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3"
               data-testid="heading-available-plans"
             >
               Available Plans for Your Device
@@ -122,7 +122,7 @@ export default function Plans() {
             </div>
             {!isWithinSixMonths && (
               <p
-                className="mt-4 text-sm text-amber-600"
+                className="mt-3 text-sm text-amber-600"
                 data-testid="text-older-device-note"
               >
                 Your device is more than 6 months old. Only Extend+ plans are
@@ -130,10 +130,30 @@ export default function Plans() {
               </p>
             )}
           </div>
+
+          {/* Benefit Strip */}
+          <div className="mt-4 mb-6 flex flex-wrap items-center justify-center gap-6 sm:gap-10">
+            <div className="flex flex-col items-center text-center w-20 sm:w-24">
+              <ShieldCheck className="w-10 h-10 sm:w-12 sm:h-12 text-[#254696] mb-2" />
+              <span className="text-xs sm:text-sm text-gray-700 font-medium">No Hidden Charges</span>
+            </div>
+            <div className="flex flex-col items-center text-center w-20 sm:w-24">
+              <Truck className="w-10 h-10 sm:w-12 sm:h-12 text-[#254696] mb-2" />
+              <span className="text-xs sm:text-sm text-gray-700 font-medium">Free Doorstep Pickup</span>
+            </div>
+            <div className="flex flex-col items-center text-center w-20 sm:w-24">
+              <Wallet className="w-10 h-10 sm:w-12 sm:h-12 text-[#254696] mb-2" />
+              <span className="text-xs sm:text-sm text-gray-700 font-medium">Instant Payouts</span>
+            </div>
+            <div className="flex flex-col items-center text-center w-20 sm:w-24">
+              <Smartphone className="w-10 h-10 sm:w-12 sm:h-12 text-[#254696] mb-2" />
+              <span className="text-xs sm:text-sm text-gray-700 font-medium">Completely Digital</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="py-6 sm:py-8 lg:py-10 relative overflow-hidden">
+      <section className="py-4 sm:py-6 lg:py-8 relative overflow-hidden">
         <img
           src={pricingCardBackground}
           alt="Background pattern"

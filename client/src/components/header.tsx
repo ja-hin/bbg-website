@@ -38,8 +38,14 @@ export default function Header() {
               key={item.label}
               onClick={(e) => {
                 e.preventDefault();
-                onItemClick();
-                item.onClick();
+                if (mobile) {
+                  onItemClick();
+                  setTimeout(() => {
+                    item.onClick();
+                  }, 150);
+                } else {
+                  item.onClick();
+                }
               }}
               className={`
                 px-4 py-2 text-sm transition-colors rounded-full cursor-pointer

@@ -10412,6 +10412,132 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // ============= ADMIN PLANS MANAGEMENT =============
+  
+  // Get all plans
+  app.get('/api/admin/plans', isAdminAuthenticated, async (req, res) => {
+    try {
+      const plans = await storage.getAllPlans();
+      res.json(plans);
+    } catch (error: any) {
+      console.error('Error fetching plans:', error);
+      res.status(500).json({ message: 'Failed to fetch plans', error: error.message });
+    }
+  });
+
+  // Get plan by ID
+  app.get('/api/admin/plans/:id', isAdminAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const plan = await storage.getPlanById(id);
+      if (!plan) {
+        return res.status(404).json({ message: 'Plan not found' });
+      }
+      res.json(plan);
+    } catch (error: any) {
+      console.error('Error fetching plan:', error);
+      res.status(500).json({ message: 'Failed to fetch plan', error: error.message });
+    }
+  });
+
+  // Create new plan
+  app.post('/api/admin/plans', isAdminAuthenticated, async (req, res) => {
+    try {
+      const { planName, planPrice, deviceType, planType } = req.body;
+      
+      if (!planName || !planPrice || !deviceType || !planType) {
+        return res.status(400).json({ message: 'Missing required fields: planName, planPrice, deviceType, planType' });
+      }
+      
+      if (!['mobile', 'laptop'].includes(deviceType)) {
+        return res.status(400).json({ message: "Invalid device type. Must be 'mobile' or 'laptop'" });
+      }
+      
+      if (!['bbg', 'extend_plus'].includes(planType)) {
+        return res.status(400).json({ message: "Invalid plan type. Must be 'bbg' or 'extend_plus'" });
+      }
+      
+      const plan = await storage.createPlan({ planName, planPrice, deviceType, planType });
+      res.status(201).json(plan);
+    } catch (error: any) {
+      console.error('Error creating plan:', error);
+      res.status(500).json({ message: 'Failed to create plan', error: error.message });
+    }
+  });
+
+  // Update plan
+  app.put('/api/admin/plans/:id', isAdminAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { planName, planPrice, deviceType, planType } = req.body;
+      
+      const updates: any = {};
+      
+      if (planName !== undefined) updates.planName = planName;
+      if (planPrice !== undefined) updates.planPrice = planPrice;
+      if (deviceType !== undefined) {
+        if (!['mobile', 'laptop'].includes(deviceType)) {
+          return res.status(400).json({ message: "Invalid device type. Must be 'mobile' or 'laptop'" });
+        }
+        updates.deviceType = deviceType;
+      }
+      if (planType !== undefined) {
+        if (!['bbg', 'extend_plus'].includes(planType)) {
+          return res.status(400).json({ message: "Invalid plan type. Must be 'bbg' or 'extend_plus'" });
+        }
+        updates.planType = planType;
+      }
+      
+      await storage.updatePlan(id, updates);
+      res.json({ message: 'Plan updated successfully' });
+    } catch (error: any) {
+      console.error('Error updating plan:', error);
+      res.status(500).json({ message: 'Failed to update plan', error: error.message });
+    }
+  });
+
+  // Delete plan
+  app.delete('/api/admin/plans/:id', isAdminAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deletePlan(id);
+      res.json({ message: 'Plan deleted successfully' });
+    } catch (error: any) {
+      console.error('Error deleting plan:', error);
+      res.status(500).json({ message: 'Failed to delete plan', error: error.message });
+    }
+  });
+
+  // Public endpoint to get plans by device type (for customer-facing pages)
+  app.get('/api/plans/device/:deviceType', async (req, res) => {
+    try {
+      const { deviceType } = req.params;
+      if (!['mobile', 'laptop'].includes(deviceType)) {
+        return res.status(400).json({ message: "Invalid device type. Must be 'mobile' or 'laptop'" });
+      }
+      const plans = await storage.getPlansByDeviceType(deviceType);
+      res.json(plans);
+    } catch (error: any) {
+      console.error('Error fetching plans by device type:', error);
+      res.status(500).json({ message: 'Failed to fetch plans', error: error.message });
+    }
+  });
+
+  // Public endpoint to get plans by plan type
+  app.get('/api/plans/type/:planType', async (req, res) => {
+    try {
+      const { planType } = req.params;
+      if (!['bbg', 'extend_plus'].includes(planType)) {
+        return res.status(400).json({ message: "Invalid plan type. Must be 'bbg' or 'extend_plus'" });
+      }
+      const plans = await storage.getPlansByType(planType);
+      res.json(plans);
+    } catch (error: any) {
+      console.error('Error fetching plans by type:', error);
+      res.status(500).json({ message: 'Failed to fetch plans', error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 

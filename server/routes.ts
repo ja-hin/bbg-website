@@ -10443,7 +10443,7 @@ Required: GUPSHUP_API_KEY environment variable
   // Create new plan
   app.post('/api/admin/plans', isAdminAuthenticated, async (req, res) => {
     try {
-      const { planName, planPrice, deviceType, planType } = req.body;
+      const { planName, planPrice, deviceType, planType, coverage } = req.body;
       
       if (!planName || !planPrice || !deviceType || !planType) {
         return res.status(400).json({ message: 'Missing required fields: planName, planPrice, deviceType, planType' });
@@ -10457,7 +10457,7 @@ Required: GUPSHUP_API_KEY environment variable
         return res.status(400).json({ message: "Invalid plan type. Must be 'bbg' or 'extend_plus'" });
       }
       
-      const plan = await storage.createPlan({ planName, planPrice, deviceType, planType });
+      const plan = await storage.createPlan({ planName, planPrice, deviceType, planType, coverage: coverage || null });
       res.status(201).json(plan);
     } catch (error: any) {
       console.error('Error creating plan:', error);
@@ -10469,7 +10469,7 @@ Required: GUPSHUP_API_KEY environment variable
   app.put('/api/admin/plans/:id', isAdminAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const { planName, planPrice, deviceType, planType } = req.body;
+      const { planName, planPrice, deviceType, planType, coverage } = req.body;
       
       const updates: any = {};
       
@@ -10487,6 +10487,7 @@ Required: GUPSHUP_API_KEY environment variable
         }
         updates.planType = planType;
       }
+      if (coverage !== undefined) updates.coverage = coverage;
       
       await storage.updatePlan(id, updates);
       res.json({ message: 'Plan updated successfully' });

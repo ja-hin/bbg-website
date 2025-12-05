@@ -24,7 +24,8 @@ export default function AdminPlans() {
     planName: '',
     planPrice: '',
     deviceType: 'mobile',
-    planType: 'bbg'
+    planType: 'bbg',
+    coverage: ''
   });
 
   const { data: plans, isLoading } = useQuery({
@@ -130,7 +131,8 @@ export default function AdminPlans() {
       planName: formData.planName,
       planPrice: formData.planPrice,
       deviceType: formData.deviceType,
-      planType: formData.planType
+      planType: formData.planType,
+      coverage: formData.coverage || null
     };
 
     if (editingPlan) {
@@ -146,7 +148,8 @@ export default function AdminPlans() {
       planName: plan.planName,
       planPrice: plan.planPrice.toString(),
       deviceType: plan.deviceType,
-      planType: plan.planType
+      planType: plan.planType,
+      coverage: plan.coverage || ''
     });
   };
 
@@ -157,7 +160,7 @@ export default function AdminPlans() {
   };
 
   const resetForm = () => {
-    setFormData({ planName: '', planPrice: '', deviceType: 'mobile', planType: 'bbg' });
+    setFormData({ planName: '', planPrice: '', deviceType: 'mobile', planType: 'bbg', coverage: '' });
     setEditingPlan(null);
   };
 
@@ -292,6 +295,18 @@ export default function AdminPlans() {
                   </Select>
                 </div>
 
+                <div>
+                  <Label htmlFor="coverage">Coverage (Optional)</Label>
+                  <Input
+                    id="coverage"
+                    value={formData.coverage}
+                    onChange={(e) => setFormData({ ...formData, coverage: e.target.value })}
+                    placeholder="e.g., 6_months, 12_months"
+                    data-testid="input-coverage"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Coverage identifier for mapping purposes</p>
+                </div>
+
                 <div className="flex justify-end gap-2 pt-4">
                   <Button 
                     type="button" 
@@ -382,6 +397,7 @@ export default function AdminPlans() {
                       <TableHead>Price</TableHead>
                       <TableHead>Device Type</TableHead>
                       <TableHead>Plan Type</TableHead>
+                      <TableHead>Coverage</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
@@ -396,6 +412,13 @@ export default function AdminPlans() {
                         </TableCell>
                         <TableCell>{getDeviceTypeBadge(plan.deviceType)}</TableCell>
                         <TableCell>{getPlanTypeBadge(plan.planType)}</TableCell>
+                        <TableCell>
+                          {plan.coverage ? (
+                            <Badge variant="outline">{plan.coverage}</Badge>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </TableCell>
                         <TableCell>
                           {plan.isActive ? (
                             <Badge className="bg-green-500">Active</Badge>
@@ -428,7 +451,7 @@ export default function AdminPlans() {
                     ))}
                     {(!plans || plans.length === 0) && (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                        <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                           No plans found. Click "Add New Plan" to create one.
                         </TableCell>
                       </TableRow>

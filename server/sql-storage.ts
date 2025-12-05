@@ -482,6 +482,27 @@ export class SqlServerStorage implements IStorage {
       await planConfigurationsRequest.query(planConfigurationsTableQuery);
       console.log('✅ PLAN_CONFIGURATIONS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
       
+      // CRITICAL: Early migration for plans table coverage column
+      // This must run BEFORE any code tries to SELECT from plans with coverage column
+      console.log('🔥 ENSURING PLANS TABLE COVERAGE COLUMN EXISTS...');
+      const plansCoverageMigrationQuery = `
+        IF EXISTS (SELECT * FROM sys.tables WHERE name = 'plans')
+        BEGIN
+          IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('plans') AND name = 'coverage')
+          BEGIN
+            ALTER TABLE plans ADD coverage NVARCHAR(50) NULL;
+            PRINT 'Added coverage column to plans table';
+          END
+          ELSE
+          BEGIN
+            PRINT 'Coverage column already exists in plans table';
+          END
+        END
+      `;
+      const plansCoverageRequest = db.pool.request();
+      await plansCoverageRequest.query(plansCoverageMigrationQuery);
+      console.log('✅ PLANS COVERAGE COLUMN CONFIRMED!!!');
+      
     } catch (themeError) {
       console.error('❌ TABLE CREATION FAILED:', themeError);
       throw themeError;
@@ -928,17 +949,27 @@ export class SqlServerStorage implements IStorage {
           plan_price DECIMAL(10,2) NOT NULL,
           device_type NVARCHAR(20) NOT NULL CHECK (device_type IN ('mobile', 'laptop')),
           plan_type NVARCHAR(20) NOT NULL CHECK (plan_type IN ('bbg', 'extend_plus')),
+          coverage NVARCHAR(50) NULL,
           is_active BIT DEFAULT 1,
           created_at DATETIME2 DEFAULT GETDATE(),
           updated_at DATETIME2 DEFAULT GETDATE()
         );
 
         -- Insert default plans
-        INSERT INTO plans (plan_name, plan_price, device_type, plan_type) VALUES
-        ('BBG for Mobile', 99.00, 'mobile', 'bbg'),
-        ('BBG for Laptop', 299.00, 'laptop', 'bbg'),
-        ('Extend+ for Mobile', 199.00, 'mobile', 'extend_plus'),
-        ('Extend+ for Laptop', 399.00, 'laptop', 'extend_plus');
+        INSERT INTO plans (plan_name, plan_price, device_type, plan_type, coverage) VALUES
+        ('BBG for Mobile', 99.00, 'mobile', 'bbg', '6_months'),
+        ('BBG for Laptop', 299.00, 'laptop', 'bbg', '6_months'),
+        ('Extend+ for Mobile', 199.00, 'mobile', 'extend_plus', '12_months'),
+        ('Extend+ for Laptop', 399.00, 'laptop', 'extend_plus', '12_months');
+      END
+
+      -- Add coverage column to plans table if it doesn't exist
+      IF EXISTS (SELECT * FROM sys.tables WHERE name = 'plans')
+      BEGIN
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('plans') AND name = 'coverage')
+        BEGIN
+          ALTER TABLE plans ADD coverage NVARCHAR(50) NULL;
+        END
       END
 
       -- Create distributor_sessions table
@@ -4632,7 +4663,7 @@ export class SqlServerStorage implements IStorage {
     await db.connectDB();
     const request = db.pool.request();
     const result = await request.query(`
-      SELECT id, plan_name, plan_price, device_type, plan_type, is_active, created_at, updated_at
+      SELECT id, plan_name, plan_price, device_type, plan_type, coverage, is_active, created_at, updated_at
       FROM plans
       ORDER BY device_type, plan_type, plan_name
     `);
@@ -4643,6 +4674,7 @@ export class SqlServerStorage implements IStorage {
       planPrice: row.plan_price,
       deviceType: row.device_type,
       planType: row.plan_type,
+      coverage: row.coverage,
       isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at
@@ -4654,7 +4686,7 @@ export class SqlServerStorage implements IStorage {
     const request = db.pool.request();
     request.input('id', sql.Int, id);
     const result = await request.query(`
-      SELECT id, plan_name, plan_price, device_type, plan_type, is_active, created_at, updated_at
+      SELECT id, plan_name, plan_price, device_type, plan_type, coverage, is_active, created_at, updated_at
       FROM plans
       WHERE id = @id
     `);
@@ -4668,6 +4700,7 @@ export class SqlServerStorage implements IStorage {
       planPrice: row.plan_price,
       deviceType: row.device_type,
       planType: row.plan_type,
+      coverage: row.coverage,
       isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at
@@ -4681,11 +4714,12 @@ export class SqlServerStorage implements IStorage {
     request.input('planPrice', sql.Decimal(10, 2), parseFloat(String(plan.planPrice)));
     request.input('deviceType', sql.NVarChar, plan.deviceType);
     request.input('planType', sql.NVarChar, plan.planType);
+    request.input('coverage', sql.NVarChar, plan.coverage || null);
     
     const result = await request.query(`
-      INSERT INTO plans (plan_name, plan_price, device_type, plan_type)
-      OUTPUT INSERTED.id, INSERTED.plan_name, INSERTED.plan_price, INSERTED.device_type, INSERTED.plan_type, INSERTED.is_active, INSERTED.created_at, INSERTED.updated_at
-      VALUES (@planName, @planPrice, @deviceType, @planType)
+      INSERT INTO plans (plan_name, plan_price, device_type, plan_type, coverage)
+      OUTPUT INSERTED.id, INSERTED.plan_name, INSERTED.plan_price, INSERTED.device_type, INSERTED.plan_type, INSERTED.coverage, INSERTED.is_active, INSERTED.created_at, INSERTED.updated_at
+      VALUES (@planName, @planPrice, @deviceType, @planType, @coverage)
     `);
     
     const row = result.recordset[0];
@@ -4695,6 +4729,7 @@ export class SqlServerStorage implements IStorage {
       planPrice: row.plan_price,
       deviceType: row.device_type,
       planType: row.plan_type,
+      coverage: row.coverage,
       isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at
@@ -4728,6 +4763,11 @@ export class SqlServerStorage implements IStorage {
       setClauses.push('plan_type = @planType');
     }
     
+    if (updates.coverage !== undefined) {
+      request.input('coverage', sql.NVarChar, updates.coverage || null);
+      setClauses.push('coverage = @coverage');
+    }
+    
     setClauses.push('updated_at = GETDATE()');
     
     if (setClauses.length > 1) {
@@ -4749,7 +4789,7 @@ export class SqlServerStorage implements IStorage {
     const request = db.pool.request();
     request.input('deviceType', sql.NVarChar, deviceType);
     const result = await request.query(`
-      SELECT id, plan_name, plan_price, device_type, plan_type, is_active, created_at, updated_at
+      SELECT id, plan_name, plan_price, device_type, plan_type, coverage, is_active, created_at, updated_at
       FROM plans
       WHERE device_type = @deviceType AND is_active = 1
       ORDER BY plan_type, plan_name
@@ -4761,6 +4801,7 @@ export class SqlServerStorage implements IStorage {
       planPrice: row.plan_price,
       deviceType: row.device_type,
       planType: row.plan_type,
+      coverage: row.coverage,
       isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at
@@ -4772,7 +4813,7 @@ export class SqlServerStorage implements IStorage {
     const request = db.pool.request();
     request.input('planType', sql.NVarChar, planType);
     const result = await request.query(`
-      SELECT id, plan_name, plan_price, device_type, plan_type, is_active, created_at, updated_at
+      SELECT id, plan_name, plan_price, device_type, plan_type, coverage, is_active, created_at, updated_at
       FROM plans
       WHERE plan_type = @planType AND is_active = 1
       ORDER BY device_type, plan_name
@@ -4784,6 +4825,7 @@ export class SqlServerStorage implements IStorage {
       planPrice: row.plan_price,
       deviceType: row.device_type,
       planType: row.plan_type,
+      coverage: row.coverage,
       isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at

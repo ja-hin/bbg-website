@@ -549,6 +549,7 @@ export const plans = pgTable("plans", {
   planPrice: decimal("plan_price", { precision: 10, scale: 2 }).notNull(),
   deviceType: text("device_type").notNull(), // 'mobile' or 'laptop'
   planType: text("plan_type").notNull(), // 'bbg' or 'extend_plus'
+  coverage: text("coverage"), // coverage identifier for mapping (e.g., '6_months', '12_months')
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -561,6 +562,7 @@ export const insertPlanSchema = createInsertSchema(plans).omit({
   updatedAt: true,
 }).extend({
   planPrice: z.string().or(z.number()).transform(val => String(val)),
+  coverage: z.string().optional().nullable(),
 });
 
 // Plans types

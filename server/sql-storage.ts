@@ -24,7 +24,9 @@ import {
   type SmtpSettings,
   type InsertSmtpSettings,
   type HomepageBanner,
-  type InsertHomepageBanner
+  type InsertHomepageBanner,
+  type Plan,
+  type InsertPlan
 } from "@shared/schema";
 import { db } from "./db";
 import sql from 'mssql';
@@ -164,6 +166,15 @@ export interface IStorage {
   getWhatsAppConfig(): Promise<any>;
   updateWhatsAppConfig(config: { userId: string; password: string; baseUrl: string; isEnabled: boolean }): Promise<any>;
   getWhatsAppTemplates(): Promise<any[]>;
+  
+  // Plans operations
+  getAllPlans(): Promise<Plan[]>;
+  getPlanById(id: number): Promise<Plan | undefined>;
+  createPlan(plan: InsertPlan): Promise<Plan>;
+  updatePlan(id: number, updates: Partial<InsertPlan>): Promise<void>;
+  deletePlan(id: number): Promise<void>;
+  getPlansByDeviceType(deviceType: string): Promise<Plan[]>;
+  getPlansByType(planType: string): Promise<Plan[]>;
 }
 
 export class SqlServerStorage implements IStorage {
@@ -906,6 +917,28 @@ export class SqlServerStorage implements IStorage {
         BEGIN
           ALTER TABLE models ADD device_type NVARCHAR(20) NOT NULL DEFAULT 'mobile';
         END
+      END
+
+      -- Create plans table for BBG and Extend+ plans
+      IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'plans')
+      BEGIN
+        CREATE TABLE plans (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          plan_name NVARCHAR(100) NOT NULL UNIQUE,
+          plan_price DECIMAL(10,2) NOT NULL,
+          device_type NVARCHAR(20) NOT NULL CHECK (device_type IN ('mobile', 'laptop')),
+          plan_type NVARCHAR(20) NOT NULL CHECK (plan_type IN ('bbg', 'extend_plus')),
+          is_active BIT DEFAULT 1,
+          created_at DATETIME2 DEFAULT GETDATE(),
+          updated_at DATETIME2 DEFAULT GETDATE()
+        );
+
+        -- Insert default plans
+        INSERT INTO plans (plan_name, plan_price, device_type, plan_type) VALUES
+        ('BBG for Mobile', 99.00, 'mobile', 'bbg'),
+        ('BBG for Laptop', 299.00, 'laptop', 'bbg'),
+        ('Extend+ for Mobile', 199.00, 'mobile', 'extend_plus'),
+        ('Extend+ for Laptop', 399.00, 'laptop', 'extend_plus');
       END
 
       -- Create distributor_sessions table
@@ -4589,6 +4622,169 @@ export class SqlServerStorage implements IStorage {
       originalAmount: parseFloat(row.original_amount || 0),
       registrationSource: row.registration_source,
       metadata: row.metadata,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    }));
+  }
+
+  // Plans CRUD operations
+  async getAllPlans(): Promise<Plan[]> {
+    await db.connectDB();
+    const request = db.pool.request();
+    const result = await request.query(`
+      SELECT id, plan_name, plan_price, device_type, plan_type, is_active, created_at, updated_at
+      FROM plans
+      ORDER BY device_type, plan_type, plan_name
+    `);
+    
+    return result.recordset.map((row: any) => ({
+      id: row.id,
+      planName: row.plan_name,
+      planPrice: row.plan_price,
+      deviceType: row.device_type,
+      planType: row.plan_type,
+      isActive: row.is_active,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    }));
+  }
+
+  async getPlanById(id: number): Promise<Plan | undefined> {
+    await db.connectDB();
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    const result = await request.query(`
+      SELECT id, plan_name, plan_price, device_type, plan_type, is_active, created_at, updated_at
+      FROM plans
+      WHERE id = @id
+    `);
+    
+    if (result.recordset.length === 0) return undefined;
+    
+    const row = result.recordset[0];
+    return {
+      id: row.id,
+      planName: row.plan_name,
+      planPrice: row.plan_price,
+      deviceType: row.device_type,
+      planType: row.plan_type,
+      isActive: row.is_active,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  async createPlan(plan: InsertPlan): Promise<Plan> {
+    await db.connectDB();
+    const request = db.pool.request();
+    request.input('planName', sql.NVarChar, plan.planName);
+    request.input('planPrice', sql.Decimal(10, 2), parseFloat(String(plan.planPrice)));
+    request.input('deviceType', sql.NVarChar, plan.deviceType);
+    request.input('planType', sql.NVarChar, plan.planType);
+    
+    const result = await request.query(`
+      INSERT INTO plans (plan_name, plan_price, device_type, plan_type)
+      OUTPUT INSERTED.id, INSERTED.plan_name, INSERTED.plan_price, INSERTED.device_type, INSERTED.plan_type, INSERTED.is_active, INSERTED.created_at, INSERTED.updated_at
+      VALUES (@planName, @planPrice, @deviceType, @planType)
+    `);
+    
+    const row = result.recordset[0];
+    return {
+      id: row.id,
+      planName: row.plan_name,
+      planPrice: row.plan_price,
+      deviceType: row.device_type,
+      planType: row.plan_type,
+      isActive: row.is_active,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  async updatePlan(id: number, updates: Partial<InsertPlan>): Promise<void> {
+    await db.connectDB();
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    
+    const setClauses: string[] = [];
+    
+    if (updates.planName !== undefined) {
+      request.input('planName', sql.NVarChar, updates.planName);
+      setClauses.push('plan_name = @planName');
+    }
+    
+    if (updates.planPrice !== undefined) {
+      request.input('planPrice', sql.Decimal(10, 2), parseFloat(String(updates.planPrice)));
+      setClauses.push('plan_price = @planPrice');
+    }
+    
+    if (updates.deviceType !== undefined) {
+      request.input('deviceType', sql.NVarChar, updates.deviceType);
+      setClauses.push('device_type = @deviceType');
+    }
+    
+    if (updates.planType !== undefined) {
+      request.input('planType', sql.NVarChar, updates.planType);
+      setClauses.push('plan_type = @planType');
+    }
+    
+    setClauses.push('updated_at = GETDATE()');
+    
+    if (setClauses.length > 1) {
+      await request.query(`
+        UPDATE plans SET ${setClauses.join(', ')} WHERE id = @id
+      `);
+    }
+  }
+
+  async deletePlan(id: number): Promise<void> {
+    await db.connectDB();
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    await request.query('DELETE FROM plans WHERE id = @id');
+  }
+
+  async getPlansByDeviceType(deviceType: string): Promise<Plan[]> {
+    await db.connectDB();
+    const request = db.pool.request();
+    request.input('deviceType', sql.NVarChar, deviceType);
+    const result = await request.query(`
+      SELECT id, plan_name, plan_price, device_type, plan_type, is_active, created_at, updated_at
+      FROM plans
+      WHERE device_type = @deviceType AND is_active = 1
+      ORDER BY plan_type, plan_name
+    `);
+    
+    return result.recordset.map((row: any) => ({
+      id: row.id,
+      planName: row.plan_name,
+      planPrice: row.plan_price,
+      deviceType: row.device_type,
+      planType: row.plan_type,
+      isActive: row.is_active,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    }));
+  }
+
+  async getPlansByType(planType: string): Promise<Plan[]> {
+    await db.connectDB();
+    const request = db.pool.request();
+    request.input('planType', sql.NVarChar, planType);
+    const result = await request.query(`
+      SELECT id, plan_name, plan_price, device_type, plan_type, is_active, created_at, updated_at
+      FROM plans
+      WHERE plan_type = @planType AND is_active = 1
+      ORDER BY device_type, plan_name
+    `);
+    
+    return result.recordset.map((row: any) => ({
+      id: row.id,
+      planName: row.plan_name,
+      planPrice: row.plan_price,
+      deviceType: row.device_type,
+      planType: row.plan_type,
+      isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at
     }));

@@ -63,15 +63,26 @@ export default function Home() {
     retry: false,
   });
 
-  // Fetch dynamic BBG prices
-  const { data: bbgPrices, isLoading: pricesLoading } = useQuery({
-    queryKey: ["/api/bbg-prices"],
+  // Fetch plans for dynamic pricing
+  const { data: allPlans = [], isLoading: pricesLoading } = useQuery({
+    queryKey: ["/api/plans"],
     queryFn: async () => {
-      const response = await fetch("/api/bbg-prices");
-      if (!response.ok) throw new Error("Failed to fetch BBG prices");
+      const response = await fetch("/api/plans");
+      if (!response.ok) throw new Error("Failed to fetch plans");
       return response.json();
     },
   });
+
+  // Extract prices from plans based on device type and plan type
+  const getLaptopBBGPrice = () => {
+    const plan = allPlans.find((p: any) => p.deviceType === "laptop" && p.planType === "bbg");
+    return plan?.planPrice || 499;
+  };
+
+  const getMobileBBGPrice = () => {
+    const plan = allPlans.find((p: any) => p.deviceType === "mobile" && p.planType === "bbg");
+    return plan?.planPrice || 299;
+  };
 
   // Fetch regular claim value slabs for mobile (exclude Acer BBG special rates)
   const { data: mobileSlabs, isLoading: isMobileLoading } = useQuery({
@@ -753,7 +764,7 @@ export default function Home() {
                 <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Laptop BBG</h3>
                   <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
-                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
+                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${getLaptopBBGPrice()}`}
                   </div>
                   <p className="text-white/80 text-xs sm:text-sm">(inclusive of GST)</p>
                 </div>
@@ -804,7 +815,7 @@ export default function Home() {
                 <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Mobile BBG</h3>
                   <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
-                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
+                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${getMobileBBGPrice()}`}
                   </div>
                   <p className="text-white/80 text-xs sm:text-sm">(inclusive of GST)</p>
                 </div>
@@ -855,7 +866,7 @@ export default function Home() {
                 <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Laptop Extend+</h3>
                   <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
-                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${bbgPrices?.laptop || 499}`}
+                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${getLaptopBBGPrice()}`}
                   </div>
                 </div>
 
@@ -901,7 +912,7 @@ export default function Home() {
                 <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Mobile Extend+</h3>
                   <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
-                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${bbgPrices?.mobile || 299}`}
+                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${getMobileBBGPrice()}`}
                   </div>
                 </div>
 

@@ -84,6 +84,16 @@ export default function Home() {
     return plan?.planPrice || 299;
   };
 
+  const getLaptopExtendPrice = () => {
+    const plan = allPlans.find((p: any) => p.deviceType === "laptop" && p.planType === "extend_plus");
+    return plan?.planPrice || 399;
+  };
+
+  const getMobileExtendPrice = () => {
+    const plan = allPlans.find((p: any) => p.deviceType === "mobile" && p.planType === "extend_plus");
+    return plan?.planPrice || 199;
+  };
+
   // Fetch regular claim value slabs for mobile (exclude Acer BBG special rates)
   const { data: mobileSlabs, isLoading: isMobileLoading } = useQuery({
     queryKey: ["/api/claim-value-slabs/active/mobile/regular"],
@@ -866,7 +876,7 @@ export default function Home() {
                 <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Laptop Extend+</h3>
                   <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
-                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${getLaptopBBGPrice()}`}
+                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${getLaptopExtendPrice()}`}
                   </div>
                 </div>
 
@@ -912,7 +922,7 @@ export default function Home() {
                 <div className="p-4 sm:p-6 pb-10 sm:pb-14 text-white text-center" style={{textShadow: '0 2px 4px rgba(0,0,0,0.3)'}}>
                   <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Mobile Extend+</h3>
                   <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
-                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${getMobileBBGPrice()}`}
+                    {pricesLoading ? <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" /> : `₹${getMobileExtendPrice()}`}
                   </div>
                 </div>
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -7,14 +7,27 @@ import { ChevronDown } from "lucide-react";
 
 interface DevicePlanSelectorFormProps {
   onSubmitSuccess?: () => void;
+  initialDeviceType?: string;
+  formRef?: React.RefObject<HTMLDivElement>;
 }
 
-export function DevicePlanSelectorForm({ onSubmitSuccess }: DevicePlanSelectorFormProps) {
-  const [selectedDeviceType, setSelectedDeviceType] = useState("");
+export function DevicePlanSelectorForm({ 
+  onSubmitSuccess, 
+  initialDeviceType,
+  formRef 
+}: DevicePlanSelectorFormProps) {
+  const [selectedDeviceType, setSelectedDeviceType] = useState(initialDeviceType || "");
   const [selectedDeviceBrand, setSelectedDeviceBrand] = useState("");
   const [devicePurchaseDate, setDevicePurchaseDate] = useState("");
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (initialDeviceType && initialDeviceType !== selectedDeviceType) {
+      setSelectedDeviceType(initialDeviceType);
+      setSelectedDeviceBrand("");
+    }
+  }, [initialDeviceType]);
 
   const { data: brands = [], isLoading: brandsLoading } = useQuery({
     queryKey: ["/api/brands", selectedDeviceType],

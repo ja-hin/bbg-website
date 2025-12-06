@@ -11,7 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { DevicePlanSelectorForm } from "@/components/device-plan-selector-form";
 import {
   Smartphone,
@@ -41,6 +41,15 @@ import bannerImg from "@assets/BBG Banners Revised (1)_1764328416967.png";
 export default function Home() {
   const [isBBGExpanded, setIsBBGExpanded] = useState(false);
   const [isExtendExpanded, setIsExtendExpanded] = useState(false);
+  const [selectedDeviceTypeFromCard, setSelectedDeviceTypeFromCard] = useState<string | undefined>();
+  const formRef = useRef<HTMLDivElement>(null);
+
+  const handleViewPlans = (deviceType: string) => {
+    setSelectedDeviceTypeFromCard(deviceType);
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 0);
+  };
 
   // Fetch theme for dynamic coloring
   const { data: theme } = useQuery({
@@ -166,7 +175,12 @@ export default function Home() {
             </div>
 
             {/* Right Side - Form Card */}
-            <DevicePlanSelectorForm />
+            <div ref={formRef}>
+              <DevicePlanSelectorForm 
+                initialDeviceType={selectedDeviceTypeFromCard}
+                formRef={formRef}
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -357,6 +371,7 @@ export default function Home() {
                       <Button
                         className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"
                         data-testid="button-view-plans-bbg"
+                        onClick={() => handleViewPlans("mobile")}
                       >
                         View Plans
                       </Button>
@@ -423,6 +438,7 @@ export default function Home() {
                       <Button
                         className="bg-gray-800 hover:bg-gray-900 text-white py-1.5 px-6 rounded-lg font-semibold text-sm"
                         data-testid="button-view-plans-extend"
+                        onClick={() => handleViewPlans("mobile")}
                       >
                         View Plans
                       </Button>

@@ -10509,6 +10509,17 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // Public endpoint to get all plans (for customer-facing pages)
+  app.get('/api/plans', async (req, res) => {
+    try {
+      const plans = await storage.getAllPlans();
+      res.json(plans);
+    } catch (error: any) {
+      console.error('Error fetching all plans:', error);
+      res.status(500).json({ message: 'Failed to fetch plans', error: error.message });
+    }
+  });
+
   // Public endpoint to get plans by device type (for customer-facing pages)
   app.get('/api/plans/device/:deviceType', async (req, res) => {
     try {

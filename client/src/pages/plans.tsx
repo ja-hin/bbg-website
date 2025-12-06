@@ -31,12 +31,12 @@ export default function Plans() {
   };
 
   const getLaptopExtendPrice = () => {
-    const plan = allPlans.find((p: any) => p.deviceType === "laptop" && p.planType === "extend");
+    const plan = allPlans.find((p: any) => p.deviceType === "laptop" && p.planType === "extend_plus");
     return plan?.planPrice || 499;
   };
 
   const getMobileExtendPrice = () => {
-    const plan = allPlans.find((p: any) => p.deviceType === "mobile" && p.planType === "extend");
+    const plan = allPlans.find((p: any) => p.deviceType === "mobile" && p.planType === "extend_plus");
     return plan?.planPrice || 299;
   };
 

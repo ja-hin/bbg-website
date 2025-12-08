@@ -314,6 +314,15 @@ export default function ThankYou() {
   const errorMessage = sessionData?.errorMessage || params?.get('errorMessage');
 
   const handleDownloadInvoice = () => {
+    // Check if server-generated invoice is available
+    const serverInvoiceUrl = sessionData?.invoiceUrl;
+    if (serverInvoiceUrl) {
+      // Open server-generated invoice in new tab for download
+      window.open(serverInvoiceUrl, '_blank');
+      return;
+    }
+
+    // Fallback to client-side PDF generation if server invoice not available
     // Get invoice data from session or URL parameters
     const invoiceData = {
       voucherCode,

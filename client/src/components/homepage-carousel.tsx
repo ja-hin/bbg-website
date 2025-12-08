@@ -12,38 +12,24 @@ interface HomepageCarouselProps {
 
 export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: HomepageCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [imageLoaded, setImageLoaded] = useState<{ [key: number]: boolean }>({});
 
   // Fetch active homepage banners (excluding special banners like "Who can use these plans")
   const { data: allBanners = [], isLoading } = useQuery({
     queryKey: ['/api/homepage-banners'],
     queryFn: async () => {
-      const response = await fetch('/api/homepage-banners');
+      const response = await fetch('/api/homepage-banners', {
+        cache: 'no-cache'
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch banners');
       }
       return response.json();
     },
-    retry: 1,
-    staleTime: 600000, // Cache for 10 minutes
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    gcTime: 900000 // Keep cache for 15 minutes
+    retry: false,
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false
   });
-
-  // Preload first banner image
-  useEffect(() => {
-    if (allBanners.length > 0) {
-      const firstBanner = allBanners[0];
-      const isMobile = window.innerWidth < 768;
-      const imageUrl = isMobile ? firstBanner.mobileImageUrl : firstBanner.desktopImageUrl;
-      
-      // Create and preload the image
-      const img = new Image();
-      img.onload = () => setImageLoaded({ 0: true });
-      img.src = imageUrl;
-    }
-  }, [allBanners]);
 
   // Filter out special banners that are displayed elsewhere
   const banners = allBanners.filter((banner: HomepageBanner) => 
@@ -105,27 +91,19 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
-          {banners.map((banner: HomepageBanner, index: number) => (
+          {banners.map((banner: HomepageBanner) => (
             <div key={banner.id} className="w-full flex-shrink-0">
               {/* Desktop Image */}
               <div 
-                className="hidden md:block relative w-full cursor-pointer bg-gray-200"
+                className="hidden md:block relative w-full cursor-pointer"
                 onClick={() => handleBannerClick(banner)}
               >
-                <div className="w-full overflow-hidden relative" style={{ paddingBottom: '56.25%' }}>
-                  {!imageLoaded[index] && (
-                    <div className="absolute inset-0 bg-gray-300 animate-pulse flex items-center justify-center">
-                      <Loader2 className="h-8 w-8 text-gray-400 animate-spin" />
-                    </div>
-                  )}
+                <div className="w-full overflow-hidden">
                   <img
                     src={banner.desktopImageUrl}
                     alt="Banner Image"
-                    className="w-full h-auto block absolute inset-0 object-cover"
-                    loading={currentSlide === index || currentSlide === (index - 1 + banners.length) % banners.length ? "eager" : "lazy"}
-                    sizes="100vw"
-                    decoding="async"
-                    onLoad={() => setImageLoaded(prev => ({ ...prev, [index]: true }))}
+                    className="w-full h-auto"
+                    style={{ imageRendering: 'crisp-edges' }}
                     onError={(e) => {
                       console.error('Desktop image failed to load:', banner.desktopImageUrl);
                       // Try local uploads route if the original S3 URL fails
@@ -140,23 +118,15 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
 
               {/* Mobile Image */}
               <div 
-                className="block md:hidden relative w-full cursor-pointer bg-gray-200"
+                className="block md:hidden relative w-full cursor-pointer"
                 onClick={() => handleBannerClick(banner)}
               >
-                <div className="w-full overflow-hidden relative" style={{ paddingBottom: '177.78%' }}>
-                  {!imageLoaded[index] && (
-                    <div className="absolute inset-0 bg-gray-300 animate-pulse flex items-center justify-center">
-                      <Loader2 className="h-8 w-8 text-gray-400 animate-spin" />
-                    </div>
-                  )}
+                <div className="w-full overflow-hidden">
                   <img
                     src={banner.mobileImageUrl}
                     alt="Banner Image"
-                    className="w-full h-auto block absolute inset-0 object-cover"
-                    loading={currentSlide === index || currentSlide === (index - 1 + banners.length) % banners.length ? "eager" : "lazy"}
-                    sizes="100vw"
-                    decoding="async"
-                    onLoad={() => setImageLoaded(prev => ({ ...prev, [index]: true }))}
+                    className="w-full h-auto"
+                    style={{ imageRendering: 'crisp-edges' }}
                     onError={(e) => {
                       console.error('Mobile image failed to load:', banner.mobileImageUrl);
                       // Try local uploads route if the original S3 URL fails

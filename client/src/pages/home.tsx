@@ -26,7 +26,6 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { HomepageCarousel } from "@/components/homepage-carousel";
-import { LazySection, LazyImage } from "@/components/lazy-image";
 
 const pricingCardBackground = "/attached_assets/(inclusive of GST) (4)_1759147213189.png";
 const planWorksBackgroundImg = "/attached_assets/Untitled design (15) (1)_1764254452404.png";
@@ -750,7 +749,6 @@ export default function Home() {
         </div>
       </section>
       {/* BBG Pricing Section */}
-      <LazySection fallback={<div className="py-6 sm:py-8 lg:py-10 min-h-[400px] bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]" />}>
       <section className="py-6 sm:py-8 lg:py-10 relative overflow-hidden">
         {/* Background Image */}
         <img 
@@ -961,9 +959,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      </LazySection>
       {/* Who Can Use These Plans Banner Section */}
-      <LazySection fallback={<div className="bg-white pt-4 min-h-[200px]" />}>
       <section className="bg-white pt-4">
         {whoCanUseBanner ? (
           <>
@@ -1001,7 +997,6 @@ export default function Home() {
           />
         )}
       </section>
-      </LazySection>
       {/* Eligibility Requirements Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

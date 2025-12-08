@@ -283,8 +283,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Send OTP (legacy endpoint)
   app.post("/api/otp/send", async (req, res) => {
     try {
-      const { contact } = req.body;
-      if (!contact || contact.length !== 10) {
+      const { contact, phone } = req.body;
+      const phoneNumber = contact || phone; // Support both field names
+      if (!phoneNumber || phoneNumber.length !== 10) {
         return res
           .status(400)
           .json({ message: "Valid 10-digit contact number required" });
@@ -295,7 +296,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Store OTP in database
       await storage.createOtp({
-        contact,
+        contact: phoneNumber,
         otp,
         expiresAt,
       });
@@ -306,12 +307,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (kaleyraSMS) {
         // Validate phone number format if service is available
-        if (!kaleyraSMS.isValidPhoneNumber(contact)) {
+        if (!kaleyraSMS.isValidPhoneNumber(phoneNumber)) {
           return res
             .status(400)
             .json({ message: "Please enter a valid Indian mobile number" });
         }
-        smsResult = await kaleyraSMS.sendOTP(contact, otp);
+        smsResult = await kaleyraSMS.sendOTP(phoneNumber, otp);
       } else {
         // Service not configured
         smsResult = { success: false, error: "SMS service not configured" };
@@ -319,7 +320,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (smsResult.success) {
         console.log(
-          `OTP sent via Kaleyra to ${contact}: ${otp} (Message ID: ${smsResult.messageId})`,
+          `OTP sent via Kaleyra to ${phoneNumber}: ${otp} (Message ID: ${smsResult.messageId})`,
         );
         res.json({
           message: "OTP sent successfully",
@@ -327,11 +328,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       } else {
         console.error(
-          `Failed to send OTP via Kaleyra to ${contact}:`,
+          `Failed to send OTP via Kaleyra to ${phoneNumber}:`,
           smsResult.error,
         );
         // Fallback: log OTP for development/testing
-        console.log(`FALLBACK - OTP for ${contact}: ${otp}`);
+        console.log(`FALLBACK - OTP for ${phoneNumber}: ${otp}`);
         res.json({
           message: "OTP sent successfully",
           warning:
@@ -656,8 +657,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Verify OTP (legacy endpoint)
   app.post("/api/otp/verify", async (req, res) => {
     try {
-      const { contact, otp } = req.body;
-      const isValid = await storage.verifyOtp(contact, otp);
+      const { contact, phone, otp } = req.body;
+      const phoneNumber = contact || phone; // Support both field names
+      const isValid = await storage.verifyOtp(phoneNumber, otp);
 
       if (isValid) {
         res.json({ message: "OTP verified successfully", verified: true });

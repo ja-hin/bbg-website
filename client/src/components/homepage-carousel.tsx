@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { HomepageBanner } from "@shared/schema";
 
@@ -26,10 +26,71 @@ const DEFAULT_FALLBACK_SLIDES = [
   }
 ];
 
+interface ProgressiveImageProps {
+  src: string;
+  alt: string;
+  className?: string;
+  onClick?: () => void;
+  priority?: boolean;
+}
+
+function ProgressiveImage({ src, alt, className = "", onClick, priority = false }: ProgressiveImageProps) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(false);
+    setHasError(false);
+    
+    const img = new Image();
+    img.onload = () => setIsLoaded(true);
+    img.onerror = () => setHasError(true);
+    img.src = src;
+    
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, [src]);
+
+  return (
+    <div className="relative w-full overflow-hidden" onClick={onClick}>
+      <div 
+        className={`absolute inset-0 bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-[#3B82F6] transition-opacity duration-500 ${
+          isLoaded && !hasError ? 'opacity-0' : 'opacity-100'
+        }`}
+        style={{
+          background: 'linear-gradient(135deg, #1E3A8A 0%, #2563EB 50%, #3B82F6 100%)',
+        }}
+      />
+      
+      {!hasError && (
+        <img
+          src={src}
+          alt={alt}
+          className={`w-full h-auto transition-all duration-500 ${
+            isLoaded ? 'opacity-100 blur-0' : 'opacity-0 blur-sm'
+          } ${className}`}
+          style={{ imageRendering: 'crisp-edges' }}
+          loading={priority ? "eager" : "lazy"}
+          decoding={priority ? "sync" : "async"}
+        />
+      )}
+      
+      {hasError && (
+        <div className="w-full aspect-[16/6] md:aspect-[16/5] flex items-center justify-center">
+          <div className="text-center text-white px-8 py-12">
+            <h2 className="text-2xl md:text-4xl font-bold mb-3">XtraCover Protection</h2>
+            <p className="text-lg opacity-90">Protect your devices with our plans</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: HomepageCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [imagesLoaded, setImagesLoaded] = useState<Set<number>>(new Set());
-  const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
 
   const { data: allBanners = [], isLoading, isError } = useQuery({
     queryKey: ['/api/homepage-banners'],
@@ -69,14 +130,12 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
   useEffect(() => {
     if (!hasBanners) return;
     
-    banners.forEach((banner: HomepageBanner, index: number) => {
-      if (index <= 1) {
-        const desktopImg = new Image();
-        desktopImg.src = banner.desktopImageUrl;
-        
-        const mobileImg = new Image();
-        mobileImg.src = banner.mobileImageUrl;
-      }
+    banners.slice(0, 2).forEach((banner: HomepageBanner) => {
+      const desktopImg = new Image();
+      desktopImg.src = banner.desktopImageUrl;
+      
+      const mobileImg = new Image();
+      mobileImg.src = banner.mobileImageUrl;
     });
   }, [banners, hasBanners]);
 
@@ -98,33 +157,7 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
     }
   }, []);
 
-  const handleImageLoad = useCallback((index: number) => {
-    setImagesLoaded(prev => new Set(prev).add(index));
-  }, []);
-
-  const handleImageError = useCallback((index: number, e: React.SyntheticEvent<HTMLImageElement>, fallbackUrl: string) => {
-    const img = e.target as HTMLImageElement;
-    if (!img.src.includes('/uploads/')) {
-      img.src = `/uploads/${fallbackUrl.split('/').pop()}`;
-    } else {
-      setImageErrors(prev => new Set(prev).add(index));
-    }
-  }, []);
-
-  if (isLoading) {
-    return (
-      <section className="w-full bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] py-16 md:py-24">
-        <div className="flex items-center justify-center min-h-[200px] md:min-h-[300px]">
-          <div className="text-center text-white">
-            <Loader2 className="h-10 w-10 animate-spin mx-auto mb-3" />
-            <span className="text-lg font-medium">Loading...</span>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (!hasBanners || isError) {
+  if (isLoading || !hasBanners || isError) {
     return (
       <section className="relative w-full">
         <div className="relative w-full overflow-hidden">
@@ -207,50 +240,24 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
         >
           {banners.map((banner: HomepageBanner, index: number) => (
             <div key={banner.id} className="w-full flex-shrink-0 relative">
-              {!imagesLoaded.has(index) && !imageErrors.has(index) && (
-                <div className="absolute inset-0 bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] flex items-center justify-center min-h-[200px] md:min-h-[300px]">
-                  <Loader2 className="h-8 w-8 animate-spin text-white" />
-                </div>
-              )}
-
-              <div 
-                className="hidden md:block relative w-full cursor-pointer"
-                onClick={() => handleBannerClick(banner)}
-              >
-                <div className="w-full overflow-hidden">
-                  <img
-                    src={banner.desktopImageUrl}
-                    alt={banner.title || "Banner Image"}
-                    className={`w-full h-auto transition-opacity duration-300 ${
-                      imagesLoaded.has(index) ? 'opacity-100' : 'opacity-0'
-                    }`}
-                    style={{ imageRendering: 'crisp-edges' }}
-                    loading={index === 0 ? "eager" : "lazy"}
-                    decoding={index === 0 ? "sync" : "async"}
-                    onLoad={() => handleImageLoad(index)}
-                    onError={(e) => handleImageError(index, e, banner.desktopImageUrl)}
-                  />
-                </div>
+              <div className="hidden md:block">
+                <ProgressiveImage
+                  src={banner.desktopImageUrl}
+                  alt={banner.title || "Banner Image"}
+                  className="cursor-pointer"
+                  onClick={() => handleBannerClick(banner)}
+                  priority={index === 0}
+                />
               </div>
 
-              <div 
-                className="block md:hidden relative w-full cursor-pointer"
-                onClick={() => handleBannerClick(banner)}
-              >
-                <div className="w-full overflow-hidden">
-                  <img
-                    src={banner.mobileImageUrl}
-                    alt={banner.title || "Banner Image"}
-                    className={`w-full h-auto transition-opacity duration-300 ${
-                      imagesLoaded.has(index) ? 'opacity-100' : 'opacity-0'
-                    }`}
-                    style={{ imageRendering: 'crisp-edges' }}
-                    loading={index === 0 ? "eager" : "lazy"}
-                    decoding={index === 0 ? "sync" : "async"}
-                    onLoad={() => handleImageLoad(index)}
-                    onError={(e) => handleImageError(index, e, banner.mobileImageUrl)}
-                  />
-                </div>
+              <div className="block md:hidden">
+                <ProgressiveImage
+                  src={banner.mobileImageUrl}
+                  alt={banner.title || "Banner Image"}
+                  className="cursor-pointer"
+                  onClick={() => handleBannerClick(banner)}
+                  priority={index === 0}
+                />
               </div>
             </div>
           ))}

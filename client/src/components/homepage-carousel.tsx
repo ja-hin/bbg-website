@@ -16,19 +16,19 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
   const [imagesLoaded, setImagesLoaded] = useState<Record<number, boolean>>({});
 
   // Fetch active homepage banners (excluding special banners like "Who can use these plans")
+  // Use browser cache and stale-while-revalidate pattern for faster loading
   const { data: allBanners = [], isLoading } = useQuery({
     queryKey: ['/api/homepage-banners'],
     queryFn: async () => {
-      const response = await fetch('/api/homepage-banners', {
-        cache: 'no-cache'
-      });
+      const response = await fetch('/api/homepage-banners');
       if (!response.ok) {
         throw new Error('Failed to fetch banners');
       }
       return response.json();
     },
     retry: false,
-    staleTime: 300000,
+    staleTime: 600000,
+    gcTime: 900000,
     refetchOnMount: false,
     refetchOnWindowFocus: false
   });

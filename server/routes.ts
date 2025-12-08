@@ -10075,9 +10075,12 @@ Required: GUPSHUP_API_KEY environment variable
   // ===== HOMEPAGE BANNER MANAGEMENT ROUTES =====
 
   // Public endpoint - Get active homepage banners (for frontend display)
+  // Cache for 5 minutes to reduce API calls and improve carousel loading speed
   app.get("/api/homepage-banners", async (req, res) => {
     try {
       const banners = await storage.getActiveHomepageBanners();
+      // Set cache headers for faster subsequent loads
+      res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=600');
       res.json(banners);
     } catch (error: any) {
       console.error("Error fetching homepage banners:", error);

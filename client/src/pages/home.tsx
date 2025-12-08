@@ -11,7 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useQuery } from "@tanstack/react-query";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { DevicePlanSelectorForm } from "@/components/device-plan-selector-form";
 import {
   Smartphone,
@@ -49,6 +49,15 @@ export default function Home() {
     setCarouselLoaded(true);
   }, []);
 
+  // Fallback: if carousel doesn't load within 2 seconds, enable deferred queries anyway
+  useEffect(() => {
+    if (carouselLoaded) return;
+    const timeout = setTimeout(() => {
+      setCarouselLoaded(true);
+    }, 2000);
+    return () => clearTimeout(timeout);
+  }, [carouselLoaded]);
+
   const handleViewPlans = (deviceType: string) => {
     setSelectedDeviceTypeFromCard(deviceType);
     setTimeout(() => {
@@ -72,10 +81,11 @@ export default function Home() {
     enabled: carouselLoaded,
   });
 
-  // Fetch plans for dynamic pricing - ALWAYS LOAD (business critical)
+  // Fetch plans for dynamic pricing - DEFERRED until carousel loads (with fallback timeout)
   const { data: allPlans = [], isLoading: pricesLoading } = useQuery({
     queryKey: ["/api/plans"],
     staleTime: 600000,
+    enabled: carouselLoaded,
   });
 
   // Extract prices from plans based on device type and plan type

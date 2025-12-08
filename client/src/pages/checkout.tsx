@@ -126,8 +126,7 @@ export default function Checkout() {
     mutationFn: async (phone: string) => {
       const response = await apiRequest("/api/otp/send", {
         method: "POST",
-        body: JSON.stringify({ phone }),
-        headers: { "Content-Type": "application/json" },
+        body: { phone },
       });
       return response;
     },
@@ -152,8 +151,7 @@ export default function Checkout() {
     mutationFn: async ({ phone, otp }: { phone: string; otp: string }) => {
       const response = await apiRequest("/api/otp/verify", {
         method: "POST",
-        body: JSON.stringify({ phone, otp }),
-        headers: { "Content-Type": "application/json" },
+        body: { phone, otp },
       });
       return response;
     },
@@ -215,8 +213,7 @@ export default function Checkout() {
     mutationFn: async (paymentData: any) => {
       const response = await apiRequest("/api/payment/initiate", {
         method: "POST",
-        body: JSON.stringify(paymentData),
-        headers: { "Content-Type": "application/json" },
+        body: paymentData,
       });
       return response;
     },

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { HomepageBanner } from "@shared/schema";
 
@@ -28,6 +28,8 @@ const DEFAULT_FALLBACK_SLIDES = [
 
 export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: HomepageCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState<Set<number>>(new Set());
+  const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
 
   const { data: allBanners = [], isLoading, isError } = useQuery({
     queryKey: ['/api/homepage-banners'],
@@ -64,6 +66,20 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
     return () => clearInterval(interval);
   }, [autoPlay, autoPlayInterval, slideCount]);
 
+  useEffect(() => {
+    if (!hasBanners) return;
+    
+    banners.forEach((banner: HomepageBanner, index: number) => {
+      if (index <= 1) {
+        const desktopImg = new Image();
+        desktopImg.src = banner.desktopImageUrl;
+        
+        const mobileImg = new Image();
+        mobileImg.src = banner.mobileImageUrl;
+      }
+    });
+  }, [banners, hasBanners]);
+
   const goToSlide = useCallback((index: number) => {
     setCurrentSlide(index);
   }, []);
@@ -82,7 +98,33 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
     }
   }, []);
 
-  if (isLoading || !hasBanners || isError) {
+  const handleImageLoad = useCallback((index: number) => {
+    setImagesLoaded(prev => new Set(prev).add(index));
+  }, []);
+
+  const handleImageError = useCallback((index: number, e: React.SyntheticEvent<HTMLImageElement>, fallbackUrl: string) => {
+    const img = e.target as HTMLImageElement;
+    if (!img.src.includes('/uploads/')) {
+      img.src = `/uploads/${fallbackUrl.split('/').pop()}`;
+    } else {
+      setImageErrors(prev => new Set(prev).add(index));
+    }
+  }, []);
+
+  if (isLoading) {
+    return (
+      <section className="w-full bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] py-16 md:py-24">
+        <div className="flex items-center justify-center min-h-[200px] md:min-h-[300px]">
+          <div className="text-center text-white">
+            <Loader2 className="h-10 w-10 animate-spin mx-auto mb-3" />
+            <span className="text-lg font-medium">Loading...</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!hasBanners || isError) {
     return (
       <section className="relative w-full">
         <div className="relative w-full overflow-hidden">
@@ -165,6 +207,12 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
         >
           {banners.map((banner: HomepageBanner, index: number) => (
             <div key={banner.id} className="w-full flex-shrink-0 relative">
+              {!imagesLoaded.has(index) && !imageErrors.has(index) && (
+                <div className="absolute inset-0 bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6] flex items-center justify-center min-h-[200px] md:min-h-[300px]">
+                  <Loader2 className="h-8 w-8 animate-spin text-white" />
+                </div>
+              )}
+
               <div 
                 className="hidden md:block relative w-full cursor-pointer"
                 onClick={() => handleBannerClick(banner)}
@@ -173,16 +221,14 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
                   <img
                     src={banner.desktopImageUrl}
                     alt={banner.title || "Banner Image"}
-                    className="w-full h-auto"
+                    className={`w-full h-auto transition-opacity duration-300 ${
+                      imagesLoaded.has(index) ? 'opacity-100' : 'opacity-0'
+                    }`}
                     style={{ imageRendering: 'crisp-edges' }}
                     loading={index === 0 ? "eager" : "lazy"}
                     decoding={index === 0 ? "sync" : "async"}
-                    onError={(e) => {
-                      const img = e.target as HTMLImageElement;
-                      if (!img.src.includes('/uploads/')) {
-                        img.src = `/uploads/${banner.desktopImageUrl.split('/').pop()}`;
-                      }
-                    }}
+                    onLoad={() => handleImageLoad(index)}
+                    onError={(e) => handleImageError(index, e, banner.desktopImageUrl)}
                   />
                 </div>
               </div>
@@ -195,16 +241,14 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
                   <img
                     src={banner.mobileImageUrl}
                     alt={banner.title || "Banner Image"}
-                    className="w-full h-auto"
+                    className={`w-full h-auto transition-opacity duration-300 ${
+                      imagesLoaded.has(index) ? 'opacity-100' : 'opacity-0'
+                    }`}
                     style={{ imageRendering: 'crisp-edges' }}
                     loading={index === 0 ? "eager" : "lazy"}
                     decoding={index === 0 ? "sync" : "async"}
-                    onError={(e) => {
-                      const img = e.target as HTMLImageElement;
-                      if (!img.src.includes('/uploads/')) {
-                        img.src = `/uploads/${banner.mobileImageUrl.split('/').pop()}`;
-                      }
-                    }}
+                    onLoad={() => handleImageLoad(index)}
+                    onError={(e) => handleImageError(index, e, banner.mobileImageUrl)}
                   />
                 </div>
               </div>

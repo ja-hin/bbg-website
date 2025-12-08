@@ -11,7 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useQuery } from "@tanstack/react-query";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { DevicePlanSelectorForm } from "@/components/device-plan-selector-form";
 import {
   Smartphone,
@@ -43,13 +43,6 @@ export default function Home() {
   const [isExtendExpanded, setIsExtendExpanded] = useState(false);
   const [selectedDeviceTypeFromCard, setSelectedDeviceTypeFromCard] = useState<string | undefined>();
   const formRef = useRef<HTMLDivElement>(null);
-  const [deferredQueriesEnabled, setDeferredQueriesEnabled] = useState(false);
-
-  // Defer non-critical API calls to allow carousel to render first
-  useEffect(() => {
-    const timer = setTimeout(() => setDeferredQueriesEnabled(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleViewPlans = (deviceType: string) => {
     setSelectedDeviceTypeFromCard(deviceType);
@@ -58,28 +51,23 @@ export default function Home() {
     }, 0);
   };
 
-  // Fetch theme for dynamic coloring - deferred
+  // Fetch theme for dynamic coloring - deferred with staleTime
   const { data: theme } = useQuery({
     queryKey: ["/api/theme/current"],
     retry: false,
-    enabled: deferredQueriesEnabled,
+    staleTime: 600000,
   });
 
-  // Fetch "Who can use these plans?" banner - deferred
+  // Fetch "Who can use these plans?" banner - deferred with staleTime
   const { data: whoCanUseBanner } = useQuery({
     queryKey: ["/api/homepage-banners/by-title/Who can use these plans"],
     retry: false,
-    enabled: deferredQueriesEnabled,
+    staleTime: 600000,
   });
 
-  // Fetch plans for dynamic pricing - load immediately for prices
+  // Fetch plans for dynamic pricing
   const { data: allPlans = [], isLoading: pricesLoading } = useQuery({
     queryKey: ["/api/plans"],
-    queryFn: async () => {
-      const response = await fetch("/api/plans");
-      if (!response.ok) throw new Error("Failed to fetch plans");
-      return response.json();
-    },
     staleTime: 600000,
   });
 
@@ -103,38 +91,6 @@ export default function Home() {
     const plan = allPlans.find((p: any) => p.deviceType === "mobile" && p.planType === "extend_plus");
     return plan?.planPrice || 199;
   };
-
-  // Fetch regular claim value slabs for mobile - deferred to not block carousel
-  const { data: mobileSlabs, isLoading: isMobileLoading } = useQuery({
-    queryKey: ["/api/claim-value-slabs/active/mobile/regular"],
-    retry: 1,
-    staleTime: 600000,
-    refetchOnMount: false,
-    enabled: deferredQueriesEnabled,
-  });
-
-  // Fetch regular claim value slabs for laptop - deferred to not block carousel
-  const { data: laptopSlabs, isLoading: isLaptopLoading } = useQuery({
-    queryKey: ["/api/claim-value-slabs/active/laptop/regular"],
-    retry: 1,
-    staleTime: 600000,
-    refetchOnMount: false,
-    enabled: deferredQueriesEnabled,
-  });
-
-  const activeMobileSlabs = Array.isArray(mobileSlabs)
-    ? mobileSlabs.filter((slab: any) => slab.isActive)
-    : [];
-  const activeLaptopSlabs = Array.isArray(laptopSlabs)
-    ? laptopSlabs.filter((slab: any) => slab.isActive)
-    : [];
-  const isSlabsLoading = isMobileLoading || isLaptopLoading;
-
-  const allSlabs = [...activeMobileSlabs, ...activeLaptopSlabs];
-  const maxPercentage =
-    allSlabs.length > 0
-      ? Math.max(...allSlabs.map((slab: any) => slab.percentage))
-      : 70;
 
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">

@@ -690,6 +690,111 @@ export class CommunicationService {
 
     return results;
   }
+
+  async sendInvoiceEmail(invoiceData: {
+    customerName: string;
+    customerEmail: string;
+    invoiceNumber: string;
+    invoiceUrl: string;
+    transactionId: string;
+    amount: number;
+    planName: string;
+  }) {
+    try {
+      console.log('📧 Sending invoice email to:', invoiceData.customerEmail);
+
+      const emailContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #254696, #4A90E2); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+            .invoice-box { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; }
+            .invoice-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+            .invoice-row:last-child { border-bottom: none; font-weight: bold; }
+            .download-btn { display: inline-block; background: #254696; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 20px; }
+            .footer { text-align: center; color: #666; font-size: 12px; margin-top: 30px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>XtraCover</h1>
+              <p>Your Invoice is Ready</p>
+            </div>
+            <div class="content">
+              <p>Dear ${invoiceData.customerName},</p>
+              <p>Thank you for your purchase! Your payment has been successfully processed. Below are the details of your transaction:</p>
+              
+              <div class="invoice-box">
+                <div class="invoice-row">
+                  <span>Invoice Number:</span>
+                  <span>${invoiceData.invoiceNumber}</span>
+                </div>
+                <div class="invoice-row">
+                  <span>Transaction ID:</span>
+                  <span>${invoiceData.transactionId}</span>
+                </div>
+                <div class="invoice-row">
+                  <span>Plan:</span>
+                  <span>${invoiceData.planName}</span>
+                </div>
+                <div class="invoice-row">
+                  <span>Amount Paid:</span>
+                  <span>₹${invoiceData.amount.toFixed(2)}</span>
+                </div>
+              </div>
+              
+              <p>You can download your invoice using the button below:</p>
+              
+              <center>
+                <a href="${invoiceData.invoiceUrl}" class="download-btn">Download Invoice</a>
+              </center>
+              
+              <p style="margin-top: 30px;">If you have any questions, please don't hesitate to contact our support team.</p>
+              
+              <p>Best regards,<br>The XtraCover Team</p>
+            </div>
+            <div class="footer">
+              <p>This is an automated email. Please do not reply directly to this message.</p>
+              <p>&copy; ${new Date().getFullYear()} XtraCover. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+
+      const smtpSettings = await this.getSmtpSettings();
+      let result;
+      
+      if (smtpSettings) {
+        console.log('📧 Using database SMTP settings for invoice email');
+        result = await this.emailService.sendEmailWithSmtpSettings(
+          invoiceData.customerEmail,
+          `Your XtraCover Invoice #${invoiceData.invoiceNumber}`,
+          emailContent,
+          smtpSettings
+        );
+      } else {
+        console.log('📧 Using default SMTP settings for invoice email');
+        result = await this.emailService.sendEmail(
+          invoiceData.customerEmail,
+          `Your XtraCover Invoice #${invoiceData.invoiceNumber}`,
+          emailContent
+        );
+      }
+
+      console.log('📧 Invoice email send result:', result);
+      return result;
+    } catch (error) {
+      console.error('❌ Error sending invoice email:', error);
+      return { success: false, error: error };
+    }
+  }
 }
 
 export const communicationService = new CommunicationService();

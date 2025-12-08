@@ -21,6 +21,7 @@ import { testAllTemplates } from "./template-test";
 import { registerTestRoutes } from "./test-services";
 import { s3Service, createS3Upload } from "./s3-service";
 import { getPlanFor, getBenefitsDescription, isEligibleForBBG } from "./plan-service";
+import { invoiceService } from "./invoice-service";
 import AWS from "aws-sdk";
 import bcrypt from "bcryptjs";
 // Removed nodemailer import - using communicationService instead
@@ -1236,6 +1237,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Clean up temporary storage
         tempStorage.delete(txnid);
 
+        // Generate invoice
+        let invoiceData = null;
+        try {
+          console.log("📄 Generating invoice for transaction:", txnid);
+          const invoice = await invoiceService.generateInvoice({
+            invoiceNumber: "",
+            transactionId: txnid,
+            customerName: customer.name,
+            customerEmail: customer.email,
+            customerContact: customer.contact,
+            planName: customer.modelName || `${customer.benefitType?.toUpperCase()} Plan`,
+            planType: customer.benefitType || "bbg",
+            deviceType: customer.deviceType,
+            brand: customer.brand,
+            amount: parseFloat(amount),
+            validity: customer.benefitsJson ? JSON.parse(customer.benefitsJson)?.validity : undefined,
+            coverage: customer.benefitsJson ? JSON.parse(customer.benefitsJson)?.coverage : undefined,
+            paymentDate: new Date(),
+            referralCode: customer.sellerCode,
+          });
+
+          if (invoice.success) {
+            invoiceData = {
+              invoiceNumber: invoice.invoiceNumber,
+              invoiceUrl: invoice.invoiceUrl,
+            };
+            console.log("✅ Invoice generated:", invoice.invoiceNumber);
+
+            // Send invoice email
+            try {
+              const emailService = communicationService;
+              await emailService.sendInvoiceEmail({
+                customerName: customer.name,
+                customerEmail: customer.email,
+                invoiceNumber: invoice.invoiceNumber,
+                invoiceUrl: invoice.invoiceUrl || "",
+                transactionId: txnid,
+                amount: parseFloat(amount),
+                planName: customer.modelName || `${customer.benefitType?.toUpperCase()} Plan`,
+              });
+              console.log("📧 Invoice email sent to:", customer.email);
+            } catch (emailError) {
+              console.error("❌ Failed to send invoice email:", emailError);
+            }
+          } else {
+            console.error("❌ Invoice generation failed:", invoice.error);
+          }
+        } catch (invoiceError) {
+          console.error("❌ Invoice generation error:", invoiceError);
+        }
+
         // Store success data in session for thank you page
         req.session.thankYouData = {
           type: "customer",
@@ -1256,6 +1308,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           planPrice: customer.planPrice,
           txnid: txnid,
           amount: amount, // Store actual charged amount (includes any referral discounts)
+          // Invoice data
+          invoiceNumber: invoiceData?.invoiceNumber,
+          invoiceUrl: invoiceData?.invoiceUrl,
         };
 
         // Redirect to success page without query parameters

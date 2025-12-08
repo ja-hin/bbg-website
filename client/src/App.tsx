@@ -6,10 +6,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import Home from "@/pages/home";
+import Header from "@/components/header";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 
-const Header = lazy(() => import("@/components/header"));
 const Footer = lazy(() => import("@/components/footer"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 const DistributorRegistration = lazy(() => import("@/pages/distributor-registration"));
@@ -124,9 +124,7 @@ function Router() {
         {/* Regular routes with header/footer */}
         <Route>
           <div className="min-h-screen flex flex-col">
-            <Suspense fallback={null}>
-              <Header />
-            </Suspense>
+            <Header />
             <main className="flex-1">
               <Switch>
                 <Route path="/" component={Home} />

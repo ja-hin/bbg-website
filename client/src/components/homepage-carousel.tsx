@@ -11,6 +11,21 @@ interface HomepageCarouselProps {
   onFirstImageLoaded?: () => void;
 }
 
+function CarouselSkeleton() {
+  return (
+    <section className="relative w-full">
+      <div className="relative w-full overflow-hidden">
+        <div className="hidden md:block">
+          <Skeleton className="w-full h-[400px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
+        </div>
+        <div className="block md:hidden">
+          <Skeleton className="w-full h-[250px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000, onFirstImageLoaded }: HomepageCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState<Record<number, boolean>>({});
@@ -50,7 +65,7 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000, on
     gcTime: 900000,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-    enabled: firstImageLoaded // Only fetch after first image loads
+    enabled: firstImageLoaded
   });
 
   // Merge banners: use first banner immediately, then full list when available
@@ -59,12 +74,10 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000, on
       banner.title !== "Who can use these plans"
     );
     
-    // If we have the full list, use it
     if (fullBanners.length > 0) {
       return fullBanners;
     }
     
-    // Otherwise, show just the first banner while loading the rest
     if (firstBanner) {
       return [firstBanner];
     }
@@ -125,17 +138,43 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000, on
     }
   }, [isFirstLoading, firstBanner, firstImageLoaded, onFirstImageLoaded]);
 
-  // Show skeleton only while fetching the first banner
-  if (isFirstLoading) {
+  // Show skeleton while API is loading OR while waiting for first image
+  // This ensures skeleton appears immediately on page load
+  if (isFirstLoading || (banners.length > 0 && !firstImageLoaded)) {
     return (
       <section className="relative w-full">
         <div className="relative w-full overflow-hidden">
+          {/* Show skeleton as placeholder */}
           <div className="hidden md:block">
             <Skeleton className="w-full h-[400px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
           </div>
           <div className="block md:hidden">
             <Skeleton className="w-full h-[250px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
           </div>
+          
+          {/* Preload the first image in the background (hidden) */}
+          {banners.length > 0 && (
+            <>
+              <img
+                ref={firstDesktopImgRef}
+                src={banners[0].desktopImageUrl}
+                alt=""
+                className="hidden"
+                loading="eager"
+                onLoad={() => handleImageLoad(0)}
+                onError={() => handleImageLoad(0)}
+              />
+              <img
+                ref={firstMobileImgRef}
+                src={banners[0].mobileImageUrl}
+                alt=""
+                className="hidden"
+                loading="eager"
+                onLoad={() => handleImageLoad(0)}
+                onError={() => handleImageLoad(0)}
+              />
+            </>
+          )}
         </div>
       </section>
     );
@@ -255,3 +294,5 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000, on
     </section>
   );
 }
+
+export { CarouselSkeleton };

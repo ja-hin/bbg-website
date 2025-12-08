@@ -1,10 +1,11 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, ArrowLeft, ShieldCheck, Truck, Wallet, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
 
 export default function Plans() {
+  const [, setLocation] = useLocation();
   const searchParams = new URLSearchParams(window.location.search);
   const deviceType = searchParams.get("type");
   const deviceBrand = searchParams.get("brand");
@@ -19,26 +20,15 @@ export default function Plans() {
     },
   });
 
-  // Extract prices from plans based on device type and plan type
-  const getLaptopBBGPrice = () => {
-    const plan = allPlans.find((p: any) => p.deviceType === "laptop" && p.planType === "bbg");
-    return plan?.planPrice || 499;
+  // Extract plan info from database-driven plans
+  const getPlanInfo = (planDeviceType: string, planType: string) => {
+    return allPlans.find((p: any) => p.deviceType === planDeviceType && p.planType === planType);
   };
 
-  const getMobileBBGPrice = () => {
-    const plan = allPlans.find((p: any) => p.deviceType === "mobile" && p.planType === "bbg");
-    return plan?.planPrice || 299;
-  };
-
-  const getLaptopExtendPrice = () => {
-    const plan = allPlans.find((p: any) => p.deviceType === "laptop" && p.planType === "extend_plus");
-    return plan?.planPrice || 499;
-  };
-
-  const getMobileExtendPrice = () => {
-    const plan = allPlans.find((p: any) => p.deviceType === "mobile" && p.planType === "extend_plus");
-    return plan?.planPrice || 299;
-  };
+  const laptopBBGPlan = getPlanInfo("laptop", "bbg");
+  const mobileBBGPlan = getPlanInfo("mobile", "bbg");
+  const laptopExtendPlan = getPlanInfo("laptop", "extend_plus");
+  const mobileExtendPlan = getPlanInfo("mobile", "extend_plus");
 
   if (!deviceType || !deviceBrand || !devicePurchaseDate) {
     return (
@@ -94,6 +84,24 @@ export default function Plans() {
     showLaptopExtend,
     showMobileExtend,
   ].filter(Boolean).length;
+
+  const handleBuyNow = (planInfo: any) => {
+    if (!planInfo || !planInfo.planPrice || !planInfo.planName) return;
+    
+    const selectedPlan = {
+      planType: planInfo.planType,
+      deviceType: planInfo.deviceType,
+      price: planInfo.planPrice,
+      planName: planInfo.planName,
+      validity: planInfo.validity,
+      coverage: planInfo.coverage,
+      brand: deviceBrand,
+      purchaseDate: devicePurchaseDate,
+    };
+    
+    sessionStorage.setItem('selectedPlan', JSON.stringify(selectedPlan));
+    setLocation('/checkout');
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -201,7 +209,7 @@ export default function Plans() {
                       {pricesLoading ? (
                         <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
                       ) : (
-                        `₹${bbgPrices?.laptop || 499}`
+                        `₹${laptopBBGPlan?.planPrice || '--'}`
                       )}
                     </div>
                     <p className="text-white/80 text-xs sm:text-sm">
@@ -242,8 +250,13 @@ export default function Plans() {
                   </div>
 
                   <div className="p-4 sm:p-6 pt-4 sm:pt-6">
-                    <Button className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold">
-                      Buy Now
+                    <Button 
+                      className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => handleBuyNow(laptopBBGPlan)}
+                      disabled={pricesLoading || !laptopBBGPlan}
+                      data-testid="button-buy-laptop-bbg"
+                    >
+                      {pricesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy Now"}
                     </Button>
                   </div>
                 </div>
@@ -283,7 +296,7 @@ export default function Plans() {
                       {pricesLoading ? (
                         <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
                       ) : (
-                        `₹${getMobileBBGPrice()}`
+                        `₹${mobileBBGPlan?.planPrice || '--'}`
                       )}
                     </div>
                     <p className="text-white/80 text-xs sm:text-sm">
@@ -322,8 +335,13 @@ export default function Plans() {
 
 
                   <div className="p-4 sm:p-6 pt-4 sm:pt-6">
-                    <Button className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold">
-                      Buy Now
+                    <Button 
+                      className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => handleBuyNow(mobileBBGPlan)}
+                      disabled={pricesLoading || !mobileBBGPlan}
+                      data-testid="button-buy-mobile-bbg"
+                    >
+                      {pricesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy Now"}
                     </Button>
                   </div>
                 </div>
@@ -363,7 +381,7 @@ export default function Plans() {
                       {pricesLoading ? (
                         <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
                       ) : (
-                        `₹${getLaptopExtendPrice()}`
+                        `₹${laptopExtendPlan?.planPrice || '--'}`
                       )}
                     </div>
                     <p className="text-white/80 text-xs sm:text-sm">
@@ -398,8 +416,13 @@ export default function Plans() {
                   </div>
 
                   <div className="p-4 sm:p-6 pt-4 sm:pt-6">
-                    <Button className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold">
-                      Buy Now
+                    <Button 
+                      className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => handleBuyNow(laptopExtendPlan)}
+                      disabled={pricesLoading || !laptopExtendPlan}
+                      data-testid="button-buy-laptop-extend"
+                    >
+                      {pricesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy Now"}
                     </Button>
                   </div>
                 </div>
@@ -439,7 +462,7 @@ export default function Plans() {
                       {pricesLoading ? (
                         <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
                       ) : (
-                        `₹${getMobileExtendPrice()}`
+                        `₹${mobileExtendPlan?.planPrice || '--'}`
                       )}
                     </div>
                     <p className="text-white/80 text-xs sm:text-sm">
@@ -473,8 +496,13 @@ export default function Plans() {
 
 
                   <div className="p-4 sm:p-6 pt-4 sm:pt-6">
-                    <Button className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold">
-                      Buy Now
+                    <Button 
+                      className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => handleBuyNow(mobileExtendPlan)}
+                      disabled={pricesLoading || !mobileExtendPlan}
+                      data-testid="button-buy-mobile-extend"
+                    >
+                      {pricesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy Now"}
                     </Button>
                   </div>
                 </div>

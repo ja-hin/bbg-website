@@ -55,6 +55,7 @@ const DistributorLogin = lazy(() => import("@/pages/distributor-login"));
 const DistributorDashboard = lazy(() => import("@/pages/distributor-dashboard"));
 const TermsAndConditions = lazy(() => import("@/pages/terms-and-conditions"));
 const Plans = lazy(() => import("@/pages/plans"));
+const Checkout = lazy(() => import("@/pages/checkout"));
 const ScrollToTopButton = lazy(() => import("@/components/scroll-to-top-button").then(m => ({ default: m.ScrollToTopButton })));
 const ThemeLoader = lazy(() => import("@/components/theme-loader").then(m => ({ default: m.ThemeLoader })));
 
@@ -129,6 +130,7 @@ function Router() {
               <Switch>
                 <Route path="/" component={Home} />
                 <Route path="/plans" component={Plans} />
+                <Route path="/checkout" component={Checkout} />
                 <Route path="/referral-partner-registration" component={DistributorRegistration} />
                 <Route path="/buy-bbg" component={CustomerRegistration} />
                 <Route path="/claim-bbg" component={ClaimBBG} />

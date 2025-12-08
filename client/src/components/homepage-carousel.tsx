@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,25 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000, on
   const firstDesktopImgRef = useRef<HTMLImageElement>(null);
   const firstMobileImgRef = useRef<HTMLImageElement>(null);
 
-  const { data: allBanners = [], isLoading } = useQuery({
+  // FAST: Fetch only the first banner immediately for quick initial render
+  const { data: firstBanner, isLoading: isFirstLoading } = useQuery({
+    queryKey: ['/api/homepage-banners/first'],
+    queryFn: async () => {
+      const response = await fetch('/api/homepage-banners/first');
+      if (!response.ok) {
+        throw new Error('Failed to fetch first banner');
+      }
+      return response.json();
+    },
+    retry: false,
+    staleTime: 600000,
+    gcTime: 900000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false
+  });
+
+  // DEFERRED: Fetch all banners after first image loads (or after timeout)
+  const { data: allBanners = [] } = useQuery({
     queryKey: ['/api/homepage-banners'],
     queryFn: async () => {
       const response = await fetch('/api/homepage-banners');
@@ -31,12 +49,28 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000, on
     staleTime: 600000,
     gcTime: 900000,
     refetchOnMount: false,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    enabled: firstImageLoaded // Only fetch after first image loads
   });
 
-  const banners = allBanners.filter((banner: HomepageBanner) => 
-    banner.title !== "Who can use these plans"
-  );
+  // Merge banners: use first banner immediately, then full list when available
+  const banners = useMemo(() => {
+    const fullBanners = allBanners.filter((banner: HomepageBanner) => 
+      banner.title !== "Who can use these plans"
+    );
+    
+    // If we have the full list, use it
+    if (fullBanners.length > 0) {
+      return fullBanners;
+    }
+    
+    // Otherwise, show just the first banner while loading the rest
+    if (firstBanner) {
+      return [firstBanner];
+    }
+    
+    return [];
+  }, [firstBanner, allBanners]);
 
   useEffect(() => {
     if (firstDesktopImgRef.current) {
@@ -83,14 +117,16 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000, on
     }
   }, [firstImageLoaded, onFirstImageLoaded]);
 
+  // Handle case when no banners exist
   useEffect(() => {
-    if (!isLoading && banners.length === 0 && !firstImageLoaded) {
+    if (!isFirstLoading && !firstBanner && !firstImageLoaded) {
       setFirstImageLoaded(true);
       onFirstImageLoaded?.();
     }
-  }, [isLoading, banners.length, firstImageLoaded, onFirstImageLoaded]);
+  }, [isFirstLoading, firstBanner, firstImageLoaded, onFirstImageLoaded]);
 
-  if (isLoading) {
+  // Show skeleton only while fetching the first banner
+  if (isFirstLoading) {
     return (
       <section className="relative w-full">
         <div className="relative w-full overflow-hidden">

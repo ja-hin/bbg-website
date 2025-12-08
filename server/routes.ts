@@ -10074,6 +10074,22 @@ Required: GUPSHUP_API_KEY environment variable
 
   // ===== HOMEPAGE BANNER MANAGEMENT ROUTES =====
 
+  // Public endpoint - Get ONLY the first active banner (for fast initial carousel load)
+  // This lightweight endpoint allows the first image to start loading immediately
+  app.get("/api/homepage-banners/first", async (req, res) => {
+    try {
+      const banners = await storage.getActiveHomepageBanners();
+      // Filter out special banners and get the first one by sort order
+      const carouselBanners = banners.filter(b => b.title !== "Who can use these plans");
+      const firstBanner = carouselBanners[0] || null;
+      res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=600');
+      res.json(firstBanner);
+    } catch (error: any) {
+      console.error("Error fetching first banner:", error);
+      res.status(500).json({ message: "Failed to get first banner" });
+    }
+  });
+
   // Public endpoint - Get active homepage banners (for frontend display)
   // Cache for 5 minutes to reduce API calls and improve carousel loading speed
   app.get("/api/homepage-banners", async (req, res) => {

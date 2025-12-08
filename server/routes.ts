@@ -1324,6 +1324,191 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Payment initiation endpoint for new checkout flow
+  app.post("/api/payment/initiate", async (req, res) => {
+    try {
+      const payuConfig = getSafePayUConfig();
+      if (!payuConfig) {
+        return res.status(500).json({
+          message: "Payment gateway is not properly configured. Please contact support.",
+          error: "Missing payment credentials",
+        });
+      }
+
+      const {
+        customerName,
+        customerContact,
+        customerEmail,
+        referralCode,
+        planType,
+        deviceType,
+        planName,
+        amount,
+        validity,
+        coverage,
+        brand,
+        purchaseDate,
+      } = req.body;
+
+      // Validate required fields
+      if (!customerName || !customerContact || !customerEmail || !planType || !deviceType || !amount) {
+        return res.status(400).json({
+          message: "Missing required fields for payment",
+          error: "Validation failed",
+        });
+      }
+
+      // Rate limiting check
+      const clientIP = req.ip || req.connection.remoteAddress || "unknown";
+      const now = Date.now();
+      const lastRequest = payuRateLimit.get(clientIP) || 0;
+      if (now - lastRequest < 30000) {
+        const waitTime = Math.ceil((30000 - (now - lastRequest)) / 1000);
+        return res.status(429).json({
+          message: `Please wait ${waitTime} seconds before trying again.`,
+          waitTime,
+        });
+      }
+      payuRateLimit.set(clientIP, now);
+
+      // Generate unique transaction ID
+      const txnid = `PLAN_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      // Persist payment data for post-payment processing
+      try {
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        const pendingPaymentData = {
+          name: customerName,
+          contact: customerContact,
+          email: customerEmail,
+          pincode: "000000",
+          deviceType: deviceType,
+          serialNumber: null,
+          brand: brand || "Unknown",
+          modelName: planName,
+          invoiceValue: 0,
+          paymentAmount: amount,
+          transactionId: txnid,
+          sellerCode: referralCode || null,
+          status: "pending",
+          expiresAt: expiresAt,
+          purchaseTimingCategory: planType === "bbg" ? "within_six_months" : "after_six_months",
+          benefitType: planType,
+          planPrice: amount,
+          benefitsJson: JSON.stringify({ planName, validity, coverage }),
+          emailTemplateKey: planType === "bbg" ? "bbg_confirmation" : "extend_plus_confirmation",
+        };
+
+        await storage.createPendingPayment(pendingPaymentData);
+        console.log("💾 Payment initiate: Plan context persisted:", { txnid, planType, amount });
+      } catch (persistError) {
+        console.error("❌ Failed to persist payment context:", persistError);
+      }
+
+      // Store in temp storage as backup
+      const tempStorage = app.locals.tempCustomerData || new Map();
+      tempStorage.set(txnid, {
+        customerData: {
+          name: customerName,
+          contact: customerContact,
+          email: customerEmail,
+          deviceType,
+          brand,
+          purchaseDate,
+        },
+        planDetails: {
+          planType,
+          planName,
+          planPrice: amount,
+          validity,
+          coverage,
+          benefitType: planType,
+        },
+        referralCode,
+        finalAmount: amount,
+      });
+      app.locals.tempCustomerData = tempStorage;
+
+      // Build PayU redirect URL
+      const host = req.get("host");
+      const baseUrl = process.env.PAYU_REDIRECT_BASE_URL || `https://${host}`;
+
+      const payuParams: any = {
+        key: payuConfig.merchantKey,
+        txnid,
+        amount: amount.toString(),
+        productinfo: planName || `${planType.toUpperCase()} Plan`,
+        firstname: customerName,
+        email: customerEmail,
+        phone: customerContact,
+        surl: `${baseUrl}/api/payu/success`,
+        furl: `${baseUrl}/api/payu/failure`,
+      };
+
+      // Generate hash
+      const hash = generatePayUHash(payuParams, payuConfig.salt);
+      payuParams.hash = hash;
+
+      // Return PayU form HTML that auto-submits
+      const payuFormHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Redirecting to Payment...</title>
+          <style>
+            body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f5f5f5; }
+            .loader { text-align: center; }
+            .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #254696; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+          </style>
+        </head>
+        <body>
+          <div class="loader">
+            <div class="spinner"></div>
+            <p>Redirecting to payment gateway...</p>
+          </div>
+          <form id="payuForm" method="POST" action="${payuConfig.baseUrl}/_payment">
+            ${Object.entries(payuParams).map(([key, value]) => `<input type="hidden" name="${key}" value="${value}" />`).join("\n")}
+          </form>
+          <script>document.getElementById('payuForm').submit();</script>
+        </body>
+        </html>
+      `;
+
+      res.json({
+        success: true,
+        txnid,
+        redirectUrl: `/api/payment/redirect/${txnid}`,
+      });
+
+      // Store form HTML for redirect
+      const formStorage = app.locals.payuForms || new Map();
+      formStorage.set(txnid, payuFormHtml);
+      app.locals.payuForms = formStorage;
+
+    } catch (error: any) {
+      console.error("Payment initiation error:", error);
+      res.status(500).json({ message: "Error initiating payment: " + error.message });
+    }
+  });
+
+  // Payment redirect endpoint - serves the PayU form
+  app.get("/api/payment/redirect/:txnid", (req, res) => {
+    const { txnid } = req.params;
+    const formStorage = app.locals.payuForms || new Map();
+    const formHtml = formStorage.get(txnid);
+
+    if (!formHtml) {
+      return res.status(404).send("Payment session expired. Please try again.");
+    }
+
+    // Clean up after use
+    formStorage.delete(txnid);
+
+    res.setHeader("Content-Type", "text/html");
+    res.send(formHtml);
+  });
+
   // Customer registration with payment processing (JSON data)
   app.post("/api/customers/register", async (req, res) => {
     try {

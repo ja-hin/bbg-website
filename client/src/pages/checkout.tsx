@@ -184,6 +184,8 @@ export default function Checkout() {
     setOtpLoading(true);
     try {
       await sendOtpMutation.mutateAsync(contact);
+    } catch (error: any) {
+      // Error already handled by onError callback
     } finally {
       setOtpLoading(false);
     }
@@ -204,6 +206,8 @@ export default function Checkout() {
         phone: form.getValues("contact"),
         otp: otpCode,
       });
+    } catch (error: any) {
+      // Error already handled by onError callback
     } finally {
       setVerifyLoading(false);
     }

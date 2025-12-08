@@ -11,7 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useQuery } from "@tanstack/react-query";
-import { useState, useRef, lazy, Suspense } from "react";
+import { useState, useRef } from "react";
 import { DevicePlanSelectorForm } from "@/components/device-plan-selector-form";
 import {
   Smartphone,
@@ -26,11 +26,17 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { HomepageCarousel } from "@/components/homepage-carousel";
-import { LazySection, LazyImage } from "@/components/lazy-image";
-
-const pricingCardBackground = "/attached_assets/(inclusive of GST) (4)_1759147213189.png";
-const planWorksBackgroundImg = "/attached_assets/Untitled design (15) (1)_1764254452404.png";
-const bannerImg = "/attached_assets/BBG Banners Revised (1)_1764328416967.png";
+import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png";
+import resaleValueImg from "@assets/Untitled design (4)_1758890353128.png";
+import doorstepPickupImg from "@assets/1_1758893676653.png";
+import instantPaymentImg from "@assets/2_1758893843696.png";
+import bbgVideoFile from "@assets/A_cinematic_hightech_202509271550_97ecx_1758972698482.mp4";
+import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.png";
+import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.png";
+import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
+import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_1764254452404.png";
+import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.png";
+import bannerImg from "@assets/BBG Banners Revised (1)_1764328416967.png";
 
 export default function Home() {
   const [isBBGExpanded, setIsBBGExpanded] = useState(false);
@@ -750,15 +756,12 @@ export default function Home() {
         </div>
       </section>
       {/* BBG Pricing Section */}
-      <LazySection fallback={<div className="py-6 sm:py-8 lg:py-10 min-h-[400px] bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]" />}>
       <section className="py-6 sm:py-8 lg:py-10 relative overflow-hidden">
         {/* Background Image */}
         <img 
           src={pricingCardBackground} 
           alt="Background pattern" 
           className="absolute inset-0 w-full h-full object-fill z-0"
-          loading="lazy"
-          decoding="async"
         />
         {/* Content */}
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -961,9 +964,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      </LazySection>
       {/* Who Can Use These Plans Banner Section */}
-      <LazySection fallback={<div className="bg-white pt-4 min-h-[200px]" />}>
       <section className="bg-white pt-4">
         {whoCanUseBanner ? (
           <>
@@ -975,8 +976,6 @@ export default function Home() {
               data-testid="image-who-can-use-desktop"
               onClick={() => whoCanUseBanner.linkUrl && (window.location.href = whoCanUseBanner.linkUrl)}
               style={{ cursor: whoCanUseBanner.linkUrl ? 'pointer' : 'default' }}
-              loading="lazy"
-              decoding="async"
             />
             {/* Mobile Image */}
             <img
@@ -986,8 +985,6 @@ export default function Home() {
               data-testid="image-who-can-use-mobile"
               onClick={() => whoCanUseBanner.linkUrl && (window.location.href = whoCanUseBanner.linkUrl)}
               style={{ cursor: whoCanUseBanner.linkUrl ? 'pointer' : 'default' }}
-              loading="lazy"
-              decoding="async"
             />
           </>
         ) : (
@@ -996,12 +993,9 @@ export default function Home() {
             alt="Woman with laptop"
             className="w-full h-auto"
             data-testid="image-who-can-use"
-            loading="lazy"
-            decoding="async"
           />
         )}
       </section>
-      </LazySection>
       {/* Eligibility Requirements Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

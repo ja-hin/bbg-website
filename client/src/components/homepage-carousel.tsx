@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { apiRequest } from "@/lib/queryClient";
 import type { HomepageBanner } from "@shared/schema";
 
 interface HomepageCarouselProps {
@@ -9,164 +10,139 @@ interface HomepageCarouselProps {
   autoPlayInterval?: number;
 }
 
-export function HomepageCarousel({
-  autoPlay = true,
-  autoPlayInterval = 15000,
-}: HomepageCarouselProps) {
+export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: HomepageCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const preloadedRef = useRef(false);
 
-  // track which slides are loaded (for fade-in only; no layout changes)
-  const [loadedSlides, setLoadedSlides] = useState<Record<number, boolean>>({});
-
-  const { data: allBanners = [] } = useQuery({
-    queryKey: ["/api/homepage-banners"],
+  // Fetch active homepage banners (excluding special banners like "Who can use these plans")
+  const { data: allBanners = [], isLoading } = useQuery({
+    queryKey: ['/api/homepage-banners'],
     queryFn: async () => {
-      const response = await fetch("/api/homepage-banners");
+      const response = await fetch('/api/homepage-banners', {
+        cache: 'no-cache'
+      });
       if (!response.ok) {
-        throw new Error("Failed to fetch banners");
+        throw new Error('Failed to fetch banners');
       }
       return response.json();
     },
-    retry: 1,
-    staleTime: 10 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
+    retry: false,
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false
   });
 
-  const banners = useMemo(
-    () =>
-      allBanners.filter(
-        (banner: HomepageBanner) => banner.title !== "Who can use these plans"
-      ),
-    [allBanners]
+  // Filter out special banners that are displayed elsewhere
+  const banners = allBanners.filter((banner: HomepageBanner) => 
+    banner.title !== "Who can use these plans"
   );
 
-  const hasBanners = banners.length > 0;
-  const slideCount = hasBanners ? banners.length : 1;
-
-  // preload first + next couple of images (no layout impact)
+  // Auto-play functionality
   useEffect(() => {
-    if (!hasBanners || preloadedRef.current) return;
-    preloadedRef.current = true;
-
-    const firstBanner = banners[0];
-    if (firstBanner) {
-      const isMobile = window.innerWidth < 768;
-      const heroUrl = isMobile
-        ? firstBanner.mobileImageUrl
-        : firstBanner.desktopImageUrl;
-
-      const existingPreload = document.querySelector(`link[href="${heroUrl}"]`);
-      if (!existingPreload) {
-        const preloadLink = document.createElement("link");
-        preloadLink.rel = "preload";
-        preloadLink.as = "image";
-        preloadLink.href = heroUrl;
-        document.head.appendChild(preloadLink);
-      }
-    }
-
-    banners.slice(1, 3).forEach((banner: HomepageBanner) => {
-      const img = new Image();
-      img.src =
-        window.innerWidth < 768
-          ? banner.mobileImageUrl
-          : banner.desktopImageUrl;
-    });
-  }, [banners, hasBanners]);
-
-  // autoplay
-  useEffect(() => {
-    if (!autoPlay || slideCount <= 1) return;
+    if (!autoPlay || banners.length <= 1) return;
 
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slideCount);
+      setCurrentSlide((prev) => (prev + 1) % banners.length);
     }, autoPlayInterval);
 
     return () => clearInterval(interval);
-  }, [autoPlay, autoPlayInterval, slideCount]);
+  }, [autoPlay, autoPlayInterval, banners.length]);
 
-  const goToSlide = useCallback((index: number) => {
+  const goToSlide = (index: number) => {
     setCurrentSlide(index);
-  }, []);
+  };
 
-  const goToPrevious = useCallback(() => {
-    setCurrentSlide((prev) => (prev - 1 + slideCount) % slideCount);
-  }, [slideCount]);
+  const goToPrevious = () => {
+    setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length);
+  };
 
-  const goToNext = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % slideCount);
-  }, [slideCount]);
+  const goToNext = () => {
+    setCurrentSlide((prev) => (prev + 1) % banners.length);
+  };
 
-  const handleBannerClick = useCallback((banner: HomepageBanner) => {
+  // Handle banner click
+  const handleBannerClick = (banner: HomepageBanner) => {
     if (banner.linkUrl) {
       window.location.href = banner.linkUrl;
     }
-  }, []);
+  };
 
-  const handleImageLoad = useCallback((index: number) => {
-    setLoadedSlides((prev) => ({ ...prev, [index]: true }));
-  }, []);
+  // Don't render anything if loading or no banners
+  if (isLoading) {
+    return (
+      <section className="w-full bg-gray-100 py-12">
+        <div className="flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+          <span className="ml-2 text-gray-600">Loading banners...</span>
+        </div>
+      </section>
+    );
+  }
 
-  if (!hasBanners) {
-    return null;
+  if (!banners || banners.length === 0) {
+    return null; // Don't show anything if no banners
   }
 
   return (
-    <section className="relative w-full bg-[#f8fafc]">
+    <section className="relative w-full">
+      {/* Main Carousel Container */}
       <div className="relative w-full overflow-hidden">
-        <div
+        {/* Slides Container */}
+        <div 
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
-          {banners.map((banner: HomepageBanner, index: number) => {
-            const isLoaded = !!loadedSlides[index];
-
-            return (
-              <div
-                key={banner.id}
-                className="w-full flex-shrink-0 relative"
+          {banners.map((banner: HomepageBanner) => (
+            <div key={banner.id} className="w-full flex-shrink-0">
+              {/* Desktop Image */}
+              <div 
+                className="hidden md:block relative w-full cursor-pointer"
+                onClick={() => handleBannerClick(banner)}
               >
-                {/* Desktop */}
-                <div
-                  className="hidden md:block cursor-pointer"
-                  onClick={() => handleBannerClick(banner)}
-                >
+                <div className="w-full overflow-hidden">
                   <img
                     src={banner.desktopImageUrl}
-                    alt={banner.title || "Banner Image"}
-                    className={`w-full h-auto transition-opacity duration-500 ${
-                      isLoaded ? "opacity-100" : "opacity-0"
-                    }`}
-                    loading={index === 0 ? "eager" : "lazy"}
-                    decoding={index === 0 ? "sync" : "async"}
-                    onLoad={() => handleImageLoad(index)}
-                  />
-                </div>
-
-                {/* Mobile */}
-                <div
-                  className="block md:hidden cursor-pointer"
-                  onClick={() => handleBannerClick(banner)}
-                >
-                  <img
-                    src={banner.mobileImageUrl}
-                    alt={banner.title || "Banner Image"}
-                    className={`w-full h-auto transition-opacity duration-500 ${
-                      isLoaded ? "opacity-100" : "opacity-0"
-                    }`}
-                    loading={index === 0 ? "eager" : "lazy"}
-                    decoding={index === 0 ? "sync" : "async"}
-                    onLoad={() => handleImageLoad(index)}
+                    alt="Banner Image"
+                    className="w-full h-auto"
+                    style={{ imageRendering: 'crisp-edges' }}
+                    onError={(e) => {
+                      console.error('Desktop image failed to load:', banner.desktopImageUrl);
+                      // Try local uploads route if the original S3 URL fails
+                      const img = e.target as HTMLImageElement;
+                      if (!img.src.includes('/uploads/')) {
+                        img.src = `/uploads/${banner.desktopImageUrl.split('/').pop()}`;
+                      }
+                    }}
                   />
                 </div>
               </div>
-            );
-          })}
+
+              {/* Mobile Image */}
+              <div 
+                className="block md:hidden relative w-full cursor-pointer"
+                onClick={() => handleBannerClick(banner)}
+              >
+                <div className="w-full overflow-hidden">
+                  <img
+                    src={banner.mobileImageUrl}
+                    alt="Banner Image"
+                    className="w-full h-auto"
+                    style={{ imageRendering: 'crisp-edges' }}
+                    onError={(e) => {
+                      console.error('Mobile image failed to load:', banner.mobileImageUrl);
+                      // Try local uploads route if the original S3 URL fails
+                      const img = e.target as HTMLImageElement;
+                      if (!img.src.includes('/uploads/')) {
+                        img.src = `/uploads/${banner.mobileImageUrl.split('/').pop()}`;
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
+        {/* Navigation Arrows - Only show if more than 1 banner */}
         {banners.length > 1 && (
           <>
             <Button
@@ -177,7 +153,7 @@ export function HomepageCarousel({
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-
+            
             <Button
               variant="outline"
               size="icon"
@@ -189,15 +165,16 @@ export function HomepageCarousel({
           </>
         )}
 
+        {/* Dots Indicator - Only show if more than 1 banner */}
         {banners.length > 1 && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
             {banners.map((_: HomepageBanner, index: number) => (
               <button
                 key={index}
                 className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                  index === currentSlide
-                    ? "bg-white shadow-lg"
-                    : "bg-white/50 hover:bg-white/75"
+                  index === currentSlide 
+                    ? 'bg-white shadow-lg' 
+                    : 'bg-white/50 hover:bg-white/75'
                 }`}
                 onClick={() => goToSlide(index)}
                 aria-label={`Go to slide ${index + 1}`}

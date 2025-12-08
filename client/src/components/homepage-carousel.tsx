@@ -9,88 +9,11 @@ interface HomepageCarouselProps {
   autoPlayInterval?: number;
 }
 
-function ShimmerPlaceholder() {
-  return (
-    <div className="relative w-full min-h-[200px] md:min-h-[350px] overflow-hidden bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-[#3B82F6]">
-      <div 
-        className="absolute inset-0 animate-shimmer"
-        style={{
-          background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%)',
-          backgroundSize: '200% 100%',
-        }}
-      />
-    </div>
-  );
-}
-
-interface ProgressiveImageProps {
-  src: string;
-  alt: string;
-  className?: string;
-  onClick?: () => void;
-  priority?: boolean;
-}
-
-function ProgressiveImage({ src, alt, className = "", onClick, priority = false }: ProgressiveImageProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  const imgRef = useRef<HTMLImageElement>(null);
-
-  useEffect(() => {
-    setIsLoaded(false);
-    setHasError(false);
-    
-    if (imgRef.current?.complete && imgRef.current?.naturalWidth > 0) {
-      setIsLoaded(true);
-      return;
-    }
-  }, [src]);
-
-  const handleLoad = () => {
-    setIsLoaded(true);
-  };
-
-  const handleError = () => {
-    setHasError(true);
-  };
-
-  return (
-    <div className="relative w-full overflow-hidden" onClick={onClick}>
-      {!isLoaded && !hasError && <ShimmerPlaceholder />}
-      
-      {!hasError && (
-        <img
-          ref={imgRef}
-          src={src}
-          alt={alt}
-          className={`w-full h-auto transition-opacity duration-300 ${
-            isLoaded ? 'opacity-100' : 'opacity-0 absolute inset-0'
-          } ${className}`}
-          loading={priority ? "eager" : "lazy"}
-          decoding={priority ? "sync" : "async"}
-          fetchPriority={priority ? "high" : "auto"}
-          onLoad={handleLoad}
-          onError={handleError}
-        />
-      )}
-      
-      {hasError && (
-        <div className="w-full min-h-[200px] md:min-h-[350px] flex items-center justify-center bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6]">
-          <div className="text-center text-white px-8 py-12">
-            <h2 className="text-2xl md:text-4xl font-bold mb-3">XtraCover Protection</h2>
-            <p className="text-lg opacity-90">Protect your devices with our plans</p>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: HomepageCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const preloadedRef = useRef(false);
 
-  const { data: allBanners = [], isLoading } = useQuery({
+  const { data: allBanners = [] } = useQuery({
     queryKey: ['/api/homepage-banners'],
     queryFn: async () => {
       const response = await fetch('/api/homepage-banners');
@@ -130,7 +53,6 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
         preloadLink.rel = 'preload';
         preloadLink.as = 'image';
         preloadLink.href = heroUrl;
-        preloadLink.setAttribute('fetchpriority', 'high');
         document.head.appendChild(preloadLink);
       }
     }
@@ -169,12 +91,8 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
     }
   }, []);
 
-  if (isLoading || !hasBanners) {
-    return (
-      <section className="relative w-full">
-        <ShimmerPlaceholder />
-      </section>
-    );
+  if (!hasBanners) {
+    return null;
   }
 
   return (
@@ -186,23 +104,29 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
         >
           {banners.map((banner: HomepageBanner, index: number) => (
             <div key={banner.id} className="w-full flex-shrink-0 relative">
-              <div className="hidden md:block">
-                <ProgressiveImage
+              <div 
+                className="hidden md:block cursor-pointer"
+                onClick={() => handleBannerClick(banner)}
+              >
+                <img
                   src={banner.desktopImageUrl}
                   alt={banner.title || "Banner Image"}
-                  className="cursor-pointer"
-                  onClick={() => handleBannerClick(banner)}
-                  priority={index === 0}
+                  className="w-full h-auto"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding={index === 0 ? "sync" : "async"}
                 />
               </div>
 
-              <div className="block md:hidden">
-                <ProgressiveImage
+              <div 
+                className="block md:hidden cursor-pointer"
+                onClick={() => handleBannerClick(banner)}
+              >
+                <img
                   src={banner.mobileImageUrl}
                   alt={banner.title || "Banner Image"}
-                  className="cursor-pointer"
-                  onClick={() => handleBannerClick(banner)}
-                  priority={index === 0}
+                  className="w-full h-auto"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding={index === 0 ? "sync" : "async"}
                 />
               </div>
             </div>

@@ -17,18 +17,17 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
   const { data: allBanners = [], isLoading } = useQuery({
     queryKey: ['/api/homepage-banners'],
     queryFn: async () => {
-      const response = await fetch('/api/homepage-banners', {
-        cache: 'no-cache'
-      });
+      const response = await fetch('/api/homepage-banners');
       if (!response.ok) {
         throw new Error('Failed to fetch banners');
       }
       return response.json();
     },
-    retry: false,
-    staleTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: false
+    retry: 1,
+    staleTime: 600000, // Cache for 10 minutes
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    gcTime: 900000 // Keep cache for 15 minutes
   });
 
   // Filter out special banners that are displayed elsewhere
@@ -102,8 +101,10 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
                   <img
                     src={banner.desktopImageUrl}
                     alt="Banner Image"
-                    className="w-full h-auto"
-                    style={{ imageRendering: 'crisp-edges' }}
+                    className="w-full h-auto block"
+                    loading={currentSlide === banners.indexOf(banner) || currentSlide === (banners.indexOf(banner) - 1 + banners.length) % banners.length ? "eager" : "lazy"}
+                    sizes="100vw"
+                    decoding="async"
                     onError={(e) => {
                       console.error('Desktop image failed to load:', banner.desktopImageUrl);
                       // Try local uploads route if the original S3 URL fails
@@ -125,8 +126,10 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
                   <img
                     src={banner.mobileImageUrl}
                     alt="Banner Image"
-                    className="w-full h-auto"
-                    style={{ imageRendering: 'crisp-edges' }}
+                    className="w-full h-auto block"
+                    loading={currentSlide === banners.indexOf(banner) || currentSlide === (banners.indexOf(banner) - 1 + banners.length) % banners.length ? "eager" : "lazy"}
+                    sizes="100vw"
+                    decoding="async"
                     onError={(e) => {
                       console.error('Mobile image failed to load:', banner.mobileImageUrl);
                       // Try local uploads route if the original S3 URL fails

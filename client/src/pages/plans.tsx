@@ -6,10 +6,33 @@ import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.
 
 export default function Plans() {
   const [, setLocation] = useLocation();
-  const searchParams = new URLSearchParams(window.location.search);
-  const deviceType = searchParams.get("type");
-  const deviceBrand = searchParams.get("brand");
-  const devicePurchaseDate = searchParams.get("date");
+  
+  // First try URL params, then fall back to sessionStorage for back navigation support
+  let searchParams = new URLSearchParams(window.location.search);
+  let deviceType = searchParams.get("type");
+  let deviceBrand = searchParams.get("brand");
+  let devicePurchaseDate = searchParams.get("date");
+  
+  // If URL params missing, try to restore from sessionStorage (for back navigation)
+  if (!deviceType || !deviceBrand || !devicePurchaseDate) {
+    const storedPlan = sessionStorage.getItem("selectedPlan");
+    if (storedPlan) {
+      try {
+        const parsed = JSON.parse(storedPlan);
+        if (parsed.plansQuery) {
+          const storedParams = new URLSearchParams(parsed.plansQuery);
+          deviceType = storedParams.get("type");
+          deviceBrand = storedParams.get("brand");
+          devicePurchaseDate = storedParams.get("date");
+          
+          // Restore URL for proper browser history
+          if (deviceType && deviceBrand && devicePurchaseDate) {
+            window.history.replaceState({}, '', `/plans${parsed.plansQuery}`);
+          }
+        }
+      } catch {}
+    }
+  }
 
   const { data: allPlans = [], isLoading: pricesLoading } = useQuery({
     queryKey: ["/api/plans"],
@@ -97,6 +120,7 @@ export default function Plans() {
       coverage: planInfo.coverage,
       brand: deviceBrand,
       purchaseDate: devicePurchaseDate,
+      plansQuery: window.location.search,
     };
     
     sessionStorage.setItem('selectedPlan', JSON.stringify(selectedPlan));

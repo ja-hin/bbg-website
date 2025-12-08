@@ -62,6 +62,19 @@ export default function Checkout() {
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
+  const getPlansUrl = () => {
+    const storedPlan = sessionStorage.getItem("selectedPlan");
+    if (storedPlan) {
+      try {
+        const parsed = JSON.parse(storedPlan);
+        if (parsed.plansQuery) {
+          return `/plans${parsed.plansQuery}`;
+        }
+      } catch {}
+    }
+    return "/plans";
+  };
+
   useEffect(() => {
     const storedPlan = sessionStorage.getItem("selectedPlan");
     if (storedPlan) {
@@ -76,13 +89,13 @@ export default function Checkout() {
         ) {
           setSelectedPlan(parsedPlan);
         } else {
-          setLocation("/plans");
+          setLocation(getPlansUrl());
         }
       } catch {
-        setLocation("/plans");
+        setLocation(getPlansUrl());
       }
     } else {
-      setLocation("/plans");
+      setLocation(getPlansUrl());
     }
   }, [setLocation]);
 
@@ -289,16 +302,15 @@ export default function Checkout() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-lg mx-auto px-4 py-6">
         <div className="mb-4">
-          <Link href="/plans">
-            <Button
-              variant="ghost"
-              className="text-gray-600 hover:text-gray-800 p-0"
-              data-testid="button-back"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Plans
-            </Button>
-          </Link>
+          <Button
+            variant="ghost"
+            className="text-gray-600 hover:text-gray-800 p-0"
+            data-testid="button-back"
+            onClick={() => setLocation(getPlansUrl())}
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Plans
+          </Button>
         </div>
 
         {selectedPlan && (

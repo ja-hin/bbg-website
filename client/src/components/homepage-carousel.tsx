@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/queryClient";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { HomepageBanner } from "@shared/schema";
 
 interface HomepageCarouselProps {
@@ -12,6 +13,7 @@ interface HomepageCarouselProps {
 
 export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: HomepageCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState<Record<number, boolean>>({});
 
   // Fetch active homepage banners (excluding special banners like "Who can use these plans")
   const { data: allBanners = [], isLoading } = useQuery({
@@ -26,8 +28,8 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
       return response.json();
     },
     retry: false,
-    staleTime: 0,
-    refetchOnMount: true,
+    staleTime: 300000,
+    refetchOnMount: false,
     refetchOnWindowFocus: false
   });
 
@@ -66,20 +68,32 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
     }
   };
 
-  // Don't render anything if loading or no banners
+  // Handle image load
+  const handleImageLoad = (index: number) => {
+    setImagesLoaded(prev => ({ ...prev, [index]: true }));
+  };
+
+  // Show loading skeleton while fetching banners
   if (isLoading) {
     return (
-      <section className="w-full bg-gray-100 py-12">
-        <div className="flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
-          <span className="ml-2 text-gray-600">Loading banners...</span>
+      <section className="relative w-full">
+        <div className="relative w-full overflow-hidden">
+          {/* Desktop Skeleton */}
+          <div className="hidden md:block">
+            <Skeleton className="w-full h-[400px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
+          </div>
+          {/* Mobile Skeleton */}
+          <div className="block md:hidden">
+            <Skeleton className="w-full h-[250px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
+          </div>
         </div>
       </section>
     );
   }
 
-  if (!banners || banners.length === 0) {
-    return null; // Don't show anything if no banners
+  // If no banners, don't render anything
+  if (banners.length === 0) {
+    return null;
   }
 
   return (
@@ -91,26 +105,31 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
-          {banners.map((banner: HomepageBanner) => (
-            <div key={banner.id} className="w-full flex-shrink-0">
+          {banners.map((banner: HomepageBanner, index: number) => (
+            <div key={banner.id} className="w-full flex-shrink-0 relative">
               {/* Desktop Image */}
               <div 
                 className="hidden md:block relative w-full cursor-pointer"
                 onClick={() => handleBannerClick(banner)}
               >
                 <div className="w-full overflow-hidden">
+                  {!imagesLoaded[index] && (
+                    <Skeleton className="absolute inset-0 w-full h-[400px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
+                  )}
                   <img
                     src={banner.desktopImageUrl}
                     alt="Banner Image"
-                    className="w-full h-auto"
+                    className={`w-full h-auto transition-opacity duration-300 ${imagesLoaded[index] ? 'opacity-100' : 'opacity-0'}`}
                     style={{ imageRendering: 'crisp-edges' }}
+                    loading="eager"
+                    onLoad={() => handleImageLoad(index)}
                     onError={(e) => {
                       console.error('Desktop image failed to load:', banner.desktopImageUrl);
-                      // Try local uploads route if the original S3 URL fails
                       const img = e.target as HTMLImageElement;
                       if (!img.src.includes('/uploads/')) {
                         img.src = `/uploads/${banner.desktopImageUrl.split('/').pop()}`;
                       }
+                      handleImageLoad(index);
                     }}
                   />
                 </div>
@@ -122,18 +141,23 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
                 onClick={() => handleBannerClick(banner)}
               >
                 <div className="w-full overflow-hidden">
+                  {!imagesLoaded[index] && (
+                    <Skeleton className="absolute inset-0 w-full h-[250px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
+                  )}
                   <img
                     src={banner.mobileImageUrl}
                     alt="Banner Image"
-                    className="w-full h-auto"
+                    className={`w-full h-auto transition-opacity duration-300 ${imagesLoaded[index] ? 'opacity-100' : 'opacity-0'}`}
                     style={{ imageRendering: 'crisp-edges' }}
+                    loading="eager"
+                    onLoad={() => handleImageLoad(index)}
                     onError={(e) => {
                       console.error('Mobile image failed to load:', banner.mobileImageUrl);
-                      // Try local uploads route if the original S3 URL fails
                       const img = e.target as HTMLImageElement;
                       if (!img.src.includes('/uploads/')) {
                         img.src = `/uploads/${banner.mobileImageUrl.split('/').pop()}`;
                       }
+                      handleImageLoad(index);
                     }}
                   />
                 </div>

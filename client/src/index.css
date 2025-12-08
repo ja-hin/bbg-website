@@ -142,3 +142,17 @@
     --tw-gradient-to: color-mix(in srgb, var(--xtra-primary) 80%, transparent) var(--tw-gradient-to-position);
   }
 }
+
+/* Shimmer animation for loading placeholders */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite linear;
+}

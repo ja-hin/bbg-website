@@ -1,22 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { apiRequest } from "@/lib/queryClient";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { HomepageBanner } from "@shared/schema";
 
 interface HomepageCarouselProps {
   autoPlay?: boolean;
   autoPlayInterval?: number;
+  onFirstImageLoaded?: () => void;
 }
 
-export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: HomepageCarouselProps) {
+export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000, onFirstImageLoaded }: HomepageCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState<Record<number, boolean>>({});
+  const [firstImageLoaded, setFirstImageLoaded] = useState(false);
+  const firstDesktopImgRef = useRef<HTMLImageElement>(null);
+  const firstMobileImgRef = useRef<HTMLImageElement>(null);
 
-  // Fetch active homepage banners (excluding special banners like "Who can use these plans")
-  // Use browser cache and stale-while-revalidate pattern for faster loading
   const { data: allBanners = [], isLoading } = useQuery({
     queryKey: ['/api/homepage-banners'],
     queryFn: async () => {
@@ -33,21 +34,28 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
     refetchOnWindowFocus: false
   });
 
-  // Filter out special banners that are displayed elsewhere
   const banners = allBanners.filter((banner: HomepageBanner) => 
     banner.title !== "Who can use these plans"
   );
 
-  // Auto-play functionality
   useEffect(() => {
-    if (!autoPlay || banners.length <= 1) return;
+    if (firstDesktopImgRef.current) {
+      firstDesktopImgRef.current.setAttribute('fetchpriority', 'high');
+    }
+    if (firstMobileImgRef.current) {
+      firstMobileImgRef.current.setAttribute('fetchpriority', 'high');
+    }
+  }, [banners]);
+
+  useEffect(() => {
+    if (!autoPlay || banners.length <= 1 || !firstImageLoaded) return;
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % banners.length);
     }, autoPlayInterval);
 
     return () => clearInterval(interval);
-  }, [autoPlay, autoPlayInterval, banners.length]);
+  }, [autoPlay, autoPlayInterval, banners.length, firstImageLoaded]);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
@@ -61,28 +69,34 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
     setCurrentSlide((prev) => (prev + 1) % banners.length);
   };
 
-  // Handle banner click
   const handleBannerClick = (banner: HomepageBanner) => {
     if (banner.linkUrl) {
       window.location.href = banner.linkUrl;
     }
   };
 
-  // Handle image load
-  const handleImageLoad = (index: number) => {
+  const handleImageLoad = useCallback((index: number) => {
     setImagesLoaded(prev => ({ ...prev, [index]: true }));
-  };
+    if (index === 0 && !firstImageLoaded) {
+      setFirstImageLoaded(true);
+      onFirstImageLoaded?.();
+    }
+  }, [firstImageLoaded, onFirstImageLoaded]);
 
-  // Show loading skeleton while fetching banners
+  useEffect(() => {
+    if (!isLoading && banners.length === 0 && !firstImageLoaded) {
+      setFirstImageLoaded(true);
+      onFirstImageLoaded?.();
+    }
+  }, [isLoading, banners.length, firstImageLoaded, onFirstImageLoaded]);
+
   if (isLoading) {
     return (
       <section className="relative w-full">
         <div className="relative w-full overflow-hidden">
-          {/* Desktop Skeleton */}
           <div className="hidden md:block">
             <Skeleton className="w-full h-[400px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
           </div>
-          {/* Mobile Skeleton */}
           <div className="block md:hidden">
             <Skeleton className="w-full h-[250px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
           </div>
@@ -91,23 +105,19 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
     );
   }
 
-  // If no banners, don't render anything
   if (banners.length === 0) {
     return null;
   }
 
   return (
     <section className="relative w-full">
-      {/* Main Carousel Container */}
       <div className="relative w-full overflow-hidden">
-        {/* Slides Container */}
         <div 
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
           {banners.map((banner: HomepageBanner, index: number) => (
             <div key={banner.id} className="w-full flex-shrink-0 relative">
-              {/* Desktop Image */}
               <div 
                 className="hidden md:block relative w-full cursor-pointer"
                 onClick={() => handleBannerClick(banner)}
@@ -117,11 +127,12 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
                     <Skeleton className="absolute inset-0 w-full h-[400px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
                   )}
                   <img
+                    ref={index === 0 ? firstDesktopImgRef : undefined}
                     src={banner.desktopImageUrl}
                     alt="Banner Image"
                     className={`w-full h-auto transition-opacity duration-300 ${imagesLoaded[index] ? 'opacity-100' : 'opacity-0'}`}
                     style={{ imageRendering: 'crisp-edges' }}
-                    loading="eager"
+                    loading={index === 0 ? "eager" : "lazy"}
                     onLoad={() => handleImageLoad(index)}
                     onError={(e) => {
                       console.error('Desktop image failed to load:', banner.desktopImageUrl);
@@ -135,7 +146,6 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
                 </div>
               </div>
 
-              {/* Mobile Image */}
               <div 
                 className="block md:hidden relative w-full cursor-pointer"
                 onClick={() => handleBannerClick(banner)}
@@ -145,11 +155,12 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
                     <Skeleton className="absolute inset-0 w-full h-[250px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
                   )}
                   <img
+                    ref={index === 0 ? firstMobileImgRef : undefined}
                     src={banner.mobileImageUrl}
                     alt="Banner Image"
                     className={`w-full h-auto transition-opacity duration-300 ${imagesLoaded[index] ? 'opacity-100' : 'opacity-0'}`}
                     style={{ imageRendering: 'crisp-edges' }}
-                    loading="eager"
+                    loading={index === 0 ? "eager" : "lazy"}
                     onLoad={() => handleImageLoad(index)}
                     onError={(e) => {
                       console.error('Mobile image failed to load:', banner.mobileImageUrl);
@@ -166,7 +177,6 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
           ))}
         </div>
 
-        {/* Navigation Arrows - Only show if more than 1 banner */}
         {banners.length > 1 && (
           <>
             <Button
@@ -189,7 +199,6 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
           </>
         )}
 
-        {/* Dots Indicator - Only show if more than 1 banner */}
         {banners.length > 1 && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
             {banners.map((_: HomepageBanner, index: number) => (

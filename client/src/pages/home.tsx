@@ -11,7 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useQuery } from "@tanstack/react-query";
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { DevicePlanSelectorForm } from "@/components/device-plan-selector-form";
 import {
   Smartphone,
@@ -42,7 +42,12 @@ export default function Home() {
   const [isBBGExpanded, setIsBBGExpanded] = useState(false);
   const [isExtendExpanded, setIsExtendExpanded] = useState(false);
   const [selectedDeviceTypeFromCard, setSelectedDeviceTypeFromCard] = useState<string | undefined>();
+  const [carouselLoaded, setCarouselLoaded] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
+
+  const handleCarouselFirstImageLoaded = useCallback(() => {
+    setCarouselLoaded(true);
+  }, []);
 
   const handleViewPlans = (deviceType: string) => {
     setSelectedDeviceTypeFromCard(deviceType);
@@ -51,21 +56,23 @@ export default function Home() {
     }, 0);
   };
 
-  // Fetch theme for dynamic coloring - deferred with staleTime
+  // Fetch theme for dynamic coloring - DEFERRED until carousel loads
   const { data: theme } = useQuery({
     queryKey: ["/api/theme/current"],
     retry: false,
     staleTime: 600000,
+    enabled: carouselLoaded,
   });
 
-  // Fetch "Who can use these plans?" banner - deferred with staleTime
+  // Fetch "Who can use these plans?" banner - DEFERRED until carousel loads
   const { data: whoCanUseBanner } = useQuery({
     queryKey: ["/api/homepage-banners/by-title/Who can use these plans"],
     retry: false,
     staleTime: 600000,
+    enabled: carouselLoaded,
   });
 
-  // Fetch plans for dynamic pricing
+  // Fetch plans for dynamic pricing - ALWAYS LOAD (business critical)
   const { data: allPlans = [], isLoading: pricesLoading } = useQuery({
     queryKey: ["/api/plans"],
     staleTime: 600000,
@@ -94,8 +101,8 @@ export default function Home() {
 
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
-      {/* Homepage Carousel */}
-      <HomepageCarousel />
+      {/* Homepage Carousel - Critical path, loads first */}
+      <HomepageCarousel onFirstImageLoaded={handleCarouselFirstImageLoaded} />
       {/* Smart Plans Section with Form */}
       <section
         className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8"

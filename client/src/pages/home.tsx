@@ -11,7 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useQuery } from "@tanstack/react-query";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { DevicePlanSelectorForm } from "@/components/device-plan-selector-form";
 import {
   Smartphone,
@@ -43,6 +43,13 @@ export default function Home() {
   const [isExtendExpanded, setIsExtendExpanded] = useState(false);
   const [selectedDeviceTypeFromCard, setSelectedDeviceTypeFromCard] = useState<string | undefined>();
   const formRef = useRef<HTMLDivElement>(null);
+  const [deferredQueriesEnabled, setDeferredQueriesEnabled] = useState(false);
+
+  // Defer non-critical API calls to allow carousel to render first
+  useEffect(() => {
+    const timer = setTimeout(() => setDeferredQueriesEnabled(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleViewPlans = (deviceType: string) => {
     setSelectedDeviceTypeFromCard(deviceType);
@@ -51,19 +58,21 @@ export default function Home() {
     }, 0);
   };
 
-  // Fetch theme for dynamic coloring
+  // Fetch theme for dynamic coloring - deferred
   const { data: theme } = useQuery({
     queryKey: ["/api/theme/current"],
     retry: false,
+    enabled: deferredQueriesEnabled,
   });
 
-  // Fetch "Who can use these plans?" banner
+  // Fetch "Who can use these plans?" banner - deferred
   const { data: whoCanUseBanner } = useQuery({
     queryKey: ["/api/homepage-banners/by-title/Who can use these plans"],
     retry: false,
+    enabled: deferredQueriesEnabled,
   });
 
-  // Fetch plans for dynamic pricing
+  // Fetch plans for dynamic pricing - load immediately for prices
   const { data: allPlans = [], isLoading: pricesLoading } = useQuery({
     queryKey: ["/api/plans"],
     queryFn: async () => {
@@ -71,6 +80,7 @@ export default function Home() {
       if (!response.ok) throw new Error("Failed to fetch plans");
       return response.json();
     },
+    staleTime: 600000,
   });
 
   // Extract prices from plans based on device type and plan type
@@ -94,20 +104,22 @@ export default function Home() {
     return plan?.planPrice || 199;
   };
 
-  // Fetch regular claim value slabs for mobile (exclude Acer BBG special rates)
+  // Fetch regular claim value slabs for mobile - deferred to not block carousel
   const { data: mobileSlabs, isLoading: isMobileLoading } = useQuery({
     queryKey: ["/api/claim-value-slabs/active/mobile/regular"],
     retry: 1,
-    staleTime: 300000, // 5 minutes
+    staleTime: 600000,
     refetchOnMount: false,
+    enabled: deferredQueriesEnabled,
   });
 
-  // Fetch regular claim value slabs for laptop (exclude Acer BBG special rates)
+  // Fetch regular claim value slabs for laptop - deferred to not block carousel
   const { data: laptopSlabs, isLoading: isLaptopLoading } = useQuery({
     queryKey: ["/api/claim-value-slabs/active/laptop/regular"],
     retry: 1,
-    staleTime: 300000, // 5 minutes
+    staleTime: 600000,
     refetchOnMount: false,
+    enabled: deferredQueriesEnabled,
   });
 
   const activeMobileSlabs = Array.isArray(mobileSlabs)

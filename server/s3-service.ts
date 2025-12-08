@@ -93,6 +93,29 @@ export class S3Service {
     const region = process.env.AWS_REGION || "ap-south-1";
     return `https://bbgassets.xtracover.com/${key}`;
   }
+
+  // Upload buffer directly with a specific key path
+  async uploadBuffer(
+    buffer: Buffer,
+    keyPath: string,
+    mimeType: string,
+  ): Promise<string> {
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: keyPath,
+      Body: buffer,
+      ContentType: mimeType,
+    });
+
+    try {
+      await this.client.send(command);
+      console.log("✅ S3 buffer upload successful:", keyPath);
+      return this.getPublicUrl(keyPath);
+    } catch (error) {
+      console.error("S3 buffer upload error:", error);
+      throw new Error("Failed to upload buffer to S3");
+    }
+  }
 }
 
 // Multer S3 Configuration for direct uploads

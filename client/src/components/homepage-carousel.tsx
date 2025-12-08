@@ -9,23 +9,6 @@ interface HomepageCarouselProps {
   autoPlayInterval?: number;
 }
 
-const DEFAULT_FALLBACK_SLIDES = [
-  {
-    id: -1,
-    title: "BuyBack Guarantee",
-    subtitle: "Lock up to 70% resale value on your new device",
-    description: "Activate BBG within 6 months of purchase",
-    bgGradient: "linear-gradient(135deg, #1E3A8A 0%, #3B82F6 50%, #93C5FD 100%)",
-  },
-  {
-    id: -2,
-    title: "Extend+ Protection",
-    subtitle: "Premium protection for your devices",
-    description: "Get free repairs and auction support",
-    bgGradient: "linear-gradient(135deg, #0F172A 0%, #1E40AF 50%, #60A5FA 100%)",
-  }
-];
-
 interface ProgressiveImageProps {
   src: string;
   alt: string;
@@ -56,7 +39,7 @@ function ProgressiveImage({ src, alt, className = "", onClick, priority = false 
   return (
     <div className="relative w-full overflow-hidden" onClick={onClick}>
       <div 
-        className={`absolute inset-0 bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-[#3B82F6] transition-opacity duration-500 ${
+        className={`absolute inset-0 transition-opacity duration-500 ${
           isLoaded && !hasError ? 'opacity-0' : 'opacity-100'
         }`}
         style={{
@@ -78,7 +61,7 @@ function ProgressiveImage({ src, alt, className = "", onClick, priority = false 
       )}
       
       {hasError && (
-        <div className="w-full aspect-[16/6] md:aspect-[16/5] flex items-center justify-center">
+        <div className="w-full aspect-[16/6] md:aspect-[16/5] flex items-center justify-center bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6]">
           <div className="text-center text-white px-8 py-12">
             <h2 className="text-2xl md:text-4xl font-bold mb-3">XtraCover Protection</h2>
             <p className="text-lg opacity-90">Protect your devices with our plans</p>
@@ -92,7 +75,7 @@ function ProgressiveImage({ src, alt, className = "", onClick, priority = false 
 export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: HomepageCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const { data: allBanners = [], isLoading, isError } = useQuery({
+  const { data: allBanners = [], isLoading } = useQuery({
     queryKey: ['/api/homepage-banners'],
     queryFn: async () => {
       const response = await fetch('/api/homepage-banners');
@@ -115,7 +98,7 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
   );
 
   const hasBanners = banners.length > 0;
-  const slideCount = hasBanners ? banners.length : DEFAULT_FALLBACK_SLIDES.length;
+  const slideCount = hasBanners ? banners.length : 1;
 
   useEffect(() => {
     if (!autoPlay || slideCount <= 1) return;
@@ -157,76 +140,15 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000 }: 
     }
   }, []);
 
-  if (isLoading || !hasBanners || isError) {
+  if (isLoading || !hasBanners) {
     return (
       <section className="relative w-full">
-        <div className="relative w-full overflow-hidden">
-          <div 
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-          >
-            {DEFAULT_FALLBACK_SLIDES.map((slide) => (
-              <div 
-                key={slide.id} 
-                className="w-full flex-shrink-0 min-h-[280px] md:min-h-[400px] flex items-center justify-center"
-                style={{ background: slide.bgGradient }}
-              >
-                <div className="text-center text-white px-8 py-12 max-w-4xl mx-auto">
-                  <h2 className="text-3xl md:text-5xl font-bold mb-4">{slide.subtitle}</h2>
-                  <p className="text-lg md:text-xl opacity-90 mb-6">{slide.description}</p>
-                  <Button 
-                    className="bg-white text-blue-900 hover:bg-gray-100 font-semibold px-8 py-3 rounded-lg"
-                    onClick={() => {
-                      const element = document.getElementById('find-plans-form');
-                      element?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                  >
-                    Find Plans
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {DEFAULT_FALLBACK_SLIDES.length > 1 && (
-            <>
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white border-white/50 shadow-lg z-10"
-                onClick={goToPrevious}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white border-white/50 shadow-lg z-10"
-                onClick={goToNext}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </>
-          )}
-
-          {DEFAULT_FALLBACK_SLIDES.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
-              {DEFAULT_FALLBACK_SLIDES.map((_, index) => (
-                <button
-                  key={index}
-                  className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                    index === currentSlide 
-                      ? 'bg-white shadow-lg' 
-                      : 'bg-white/50 hover:bg-white/75'
-                  }`}
-                  onClick={() => goToSlide(index)}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        <div 
+          className="w-full min-h-[280px] md:min-h-[400px]"
+          style={{
+            background: 'linear-gradient(135deg, #1E3A8A 0%, #2563EB 50%, #3B82F6 100%)',
+          }}
+        />
       </section>
     );
   }

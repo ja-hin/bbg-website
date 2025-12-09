@@ -1470,6 +1470,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           name: customerName,
           contact: customerContact,
           email: customerEmail,
+          pincode: customerPincode,
           deviceType,
           brand,
           purchaseDate,

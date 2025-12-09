@@ -186,6 +186,7 @@ export function DevicePlanSelectorForm({
             data-testid="input-purchase-date"
             value={devicePurchaseDate}
             onChange={(e) => setDevicePurchaseDate(e.target.value)}
+            max={new Date().toISOString().split('T')[0]}
           />
         </div>
 

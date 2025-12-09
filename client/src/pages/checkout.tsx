@@ -32,6 +32,9 @@ const checkoutSchema = z.object({
     .string()
     .regex(/^[6-9]\d{9}$/, "Mobile number must be 10 digits starting with 6-9"),
   email: z.string().email("Please enter a valid email address"),
+  pincode: z
+    .string()
+    .regex(/^\d{6}$/, "Pincode must be 6 digits"),
   referralCode: z.string().optional(),
   agreeToTerms: z
     .boolean()
@@ -113,6 +116,7 @@ export default function Checkout() {
       name: "",
       contact: "",
       email: "",
+      pincode: "",
       referralCode: "",
       agreeToTerms: false,
     },
@@ -265,6 +269,7 @@ export default function Checkout() {
       customerName: data.name,
       customerContact: data.contact,
       customerEmail: data.email,
+      customerPincode: data.pincode,
       referralCode: data.referralCode || null,
       planType: selectedPlan.planType,
       deviceType: selectedPlan.deviceType,
@@ -469,6 +474,29 @@ export default function Checkout() {
                         {...field}
                         className="border-blue-200 focus:border-blue-500"
                         data-testid="input-email"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="pincode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700">
+                      Pincode <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Enter your 6-digit pincode"
+                        maxLength={6}
+                        {...field}
+                        className="border-blue-200 focus:border-blue-500"
+                        data-testid="input-pincode"
                       />
                     </FormControl>
                     <FormMessage />

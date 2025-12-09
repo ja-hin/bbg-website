@@ -1396,6 +1396,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         customerName,
         customerContact,
         customerEmail,
+        customerPincode,
         referralCode,
         planType,
         deviceType,
@@ -1408,7 +1409,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } = req.body;
 
       // Validate required fields
-      if (!customerName || !customerContact || !customerEmail || !planType || !deviceType || !amount) {
+      if (!customerName || !customerContact || !customerEmail || !customerPincode || !planType || !deviceType || !amount) {
         return res.status(400).json({
           message: "Missing required fields for payment",
           error: "Validation failed",
@@ -1438,7 +1439,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           name: customerName,
           contact: customerContact,
           email: customerEmail,
-          pincode: "000000",
+          pincode: customerPincode,
           deviceType: deviceType,
           serialNumber: null,
           brand: brand || "Unknown",

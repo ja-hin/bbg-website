@@ -2306,27 +2306,36 @@ export class SqlServerStorage implements IStorage {
     
     // Get the category prefix
     const category = deviceType === 'mobile' ? 'MOB' : 'LAP';
+    const prefix = `BBG${category}`;
     
-    // Get the highest existing serial number for this device type (new format only)
+    // Get all voucher codes for this device type and find max numeric suffix
     const query = `
-      SELECT MAX(CASE 
-        WHEN voucher_code LIKE @exactPattern 
-        AND ISNUMERIC(RIGHT(voucher_code, 2)) = 1
-        THEN CAST(RIGHT(voucher_code, 2) AS INT)
-        ELSE 0 
-      END) as maxSerial
+      SELECT voucher_code
       FROM customers 
-      WHERE voucher_code LIKE @exactPattern
+      WHERE voucher_code LIKE @pattern
     `;
     
     const request = db.pool.request();
-    request.input('exactPattern', sql.NVarChar, `BBG${category}__`); // Exact length match with 2 digits
+    request.input('pattern', sql.NVarChar, `${prefix}%`);
     
     const result = await request.query(query);
-    const maxSerial = result.recordset[0]?.maxSerial || 0;
+    
+    // Extract numeric suffix from each voucher code and find max
+    let maxSerial = 0;
+    for (const row of result.recordset) {
+      const code = row.voucher_code;
+      if (code && code.startsWith(prefix)) {
+        const numericPart = code.substring(prefix.length);
+        const num = parseInt(numericPart, 10);
+        if (!isNaN(num) && num > maxSerial) {
+          maxSerial = num;
+        }
+      }
+    }
+    
     const nextSerial = maxSerial + 1;
     
-    // Format as two-digit number (01, 02, 03, etc.)
+    // Format as two-digit number minimum (01, 02, ... 99, 100, 101, etc.)
     return nextSerial.toString().padStart(2, '0');
   }
 

@@ -71,6 +71,21 @@ export function DevicePlanSelectorForm({
       return;
     }
 
+    // Validate that purchase date is not in the future
+    const selectedDate = new Date(devicePurchaseDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    if (selectedDate > today) {
+      toast({
+        title: "Invalid purchase date",
+        description: "Device purchase date cannot be a future date",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (onSubmitSuccess) {
       onSubmitSuccess();
     }

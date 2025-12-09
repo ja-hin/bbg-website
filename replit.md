@@ -4,6 +4,13 @@
 This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) system. Its primary purpose is to enable distributors (referral partners) to register and earn commissions, customers to register their devices for BBG protection, and users to claim their buyback guarantees. The project streamlines the BBG process, offers a user-friendly experience with real-time feedback, and provides robust administrative tools for managing all aspects of the system.
 
 ## Recent Critical Updates
+**Date: December 9, 2025**
+- **✅ DEVICE PURCHASE DATE VALIDATION IMPLEMENTED**: Added comprehensive validation preventing future dates on device purchase date field
+- **✅ DUAL LOCATION VALIDATION**: Future date validation now active in both main plan selection form and "Buy" popup from navigation menu (via shared DevicePlanSelectorForm component)
+- **✅ USER-FRIENDLY ERROR MESSAGING**: Clear error toast displays "Device purchase date cannot be a future date" when validation fails
+- **✅ REFERRAL CODE VALIDATION UI ENHANCED**: Added "Apply" button to referral code field with real-time validation feedback
+- **✅ REFERRAL DISCOUNT DISPLAY**: Checkout now shows discounted price with strikethrough original price and green highlight when referral code applied
+
 **Date: August 21, 2025**
 - **✅ REFERRAL CODE GENERATION ISSUE COMPLETELY RESOLVED**: Fixed undefined referral code problem in simplified distributor registration form
 - **✅ DATABASE SCHEMA COMPATIBILITY FIXED**: Updated SQL storage to handle simplified form while maintaining database table requirements for pincode and preferred_mode fields

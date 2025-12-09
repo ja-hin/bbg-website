@@ -24,6 +24,8 @@ import {
   Loader2,
   Lock,
   CheckCircle,
+  Tag,
+  XCircle,
 } from "lucide-react";
 
 const checkoutSchema = z.object({
@@ -54,6 +56,14 @@ interface SelectedPlan {
   purchaseDate: string | null;
 }
 
+interface ReferralValidation {
+  valid: boolean;
+  partnerName?: string;
+  discountType?: 'percentage' | 'flat';
+  discountValue?: number;
+  discountedPrice?: number;
+}
+
 export default function Checkout() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -64,6 +74,8 @@ export default function Checkout() {
   const [otpLoading, setOtpLoading] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const [referralValidation, setReferralValidation] = useState<ReferralValidation | null>(null);
+  const [referralValidating, setReferralValidating] = useState(false);
 
   const getPlansUrl = () => {
     const storedPlan = sessionStorage.getItem("selectedPlan");
@@ -217,6 +229,54 @@ export default function Checkout() {
     }
   };
 
+  const validateReferralCode = async (code: string) => {
+    if (!code || code.trim().length < 3) {
+      setReferralValidation(null);
+      return;
+    }
+    
+    setReferralValidating(true);
+    try {
+      const response = await fetch(`/api/validate-referral-code/${encodeURIComponent(code.trim())}`);
+      const data = await response.json();
+      
+      if (data.valid && selectedPlan) {
+        let discountedPrice = selectedPlan.price;
+        if (data.discountType === 'percentage' && data.discountValue) {
+          discountedPrice = Math.round(selectedPlan.price - (selectedPlan.price * data.discountValue / 100));
+        } else if (data.discountType === 'flat' && data.discountValue) {
+          discountedPrice = Math.max(1, selectedPlan.price - data.discountValue);
+        }
+        
+        setReferralValidation({
+          valid: true,
+          partnerName: data.partnerName,
+          discountType: data.discountType,
+          discountValue: data.discountValue,
+          discountedPrice,
+        });
+        
+        toast({
+          title: "Referral Code Applied!",
+          description: data.discountValue 
+            ? `${data.discountType === 'percentage' ? data.discountValue + '%' : '₹' + data.discountValue} discount applied` 
+            : "Valid referral code",
+        });
+      } else {
+        setReferralValidation({ valid: false });
+        toast({
+          title: "Invalid Referral Code",
+          description: "Please check the code and try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      setReferralValidation({ valid: false });
+    } finally {
+      setReferralValidating(false);
+    }
+  };
+
   const paymentMutation = useMutation({
     mutationFn: async (paymentData: any) => {
       const response = await apiRequest("/api/payment/initiate", {
@@ -335,8 +395,21 @@ export default function Checkout() {
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold">₹{selectedPlan.price}</div>
-                <p className="text-white/70 text-xs">(incl. GST)</p>
+                {referralValidation?.valid && referralValidation.discountedPrice ? (
+                  <>
+                    <div className="text-lg line-through text-white/60">₹{selectedPlan.price}</div>
+                    <div className="text-3xl font-bold text-green-300">₹{referralValidation.discountedPrice}</div>
+                    <div className="flex items-center gap-1 justify-end text-green-300 text-xs">
+                      <Tag className="w-3 h-3" />
+                      <span>Referral discount applied</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-3xl font-bold">₹{selectedPlan.price}</div>
+                    <p className="text-white/70 text-xs">(incl. GST)</p>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -512,14 +585,60 @@ export default function Checkout() {
                     <FormLabel className="text-gray-700">
                       Referral Code (Optional)
                     </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter referral code if you have one"
-                        {...field}
-                        className="border-blue-200 focus:border-blue-500"
-                        data-testid="input-referral-code"
-                      />
-                    </FormControl>
+                    <div className="flex gap-2">
+                      <FormControl>
+                        <Input
+                          placeholder="Enter referral code if you have one"
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            if (referralValidation) {
+                              setReferralValidation(null);
+                            }
+                          }}
+                          className={`border-blue-200 focus:border-blue-500 ${
+                            referralValidation?.valid === true ? 'border-green-500 bg-green-50' : 
+                            referralValidation?.valid === false ? 'border-red-500 bg-red-50' : ''
+                          }`}
+                          data-testid="input-referral-code"
+                        />
+                      </FormControl>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => validateReferralCode(field.value || '')}
+                        disabled={referralValidating || !field.value || field.value.length < 3}
+                        className="shrink-0"
+                        data-testid="button-apply-referral"
+                      >
+                        {referralValidating ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          "Apply"
+                        )}
+                      </Button>
+                    </div>
+                    {referralValidation?.valid === true && (
+                      <div className="flex items-center gap-2 text-green-600 text-sm mt-1">
+                        <CheckCircle className="w-4 h-4" />
+                        <span>
+                          Code applied! 
+                          {referralValidation.discountValue && (
+                            <span className="font-medium">
+                              {' '}({referralValidation.discountType === 'percentage' 
+                                ? `${referralValidation.discountValue}% off` 
+                                : `₹${referralValidation.discountValue} off`})
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                    )}
+                    {referralValidation?.valid === false && (
+                      <div className="flex items-center gap-2 text-red-600 text-sm mt-1">
+                        <XCircle className="w-4 h-4" />
+                        <span>Invalid referral code</span>
+                      </div>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}

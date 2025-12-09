@@ -1416,6 +1416,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // SECURITY: Recalculate final amount server-side with referral discount
+      let finalAmount = amount;
+      let discountApplied = false;
+      let discountAmount = 0;
+
+      if (referralCode) {
+        try {
+          const referralPartner = await storage.getDistributorBySellerCode(referralCode);
+          if (referralPartner) {
+            const discountSettings = await storage.getReferralDiscountSettings();
+            
+            if (discountSettings && discountSettings.isActive && discountSettings.discountValue > 0) {
+              if (discountSettings.discountType === 'percentage') {
+                discountAmount = (amount * discountSettings.discountValue) / 100;
+              } else if (discountSettings.discountType === 'flat') {
+                discountAmount = Math.min(discountSettings.discountValue, amount);
+              }
+
+              // Apply discount (ensure price doesn't go below 1)
+              finalAmount = Math.max(1, Math.round(amount - discountAmount));
+              discountApplied = true;
+              
+              console.log('🎯 Payment Initiate - Referral discount applied:', {
+                referralCode,
+                partnerName: referralPartner.name,
+                discountType: discountSettings.discountType,
+                discountValue: discountSettings.discountValue,
+                originalAmount: amount,
+                discountAmount,
+                finalAmount
+              });
+            }
+          } else {
+            console.log('⚠️ Payment Initiate - Invalid referral code:', referralCode);
+          }
+        } catch (discountError) {
+          console.error("Error applying referral discount:", discountError);
+        }
+      }
+
       // Rate limiting check
       const clientIP = req.ip || req.connection.remoteAddress || "unknown";
       const now = Date.now();
@@ -1445,20 +1485,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           brand: brand || "Unknown",
           modelName: planName,
           invoiceValue: 0,
-          paymentAmount: amount,
+          paymentAmount: finalAmount,
           transactionId: txnid,
           sellerCode: referralCode || null,
           status: "pending",
           expiresAt: expiresAt,
           purchaseTimingCategory: planType === "bbg" ? "within_six_months" : "after_six_months",
           benefitType: planType,
-          planPrice: amount,
+          planPrice: finalAmount,
           benefitsJson: JSON.stringify({ planName, validity, coverage }),
           emailTemplateKey: planType === "bbg" ? "bbg_confirmation" : "extend_plus_confirmation",
         };
 
         await storage.createPendingPayment(pendingPaymentData);
-        console.log("💾 Payment initiate: Plan context persisted:", { txnid, planType, amount });
+        console.log("💾 Payment initiate: Plan context persisted:", { txnid, planType, amount: finalAmount, referralCode, discountApplied });
       } catch (persistError) {
         console.error("❌ Failed to persist payment context:", persistError);
       }
@@ -1474,21 +1514,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
           deviceType,
           brand,
           modelName: planName || `${planType.toUpperCase()} Plan`,
-          invoiceValue: amount,
+          invoiceValue: finalAmount,
           dateOfPurchase: purchaseDate || new Date().toISOString().split('T')[0],
           sellerCode: referralCode || null,
         },
         planDetails: {
           planType,
           planName,
-          planPrice: amount,
+          planPrice: finalAmount,
           validity,
           coverage,
           benefitType: planType,
           purchaseTimingCategory: planType === 'bbg' ? 'within_six_months' : 'after_six_months',
         },
         referralCode,
-        finalAmount: amount,
+        discountApplied,
+        discountAmount,
+        originalAmount: amount,
+        finalAmount,
       });
       app.locals.tempCustomerData = tempStorage;
 
@@ -1499,7 +1542,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const payuParams: any = {
         key: payuConfig.merchantKey,
         txnid,
-        amount: amount.toString(),
+        amount: finalAmount.toString(),
         productinfo: planName || `${planType.toUpperCase()} Plan`,
         firstname: customerName,
         email: customerEmail,
@@ -3011,10 +3054,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const distributor = await storage.getDistributorBySellerCode(code);
 
       if (distributor) {
+        // Get discount settings to return to frontend
+        let discountType: string | null = null;
+        let discountValue: number | null = null;
+        
+        try {
+          const discountSettings = await storage.getReferralDiscountSettings();
+          if (discountSettings && discountSettings.isActive && discountSettings.discountValue > 0) {
+            discountType = discountSettings.discountType;
+            discountValue = discountSettings.discountValue;
+          }
+        } catch (discountError) {
+          console.error("Error fetching discount settings:", discountError);
+        }
+        
         res.json({
           valid: true,
           message: `Valid referral code for ${distributor.name}`,
+          partnerName: distributor.name,
           distributorName: distributor.name,
+          discountType,
+          discountValue,
         });
       } else {
         res.json({

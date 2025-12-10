@@ -1,90 +1,7 @@
 # XtraCover BBG Application
 
 ## Overview
-This is a full-stack web application for XtraCover's BuyBack Guarantee (BBG) system. Its primary purpose is to enable distributors (referral partners) to register and earn commissions, customers to register their devices for BBG protection, and users to claim their buyback guarantees. The project streamlines the BBG process, offers a user-friendly experience with real-time feedback, and provides robust administrative tools for managing all aspects of the system.
-
-## Recent Critical Updates
-**Date: December 9, 2025**
-- **✅ DEVICE PURCHASE DATE VALIDATION IMPLEMENTED**: Added comprehensive validation preventing future dates on device purchase date field
-- **✅ DUAL LOCATION VALIDATION**: Future date validation now active in both main plan selection form and "Buy" popup from navigation menu (via shared DevicePlanSelectorForm component)
-- **✅ USER-FRIENDLY ERROR MESSAGING**: Clear error toast displays "Device purchase date cannot be a future date" when validation fails
-- **✅ REFERRAL CODE VALIDATION UI ENHANCED**: Added "Apply" button to referral code field with real-time validation feedback
-- **✅ REFERRAL DISCOUNT DISPLAY**: Checkout now shows discounted price with strikethrough original price and green highlight when referral code applied
-
-**Date: August 21, 2025**
-- **✅ REFERRAL CODE GENERATION ISSUE COMPLETELY RESOLVED**: Fixed undefined referral code problem in simplified distributor registration form
-- **✅ DATABASE SCHEMA COMPATIBILITY FIXED**: Updated SQL storage to handle simplified form while maintaining database table requirements for pincode and preferred_mode fields
-- **✅ SMART DEFAULT VALUES IMPLEMENTED**: System now provides automatic default values ('000000' for pincode, 'TBD' for preferred_mode) for missing optional fields during simplified registration
-- **✅ SELLER CODE GENERATION VERIFIED**: Confirmed referral codes generate correctly using distributor initials + last 3 mobile digits format (e.g., "TU426" for "Test User" + mobile ending in "426")
-- **✅ SIMPLIFIED REGISTRATION FORM FULLY FUNCTIONAL**: Minimal form with only name, contact, email, and 3 business declarations now works perfectly with proper referral code generation
-- **✅ FIELD MAPPING CORRECTED**: Fixed boolean conversion logic for new declaration field names (declarationAccuracy, tdsUnderstanding, gstInvoiceAgreement)
-- **✅ EMAIL NOTIFICATIONS WORKING**: Welcome emails successfully sent to new referral partners with correct seller codes included
-
-**Date: August 20, 2025**
-- **✅ CLAIM VALUE SLABS EMAIL INTEGRATION COMPLETED**: Successfully implemented claim value slabs display in customer registration confirmation emails
-- **✅ DYNAMIC HTML GENERATION**: Claim value slabs are fetched from database and rendered as formatted HTML table in emails showing device age ranges and claim percentages
-- **✅ REAL-TIME EMAIL DELIVERY**: Registration emails now include personalized claim value slabs based on customer's device type and brand (Apple, Samsung, etc.)
-- **✅ TEMPLATE VARIABLE INTEGRATION**: Added claimValueSlabsHtml variable to email templates with proper substitution via template service
-- **✅ COMPREHENSIVE LOGGING**: Enhanced debug logging throughout communication service to track slab fetching, HTML generation, and email rendering
-- **✅ BRAND-SPECIFIC SLAB RETRIEVAL**: System correctly fetches and displays brand-specific claim value slabs (e.g., Apple vs Samsung mobile rates)
-- **✅ MULTI-DEVICE SUPPORT**: Email integration works for both laptop and mobile device registrations with appropriate slab data
-- **✅ S3 FILE UPLOAD SYSTEM VERIFIED**: Confirmed AWS S3 integration is working correctly for all file uploads with environment variables properly configured
-- **✅ FILE UPLOAD DEBUGGING**: Added enhanced logging to track S3 vs local storage usage and confirmed all files are uploading to S3 bucket (bbg-asset)
-- **✅ PRODUCTION DEPLOYMENT GUIDANCE**: Documented that local storage permission errors occur only in production deployments with incorrect S3 configuration
-
-**Date: August 18, 2025**
-- **✅ BULLETPROOF ACER BBG DETECTION SYSTEM**: Implemented comprehensive multi-layer detection system with absolute failsafe protection
-- **✅ TRIPLE-REDUNDANCY PROTECTION**: Primary, secondary, and backup detection methods ensure Acer BBG customers are never subjected to waiting periods
-- **✅ ENHANCED DEBUGGING CAPABILITIES**: Added comprehensive logging for detection methods, configuration tracking, and clear exemption confirmation messages
-- **✅ ABSOLUTE FAILSAFE IMPLEMENTATION**: Final validation layer prevents any configuration changes from affecting Acer BBG waiting period exemptions
-- **✅ ROBUST ERROR HANDLING**: System maintains proper behavior even during database errors or configuration failures
-- **✅ TEXT CONTENT UPDATED**: Changed mobile BBG payout text from "Up to 70%" to "Up to 60%" as requested on homepage
-
-**Date: August 17, 2025**
-- **✅ COMPREHENSIVE FINANCE DATA EXPORT SYSTEM IMPLEMENTED**: Complete CSV export functionality for customers, referral partners, and commission payouts with finance-ready formatting
-- **✅ CUSTOMER DATA EXPORT**: Full customer records with BBG voucher codes, purchase details, payment references, registration source tracking, and referral partner associations
-- **✅ REFERRAL PARTNER EXPORT**: Complete distributor details with banking information, performance metrics, commission summaries, and customer breakdown by device type
-- **✅ COMMISSION PAYOUT EXPORT**: Detailed payout records with status tracking, payment references, associated customer and partner information for financial reconciliation
-- **✅ DATABASE SCHEMA CORRECTIONS**: Fixed all export endpoints to use correct table names (distributors vs referral_partners) and column names for proper data retrieval
-- **✅ PROFESSIONAL CSV FORMATTING**: Finance-friendly column headers, proper data escaping, automatic filename generation with dates, and comprehensive audit trail fields
-- **✅ ADMIN PANEL INTEGRATION**: One-click export buttons in admin dashboard with proper authentication and error handling
-- **✅ 3-MONTH WAITING PERIOD IMPLEMENTED**: Regular BBG customers must wait 3 months from purchase date before filing claims (Acer BBG registrations exempt)
-- **✅ BACKEND VALIDATION ADDED**: New business rule in /api/claims/check endpoint validates registration date vs current date
-- **✅ FRONTEND ERROR HANDLING**: Enhanced claim form displays detailed waiting period information with countdown and registration details
-- **✅ REGISTRATION SOURCE TRACKING**: System differentiates between 'regular' and 'acer_bbg' registrations for proper validation rules
-- **✅ COMPREHENSIVE USER FEEDBACK**: Clear error messages show registration date, months waited, and exact eligibility date
-- **✅ DYNAMIC BBG PRICING SYSTEM IMPLEMENTED**: Complete integration of admin-configurable BBG prices with database table structure
-- **✅ ADMIN BBG SETTINGS PAGE**: Created table-format admin interface for managing laptop and mobile BBG pricing
-- **✅ UNIFIED PRICE FETCHING**: All frontend pages (homepage, customer registration, thank-you pages) now use dynamic prices from /api/bbg-prices endpoint
-- **✅ REAL-TIME PRICE UPDATES**: Changes made in admin dashboard immediately reflected across all customer-facing pages
-- **✅ FALLBACK PRICING**: System maintains default prices (laptop: ₹299, mobile: ₹99) if database unavailable
-- **✅ DEVICE AGE VALIDATION ADDED**: Devices older than 1 year from purchase date cannot buy regular BBG coverage (Acer BBG registrations exempt)
-- **✅ DUAL VALIDATION SYSTEM**: Both frontend (Zod schema) and backend (API routes) validate device age with proper error messages
-- **✅ ACER BBG EXEMPTION**: Acer registrations bypass age validation, allowing any device age with valid IMEI
-- **✅ SHORTENED REFERRAL CODES**: Updated referral code generation to use 4-5 digit format with distributor initials + mobile digits
-- **✅ DUAL STORAGE SYSTEM UPDATED**: Modified both storage.ts and sql-storage.ts to generate personalized codes (e.g., "JS123" for John Smith with mobile ending in 123)
-- **✅ BACKWARDS COMPATIBILITY**: Maintains fallback to legacy format if distributor data unavailable
-- **✅ PAYU SECURITY FIX**: Forced HTTPS redirect URLs to eliminate browser security warnings during payment flow
-
-**Date: August 15, 2025**
-- **✅ ADMIN MENU CUSTOMIZATION IMPLEMENTED**: Complete menu reordering system with drag-and-drop functionality
-- **✅ DYNAMIC SIDEBAR INTEGRATION**: Admin sidebar now fetches menu order from backend API and updates in real-time
-- **✅ MENU SETTINGS PAGE CREATED**: New admin page allows full customization of menu order with save/reset functionality
-- **✅ BACKEND API ENDPOINTS**: Added `/api/admin/menu-order` GET/POST and `/api/admin/menu-order/reset` for menu management
-- **✅ MASTERS AND BRANDS PRIORITIZED**: Menu now shows Masters and Brands at top of navigation as requested
-
-**Date: August 13, 2025**
-- **✅ EMAIL NOTIFICATION SYSTEM FIXED**: Acer BBG registration now sends email confirmations successfully to both ritwik123tiwary@gmail.com and jatin.singh@xtracover.com
-- **✅ SMTP INTEGRATION RESTORED**: Fixed ES module compatibility and properly integrated database SMTP settings with AWS SES configuration
-- **✅ COMMUNICATION SERVICE ENHANCED**: Resolved import issues and enabled email delivery using stored SMTP credentials from database
-
-**Date: August 12, 2025**
-- **✅ ACER BBG SLAB SYSTEM FULLY IMPLEMENTED**: Complete Acer BBG flow now uses dedicated 80% slabs instead of regular 70% Acer rates
-- **✅ BACKEND API ENHANCED**: New `/api/claim-value-slabs/active/:deviceType/:registrationSource` endpoint serves Acer BBG-specific slabs
-- **✅ REGISTRATION SOURCE TRACKING**: Acer BBG registrations properly marked with `registrationSource: 'acer_bbg'` for database integrity
-- **✅ FRONTEND UPDATES COMPLETED**: Acer BBG registration and thank you pages show correct "Up to 80%" maximum claim rate
-- **✅ COMPLETE SLAB PRESERVATION**: Acer BBG customers' `registrationSlabData` stores higher-rate slab structure from registration time
-- **✅ CLAIM SYSTEM VERIFIED**: Claims process correctly uses preserved Acer BBG rates, protecting customers against future rate changes
+This full-stack web application is designed for XtraCover's BuyBack Guarantee (BBG) system. It facilitates device registration for BBG protection, enables customers to claim buyback guarantees, and allows distributors to register and earn commissions. The project aims to streamline the BBG process, provide a user-friendly experience with real-time feedback, and offer robust administrative tools for comprehensive system management.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -92,37 +9,33 @@ Preferred communication style: Simple, everyday language.
 ## System Architecture
 
 ### Frontend
-- **Framework**: React 18 with TypeScript
-- **Routing**: Wouter
-- **State Management**: TanStack Query (React Query)
-- **Styling**: Tailwind CSS with shadcn/ui components
-- **Form Handling**: React Hook Form with Zod validation
-- **Build Tool**: Vite
-- **UI/UX Decisions**: Focus on a streamlined, single-page customer registration flow with real-time validation, smart focus-based message display, and smooth animations. The design aims for a professional, consistent look across customer, partner, and admin interfaces, incorporating a dual-color theme with primary (#254696) and secondary (#E72829) colors. A dynamic theme system allows for real-time color customization.
+- **Framework**: React 18 with TypeScript, Wouter for routing, TanStack Query for state management.
+- **Styling**: Tailwind CSS with shadcn/ui components.
+- **Form Handling**: React Hook Form with Zod validation.
+- **Build Tool**: Vite.
+- **UI/UX Decisions**: Focus on a streamlined, single-page customer registration flow with real-time validation, smart focus-based message display, and smooth animations. The design utilizes a dual-color theme (primary #254696, secondary #E72829) with a dynamic theme system for real-time customization, ensuring a professional and consistent look across all interfaces.
 
 ### Backend
-- **Runtime**: Node.js with Express.js
-- **Language**: TypeScript with ES modules
-- **Database ORM**: Drizzle ORM (for potential future use, currently raw SQL)
-- **File Handling**: Multer for file uploads, integrated with AWS S3 for cloud storage with local fallback.
-- **Admin Panel**: Secure session-based authentication with bcrypt hashing. Provides comprehensive management of referral partners, customers, claims, communication templates, and IMEI data. Features customizable menu ordering system with drag-and-drop interface for admin navigation management.
+- **Runtime**: Node.js with Express.js (TypeScript, ES modules).
+- **Database ORM**: Drizzle ORM (planned, currently raw SQL).
+- **File Handling**: Multer for uploads, integrated with AWS S3 for cloud storage with local fallback.
+- **Admin Panel**: Secure session-based authentication with bcrypt hashing, offering comprehensive management of partners, customers, claims, communication templates, and IMEI data. Features a customizable drag-and-drop menu ordering system.
 
 ### Database Design
 - **Primary Database**: Microsoft SQL Server.
 - **Core Tables**: `referral_partners`, `customers`, `claims`, `otp_verifications`, `admin_users`, `message_templates`, `acer_imei_validation`, `claim_value_slabs`.
 - **Key Technical Implementations**:
-    - **Authentication**: OTP-based verification for customer and referral partner registration; session-based with secure password hashing for admin.
-    - **Business Logic**: Dynamic commission calculation, device age-based claim eligibility, and BBG voucher code generation. Includes brand-specific claim value slab configurations.
-    - **File Management**: Secure uploads (invoices, payment proofs) to AWS S3 with signed URLs. Supports image (JPEG, PNG) and PDF files up to 5MB.
-    - **Data Validation**: Comprehensive Zod schemas for all data, including Indian phone numbers, pincodes, and bank details.
-    - **Communication System**: Multi-channel notifications via Email (SMTP), SMS (Kaleyra), and WhatsApp (Gupshup). Features a Template Management System for admin CRUD operations with dynamic variables and live previews.
-    - **Acer IMEI Validation**: System for uploading and validating Acer IMEI data to prevent duplicate device registrations.
+    - **Authentication**: OTP-based for customer/partner registration; session-based with password hashing for admin.
+    - **Business Logic**: Dynamic commission calculation, device age-based claim eligibility, BBG voucher code generation, and brand-specific claim value slab configurations. Includes a 3-month waiting period for regular BBG claims (Acer BBG registrations exempt) and a 1-year device age limit for regular BBG coverage.
+    - **File Management**: Secure uploads (invoices, payment proofs) to AWS S3 (up to 5MB, JPEG, PNG, PDF) with signed URLs.
+    - **Data Validation**: Comprehensive Zod schemas for all data.
+    - **Communication System**: Multi-channel notifications via Email (SMTP), SMS (Kaleyra), and WhatsApp (Gupshup), with an admin-managed Template Management System.
+    - **Acer IMEI Validation**: System for uploading and validating Acer IMEI data to prevent duplicate registrations, specifically handling Acer BBG customers with an 80% slab system.
 
 ### Deployment Strategy
-- **Target Platform**: AWS Cloud Infrastructure
-- **Architecture**: Auto-scaling EC2 instances with Application Load Balancer.
-- **Database**: Continues using existing Microsoft SQL Server.
-- **Storage**: Maintains AWS S3 integration.
+- **Target Platform**: AWS Cloud Infrastructure (EC2 instances with Application Load Balancer).
+- **Database**: Existing Microsoft SQL Server.
+- **Storage**: AWS S3.
 
 ## External Dependencies
 

@@ -224,6 +224,7 @@ export class CommunicationService {
       bbgPurchaseDate?: string;
       termsAndConditionsUrl?: string;
       emailTemplateKey?: string; // For auction/repair vs claim_slabs flow
+      planType?: string; // 'bbg' or 'extend_plus'
     }
   ) {
     const results = {
@@ -233,52 +234,58 @@ export class CommunicationService {
     };
 
     try {
-      // Fetch claim value slabs for this device brand/type
+      // Fetch claim value slabs ONLY for BBG plans (not for Extend+)
       let claimValueSlabs: any[] = [];
-      try {
-        // For website device registrations, use 'regular' slabs instead of 'website'
-        // For Acer BBG and other registrations, use their respective registration sources
-        let slabRegistrationSource = customerData.registrationSource || 'regular';
-        if (customerData.registrationSource === 'website') {
-          slabRegistrationSource = 'regular'; // Website device registrations use regular claim slabs
-        }
-        
-        // Amazon BBG and Acer BBG slabs are brand-agnostic (brand = NULL)
-        // Use getActiveClaimValueSlabsByDeviceTypeAndSource instead of getClaimValueSlabsByTypeAndBrand
-        if (customerData.registrationSource === 'amazon_bbg' || customerData.registrationSource === 'acer_bbg') {
-          console.log(`📊 Fetching ${slabRegistrationSource} claim value slabs for: ${customerData.deviceType} (brand-agnostic)`);
-          claimValueSlabs = await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(
-            customerData.deviceType, 
-            slabRegistrationSource
-          );
-        } else {
-          console.log(`📊 Fetching claim value slabs for: ${customerData.deviceType}/${customerData.brand}/${slabRegistrationSource}`);
-          claimValueSlabs = await storage.getClaimValueSlabsByTypeAndBrand(
-            customerData.deviceType, 
-            customerData.brand, 
-            slabRegistrationSource
-          );
-        }
-        console.log(`📊 Fetched ${claimValueSlabs.length} claim value slabs for email`);
-      } catch (error) {
-        console.error('❌ Error fetching claim value slabs for email:', error);
-        // Continue without slabs if fetch fails
-      }
-
-      // Generate HTML for claim value slabs
       let claimValueSlabsHtml = '';
-      if (claimValueSlabs.length > 0) {
-        console.log(`📋 Generating HTML for ${claimValueSlabs.length} claim value slabs`);
-        claimValueSlabsHtml = claimValueSlabs.map(slab => 
-          `<div style="background: white; padding: 10px 15px; margin: 8px 0; border-radius: 6px; border-left: 3px solid #0277bd;">
-            <span style="font-weight: bold; color: #1976d2;">${slab.minMonths}-${slab.maxMonths} months old:</span>
-            <span style="color: #2e7d32; font-weight: bold; float: right;">${slab.percentage}%</span>
-          </div>`
-        ).join('');
-        console.log(`📋 Generated claimValueSlabsHtml (${claimValueSlabsHtml.length} chars):`, claimValueSlabsHtml.substring(0, 200) + '...');
+      
+      // Only fetch and display claim value slabs for BBG plans
+      if (customerData.planType !== 'extend_plus') {
+        try {
+          // For website device registrations, use 'regular' slabs instead of 'website'
+          // For Acer BBG and other registrations, use their respective registration sources
+          let slabRegistrationSource = customerData.registrationSource || 'regular';
+          if (customerData.registrationSource === 'website') {
+            slabRegistrationSource = 'regular'; // Website device registrations use regular claim slabs
+          }
+          
+          // Amazon BBG and Acer BBG slabs are brand-agnostic (brand = NULL)
+          // Use getActiveClaimValueSlabsByDeviceTypeAndSource instead of getClaimValueSlabsByTypeAndBrand
+          if (customerData.registrationSource === 'amazon_bbg' || customerData.registrationSource === 'acer_bbg') {
+            console.log(`📊 Fetching ${slabRegistrationSource} claim value slabs for: ${customerData.deviceType} (brand-agnostic)`);
+            claimValueSlabs = await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(
+              customerData.deviceType, 
+              slabRegistrationSource
+            );
+          } else {
+            console.log(`📊 Fetching claim value slabs for: ${customerData.deviceType}/${customerData.brand}/${slabRegistrationSource}`);
+            claimValueSlabs = await storage.getClaimValueSlabsByTypeAndBrand(
+              customerData.deviceType, 
+              customerData.brand, 
+              slabRegistrationSource
+            );
+          }
+          console.log(`📊 Fetched ${claimValueSlabs.length} claim value slabs for email`);
+        } catch (error) {
+          console.error('❌ Error fetching claim value slabs for email:', error);
+          // Continue without slabs if fetch fails
+        }
+
+        // Generate HTML for claim value slabs
+        if (claimValueSlabs.length > 0) {
+          console.log(`📋 Generating HTML for ${claimValueSlabs.length} claim value slabs`);
+          claimValueSlabsHtml = claimValueSlabs.map(slab => 
+            `<div style="background: white; padding: 10px 15px; margin: 8px 0; border-radius: 6px; border-left: 3px solid #0277bd;">
+              <span style="font-weight: bold; color: #1976d2;">${slab.minMonths}-${slab.maxMonths} months old:</span>
+              <span style="color: #2e7d32; font-weight: bold; float: right;">${slab.percentage}%</span>
+            </div>`
+          ).join('');
+          console.log(`📋 Generated claimValueSlabsHtml (${claimValueSlabsHtml.length} chars):`, claimValueSlabsHtml.substring(0, 200) + '...');
+        } else {
+          console.log('📋 No claim value slabs found, using fallback message');
+          claimValueSlabsHtml = '<div style="background: white; padding: 15px; border-radius: 6px; text-align: center; color: #666;">Claim value slabs will be available based on your device specifications.</div>';
+        }
       } else {
-        console.log('📋 No claim value slabs found, using fallback message');
-        claimValueSlabsHtml = '<div style="background: white; padding: 15px; border-radius: 6px; text-align: center; color: #666;">Claim value slabs will be available based on your device specifications.</div>';
+        console.log('📋 Extend+ plan detected - skipping claim value slabs (not applicable to Extend+ coverage)');
       }
 
       // Prepare extended customer data with claim value slabs HTML

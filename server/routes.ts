@@ -1143,6 +1143,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 day: 'numeric' 
               }),
               termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
+              planType: customer.benefitType || 'bbg',
             });
 
           console.log("🔔 PayU customer registration notifications complete:", {
@@ -1790,6 +1791,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               day: 'numeric' 
             }),
             termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
+            planType: customer.benefitType || 'bbg',
           });
 
         console.log("🔔 Customer registration notifications complete:", {

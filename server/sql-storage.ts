@@ -1802,13 +1802,13 @@ export class SqlServerStorage implements IStorage {
       INSERT INTO customers (
         name, contact, email, pincode, device_type, serial_number, 
         brand, model_name, invoice_value, date_of_purchase, seller_code, voucher_code, payment_intent_id, is_verified,
-        registration_source, invoice_file, claim_value_slab_id, registration_slab_data, plan_id
+        registration_source, invoice_file, claim_value_slab_id, registration_slab_data, plan_id, benefit_type
       ) 
       OUTPUT INSERTED.*
       VALUES (
         @name, @contact, @email, @pincode, @deviceType, @serialNumber, 
         @brand, @modelName, @invoiceValue, @dateOfPurchase, @sellerCode, @voucherCode, @paymentIntentId, @isVerified,
-        @registrationSource, @invoiceFile, @claimValueSlabId, @registrationSlabData, @planId
+        @registrationSource, @invoiceFile, @claimValueSlabId, @registrationSlabData, @planId, @benefitType
       )
     `;
 
@@ -1835,6 +1835,7 @@ export class SqlServerStorage implements IStorage {
     request.input('claimValueSlabId', sql.Int, claimValueSlabId);
     request.input('registrationSlabData', sql.NVarChar, insertCustomer.registrationSlabData || null);
     request.input('planId', sql.Int, (insertCustomer as any).planId || null);
+    request.input('benefitType', sql.NVarChar, (insertCustomer as any).benefitType || null);
 
     const result = await request.query(query);
 
@@ -2239,14 +2240,16 @@ export class SqlServerStorage implements IStorage {
       brand: row.brand,
       modelName: row.model_name,
       invoiceValue: parseFloat(row.invoice_value),
-      dateOfPurchase: row.date_of_purchase, // Correct: database column is date_of_purchase
+      dateOfPurchase: row.date_of_purchase,
       sellerCode: row.seller_code,
       voucherCode: row.voucher_code,
       paymentIntentId: row.payment_intent_id,
       isVerified: Boolean(row.is_verified),
       claimValueSlabId: row.claim_value_slab_id || null,
       registrationSlabData: row.registration_slab_data || null,
-      registrationSource: row.registration_source || 'regular', // Fixed: missing mapping for registration_source
+      registrationSource: row.registration_source || 'regular',
+      planId: row.plan_id || null,
+      benefitType: row.benefit_type || null,
       createdAt: row.created_at
     };
   }

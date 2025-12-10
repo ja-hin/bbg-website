@@ -225,6 +225,7 @@ export class CommunicationService {
       termsAndConditionsUrl?: string;
       emailTemplateKey?: string; // For auction/repair vs claim_slabs flow
       planType?: string; // 'bbg' or 'extend_plus'
+      planId?: number | null; // Plan ID for plan-specific email templates
     }
   ) {
     const results = {
@@ -234,12 +235,24 @@ export class CommunicationService {
     };
 
     try {
+      // Get plan details if planId is provided
+      let purchasedPlan: any = null;
+      if (customerData.planId) {
+        try {
+          purchasedPlan = await storage.getPlanById(customerData.planId);
+          console.log(`📋 Plan details for planId ${customerData.planId}:`, purchasedPlan);
+        } catch (planError) {
+          console.error(`❌ Error fetching plan ${customerData.planId}:`, planError);
+        }
+      }
+      
       // Fetch claim value slabs ONLY for BBG plans (not for Extend+)
       let claimValueSlabs: any[] = [];
       let claimValueSlabsHtml = '';
       
       // Only fetch and display claim value slabs for BBG plans
-      if (customerData.planType !== 'extend_plus') {
+      const isBBGPlan = purchasedPlan?.planType === 'bbg' || customerData.planType === 'bbg';
+      if (isBBGPlan && customerData.planType !== 'extend_plus') {
         try {
           // For website device registrations, use 'regular' slabs instead of 'website'
           // For Acer BBG and other registrations, use their respective registration sources
@@ -295,56 +308,73 @@ export class CommunicationService {
       };
 
       // Email confirmation using template with SMTP settings from database
-      // Determine if this is BBG purchase vs device registration and timing
+      // Use plan ID for plan-specific email templates if available
       let emailTemplate;
-      
-      // Calculate device age in months to determine template
-      const deviceAgeInMonths = this.calculateDeviceAgeInMonths(customerData.devicePurchaseDate);
-      
-      // Get plan configurations from database
-      const plans = await storage.getAllPlanConfigurations();
-      let selectedPlan: any = null;
-      
-      // Find the appropriate plan based on device age
-      for (const plan of plans) {
-        if (deviceAgeInMonths <= plan.maxMonths) {
-          selectedPlan = plan;
-          break;
-        }
-      }
-      
-      // Fallback to last plan if age exceeds all thresholds
-      if (!selectedPlan && plans.length > 0) {
-        selectedPlan = plans[plans.length - 1];
-      }
-      
-      console.log(`📅 Device age: ${deviceAgeInMonths} months, selected plan: ${selectedPlan?.label || 'Unknown'}`);
-      
-      // Determine the appropriate template based on registration source and plan:
-      // - Website registrations = device registration templates
-      // - Acer BBG registrations = Acer-specific templates
-      // - Amazon BBG registrations = Amazon-specific template
-      // - Regular registrations = BBG purchase templates
-      
       let eventType: string;
-      const planIdentifier = selectedPlan?.templateIdentifier || (deviceAgeInMonths <= 6 ? 'within_6_months' : 'over_6_months');
       
-      if (customerData.registrationSource === 'website') {
-        // Website device registrations
-        eventType = planIdentifier === 'within_6_months' ? 'device_registration_within_6_months' : 'device_registration_over_6_months';
-        console.log(`📧 Device Registration - Plan: ${selectedPlan?.label}, using template: ${eventType}`);
-      } else if (customerData.registrationSource === 'acer_bbg') {
-        // Acer BBG registrations - use dedicated Acer templates
-        eventType = planIdentifier === 'within_6_months' ? 'acer_registration_within_6_months' : 'acer_registration_over_6_months';
-        console.log(`📧 Acer Registration - Plan: ${selectedPlan?.label}, using template: ${eventType}`);
-      } else if (customerData.registrationSource === 'amazon_bbg') {
-        // Amazon BBG registrations - use dedicated Amazon template
-        eventType = 'amazon_bbg_registration';
-        console.log(`📧 Amazon BBG Registration - using template: ${eventType}`);
+      if (customerData.planId && purchasedPlan) {
+        // Use plan-specific email template based on planId
+        // Map plan ID to specific event type templates
+        console.log(`📧 Using plan-specific email template for plan ID ${customerData.planId}: ${purchasedPlan?.planName}`);
+        
+        // Create a unique event type based on plan name for plan-specific templates
+        // Templates should be named: plan_template_bbg_mobile, plan_template_bbg_laptop, plan_template_extend_plus_mobile, plan_template_extend_plus_laptop
+        const planType = purchasedPlan?.planType || 'bbg';
+        const deviceType = purchasedPlan?.deviceType || 'mobile';
+        eventType = `plan_template_${planType}_${deviceType}`;
+        
+        console.log(`📧 Template event type for plan: ${eventType}`);
       } else {
-        // Regular BBG purchases
-        eventType = planIdentifier === 'within_6_months' ? 'bbg_purchase_within_6_months' : 'bbg_purchase_over_6_months';
-        console.log(`📧 BBG Purchase - Plan: ${selectedPlan?.label}, using template: ${eventType}`);
+        // Fallback to device-age-based template selection for device registrations
+        console.log(`📧 No planId provided, using device-age-based template selection`);
+        
+        // Calculate device age in months to determine template
+        const deviceAgeInMonths = this.calculateDeviceAgeInMonths(customerData.devicePurchaseDate);
+        
+        // Get plan configurations from database
+        const plans = await storage.getAllPlanConfigurations();
+        let selectedPlan: any = null;
+        
+        // Find the appropriate plan based on device age
+        for (const plan of plans) {
+          if (deviceAgeInMonths <= plan.maxMonths) {
+            selectedPlan = plan;
+            break;
+          }
+        }
+        
+        // Fallback to last plan if age exceeds all thresholds
+        if (!selectedPlan && plans.length > 0) {
+          selectedPlan = plans[plans.length - 1];
+        }
+        
+        console.log(`📅 Device age: ${deviceAgeInMonths} months, selected plan: ${selectedPlan?.label || 'Unknown'}`);
+        
+        // Determine the appropriate template based on registration source and plan:
+        // - Website registrations = device registration templates
+        // - Acer BBG registrations = Acer-specific templates
+        // - Amazon BBG registrations = Amazon-specific template
+        // - Regular registrations = BBG purchase templates
+        
+        const planIdentifier = selectedPlan?.templateIdentifier || (deviceAgeInMonths <= 6 ? 'within_6_months' : 'over_6_months');
+        
+        if (customerData.registrationSource === 'website') {
+          // Website device registrations
+          eventType = planIdentifier === 'within_6_months' ? 'device_registration_within_6_months' : 'device_registration_over_6_months';
+          console.log(`📧 Device Registration - Plan: ${selectedPlan?.label}, using template: ${eventType}`);
+        } else if (customerData.registrationSource === 'acer_bbg') {
+          // Acer BBG registrations - use dedicated Acer templates
+          eventType = planIdentifier === 'within_6_months' ? 'acer_registration_within_6_months' : 'acer_registration_over_6_months';
+          console.log(`📧 Acer Registration - Plan: ${selectedPlan?.label}, using template: ${eventType}`);
+        } else if (customerData.registrationSource === 'amazon_bbg') {
+          // Amazon BBG registrations - use dedicated Amazon template
+          eventType = 'amazon_bbg_registration';
+          console.log(`📧 Amazon BBG Registration - using template: ${eventType}`);
+        } else {
+          // Regular BBG purchases
+          eventType = planIdentifier === 'within_6_months' ? 'bbg_purchase_within_6_months' : 'bbg_purchase_over_6_months';
+          console.log(`📧 BBG Purchase - Plan: ${selectedPlan?.label}, using template: ${eventType}`);
+        }
       }
       
       emailTemplate = await templateService.getTemplateByTypeEventAndDevice('email', eventType, undefined);

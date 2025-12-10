@@ -1070,6 +1070,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           benefitType: planDetails?.benefitType || null,
           planPrice: planDetails?.planPrice || null,
           benefitsJson: planDetails ? JSON.stringify(planDetails.benefits) : null,
+          // Plan ID for email template selection
+          planId: tempData?.planId || null,
           // Remove invoiceFile completely for PayU payments
         };
 
@@ -1144,6 +1146,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               }),
               termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
               planType: customer.benefitType || 'bbg',
+              planId: customer.planId || null,
             });
 
           console.log("🔔 PayU customer registration notifications complete:", {
@@ -1792,6 +1795,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }),
             termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
             planType: customer.benefitType || 'bbg',
+            planId: customer.planId || null,
           });
 
         console.log("🔔 Customer registration notifications complete:", {

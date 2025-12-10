@@ -351,6 +351,22 @@ export default function Checkout() {
     paymentMutation.mutate(checkoutData);
   };
 
+  const formatCoverage = (coverage: string | number | undefined) => {
+    if (coverage == null) return "";
+
+    const str = String(coverage).trim();
+    const num = parseInt(str, 10);
+
+    // If it looks like a number, standardize to "36 months"
+    if (!isNaN(num)) {
+      return `${num} month${num === 1 ? "" : "s"}`;
+    }
+
+    // Otherwise just show whatever is stored
+    return str;
+  };
+
+
   if (!selectedPlan) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
@@ -366,7 +382,7 @@ export default function Checkout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-lg mx-auto px-4 py-6">
+      <div className="w-full mx-auto px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-4">
           <Button
             variant="ghost"
@@ -389,10 +405,11 @@ export default function Checkout() {
                     {selectedPlan.planName}
                   </span>
                 </div>
-                <p className="text-white/80 text-sm">{selectedPlan.coverage}</p>
                 <p className="text-white/70 text-xs mt-1">
                   Validity: {selectedPlan.validity}
                 </p>
+                <p className="text-white/80 text-sm">{formatCoverage(selectedPlan.coverage)}</p>
+                
               </div>
               <div className="text-right">
                 {referralValidation?.valid && referralValidation.discountedPrice ? (
@@ -416,12 +433,6 @@ export default function Checkout() {
         )}
 
         <div className="bg-white rounded-xl shadow-sm border p-6">
-          <h2
-            className="text-lg font-semibold text-gray-800 mb-1"
-            data-testid="heading-form"
-          >
-            These details are needed to generate invoice.
-          </h2>
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
@@ -661,14 +672,21 @@ export default function Checkout() {
                         By continuing, you verify that you are at least 18 years
                         old and agree to these{" "}
                         <Link
-                          href="/terms-and-conditions"
+                          to="/terms-and-conditions"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            window.open("/terms-and-conditions", "_blank", "noopener,noreferrer")
+                          }}
                           className="text-blue-600 hover:underline"
                         >
                           Terms & Conditions
-                        </Link>{" "}
+                        </Link>
+{" "}
                         and{" "}
                         <a
-                          href="#"
+                          href="https://www.xtracover.com/privacy-policy"
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="text-blue-600 hover:underline"
                         >
                           Privacy Policy

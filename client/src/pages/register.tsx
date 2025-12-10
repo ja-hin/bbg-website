@@ -177,52 +177,90 @@ export default function Register() {
   if (!registrationType) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
-        <div className="container mx-auto px-4 max-w-2xl">
+        <div className="container mx-auto px-4 max-w-6xl">
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Device Registration
             </h1>
             <p className="text-lg text-gray-600 max-w-xl mx-auto">
-              Please select where you purchased your plan
+              Please select where you purchased your device to proceed with registration.
             </p>
           </div>
 
-          {/* Simple Selection */}
-          <Card className="shadow-xl">
-            <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-              <CardTitle className="text-xl text-center">
-                Select Purchase Source
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-8">
-              <div className="space-y-4">
-                <Button
-                  onClick={() => handleRegistrationTypeSelect('acer')}
-                  className="w-full h-16 text-lg bg-orange-600 hover:bg-orange-700"
-                  data-testid="button-acer-selection"
-                >
-                  Acer E-Store
-                </Button>
-                <Button
-                  onClick={() => handleRegistrationTypeSelect('website')}
-                  className="w-full h-16 text-lg bg-blue-600 hover:bg-blue-700"
-                  data-testid="button-website-selection"
-                >
-                  Website Purchase
-                </Button>
-                <Button
-                  onClick={() => handleRegistrationTypeSelect('amazon')}
-                  className="w-full h-16 text-lg bg-[#FF9900] hover:bg-[#E88B00]"
-                  data-testid="button-amazon-selection"
-                >
-                  Amazon
-                </Button>
+          {/* Main panel */}
+          <Card className="shadow-xl border-0 rounded-2xl bg-white">
+            <CardContent className="p-8 lg:p-10">
+              <div className="grid gap-6 md:grid-cols-3">
+                {/* Acer E-Store */}
+                <div className="flex flex-col rounded-2xl border border-blue-200 bg-blue-50/80 px-6 py-6 text-center">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Acer E-Store
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-6">
+                    Purchased directly from the Acer online store. Requires order confirmation email.
+                  </p>
+                  <Button
+                    onClick={() => handleRegistrationTypeSelect("acer")}
+                    className="mt-auto w-full h-11 text-sm font-medium bg-blue-600 hover:bg-blue-700"
+                    data-testid="button-acer-selection"
+                  >
+                    Select Acer E-Store
+                  </Button>
+                </div>
+
+                {/* Website Purchase */}
+                <div className="flex flex-col rounded-2xl border border-gray-200 bg-gray-50 px-6 py-6 text-center">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Website Purchase
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-6">
+                    Purchased from a registered retailer&apos;s website (e.g., Best Buy, Newegg).
+                    Requires digital receipt.
+                  </p>
+                  <Button
+                    onClick={() => handleRegistrationTypeSelect("website")}
+                    className="mt-auto w-full h-11 text-sm font-medium bg-gray-700 hover:bg-gray-800"
+                    data-testid="button-website-selection"
+                  >
+                    Select Website Purchase
+                  </Button>
+                </div>
+
+                {/* Amazon */}
+                <div className="flex flex-col rounded-2xl border border-amber-200 bg-amber-50 px-6 py-6 text-center">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Amazon
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-6">
+                    Purchased from the Amazon marketplace. Requires order number or invoice.
+                  </p>
+                  <Button
+                    onClick={() => handleRegistrationTypeSelect("amazon")}
+                    className="mt-auto w-full h-11 text-sm font-medium bg-[#FF9900] hover:bg-[#E88B00]"
+                    data-testid="button-amazon-selection"
+                  >
+                    Select Amazon
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
+
+          {/* Support link */}
+          <div className="mt-6 text-center text-sm text-gray-600">
+            Not sure?{" "}
+            <a
+              href="https://www.xtracover.com/contact-us"
+              target="_blank"
+              className="text-blue-600 font-medium hover:underline"
+            >
+              Contact Us
+            </a>
+          </div>
         </div>
       </div>
+
     );
   }
 

@@ -46,6 +46,7 @@ const checkoutSchema = z.object({
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
 interface SelectedPlan {
+  id: number;
   planType: "bbg" | "extend_plus";
   deviceType: "laptop" | "mobile";
   price: number;
@@ -331,6 +332,7 @@ export default function Checkout() {
       customerEmail: data.email,
       customerPincode: data.pincode,
       referralCode: data.referralCode || null,
+      planId: selectedPlan.id,
       planType: selectedPlan.planType,
       deviceType: selectedPlan.deviceType,
       planName: selectedPlan.planName,

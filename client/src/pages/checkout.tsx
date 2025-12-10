@@ -435,12 +435,12 @@ export default function Checkout() {
         <div className="bg-white rounded-xl shadow-sm border p-6">
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="sm:col-span-2">
                     <FormLabel className="text-gray-700">
                       Enter name (As per any Govt. ID){" "}
                       <span className="text-red-500">*</span>
@@ -462,7 +462,7 @@ export default function Checkout() {
                 control={form.control}
                 name="contact"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="sm:col-span-2">
                     <FormLabel className="text-gray-700">
                       Mobile Number <span className="text-red-500">*</span>
                     </FormLabel>
@@ -512,7 +512,7 @@ export default function Checkout() {
               />
 
               {otpSent && !otpVerified && (
-                <div className="space-y-2">
+                <div className="space-y-2 sm:col-span-2">
                   <label className="text-sm font-medium text-gray-700">
                     Enter OTP <span className="text-red-500">*</span>
                   </label>
@@ -592,7 +592,7 @@ export default function Checkout() {
                 control={form.control}
                 name="referralCode"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="sm:col-span-2">
                     <FormLabel className="text-gray-700">
                       Referral Code (Optional)
                     </FormLabel>
@@ -659,7 +659,7 @@ export default function Checkout() {
                 control={form.control}
                 name="agreeToTerms"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 pt-2">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 pt-2 sm:col-span-2">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -698,7 +698,7 @@ export default function Checkout() {
                 )}
               />
 
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-gray-500 mt-2 sm:col-span-2">
                 Note: Only devices purchased within India are eligible for
                 XtraCover plans.
               </p>

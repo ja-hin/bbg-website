@@ -112,6 +112,7 @@ export default function Plans() {
     if (!planInfo || !planInfo.planPrice || !planInfo.planName) return;
     
     const selectedPlan = {
+      id: planInfo.id,
       planType: planInfo.planType,
       deviceType: planInfo.deviceType,
       price: planInfo.planPrice,

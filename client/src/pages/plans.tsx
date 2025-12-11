@@ -52,6 +52,8 @@ export default function Plans() {
   const mobileBBGPlan = getPlanInfo("mobile", "bbg");
   const laptopExtendPlan = getPlanInfo("laptop", "extend_plus");
   const mobileExtendPlan = getPlanInfo("mobile", "extend_plus");
+  const laptopBundlePlan = getPlanInfo("laptop", "bundle");
+  const mobileBundlePlan = getPlanInfo("mobile", "bundle");
 
   if (!deviceType || !deviceBrand || !devicePurchaseDate) {
     return (
@@ -100,12 +102,16 @@ export default function Plans() {
   const showMobileBBG = isMobile && isWithinSixMonths;
   const showLaptopExtend = isLaptop;
   const showMobileExtend = isMobile;
+  const showLaptopBundle = isLaptop && isWithinSixMonths;
+  const showMobileBundle = isMobile && isWithinSixMonths;
 
   const visibleCards = [
     showLaptopBBG,
     showMobileBBG,
     showLaptopExtend,
     showMobileExtend,
+    showLaptopBundle,
+    showMobileBundle,
   ].filter(Boolean).length;
 
   const handleBuyNow = (planInfo: any) => {
@@ -545,6 +551,180 @@ export default function Plans() {
                       </p>
                     </div>
                     <div className="absolute -bottom-[15px] sm:-bottom-[20px] left-0 w-0 h-0 border-t-[15px] sm:border-t-[20px] border-t-blue-300 border-l-[18px] sm:border-l-[24px] border-l-transparent"></div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {showLaptopBundle && (
+              <div
+                className="relative w-full max-w-xs h-full flex flex-col"
+                data-testid="card-laptop-bundle"
+              >
+                <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#8B5CF6] to-[#5B21B6] h-full flex flex-col">
+                  <div
+                    className="p-4 sm:p-6 pb-3 sm:pb-4 text-white text-center"
+                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
+                  >
+                    <div className="absolute top-2 right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
+                      BEST VALUE
+                    </div>
+                    <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">
+                      Laptop Bundle
+                    </h3>
+                    <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
+                      {pricesLoading ? (
+                        <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
+                      ) : (
+                        `₹${laptopBundlePlan?.planPrice || '--'}`
+                      )}
+                    </div>
+                    <p className="text-white/80 text-xs sm:text-sm">
+                      (inclusive of GST)
+                    </p>
+                  </div>
+
+                  <div
+                    className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow mt-10 sm:mt-12"
+                    style={{ textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
+                  >
+                    <ul className="space-y-2 sm:space-y-3 text-white">
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">
+                          BBG + Extend+ Combined
+                        </span>
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">
+                          70% payout + Free Repair
+                        </span>
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">
+                          Auction Service Included
+                        </span>
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">
+                          Validity: 12 months
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 sm:p-6 pt-4 sm:pt-6">
+                    <Button 
+                      className="w-full bg-white text-purple-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => handleBuyNow(laptopBundlePlan)}
+                      disabled={pricesLoading || !laptopBundlePlan}
+                      data-testid="button-buy-laptop-bundle"
+                    >
+                      {pricesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy Now"}
+                    </Button>
+                  </div>
+                </div>
+
+                <div
+                  className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]"
+                  style={{ left: "-1.5rem" }}
+                >
+                  <div className="relative sm:block">
+                    <div className="bg-purple-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
+                      <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
+                        Complete protection
+                        <br />
+                        bundle
+                      </p>
+                    </div>
+                    <div className="absolute -bottom-[15px] sm:-bottom-[20px] left-0 w-0 h-0 border-t-[15px] sm:border-t-[20px] border-t-purple-300 border-l-[18px] sm:border-l-[24px] border-l-transparent"></div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {showMobileBundle && (
+              <div
+                className="relative w-full max-w-xs h-full flex flex-col"
+                data-testid="card-mobile-bundle"
+              >
+                <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#8B5CF6] to-[#5B21B6] h-full flex flex-col">
+                  <div
+                    className="p-4 sm:p-6 pb-3 sm:pb-4 text-white text-center"
+                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
+                  >
+                    <div className="absolute top-2 right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
+                      BEST VALUE
+                    </div>
+                    <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">
+                      Mobile Bundle
+                    </h3>
+                    <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
+                      {pricesLoading ? (
+                        <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
+                      ) : (
+                        `₹${mobileBundlePlan?.planPrice || '--'}`
+                      )}
+                    </div>
+                    <p className="text-white/80 text-xs sm:text-sm">
+                      (inclusive of GST)
+                    </p>
+                  </div>
+
+                  <div
+                    className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow mt-10 sm:mt-12"
+                    style={{ textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
+                  >
+                    <ul className="space-y-2 sm:space-y-3 text-white">
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">BBG + Extend+ Combined</span>
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">
+                          70% payout + Free Repair
+                        </span>
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">Auction Service Included</span>
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">Validity: 12 months</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 sm:p-6 pt-4 sm:pt-6">
+                    <Button 
+                      className="w-full bg-white text-purple-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => handleBuyNow(mobileBundlePlan)}
+                      disabled={pricesLoading || !mobileBundlePlan}
+                      data-testid="button-buy-mobile-bundle"
+                    >
+                      {pricesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy Now"}
+                    </Button>
+                  </div>
+                </div>
+
+                <div
+                  className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]"
+                  style={{ left: "-1.5rem" }}
+                >
+                  <div className="relative sm:block">
+                    <div className="bg-purple-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
+                      <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
+                        Complete protection
+                        <br />
+                        bundle
+                      </p>
+                    </div>
+                    <div className="absolute -bottom-[15px] sm:-bottom-[20px] left-0 w-0 h-0 border-t-[15px] sm:border-t-[20px] border-t-purple-300 border-l-[18px] sm:border-l-[24px] border-l-transparent"></div>
                   </div>
                 </div>
               </div>

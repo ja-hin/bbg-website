@@ -954,7 +954,7 @@ export class SqlServerStorage implements IStorage {
           plan_name NVARCHAR(100) NOT NULL UNIQUE,
           plan_price DECIMAL(10,2) NOT NULL,
           device_type NVARCHAR(20) NOT NULL CHECK (device_type IN ('mobile', 'laptop')),
-          plan_type NVARCHAR(20) NOT NULL CHECK (plan_type IN ('bbg', 'extend_plus')),
+          plan_type NVARCHAR(20) NOT NULL CHECK (plan_type IN ('bbg', 'extend_plus', 'bundle')),
           coverage NVARCHAR(50) NULL,
           is_active BIT DEFAULT 1,
           created_at DATETIME2 DEFAULT GETDATE(),
@@ -975,6 +975,34 @@ export class SqlServerStorage implements IStorage {
         IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('plans') AND name = 'coverage')
         BEGIN
           ALTER TABLE plans ADD coverage NVARCHAR(50) NULL;
+        END
+      END
+
+      -- Update plan_type constraint to include 'bundle' and add bundle plans
+      IF EXISTS (SELECT * FROM sys.tables WHERE name = 'plans')
+      BEGIN
+        -- Drop old constraint if it exists and recreate with bundle option
+        DECLARE @constraintName NVARCHAR(200);
+        SELECT @constraintName = name FROM sys.check_constraints 
+        WHERE parent_object_id = OBJECT_ID('plans') AND definition LIKE '%plan_type%';
+        
+        IF @constraintName IS NOT NULL
+        BEGIN
+          EXEC('ALTER TABLE plans DROP CONSTRAINT ' + @constraintName);
+          ALTER TABLE plans ADD CONSTRAINT CK_plans_plan_type CHECK (plan_type IN ('bbg', 'extend_plus', 'bundle'));
+        END
+
+        -- Insert bundle plans if they don't exist
+        IF NOT EXISTS (SELECT 1 FROM plans WHERE plan_name = 'BBG + Extend+ Bundle for Mobile')
+        BEGIN
+          INSERT INTO plans (plan_name, plan_price, device_type, plan_type, coverage) 
+          VALUES ('BBG + Extend+ Bundle for Mobile', 499.00, 'mobile', 'bundle', '12_months');
+        END
+
+        IF NOT EXISTS (SELECT 1 FROM plans WHERE plan_name = 'BBG + Extend+ Bundle for Laptop')
+        BEGIN
+          INSERT INTO plans (plan_name, plan_price, device_type, plan_type, coverage) 
+          VALUES ('BBG + Extend+ Bundle for Laptop', 799.00, 'laptop', 'bundle', '12_months');
         END
       END
 

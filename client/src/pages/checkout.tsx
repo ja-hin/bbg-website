@@ -47,7 +47,7 @@ type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
 interface SelectedPlan {
   id: number;
-  planType: "bbg" | "extend_plus";
+  planType: "bbg" | "extend_plus" | "bundle";
   deviceType: "laptop" | "mobile";
   price: number;
   planName: string;

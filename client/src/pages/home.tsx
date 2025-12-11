@@ -874,7 +874,7 @@ export default function Home() {
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-2 sm:mr-3">•</span>
-                      <span className="text-xs sm:text-sm">1 Free Device Repair (service charges waived, parts chargeable)</span>
+                      <span className="text-xs sm:text-sm">1 Free Device Repair</span>
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-2 sm:mr-3">•</span>
@@ -920,7 +920,7 @@ export default function Home() {
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-2 sm:mr-3">•</span>
-                      <span className="text-xs sm:text-sm">1 Free Device Repair (service charges waived, parts chargeable)</span>
+                      <span className="text-xs sm:text-sm">1 Free Device Repair</span>
                     </li>
                     <li className="flex items-center">
                       <span className="text-white mr-2 sm:mr-3">•</span>

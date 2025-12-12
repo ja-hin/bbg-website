@@ -43,6 +43,7 @@ export default function Home() {
   const [isExtendExpanded, setIsExtendExpanded] = useState(false);
   const [selectedDeviceTypeFromCard, setSelectedDeviceTypeFromCard] = useState<string | undefined>();
   const [carouselLoaded, setCarouselLoaded] = useState(false);
+  const [pricingView, setPricingView] = useState<"laptop" | "mobile">("laptop");
   const formRef = useRef<HTMLDivElement>(null);
 
   const handleCarouselFirstImageLoaded = useCallback(() => {
@@ -738,6 +739,36 @@ export default function Home() {
               style={{ height: "0.125rem", backgroundColor: "#303e58" }}
             ></div>
           </div>
+
+          {/* Plan Type Toggle */}
+          <div className="flex justify-center mt-6 mb-2">
+            <div className="inline-flex bg-gray-100 rounded-full p-1 border border-gray-200">
+              <button
+                onClick={() => setPricingView("laptop")}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  pricingView === "laptop"
+                    ? "bg-[#254696] text-white shadow-md"
+                    : "text-gray-600 hover:text-gray-800"
+                }`}
+                data-testid="toggle-pricing-laptop"
+              >
+                <Laptop className="w-4 h-4" />
+                Laptop Plans
+              </button>
+              <button
+                onClick={() => setPricingView("mobile")}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  pricingView === "mobile"
+                    ? "bg-[#254696] text-white shadow-md"
+                    : "text-gray-600 hover:text-gray-800"
+                }`}
+                data-testid="toggle-pricing-mobile"
+              >
+                <Smartphone className="w-4 h-4" />
+                Mobile Plans
+              </button>
+            </div>
+          </div>
         </div>
       </section>
       {/* BBG Pricing Section */}
@@ -753,6 +784,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 justify-items-center">
 
             {/* Laptop BBG Card */}
+            {pricingView === "laptop" && (
             <div className="relative w-full max-w-xs">
               <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
                 {/* Header Section with text shadow */}
@@ -802,8 +834,10 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            )}
 
             {/* Mobile BBG Card */}
+            {pricingView === "mobile" && (
             <div className="relative w-full max-w-xs">
               <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
                 {/* Header Section with text shadow */}
@@ -853,8 +887,10 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            )}
 
             {/* Laptop Extend+ Card */}
+            {pricingView === "laptop" && (
             <div className="relative w-full max-w-xs">
               <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
                 {/* Header Section with text shadow */}
@@ -899,8 +935,10 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            )}
 
             {/* Mobile Extend+ Card */}
+            {pricingView === "mobile" && (
             <div className="relative w-full max-w-xs">
               <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
                 {/* Header Section with text shadow */}
@@ -945,6 +983,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            )}
 
           </div>
         </div>

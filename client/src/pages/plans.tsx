@@ -1,18 +1,28 @@
+import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, ArrowLeft, ShieldCheck, Truck, Wallet, Smartphone } from "lucide-react";
+import {
+  Loader2,
+  ArrowLeft,
+  ShieldCheck,
+  Truck,
+  Wallet,
+  Smartphone,
+  Laptop,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
 
 export default function Plans() {
   const [, setLocation] = useLocation();
-  
+  const [selectedView, setSelectedView] = useState<"laptop" | "mobile">("laptop");
+
   // First try URL params, then fall back to sessionStorage for back navigation support
   let searchParams = new URLSearchParams(window.location.search);
   let deviceType = searchParams.get("type");
   let deviceBrand = searchParams.get("brand");
   let devicePurchaseDate = searchParams.get("date");
-  
+
   // If URL params missing, try to restore from sessionStorage (for back navigation)
   if (!deviceType || !deviceBrand || !devicePurchaseDate) {
     const storedPlan = sessionStorage.getItem("selectedPlan");
@@ -24,10 +34,10 @@ export default function Plans() {
           deviceType = storedParams.get("type");
           deviceBrand = storedParams.get("brand");
           devicePurchaseDate = storedParams.get("date");
-          
+
           // Restore URL for proper browser history
           if (deviceType && deviceBrand && devicePurchaseDate) {
-            window.history.replaceState({}, '', `/plans${parsed.plansQuery}`);
+            window.history.replaceState({}, "", `/plans${parsed.plansQuery}`);
           }
         }
       } catch {}
@@ -45,7 +55,9 @@ export default function Plans() {
 
   // Extract plan info from database-driven plans
   const getPlanInfo = (planDeviceType: string, planType: string) => {
-    return allPlans.find((p: any) => p.deviceType === planDeviceType && p.planType === planType);
+    return allPlans.find(
+      (p: any) => p.deviceType === planDeviceType && p.planType === planType,
+    );
   };
 
   const laptopBBGPlan = getPlanInfo("laptop", "bbg");
@@ -95,15 +107,17 @@ export default function Plans() {
   cutoffDate.setHours(0, 0, 0, 0);
 
   const isWithinSixMonths = purchaseDate >= cutoffDate;
-  const isMobile = deviceType.toLowerCase() === "mobile";
-  const isLaptop = deviceType.toLowerCase() === "laptop";
+  
+  // Use toggle view instead of URL device type for showing plans
+  const showingLaptop = selectedView === "laptop";
+  const showingMobile = selectedView === "mobile";
 
-  const showLaptopBBG = isLaptop && isWithinSixMonths;
-  const showMobileBBG = isMobile && isWithinSixMonths;
-  const showLaptopExtend = isLaptop;
-  const showMobileExtend = isMobile;
-  const showLaptopBundle = isLaptop && isWithinSixMonths;
-  const showMobileBundle = isMobile && isWithinSixMonths;
+  const showLaptopBBG = showingLaptop && isWithinSixMonths;
+  const showMobileBBG = showingMobile && isWithinSixMonths;
+  const showLaptopExtend = showingLaptop;
+  const showMobileExtend = showingMobile;
+  const showLaptopBundle = showingLaptop && isWithinSixMonths;
+  const showMobileBundle = showingMobile && isWithinSixMonths;
 
   const visibleCards = [
     showLaptopBBG,
@@ -116,7 +130,7 @@ export default function Plans() {
 
   const handleBuyNow = (planInfo: any) => {
     if (!planInfo || !planInfo.planPrice || !planInfo.planName) return;
-    
+
     const selectedPlan = {
       id: planInfo.id,
       planType: planInfo.planType,
@@ -129,9 +143,9 @@ export default function Plans() {
       purchaseDate: devicePurchaseDate,
       plansQuery: window.location.search,
     };
-    
-    sessionStorage.setItem('selectedPlan', JSON.stringify(selectedPlan));
-    setLocation('/checkout');
+
+    sessionStorage.setItem("selectedPlan", JSON.stringify(selectedPlan));
+    setLocation("/checkout");
   };
 
   return (
@@ -158,7 +172,7 @@ export default function Plans() {
             >
               Available Plans for Your Device
             </h1>
-            <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600">
+            <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600 mb-4">
               <span
                 className="bg-gray-100 px-3 py-1 rounded-full"
                 data-testid="text-device-type"
@@ -180,6 +194,36 @@ export default function Plans() {
                 {new Date(devicePurchaseDate).toLocaleDateString("en-IN")}
               </span>
             </div>
+
+            {/* Plan Type Toggle */}
+            <div className="flex justify-center mb-6">
+              <div className="inline-flex bg-gray-100 rounded-full p-1 border border-gray-200">
+                <button
+                  onClick={() => setSelectedView("laptop")}
+                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                    selectedView === "laptop"
+                      ? "bg-[#254696] text-white shadow-md"
+                      : "text-gray-600 hover:text-gray-800"
+                  }`}
+                  data-testid="toggle-laptop-plans"
+                >
+                  <Laptop className="w-4 h-4" />
+                  Laptop Plans
+                </button>
+                <button
+                  onClick={() => setSelectedView("mobile")}
+                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                    selectedView === "mobile"
+                      ? "bg-[#254696] text-white shadow-md"
+                      : "text-gray-600 hover:text-gray-800"
+                  }`}
+                  data-testid="toggle-mobile-plans"
+                >
+                  <Smartphone className="w-4 h-4" />
+                  Mobile Plans
+                </button>
+              </div>
+            </div>
             {!isWithinSixMonths && (
               <p
                 className="mt-3 text-sm text-amber-600"
@@ -195,19 +239,27 @@ export default function Plans() {
           <div className="mt-4 mb-6 flex flex-wrap items-center justify-center gap-6 sm:gap-10">
             <div className="flex flex-col items-center text-center w-20 sm:w-24">
               <ShieldCheck className="w-10 h-10 sm:w-12 sm:h-12 text-[#254696] mb-2" />
-              <span className="text-xs sm:text-sm text-gray-700 font-medium">No Hidden Charges</span>
+              <span className="text-xs sm:text-sm text-gray-700 font-medium">
+                No Hidden Charges
+              </span>
             </div>
             <div className="flex flex-col items-center text-center w-20 sm:w-24">
               <Truck className="w-10 h-10 sm:w-12 sm:h-12 text-[#254696] mb-2" />
-              <span className="text-xs sm:text-sm text-gray-700 font-medium">Free Doorstep Pickup</span>
+              <span className="text-xs sm:text-sm text-gray-700 font-medium">
+                Free Doorstep Pickup
+              </span>
             </div>
             <div className="flex flex-col items-center text-center w-20 sm:w-24">
               <Wallet className="w-10 h-10 sm:w-12 sm:h-12 text-[#254696] mb-2" />
-              <span className="text-xs sm:text-sm text-gray-700 font-medium">Instant Payouts</span>
+              <span className="text-xs sm:text-sm text-gray-700 font-medium">
+                Instant Payouts
+              </span>
             </div>
             <div className="flex flex-col items-center text-center w-20 sm:w-24">
               <Smartphone className="w-10 h-10 sm:w-12 sm:h-12 text-[#254696] mb-2" />
-              <span className="text-xs sm:text-sm text-gray-700 font-medium">Completely Digital</span>
+              <span className="text-xs sm:text-sm text-gray-700 font-medium">
+                Completely Digital
+              </span>
             </div>
           </div>
         </div>
@@ -220,12 +272,10 @@ export default function Plans() {
           className="absolute inset-0 w-full h-full object-fill z-0"
         />
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div
-            className={`grid grid-cols-1 ${visibleCards > 1 ? "lg:grid-cols-2" : ""} gap-8 lg:gap-12 justify-items-center items-stretch`}
-          >
+          <div className="grid gap-8 lg:gap-12 items-stretch [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
             {showLaptopBBG && (
               <div
-                className="relative w-full max-w-xs h-full flex flex-col"
+                className="relative w-full mx-auto h-full flex flex-col"
                 data-testid="card-laptop-bbg"
               >
                 <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
@@ -240,7 +290,7 @@ export default function Plans() {
                       {pricesLoading ? (
                         <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
                       ) : (
-                        `₹${laptopBBGPlan?.planPrice || '--'}`
+                        `₹${laptopBBGPlan?.planPrice || "--"}`
                       )}
                     </div>
                     <p className="text-white/80 text-xs sm:text-sm">
@@ -256,19 +306,19 @@ export default function Plans() {
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
                         <span className="text-xs sm:text-sm">
-                          70% payout value
+                          Guaranteed 70 percent future resale value*
                         </span>
                       </li>
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
                         <span className="text-xs sm:text-sm">
-                          Free doorstep pickup for claims
+                          Free doorstep pickup
                         </span>
                       </li>
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
                         <span className="text-xs sm:text-sm">
-                          Instant payouts
+                          Instant payment
                         </span>
                       </li>
                       <li className="flex items-center">
@@ -281,13 +331,17 @@ export default function Plans() {
                   </div>
 
                   <div className="p-4 sm:p-6 pt-4 sm:pt-6">
-                    <Button 
+                    <Button
                       className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handleBuyNow(laptopBBGPlan)}
                       disabled={pricesLoading || !laptopBBGPlan}
                       data-testid="button-buy-laptop-bbg"
                     >
-                      {pricesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy Now"}
+                      {pricesLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Buy Now"
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -312,7 +366,7 @@ export default function Plans() {
 
             {showMobileBBG && (
               <div
-                className="relative w-full max-w-xs h-full flex flex-col"
+                className="relative w-full   h-full flex flex-col"
                 data-testid="card-mobile-bbg"
               >
                 <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
@@ -327,7 +381,7 @@ export default function Plans() {
                       {pricesLoading ? (
                         <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
                       ) : (
-                        `₹${mobileBBGPlan?.planPrice || '--'}`
+                        `₹${mobileBBGPlan?.planPrice || "--"}`
                       )}
                     </div>
                     <p className="text-white/80 text-xs sm:text-sm">
@@ -342,37 +396,46 @@ export default function Plans() {
                     <ul className="space-y-2 sm:space-y-3 text-white">
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">70% payout value</span>
-                      </li>
-
-                      <li className="flex items-center">
-                        <span className="text-white mr-2 sm:mr-3">•</span>
                         <span className="text-xs sm:text-sm">
-                          Free doorstep pickup for claims
+                          Guaranteed 70 percent future Resale value*
                         </span>
                       </li>
 
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">Instant payouts</span>
+                        <span className="text-xs sm:text-sm">
+                          Free doorstep pickup
+                        </span>
                       </li>
 
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">Validity: 18 months</span>
+                        <span className="text-xs sm:text-sm">
+                          Instant payment
+                        </span>
+                      </li>
+
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">
+                          Validity: 18 months
+                        </span>
                       </li>
                     </ul>
                   </div>
 
-
                   <div className="p-4 sm:p-6 pt-4 sm:pt-6">
-                    <Button 
+                    <Button
                       className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handleBuyNow(mobileBBGPlan)}
                       disabled={pricesLoading || !mobileBBGPlan}
                       data-testid="button-buy-mobile-bbg"
                     >
-                      {pricesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy Now"}
+                      {pricesLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Buy Now"
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -397,7 +460,7 @@ export default function Plans() {
 
             {showLaptopExtend && (
               <div
-                className="relative w-full max-w-xs h-full flex flex-col"
+                className="relative w-full   h-full flex flex-col"
                 data-testid="card-laptop-extend"
               >
                 <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
@@ -412,7 +475,7 @@ export default function Plans() {
                       {pricesLoading ? (
                         <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
                       ) : (
-                        `₹${laptopExtendPlan?.planPrice || '--'}`
+                        `₹${laptopExtendPlan?.planPrice || "--"}`
                       )}
                     </div>
                     <p className="text-white/80 text-xs sm:text-sm">
@@ -428,13 +491,20 @@ export default function Plans() {
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
                         <span className="text-xs sm:text-sm">
-                          1 Free Device Repair†
+                          Free Device Repair*
                         </span>
                       </li>
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
                         <span className="text-xs sm:text-sm">
-                          Auction Service → 10-20% higher resale than market†
+                          30% OFF your Extended Warranty Purchase
+                        </span>
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">
+                          Get resale value up to 20 percent higher than standard
+                          market rates
                         </span>
                       </li>
                       <li className="flex items-center">
@@ -447,13 +517,17 @@ export default function Plans() {
                   </div>
 
                   <div className="p-4 sm:p-6 pt-4 sm:pt-6">
-                    <Button 
+                    <Button
                       className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handleBuyNow(laptopExtendPlan)}
                       disabled={pricesLoading || !laptopExtendPlan}
                       data-testid="button-buy-laptop-extend"
                     >
-                      {pricesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy Now"}
+                      {pricesLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Buy Now"
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -478,7 +552,7 @@ export default function Plans() {
 
             {showMobileExtend && (
               <div
-                className="relative w-full max-w-xs h-full flex flex-col"
+                className="relative w-full   h-full flex flex-col"
                 data-testid="card-mobile-extend"
               >
                 <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
@@ -493,7 +567,7 @@ export default function Plans() {
                       {pricesLoading ? (
                         <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
                       ) : (
-                        `₹${mobileExtendPlan?.planPrice || '--'}`
+                        `₹${mobileExtendPlan?.planPrice || "--"}`
                       )}
                     </div>
                     <p className="text-white/80 text-xs sm:text-sm">
@@ -508,32 +582,45 @@ export default function Plans() {
                     <ul className="space-y-2 sm:space-y-3 text-white">
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">1 Free Device Repair*</span>
+                        <span className="text-xs sm:text-sm">
+                          Free Device Repair*
+                        </span>
                       </li>
-
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
                         <span className="text-xs sm:text-sm">
-                          Auction Service → 10–20% higher resale than market*
+                          30% OFF your Extended Warranty Purchase
+                        </span>
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">
+                          Get resale value up to 20 percent higher than standard
+                          market rates
                         </span>
                       </li>
 
-                      <li className="flex items-center">
+                      <li className="flex items-center mt-2 sm:mt-3">
                         <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">Validity: 24 months</span>
+                        <span className="text-xs sm:text-sm">
+                          Validity: 24 months
+                        </span>
                       </li>
                     </ul>
                   </div>
 
-
                   <div className="p-4 sm:p-6 pt-4 sm:pt-6">
-                    <Button 
+                    <Button
                       className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handleBuyNow(mobileExtendPlan)}
                       disabled={pricesLoading || !mobileExtendPlan}
                       data-testid="button-buy-mobile-extend"
                     >
-                      {pricesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy Now"}
+                      {pricesLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Buy Now"
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -558,7 +645,7 @@ export default function Plans() {
 
             {showLaptopBundle && (
               <div
-                className="relative w-full max-w-xs h-full flex flex-col"
+                className="relative w-full   h-full flex flex-col"
                 data-testid="card-laptop-bundle"
               >
                 <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#8B5CF6] to-[#5B21B6] h-full flex flex-col">
@@ -566,7 +653,7 @@ export default function Plans() {
                     className="p-4 sm:p-6 pb-3 sm:pb-4 text-white text-center"
                     style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
                   >
-                    <div className="absolute top-2 right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
+                    <div className="absolute top-1 right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
                       BEST VALUE
                     </div>
                     <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">
@@ -576,7 +663,7 @@ export default function Plans() {
                       {pricesLoading ? (
                         <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
                       ) : (
-                        `₹${laptopBundlePlan?.planPrice || '--'}`
+                        `₹${laptopBundlePlan?.planPrice || "--"}`
                       )}
                     </div>
                     <p className="text-white/80 text-xs sm:text-sm">
@@ -592,38 +679,48 @@ export default function Plans() {
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
                         <span className="text-xs sm:text-sm">
-                          BBG + Extend+ Combined
+                          Guaranteed 70 percent future resale value*
                         </span>
                       </li>
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
                         <span className="text-xs sm:text-sm">
-                          70% payout + Free Repair
+                          Free Device Repair*
                         </span>
                       </li>
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
                         <span className="text-xs sm:text-sm">
-                          Auction Service Included
+                          30% OFF your Extended Warranty Purchase
                         </span>
                       </li>
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
                         <span className="text-xs sm:text-sm">
-                          Validity: 12 months
+                          Instant payment
+                        </span>
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">
+                          Validity: 36 months
                         </span>
                       </li>
                     </ul>
                   </div>
 
                   <div className="p-4 sm:p-6 pt-4 sm:pt-6">
-                    <Button 
+                    <Button
                       className="w-full bg-white text-purple-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handleBuyNow(laptopBundlePlan)}
                       disabled={pricesLoading || !laptopBundlePlan}
                       data-testid="button-buy-laptop-bundle"
                     >
-                      {pricesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy Now"}
+                      {pricesLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Buy Now"
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -635,9 +732,9 @@ export default function Plans() {
                   <div className="relative sm:block">
                     <div className="bg-purple-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
                       <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
-                        Complete protection
+                        Assured resale value,
                         <br />
-                        bundle
+                        Protection and repairs
                       </p>
                     </div>
                     <div className="absolute -bottom-[15px] sm:-bottom-[20px] left-0 w-0 h-0 border-t-[15px] sm:border-t-[20px] border-t-purple-300 border-l-[18px] sm:border-l-[24px] border-l-transparent"></div>
@@ -648,7 +745,7 @@ export default function Plans() {
 
             {showMobileBundle && (
               <div
-                className="relative w-full max-w-xs h-full flex flex-col"
+                className="relative w-full h-full flex flex-col"
                 data-testid="card-mobile-bundle"
               >
                 <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#8B5CF6] to-[#5B21B6] h-full flex flex-col">
@@ -656,7 +753,7 @@ export default function Plans() {
                     className="p-4 sm:p-6 pb-3 sm:pb-4 text-white text-center"
                     style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
                   >
-                    <div className="absolute top-2 right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
+                    <div className="absolute top-1 right-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded-full">
                       BEST VALUE
                     </div>
                     <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">
@@ -666,7 +763,7 @@ export default function Plans() {
                       {pricesLoading ? (
                         <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
                       ) : (
-                        `₹${mobileBundlePlan?.planPrice || '--'}`
+                        `₹${mobileBundlePlan?.planPrice || "--"}`
                       )}
                     </div>
                     <p className="text-white/80 text-xs sm:text-sm">
@@ -681,33 +778,49 @@ export default function Plans() {
                     <ul className="space-y-2 sm:space-y-3 text-white">
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">BBG + Extend+ Combined</span>
-                      </li>
-                      <li className="flex items-center">
-                        <span className="text-white mr-2 sm:mr-3">•</span>
                         <span className="text-xs sm:text-sm">
-                          70% payout + Free Repair
+                          Guaranteed 70 percent future resale value*
                         </span>
                       </li>
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">Auction Service Included</span>
+                        <span className="text-xs sm:text-sm">
+                          Free Device Repair*
+                        </span>
                       </li>
                       <li className="flex items-center">
                         <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">Validity: 12 months</span>
+                        <span className="text-xs sm:text-sm">
+                          30% OFF your Extended Warranty Purchase
+                        </span>
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">
+                          Instant payment
+                        </span>
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-white mr-2 sm:mr-3">•</span>
+                        <span className="text-xs sm:text-sm">
+                          Validity: 24 months
+                        </span>
                       </li>
                     </ul>
                   </div>
 
                   <div className="p-4 sm:p-6 pt-4 sm:pt-6">
-                    <Button 
+                    <Button
                       className="w-full bg-white text-purple-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => handleBuyNow(mobileBundlePlan)}
                       disabled={pricesLoading || !mobileBundlePlan}
                       data-testid="button-buy-mobile-bundle"
                     >
-                      {pricesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Buy Now"}
+                      {pricesLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Buy Now"
+                      )}
                     </Button>
                   </div>
                 </div>

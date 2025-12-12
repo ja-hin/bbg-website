@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -15,7 +15,6 @@ import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.
 
 export default function Plans() {
   const [, setLocation] = useLocation();
-  const [selectedView, setSelectedView] = useState<"laptop" | "mobile">("laptop");
 
   // First try URL params, then fall back to sessionStorage for back navigation support
   let searchParams = new URLSearchParams(window.location.search);
@@ -43,6 +42,10 @@ export default function Plans() {
       } catch {}
     }
   }
+
+  // Initialize toggle based on device type from URL
+  const initialView = deviceType?.toLowerCase() === "mobile" ? "mobile" : "laptop";
+  const [selectedView, setSelectedView] = useState<"laptop" | "mobile">(initialView);
 
   const { data: allPlans = [], isLoading: pricesLoading } = useQuery({
     queryKey: ["/api/plans"],

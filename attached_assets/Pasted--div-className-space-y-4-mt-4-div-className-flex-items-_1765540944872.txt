@@ -1,0 +1,50 @@
+ <div className="space-y-4 mt-4">
+                <div className="flex items-start">
+                  <BsCheckLg
+                    className="text-3xl mr-3 mt-1 font-bold"
+                    style={{ color: "#16a34a" }}
+                  />
+                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
+                  Assured resale value                  </p>
+                </div>
+
+                <div className="flex items-start">
+                  <BsCheckLg
+                    className="text-3xl mr-3 mt-1 font-bold"
+                    style={{ color: "#16a34a" }}
+                  />
+                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
+                    Free repair service
+                  </p>
+                </div>
+
+                <div className="flex items-start">
+                  <BsCheckLg
+                    className="text-3xl mr-3 mt-1 font-bold"
+                    style={{ color: "#16a34a" }}
+                  />
+
+                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
+                    Free Doorstep Pickup 
+                  </p>
+                </div>
+                <div className="flex items-start">
+                  <BsCheckLg
+                    className="text-3xl mr-3 mt-1 font-bold"
+                    style={{ color: "#16a34a" }}
+                  />
+                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
+                    Supports all major mobile and laptop brands
+                  </p>
+                </div>
+                <div className="flex items-start">
+                  <BsCheckLg
+                    className="text-3xl mr-3 mt-1 font-bold"
+                    style={{ color: "#16a34a" }}
+                  />
+                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
+                    100% authorized services
+                  </p>
+                </div>
+              </div>
+            </div>

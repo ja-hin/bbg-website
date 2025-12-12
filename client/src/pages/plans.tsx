@@ -172,7 +172,7 @@ export default function Plans() {
             >
               Available Plans for Your Device
             </h1>
-            <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600 mb-4">
+            <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600">
               <span
                 className="bg-gray-100 px-3 py-1 rounded-full"
                 data-testid="text-device-type"
@@ -193,36 +193,6 @@ export default function Plans() {
                 <strong>Purchase Date:</strong>{" "}
                 {new Date(devicePurchaseDate).toLocaleDateString("en-IN")}
               </span>
-            </div>
-
-            {/* Plan Type Toggle */}
-            <div className="flex justify-center mb-6">
-              <div className="inline-flex bg-gray-100 rounded-full p-1 border border-gray-200">
-                <button
-                  onClick={() => setSelectedView("laptop")}
-                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                    selectedView === "laptop"
-                      ? "bg-[#254696] text-white shadow-md"
-                      : "text-gray-600 hover:text-gray-800"
-                  }`}
-                  data-testid="toggle-laptop-plans"
-                >
-                  <Laptop className="w-4 h-4" />
-                  Laptop Plans
-                </button>
-                <button
-                  onClick={() => setSelectedView("mobile")}
-                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                    selectedView === "mobile"
-                      ? "bg-[#254696] text-white shadow-md"
-                      : "text-gray-600 hover:text-gray-800"
-                  }`}
-                  data-testid="toggle-mobile-plans"
-                >
-                  <Smartphone className="w-4 h-4" />
-                  Mobile Plans
-                </button>
-              </div>
             </div>
             {!isWithinSixMonths && (
               <p

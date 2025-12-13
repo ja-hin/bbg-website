@@ -60,9 +60,96 @@ export class TemplateService {
       
       // Insert default templates if none exist
       await this.createDefaultTemplates();
+      
+      // Apply one-time template migrations
+      await this.applyTemplateMigrations();
     } catch (error) {
       console.error('Error initializing template tables:', error);
       throw error;
+    }
+  }
+
+  // Apply one-time template migrations for specific template updates
+  async applyTemplateMigrations(): Promise<void> {
+    try {
+      await db.connectDB();
+      
+      // Migration: Update template ID 1147 with new Plan Purchase Confirmation email content
+      const newPlanPurchaseEmailContent = `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #dc2626;">XtraCover BBG</h1>
+    <h2 style="color: #374151;">Purchase Successful!</h2>
+  </div>
+  
+  <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #374151; margin-top: 0;">Hi {{name}},</h3>
+    <p>Thank you for purchasing XtraCover BBG protection! Your BBG plan has been successfully activated.</p>
+    
+    <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+      <strong>BBG Voucher Code: {{voucherCode}}</strong>
+    </div>
+    
+    <ul style="color: #6b7280;">
+      <li><strong>Device:</strong> {{brand}} {{modelName}} ({{deviceType}})</li>
+      <li><strong>BBG Purchase Date:</strong> {{bbgPurchaseDate}}</li>
+      <li><strong>Contact:</strong> {{contact}}</li>
+      <li><strong>Email:</strong> {{email}}</li>
+    </ul>
+  </div>
+  
+  <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #0277bd; margin-top: 0;">📱 Your BBG Protection Plan</h3>
+    <p style="color: #424242; margin-bottom: 15px;">Your device qualifies for our Claim Slabs benefit plan. Here's what you'll get when you claim:</p>
+    
+    <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0;">
+      <h4 style="color: #16a34a; margin-top: 0;">Claim Value Slabs</h4>
+      <p style="color: #6b7280; margin-bottom: 15px;">Based on your device age at the time of claim, you can receive up to 70% of your device's current market value.</p>
+      
+      {{claimValueSlabsHtml}}
+    </div>
+    
+    <div style="background: #fff3e0; padding: 10px; border-radius: 6px; margin-top: 15px;">
+      <p style="margin: 0; color: #e65100; font-size: 14px;"><strong>Next Step:</strong> Complete your device registration with IMEI/Serial number to activate your protection.</p>
+    </div>
+  </div>
+
+  <div style="background: #fef3c7; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+    <p style="margin: 0; color: #92400e;"><strong>Important:</strong> Save your voucher code safely. You'll need it to register your device and file claims.</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 30px;">
+    <p style="color: #6b7280;">Thank you for choosing XtraCover BBG!</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+    <p style="color: #9ca3af; font-size: 14px;">
+      <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
+      For support, contact us at contactus@xtracover.com
+    </p>
+  </div>
+</div>
+          `;
+      
+      // Check if template ID 1147 exists
+      const checkResult = await db.pool.request()
+        .input('id', sql.Int, 1147)
+        .query('SELECT id, name FROM message_templates WHERE id = @id');
+      
+      if (checkResult.recordset.length > 0) {
+        // Update template 1147 with new content
+        await db.pool.request()
+          .input('id', sql.Int, 1147)
+          .input('content', sql.NText, newPlanPurchaseEmailContent)
+          .input('updatedAt', sql.DateTime2, new Date())
+          .query('UPDATE message_templates SET content = @content, updated_at = @updatedAt WHERE id = @id');
+        
+        console.log('✅ Updated template ID 1147 with new Plan Purchase Confirmation email content');
+      } else {
+        console.log('⚠️ Template ID 1147 not found, skipping migration');
+      }
+    } catch (error: any) {
+      console.log('⚠️ Template migration failed (may already be applied):', error.message);
     }
   }
 

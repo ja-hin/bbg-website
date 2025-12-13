@@ -181,10 +181,10 @@ export default function Plans() {
               </span>
               <span
                 className="bg-gray-100 px-3 py-1 rounded-full"
-                data-testid="text-purchase-date"
+                data-testid="text-device-age"
               >
-                <strong>Purchase Date:</strong>{" "}
-                {new Date(devicePurchaseDate).toLocaleDateString("en-IN")}
+                <strong>Device Age:</strong>{" "}
+                {deviceAgeSelection === "1" ? "Within 6 months" : "More than 6 months"}
               </span>
             </div>
             {!isWithinSixMonths && (

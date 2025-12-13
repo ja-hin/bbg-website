@@ -1146,8 +1146,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             contact: customer.contact,
           });
 
-          const notificationResults =
-            await communicationService.sendRegistrationConfirmation({
+          communicationService.sendRegistrationConfirmation({
               name: customer.name,
               email: customer.email,
               contact: customer.contact,
@@ -1170,19 +1169,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
               termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
               planType: customer.benefitType || 'bbg',
               planId: customer.planId || null,
+            }).then(notificationResults => {
+              console.log("🔔 PayU customer registration notifications complete:", {
+                email: notificationResults.email?.success
+                  ? "✅ Sent"
+                  : `❌ Failed: ${notificationResults.email?.error}`,
+                sms: notificationResults.sms?.success
+                  ? "✅ Sent"
+                  : `❌ Failed: ${notificationResults.sms?.error}`,
+                whatsapp: notificationResults.whatsapp?.success
+                  ? "✅ Sent"
+                  : `❌ Failed: ${notificationResults.whatsapp?.error}`,
+              });
+            }).catch(err => {
+              console.error("❌ Failed to send PayU notifications:", err);
             });
-
-          console.log("🔔 PayU customer registration notifications complete:", {
-            email: notificationResults.email?.success
-              ? "✅ Sent"
-              : `❌ Failed: ${notificationResults.email?.error}`,
-            sms: notificationResults.sms?.success
-              ? "✅ Sent"
-              : `❌ Failed: ${notificationResults.sms?.error}`,
-            whatsapp: notificationResults.whatsapp?.success
-              ? "✅ Sent"
-              : `❌ Failed: ${notificationResults.whatsapp?.error}`,
-          });
 
           // Send notification to distributor if registration was through referral code
           if (customer.sellerCode) {
@@ -1804,8 +1805,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           contact: customer.contact,
         });
 
-        const notificationResults =
-          await communicationService.sendRegistrationConfirmation({
+        communicationService.sendRegistrationConfirmation({
             name: customer.name,
             email: customer.email,
             contact: customer.contact,
@@ -1828,19 +1828,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
             termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
             planType: customer.benefitType || 'bbg',
             planId: customer.planId || null,
+          }).then(notificationResults => {
+            console.log("🔔 Customer registration notifications complete:", {
+              email: notificationResults.email?.success
+                ? "✅ Sent"
+                : `❌ Failed: ${notificationResults.email?.error}`,
+              sms: notificationResults.sms?.success
+                ? "✅ Sent"
+                : `❌ Failed: ${notificationResults.sms?.error}`,
+              whatsapp: notificationResults.whatsapp?.success
+                ? "✅ Sent"
+                : `❌ Failed: ${notificationResults.whatsapp?.error}`,
+            });
+          }).catch(err => {
+            console.error("❌ Failed to send customer notifications:", err);
           });
-
-        console.log("🔔 Customer registration notifications complete:", {
-          email: notificationResults.email?.success
-            ? "✅ Sent"
-            : `❌ Failed: ${notificationResults.email?.error}`,
-          sms: notificationResults.sms?.success
-            ? "✅ Sent"
-            : `❌ Failed: ${notificationResults.sms?.error}`,
-          whatsapp: notificationResults.whatsapp?.success
-            ? "✅ Sent"
-            : `❌ Failed: ${notificationResults.whatsapp?.error}`,
-        });
 
         // Send notification to distributor if registration was through referral code
         if (customer.sellerCode) {
@@ -2209,8 +2211,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           templateType: isWithin6Months ? "Device Registration Confirmation - Within 6 Months" : "Device Registration Confirmation - Over 6 Months"
         });
 
-        // Send device registration confirmation email using the proper communication service
-        const notificationResults = await communicationService.sendRegistrationConfirmation({
+        // Send device registration confirmation email using the proper communication service (fire-and-forget)
+        communicationService.sendRegistrationConfirmation({
           name: customerInfo.name,
           email: customerInfo.email,
           contact: customerInfo.contact,
@@ -2223,16 +2225,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           devicePurchaseDate: customerInfo.date_of_purchase,
           bbgPurchaseDate: new Date().toISOString().split('T')[0], // Registration date
           termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
-        });
-
-        console.log("🔔 Website device registration email notification result:", {
-          email: notificationResults.email?.success ? "✅ Sent" : `❌ Failed: ${notificationResults.email?.error}`,
-          sms: notificationResults.sms?.success ? "✅ Sent" : `❌ Failed: ${notificationResults.sms?.error}`,
-          whatsapp: notificationResults.whatsapp?.success ? "✅ Sent" : `❌ Failed: ${notificationResults.whatsapp?.error}`,
-          recipient: customerInfo.email,
-          purchaseDate: customerInfo.date_of_purchase,
-          monthsOld: monthsDifference,
-          templateType: isWithin6Months ? "Device Registration - Within 6 Months" : "Device Registration - Over 6 Months"
+        }).then(notificationResults => {
+          console.log("🔔 Website device registration email notification result:", {
+            email: notificationResults.email?.success ? "✅ Sent" : `❌ Failed: ${notificationResults.email?.error}`,
+            sms: notificationResults.sms?.success ? "✅ Sent" : `❌ Failed: ${notificationResults.sms?.error}`,
+            whatsapp: notificationResults.whatsapp?.success ? "✅ Sent" : `❌ Failed: ${notificationResults.whatsapp?.error}`,
+            recipient: customerInfo.email,
+            purchaseDate: customerInfo.date_of_purchase,
+            monthsOld: monthsDifference,
+            templateType: isWithin6Months ? "Device Registration - Within 6 Months" : "Device Registration - Over 6 Months"
+          });
+        }).catch(err => {
+          console.error("❌ Failed to send device registration notifications:", err);
         });
 
       } catch (notificationError) {
@@ -7306,8 +7310,7 @@ Required: GUPSHUP_API_KEY environment variable
             contact: customer.contact,
           });
 
-          const notificationResults =
-            await communicationService.sendRegistrationConfirmation({
+          communicationService.sendRegistrationConfirmation({
               name: customer.name,
               email: customer.email,
               contact: customer.contact,
@@ -7328,19 +7331,21 @@ Required: GUPSHUP_API_KEY environment variable
                 day: 'numeric' 
               }),
               termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
+            }).then(notificationResults => {
+              console.log("🔔 Acer BBG registration notifications complete:", {
+                email: notificationResults.email?.success
+                  ? "✅ Sent"
+                  : `❌ Failed: ${notificationResults.email?.error}`,
+                sms: notificationResults.sms?.success
+                  ? "✅ Sent"
+                  : `❌ Failed: ${notificationResults.sms?.error}`,
+                whatsapp: notificationResults.whatsapp?.success
+                  ? "✅ Sent"
+                  : `❌ Failed: ${notificationResults.whatsapp?.error}`,
+              });
+            }).catch(err => {
+              console.error("❌ Failed to send Acer BBG notifications:", err);
             });
-
-          console.log("🔔 Acer BBG registration notifications complete:", {
-            email: notificationResults.email?.success
-              ? "✅ Sent"
-              : `❌ Failed: ${notificationResults.email?.error}`,
-            sms: notificationResults.sms?.success
-              ? "✅ Sent"
-              : `❌ Failed: ${notificationResults.sms?.error}`,
-            whatsapp: notificationResults.whatsapp?.success
-              ? "✅ Sent"
-              : `❌ Failed: ${notificationResults.whatsapp?.error}`,
-          });
         } catch (notificationError) {
           console.error(
             "❌ Failed to send Acer BBG notifications:",
@@ -7644,8 +7649,7 @@ Required: GUPSHUP_API_KEY environment variable
         try {
           console.log("🔔 Starting Amazon BBG registration notifications...");
           
-          const notificationResults =
-            await communicationService.sendRegistrationConfirmation({
+          communicationService.sendRegistrationConfirmation({
               name: customer.name,
               email: customer.email,
               contact: customer.contact,
@@ -7666,19 +7670,21 @@ Required: GUPSHUP_API_KEY environment variable
                 day: 'numeric' 
               }),
               termsAndConditionsUrl: `https://www.xtracover.com/files/xtracover-tnc-bbg-amazon.pdf`,
+            }).then(notificationResults => {
+              console.log("🔔 Amazon BBG registration notifications complete:", {
+                email: notificationResults.email?.success
+                  ? "✅ Sent"
+                  : `❌ Failed: ${notificationResults.email?.error}`,
+                sms: notificationResults.sms?.success
+                  ? "✅ Sent"
+                  : `❌ Failed: ${notificationResults.sms?.error}`,
+                whatsapp: notificationResults.whatsapp?.success
+                  ? "✅ Sent"
+                  : `❌ Failed: ${notificationResults.whatsapp?.error}`,
+              });
+            }).catch(err => {
+              console.error("❌ Failed to send Amazon BBG notifications:", err);
             });
-
-          console.log("🔔 Amazon BBG registration notifications complete:", {
-            email: notificationResults.email?.success
-              ? "✅ Sent"
-              : `❌ Failed: ${notificationResults.email?.error}`,
-            sms: notificationResults.sms?.success
-              ? "✅ Sent"
-              : `❌ Failed: ${notificationResults.sms?.error}`,
-            whatsapp: notificationResults.whatsapp?.success
-              ? "✅ Sent"
-              : `❌ Failed: ${notificationResults.whatsapp?.error}`,
-          });
         } catch (notificationError) {
           console.error(
             "❌ Failed to send Amazon BBG notifications:",

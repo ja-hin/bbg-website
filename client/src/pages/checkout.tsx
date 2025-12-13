@@ -91,10 +91,15 @@ export default function Checkout() {
   const [referralValidation, setReferralValidation] = useState<ReferralValidation | null>(null);
   const [referralValidating, setReferralValidating] = useState(false);
 
-  // Fetch device models for dropdown
-  const { data: deviceModels = [] } = useQuery<any[]>({
-    queryKey: ['/api/models'],
+  // Fetch brands with models for dropdown
+  const { data: brandsWithModels = [] } = useQuery<any[]>({
+    queryKey: ['/api/brands-with-models'],
   });
+
+  // Filter models based on selected brand from plan
+  const deviceModels = brandsWithModels
+    .filter((brand: any) => brand.name === selectedPlan?.brand)
+    .flatMap((brand: any) => brand.models || []);
 
   const getPlansUrl = () => {
     const storedPlan = sessionStorage.getItem("selectedPlan");
@@ -674,8 +679,8 @@ export default function Checkout() {
                       </FormControl>
                       <SelectContent>
                         {deviceModels.map((model: any) => (
-                          <SelectItem key={model.id} value={model.modelName}>
-                            {model.modelName}
+                          <SelectItem key={model.id} value={model.name}>
+                            {model.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

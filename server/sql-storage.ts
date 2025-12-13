@@ -4760,6 +4760,7 @@ export class SqlServerStorage implements IStorage {
     const result = await request.query(`
       SELECT id, plan_name, plan_price, device_type, plan_type, coverage, is_active, created_at, updated_at
       FROM plans
+      WHERE is_active = 1
       ORDER BY device_type, plan_type, plan_name
     `);
     

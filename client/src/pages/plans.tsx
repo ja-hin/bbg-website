@@ -238,7 +238,7 @@ export default function Plans() {
           {/* Amazon and Acer purchase links */}
           <div className="text-center mb-6 bg-white/90 rounded-lg p-3 shadow-sm">
             <p className="text-sm sm:text-base text-gray-700">
-              You can also buy{" "}
+              Also available on our partner stores{" "}
               {showingMobile ? (
                 <>
                   <a

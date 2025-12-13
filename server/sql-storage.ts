@@ -503,6 +503,34 @@ export class SqlServerStorage implements IStorage {
       await plansCoverageRequest.query(plansCoverageMigrationQuery);
       console.log('✅ PLANS COVERAGE COLUMN CONFIRMED!!!');
       
+      // Migration for plans table template columns
+      console.log('🔥 ENSURING PLANS TABLE TEMPLATE COLUMNS EXIST...');
+      const plansTemplatesMigrationQuery = `
+        IF EXISTS (SELECT * FROM sys.tables WHERE name = 'plans')
+        BEGIN
+          IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('plans') AND name = 'email_template_id')
+          BEGIN
+            ALTER TABLE plans ADD email_template_id INT NULL;
+            PRINT 'Added email_template_id column to plans table';
+          END
+          
+          IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('plans') AND name = 'whatsapp_template_id')
+          BEGIN
+            ALTER TABLE plans ADD whatsapp_template_id INT NULL;
+            PRINT 'Added whatsapp_template_id column to plans table';
+          END
+          
+          IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('plans') AND name = 'sms_template_id')
+          BEGIN
+            ALTER TABLE plans ADD sms_template_id INT NULL;
+            PRINT 'Added sms_template_id column to plans table';
+          END
+        END
+      `;
+      const plansTemplatesRequest = db.pool.request();
+      await plansTemplatesRequest.query(plansTemplatesMigrationQuery);
+      console.log('✅ PLANS TEMPLATE COLUMNS CONFIRMED!!!');
+      
     } catch (themeError) {
       console.error('❌ TABLE CREATION FAILED:', themeError);
       throw themeError;
@@ -4758,7 +4786,9 @@ export class SqlServerStorage implements IStorage {
     await db.connectDB();
     const request = db.pool.request();
     const result = await request.query(`
-      SELECT id, plan_name, plan_price, device_type, plan_type, coverage, is_active, created_at, updated_at
+      SELECT id, plan_name, plan_price, device_type, plan_type, coverage, 
+             email_template_id, whatsapp_template_id, sms_template_id,
+             is_active, created_at, updated_at
       FROM plans
       WHERE is_active = 1
       ORDER BY device_type, plan_type, plan_name
@@ -4771,6 +4801,9 @@ export class SqlServerStorage implements IStorage {
       deviceType: row.device_type,
       planType: row.plan_type,
       coverage: row.coverage,
+      emailTemplateId: row.email_template_id,
+      whatsappTemplateId: row.whatsapp_template_id,
+      smsTemplateId: row.sms_template_id,
       isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at
@@ -4782,7 +4815,9 @@ export class SqlServerStorage implements IStorage {
     const request = db.pool.request();
     request.input('id', sql.Int, id);
     const result = await request.query(`
-      SELECT id, plan_name, plan_price, device_type, plan_type, coverage, is_active, created_at, updated_at
+      SELECT id, plan_name, plan_price, device_type, plan_type, coverage,
+             email_template_id, whatsapp_template_id, sms_template_id,
+             is_active, created_at, updated_at
       FROM plans
       WHERE id = @id
     `);
@@ -4797,6 +4832,9 @@ export class SqlServerStorage implements IStorage {
       deviceType: row.device_type,
       planType: row.plan_type,
       coverage: row.coverage,
+      emailTemplateId: row.email_template_id,
+      whatsappTemplateId: row.whatsapp_template_id,
+      smsTemplateId: row.sms_template_id,
       isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at
@@ -4811,11 +4849,16 @@ export class SqlServerStorage implements IStorage {
     request.input('deviceType', sql.NVarChar, plan.deviceType);
     request.input('planType', sql.NVarChar, plan.planType);
     request.input('coverage', sql.NVarChar, plan.coverage || null);
+    request.input('emailTemplateId', sql.Int, plan.emailTemplateId || null);
+    request.input('whatsappTemplateId', sql.Int, plan.whatsappTemplateId || null);
+    request.input('smsTemplateId', sql.Int, plan.smsTemplateId || null);
     
     const result = await request.query(`
-      INSERT INTO plans (plan_name, plan_price, device_type, plan_type, coverage)
-      OUTPUT INSERTED.id, INSERTED.plan_name, INSERTED.plan_price, INSERTED.device_type, INSERTED.plan_type, INSERTED.coverage, INSERTED.is_active, INSERTED.created_at, INSERTED.updated_at
-      VALUES (@planName, @planPrice, @deviceType, @planType, @coverage)
+      INSERT INTO plans (plan_name, plan_price, device_type, plan_type, coverage, email_template_id, whatsapp_template_id, sms_template_id)
+      OUTPUT INSERTED.id, INSERTED.plan_name, INSERTED.plan_price, INSERTED.device_type, INSERTED.plan_type, INSERTED.coverage,
+             INSERTED.email_template_id, INSERTED.whatsapp_template_id, INSERTED.sms_template_id,
+             INSERTED.is_active, INSERTED.created_at, INSERTED.updated_at
+      VALUES (@planName, @planPrice, @deviceType, @planType, @coverage, @emailTemplateId, @whatsappTemplateId, @smsTemplateId)
     `);
     
     const row = result.recordset[0];
@@ -4826,6 +4869,9 @@ export class SqlServerStorage implements IStorage {
       deviceType: row.device_type,
       planType: row.plan_type,
       coverage: row.coverage,
+      emailTemplateId: row.email_template_id,
+      whatsappTemplateId: row.whatsapp_template_id,
+      smsTemplateId: row.sms_template_id,
       isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at
@@ -4864,6 +4910,21 @@ export class SqlServerStorage implements IStorage {
       setClauses.push('coverage = @coverage');
     }
     
+    if (updates.emailTemplateId !== undefined) {
+      request.input('emailTemplateId', sql.Int, updates.emailTemplateId || null);
+      setClauses.push('email_template_id = @emailTemplateId');
+    }
+    
+    if (updates.whatsappTemplateId !== undefined) {
+      request.input('whatsappTemplateId', sql.Int, updates.whatsappTemplateId || null);
+      setClauses.push('whatsapp_template_id = @whatsappTemplateId');
+    }
+    
+    if (updates.smsTemplateId !== undefined) {
+      request.input('smsTemplateId', sql.Int, updates.smsTemplateId || null);
+      setClauses.push('sms_template_id = @smsTemplateId');
+    }
+    
     setClauses.push('updated_at = GETDATE()');
     
     if (setClauses.length > 1) {
@@ -4885,7 +4946,9 @@ export class SqlServerStorage implements IStorage {
     const request = db.pool.request();
     request.input('deviceType', sql.NVarChar, deviceType);
     const result = await request.query(`
-      SELECT id, plan_name, plan_price, device_type, plan_type, coverage, is_active, created_at, updated_at
+      SELECT id, plan_name, plan_price, device_type, plan_type, coverage,
+             email_template_id, whatsapp_template_id, sms_template_id,
+             is_active, created_at, updated_at
       FROM plans
       WHERE device_type = @deviceType AND is_active = 1
       ORDER BY plan_type, plan_name
@@ -4898,6 +4961,9 @@ export class SqlServerStorage implements IStorage {
       deviceType: row.device_type,
       planType: row.plan_type,
       coverage: row.coverage,
+      emailTemplateId: row.email_template_id,
+      whatsappTemplateId: row.whatsapp_template_id,
+      smsTemplateId: row.sms_template_id,
       isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at
@@ -4909,7 +4975,9 @@ export class SqlServerStorage implements IStorage {
     const request = db.pool.request();
     request.input('planType', sql.NVarChar, planType);
     const result = await request.query(`
-      SELECT id, plan_name, plan_price, device_type, plan_type, coverage, is_active, created_at, updated_at
+      SELECT id, plan_name, plan_price, device_type, plan_type, coverage,
+             email_template_id, whatsapp_template_id, sms_template_id,
+             is_active, created_at, updated_at
       FROM plans
       WHERE plan_type = @planType AND is_active = 1
       ORDER BY device_type, plan_name
@@ -4922,6 +4990,9 @@ export class SqlServerStorage implements IStorage {
       deviceType: row.device_type,
       planType: row.plan_type,
       coverage: row.coverage,
+      emailTemplateId: row.email_template_id,
+      whatsappTemplateId: row.whatsapp_template_id,
+      smsTemplateId: row.sms_template_id,
       isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at

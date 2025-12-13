@@ -550,6 +550,9 @@ export const plans = pgTable("plans", {
   deviceType: text("device_type").notNull(), // 'mobile' or 'laptop'
   planType: text("plan_type").notNull(), // 'bbg' or 'extend_plus'
   coverage: text("coverage"), // coverage identifier for mapping (e.g., '6_months', '12_months')
+  emailTemplateId: integer("email_template_id"), // Reference to message_templates table
+  whatsappTemplateId: integer("whatsapp_template_id"), // Reference to message_templates table
+  smsTemplateId: integer("sms_template_id"), // Reference to message_templates table
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -563,6 +566,9 @@ export const insertPlanSchema = createInsertSchema(plans).omit({
 }).extend({
   planPrice: z.string().or(z.number()).transform(val => String(val)),
   coverage: z.string().optional().nullable(),
+  emailTemplateId: z.number().optional().nullable(),
+  whatsappTemplateId: z.number().optional().nullable(),
+  smsTemplateId: z.number().optional().nullable(),
 });
 
 // Plans types

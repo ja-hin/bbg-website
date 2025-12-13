@@ -314,15 +314,17 @@ export class CommunicationService {
       
       if (customerData.planId && purchasedPlan) {
         // Use plan-specific email template based on planId
-        // Map plan ID to specific event type templates
         console.log(`📧 Using plan-specific email template for plan ID ${customerData.planId}: ${purchasedPlan?.planName}`);
         
-        // Create a unique event type based on plan name for plan-specific templates
-        // Templates should be named: plan_template_bbg_mobile, plan_template_bbg_laptop, plan_template_extend_plus_mobile, plan_template_extend_plus_laptop
-        const planType = purchasedPlan?.planType || 'bbg';
-        const deviceType = purchasedPlan?.deviceType || 'mobile';
-        eventType = `plan_template_${planType}_${deviceType}`;
+        // Check if plan has specific templates assigned
+        if (purchasedPlan.emailTemplateId) {
+          // Use the specific template ID assigned to this plan
+          console.log(`📧 Plan has assigned email template ID: ${purchasedPlan.emailTemplateId}`);
+          emailTemplate = await templateService.getTemplateById(purchasedPlan.emailTemplateId);
+        }
         
+        // Use generic plan_purchase event type for plans without specific template
+        eventType = 'plan_purchase';
         console.log(`📧 Template event type for plan: ${eventType}`);
       } else {
         // Fallback to device-age-based template selection for device registrations

@@ -1136,6 +1136,42 @@ For support: contactus@xtracover.com`,
     }
   }
 
+  // Get template by ID
+  async getTemplateById(id: number): Promise<MessageTemplate | null> {
+    try {
+      await db.connectDB();
+      const query = `
+        SELECT id, name, type, event, device_type, subject, content, variables, is_active, created_at, updated_at 
+        FROM message_templates 
+        WHERE id = @id
+      `;
+      
+      const request = db.pool.request();
+      request.input('id', sql.Int, id);
+      const result = await request.query(query);
+      
+      if (result.recordset.length === 0) return null;
+      
+      const row = result.recordset[0];
+      return {
+        id: row.id,
+        name: row.name,
+        type: row.type,
+        event: row.event,
+        deviceType: row.device_type,
+        subject: row.subject,
+        content: row.content,
+        variables: row.variables ? JSON.parse(row.variables) : [],
+        isActive: row.is_active,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      };
+    } catch (error) {
+      console.error('Error fetching template by ID:', error);
+      return null;
+    }
+  }
+
   // Get all templates
   async getAllTemplates(): Promise<MessageTemplate[]> {
     try {

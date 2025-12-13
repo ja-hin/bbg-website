@@ -2379,8 +2379,42 @@ export class SqlServerStorage implements IStorage {
 
   private async generateVoucherCode(deviceType: string): Promise<string> {
     const category = deviceType === 'mobile' ? 'MOB' : 'LAP';
-    const serialNumber = await this.getNextSerialNumber(deviceType);
-    return `BBG${category}${serialNumber}`;
+    const prefix = `BBG${category}`;
+    
+    // Generate random alphanumeric string for security
+    const generateRandomCode = () => {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excluded I, O, 0, 1 to avoid confusion
+      let code = '';
+      for (let i = 0; i < 8; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return code;
+    };
+    
+    // Keep generating until we find a unique code
+    let attempts = 0;
+    const maxAttempts = 10;
+    
+    while (attempts < maxAttempts) {
+      const randomCode = generateRandomCode();
+      const voucherCode = `${prefix}${randomCode}`;
+      
+      // Check if this code already exists
+      const checkQuery = `SELECT COUNT(*) as count FROM customers WHERE voucher_code = @code`;
+      const checkRequest = db.pool.request();
+      checkRequest.input('code', sql.NVarChar, voucherCode);
+      const checkResult = await checkRequest.query(checkQuery);
+      
+      if (checkResult.recordset[0].count === 0) {
+        return voucherCode;
+      }
+      
+      attempts++;
+    }
+    
+    // Fallback: add timestamp to ensure uniqueness
+    const timestamp = Date.now().toString(36).toUpperCase();
+    return `${prefix}${generateRandomCode()}${timestamp}`;
   }
 
   private generateSessionToken(): string {

@@ -608,10 +608,19 @@ export default function Checkout() {
                   const maxDate = today.toISOString().split('T')[0];
                   
                   // For BBG and Bundle plans, limit to within 6 months
+                  // For Extend Plus plans, limit to within 3 years
                   const isBbgOrBundle = selectedPlan?.planType === 'bbg' || selectedPlan?.planType === 'bundle';
-                  const sixMonthsAgo = new Date();
-                  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-                  const minDate = isBbgOrBundle ? sixMonthsAgo.toISOString().split('T')[0] : undefined;
+                  let minDate: string;
+                  
+                  if (isBbgOrBundle) {
+                    const sixMonthsAgo = new Date();
+                    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                    minDate = sixMonthsAgo.toISOString().split('T')[0];
+                  } else {
+                    const threeYearsAgo = new Date();
+                    threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+                    minDate = threeYearsAgo.toISOString().split('T')[0];
+                  }
                   
                   return (
                     <FormItem>

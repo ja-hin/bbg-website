@@ -54,7 +54,7 @@ interface SelectedPlan {
   validity: string;
   coverage: string;
   brand: string | null;
-  purchaseDate: string | null;
+  deviceAgeSelection: string | null;
 }
 
 interface ReferralValidation {
@@ -340,7 +340,7 @@ export default function Checkout() {
       validity: selectedPlan.validity,
       coverage: selectedPlan.coverage,
       brand: selectedPlan.brand,
-      purchaseDate: selectedPlan.purchaseDate,
+      deviceAgeSelection: selectedPlan.deviceAgeSelection,
     };
 
     sessionStorage.setItem("checkoutData", JSON.stringify(checkoutData));

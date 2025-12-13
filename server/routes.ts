@@ -693,12 +693,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { customerData, referralCode } = req.body;
       const deviceType = customerData.deviceType;
-      const dateOfPurchase = customerData.dateOfPurchase;
+      const deviceAgeSelection = customerData.deviceAgeSelection;
+      
+      // Calculate dateOfPurchase from deviceAgeSelection
+      // 1 = within 6 months (use 3 months ago as middle of range)
+      // 2 = more than 6 months (use 9 months ago as safe value for extend_plus)
+      let dateOfPurchase: string;
+      if (deviceAgeSelection === "1") {
+        const date = new Date();
+        date.setMonth(date.getMonth() - 3);
+        dateOfPurchase = date.toISOString().split('T')[0];
+      } else if (deviceAgeSelection === "2") {
+        const date = new Date();
+        date.setMonth(date.getMonth() - 9);
+        dateOfPurchase = date.toISOString().split('T')[0];
+      } else if (customerData.dateOfPurchase) {
+        // Fallback to provided dateOfPurchase for backward compatibility
+        dateOfPurchase = customerData.dateOfPurchase;
+      } else {
+        return res.status(400).json({
+          message: "deviceAgeSelection is required for BBG registration",
+          error: "Missing required fields"
+        });
+      }
 
       // Validate required fields for dual-flow BBG system
-      if (!deviceType || !dateOfPurchase) {
+      if (!deviceType) {
         return res.status(400).json({
-          message: "deviceType and dateOfPurchase are required for BBG registration",
+          message: "deviceType is required for BBG registration",
           error: "Missing required fields"
         });
       }
@@ -1410,7 +1432,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validity,
         coverage,
         brand,
-        purchaseDate,
+        deviceAgeSelection,
       } = req.body;
 
       // Validate required fields
@@ -1508,6 +1530,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error("❌ Failed to persist payment context:", persistError);
       }
 
+      // Calculate dateOfPurchase from deviceAgeSelection for storage
+      // 1 = within 6 months (use 3 months ago), 2 = more than 6 months (use 9 months ago)
+      let calculatedDateOfPurchase: string;
+      if (deviceAgeSelection === "1") {
+        const date = new Date();
+        date.setMonth(date.getMonth() - 3);
+        calculatedDateOfPurchase = date.toISOString().split('T')[0];
+      } else if (deviceAgeSelection === "2") {
+        const date = new Date();
+        date.setMonth(date.getMonth() - 9);
+        calculatedDateOfPurchase = date.toISOString().split('T')[0];
+      } else {
+        calculatedDateOfPurchase = new Date().toISOString().split('T')[0];
+      }
+
       // Store in temp storage as backup
       const tempStorage = app.locals.tempCustomerData || new Map();
       tempStorage.set(txnid, {
@@ -1520,7 +1557,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           brand,
           modelName: planName || `${planType.toUpperCase()} Plan`,
           invoiceValue: finalAmount,
-          dateOfPurchase: purchaseDate || new Date().toISOString().split('T')[0],
+          dateOfPurchase: calculatedDateOfPurchase,
+          deviceAgeSelection: deviceAgeSelection || null,
           sellerCode: referralCode || null,
         },
         planDetails: {

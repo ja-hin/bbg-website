@@ -5,7 +5,7 @@ export interface MessageTemplate {
   id: number;
   name: string;
   type: 'email' | 'sms' | 'whatsapp';
-  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification' | 'distributor_bbg_notification' | 'bbg_registration_benefits' | 'bbg_purchase_confirmation' | 'device_registration_confirmation' | 'bbg_purchase_within_6_months' | 'bbg_purchase_over_6_months' | 'device_registration_within_6_months' | 'device_registration_over_6_months' | 'acer_registration_within_6_months' | 'acer_registration_over_6_months' | 'amazon_bbg_registration';
+  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification' | 'distributor_bbg_notification' | 'bbg_registration_benefits' | 'bbg_purchase_confirmation' | 'device_registration_confirmation' | 'bbg_purchase_within_6_months' | 'bbg_purchase_over_6_months' | 'device_registration_within_6_months' | 'device_registration_over_6_months' | 'acer_registration_within_6_months' | 'acer_registration_over_6_months' | 'amazon_bbg_registration' | 'plan_purchase';
   deviceType?: 'mobile' | 'laptop'; // For device-specific templates
   subject?: string; // For emails
   content: string;
@@ -18,7 +18,7 @@ export interface MessageTemplate {
 export interface CreateTemplateData {
   name: string;
   type: 'email' | 'sms' | 'whatsapp';
-  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification' | 'distributor_bbg_notification' | 'bbg_registration_benefits' | 'bbg_purchase_confirmation' | 'device_registration_confirmation' | 'bbg_purchase_within_6_months' | 'bbg_purchase_over_6_months' | 'device_registration_within_6_months' | 'device_registration_over_6_months' | 'acer_registration_within_6_months' | 'acer_registration_over_6_months' | 'amazon_bbg_registration';
+  event: 'customer_registration' | 'referral_partner_welcome' | 'claim_status_update' | 'payout_notification' | 'otp_verification' | 'distributor_bbg_notification' | 'bbg_registration_benefits' | 'bbg_purchase_confirmation' | 'device_registration_confirmation' | 'bbg_purchase_within_6_months' | 'bbg_purchase_over_6_months' | 'device_registration_within_6_months' | 'device_registration_over_6_months' | 'acer_registration_within_6_months' | 'acer_registration_over_6_months' | 'amazon_bbg_registration' | 'plan_purchase';
   deviceType?: 'mobile' | 'laptop'; // For device-specific templates
   subject?: string;
   content: string;
@@ -144,7 +144,7 @@ export class TemplateService {
       const addConstraintQuery = `
         ALTER TABLE message_templates 
         ADD CONSTRAINT CHK_message_templates_event 
-        CHECK (event IN ('customer_registration', 'referral_partner_welcome', 'claim_status_update', 'payout_notification', 'otp_verification', 'distributor_bbg_notification', 'bbg_registration_benefits', 'bbg_purchase_confirmation', 'device_registration_confirmation', 'bbg_purchase_within_6_months', 'bbg_purchase_over_6_months', 'device_registration_within_6_months', 'device_registration_over_6_months', 'acer_registration_within_6_months', 'acer_registration_over_6_months', 'amazon_bbg_registration'))
+        CHECK (event IN ('customer_registration', 'referral_partner_welcome', 'claim_status_update', 'payout_notification', 'otp_verification', 'distributor_bbg_notification', 'bbg_registration_benefits', 'bbg_purchase_confirmation', 'device_registration_confirmation', 'bbg_purchase_within_6_months', 'bbg_purchase_over_6_months', 'device_registration_within_6_months', 'device_registration_over_6_months', 'acer_registration_within_6_months', 'acer_registration_over_6_months', 'amazon_bbg_registration', 'plan_purchase'))
       `;
       
       await db.pool.request().query(addConstraintQuery);
@@ -1019,6 +1019,81 @@ export class TemplateService {
 </div>
           `,
           variables: ['name', 'email', 'contact', 'voucherCode', 'brand', 'modelName', 'deviceType', 'serialNumber', 'devicePurchaseDate', 'bbgPurchaseDate', 'claimValueSlabsHtml', 'termsAndConditionsUrl']
+        },
+        // Plan Purchase Templates - Email
+        {
+          name: 'Plan Purchase Confirmation - Email',
+          type: 'email',
+          event: 'plan_purchase',
+          subject: 'Your {{planName}} Purchase Confirmation - XtraCover',
+          content: `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #254696;">XtraCover</h1>
+    <h2 style="color: #374151;">Plan Purchase Successful!</h2>
+  </div>
+  
+  <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #374151; margin-top: 0;">Hi {{name}},</h3>
+    <p>Thank you for purchasing {{planName}}! Your device is now protected.</p>
+    
+    <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+      <strong>Voucher Code: {{voucherCode}}</strong>
+    </div>
+    
+    <h4 style="color: #374151;">Purchase Details:</h4>
+    <ul style="color: #6b7280;">
+      <li><strong>Plan:</strong> {{planName}}</li>
+      <li><strong>Price:</strong> ₹{{planPrice}}</li>
+      <li><strong>Device:</strong> {{brand}} {{modelName}} ({{deviceType}})</li>
+      <li><strong>IMEI / Serial No.:</strong> {{serialNumber}}</li>
+      <li><strong>Purchase Date:</strong> {{purchaseDate}}</li>
+    </ul>
+  </div>
+  
+  <div style="background: #dcfce7; padding: 15px; border-radius: 6px; border-left: 4px solid #16a34a;">
+    <p style="margin: 0; color: #166534;"><strong>Protection Active:</strong> Your plan is now active. Keep your voucher code safe for future claims.</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 30px;">
+    <p style="color: #6b7280;">Thank you for choosing XtraCover!</p>
+  </div>
+</div>
+          `,
+          variables: ['name', 'email', 'contact', 'voucherCode', 'planName', 'planPrice', 'brand', 'modelName', 'deviceType', 'serialNumber', 'purchaseDate']
+        },
+        // Plan Purchase Templates - SMS
+        {
+          name: 'Plan Purchase Confirmation - SMS',
+          type: 'sms',
+          event: 'plan_purchase',
+          content: `XtraCover: Your {{planName}} purchase is confirmed! Voucher Code: {{voucherCode}}. Device: {{brand}} {{deviceType}}. Amount: Rs.{{planPrice}}. Keep this code safe for claims.`,
+          variables: ['name', 'voucherCode', 'planName', 'planPrice', 'brand', 'deviceType']
+        },
+        // Plan Purchase Templates - WhatsApp
+        {
+          name: 'Plan Purchase Confirmation - WhatsApp',
+          type: 'whatsapp',
+          event: 'plan_purchase',
+          content: `🎉 *XtraCover Plan Purchase Confirmed!*
+
+Hi {{name}},
+
+Thank you for purchasing *{{planName}}*!
+
+📋 *Purchase Details:*
+• Plan: {{planName}}
+• Price: ₹{{planPrice}}
+• Device: {{brand}} {{modelName}}
+• Type: {{deviceType}}
+• IMEI/Serial: {{serialNumber}}
+
+🔑 *Your Voucher Code:* {{voucherCode}}
+
+✅ Your protection is now active. Keep this voucher code safe for future claims.
+
+For support: contactus@xtracover.com`,
+          variables: ['name', 'voucherCode', 'planName', 'planPrice', 'brand', 'modelName', 'deviceType', 'serialNumber']
         }
       ];
 

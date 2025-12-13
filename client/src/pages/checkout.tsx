@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
 import { z } from "zod";
 import { apiRequest } from "@/lib/queryClient";
@@ -10,6 +10,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -83,6 +90,11 @@ export default function Checkout() {
   const [countdown, setCountdown] = useState(0);
   const [referralValidation, setReferralValidation] = useState<ReferralValidation | null>(null);
   const [referralValidating, setReferralValidating] = useState(false);
+
+  // Fetch device models for dropdown
+  const { data: deviceModels = [] } = useQuery<any[]>({
+    queryKey: ['/api/models'],
+  });
 
   const getPlansUrl = () => {
     const storedPlan = sessionStorage.getItem("selectedPlan");
@@ -651,15 +663,23 @@ export default function Checkout() {
                     <FormLabel className="text-gray-700">
                       Device Model <span className="text-red-500">*</span>
                     </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="e.g., iPhone 15 Pro, Samsung Galaxy S24"
-                        {...field}
-                        className="border-blue-200 focus:border-blue-500"
-                        data-testid="input-device-model"
-                      />
-                    </FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger 
+                          className="border-blue-200 focus:border-blue-500"
+                          data-testid="select-device-model"
+                        >
+                          <SelectValue placeholder="Select your device model" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {deviceModels.map((model: any) => (
+                          <SelectItem key={model.id} value={model.modelName}>
+                            {model.modelName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

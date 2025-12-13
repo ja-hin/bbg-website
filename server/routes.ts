@@ -1423,6 +1423,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         customerContact,
         customerEmail,
         customerPincode,
+        devicePurchaseDate,
+        deviceModel,
         referralCode,
         planType,
         deviceType,
@@ -1510,8 +1512,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           deviceType: deviceType,
           serialNumber: null,
           brand: brand || "Unknown",
-          modelName: null, // Model name will be set during device registration, not at payment time
+          modelName: deviceModel || null,
           invoiceValue: 0,
+          dateOfPurchase: devicePurchaseDate || null,
           paymentAmount: finalAmount,
           transactionId: txnid,
           sellerCode: referralCode || null,
@@ -1530,21 +1533,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error("❌ Failed to persist payment context:", persistError);
       }
 
-      // Calculate dateOfPurchase from deviceAgeSelection for storage
-      // 1 = within 6 months (use 3 months ago), 2 = more than 6 months (use 9 months ago)
-      let calculatedDateOfPurchase: string;
-      if (deviceAgeSelection === "1") {
-        const date = new Date();
-        date.setMonth(date.getMonth() - 3);
-        calculatedDateOfPurchase = date.toISOString().split('T')[0];
-      } else if (deviceAgeSelection === "2") {
-        const date = new Date();
-        date.setMonth(date.getMonth() - 9);
-        calculatedDateOfPurchase = date.toISOString().split('T')[0];
-      } else {
-        calculatedDateOfPurchase = new Date().toISOString().split('T')[0];
-      }
-
       // Store in temp storage as backup
       const tempStorage = app.locals.tempCustomerData || new Map();
       tempStorage.set(txnid, {
@@ -1555,9 +1543,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           pincode: customerPincode,
           deviceType,
           brand,
-          modelName: planName || `${planType.toUpperCase()} Plan`,
+          modelName: deviceModel || null,
           invoiceValue: finalAmount,
-          dateOfPurchase: calculatedDateOfPurchase,
+          dateOfPurchase: devicePurchaseDate || null,
           deviceAgeSelection: deviceAgeSelection || null,
           sellerCode: referralCode || null,
         },

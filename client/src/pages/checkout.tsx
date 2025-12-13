@@ -37,6 +37,12 @@ const checkoutSchema = z.object({
   pincode: z
     .string()
     .regex(/^\d{6}$/, "Pincode must be 6 digits"),
+  devicePurchaseDate: z
+    .string()
+    .min(1, "Device purchase date is required"),
+  deviceModel: z
+    .string()
+    .min(1, "Device model is required"),
   referralCode: z.string().optional(),
   agreeToTerms: z
     .boolean()
@@ -130,6 +136,8 @@ export default function Checkout() {
       contact: "",
       email: "",
       pincode: "",
+      devicePurchaseDate: "",
+      deviceModel: "",
       referralCode: "",
       agreeToTerms: false,
     },
@@ -331,6 +339,8 @@ export default function Checkout() {
       customerContact: data.contact,
       customerEmail: data.email,
       customerPincode: data.pincode,
+      devicePurchaseDate: data.devicePurchaseDate,
+      deviceModel: data.deviceModel,
       referralCode: data.referralCode || null,
       planId: selectedPlan.id,
       planType: selectedPlan.planType,
@@ -583,6 +593,50 @@ export default function Checkout() {
                         {...field}
                         className="border-blue-200 focus:border-blue-500"
                         data-testid="input-pincode"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="devicePurchaseDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700">
+                      Device Purchase Date <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        {...field}
+                        max={new Date().toISOString().split('T')[0]}
+                        className="border-blue-200 focus:border-blue-500"
+                        data-testid="input-device-purchase-date"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="deviceModel"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700">
+                      Device Model <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="e.g., iPhone 15 Pro, Samsung Galaxy S24"
+                        {...field}
+                        className="border-blue-200 focus:border-blue-500"
+                        data-testid="input-device-model"
                       />
                     </FormControl>
                     <FormMessage />

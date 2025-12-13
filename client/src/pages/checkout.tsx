@@ -628,11 +628,6 @@ export default function Checkout() {
                           data-testid="input-device-purchase-date"
                         />
                       </FormControl>
-                      {isBbgOrBundle && (
-                        <p className="text-xs text-amber-600 mt-1">
-                          For BBG/Bundle plans, device must be purchased within the last 6 months
-                        </p>
-                      )}
                       <FormMessage />
                     </FormItem>
                   );

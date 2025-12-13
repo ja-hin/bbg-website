@@ -1510,7 +1510,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           deviceType: deviceType,
           serialNumber: null,
           brand: brand || "Unknown",
-          modelName: planName,
+          modelName: null, // Model name will be set during device registration, not at payment time
           invoiceValue: 0,
           paymentAmount: finalAmount,
           transactionId: txnid,

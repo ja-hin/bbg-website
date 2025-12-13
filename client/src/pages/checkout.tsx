@@ -603,23 +603,40 @@ export default function Checkout() {
               <FormField
                 control={form.control}
                 name="devicePurchaseDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-700">
-                      Device Purchase Date <span className="text-red-500">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="date"
-                        {...field}
-                        max={new Date().toISOString().split('T')[0]}
-                        className="border-blue-200 focus:border-blue-500"
-                        data-testid="input-device-purchase-date"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const today = new Date();
+                  const maxDate = today.toISOString().split('T')[0];
+                  
+                  // For BBG and Bundle plans, limit to within 6 months
+                  const isBbgOrBundle = selectedPlan?.planType === 'bbg' || selectedPlan?.planType === 'bundle';
+                  const sixMonthsAgo = new Date();
+                  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                  const minDate = isBbgOrBundle ? sixMonthsAgo.toISOString().split('T')[0] : undefined;
+                  
+                  return (
+                    <FormItem>
+                      <FormLabel className="text-gray-700">
+                        Device Purchase Date <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="date"
+                          {...field}
+                          min={minDate}
+                          max={maxDate}
+                          className="border-blue-200 focus:border-blue-500"
+                          data-testid="input-device-purchase-date"
+                        />
+                      </FormControl>
+                      {isBbgOrBundle && (
+                        <p className="text-xs text-amber-600 mt-1">
+                          For BBG/Bundle plans, device must be purchased within the last 6 months
+                        </p>
+                      )}
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
 
               <FormField

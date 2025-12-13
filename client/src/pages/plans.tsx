@@ -235,6 +235,46 @@ export default function Plans() {
           className="absolute inset-0 w-full h-full object-fill z-0"
         />
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Amazon and Acer purchase links */}
+          <div className="text-center mb-6 bg-white/90 rounded-lg p-3 shadow-sm">
+            <p className="text-sm sm:text-base text-gray-700">
+              You can also buy{" "}
+              {showingMobile ? (
+                <>
+                  <a
+                    href="https://www.amazon.in/Xtracover-Months-BuyBack-Guarantee-Delivery/dp/B0FW4L6NBY/ref=sr_1_2?crid=24QTJT6QA2W5W&dib=eyJ2IjoiMSJ9.a8P_SgtRFczb5F_6aAebivaon7zytbpphnxB2aC1TzM.quPafkCUjmfxo0ma9hp3S3sxdpQxQjVgaytnwgirQNc&dib_tag=se&keywords=xtracover+buyback+guarantee&qid=1765616560&s=electronics&sprefix=xtracover+buyback+guarantee%2Celectronics%2C213&sr=1-2-catcorr"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#254696] font-semibold underline hover:text-[#1a3366]"
+                  >
+                    mobile
+                  </a>
+                </>
+              ) : (
+                <>
+                  <a
+                    href="https://www.amazon.in/Xtracover-BuyBack-Guarantee-Laptop-Delivery/dp/B0FW4JTYV7/ref=sr_1_1?crid=24QTJT6QA2W5W&dib=eyJ2IjoiMSJ9.a8P_SgtRFczb5F_6aAebivaon7zytbpphnxB2aC1TzM.quPafkCUjmfxo0ma9hp3S3sxdpQxQjVgaytnwgirQNc&dib_tag=se&keywords=xtracover+buyback+guarantee&qid=1765616560&s=electronics&sprefix=xtracover+buyback+guarantee%2Celectronics%2C213&sr=1-1-catcorr"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#254696] font-semibold underline hover:text-[#1a3366]"
+                  >
+                    laptop
+                  </a>
+                </>
+              )}{" "}
+              and{" "}
+              <a
+                href="https://store.acer.com/en-in/buybackpolicy-offer-terms-conditions-in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#254696] font-semibold underline hover:text-[#1a3366]"
+              >
+                Acer
+              </a>{" "}
+              plans from Amazon.
+            </p>
+          </div>
+
           <div className="grid gap-8 lg:gap-12 items-stretch [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
             {showLaptopBBG && (
               <div

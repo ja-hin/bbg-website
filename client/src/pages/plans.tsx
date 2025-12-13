@@ -20,10 +20,10 @@ export default function Plans() {
   let searchParams = new URLSearchParams(window.location.search);
   let deviceType = searchParams.get("type");
   let deviceBrand = searchParams.get("brand");
-  let devicePurchaseDate = searchParams.get("date");
+  let deviceAgeSelection = searchParams.get("age");
 
   // If URL params missing, try to restore from sessionStorage (for back navigation)
-  if (!deviceType || !deviceBrand || !devicePurchaseDate) {
+  if (!deviceType || !deviceBrand || !deviceAgeSelection) {
     const storedPlan = sessionStorage.getItem("selectedPlan");
     if (storedPlan) {
       try {
@@ -32,10 +32,10 @@ export default function Plans() {
           const storedParams = new URLSearchParams(parsed.plansQuery);
           deviceType = storedParams.get("type");
           deviceBrand = storedParams.get("brand");
-          devicePurchaseDate = storedParams.get("date");
+          deviceAgeSelection = storedParams.get("age");
 
           // Restore URL for proper browser history
-          if (deviceType && deviceBrand && devicePurchaseDate) {
+          if (deviceType && deviceBrand && deviceAgeSelection) {
             window.history.replaceState({}, "", `/plans${parsed.plansQuery}`);
           }
         }
@@ -70,7 +70,7 @@ export default function Plans() {
   const laptopBundlePlan = getPlanInfo("laptop", "bundle");
   const mobileBundlePlan = getPlanInfo("mobile", "bundle");
 
-  if (!deviceType || !deviceBrand || !devicePurchaseDate) {
+  if (!deviceType || !deviceBrand || !deviceAgeSelection) {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4">
         <div className="text-center max-w-md">
@@ -98,18 +98,8 @@ export default function Plans() {
     );
   }
 
-  const [year, month, day] = devicePurchaseDate.split("-").map(Number);
-  const purchaseDate = new Date(year, month - 1, day);
-  purchaseDate.setHours(0, 0, 0, 0);
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const cutoffDate = new Date(today);
-  cutoffDate.setMonth(cutoffDate.getMonth() - 6);
-  cutoffDate.setHours(0, 0, 0, 0);
-
-  const isWithinSixMonths = purchaseDate >= cutoffDate;
+  // Device age selection: 1 = within 6 months, 2 = more than 6 months
+  const isWithinSixMonths = deviceAgeSelection === "1";
   
   // Use toggle view instead of URL device type for showing plans
   const showingLaptop = selectedView === "laptop";
@@ -143,7 +133,7 @@ export default function Plans() {
       validity: planInfo.validity,
       coverage: planInfo.coverage,
       brand: deviceBrand,
-      purchaseDate: devicePurchaseDate,
+      deviceAgeSelection: deviceAgeSelection,
       plansQuery: window.location.search,
     };
 

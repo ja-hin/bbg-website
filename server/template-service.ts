@@ -151,6 +151,397 @@ export class TemplateService {
     } catch (error: any) {
       console.log('⚠️ Template migration failed (may already be applied):', error.message);
     }
+    
+    // Create plan-specific templates for all 6 plans
+    await this.createPlanSpecificTemplates();
+  }
+
+  // Create plan-specific templates for all 6 plans (email, SMS, WhatsApp each)
+  async createPlanSpecificTemplates(): Promise<void> {
+    try {
+      await db.connectDB();
+      
+      // Define templates for each plan type
+      const planTemplates = [
+        {
+          planName: 'BBG for Mobile',
+          deviceType: 'mobile',
+          planType: 'bbg',
+          emailSubject: 'XtraCover BBG for Mobile - Purchase Successful!',
+          emailContent: this.generateBBGEmailTemplate('mobile'),
+          smsContent: 'Dear {{name}}, Your BBG for Mobile is active! Voucher: {{voucherCode}}. Device: {{brand}} {{modelName}}. Register your IMEI to activate protection. - XtraCover',
+          whatsappContent: '🎉 *BBG for Mobile Activated!*\n\nHi {{name}},\n\nYour BBG protection for mobile is now active!\n\n📱 Device: {{brand}} {{modelName}}\n🎟️ Voucher: {{voucherCode}}\n\n*Next Step:* Register your IMEI to activate protection.\n\nThank you for choosing XtraCover! 🛡️'
+        },
+        {
+          planName: 'BBG for Laptop',
+          deviceType: 'laptop',
+          planType: 'bbg',
+          emailSubject: 'XtraCover BBG for Laptop - Purchase Successful!',
+          emailContent: this.generateBBGEmailTemplate('laptop'),
+          smsContent: 'Dear {{name}}, Your BBG for Laptop is active! Voucher: {{voucherCode}}. Device: {{brand}} {{modelName}}. Register your Serial No. to activate protection. - XtraCover',
+          whatsappContent: '🎉 *BBG for Laptop Activated!*\n\nHi {{name}},\n\nYour BBG protection for laptop is now active!\n\n💻 Device: {{brand}} {{modelName}}\n🎟️ Voucher: {{voucherCode}}\n\n*Next Step:* Register your Serial Number to activate protection.\n\nThank you for choosing XtraCover! 🛡️'
+        },
+        {
+          planName: 'Extend+ for Mobile',
+          deviceType: 'mobile',
+          planType: 'extend_plus',
+          emailSubject: 'XtraCover Extend+ for Mobile - Purchase Successful!',
+          emailContent: this.generateExtendPlusEmailTemplate('mobile'),
+          smsContent: 'Dear {{name}}, Your Extend+ for Mobile is active! Voucher: {{voucherCode}}. Device: {{brand}} {{modelName}}. Extended warranty protection activated. - XtraCover',
+          whatsappContent: '🎉 *Extend+ for Mobile Activated!*\n\nHi {{name}},\n\nYour Extend+ protection for mobile is now active!\n\n📱 Device: {{brand}} {{modelName}}\n🎟️ Voucher: {{voucherCode}}\n\nYour extended warranty coverage is now in effect.\n\nThank you for choosing XtraCover! 🛡️'
+        },
+        {
+          planName: 'Extend+ for Laptop',
+          deviceType: 'laptop',
+          planType: 'extend_plus',
+          emailSubject: 'XtraCover Extend+ for Laptop - Purchase Successful!',
+          emailContent: this.generateExtendPlusEmailTemplate('laptop'),
+          smsContent: 'Dear {{name}}, Your Extend+ for Laptop is active! Voucher: {{voucherCode}}. Device: {{brand}} {{modelName}}. Extended warranty protection activated. - XtraCover',
+          whatsappContent: '🎉 *Extend+ for Laptop Activated!*\n\nHi {{name}},\n\nYour Extend+ protection for laptop is now active!\n\n💻 Device: {{brand}} {{modelName}}\n🎟️ Voucher: {{voucherCode}}\n\nYour extended warranty coverage is now in effect.\n\nThank you for choosing XtraCover! 🛡️'
+        },
+        {
+          planName: 'BBG + Extend+ Bundle for Mobile',
+          deviceType: 'mobile',
+          planType: 'bundle',
+          emailSubject: 'XtraCover BBG + Extend+ Bundle for Mobile - Purchase Successful!',
+          emailContent: this.generateBundleEmailTemplate('mobile'),
+          smsContent: 'Dear {{name}}, Your BBG + Extend+ Bundle for Mobile is active! Voucher: {{voucherCode}}. Device: {{brand}} {{modelName}}. Complete protection activated. - XtraCover',
+          whatsappContent: '🎉 *BBG + Extend+ Bundle for Mobile Activated!*\n\nHi {{name}},\n\nYour complete protection bundle for mobile is now active!\n\n📱 Device: {{brand}} {{modelName}}\n🎟️ Voucher: {{voucherCode}}\n\n✅ BBG Protection\n✅ Extended Warranty\n\n*Next Step:* Register your IMEI to activate full protection.\n\nThank you for choosing XtraCover! 🛡️'
+        },
+        {
+          planName: 'BBG + Extend+ Bundle for Laptop',
+          deviceType: 'laptop',
+          planType: 'bundle',
+          emailSubject: 'XtraCover BBG + Extend+ Bundle for Laptop - Purchase Successful!',
+          emailContent: this.generateBundleEmailTemplate('laptop'),
+          smsContent: 'Dear {{name}}, Your BBG + Extend+ Bundle for Laptop is active! Voucher: {{voucherCode}}. Device: {{brand}} {{modelName}}. Complete protection activated. - XtraCover',
+          whatsappContent: '🎉 *BBG + Extend+ Bundle for Laptop Activated!*\n\nHi {{name}},\n\nYour complete protection bundle for laptop is now active!\n\n💻 Device: {{brand}} {{modelName}}\n🎟️ Voucher: {{voucherCode}}\n\n✅ BBG Protection\n✅ Extended Warranty\n\n*Next Step:* Register your Serial Number to activate full protection.\n\nThank you for choosing XtraCover! 🛡️'
+        }
+      ];
+      
+      const variables = ['name', 'email', 'contact', 'voucherCode', 'brand', 'modelName', 'deviceType', 'bbgPurchaseDate', 'termsAndConditionsUrl', 'claimValueSlabsHtml'];
+      
+      for (const planTemplate of planTemplates) {
+        // Check if plan exists
+        const planResult = await db.pool.request()
+          .input('planName', sql.NVarChar, planTemplate.planName)
+          .query('SELECT id, email_template_id, whatsapp_template_id, sms_template_id FROM plans WHERE plan_name = @planName');
+        
+        if (planResult.recordset.length === 0) {
+          console.log(`⚠️ Plan "${planTemplate.planName}" not found in database, skipping`);
+          continue;
+        }
+        
+        const plan = planResult.recordset[0];
+        let emailTemplateId = plan.email_template_id;
+        let smsTemplateId = plan.sms_template_id;
+        let whatsappTemplateId = plan.whatsapp_template_id;
+        
+        // Create Email template if not exists
+        if (!emailTemplateId) {
+          const emailName = `${planTemplate.planName} - Email`;
+          const existingEmail = await db.pool.request()
+            .input('name', sql.NVarChar, emailName)
+            .query('SELECT id FROM message_templates WHERE name = @name');
+          
+          if (existingEmail.recordset.length > 0) {
+            emailTemplateId = existingEmail.recordset[0].id;
+            // Update existing template content
+            await db.pool.request()
+              .input('id', sql.Int, emailTemplateId)
+              .input('content', sql.NText, planTemplate.emailContent)
+              .input('subject', sql.NVarChar, planTemplate.emailSubject)
+              .query('UPDATE message_templates SET content = @content, subject = @subject WHERE id = @id');
+            console.log(`📧 Updated existing email template for "${planTemplate.planName}": ID ${emailTemplateId}`);
+          } else {
+            // Use plan-specific event type to avoid unique constraint issues
+            const planEvent = `plan_${planTemplate.planType}_${planTemplate.deviceType}`;
+            const insertResult = await db.pool.request()
+              .input('name', sql.NVarChar, emailName)
+              .input('type', sql.NVarChar, 'email')
+              .input('event', sql.NVarChar, planEvent)
+              .input('deviceType', sql.NVarChar, planTemplate.deviceType)
+              .input('subject', sql.NVarChar, planTemplate.emailSubject)
+              .input('content', sql.NText, planTemplate.emailContent)
+              .input('variables', sql.NText, JSON.stringify(variables))
+              .query(`INSERT INTO message_templates (name, type, event, device_type, subject, content, variables, is_active) 
+                      OUTPUT INSERTED.id 
+                      VALUES (@name, @type, @event, @deviceType, @subject, @content, @variables, 1)`);
+            emailTemplateId = insertResult.recordset[0].id;
+            console.log(`✅ Created email template for "${planTemplate.planName}": ID ${emailTemplateId}`);
+          }
+        }
+        
+        // Create SMS template if not exists
+        if (!smsTemplateId) {
+          const smsName = `${planTemplate.planName} - SMS`;
+          const existingSms = await db.pool.request()
+            .input('name', sql.NVarChar, smsName)
+            .query('SELECT id FROM message_templates WHERE name = @name');
+          
+          if (existingSms.recordset.length > 0) {
+            smsTemplateId = existingSms.recordset[0].id;
+            // Update existing template content
+            await db.pool.request()
+              .input('id', sql.Int, smsTemplateId)
+              .input('content', sql.NText, planTemplate.smsContent)
+              .query('UPDATE message_templates SET content = @content WHERE id = @id');
+            console.log(`📱 Updated existing SMS template for "${planTemplate.planName}": ID ${smsTemplateId}`);
+          } else {
+            const planEvent = `plan_${planTemplate.planType}_${planTemplate.deviceType}`;
+            const insertResult = await db.pool.request()
+              .input('name', sql.NVarChar, smsName)
+              .input('type', sql.NVarChar, 'sms')
+              .input('event', sql.NVarChar, planEvent)
+              .input('deviceType', sql.NVarChar, planTemplate.deviceType)
+              .input('content', sql.NText, planTemplate.smsContent)
+              .input('variables', sql.NText, JSON.stringify(variables))
+              .query(`INSERT INTO message_templates (name, type, event, device_type, content, variables, is_active) 
+                      OUTPUT INSERTED.id 
+                      VALUES (@name, @type, @event, @deviceType, @content, @variables, 1)`);
+            smsTemplateId = insertResult.recordset[0].id;
+            console.log(`✅ Created SMS template for "${planTemplate.planName}": ID ${smsTemplateId}`);
+          }
+        }
+        
+        // Create WhatsApp template if not exists
+        if (!whatsappTemplateId) {
+          const whatsappName = `${planTemplate.planName} - WhatsApp`;
+          const existingWhatsapp = await db.pool.request()
+            .input('name', sql.NVarChar, whatsappName)
+            .query('SELECT id FROM message_templates WHERE name = @name');
+          
+          if (existingWhatsapp.recordset.length > 0) {
+            whatsappTemplateId = existingWhatsapp.recordset[0].id;
+            // Update existing template content
+            await db.pool.request()
+              .input('id', sql.Int, whatsappTemplateId)
+              .input('content', sql.NText, planTemplate.whatsappContent)
+              .query('UPDATE message_templates SET content = @content WHERE id = @id');
+            console.log(`💬 Updated existing WhatsApp template for "${planTemplate.planName}": ID ${whatsappTemplateId}`);
+          } else {
+            const planEvent = `plan_${planTemplate.planType}_${planTemplate.deviceType}`;
+            const insertResult = await db.pool.request()
+              .input('name', sql.NVarChar, whatsappName)
+              .input('type', sql.NVarChar, 'whatsapp')
+              .input('event', sql.NVarChar, planEvent)
+              .input('deviceType', sql.NVarChar, planTemplate.deviceType)
+              .input('content', sql.NText, planTemplate.whatsappContent)
+              .input('variables', sql.NText, JSON.stringify(variables))
+              .query(`INSERT INTO message_templates (name, type, event, device_type, content, variables, is_active) 
+                      OUTPUT INSERTED.id 
+                      VALUES (@name, @type, @event, @deviceType, @content, @variables, 1)`);
+            whatsappTemplateId = insertResult.recordset[0].id;
+            console.log(`✅ Created WhatsApp template for "${planTemplate.planName}": ID ${whatsappTemplateId}`);
+          }
+        }
+        
+        // Update plan with template IDs
+        await db.pool.request()
+          .input('planId', sql.Int, plan.id)
+          .input('emailTemplateId', sql.Int, emailTemplateId)
+          .input('smsTemplateId', sql.Int, smsTemplateId)
+          .input('whatsappTemplateId', sql.Int, whatsappTemplateId)
+          .query(`UPDATE plans SET 
+                    email_template_id = @emailTemplateId, 
+                    sms_template_id = @smsTemplateId, 
+                    whatsapp_template_id = @whatsappTemplateId 
+                  WHERE id = @planId`);
+        
+        console.log(`✅ Updated plan "${planTemplate.planName}" with template IDs: Email=${emailTemplateId}, SMS=${smsTemplateId}, WhatsApp=${whatsappTemplateId}`);
+      }
+      
+      console.log('✅ Plan-specific templates created and linked successfully');
+    } catch (error: any) {
+      console.log('⚠️ Plan-specific template creation failed:', error.message);
+    }
+  }
+  
+  // Generate BBG email template
+  private generateBBGEmailTemplate(deviceType: 'mobile' | 'laptop'): string {
+    const deviceIcon = deviceType === 'mobile' ? '📱' : '💻';
+    const serialLabel = deviceType === 'mobile' ? 'IMEI' : 'Serial Number';
+    
+    return `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #dc2626;">XtraCover BBG</h1>
+    <h2 style="color: #374151;">Purchase Successful!</h2>
+  </div>
+  
+  <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #374151; margin-top: 0;">Hi {{name}},</h3>
+    <p>Thank you for purchasing XtraCover BBG protection for your ${deviceType}! Your BBG plan has been successfully activated.</p>
+    
+    <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+      <strong>BBG Voucher Code: {{voucherCode}}</strong>
+    </div>
+    
+    <ul style="color: #6b7280;">
+      <li><strong>Device:</strong> {{brand}} {{modelName}} ({{deviceType}})</li>
+      <li><strong>BBG Purchase Date:</strong> {{bbgPurchaseDate}}</li>
+      <li><strong>Contact:</strong> {{contact}}</li>
+      <li><strong>Email:</strong> {{email}}</li>
+    </ul>
+  </div>
+  
+  <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #0277bd; margin-top: 0;">${deviceIcon} Your BBG Protection Plan</h3>
+    <p style="color: #424242; margin-bottom: 15px;">Your device qualifies for our Claim Slabs benefit plan. Here's what you'll get when you claim:</p>
+    
+    <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0;">
+      <h4 style="color: #16a34a; margin-top: 0;">Claim Value Slabs</h4>
+      <p style="color: #6b7280; margin-bottom: 15px;">Based on your device age at the time of claim, you can receive up to 70% of your device's current market value.</p>
+      
+      {{claimValueSlabsHtml}}
+    </div>
+    
+    <div style="background: #fff3e0; padding: 10px; border-radius: 6px; margin-top: 15px;">
+      <p style="margin: 0; color: #e65100; font-size: 14px;"><strong>Next Step:</strong> Complete your device registration with ${serialLabel} to activate your protection.</p>
+    </div>
+  </div>
+
+  <div style="background: #fef3c7; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+    <p style="margin: 0; color: #92400e;"><strong>Important:</strong> Save your voucher code safely. You'll need it to register your device and file claims.</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 30px;">
+    <p style="color: #6b7280;">Thank you for choosing XtraCover BBG!</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+    <p style="color: #9ca3af; font-size: 14px;">
+      <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
+      For support, contact us at contactus@xtracover.com
+    </p>
+  </div>
+</div>`;
+  }
+  
+  // Generate Extend+ email template
+  private generateExtendPlusEmailTemplate(deviceType: 'mobile' | 'laptop'): string {
+    const deviceIcon = deviceType === 'mobile' ? '📱' : '💻';
+    
+    return `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #2563eb;">XtraCover Extend+</h1>
+    <h2 style="color: #374151;">Extended Warranty Activated!</h2>
+  </div>
+  
+  <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #374151; margin-top: 0;">Hi {{name}},</h3>
+    <p>Thank you for purchasing XtraCover Extend+ protection for your ${deviceType}! Your extended warranty has been successfully activated.</p>
+    
+    <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+      <strong>Extend+ Voucher Code: {{voucherCode}}</strong>
+    </div>
+    
+    <ul style="color: #6b7280;">
+      <li><strong>Device:</strong> {{brand}} {{modelName}} ({{deviceType}})</li>
+      <li><strong>Purchase Date:</strong> {{bbgPurchaseDate}}</li>
+      <li><strong>Contact:</strong> {{contact}}</li>
+      <li><strong>Email:</strong> {{email}}</li>
+    </ul>
+  </div>
+  
+  <div style="background: #eff6ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #1d4ed8; margin-top: 0;">${deviceIcon} Your Extend+ Coverage</h3>
+    <p style="color: #424242; margin-bottom: 15px;">Your extended warranty coverage includes:</p>
+    
+    <div style="background: white; padding: 20px; border-radius: 8px; margin: 15px 0;">
+      <ul style="color: #374151; margin: 0; padding-left: 20px;">
+        <li style="margin-bottom: 10px;">✅ Extended manufacturer warranty coverage</li>
+        <li style="margin-bottom: 10px;">✅ Protection against manufacturing defects</li>
+        <li style="margin-bottom: 10px;">✅ Hassle-free claim process</li>
+        <li style="margin-bottom: 10px;">✅ Dedicated customer support</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background: #fef3c7; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+    <p style="margin: 0; color: #92400e;"><strong>Important:</strong> Save your voucher code safely. You'll need it for any warranty claims.</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 30px;">
+    <p style="color: #6b7280;">Thank you for choosing XtraCover Extend+!</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+    <p style="color: #9ca3af; font-size: 14px;">
+      <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
+      For support, contact us at contactus@xtracover.com
+    </p>
+  </div>
+</div>`;
+  }
+  
+  // Generate Bundle (BBG + Extend+) email template
+  private generateBundleEmailTemplate(deviceType: 'mobile' | 'laptop'): string {
+    const deviceIcon = deviceType === 'mobile' ? '📱' : '💻';
+    const serialLabel = deviceType === 'mobile' ? 'IMEI' : 'Serial Number';
+    
+    return `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #7c3aed;">XtraCover Complete Bundle</h1>
+    <h2 style="color: #374151;">BBG + Extend+ Activated!</h2>
+  </div>
+  
+  <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #374151; margin-top: 0;">Hi {{name}},</h3>
+    <p>Thank you for purchasing the XtraCover Complete Protection Bundle for your ${deviceType}! Both BBG and Extend+ have been successfully activated.</p>
+    
+    <div style="background: white; padding: 15px; border-radius: 6px; margin: 15px 0;">
+      <strong>Bundle Voucher Code: {{voucherCode}}</strong>
+    </div>
+    
+    <ul style="color: #6b7280;">
+      <li><strong>Device:</strong> {{brand}} {{modelName}} ({{deviceType}})</li>
+      <li><strong>Purchase Date:</strong> {{bbgPurchaseDate}}</li>
+      <li><strong>Contact:</strong> {{contact}}</li>
+      <li><strong>Email:</strong> {{email}}</li>
+    </ul>
+  </div>
+  
+  <div style="background: #f5f3ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #6d28d9; margin-top: 0;">${deviceIcon} Your Complete Protection Package</h3>
+    
+    <div style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #dc2626;">
+      <h4 style="color: #dc2626; margin-top: 0;">🛡️ BBG Protection</h4>
+      <p style="color: #6b7280; margin-bottom: 10px;">BuyBack Guarantee with claim value slabs:</p>
+      {{claimValueSlabsHtml}}
+    </div>
+    
+    <div style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #2563eb;">
+      <h4 style="color: #2563eb; margin-top: 0;">🔧 Extend+ Coverage</h4>
+      <ul style="color: #374151; margin: 0; padding-left: 20px;">
+        <li>Extended manufacturer warranty</li>
+        <li>Protection against manufacturing defects</li>
+        <li>Hassle-free claim process</li>
+      </ul>
+    </div>
+    
+    <div style="background: #fff3e0; padding: 10px; border-radius: 6px; margin-top: 15px;">
+      <p style="margin: 0; color: #e65100; font-size: 14px;"><strong>Next Step:</strong> Complete your device registration with ${serialLabel} to activate full protection.</p>
+    </div>
+  </div>
+
+  <div style="background: #fef3c7; padding: 15px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+    <p style="margin: 0; color: #92400e;"><strong>Important:</strong> Save your voucher code safely. You'll need it for all claims and warranty services.</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 30px;">
+    <p style="color: #6b7280;">Thank you for choosing XtraCover Complete Protection!</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+    <p style="color: #9ca3af; font-size: 14px;">
+      <a href="{{termsAndConditionsUrl}}" style="color: #2563eb; text-decoration: none;">Terms & Conditions</a> | 
+      For support, contact us at contactus@xtracover.com
+    </p>
+  </div>
+</div>`;
   }
 
   // Update table schema to support device-specific templates
@@ -209,14 +600,13 @@ export class TemplateService {
   // Update event constraint to allow new event types
   async updateEventConstraint(): Promise<void> {
     try {
-      // Drop ALL existing event-related CHECK constraints
+      // Drop ALL existing event-related CHECK constraints to allow flexible event types
       const dropConstraintQuery = `
         DECLARE @sql NVARCHAR(MAX) = ''
         SELECT @sql = @sql + 'ALTER TABLE message_templates DROP CONSTRAINT [' + cc.name + ']; '
         FROM sys.check_constraints cc
-        INNER JOIN sys.columns c ON cc.parent_object_id = c.object_id
         WHERE cc.parent_object_id = OBJECT_ID('message_templates') 
-        AND (cc.name LIKE '%event%' OR c.name = 'event')
+        AND cc.name LIKE '%event%'
         
         IF LEN(@sql) > 0
         BEGIN
@@ -227,15 +617,8 @@ export class TemplateService {
       
       await db.pool.request().query(dropConstraintQuery);
       
-      // Add new constraint with updated event types
-      const addConstraintQuery = `
-        ALTER TABLE message_templates 
-        ADD CONSTRAINT CHK_message_templates_event 
-        CHECK (event IN ('customer_registration', 'referral_partner_welcome', 'claim_status_update', 'payout_notification', 'otp_verification', 'distributor_bbg_notification', 'bbg_registration_benefits', 'bbg_purchase_confirmation', 'device_registration_confirmation', 'bbg_purchase_within_6_months', 'bbg_purchase_over_6_months', 'device_registration_within_6_months', 'device_registration_over_6_months', 'acer_registration_within_6_months', 'acer_registration_over_6_months', 'amazon_bbg_registration', 'plan_purchase'))
-      `;
-      
-      await db.pool.request().query(addConstraintQuery);
-      console.log('✅ Updated event constraint to include distributor_bbg_notification and bbg_registration_benefits');
+      // No longer adding a constraint - event types are now flexible to support plan-specific templates
+      console.log('✅ Event constraint dropped - flexible event types enabled for plan-specific templates');
     } catch (error: any) {
       console.log('⚠️ Event constraint update failed (may already be correct):', error.message);
       // Don't throw error as this is a migration that might not be needed

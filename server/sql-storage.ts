@@ -658,6 +658,12 @@ export class SqlServerStorage implements IStorage {
         BEGIN
           ALTER TABLE customers ADD plan_id INT;
         END
+        
+        -- Add state column for customer address
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('customers') AND name = 'state')
+        BEGIN
+          ALTER TABLE customers ADD state NVARCHAR(100);
+        END
       END
 
       -- Create claims table
@@ -897,6 +903,12 @@ export class SqlServerStorage implements IStorage {
         IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('pending_payments') AND name = 'email_template_key')
         BEGIN
           ALTER TABLE pending_payments ADD email_template_key NVARCHAR(100);
+        END
+        
+        -- Add state column for customer address
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('pending_payments') AND name = 'state')
+        BEGIN
+          ALTER TABLE pending_payments ADD state NVARCHAR(100);
         END
       END
 
@@ -1828,13 +1840,13 @@ export class SqlServerStorage implements IStorage {
     
     const query = `
       INSERT INTO customers (
-        name, contact, email, pincode, device_type, serial_number, 
+        name, contact, email, pincode, state, device_type, serial_number, 
         brand, model_name, invoice_value, date_of_purchase, seller_code, voucher_code, payment_intent_id, is_verified,
         registration_source, invoice_file, claim_value_slab_id, registration_slab_data, plan_id, benefit_type
       ) 
       OUTPUT INSERTED.*
       VALUES (
-        @name, @contact, @email, @pincode, @deviceType, @serialNumber, 
+        @name, @contact, @email, @pincode, @state, @deviceType, @serialNumber, 
         @brand, @modelName, @invoiceValue, @dateOfPurchase, @sellerCode, @voucherCode, @paymentIntentId, @isVerified,
         @registrationSource, @invoiceFile, @claimValueSlabId, @registrationSlabData, @planId, @benefitType
       )
@@ -1845,6 +1857,7 @@ export class SqlServerStorage implements IStorage {
     request.input('contact', sql.NVarChar, insertCustomer.contact);
     request.input('email', sql.NVarChar, insertCustomer.email);
     request.input('pincode', sql.NVarChar, insertCustomer.pincode);
+    request.input('state', sql.NVarChar, (insertCustomer as any).state || null);
     request.input('deviceType', sql.NVarChar, insertCustomer.deviceType);
     request.input('serialNumber', sql.NVarChar, insertCustomer.serialNumber);
     request.input('brand', sql.NVarChar, insertCustomer.brand);
@@ -2757,14 +2770,14 @@ export class SqlServerStorage implements IStorage {
     await db.connectDB();
     const query = `
       INSERT INTO pending_payments (
-        name, contact, email, pincode, device_type, serial_number, 
+        name, contact, email, pincode, state, device_type, serial_number, 
         brand, model_name, invoice_value, payment_amount, transaction_id, 
         seller_code, status, expires_at, purchase_timing_category, 
         benefit_type, plan_price, benefits_json, email_template_key
       ) 
       OUTPUT INSERTED.*
       VALUES (
-        @name, @contact, @email, @pincode, @deviceType, @serialNumber, 
+        @name, @contact, @email, @pincode, @state, @deviceType, @serialNumber, 
         @brand, @modelName, @invoiceValue, @paymentAmount, @transactionId, 
         @sellerCode, @status, @expiresAt, @purchaseTimingCategory,
         @benefitType, @planPrice, @benefitsJson, @emailTemplateKey
@@ -2776,6 +2789,7 @@ export class SqlServerStorage implements IStorage {
     request.input('contact', sql.NVarChar, insertPayment.contact);
     request.input('email', sql.NVarChar, insertPayment.email);
     request.input('pincode', sql.NVarChar, insertPayment.pincode);
+    request.input('state', sql.NVarChar, (insertPayment as any).state || null);
     request.input('deviceType', sql.NVarChar, insertPayment.deviceType);
     request.input('serialNumber', sql.NVarChar, insertPayment.serialNumber);
     request.input('brand', sql.NVarChar, insertPayment.brand);

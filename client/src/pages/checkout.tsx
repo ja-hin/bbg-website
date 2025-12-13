@@ -35,6 +35,16 @@ import {
   XCircle,
 } from "lucide-react";
 
+const INDIAN_STATES = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
+  "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
+  "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
+  "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+  "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+  "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+];
+
 const checkoutSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   contact: z
@@ -44,6 +54,9 @@ const checkoutSchema = z.object({
   pincode: z
     .string()
     .regex(/^\d{6}$/, "Pincode must be 6 digits"),
+  state: z
+    .string()
+    .min(1, "State is required"),
   devicePurchaseDate: z
     .string()
     .min(1, "Device purchase date is required"),
@@ -153,6 +166,7 @@ export default function Checkout() {
       contact: "",
       email: "",
       pincode: "",
+      state: "",
       devicePurchaseDate: "",
       deviceModel: "",
       referralCode: "",
@@ -356,6 +370,7 @@ export default function Checkout() {
       customerContact: data.contact,
       customerEmail: data.email,
       customerPincode: data.pincode,
+      customerState: data.state,
       devicePurchaseDate: data.devicePurchaseDate,
       deviceModel: data.deviceModel,
       referralCode: data.referralCode || null,
@@ -612,6 +627,36 @@ export default function Checkout() {
                         data-testid="input-pincode"
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="state"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700">
+                      State <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger 
+                          className="border-blue-200 focus:border-blue-500"
+                          data-testid="select-state"
+                        >
+                          <SelectValue placeholder="Select your state" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {INDIAN_STATES.map((stateName) => (
+                          <SelectItem key={stateName} value={stateName}>
+                            {stateName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

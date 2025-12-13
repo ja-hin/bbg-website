@@ -379,7 +379,10 @@ export class CommunicationService {
         }
       }
       
-      emailTemplate = await templateService.getTemplateByTypeEventAndDevice('email', eventType, undefined);
+      // Only look up template by event type if not already set from plan-specific template
+      if (!emailTemplate) {
+        emailTemplate = await templateService.getTemplateByTypeEventAndDevice('email', eventType, undefined);
+      }
       
       if (emailTemplate) {
         console.log('📧 Rendering email template with variables:', {

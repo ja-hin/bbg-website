@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -18,7 +18,7 @@ export function DevicePlanSelectorForm({
 }: DevicePlanSelectorFormProps) {
   const [selectedDeviceType, setSelectedDeviceType] = useState(initialDeviceType || "");
   const [selectedDeviceBrand, setSelectedDeviceBrand] = useState("");
-  const [devicePurchaseDate, setDevicePurchaseDate] = useState("");
+  const [deviceAgeSelection, setDeviceAgeSelection] = useState<"" | "1" | "2">("");
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
@@ -62,25 +62,10 @@ export function DevicePlanSelectorForm({
       });
       return;
     }
-    if (!devicePurchaseDate) {
+    if (!deviceAgeSelection) {
       toast({
-        title: "Please select purchase date",
-        description: "Device purchase date is required to find plans",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate that purchase date is not in the future
-    const selectedDate = new Date(devicePurchaseDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    selectedDate.setHours(0, 0, 0, 0);
-
-    if (selectedDate > today) {
-      toast({
-        title: "Invalid purchase date",
-        description: "Device purchase date cannot be a future date",
+        title: "Please select device age",
+        description: "Please tell us how old your device is",
         variant: "destructive",
       });
       return;
@@ -93,7 +78,7 @@ export function DevicePlanSelectorForm({
     const params = new URLSearchParams({
       type: selectedDeviceType,
       brand: selectedDeviceBrand,
-      date: devicePurchaseDate,
+      age: deviceAgeSelection,
     });
     setLocation(`/plans?${params.toString()}`);
   };
@@ -170,24 +155,53 @@ export function DevicePlanSelectorForm({
 
         <div>
           <label
-            className="block text-sm font-medium mb-2"
+            className="block text-sm font-medium mb-3"
             style={{ color: "#374151" }}
           >
-            Device Purchase Date
+            How old is your device?
           </label>
-          <input
-            type="date"
-            className="w-full px-4 py-3 border rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
-            style={{
-              borderColor: "#d1d5db",
-              backgroundColor: "#ffffff",
-              color: "#4b5563",
-            }}
-            data-testid="input-purchase-date"
-            value={devicePurchaseDate}
-            onChange={(e) => setDevicePurchaseDate(e.target.value)}
-            max={new Date().toISOString().split('T')[0]}
-          />
+          <div className="flex flex-col gap-3">
+            <label
+              className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all ${
+                deviceAgeSelection === "1"
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-gray-200 hover:border-gray-300"
+              }`}
+            >
+              <input
+                type="radio"
+                name="deviceAge"
+                value="1"
+                checked={deviceAgeSelection === "1"}
+                onChange={(e) => setDeviceAgeSelection(e.target.value as "1" | "2")}
+                className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                data-testid="radio-within-6-months"
+              />
+              <span className="text-sm sm:text-base" style={{ color: "#374151" }}>
+                Within 6 months
+              </span>
+            </label>
+            <label
+              className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all ${
+                deviceAgeSelection === "2"
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-gray-200 hover:border-gray-300"
+              }`}
+            >
+              <input
+                type="radio"
+                name="deviceAge"
+                value="2"
+                checked={deviceAgeSelection === "2"}
+                onChange={(e) => setDeviceAgeSelection(e.target.value as "1" | "2")}
+                className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                data-testid="radio-more-than-6-months"
+              />
+              <span className="text-sm sm:text-base" style={{ color: "#374151" }}>
+                More than 6 months
+              </span>
+            </label>
+          </div>
         </div>
 
         <div className="pt-2">

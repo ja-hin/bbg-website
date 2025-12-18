@@ -293,10 +293,11 @@ export class CommunicationService {
           // Continue without slabs if fetch fails
         }
 
-        // Generate HTML for claim value slabs
+        // Generate HTML for claim value slabs (limit to first 5 to avoid email being too long)
         if (claimValueSlabs.length > 0) {
-          console.log(`📋 Generating HTML for ${claimValueSlabs.length} claim value slabs`);
-          claimValueSlabsHtml = claimValueSlabs.map(slab => 
+          const displaySlabs = claimValueSlabs.slice(0, 5);
+          console.log(`📋 Generating HTML for ${displaySlabs.length} of ${claimValueSlabs.length} claim value slabs (showing top 5)`);
+          claimValueSlabsHtml = displaySlabs.map(slab => 
             `<div style="background: white; padding: 10px 15px; margin: 8px 0; border-radius: 6px; border-left: 3px solid #0277bd;">
               <span style="font-weight: bold; color: #1976d2;">${slab.minMonths}-${slab.maxMonths} months old:</span>
               <span style="color: #2e7d32; font-weight: bold; float: right;">${slab.percentage}%</span>

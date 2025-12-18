@@ -254,56 +254,65 @@ export class CommunicationService {
       const isBBGPlan = purchasedPlan?.planType === 'bbg' || customerData.planType === 'bbg';
       if (isBBGPlan && customerData.planType !== 'extend_plus') {
         try {
-          // For website device registrations, use 'regular' slabs instead of 'website'
-          // For Acer BBG and other registrations, use their respective registration sources
-          let slabRegistrationSource = customerData.registrationSource || 'regular';
-          if (customerData.registrationSource === 'website') {
-            slabRegistrationSource = 'regular'; // Website device registrations use regular claim slabs
-          }
+          const registrationSource = customerData.registrationSource || 'regular';
           
-          // Amazon BBG and Acer BBG slabs are brand-agnostic (brand = NULL)
-          // Use getActiveClaimValueSlabsByDeviceTypeAndSource instead of getClaimValueSlabsByTypeAndBrand
-          if (customerData.registrationSource === 'amazon_bbg' || customerData.registrationSource === 'acer_bbg') {
-            console.log(`📊 Fetching ${slabRegistrationSource} claim value slabs for: ${customerData.deviceType} (brand-agnostic)`);
+          // Amazon BBG and Acer BBG slabs are fetched from database (brand-agnostic) - UNCHANGED
+          if (registrationSource === 'amazon_bbg' || registrationSource === 'acer_bbg') {
+            console.log(`📊 Fetching ${registrationSource} claim value slabs for: ${customerData.deviceType} (brand-agnostic from database)`);
             claimValueSlabs = await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(
               customerData.deviceType, 
-              slabRegistrationSource
+              registrationSource
             );
-          } else {
-            // For regular/website registrations, try brand-specific first, then fall back to brand-agnostic
-            console.log(`📊 Fetching claim value slabs for: ${customerData.deviceType}/${customerData.brand}/${slabRegistrationSource}`);
-            claimValueSlabs = await storage.getClaimValueSlabsByTypeAndBrand(
-              customerData.deviceType, 
-              customerData.brand, 
-              slabRegistrationSource
-            );
+            console.log(`📊 Fetched ${claimValueSlabs.length} claim value slabs for email`);
+          } else if (registrationSource === 'regular' || registrationSource === 'website') {
+            // For regular/website BBG purchases, use FIXED hardcoded slabs (brand-agnostic for all brands)
+            console.log(`📊 Using fixed hardcoded slabs for website BBG: ${customerData.deviceType}`);
             
-            // If no brand-specific slabs found, fall back to brand-agnostic slabs
-            if (claimValueSlabs.length === 0) {
-              console.log(`📊 No brand-specific slabs found, trying brand-agnostic slabs for: ${customerData.deviceType}/${slabRegistrationSource}`);
-              claimValueSlabs = await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(
-                customerData.deviceType, 
-                slabRegistrationSource
-              );
+            if (customerData.deviceType === 'mobile') {
+              // Fixed mobile slabs for website BBG purchases (same for all brands)
+              claimValueSlabs = [
+                { minMonths: 4, maxMonths: 6, percentage: 70 },
+                { minMonths: 7, maxMonths: 9, percentage: 60 },
+                { minMonths: 10, maxMonths: 12, percentage: 50 },
+                { minMonths: 13, maxMonths: 15, percentage: 40 },
+                { minMonths: 16, maxMonths: 18, percentage: 30 }
+              ];
+            } else if (customerData.deviceType === 'laptop') {
+              // Fixed laptop slabs for website BBG purchases (same for all brands)
+              claimValueSlabs = [
+                { minMonths: 4, maxMonths: 6, percentage: 70 },
+                { minMonths: 7, maxMonths: 12, percentage: 50 },
+                { minMonths: 13, maxMonths: 18, percentage: 45 },
+                { minMonths: 19, maxMonths: 24, percentage: 40 },
+                { minMonths: 25, maxMonths: 30, percentage: 30 },
+                { minMonths: 31, maxMonths: 36, percentage: 25 }
+              ];
             }
+            console.log(`📊 Using ${claimValueSlabs.length} fixed hardcoded slabs for ${customerData.deviceType}`);
+          } else {
+            // For any other registration sources, fetch from database as fallback
+            console.log(`📊 Unknown registration source '${registrationSource}', fetching from database`);
+            claimValueSlabs = await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(
+              customerData.deviceType, 
+              registrationSource
+            );
+            console.log(`📊 Fetched ${claimValueSlabs.length} claim value slabs for email`);
           }
-          console.log(`📊 Fetched ${claimValueSlabs.length} claim value slabs for email`);
         } catch (error) {
           console.error('❌ Error fetching claim value slabs for email:', error);
           // Continue without slabs if fetch fails
         }
 
-        // Generate HTML for claim value slabs (limit to first 5 to avoid email being too long)
+        // Generate HTML for claim value slabs
         if (claimValueSlabs.length > 0) {
-          const displaySlabs = claimValueSlabs.slice(0, 5);
-          console.log(`📋 Generating HTML for ${displaySlabs.length} of ${claimValueSlabs.length} claim value slabs (showing top 5)`);
-          claimValueSlabsHtml = displaySlabs.map(slab => 
+          console.log(`📋 Generating HTML for ${claimValueSlabs.length} claim value slabs`);
+          claimValueSlabsHtml = claimValueSlabs.map(slab => 
             `<div style="background: white; padding: 10px 15px; margin: 8px 0; border-radius: 6px; border-left: 3px solid #0277bd;">
               <span style="font-weight: bold; color: #1976d2;">${slab.minMonths}-${slab.maxMonths} months old:</span>
               <span style="color: #2e7d32; font-weight: bold; float: right;">${slab.percentage}%</span>
             </div>`
           ).join('');
-          console.log(`📋 Generated claimValueSlabsHtml (${claimValueSlabsHtml.length} chars):`, claimValueSlabsHtml.substring(0, 200) + '...');
+          console.log(`📋 Generated claimValueSlabsHtml (${claimValueSlabsHtml.length} chars)`);
         } else {
           console.log('📋 No claim value slabs found, using fallback message');
           claimValueSlabsHtml = '<div style="background: white; padding: 15px; border-radius: 6px; text-align: center; color: #666;">Claim value slabs will be available based on your device specifications.</div>';

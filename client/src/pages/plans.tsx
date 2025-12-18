@@ -380,7 +380,7 @@ export default function Plans() {
                     style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
                   >
                     <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">
-                      Mobile BBG
+                      Mobile BuyBack Guarantee
                     </h3>
                     <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
                       {pricesLoading ? (

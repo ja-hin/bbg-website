@@ -112,7 +112,7 @@ class InvoiceService {
   private createPdfBuffer(data: InvoiceData, invoiceNumber: string): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       try {
-        const doc = new PDFDocument({ margin: 40, size: "A4" });
+        const doc = new PDFDocument({ margin: 30, size: "A4" });
         const chunks: Buffer[] = [];
 
         doc.on("data", (chunk: Buffer) => chunks.push(chunk));
@@ -124,273 +124,324 @@ class InvoiceService {
         const baseAmount = data.amount - gstAmount;
         const hsnCode = data.hsnCode || "998413";
 
-        // Header - XtraCover
-        doc
-          .fontSize(18)
-          .fillColor("#254696")
-          .text("XTRACOVER", 40, 40);
+        // Main box background
+        doc.rect(30, 30, 555, 750).fill("#f9f9f9");
 
-        // Company details
+        let currentY = 50;
+
+        // Header Section - XTRACOVER
+        doc
+          .fontSize(16)
+          .fillColor("#254696")
+          .text("XTRACOVER", 50, currentY);
+
+        currentY += 20;
+
+        // Company Details
+        doc
+          .fontSize(8.5)
+          .fillColor("#333")
+          .text("Xtracover Technologies Pvt Ltd (Delhi)", 50, currentY)
+          .fontSize(7.5)
+          .fillColor("#666")
+          .text("Near U-Lehi Chowk, 3rd Floor, A1, FIEE Complex, Okhla Estste Phase-2", 50, currentY + 10)
+          .text("New Delhi-110020", 50, currentY + 17)
+          .text("GSTIN/UIN: 07A8BCD2012D1ZM | CIN: U74999DL2016PTC302763", 50, currentY + 24)
+          .text("Email: complaints@xtracover.com | Phone: +91-8882136586", 50, currentY + 31);
+
+        // Invoice Details Box on right
+        doc
+          .rect(380, currentY, 185, 65)
+          .fill("#f0f0f0");
+
         doc
           .fontSize(9)
           .fillColor("#333")
-          .text("Xtracover Technologies Pvt Ltd (Delhi)", 40, 62)
+          .text("Invoice Details", 390, currentY + 5, { width: 175, align: "center" });
+
+        doc
           .fontSize(8)
           .fillColor("#666")
-          .text("Near U-Lehi Chowk, 3rd Floor, A1, FIEE Complex, Okhla Estste Phase-2", 40, 74)
-          .text("New Delhi-110020", 40, 82)
-          .text("GSTIN/UIN: 07A8BCD2012D1ZM | CIN: U74999DL2016PTC302763", 40, 90)
-          .text("Email: complaints@xtracover.com | Phone: +91-8882136586", 40, 98);
-
-        // Invoice Details Box (right side)
-        const invoiceDetailsX = 320;
-        doc
-          .fontSize(11)
+          .text("Invoice No.", 390, currentY + 20)
           .fillColor("#333")
-          .text("Invoice Details", invoiceDetailsX, 45);
+          .text(invoiceNumber, 470, currentY + 20);
 
         doc
-          .fontSize(9)
+          .fontSize(8)
           .fillColor("#666")
-          .text("Invoice No.", invoiceDetailsX, 65)
-          .fontSize(9)
+          .text("Date:", 390, currentY + 30)
           .fillColor("#333")
-          .text(invoiceNumber, invoiceDetailsX + 120, 65);
+          .text(this.formatDate(data.paymentDate), 470, currentY + 30);
 
         doc
-          .fontSize(9)
+          .fontSize(8)
           .fillColor("#666")
-          .text("Date:", invoiceDetailsX, 82)
-          .fontSize(9)
+          .text("Ref No:", 390, currentY + 40)
           .fillColor("#333")
-          .text(this.formatDate(data.paymentDate), invoiceDetailsX + 120, 82);
-
-        doc
-          .fontSize(9)
-          .fillColor("#666")
-          .text("Ref No:", invoiceDetailsX, 99)
-          .fontSize(9)
-          .fillColor("#333")
-          .text(data.transactionId, invoiceDetailsX + 120, 99);
+          .text(data.transactionId, 470, currentY + 40);
 
         // Online Payment Badge
         doc
-          .rect(invoiceDetailsX, 118, 155, 22)
+          .rect(380, currentY + 50, 185, 18)
           .fill("#254696");
         doc
-          .fontSize(9)
+          .fontSize(8)
           .fillColor("#fff")
-          .text("Online Payment", invoiceDetailsX + 8, 123, { width: 140, align: "center" });
+          .text("Online Payment", 390, currentY + 54, { width: 165, align: "center" });
+
+        currentY += 85;
 
         // Customer Information Section
         doc
-          .fontSize(10)
-          .fillColor("#333")
-          .text("Customer Information", 40, 175);
-
-        doc
           .fontSize(9)
-          .fillColor("#666")
-          .text("Name:", 40, 195)
           .fillColor("#333")
-          .text(data.customerName, 110, 195);
+          .text("Customer Information", 50, currentY);
+
+        currentY += 20;
+
+        // Customer Info Box
+        doc
+          .rect(50, currentY, 515, 60)
+          .stroke("#ddd");
+
+        // Left column
+        doc
+          .fontSize(8)
+          .fillColor("#666")
+          .text("Name:", 60, currentY + 5)
+          .fillColor("#333")
+          .text(data.customerName, 110, currentY + 5);
 
         doc
-          .fontSize(9)
+          .fontSize(8)
           .fillColor("#666")
-          .text("Email:", 40, 210)
+          .text("Email:", 60, currentY + 18)
           .fillColor("#333")
-          .text(data.customerEmail, 110, 210);
+          .text(data.customerEmail, 110, currentY + 18);
 
         doc
-          .fontSize(9)
+          .fontSize(8)
           .fillColor("#666")
-          .text("State:", 40, 225)
+          .text("State:", 60, currentY + 31)
           .fillColor("#333")
-          .text(data.customerState || "—", 110, 225);
+          .text(data.customerState || "—", 110, currentY + 31);
 
         doc
-          .fontSize(9)
+          .fontSize(8)
           .fillColor("#666")
-          .text("Phone:", 320, 195)
+          .text("Pincode:", 60, currentY + 44)
           .fillColor("#333")
-          .text(data.customerContact, 380, 195);
+          .text(data.customerPincode || "—", 110, currentY + 44);
+
+        // Right column
+        doc
+          .fontSize(8)
+          .fillColor("#666")
+          .text("Phone:", 340, currentY + 5)
+          .fillColor("#333")
+          .text(data.customerContact, 400, currentY + 5);
 
         doc
-          .fontSize(9)
+          .fontSize(8)
           .fillColor("#666")
-          .text("Pincode:", 320, 210)
+          .text("Pincode:", 340, currentY + 18)
           .fillColor("#333")
-          .text(data.customerPincode || "—", 380, 210);
+          .text(data.customerPincode || "—", 400, currentY + 18);
 
         doc
-          .fontSize(9)
+          .fontSize(8)
           .fillColor("#666")
-          .text("State", 320, 225)
+          .text("State", 340, currentY + 31)
           .fillColor("#333")
-          .text("—", 380, 225);
+          .text("—", 400, currentY + 31);
 
-        // Table Header
-        const tableTop = 260;
-        const columnPositions = { siNo: 40, desc: 80, hsn: 320, qty: 380, rate: 430, amount: 490 };
+        currentY += 75;
 
+        // Items Table
+        const tableHeaderY = currentY;
         doc
-          .rect(40, tableTop, 515, 22)
+          .rect(50, tableHeaderY, 515, 22)
           .fill("#1a3f5c");
 
-        const headerY = tableTop + 6;
         doc
-          .fontSize(9)
-          .fillColor("#fff")
-          .text("Sl No:", columnPositions.siNo, headerY)
-          .text("Description of Goods", columnPositions.desc, headerY)
-          .text("HSN/SAC", columnPositions.hsn, headerY)
-          .text("Quantity", columnPositions.qty, headerY)
-          .text("Rate", columnPositions.rate, headerY)
-          .text("Amount", columnPositions.amount, headerY);
-
-        // Table Row 1 - Plan Item
-        const row1Y = tableTop + 30;
-        doc
-          .fontSize(9)
-          .fillColor("#333")
-          .text("1", columnPositions.siNo, row1Y)
-          .text(data.planName, columnPositions.desc, row1Y)
           .fontSize(8)
-          .fillColor("#666")
-          .text(`${data.planType.toUpperCase()} ${hsnCode}`, columnPositions.desc, row1Y + 12)
-          .fontSize(9)
-          .fillColor("#333")
-          .text(hsnCode, columnPositions.hsn, row1Y)
-          .text("1 pcs", columnPositions.qty, row1Y)
-          .text(`₹${baseAmount.toFixed(2)}`, columnPositions.rate, row1Y, { align: "right" })
-          .text(`₹${baseAmount.toFixed(2)}`, columnPositions.amount, row1Y, { align: "right" });
+          .fillColor("#fff")
+          .text("Sl No:", 60, tableHeaderY + 6)
+          .text("Description of Goods", 95, tableHeaderY + 6)
+          .text("HSN/SAC", 330, tableHeaderY + 6)
+          .text("Quantity", 390, tableHeaderY + 6)
+          .text("Rate", 450, tableHeaderY + 6)
+          .text("Amount", 505, tableHeaderY + 6, { align: "right" });
 
-        // Table Row 2 - IGST
-        const row2Y = row1Y + 30;
+        // Item Row 1
+        const itemRow1Y = tableHeaderY + 25;
+        doc
+          .rect(50, itemRow1Y, 515, 35)
+          .stroke("#ddd");
+
+        doc
+          .fontSize(8)
+          .fillColor("#333")
+          .text("1", 60, itemRow1Y + 3)
+          .fontSize(8)
+          .text(`${data.planName}`, 95, itemRow1Y + 3)
+          .fontSize(7)
+          .fillColor("#666")
+          .text(`${data.planType.toUpperCase()} ${hsnCode}`, 95, itemRow1Y + 12);
+
+        doc
+          .fontSize(8)
+          .fillColor("#333")
+          .text(hsnCode, 330, itemRow1Y + 3)
+          .text("1 pcs", 390, itemRow1Y + 3)
+          .text(`₹${baseAmount.toFixed(2)}`, 450, itemRow1Y + 3, { align: "right" })
+          .text(`₹${baseAmount.toFixed(2)}`, 520, itemRow1Y + 3, { align: "right" });
+
+        // IGST Row
+        const igstRowY = itemRow1Y + 38;
+        doc
+          .rect(50, igstRowY, 515, 20)
+          .stroke("#ddd");
+
+        doc
+          .fontSize(8)
+          .fillColor("#333")
+          .text("IGST", 95, igstRowY + 4)
+          .text(`${gstRate}%`, 450, igstRowY + 4, { align: "right" })
+          .text(`₹${gstAmount.toFixed(2)}`, 520, igstRowY + 4, { align: "right" });
+
+        // Round off Row
+        const roundOffRowY = igstRowY + 22;
+        doc
+          .rect(50, roundOffRowY, 515, 20)
+          .stroke("#ddd");
+
+        doc
+          .fontSize(8)
+          .fillColor("#333")
+          .text("Round off", 95, roundOffRowY + 4)
+          .text("- 0.01", 520, roundOffRowY + 4, { align: "right" });
+
+        // Total Amount Chargeable
+        const totalRowY = roundOffRowY + 22;
+        doc
+          .rect(50, totalRowY, 515, 25)
+          .fill("#f9f9f9")
+          .stroke("#333");
+
         doc
           .fontSize(9)
-          .fillColor("#666")
-          .text("IGST", columnPositions.desc, row2Y)
-          .fontSize(9)
           .fillColor("#333")
-          .text(`${gstRate}%`, columnPositions.rate, row2Y, { align: "right" })
-          .text(`₹${gstAmount.toFixed(2)}`, columnPositions.amount, row2Y, { align: "right" });
+          .text("Total Amount Chargeable", 300, totalRowY + 5, { align: "right" })
+          .text("1 pcs", 390, totalRowY + 5)
+          .fontSize(10)
+          .fillColor("#254696")
+          .text(`₹${data.amount.toFixed(2)}`, 520, totalRowY + 5, { align: "right" });
 
-        // Table Row 3 - Round off (if needed)
-        const row3Y = row2Y + 18;
+        // Amount in words
+        currentY = totalRowY + 30;
         doc
-          .fontSize(9)
-          .fillColor("#666")
-          .text("Round off", columnPositions.desc, row3Y)
+          .fontSize(8)
           .fillColor("#333")
-          .text("- 0.01", columnPositions.amount, row3Y, { align: "right" });
+          .text(`INR ${this.numberToWords(Math.floor(data.amount))}`, 60, currentY);
 
-        // Total section
-        const totalBoxY = row3Y + 25;
+        currentY += 20;
+
+        // Tax Details Table
+        const taxTableHeaderY = currentY;
+        doc
+          .rect(50, taxTableHeaderY, 515, 18)
+          .fill("#f0f0f0")
+          .stroke("#ddd");
+
+        doc
+          .fontSize(7.5)
+          .fillColor("#333")
+          .text("HSN/SAC", 60, taxTableHeaderY + 4)
+          .text("Taxable Value", 120, taxTableHeaderY + 4)
+          .text("IGST", 210, taxTableHeaderY + 4)
+          .text("Rate", 280, taxTableHeaderY + 4)
+          .text("Tax Total", 330, taxTableHeaderY + 4)
+          .text("Amount", 505, taxTableHeaderY + 4, { align: "right" });
+
+        const taxRow1Y = taxTableHeaderY + 20;
+        doc
+          .rect(50, taxRow1Y, 515, 18)
+          .stroke("#ddd");
+
+        doc
+          .fontSize(7.5)
+          .fillColor("#333")
+          .text(hsnCode, 60, taxRow1Y + 4)
+          .text(`₹${baseAmount.toFixed(2)}`, 120, taxRow1Y + 4)
+          .text(hsnCode, 210, taxRow1Y + 4)
+          .text(`${gstRate}%`, 280, taxRow1Y + 4)
+          .text(`₹${gstAmount.toFixed(2)}`, 330, taxRow1Y + 4)
+          .text(`₹${baseAmount.toFixed(2)}`, 505, taxRow1Y + 4, { align: "right" });
+
+        const taxRow2Y = taxRow1Y + 20;
+        doc
+          .rect(50, taxRow2Y, 515, 18)
+          .stroke("#ddd");
+
+        doc
+          .fontSize(7.5)
+          .fillColor("#333")
+          .text("Total", 280, taxRow2Y + 4)
+          .text(`- ${gstAmount.toFixed(2)}`, 330, taxRow2Y + 4)
+          .text(`₹${data.amount.toFixed(2)}`, 505, taxRow2Y + 4, { align: "right" });
+
+        // Tax amount in words
+        currentY = taxRow2Y + 22;
+        doc
+          .fontSize(8)
+          .fillColor("#333")
+          .text(`Tax Amount in words: INR ${this.numberToWords(Math.floor(data.amount))} Only`, 60, currentY);
+
+        // Declaration Section
+        currentY += 25;
         doc
           .fontSize(10)
           .fillColor("#333")
-          .text("Total Amount Chargeable", 280, totalBoxY, { align: "right" })
-          .text("1 pcs", columnPositions.qty, totalBoxY)
-          .fontSize(11)
-          .fillColor("#254696")
-          .text(`₹${data.amount.toFixed(2)}`, columnPositions.amount, totalBoxY, { align: "right" });
+          .text("Declaration", 60, currentY);
 
-        // Amount in words
-        doc
-          .fontSize(9)
-          .fillColor("#333")
-          .text(`INR ${this.numberToWords(Math.floor(data.amount))}`, 40, totalBoxY + 22);
-
-        // Tax Details Table
-        const taxTableY = totalBoxY + 50;
-        doc
-          .fontSize(9)
-          .fillColor("#333")
-          .text("HSN/SAC", 40, taxTableY)
-          .text("Taxable Value", 110, taxTableY)
-          .text("IGST", 210, taxTableY)
-          .text("Rate", 280, taxTableY)
-          .text("Tax Total", 340, taxTableY)
-          .text("Amount", 420, taxTableY);
-
-        const taxRow1Y = taxTableY + 18;
-        doc
-          .fontSize(9)
-          .text(hsnCode, 40, taxRow1Y)
-          .text(`₹${baseAmount.toFixed(2)}`, 110, taxRow1Y)
-          .text(hsnCode, 210, taxRow1Y)
-          .text(`${gstRate}%`, 280, taxRow1Y)
-          .text(`₹${gstAmount.toFixed(2)}`, 340, taxRow1Y)
-          .text(`₹${baseAmount.toFixed(2)}`, 420, taxRow1Y);
-
-        const taxRow2Y = taxRow1Y + 18;
-        doc
-          .fontSize(9)
-          .fillColor("#333")
-          .text("Total", 280, taxRow2Y, { align: "right" })
-          .text(`- ${gstAmount.toFixed(2)}`, 340, taxRow2Y, { align: "right" })
-          .text(`₹${data.amount.toFixed(2)}`, 420, taxRow2Y, { align: "right" });
-
-        // Tax amount in words
-        doc
-          .fontSize(9)
-          .fillColor("#333")
-          .text(`Tax Amount in words: INR ${this.numberToWords(Math.floor(data.amount))} Only`, 40, taxRow2Y + 25);
-
-        // Declaration Section
-        const declarationY = taxRow2Y + 45;
-        doc
-          .fontSize(11)
-          .fillColor("#333")
-          .text("Declaration", 40, declarationY);
+        currentY += 15;
 
         doc
-          .fontSize(8)
+          .fontSize(7)
           .fillColor("#666")
-          .text("• BBG obligations arising for the original device registered with a valid BBG contract, expires, ZONE conditions, procedure applicable only for XtraCover plans with a registered plan holder from an authorized channel as allowed in the coupon as mentioned in terms.", 40, declarationY + 18, { width: 515, align: "left" })
-          .text("• XtraCover cannot guarantee coverage under all circumstances. Coverage exclusions apply as per the plan terms.", 40, declarationY + 50, { width: 515, align: "left" })
-          .text("• This invoice's liabilities are distinctionary any liability for data loss, misplacement, data corruption, unforeseenushalities, hardware defects/damage out of manual interference, software issues or damaged due to mishandled unintended use.  Please read the complete insurance contract for full details.", 40, declarationY + 75, { width: 515, align: "left" });
+          .text("• BBG obligations arising for the original device registered with a valid BBG contract, expires, ZONE conditions, procedure applicable only for XtraCover plans with a registered plan holder from an authorized channel as allowed in the coupon as mentioned in terms.", 60, currentY, { width: 495, align: "left" })
+          .text("• This invoice's liabilities are distinctionary any liability for data loss, misplacement, data corruption, unforeseenushalities, hardware defects/damage out of manual interference, software issues or damaged due to mishandled unintended use. Please read the complete insurance contract for full details.", 60, currentY + 25, { width: 495, align: "left" });
 
         // Footer - Company Details
-        const footerY = declarationY + 120;
-        doc
-          .fontSize(9)
-          .fillColor("#333")
-          .text("Xtracover Technologies Pvt Ltd", 40, footerY)
-          .fontSize(8)
-          .fillColor("#666")
-          .text("Near U Lehi Chowk, 3rd Floor, A1, FIEE Complex, Estste Phase-2", 40, footerY + 12)
-          .text("New Delhi-110020", 40, footerY + 20)
-          .text("Email: complaints@xtracover.com", 40, footerY + 28)
-          .text("Phone: +91-8882136586", 40, footerY + 36);
-
-        // Bank Details (right side of footer)
-        doc
-          .fontSize(9)
-          .fillColor("#333")
-          .text("Bank for Ept: EFT:", 320, footerY);
-
+        currentY = 740;
         doc
           .fontSize(8)
-          .fillColor("#666")
-          .text("IFSC:", 320, footerY + 12)
           .fillColor("#333")
-          .text("UBIND9819579", 380, footerY + 12);
+          .text("Xtracover Technologies Pvt Ltd", 60, currentY)
+          .fontSize(7)
+          .fillColor("#666")
+          .text("Near U Lehi Chowk, 3rd Floor, A1, FIEE Complex, Estste Phase-2", 60, currentY + 10)
+          .text("New Delhi-110020", 60, currentY + 18)
+          .text("Email: complaints@xtracover.com | Phone: +91-8882136586", 60, currentY + 26);
 
+        // Bank Details
         doc
           .fontSize(8)
-          .fillColor("#666")
-          .text("A/C No:", 320, footerY + 20)
           .fillColor("#333")
-          .text("04114783291076", 380, footerY + 20);
+          .text("Bank for Ept: EFT:", 360, currentY);
+
+        doc
+          .fontSize(7)
+          .fillColor("#666")
+          .text("IFSC: UBIND9819579", 360, currentY + 8)
+          .text("A/C No: 04114783291076", 360, currentY + 16);
 
         // Computer Generated Note
         doc
-          .fontSize(8)
+          .fontSize(7)
           .fillColor("#999")
-          .text("This is a Computer Generated Invoice", 40, footerY + 50);
+          .text("This is a Computer Generated Invoice", 50, 775, { align: "center", width: 515 });
 
         doc.end();
       } catch (error) {

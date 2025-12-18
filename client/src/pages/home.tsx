@@ -74,13 +74,6 @@ export default function Home() {
     enabled: carouselLoaded,
   });
 
-  // Fetch "Who can use these plans?" banner - DEFERRED until carousel loads
-  const { data: whoCanUseBanner } = useQuery({
-    queryKey: ["/api/homepage-banners/by-title/Who can use these plans"],
-    retry: false,
-    staleTime: 600000,
-    enabled: carouselLoaded,
-  });
 
   // Fetch plans for dynamic pricing - DEFERRED until carousel loads (with fallback timeout)
   const { data: allPlans = [], isLoading: pricesLoading } = useQuery({
@@ -976,125 +969,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Who Can Use These Plans Banner Section */}
-      <section className="bg-white pt-4">
-        {whoCanUseBanner ? (
-          <>
-            {/* Desktop Image */}
-            <img
-              src={whoCanUseBanner.desktopImageUrl}
-              alt={whoCanUseBanner.title || "Who can use these plans"}
-              className="w-full h-auto hidden md:block"
-              data-testid="image-who-can-use-desktop"
-              onClick={() => whoCanUseBanner.linkUrl && (window.location.href = whoCanUseBanner.linkUrl)}
-              style={{ cursor: whoCanUseBanner.linkUrl ? 'pointer' : 'default' }}
-            />
-            {/* Mobile Image */}
-            <img
-              src={whoCanUseBanner.mobileImageUrl}
-              alt={whoCanUseBanner.title || "Who can use these plans"}
-              className="w-full h-auto md:hidden"
-              data-testid="image-who-can-use-mobile"
-              onClick={() => whoCanUseBanner.linkUrl && (window.location.href = whoCanUseBanner.linkUrl)}
-              style={{ cursor: whoCanUseBanner.linkUrl ? 'pointer' : 'default' }}
-            />
-          </>
-        ) : (
-          <img
-            src={bannerImg}
-            alt="Woman with laptop"
-            className="w-full h-auto"
-            data-testid="image-who-can-use"
-          />
-        )}
-      </section>
-      {/* Eligibility Requirements Section */}
-      <section className="bg-white py-8 sm:py-12 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Two Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
-            {/* BBG Column */}
-            <div 
-              className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12"
-              style={{ backgroundImage: "linear-gradient(to top, #123675 0%, #306FC0 100%)" }}
-            >
-              <h3 className="text-white font-bold text-lg sm:text-2xl lg:text-3xl mb-4 sm:mb-6 text-center">Buy Back Guarantee</h3>
-              <ul className="space-y-2 sm:space-y-3 lg:space-y-4">
-                <li className="flex items-start gap-2 sm:gap-3">
-                  <span className="text-white font-bold text-base sm:text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-xs sm:text-sm lg:text-base">Only for brand-new mobiles and laptops.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">Must be purchased from an authorised retailer or marketplace.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">Registration must match the original buyer's name and government ID.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">Device should be fully functional with no major damage.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">IMEI/serial must match the registered details.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">Original invoice, box, and basic accessories required.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">Device must be factory-reset before pickup.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">BBG is not transferable or refundable.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">Assured value is given only during an upgrade or purchase, not as cash.</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Extend+ Column */}
-            <div 
-              className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12"
-              style={{ backgroundImage: "linear-gradient(to top, #123675 0%, #306FC0 100%)" }}
-            >
-              <h3 className="text-white font-bold text-lg sm:text-2xl lg:text-3xl mb-4 sm:mb-6 text-center">Extend+</h3>
-              <ul className="space-y-2 sm:space-y-3 lg:space-y-4">
-                <li className="flex items-start gap-2 sm:gap-3">
-                  <span className="text-white font-bold text-base sm:text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-xs sm:text-sm lg:text-base">Device can be up to 3 years old with a valid invoice.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">Device must not be stolen, blocked, or flagged.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">Free repair covers service charges; parts may be chargeable.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">Auction support applies only if the device passes quality checks.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">Final offer depends on live bids and actual device condition.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-white font-bold text-lg flex-shrink-0">•</span>
-                  <span className="text-white text-sm sm:text-base">Plan remains in the registered user's name and cannot be transferred.</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
       {/* What happens when you raise a request Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

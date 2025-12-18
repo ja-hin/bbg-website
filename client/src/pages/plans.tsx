@@ -199,7 +199,7 @@ export default function Plans() {
           </div>
 
           {/* Benefit Strip */}
-          <div className="mt-4 mb-6 flex flex-wrap items-center justify-center gap-6 sm:gap-10">
+          <div className="mt-4 mb-1 flex flex-wrap items-center justify-center gap-6 sm:gap-10">
             <div className="flex flex-col items-center text-center w-20 sm:w-24">
               <ShieldCheck className="w-10 h-10 sm:w-12 sm:h-12 text-[#254696] mb-2" />
               <span className="text-xs sm:text-sm text-gray-700 font-medium">
@@ -228,7 +228,46 @@ export default function Plans() {
         </div>
       </section>
 
+      <div className="text-center bg-white/90 rounded-lg p-3 shadow-sm">
+        <p className="text-sm sm:text-base text-gray-700">
+          Also available on our partner stores{" "}
+          {showingMobile ? (
+            <>
+              <a
+                href="https://www.amazon.in/Xtracover-Months-BuyBack-Guarantee-Delivery/dp/B0FW4L6NBY/ref=sr_1_2?crid=24QTJT6QA2W5W&dib=eyJ2IjoiMSJ9.a8P_SgtRFczb5F_6aAebivaon7zytbpphnxB2aC1TzM.quPafkCUjmfxo0ma9hp3S3sxdpQxQjVgaytnwgirQNc&dib_tag=se&keywords=xtracover+buyback+guarantee&qid=1765616560&s=electronics&sprefix=xtracover+buyback+guarantee%2Celectronics%2C213&sr=1-2-catcorr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#254696] font-semibold underline hover:text-[#1a3366]"
+              >
+                Amazon
+              </a>
+            </>
+          ) : (
+            <>
+              <a
+                href="https://www.amazon.in/Xtracover-BuyBack-Guarantee-Laptop-Delivery/dp/B0FW4JTYV7/ref=sr_1_1?crid=24QTJT6QA2W5W&dib=eyJ2IjoiMSJ9.a8P_SgtRFczb5F_6aAebivaon7zytbpphnxB2aC1TzM.quPafkCUjmfxo0ma9hp3S3sxdpQxQjVgaytnwgirQNc&dib_tag=se&keywords=xtracover+buyback+guarantee&qid=1765616560&s=electronics&sprefix=xtracover+buyback+guarantee%2Celectronics%2C213&sr=1-1-catcorr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#254696] font-semibold underline hover:text-[#1a3366]"
+              >
+                Amazon
+              </a>
+            </>
+          )}{" "}
+          and{" "}
+          <a
+            href="https://store.acer.com/en-in/buybackpolicy-offer-terms-conditions-in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#254696] font-semibold underline hover:text-[#1a3366]"
+          >
+            Acer
+          </a>{" "}
+        </p>
+      </div>
+
       <section className="py-4 sm:py-6 lg:py-8 relative overflow-hidden">
+        
         <img
           src={pricingCardBackground}
           alt="Background pattern"
@@ -236,44 +275,7 @@ export default function Plans() {
         />
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Amazon and Acer purchase links */}
-          <div className="text-center mb-6 bg-white/90 rounded-lg p-3 shadow-sm">
-            <p className="text-sm sm:text-base text-gray-700">
-              Also available on our partner stores{" "}
-              {showingMobile ? (
-                <>
-                  <a
-                    href="https://www.amazon.in/Xtracover-Months-BuyBack-Guarantee-Delivery/dp/B0FW4L6NBY/ref=sr_1_2?crid=24QTJT6QA2W5W&dib=eyJ2IjoiMSJ9.a8P_SgtRFczb5F_6aAebivaon7zytbpphnxB2aC1TzM.quPafkCUjmfxo0ma9hp3S3sxdpQxQjVgaytnwgirQNc&dib_tag=se&keywords=xtracover+buyback+guarantee&qid=1765616560&s=electronics&sprefix=xtracover+buyback+guarantee%2Celectronics%2C213&sr=1-2-catcorr"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#254696] font-semibold underline hover:text-[#1a3366]"
-                  >
-                    mobile
-                  </a>
-                </>
-              ) : (
-                <>
-                  <a
-                    href="https://www.amazon.in/Xtracover-BuyBack-Guarantee-Laptop-Delivery/dp/B0FW4JTYV7/ref=sr_1_1?crid=24QTJT6QA2W5W&dib=eyJ2IjoiMSJ9.a8P_SgtRFczb5F_6aAebivaon7zytbpphnxB2aC1TzM.quPafkCUjmfxo0ma9hp3S3sxdpQxQjVgaytnwgirQNc&dib_tag=se&keywords=xtracover+buyback+guarantee&qid=1765616560&s=electronics&sprefix=xtracover+buyback+guarantee%2Celectronics%2C213&sr=1-1-catcorr"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#254696] font-semibold underline hover:text-[#1a3366]"
-                  >
-                    laptop
-                  </a>
-                </>
-              )}{" "}
-              and{" "}
-              <a
-                href="https://store.acer.com/en-in/buybackpolicy-offer-terms-conditions-in"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#254696] font-semibold underline hover:text-[#1a3366]"
-              >
-                Acer
-              </a>{" "}
-              plans from Amazon.
-            </p>
-          </div>
+          
 
           <div className="grid gap-8 lg:gap-12 items-stretch [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
             {showLaptopBBG && (

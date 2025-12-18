@@ -270,12 +270,22 @@ export class CommunicationService {
               slabRegistrationSource
             );
           } else {
+            // For regular/website registrations, try brand-specific first, then fall back to brand-agnostic
             console.log(`📊 Fetching claim value slabs for: ${customerData.deviceType}/${customerData.brand}/${slabRegistrationSource}`);
             claimValueSlabs = await storage.getClaimValueSlabsByTypeAndBrand(
               customerData.deviceType, 
               customerData.brand, 
               slabRegistrationSource
             );
+            
+            // If no brand-specific slabs found, fall back to brand-agnostic slabs
+            if (claimValueSlabs.length === 0) {
+              console.log(`📊 No brand-specific slabs found, trying brand-agnostic slabs for: ${customerData.deviceType}/${slabRegistrationSource}`);
+              claimValueSlabs = await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(
+                customerData.deviceType, 
+                slabRegistrationSource
+              );
+            }
           }
           console.log(`📊 Fetched ${claimValueSlabs.length} claim value slabs for email`);
         } catch (error) {

@@ -915,29 +915,18 @@ export default function Home() {
             </h3>
           </div>
 
-          {/* Step rows (this is what fixes alignment) */}
-          <div className="mt-4 sm:mt-6 grid gap-3 sm:gap-4">
-            {[
-              {
-                left: { step: "1. Buy BBG", text: "Activate BBG within 6 months of purchasing your mobile or laptop." },
-                right: { step: "1. Buy Extend+", text: "Choose Extend+ for your mobile or laptop up to 3 years old." },
-              },
-              {
-                left: { step: "2. Register device", text: "Enter voucher code, IMEI or serial number, and upload your invoice on the BBG portal." },
-                right: { step: "2. Register device", text: "Upload device details, invoice, and ID proof on the portal to activate coverage." },
-              },
-              {
-                left: { step: "3. Usage", text: "Keep the device functional and retain the box and basic accessories." },
-                right: { step: "3. Use free repair", text: "Book a visit when needed and get service charges waived as per the plan." },
-              },
-              {
-                left: { step: "4. Raise claim", text: "When upgrading, log in, request a claim, complete doorstep QC, and receive your assured value." },
-                right: { step: "4. Use auction support", text: "Request doorstep auction help and secure a 10-20% better resale price." },
-              },
-            ].map((row, index) => (
-              <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
-                {/* Left card */}
+          {/* Step rows - restructured for mobile layout */}
+          <div className="mt-4 sm:mt-6 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            {/* BBG Column */}
+            <div className="grid gap-3 sm:gap-4">
+              {[
+                { step: "1. Buy BBG", text: "Activate BBG within 6 months of purchasing your mobile or laptop." },
+                { step: "2. Register device", text: "Enter voucher code, IMEI or serial number, and upload your invoice on the BBG portal." },
+                { step: "3. Usage", text: "Keep the device functional and retain the box and basic accessories." },
+                { step: "4. Raise claim", text: "When upgrading, log in, request a claim, complete doorstep QC, and receive your assured value." },
+              ].map((item, index) => (
                 <div
+                  key={`bbg-${index}`}
                   className="p-4 sm:p-5 rounded-xl h-full flex flex-col justify-center"
                   style={{
                     backgroundColor: "#fff",
@@ -946,25 +935,35 @@ export default function Home() {
                   }}
                 >
                   <p className="text-sm sm:text-base text-gray-800">
-                    <span className="font-bold text-gray-900">{row.left.step}</span>
+                    <span className="font-bold text-gray-900">{item.step}</span>
                     <br />
-                    <span className="text-gray-600">{row.left.text}</span>
+                    <span className="text-gray-600">{item.text}</span>
                   </p>
                 </div>
+              ))}
+            </div>
 
-                {/* Right card */}
+            {/* Extend+ Column */}
+            <div className="grid gap-3 sm:gap-4">
+              {[
+                { step: "1. Buy Extend+", text: "Choose Extend+ for your mobile or laptop up to 3 years old." },
+                { step: "2. Register device", text: "Upload device details, invoice, and ID proof on the portal to activate coverage." },
+                { step: "3. Use free repair", text: "Book a visit when needed and get service charges waived as per the plan." },
+                { step: "4. Use auction support", text: "Request doorstep auction help and secure a 10-20% better resale price." },
+              ].map((item, index) => (
                 <div
+                  key={`extend-${index}`}
                   className="p-4 sm:p-5 rounded-xl h-full flex flex-col justify-center"
                   style={{ backgroundColor: "#254696" }}
                 >
                   <p className="text-sm sm:text-base text-white">
-                    <span className="font-bold">{row.right.step}</span>
+                    <span className="font-bold">{item.step}</span>
                     <br />
-                    <span className="text-white/90">{row.right.text}</span>
+                    <span className="text-white/90">{item.text}</span>
                   </p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>

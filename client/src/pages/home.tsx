@@ -891,9 +891,9 @@ export default function Home() {
       <section className="bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Step rows - restructured for mobile layout with headings */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
             {/* BBG Column */}
-            <div>
+            <div className="flex flex-col h-full">
               <h3
                 className="text-center font-black mb-4 sm:mb-6"
                 style={{
@@ -904,7 +904,7 @@ export default function Home() {
               >
                 BUY BACK GUARANTEE
               </h3>
-              <div className="grid gap-3 sm:gap-4">
+              <div className="grid gap-3 sm:gap-4 items-stretch flex-1">
                 {[
                   { step: "1. Buy BBG", text: "Activate BBG within 6 months of purchasing your mobile or laptop." },
                   { step: "2. Register device", text: "Enter voucher code, IMEI or serial number, and upload your invoice on the BBG portal." },
@@ -913,7 +913,7 @@ export default function Home() {
                 ].map((item, index) => (
                   <div
                     key={`bbg-${index}`}
-                    className="p-4 sm:p-5 rounded-xl h-full flex flex-col justify-center"
+                    className="p-4 sm:p-5 rounded-xl flex flex-col justify-center"
                     style={{
                       backgroundColor: "#fff",
                       border: "2px solid #254696",
@@ -931,7 +931,7 @@ export default function Home() {
             </div>
 
             {/* Extend+ Column */}
-            <div>
+            <div className="flex flex-col h-full">
               <h3
                 className="text-center font-black mb-4 sm:mb-6"
                 style={{
@@ -942,7 +942,7 @@ export default function Home() {
               >
                 EXTEND+
               </h3>
-              <div className="grid gap-3 sm:gap-4">
+              <div className="grid gap-3 sm:gap-4 items-stretch flex-1">
                 {[
                   { step: "1. Buy Extend+", text: "Choose Extend+ for your mobile or laptop up to 3 years old." },
                   { step: "2. Register device", text: "Upload device details, invoice, and ID proof on the portal to activate coverage." },
@@ -951,7 +951,7 @@ export default function Home() {
                 ].map((item, index) => (
                   <div
                     key={`extend-${index}`}
-                    className="p-4 sm:p-5 rounded-xl h-full flex flex-col justify-center"
+                    className="p-4 sm:p-5 rounded-xl flex flex-col justify-center"
                     style={{ backgroundColor: "#254696" }}
                   >
                     <p className="text-sm sm:text-base text-white">

@@ -158,7 +158,7 @@ export function DevicePlanSelectorForm({
             className="block text-sm font-medium mb-3"
             style={{ color: "#374151" }}
           >
-            How old is your device?
+            When did you purchase your device?
           </label>
           <div className="flex flex-col gap-3">
             <label

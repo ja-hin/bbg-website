@@ -1,8 +1,5 @@
 import PDFDocument from "pdfkit";
 import { s3Service } from "./s3-service";
-import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
 
 interface InvoiceData {
   invoiceNumber: string;
@@ -137,21 +134,13 @@ class InvoiceService {
 
         let y = 40;
 
-        /* ================= HEADER WITH LOGO ================= */
-        try {
-          const __filename = fileURLToPath(import.meta.url);
-          const __dirname = dirname(__filename);
-          const logoPath = join(__dirname, "..", "attached_assets", "Final_Buy_Back_Guarantee_Logo_1766149179063.png");
-          doc.image(logoPath, 40, y, { width: 250, height: 80 });
-          y += 95;
-        } catch (logoError) {
-          console.warn("Failed to load logo, using text fallback:", logoError);
-          doc
-            .fontSize(18)
-            .fillColor("#1f3c88")
-            .text("XTRACOVER", 40, y);
-          y += 28;
-        }
+        /* ================= HEADER ================= */
+        doc
+          .fontSize(18)
+          .fillColor("#1f3c88")
+          .text("XTRACOVER", 40, y);
+
+        y += 28;
 
         doc
           .fontSize(9)

@@ -761,156 +761,83 @@ export class CommunicationService {
     transactionId: string;
     amount: number;
     planName: string;
-    deviceType?: string;
-    planType?: string;
-    brand?: string;
   }) {
     try {
       console.log('📧 Sending invoice email to:', invoiceData.customerEmail);
 
-      // Generate claim value slabs HTML if this is a BBG plan
-      let claimValueSlabsHtml = '';
-      
-      if (invoiceData.planType === 'bbg' && invoiceData.deviceType) {
-        console.log(`📊 Generating claim value slabs for ${invoiceData.deviceType} device`);
-        
-        let claimValueSlabs: any[] = [];
-        
-        // Use fixed hardcoded slabs for website BBG purchases (brand-agnostic)
-        if (invoiceData.deviceType === 'mobile') {
-          claimValueSlabs = [
-            { minMonths: 4, maxMonths: 6, percentage: 70 },
-            { minMonths: 7, maxMonths: 9, percentage: 60 },
-            { minMonths: 10, maxMonths: 12, percentage: 50 },
-            { minMonths: 13, maxMonths: 15, percentage: 40 },
-            { minMonths: 16, maxMonths: 18, percentage: 30 }
-          ];
-        } else if (invoiceData.deviceType === 'laptop') {
-          claimValueSlabs = [
-            { minMonths: 4, maxMonths: 6, percentage: 70 },
-            { minMonths: 7, maxMonths: 12, percentage: 50 },
-            { minMonths: 13, maxMonths: 18, percentage: 45 },
-            { minMonths: 19, maxMonths: 24, percentage: 40 },
-            { minMonths: 25, maxMonths: 30, percentage: 30 },
-            { minMonths: 31, maxMonths: 36, percentage: 25 }
-          ];
-        }
-        
-        // Generate HTML for claim value slabs
-        if (claimValueSlabs.length > 0) {
-          claimValueSlabsHtml = claimValueSlabs.map(slab => 
-            `<div style="background: white; padding: 10px 15px; margin: 8px 0; border-radius: 6px; border-left: 3px solid #0277bd;">
-              <span style="font-weight: bold; color: #1976d2;">${slab.minMonths}-${slab.maxMonths} months old:</span>
-              <span style="color: #2e7d32; font-weight: bold; float: right;">${slab.percentage}%</span>
-            </div>`
-          ).join('');
-        }
-      }
-
-      // Prepare email data with claim value slabs
-      const emailDataWithSlabs = {
-        ...invoiceData,
-        claimValueSlabsHtml
-      };
-
-      // Try to fetch template from database by ID (templates 1163 or 1166)
-      let emailTemplate = null;
-      try {
-        // Try to fetch buy email template
-        emailTemplate = await templateService.getTemplate('email', 'plan_purchase_confirmation');
-        if (!emailTemplate) {
-          console.log('📧 Plan purchase template not found by event type, trying by ID');
-        }
-      } catch (err) {
-        console.log('📧 Error fetching template by event type:', err);
-      }
-
-      let result;
-      let emailContent: string;
-      let emailSubject: string;
-
-      if (emailTemplate) {
-        // Use database template
-        console.log('📧 Using database template for invoice email');
-        emailContent = templateService.renderTemplate(emailTemplate.content, emailDataWithSlabs);
-        emailSubject = templateService.renderTemplate(emailTemplate.subject || `Your XtraCover Invoice #${invoiceData.invoiceNumber}`, emailDataWithSlabs);
-      } else {
-        // Fallback to hardcoded template if no database template found
-        console.log('📧 No database template found, using fallback HTML template');
-        emailContent = `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <style>
-              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { background: linear-gradient(135deg, #254696, #4A90E2); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-              .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-              .invoice-box { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; }
-              .invoice-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
-              .invoice-row:last-child { border-bottom: none; font-weight: bold; }
-              .download-btn { display: inline-block; background: #254696; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 20px; }
-              .footer { text-align: center; color: #666; font-size: 12px; margin-top: 30px; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1>XtraCover</h1>
-                <p>Your Invoice is Ready</p>
-              </div>
-              <div class="content">
-                <p>Dear ${invoiceData.customerName},</p>
-                <p>Thank you for your purchase! Your payment has been successfully processed. Below are the details of your transaction:</p>
-                
-                <div class="invoice-box">
-                  <div class="invoice-row">
-                    <span>Invoice Number:</span>
-                    <span>${invoiceData.invoiceNumber}</span>
-                  </div>
-                  <div class="invoice-row">
-                    <span>Transaction ID:</span>
-                    <span>${invoiceData.transactionId}</span>
-                  </div>
-                  <div class="invoice-row">
-                    <span>Plan:</span>
-                    <span>${invoiceData.planName}</span>
-                  </div>
-                  <div class="invoice-row">
-                    <span>Amount Paid:</span>
-                    <span>₹${invoiceData.amount.toFixed(2)}</span>
-                  </div>
-                </div>
-                
-                <p>You can download your invoice using the button below:</p>
-                
-                <center>
-                  <a href="${invoiceData.invoiceUrl}" class="download-btn">Download Invoice</a>
-                </center>
-                
-                <p style="margin-top: 30px;">If you have any questions, please don't hesitate to contact our support team.</p>
-                
-                <p>Best regards,<br>The XtraCover Team</p>
-              </div>
-              <div class="footer">
-                <p>This is an automated email. Please do not reply directly to this message.</p>
-                <p>&copy; ${new Date().getFullYear()} XtraCover. All rights reserved.</p>
-              </div>
+      const emailContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #254696, #4A90E2); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+            .invoice-box { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; }
+            .invoice-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+            .invoice-row:last-child { border-bottom: none; font-weight: bold; }
+            .download-btn { display: inline-block; background: #254696; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 20px; }
+            .footer { text-align: center; color: #666; font-size: 12px; margin-top: 30px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>XtraCover</h1>
+              <p>Your Invoice is Ready</p>
             </div>
-          </body>
-          </html>
-        `;
-        emailSubject = `Your XtraCover Invoice #${invoiceData.invoiceNumber}`;
-      }
+            <div class="content">
+              <p>Dear ${invoiceData.customerName},</p>
+              <p>Thank you for your purchase! Your payment has been successfully processed. Below are the details of your transaction:</p>
+              
+              <div class="invoice-box">
+                <div class="invoice-row">
+                  <span>Invoice Number:</span>
+                  <span>${invoiceData.invoiceNumber}</span>
+                </div>
+                <div class="invoice-row">
+                  <span>Transaction ID:</span>
+                  <span>${invoiceData.transactionId}</span>
+                </div>
+                <div class="invoice-row">
+                  <span>Plan:</span>
+                  <span>${invoiceData.planName}</span>
+                </div>
+                <div class="invoice-row">
+                  <span>Amount Paid:</span>
+                  <span>₹${invoiceData.amount.toFixed(2)}</span>
+                </div>
+              </div>
+              
+              <p>You can download your invoice using the button below:</p>
+              
+              <center>
+                <a href="${invoiceData.invoiceUrl}" class="download-btn">Download Invoice</a>
+              </center>
+              
+              <p style="margin-top: 30px;">If you have any questions, please don't hesitate to contact our support team.</p>
+              
+              <p>Best regards,<br>The XtraCover Team</p>
+            </div>
+            <div class="footer">
+              <p>This is an automated email. Please do not reply directly to this message.</p>
+              <p>&copy; ${new Date().getFullYear()} XtraCover. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
 
       const smtpSettings = await this.getSmtpSettings();
+      let result;
       
       if (smtpSettings) {
         console.log('📧 Using database SMTP settings for invoice email');
         result = await this.emailService.sendEmailWithSmtpSettings(
           invoiceData.customerEmail,
-          emailSubject,
+          `Your XtraCover Invoice #${invoiceData.invoiceNumber}`,
           emailContent,
           smtpSettings
         );
@@ -918,7 +845,7 @@ export class CommunicationService {
         console.log('📧 Using default SMTP settings for invoice email');
         result = await this.emailService.sendEmail(
           invoiceData.customerEmail,
-          emailSubject,
+          `Your XtraCover Invoice #${invoiceData.invoiceNumber}`,
           emailContent
         );
       }

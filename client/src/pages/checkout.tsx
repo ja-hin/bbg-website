@@ -109,19 +109,11 @@ export default function Checkout() {
     queryKey: ['/api/brands-with-models'],
   });
 
-  // selectedPlan from session storage
-  const planBrand = selectedPlan?.brand?.trim().toLowerCase();
-  const planDeviceType = selectedPlan?.deviceType?.trim().toLowerCase(); // "mobile" | "laptop"
-
-  // Filter by brand + device_type on the BRAND object, then take its models
-  const deviceModels =
-    brandsWithModels
-      .filter((b: any) =>
-        (b?.name || "").trim().toLowerCase() === planBrand &&
-        (b?.device_type || "").trim().toLowerCase() === planDeviceType
-      )
-      .flatMap((b: any) => b.models ?? []);
-
+  // Filter models based on selected brand and device type from plan
+  const deviceModels = brandsWithModels
+    .filter((brand: any) => brand.name === selectedPlan?.brand)
+    .flatMap((brand: any) => brand.models || [])
+    .filter((model: any) => model.deviceType === selectedPlan?.deviceType);
 
   const getPlansUrl = () => {
     const storedPlan = sessionStorage.getItem("selectedPlan");

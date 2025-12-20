@@ -246,13 +246,14 @@ export class CommunicationService {
         }
       }
       
-      // Fetch claim value slabs ONLY for BBG plans (not for Extend+)
+      // Fetch claim value slabs for BBG and Bundle plans (not for Extend+ only)
       let claimValueSlabs: any[] = [];
       let claimValueSlabsHtml = '';
       
-      // Only fetch and display claim value slabs for BBG plans
-      const isBBGPlan = purchasedPlan?.planType === 'bbg' || customerData.planType === 'bbg';
-      if (isBBGPlan && customerData.planType !== 'extend_plus') {
+      // Display claim value slabs for BBG and Bundle plans (Bundle includes BBG coverage)
+      const planType = purchasedPlan?.planType || customerData.planType;
+      const hasBBGCoverage = planType === 'bbg' || planType === 'bundle';
+      if (hasBBGCoverage) {
         try {
           const registrationSource = customerData.registrationSource || 'regular';
           
@@ -318,7 +319,7 @@ export class CommunicationService {
           claimValueSlabsHtml = '<div style="background: white; padding: 15px; border-radius: 6px; text-align: center; color: #666;">Claim value slabs will be available based on your device specifications.</div>';
         }
       } else {
-        console.log('📋 Extend+ plan detected - skipping claim value slabs (not applicable to Extend+ coverage)');
+        console.log(`📋 Plan type '${planType}' has no BBG coverage - skipping claim value slabs`);
       }
 
       // Prepare extended customer data with claim value slabs HTML

@@ -1306,6 +1306,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 transactionId: txnid,
                 amount: parseFloat(amount),
                 planName: customer.modelName || `${customer.benefitType?.toUpperCase()} Plan`,
+                deviceType: customer.deviceType,
+                planType: customer.benefitType,
+                brand: customer.brand,
               });
               console.log("📧 Invoice email sent to:", customer.email);
             } catch (emailError) {

@@ -5,7 +5,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useTheme } from "@/hooks/useTheme";
 import { BuyModal } from "./buy-modal";
-import bbgLogo from "@assets/Final_Buy_Back_Guarantee_Logo_1766149493956.png";
+import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.png";
 
 export default function Header() {
   const [location] = useLocation();

@@ -112,7 +112,7 @@ export default function Header() {
                 <img
                   src={bbgLogo}
                   alt="BBG Logo"
-                  className="h-12 w-auto"
+                  className="h-20 w-auto"
                 />
               </Link>
             </div>
@@ -144,7 +144,7 @@ export default function Header() {
                       <img
                         src={bbgLogo}
                         alt="BBG Logo"
-                        className="h-10 w-auto"
+                        className="h-16 w-auto"
                       />
                     </div>
 

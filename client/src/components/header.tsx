@@ -104,7 +104,7 @@ export default function Header() {
       {/* Logo Section - White Background */}
       <div className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+          <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center space-x-3">
               {/* XTRACOVER Logo - External Link */}

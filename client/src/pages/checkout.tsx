@@ -110,10 +110,10 @@ export default function Checkout() {
   });
 
   // Filter models based on selected brand and device type from plan
+  // Note: device_type is on the brand object, not on individual models
   const deviceModels = brandsWithModels
-    .filter((brand: any) => brand.name === selectedPlan?.brand)
-    .flatMap((brand: any) => brand.models || [])
-    .filter((model: any) => model.deviceType === selectedPlan?.deviceType);
+    .filter((brand: any) => brand.name === selectedPlan?.brand && brand.device_type === selectedPlan?.deviceType)
+    .flatMap((brand: any) => brand.models || []);
 
   const getPlansUrl = () => {
     const storedPlan = sessionStorage.getItem("selectedPlan");

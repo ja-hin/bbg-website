@@ -218,8 +218,11 @@ export default function Home() {
             }}
           >
             <div
-              className="p-8 sm:p-10 lg:p-12 bg-white text-center"
-              style={{ borderRadius: "35px" }}
+              className="p-8 sm:p-10 lg:p-12 text-center"
+              style={{ 
+                borderRadius: "35px",
+                background: "linear-gradient(135deg, #ffffff 0%, #f8fbff 50%, #ffffff 100%)"
+              }}
             >
               <h2 
                 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 leading-tight"

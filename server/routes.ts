@@ -2085,7 +2085,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validVoucher = await db.pool.request()
         .input('voucherCode', formData.voucherCode)
         .query(`
-          SELECT id, name, device_type, brand, email, contact, date_of_purchase 
+          SELECT id, name, device_type, brand, email, contact, date_of_purchase, plan_id 
           FROM customers 
           WHERE voucher_code = @voucherCode
         `);
@@ -2225,6 +2225,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           devicePurchaseDate: customerInfo.date_of_purchase,
           bbgPurchaseDate: new Date().toISOString().split('T')[0], // Registration date
           termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
+          planId: customerInfo.plan_id, // Pass the plan ID so registration templates are triggered
+          isDeviceRegistration: true, // Flag to indicate this is a registration (not purchase) flow
         }).then(notificationResults => {
           console.log("🔔 Website device registration email notification result:", {
             email: notificationResults.email?.success ? "✅ Sent" : `❌ Failed: ${notificationResults.email?.error}`,

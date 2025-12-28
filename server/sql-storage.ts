@@ -4816,6 +4816,7 @@ export class SqlServerStorage implements IStorage {
     const result = await request.query(`
       SELECT id, plan_name, plan_price, device_type, plan_type, coverage, 
              email_template_id, whatsapp_template_id, sms_template_id,
+             registration_email_template_id, registration_sms_template_id, registration_whatsapp_template_id,
              is_active, created_at, updated_at
       FROM plans
       WHERE is_active = 1
@@ -4832,6 +4833,9 @@ export class SqlServerStorage implements IStorage {
       emailTemplateId: row.email_template_id,
       whatsappTemplateId: row.whatsapp_template_id,
       smsTemplateId: row.sms_template_id,
+      registration_email_template_id: row.registration_email_template_id,
+      registration_sms_template_id: row.registration_sms_template_id,
+      registration_whatsapp_template_id: row.registration_whatsapp_template_id,
       isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at
@@ -4845,6 +4849,7 @@ export class SqlServerStorage implements IStorage {
     const result = await request.query(`
       SELECT id, plan_name, plan_price, device_type, plan_type, coverage,
              email_template_id, whatsapp_template_id, sms_template_id,
+             registration_email_template_id, registration_sms_template_id, registration_whatsapp_template_id,
              is_active, created_at, updated_at
       FROM plans
       WHERE id = @id
@@ -4863,6 +4868,9 @@ export class SqlServerStorage implements IStorage {
       emailTemplateId: row.email_template_id,
       whatsappTemplateId: row.whatsapp_template_id,
       smsTemplateId: row.sms_template_id,
+      registration_email_template_id: row.registration_email_template_id,
+      registration_sms_template_id: row.registration_sms_template_id,
+      registration_whatsapp_template_id: row.registration_whatsapp_template_id,
       isActive: row.is_active,
       createdAt: row.created_at,
       updatedAt: row.updated_at

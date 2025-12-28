@@ -226,6 +226,7 @@ export class CommunicationService {
       emailTemplateKey?: string; // For auction/repair vs claim_slabs flow
       planType?: string; // 'bbg' or 'extend_plus'
       planId?: number | null; // Plan ID for plan-specific email templates
+      isDeviceRegistration?: boolean; // Flag to use registration templates instead of purchase templates
     }
   ) {
     const results = {
@@ -337,15 +338,19 @@ export class CommunicationService {
         // Use plan-specific email template based on planId
         console.log(`📧 Using plan-specific email template for plan ID ${customerData.planId}: ${purchasedPlan?.planName}`);
         
-        // Check if plan has specific templates assigned
-        if (purchasedPlan.emailTemplateId) {
-          // Use the specific template ID assigned to this plan
-          console.log(`📧 Plan has assigned email template ID: ${purchasedPlan.emailTemplateId}`);
+        // Check if this is a device registration flow - use registration templates instead of purchase templates
+        if (customerData.isDeviceRegistration && purchasedPlan.registration_email_template_id) {
+          // Use the REGISTRATION template ID assigned to this plan
+          console.log(`📧 Device registration flow: Using registration email template ID: ${purchasedPlan.registration_email_template_id}`);
+          emailTemplate = await templateService.getTemplateById(purchasedPlan.registration_email_template_id);
+          eventType = 'device_registration';
+        } else if (!customerData.isDeviceRegistration && purchasedPlan.emailTemplateId) {
+          // Use the PURCHASE template ID assigned to this plan (for purchase confirmation emails)
+          console.log(`📧 Purchase flow: Plan has assigned email template ID: ${purchasedPlan.emailTemplateId}`);
           emailTemplate = await templateService.getTemplateById(purchasedPlan.emailTemplateId);
+          eventType = 'plan_purchase';
         }
         
-        // Use generic plan_purchase event type for plans without specific template
-        eventType = 'plan_purchase';
         console.log(`📧 Template event type for plan: ${eventType}`);
       } else {
         // Fallback to device-age-based template selection for device registrations
@@ -424,14 +429,34 @@ export class CommunicationService {
       }
 
       // SMS confirmation using template with same logic as email
-      const smsTemplate = await templateService.getTemplateByTypeEventAndDevice('sms', eventType, undefined);
+      let smsTemplate;
+      
+      // Check if this is a device registration flow with plan-specific SMS template
+      if (customerData.isDeviceRegistration && purchasedPlan?.registration_sms_template_id) {
+        console.log(`📱 Device registration flow: Using registration SMS template ID: ${purchasedPlan.registration_sms_template_id}`);
+        smsTemplate = await templateService.getTemplateById(purchasedPlan.registration_sms_template_id);
+      } else {
+        // Fall back to event-type based SMS template lookup
+        smsTemplate = await templateService.getTemplateByTypeEventAndDevice('sms', eventType, undefined);
+      }
+      
       if (smsTemplate) {
         const smsMessage = templateService.renderTemplate(smsTemplate.content, customerData);
         results.sms = await this.smsService.sendSMS(customerData.contact, smsMessage);
       }
 
       // WhatsApp confirmation using template with same logic as email
-      const whatsappTemplate = await templateService.getTemplateByTypeEventAndDevice('whatsapp', eventType, undefined);
+      let whatsappTemplate;
+      
+      // Check if this is a device registration flow with plan-specific WhatsApp template
+      if (customerData.isDeviceRegistration && purchasedPlan?.registration_whatsapp_template_id) {
+        console.log(`💬 Device registration flow: Using registration WhatsApp template ID: ${purchasedPlan.registration_whatsapp_template_id}`);
+        whatsappTemplate = await templateService.getTemplateById(purchasedPlan.registration_whatsapp_template_id);
+      } else {
+        // Fall back to event-type based WhatsApp template lookup
+        whatsappTemplate = await templateService.getTemplateByTypeEventAndDevice('whatsapp', eventType, undefined);
+      }
+      
       if (whatsappTemplate) {
         const whatsappMessage = templateService.renderTemplate(whatsappTemplate.content, customerData);
         results.whatsapp = await this.whatsappService.sendWhatsAppMessage(customerData.contact, whatsappMessage);

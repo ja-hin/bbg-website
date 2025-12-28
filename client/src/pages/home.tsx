@@ -633,7 +633,7 @@ export default function Home() {
                 style={{ borderRadius: "35px" }}
               >
                 <div className="mb-4">
-                  <h4 className="sm:text-base lg:text-lg font-bold mb-2 text-[24px]" style={{ color: "#1F4B88" }}>BuyBack Guarantee</h4>
+                  <h4 className="sm:text-base lg:text-lg font-bold mb-2 text-[24px]" style={{ color: "#1F4B88" }}>Buy Back Guarantee</h4>
                   <p className="text-gray-900 text-xs sm:text-sm lg:text-base mb-2 leading-relaxed font-medium">For mobiles and laptops up to 6 months old</p>
                   <p className="text-gray-900 text-xs sm:text-sm lg:text-base leading-relaxed font-medium">Locks your future resale value from day one</p>
                 </div>

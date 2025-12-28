@@ -122,6 +122,157 @@ export default function Home() {
 
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
+      {/* Compact Featured Cards Section - Above Carousel */}
+      <section 
+        className="py-6 sm:py-8 px-4 sm:px-6 lg:px-8"
+        style={{
+          background: "linear-gradient(135deg, #f5f9ff 0%, #f0f7ff 50%, #fafbfe 100%)"
+        }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6">
+            {/* BuyBack Guarantee Compact Card */}
+            <div
+              style={{
+                borderRadius: "24px",
+                padding: "1px",
+                background: "radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)",
+              }}
+            >
+              <div
+                className="p-5 sm:p-6 text-center"
+                style={{ 
+                  borderRadius: "24px",
+                  background: "linear-gradient(135deg, #ffffff 0%, #f8fbff 50%, #ffffff 100%)"
+                }}
+              >
+                <h3 
+                  className="text-lg sm:text-xl font-bold mb-2"
+                  style={{ color: "#1F4B88" }}
+                  data-testid="heading-bbg-compact"
+                >
+                  BuyBack Guarantee
+                </h3>
+                
+                <p 
+                  className="text-xs sm:text-sm mb-4 font-medium"
+                  style={{ color: "#4b5563" }}
+                >
+                  Lock resale value of your device
+                </p>
+
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="flex flex-col items-center">
+                    <Clock className="w-6 h-6 mb-1" style={{ color: "#1F4B88" }} />
+                    <p className="text-xs font-semibold" style={{ color: "#303e58" }}>
+                      6 months old
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <TrendingUp className="w-6 h-6 mb-1" style={{ color: "#1F4B88" }} />
+                    <p className="text-xs font-semibold" style={{ color: "#303e58" }}>
+                      Upto 70%
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <Package className="w-6 h-6 mb-1" style={{ color: "#1F4B88" }} />
+                    <p className="text-xs font-semibold" style={{ color: "#303e58" }}>
+                      Doorstep
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <Shield className="w-6 h-6 mb-1" style={{ color: "#1F4B88" }} />
+                    <p className="text-xs font-semibold" style={{ color: "#303e58" }}>
+                      Secure
+                    </p>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={scrollToForm}
+                  className="w-full text-white font-semibold py-2 px-4 rounded-full text-xs sm:text-sm transition-all"
+                  style={{
+                    background: "linear-gradient(90deg, #1F4B88, #245AA3)",
+                  }}
+                  data-testid="button-bbg-compact"
+                >
+                  Get BuyBack Guarantee
+                </Button>
+              </div>
+            </div>
+
+            {/* Extend+ Protection Compact Card */}
+            <div
+              style={{
+                borderRadius: "24px",
+                padding: "1px",
+                background: "radial-gradient(circle at 50% 50%, #4a7fd9, #1a3a6b, #0f2847)",
+              }}
+            >
+              <div
+                className="p-5 sm:p-6 text-center text-white"
+                style={{ 
+                  borderRadius: "24px",
+                  background: "linear-gradient(135deg, rgba(26, 58, 107, 0.95) 0%, rgba(42, 95, 168, 0.95) 50%, rgba(26, 58, 107, 0.95) 100%)"
+                }}
+              >
+                <h3 
+                  className="text-lg sm:text-xl font-bold mb-2"
+                  data-testid="heading-extend-compact"
+                >
+                  Extend+
+                </h3>
+                
+                <p 
+                  className="text-xs sm:text-sm mb-4 font-medium opacity-90"
+                >
+                  Protection beyond warranty
+                </p>
+
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="flex flex-col items-center">
+                    <Clock className="w-6 h-6 mb-1 text-white" />
+                    <p className="text-xs font-semibold text-white">
+                      3 years old
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <Wrench className="w-6 h-6 mb-1 text-white" />
+                    <p className="text-xs font-semibold text-white">
+                      1 Free Repair
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <TrendingUp className="w-6 h-6 mb-1 text-white" />
+                    <p className="text-xs font-semibold text-white">
+                      10-20% Better
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <Award className="w-6 h-6 mb-1 text-white" />
+                    <p className="text-xs font-semibold text-white">
+                      30% Discount
+                    </p>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={scrollToForm}
+                  className="w-full font-semibold py-2 px-4 rounded-full text-xs sm:text-sm transition-all text-white"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.2)",
+                    border: "2px solid rgba(255, 255, 255, 0.4)",
+                  }}
+                  data-testid="button-extend-compact"
+                >
+                  Get Extend+ Protection
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Homepage Carousel - Critical path, loads first */}
       <HomepageCarousel onFirstImageLoaded={handleCarouselFirstImageLoaded} />
       {/* Smart Plans Section with Form */}
@@ -202,278 +353,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* BuyBack Guarantee Featured Card Section */}
-      <section 
-        className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8"
-        style={{
-          background: "linear-gradient(135deg, #f5f9ff 0%, #f0f7ff 50%, #fafbfe 100%)"
-        }}
-      >
-        <div className="max-w-5xl mx-auto">
-          <div
-            style={{
-              borderRadius: "35px",
-              padding: "1px",
-              background: "radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)",
-            }}
-          >
-            <div
-              className="p-8 sm:p-10 lg:p-12 text-center"
-              style={{ 
-                borderRadius: "35px",
-                background: "linear-gradient(135deg, #ffffff 0%, #f8fbff 50%, #ffffff 100%)"
-              }}
-            >
-              <h2 
-                className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 leading-tight"
-                style={{ color: "#1F4B88" }}
-                data-testid="heading-buyback-featured"
-              >
-                BuyBack Guarantee:<br />
-                Lock Resale Value of your Mobile<br />
-                & Laptop
-              </h2>
-              
-              <p 
-                className="text-base sm:text-lg lg:text-xl mb-10 font-medium"
-                style={{ color: "#4b5563" }}
-                data-testid="text-buyback-featured-desc"
-              >
-                Secure your device's resale value and upgrade worry-free.
-              </p>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-10">
-                {/* Feature 1 */}
-                <div className="flex flex-col items-center">
-                  <div 
-                    className="rounded-full p-4 mb-4 flex items-center justify-center"
-                    style={{
-                      background: "linear-gradient(135deg, #e8f4f8 0%, #f0f7ff 100%)",
-                      width: "70px",
-                      height: "70px",
-                    }}
-                  >
-                    <Clock className="w-9 h-9" style={{ color: "#1F4B88" }} />
-                  </div>
-                  <p 
-                    className="text-sm sm:text-base font-semibold text-center"
-                    style={{ color: "#303e58" }}
-                  >
-                    For devices up<br />to 6 months old
-                  </p>
-                </div>
-
-                {/* Feature 2 */}
-                <div className="flex flex-col items-center">
-                  <div 
-                    className="rounded-full p-4 mb-4 flex items-center justify-center"
-                    style={{
-                      background: "linear-gradient(135deg, #e8f4f8 0%, #f0f7ff 100%)",
-                      width: "70px",
-                      height: "70px",
-                    }}
-                  >
-                    <TrendingUp className="w-9 h-9" style={{ color: "#1F4B88" }} />
-                  </div>
-                  <p 
-                    className="text-sm sm:text-base font-semibold text-center"
-                    style={{ color: "#303e58" }}
-                  >
-                    Upto 70%<br />Resale Value
-                  </p>
-                </div>
-
-                {/* Feature 3 */}
-                <div className="flex flex-col items-center">
-                  <div 
-                    className="rounded-full p-4 mb-4 flex items-center justify-center"
-                    style={{
-                      background: "linear-gradient(135deg, #e8f4f8 0%, #f0f7ff 100%)",
-                      width: "70px",
-                      height: "70px",
-                    }}
-                  >
-                    <Package className="w-9 h-9" style={{ color: "#1F4B88" }} />
-                  </div>
-                  <p 
-                    className="text-sm sm:text-base font-semibold text-center"
-                    style={{ color: "#303e58" }}
-                  >
-                    Sell your device<br />at doorstep
-                  </p>
-                </div>
-
-                {/* Feature 4 */}
-                <div className="flex flex-col items-center">
-                  <div 
-                    className="rounded-full p-4 mb-4 flex items-center justify-center"
-                    style={{
-                      background: "linear-gradient(135deg, #e8f4f8 0%, #f0f7ff 100%)",
-                      width: "70px",
-                      height: "70px",
-                    }}
-                  >
-                    <Shield className="w-9 h-9" style={{ color: "#1F4B88" }} />
-                  </div>
-                  <p 
-                    className="text-sm sm:text-base font-semibold text-center"
-                    style={{ color: "#303e58" }}
-                  >
-                    Fast and Secure<br />Payment
-                  </p>
-                </div>
-              </div>
-
-              <Button
-                onClick={scrollToForm}
-                className="text-white font-bold py-3 px-8 rounded-full text-base sm:text-lg transition-all"
-                style={{
-                  background: "linear-gradient(90deg, #1F4B88, #245AA3)",
-                }}
-                data-testid="button-get-bbg-guarantee"
-              >
-                Get BuyBack Guarantee
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Extend+ Protection Featured Card Section */}
-      <section 
-        className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8"
-        style={{
-          background: "linear-gradient(135deg, #1a3a6b 0%, #2a5fa8 50%, #1a3a6b 100%)"
-        }}
-      >
-        <div className="max-w-5xl mx-auto">
-          <div
-            style={{
-              borderRadius: "35px",
-              padding: "1px",
-              background: "radial-gradient(circle at 50% 50%, #4a7fd9, #1a3a6b, #0f2847)",
-            }}
-          >
-            <div
-              className="p-8 sm:p-10 lg:p-12 text-center text-white"
-              style={{ 
-                borderRadius: "35px",
-                background: "linear-gradient(135deg, rgba(26, 58, 107, 0.95) 0%, rgba(42, 95, 168, 0.95) 50%, rgba(26, 58, 107, 0.95) 100%)"
-              }}
-            >
-              <h2 
-                className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 leading-tight"
-                data-testid="heading-extend-featured"
-              >
-                Extend+: Protection for<br />
-                Your Mobile & Laptop
-              </h2>
-              
-              <p 
-                className="text-base sm:text-lg lg:text-xl mb-10 font-medium opacity-90"
-                data-testid="text-extend-featured-desc"
-              >
-                Keep your devices covered beyond their standard warranty<br />
-                with added benefits.
-              </p>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-10">
-                {/* Feature 1 */}
-                <div className="flex flex-col items-center">
-                  <div 
-                    className="rounded-full p-4 mb-4 flex items-center justify-center"
-                    style={{
-                      background: "rgba(255, 255, 255, 0.15)",
-                      width: "70px",
-                      height: "70px",
-                      backdropFilter: "blur(10px)",
-                    }}
-                  >
-                    <Clock className="w-9 h-9 text-white" />
-                  </div>
-                  <p 
-                    className="text-sm sm:text-base font-semibold text-center text-white"
-                  >
-                    For devices up<br />to 3 years old
-                  </p>
-                </div>
-
-                {/* Feature 2 */}
-                <div className="flex flex-col items-center">
-                  <div 
-                    className="rounded-full p-4 mb-4 flex items-center justify-center"
-                    style={{
-                      background: "rgba(255, 255, 255, 0.15)",
-                      width: "70px",
-                      height: "70px",
-                      backdropFilter: "blur(10px)",
-                    }}
-                  >
-                    <Wrench className="w-9 h-9 text-white" />
-                  </div>
-                  <p 
-                    className="text-sm sm:text-base font-semibold text-center text-white"
-                  >
-                    1 Free Device<br />Repair*
-                  </p>
-                </div>
-
-                {/* Feature 3 */}
-                <div className="flex flex-col items-center">
-                  <div 
-                    className="rounded-full p-4 mb-4 flex items-center justify-center"
-                    style={{
-                      background: "rgba(255, 255, 255, 0.15)",
-                      width: "70px",
-                      height: "70px",
-                      backdropFilter: "blur(10px)",
-                    }}
-                  >
-                    <TrendingUp className="w-9 h-9 text-white" />
-                  </div>
-                  <p 
-                    className="text-sm sm:text-base font-semibold text-center text-white"
-                  >
-                    10-20% Better<br />Resale Value
-                  </p>
-                </div>
-
-                {/* Feature 4 */}
-                <div className="flex flex-col items-center">
-                  <div 
-                    className="rounded-full p-4 mb-4 flex items-center justify-center"
-                    style={{
-                      background: "rgba(255, 255, 255, 0.15)",
-                      width: "70px",
-                      height: "70px",
-                      backdropFilter: "blur(10px)",
-                    }}
-                  >
-                    <Award className="w-9 h-9 text-white" />
-                  </div>
-                  <p 
-                    className="text-sm sm:text-base font-semibold text-center text-white"
-                  >
-                    30% discount on<br />Extended Warranty
-                  </p>
-                </div>
-              </div>
-
-              <Button
-                onClick={scrollToForm}
-                className="text-white font-bold py-3 px-8 rounded-full text-base sm:text-lg transition-all"
-                style={{
-                  background: "rgba(255, 255, 255, 0.2)",
-                  border: "2px solid rgba(255, 255, 255, 0.4)",
-                }}
-                data-testid="button-get-extend-protection"
-              >
-                Get Extend+ Protection
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* BBG Guarantee Cards Section */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">

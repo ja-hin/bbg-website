@@ -12,6 +12,7 @@ import {
   Shield,
   Car,
   DollarSign,
+  Wrench,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
@@ -488,65 +489,91 @@ export default function Plans() {
 
             {showLaptopExtend && (
               <div
-                className="relative w-full   h-full flex flex-col"
+                className="w-full h-full flex flex-col"
                 data-testid="card-laptop-extend"
               >
-                <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white">
+                  {/* Blue Header */}
                   <div
-                    className="p-4 sm:p-6 pb-3 sm:pb-4 text-white text-center"
-                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
+                    className="p-6 sm:p-8 text-white text-center"
+                    style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                   >
-                    <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">
-                      Laptop Extend+
+                    <h3 className="text-2xl sm:text-3xl font-bold mb-2">
+                      Extend+
                     </h3>
-                    <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
+                    <p className="text-sm sm:text-base mb-4 opacity-90">
+                      Repairs, better resale & extra savings for your laptop
+                    </p>
+                    <div className="text-5xl sm:text-7xl font-bold">
                       {pricesLoading ? (
-                        <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
+                        <Loader2 className="h-8 w-8 sm:h-12 sm:w-12 animate-spin inline" />
                       ) : (
                         `₹${laptopExtendPlan?.planPrice || "--"}`
                       )}
                     </div>
-                    <p className="text-white/80 text-xs sm:text-sm">
-                      (inclusive of GST)
-                    </p>
                   </div>
 
-                  <div
-                    className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow mt-10 sm:mt-12"
-                    style={{ textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
-                  >
-                    <ul className="space-y-2 sm:space-y-3 text-white">
-                      <li className="flex items-center">
-                        <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">
-                          Free Device Repair*
-                        </span>
-                      </li>
-                      <li className="flex items-center">
-                        <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">
-                          30% OFF your Extended Warranty Purchase
-                        </span>
-                      </li>
-                      <li className="flex items-center">
-                        <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">
-                          Get resale value up to 20 percent higher than standard
-                          market rates
-                        </span>
-                      </li>
-                      <li className="flex items-center">
-                        <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">
-                          Validity: 24 months
-                        </span>
-                      </li>
-                    </ul>
+                  {/* White Content Area */}
+                  <div className="flex-grow p-6 sm:p-8 space-y-6">
+                    {/* Benefits with Icons */}
+                    <div className="space-y-5">
+                      <div className="flex gap-4">
+                        <Wrench
+                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          style={{ color: "#254696" }}
+                        />
+                        <div>
+                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                            1 Free Repair Service
+                          </p>
+                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                            We pick up, fix, and return your device
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-4">
+                        <Car
+                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          style={{ color: "#254696" }}
+                        />
+                        <div>
+                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                            Sell your device from Doorstep
+                          </p>
+                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                            Get 10-20% higher resale value
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-4">
+                        <Shield
+                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          style={{ color: "#254696" }}
+                        />
+                        <div>
+                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                            30% OFF XtraCover Warranty Plans
+                          </p>
+                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                            One-time use during validity
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Validity */}
+                    <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
+                      Validity: 24 months
+                    </div>
                   </div>
 
-                  <div className="p-4 sm:p-6 pt-4 sm:pt-6">
+                  {/* Buy Now Button */}
+                  <div className="p-6 sm:p-8 pt-4 sm:pt-6">
                     <Button
-                      className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                      style={{
+                        background: "linear-gradient(90deg, #254696, #1F4B88)",
+                      }}
                       onClick={() => handleBuyNow(laptopExtendPlan)}
                       disabled={pricesLoading || !laptopExtendPlan}
                       data-testid="button-buy-laptop-extend"
@@ -559,87 +586,96 @@ export default function Plans() {
                     </Button>
                   </div>
                 </div>
-
-                <div
-                  className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]"
-                  style={{ left: "-1.5rem" }}
-                >
-                  <div className="relative sm:block">
-                    <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
-                      <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
-                        Protection, repairs, and
-                        <br />
-                        better resale
-                      </p>
-                    </div>
-                    <div className="absolute -bottom-[15px] sm:-bottom-[20px] left-0 w-0 h-0 border-t-[15px] sm:border-t-[20px] border-t-blue-300 border-l-[18px] sm:border-l-[24px] border-l-transparent"></div>
-                  </div>
-                </div>
               </div>
             )}
 
             {showMobileExtend && (
               <div
-                className="relative w-full   h-full flex flex-col"
+                className="w-full h-full flex flex-col"
                 data-testid="card-mobile-extend"
               >
-                <div className="rounded-2xl shadow-xl overflow-hidden relative z-10 bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white">
+                  {/* Blue Header */}
                   <div
-                    className="p-4 sm:p-6 pb-3 sm:pb-4 text-white text-center"
-                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
+                    className="p-6 sm:p-8 text-white text-center"
+                    style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                   >
-                    <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">
-                      Mobile Extend+
+                    <h3 className="text-2xl sm:text-3xl font-bold mb-2">
+                      Extend+
                     </h3>
-                    <div className="text-4xl sm:text-6xl font-bold mb-2 sm:mb-3">
+                    <p className="text-sm sm:text-base mb-4 opacity-90">
+                      Repairs, better resale & extra savings for your phone
+                    </p>
+                    <div className="text-5xl sm:text-7xl font-bold">
                       {pricesLoading ? (
-                        <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin inline" />
+                        <Loader2 className="h-8 w-8 sm:h-12 sm:w-12 animate-spin inline" />
                       ) : (
                         `₹${mobileExtendPlan?.planPrice || "--"}`
                       )}
                     </div>
-                    <p className="text-white/80 text-xs sm:text-sm">
-                      (inclusive of GST)
-                    </p>
                   </div>
 
-                  <div
-                    className="p-4 sm:p-6 pt-3 sm:pt-4 flex-grow mt-10 sm:mt-12"
-                    style={{ textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
-                  >
-                    <ul className="space-y-2 sm:space-y-3 text-white">
-                      <li className="flex items-center">
-                        <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">
-                          Free Device Repair*
-                        </span>
-                      </li>
-                      <li className="flex items-center">
-                        <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">
-                          30% OFF your Extended Warranty Purchase
-                        </span>
-                      </li>
-                      <li className="flex items-center">
-                        <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">
-                          Get resale value up to 20 percent higher than standard
-                          market rates
-                        </span>
-                      </li>
+                  {/* White Content Area */}
+                  <div className="flex-grow p-6 sm:p-8 space-y-6">
+                    {/* Benefits with Icons */}
+                    <div className="space-y-5">
+                      <div className="flex gap-4">
+                        <Wrench
+                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          style={{ color: "#254696" }}
+                        />
+                        <div>
+                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                            1 Free Repair Service
+                          </p>
+                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                            We pick up, fix, and return your device
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-4">
+                        <Car
+                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          style={{ color: "#254696" }}
+                        />
+                        <div>
+                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                            Sell your device from Doorstep
+                          </p>
+                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                            Get 10-20% higher resale value
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-4">
+                        <Shield
+                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          style={{ color: "#254696" }}
+                        />
+                        <div>
+                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                            30% OFF XtraCover Warranty Plans
+                          </p>
+                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                            One-time use during validity
+                          </p>
+                        </div>
+                      </div>
+                    </div>
 
-                      <li className="flex items-center mt-2 sm:mt-3">
-                        <span className="text-white mr-2 sm:mr-3">•</span>
-                        <span className="text-xs sm:text-sm">
-                          Validity: 24 months
-                        </span>
-                      </li>
-                    </ul>
+                    {/* Validity */}
+                    <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
+                      Validity: 24 months
+                    </div>
                   </div>
 
-                  <div className="p-4 sm:p-6 pt-4 sm:pt-6">
+                  {/* Buy Now Button */}
+                  <div className="p-6 sm:p-8 pt-4 sm:pt-6">
                     <Button
-                      className="w-full bg-white text-blue-600 hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                      style={{
+                        background: "linear-gradient(90deg, #254696, #1F4B88)",
+                      }}
                       onClick={() => handleBuyNow(mobileExtendPlan)}
                       disabled={pricesLoading || !mobileExtendPlan}
                       data-testid="button-buy-mobile-extend"
@@ -650,22 +686,6 @@ export default function Plans() {
                         "Buy Now"
                       )}
                     </Button>
-                  </div>
-                </div>
-
-                <div
-                  className="absolute right-6 z-20 top-[7.5rem] sm:top-[8.5rem]"
-                  style={{ left: "-1.5rem" }}
-                >
-                  <div className="relative sm:block">
-                    <div className="bg-blue-200 py-2 sm:py-3 pl-10 sm:pl-14 pr-3 sm:pr-4 shadow-lg relative">
-                      <p className="text-gray-800 font-bold text-xs sm:text-sm text-center">
-                        Protection, repairs, and
-                        <br />
-                        better resale
-                      </p>
-                    </div>
-                    <div className="absolute -bottom-[15px] sm:-bottom-[20px] left-0 w-0 h-0 border-t-[15px] sm:border-t-[20px] border-t-blue-300 border-l-[18px] sm:border-l-[24px] border-l-transparent"></div>
                   </div>
                 </div>
               </div>

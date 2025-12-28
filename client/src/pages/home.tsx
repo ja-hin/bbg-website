@@ -140,57 +140,57 @@ export default function Home() {
               }}
             >
               <div
-                className="p-5 sm:p-6 text-center"
+                className="p-6 sm:p-8 text-center"
                 style={{ 
                   borderRadius: "24px",
                   background: "linear-gradient(135deg, #ffffff 0%, #f8fbff 50%, #ffffff 100%)"
                 }}
               >
                 <h3 
-                  className="text-xl sm:text-2xl font-bold mb-2"
+                  className="text-base sm:text-lg font-bold mb-1"
                   style={{ color: "#1F4B88" }}
                   data-testid="heading-bbg-compact"
                 >
-                  BuyBack Guarantee
+                  BuyBack Guarantee:
                 </h3>
                 
                 <p 
-                  className="text-sm sm:text-base mb-4 font-medium"
+                  className="text-xs sm:text-sm mb-4 font-medium leading-snug"
                   style={{ color: "#4b5563" }}
                 >
-                  Lock resale value of your device
+                  Lock Resale Value of your Mobile & Laptop
                 </p>
 
-                <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="flex justify-center gap-4 mb-6">
                   <div className="flex flex-col items-center">
-                    <Clock className="w-7 h-7 mb-1" style={{ color: "#1F4B88" }} />
-                    <p className="text-sm font-semibold" style={{ color: "#303e58" }}>
-                      6 months old
+                    <Clock className="w-8 h-8 mb-2" style={{ color: "#1F4B88" }} />
+                    <p className="text-xs font-semibold text-center" style={{ color: "#303e58", maxWidth: "70px" }}>
+                      For devices up to 6 months old
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <TrendingUp className="w-7 h-7 mb-1" style={{ color: "#1F4B88" }} />
-                    <p className="text-sm font-semibold" style={{ color: "#303e58" }}>
-                      Upto 70%
+                    <TrendingUp className="w-8 h-8 mb-2" style={{ color: "#1F4B88" }} />
+                    <p className="text-xs font-semibold text-center" style={{ color: "#303e58", maxWidth: "70px" }}>
+                      Upto 70% Resale Value
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <Package className="w-7 h-7 mb-1" style={{ color: "#1F4B88" }} />
-                    <p className="text-sm font-semibold" style={{ color: "#303e58" }}>
-                      Doorstep
+                    <Package className="w-8 h-8 mb-2" style={{ color: "#1F4B88" }} />
+                    <p className="text-xs font-semibold text-center" style={{ color: "#303e58", maxWidth: "70px" }}>
+                      Sell your device at doorstep
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <Shield className="w-7 h-7 mb-1" style={{ color: "#1F4B88" }} />
-                    <p className="text-sm font-semibold" style={{ color: "#303e58" }}>
-                      Secure
+                    <Shield className="w-8 h-8 mb-2" style={{ color: "#1F4B88" }} />
+                    <p className="text-xs font-semibold text-center" style={{ color: "#303e58", maxWidth: "70px" }}>
+                      Fast and Secure Payment
                     </p>
                   </div>
                 </div>
 
                 <Button
                   onClick={scrollToForm}
-                  className="w-full text-white font-semibold py-2 px-4 rounded-full text-sm sm:text-base transition-all"
+                  className="text-white font-semibold py-2 px-6 rounded-full text-xs sm:text-sm transition-all"
                   style={{
                     background: "linear-gradient(90deg, #1F4B88, #245AA3)",
                   }}
@@ -210,55 +210,55 @@ export default function Home() {
               }}
             >
               <div
-                className="p-5 sm:p-6 text-center text-white"
+                className="p-6 sm:p-8 text-center text-white"
                 style={{ 
                   borderRadius: "24px",
                   background: "linear-gradient(135deg, rgba(26, 58, 107, 0.95) 0%, rgba(42, 95, 168, 0.95) 50%, rgba(26, 58, 107, 0.95) 100%)"
                 }}
               >
                 <h3 
-                  className="text-xl sm:text-2xl font-bold mb-2"
+                  className="text-base sm:text-lg font-bold mb-1"
                   data-testid="heading-extend-compact"
                 >
-                  Extend+
+                  Extend+: Protection for
                 </h3>
                 
                 <p 
-                  className="text-sm sm:text-base mb-4 font-medium opacity-90"
+                  className="text-xs sm:text-sm mb-4 font-medium opacity-90 leading-snug"
                 >
-                  Protection beyond warranty
+                  Your Mobile & Laptop
                 </p>
 
-                <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="flex justify-center gap-4 mb-6">
                   <div className="flex flex-col items-center">
-                    <Clock className="w-7 h-7 mb-1 text-white" />
-                    <p className="text-sm font-semibold text-white">
-                      3 years old
+                    <Clock className="w-8 h-8 mb-2 text-white" />
+                    <p className="text-xs font-semibold text-white text-center" style={{ maxWidth: "70px" }}>
+                      For devices up to 3 years old
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <Wrench className="w-7 h-7 mb-1 text-white" />
-                    <p className="text-sm font-semibold text-white">
-                      1 Free Repair
+                    <Wrench className="w-8 h-8 mb-2 text-white" />
+                    <p className="text-xs font-semibold text-white text-center" style={{ maxWidth: "70px" }}>
+                      1 Free Device Repair*
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <TrendingUp className="w-7 h-7 mb-1 text-white" />
-                    <p className="text-sm font-semibold text-white">
-                      10-20% Better
+                    <TrendingUp className="w-8 h-8 mb-2 text-white" />
+                    <p className="text-xs font-semibold text-white text-center" style={{ maxWidth: "70px" }}>
+                      10-20% Better Resale Value
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <Award className="w-7 h-7 mb-1 text-white" />
-                    <p className="text-sm font-semibold text-white">
-                      30% Discount
+                    <Award className="w-8 h-8 mb-2 text-white" />
+                    <p className="text-xs font-semibold text-white text-center" style={{ maxWidth: "70px" }}>
+                      30% discount on Extended Warranty
                     </p>
                   </div>
                 </div>
 
                 <Button
                   onClick={scrollToForm}
-                  className="w-full font-semibold py-2 px-4 rounded-full text-sm sm:text-base transition-all text-white"
+                  className="font-semibold py-2 px-6 rounded-full text-xs sm:text-sm transition-all text-white"
                   style={{
                     background: "rgba(255, 255, 255, 0.2)",
                     border: "2px solid rgba(255, 255, 255, 0.4)",

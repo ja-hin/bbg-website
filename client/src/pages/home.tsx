@@ -731,44 +731,47 @@ export default function Home() {
               <>
                 {/* Laptop BBG Card */}
                 <div className="relative w-full max-w-sm">
-                  <div className="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
-                    <div className="p-5 sm:p-6 text-white text-center">
-                      <h3 className="text-xl sm:text-2xl font-bold mb-2">Laptop BBG</h3>
-                      <div className="text-4xl sm:text-5xl font-bold mb-3">
+                  <div className="rounded-3xl shadow-lg overflow-hidden bg-white h-full flex flex-col">
+                    {/* Blue Header */}
+                    <div className="p-6 sm:p-8 text-white text-center bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1">Laptop BBG</h3>
+                      <div className="text-4xl sm:text-5xl font-bold">
                         {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${getLaptopBBGPrice()}`}
                       </div>
                     </div>
-                    <div className="mx-4 sm:mx-6">
-                      <div className="bg-blue-200 py-2 px-4 rounded-lg">
+                    {/* White Content */}
+                    <div className="p-6 sm:p-8 flex-grow flex flex-col">
+                      {/* Tagline */}
+                      <div className="bg-blue-100 py-3 px-4 rounded-lg mb-5">
                         <p className="text-gray-800 font-semibold text-xs sm:text-sm text-center">
                           Assured buyback value for your Laptop
                         </p>
                       </div>
-                    </div>
-                    <div className="p-5 sm:p-6 flex-grow">
-                      <ul className="space-y-3 text-white text-sm">
+                      {/* Benefits */}
+                      <ul className="space-y-2 text-gray-800 text-sm flex-grow">
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Guaranteed 70 percent future resale value*</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Free doorstep pickup</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Instant payment</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Validity: 36 months</span>
                         </li>
                       </ul>
                     </div>
-                    <div className="p-4 sm:p-6 pt-0">
+                    {/* Button */}
+                    <div className="p-6 sm:p-8 pt-0">
                       <button
                         onClick={scrollToForm}
-                        className="w-full py-3 rounded-lg bg-white text-blue-600 font-semibold hover:bg-gray-100 transition-colors"
+                        className="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
                         data-testid="button-explore-laptop-bbg"
                       >
                         Explore
@@ -779,44 +782,47 @@ export default function Home() {
 
                 {/* Laptop Extend+ Card */}
                 <div className="relative w-full max-w-sm">
-                  <div className="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
-                    <div className="p-5 sm:p-6 text-white text-center">
-                      <h3 className="text-xl sm:text-2xl font-bold mb-2">Laptop Extend+</h3>
-                      <div className="text-4xl sm:text-5xl font-bold mb-3">
+                  <div className="rounded-3xl shadow-lg overflow-hidden bg-white h-full flex flex-col">
+                    {/* Blue Header */}
+                    <div className="p-6 sm:p-8 text-white text-center bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1">Laptop Extend+</h3>
+                      <div className="text-4xl sm:text-5xl font-bold">
                         {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${getLaptopExtendPrice()}`}
                       </div>
                     </div>
-                    <div className="mx-4 sm:mx-6">
-                      <div className="bg-blue-200 py-2 px-4 rounded-lg">
+                    {/* White Content */}
+                    <div className="p-6 sm:p-8 flex-grow flex flex-col">
+                      {/* Tagline */}
+                      <div className="bg-blue-100 py-3 px-4 rounded-lg mb-5">
                         <p className="text-gray-800 font-semibold text-xs sm:text-sm text-center">
                           Protection, repairs, and better resale
                         </p>
                       </div>
-                    </div>
-                    <div className="p-5 sm:p-6 flex-grow">
-                      <ul className="space-y-3 text-white text-sm">
+                      {/* Benefits */}
+                      <ul className="space-y-2 text-gray-800 text-sm flex-grow">
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Free Device Repair*</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>30% OFF your Extended Warranty Purchase</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Get resale value up to 20 percent higher than standard market rates</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Validity: 24 months</span>
                         </li>
                       </ul>
                     </div>
-                    <div className="p-4 sm:p-6 pt-0">
+                    {/* Button */}
+                    <div className="p-6 sm:p-8 pt-0">
                       <button
                         onClick={scrollToForm}
-                        className="w-full py-3 rounded-lg bg-white text-blue-600 font-semibold hover:bg-gray-100 transition-colors"
+                        className="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
                         data-testid="button-explore-laptop-extend"
                       >
                         Explore
@@ -832,48 +838,51 @@ export default function Home() {
                       BEST VALUE
                     </span>
                   </div>
-                  <div className="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-b from-[#8B5CF6] to-[#5B21B6] h-full flex flex-col">
-                    <div className="p-5 sm:p-6 text-white text-center pt-8">
-                      <h3 className="text-xl sm:text-2xl font-bold mb-2">Laptop Bundle</h3>
-                      <div className="text-4xl sm:text-5xl font-bold mb-3">
+                  <div className="rounded-3xl shadow-lg overflow-hidden bg-white h-full flex flex-col">
+                    {/* Purple Header */}
+                    <div className="p-6 sm:p-8 text-white text-center bg-gradient-to-b from-[#8B5CF6] to-[#5B21B6]">
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1">Laptop Bundle</h3>
+                      <div className="text-4xl sm:text-5xl font-bold">
                         {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${getLaptopBundlePrice()}`}
                       </div>
                     </div>
-                    <div className="mx-4 sm:mx-6">
-                      <div className="bg-purple-200 py-2 px-4 rounded-lg">
+                    {/* White Content */}
+                    <div className="p-6 sm:p-8 flex-grow flex flex-col">
+                      {/* Tagline */}
+                      <div className="bg-purple-100 py-3 px-4 rounded-lg mb-5">
                         <p className="text-gray-800 font-semibold text-xs sm:text-sm text-center">
                           Assured resale value, Protection and repairs
                         </p>
                       </div>
-                    </div>
-                    <div className="p-5 sm:p-6 flex-grow">
-                      <ul className="space-y-3 text-white text-sm">
+                      {/* Benefits */}
+                      <ul className="space-y-2 text-gray-800 text-sm flex-grow">
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Guaranteed 70 percent future resale value*</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Free Device Repair*</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>30% OFF your Extended Warranty Purchase</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Instant payment</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Validity: 36 months</span>
                         </li>
                       </ul>
                     </div>
-                    <div className="p-4 sm:p-6 pt-0">
+                    {/* Button */}
+                    <div className="p-6 sm:p-8 pt-0">
                       <button
                         onClick={scrollToForm}
-                        className="w-full py-3 rounded-lg bg-white text-purple-600 font-semibold hover:bg-gray-100 transition-colors"
+                        className="w-full py-3 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
                         data-testid="button-explore-laptop-bundle"
                       >
                         Explore
@@ -889,44 +898,47 @@ export default function Home() {
               <>
                 {/* Mobile BBG Card */}
                 <div className="relative w-full max-w-sm">
-                  <div className="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
-                    <div className="p-5 sm:p-6 text-white text-center">
-                      <h3 className="text-xl sm:text-2xl font-bold mb-2">Mobile BBG</h3>
-                      <div className="text-4xl sm:text-5xl font-bold mb-3">
+                  <div className="rounded-3xl shadow-lg overflow-hidden bg-white h-full flex flex-col">
+                    {/* Blue Header */}
+                    <div className="p-6 sm:p-8 text-white text-center bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1">Mobile BBG</h3>
+                      <div className="text-4xl sm:text-5xl font-bold">
                         {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${getMobileBBGPrice()}`}
                       </div>
                     </div>
-                    <div className="mx-4 sm:mx-6">
-                      <div className="bg-blue-200 py-2 px-4 rounded-lg">
+                    {/* White Content */}
+                    <div className="p-6 sm:p-8 flex-grow flex flex-col">
+                      {/* Tagline */}
+                      <div className="bg-blue-100 py-3 px-4 rounded-lg mb-5">
                         <p className="text-gray-800 font-semibold text-xs sm:text-sm text-center">
                           Assured buyback value for your Mobile
                         </p>
                       </div>
-                    </div>
-                    <div className="p-5 sm:p-6 flex-grow">
-                      <ul className="space-y-3 text-white text-sm">
+                      {/* Benefits */}
+                      <ul className="space-y-2 text-gray-800 text-sm flex-grow">
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Guaranteed 70 percent future resale value*</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Free doorstep pickup</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Instant payment</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Validity: 18 months</span>
                         </li>
                       </ul>
                     </div>
-                    <div className="p-4 sm:p-6 pt-0">
+                    {/* Button */}
+                    <div className="p-6 sm:p-8 pt-0">
                       <button
                         onClick={scrollToForm}
-                        className="w-full py-3 rounded-lg bg-white text-blue-600 font-semibold hover:bg-gray-100 transition-colors"
+                        className="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
                         data-testid="button-explore-mobile-bbg"
                       >
                         Explore
@@ -937,44 +949,47 @@ export default function Home() {
 
                 {/* Mobile Extend+ Card */}
                 <div className="relative w-full max-w-sm">
-                  <div className="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
-                    <div className="p-5 sm:p-6 text-white text-center">
-                      <h3 className="text-xl sm:text-2xl font-bold mb-2">Mobile Extend+</h3>
-                      <div className="text-4xl sm:text-5xl font-bold mb-3">
+                  <div className="rounded-3xl shadow-lg overflow-hidden bg-white h-full flex flex-col">
+                    {/* Blue Header */}
+                    <div className="p-6 sm:p-8 text-white text-center bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A]">
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1">Mobile Extend+</h3>
+                      <div className="text-4xl sm:text-5xl font-bold">
                         {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${getMobileExtendPrice()}`}
                       </div>
                     </div>
-                    <div className="mx-4 sm:mx-6">
-                      <div className="bg-blue-200 py-2 px-4 rounded-lg">
+                    {/* White Content */}
+                    <div className="p-6 sm:p-8 flex-grow flex flex-col">
+                      {/* Tagline */}
+                      <div className="bg-blue-100 py-3 px-4 rounded-lg mb-5">
                         <p className="text-gray-800 font-semibold text-xs sm:text-sm text-center">
                           Protection, repairs, and better resale
                         </p>
                       </div>
-                    </div>
-                    <div className="p-5 sm:p-6 flex-grow">
-                      <ul className="space-y-3 text-white text-sm">
+                      {/* Benefits */}
+                      <ul className="space-y-2 text-gray-800 text-sm flex-grow">
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Free Device Repair*</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>30% OFF your Extended Warranty Purchase</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Get resale value up to 20 percent higher than standard market rates</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Validity: 24 months</span>
                         </li>
                       </ul>
                     </div>
-                    <div className="p-4 sm:p-6 pt-0">
+                    {/* Button */}
+                    <div className="p-6 sm:p-8 pt-0">
                       <button
                         onClick={scrollToForm}
-                        className="w-full py-3 rounded-lg bg-white text-blue-600 font-semibold hover:bg-gray-100 transition-colors"
+                        className="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
                         data-testid="button-explore-mobile-extend"
                       >
                         Explore
@@ -990,48 +1005,51 @@ export default function Home() {
                       BEST VALUE
                     </span>
                   </div>
-                  <div className="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-b from-[#8B5CF6] to-[#5B21B6] h-full flex flex-col">
-                    <div className="p-5 sm:p-6 text-white text-center pt-8">
-                      <h3 className="text-xl sm:text-2xl font-bold mb-2">Mobile Bundle</h3>
-                      <div className="text-4xl sm:text-5xl font-bold mb-3">
+                  <div className="rounded-3xl shadow-lg overflow-hidden bg-white h-full flex flex-col">
+                    {/* Purple Header */}
+                    <div className="p-6 sm:p-8 text-white text-center bg-gradient-to-b from-[#8B5CF6] to-[#5B21B6]">
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1">Mobile Bundle</h3>
+                      <div className="text-4xl sm:text-5xl font-bold">
                         {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${getMobileBundlePrice()}`}
                       </div>
                     </div>
-                    <div className="mx-4 sm:mx-6">
-                      <div className="bg-purple-200 py-2 px-4 rounded-lg">
+                    {/* White Content */}
+                    <div className="p-6 sm:p-8 flex-grow flex flex-col">
+                      {/* Tagline */}
+                      <div className="bg-purple-100 py-3 px-4 rounded-lg mb-5">
                         <p className="text-gray-800 font-semibold text-xs sm:text-sm text-center">
                           Assured resale value, Protection and repairs
                         </p>
                       </div>
-                    </div>
-                    <div className="p-5 sm:p-6 flex-grow">
-                      <ul className="space-y-3 text-white text-sm">
+                      {/* Benefits */}
+                      <ul className="space-y-2 text-gray-800 text-sm flex-grow">
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Guaranteed 70 percent future resale value*</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Free Device Repair*</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>30% OFF your Extended Warranty Purchase</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Instant payment</span>
                         </li>
                         <li className="flex items-start">
-                          <span className="mr-2">•</span>
+                          <span className="mr-3 flex-shrink-0">•</span>
                           <span>Validity: 24 months</span>
                         </li>
                       </ul>
                     </div>
-                    <div className="p-4 sm:p-6 pt-0">
+                    {/* Button */}
+                    <div className="p-6 sm:p-8 pt-0">
                       <button
                         onClick={scrollToForm}
-                        className="w-full py-3 rounded-lg bg-white text-purple-600 font-semibold hover:bg-gray-100 transition-colors"
+                        className="w-full py-3 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
                         data-testid="button-explore-mobile-bundle"
                       >
                         Explore

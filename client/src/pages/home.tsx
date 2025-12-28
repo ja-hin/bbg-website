@@ -27,6 +27,8 @@ import {
   Clock,
   Wrench,
   Package,
+  Car,
+  DollarSign,
 } from "lucide-react";
 import { HomepageCarousel } from "@/components/homepage-carousel";
 import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png";
@@ -821,160 +823,136 @@ export default function Home() {
           className="absolute inset-0 w-full h-full object-fill z-0"
         />
         {/* Content */}
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 justify-items-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
 
             {/* Laptop Plans */}
             {pricingView === "laptop" && (
               <>
                 {/* Laptop BBG Card */}
-                <div className="relative w-full max-w-sm">
-                  <div className="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
-                    <div className="p-5 sm:p-6 text-white text-center">
-                      <h3 className="text-xl sm:text-2xl font-bold mb-2">Laptop BBG</h3>
-                      <div className="text-4xl sm:text-5xl font-bold mb-3">
-                        {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${getLaptopBBGPrice()}`}
+                <div className="w-full h-full flex flex-col">
+                  <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                    <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                        BuyBack Guarantee
+                      </h3>
+                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Lock your laptop's resale value</p>
+                      <div className="text-5xl sm:text-6xl font-bold">
+                        {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getLaptopBBGPrice()}`}
                       </div>
                     </div>
-                    <div className="mx-4 sm:mx-6">
-                      <div className="bg-blue-200 py-2 px-4 rounded-lg">
-                        <p className="text-gray-800 font-semibold text-xs sm:text-sm text-center">
-                          Assured buyback value for your Laptop
-                        </p>
+                    <div className="flex-grow p-6 sm:p-8 space-y-6">
+                      <div className="space-y-4">
+                        <div className="flex items-start gap-4">
+                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <span className="text-sm sm:text-base" style={{ color: "#374151" }}>Assured resale value</span>
+                        </div>
+                        <div className="flex items-start gap-4">
+                          <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <span className="text-sm sm:text-base" style={{ color: "#374151" }}>Sell your device at doorstep</span>
+                        </div>
+                        <div className="flex items-start gap-4">
+                          <DollarSign className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <span className="text-sm sm:text-base" style={{ color: "#374151" }}>Fast & secure payment</span>
+                        </div>
                       </div>
+                      <div className="border-t pt-4 text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Validity 36 months</div>
                     </div>
-                    <div className="p-5 sm:p-6 flex-grow">
-                      <ul className="space-y-3 text-white text-sm">
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Guaranteed 70 percent future resale value*</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Free doorstep pickup</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Instant payment</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Validity: 36 months</span>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="p-4 sm:p-6 pt-0">
-                      <button
-                        onClick={scrollToForm}
-                        className="w-full py-3 rounded-lg bg-white text-blue-600 font-semibold hover:bg-gray-100 transition-colors"
-                        data-testid="button-explore-laptop-bbg"
-                      >
-                        Explore
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                      <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-laptop-bbg">
+                        Explore Plans
                       </button>
                     </div>
                   </div>
                 </div>
 
                 {/* Laptop Extend+ Card */}
-                <div className="relative w-full max-w-sm">
-                  <div className="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
-                    <div className="p-5 sm:p-6 text-white text-center">
-                      <h3 className="text-xl sm:text-2xl font-bold mb-2">Laptop Extend+</h3>
-                      <div className="text-4xl sm:text-5xl font-bold mb-3">
-                        {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${getLaptopExtendPrice()}`}
+                <div className="w-full h-full flex flex-col">
+                  <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                    <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap">Extend+</h3>
+                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Repairs, better resale & extra savings</p>
+                      <div className="text-5xl sm:text-6xl font-bold">
+                        {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getLaptopExtendPrice()}`}
                       </div>
                     </div>
-                    <div className="mx-4 sm:mx-6">
-                      <div className="bg-blue-200 py-2 px-4 rounded-lg">
-                        <p className="text-gray-800 font-semibold text-xs sm:text-sm text-center">
-                          Protection, repairs, and better resale
-                        </p>
+                    <div className="flex-grow p-6 sm:p-8 space-y-6">
+                      <div className="space-y-4">
+                        <div className="flex items-start gap-4">
+                          <Wrench className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>1 Free Repair Service</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>We pick up, fix, and return</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                          <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Better Resale Value</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>10-20% higher value</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>30% OFF Warranty</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>One-time use</p>
+                          </div>
+                        </div>
                       </div>
+                      <div className="border-t pt-4 text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Validity 24 months</div>
                     </div>
-                    <div className="p-5 sm:p-6 flex-grow">
-                      <ul className="space-y-3 text-white text-sm">
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Free Device Repair*</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>30% OFF your Extended Warranty Purchase</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Get resale value up to 20 percent higher than standard market rates</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Validity: 24 months</span>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="p-4 sm:p-6 pt-0">
-                      <button
-                        onClick={scrollToForm}
-                        className="w-full py-3 rounded-lg bg-white text-blue-600 font-semibold hover:bg-gray-100 transition-colors"
-                        data-testid="button-explore-laptop-extend"
-                      >
-                        Explore
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                      <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-laptop-extend">
+                        Explore Plans
                       </button>
                     </div>
                   </div>
                 </div>
 
                 {/* Laptop Bundle Card */}
-                <div className="relative w-full max-w-sm">
-                  <div className="absolute -top-2 right-4 z-10">
-                    <span className="bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full shadow-md">
-                      BEST VALUE
-                    </span>
-                  </div>
-                  <div className="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-b from-[#8B5CF6] to-[#5B21B6] h-full flex flex-col">
-                    <div className="p-5 sm:p-6 text-white text-center pt-8">
-                      <h3 className="text-xl sm:text-2xl font-bold mb-2">Laptop Bundle</h3>
-                      <div className="text-4xl sm:text-5xl font-bold mb-3">
-                        {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${getLaptopBundlePrice()}`}
+                <div className="w-full h-full flex flex-col">
+                  <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                    <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                      <h3 className="text-lg sm:text-xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">BuyBack + Extend+ Bundle</h3>
+                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Repairs, better resale & savings</p>
+                      <div className="text-5xl sm:text-6xl font-bold">
+                        {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getLaptopBundlePrice()}`}
                       </div>
                     </div>
-                    <div className="mx-4 sm:mx-6">
-                      <div className="bg-purple-200 py-2 px-4 rounded-lg">
-                        <p className="text-gray-800 font-semibold text-xs sm:text-sm text-center">
-                          Assured resale value, Protection and repairs
-                        </p>
+                    <div className="flex-grow p-6 sm:p-8 space-y-6">
+                      <div className="space-y-5">
+                        <div className="flex gap-4">
+                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <span className="text-sm sm:text-base font-semibold" style={{ color: "#1F2937" }}>Assured resale value</span>
+                        </div>
+                        <div className="flex gap-4">
+                          <Wrench className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>1 Free Repair Service</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>We pick up, fix, and return</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Sell from Doorstep</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Get higher resale value</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>30% OFF Warranty</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>One-time use</p>
+                          </div>
+                        </div>
                       </div>
+                      <div className="border-t pt-4 text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Validity 36 months</div>
                     </div>
-                    <div className="p-5 sm:p-6 flex-grow">
-                      <ul className="space-y-3 text-white text-sm">
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Guaranteed 70 percent future resale value*</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Free Device Repair*</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>30% OFF your Extended Warranty Purchase</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Instant payment</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Validity: 36 months</span>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="p-4 sm:p-6 pt-0">
-                      <button
-                        onClick={scrollToForm}
-                        className="w-full py-3 rounded-lg bg-white text-purple-600 font-semibold hover:bg-gray-100 transition-colors"
-                        data-testid="button-explore-laptop-bundle"
-                      >
-                        Explore
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                      <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-laptop-bundle">
+                        Explore Plans
                       </button>
                     </div>
                   </div>
@@ -986,153 +964,129 @@ export default function Home() {
             {pricingView === "mobile" && (
               <>
                 {/* Mobile BBG Card */}
-                <div className="relative w-full max-w-sm">
-                  <div className="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
-                    <div className="p-5 sm:p-6 text-white text-center">
-                      <h3 className="text-xl sm:text-2xl font-bold mb-2">Mobile BBG</h3>
-                      <div className="text-4xl sm:text-5xl font-bold mb-3">
-                        {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${getMobileBBGPrice()}`}
+                <div className="w-full h-full flex flex-col">
+                  <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                    <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                        BuyBack Guarantee
+                      </h3>
+                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Lock your mobile's resale value</p>
+                      <div className="text-5xl sm:text-6xl font-bold">
+                        {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getMobileBBGPrice()}`}
                       </div>
                     </div>
-                    <div className="mx-4 sm:mx-6">
-                      <div className="bg-blue-200 py-2 px-4 rounded-lg">
-                        <p className="text-gray-800 font-semibold text-xs sm:text-sm text-center">
-                          Assured buyback value for your Mobile
-                        </p>
+                    <div className="flex-grow p-6 sm:p-8 space-y-6">
+                      <div className="space-y-4">
+                        <div className="flex items-start gap-4">
+                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <span className="text-sm sm:text-base" style={{ color: "#374151" }}>Assured resale value</span>
+                        </div>
+                        <div className="flex items-start gap-4">
+                          <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <span className="text-sm sm:text-base" style={{ color: "#374151" }}>Sell your device at doorstep</span>
+                        </div>
+                        <div className="flex items-start gap-4">
+                          <DollarSign className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <span className="text-sm sm:text-base" style={{ color: "#374151" }}>Fast & secure payment</span>
+                        </div>
                       </div>
+                      <div className="border-t pt-4 text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Validity 18 months</div>
                     </div>
-                    <div className="p-5 sm:p-6 flex-grow">
-                      <ul className="space-y-3 text-white text-sm">
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Guaranteed 70 percent future resale value*</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Free doorstep pickup</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Instant payment</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Validity: 18 months</span>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="p-4 sm:p-6 pt-0">
-                      <button
-                        onClick={scrollToForm}
-                        className="w-full py-3 rounded-lg bg-white text-blue-600 font-semibold hover:bg-gray-100 transition-colors"
-                        data-testid="button-explore-mobile-bbg"
-                      >
-                        Explore
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                      <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-mobile-bbg">
+                        Explore Plans
                       </button>
                     </div>
                   </div>
                 </div>
 
                 {/* Mobile Extend+ Card */}
-                <div className="relative w-full max-w-sm">
-                  <div className="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-b from-[#4A90E2] to-[#1E3A8A] h-full flex flex-col">
-                    <div className="p-5 sm:p-6 text-white text-center">
-                      <h3 className="text-xl sm:text-2xl font-bold mb-2">Mobile Extend+</h3>
-                      <div className="text-4xl sm:text-5xl font-bold mb-3">
-                        {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${getMobileExtendPrice()}`}
+                <div className="w-full h-full flex flex-col">
+                  <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                    <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap">Extend+</h3>
+                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Repairs, better resale & extra savings</p>
+                      <div className="text-5xl sm:text-6xl font-bold">
+                        {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getMobileExtendPrice()}`}
                       </div>
                     </div>
-                    <div className="mx-4 sm:mx-6">
-                      <div className="bg-blue-200 py-2 px-4 rounded-lg">
-                        <p className="text-gray-800 font-semibold text-xs sm:text-sm text-center">
-                          Protection, repairs, and better resale
-                        </p>
+                    <div className="flex-grow p-6 sm:p-8 space-y-6">
+                      <div className="space-y-4">
+                        <div className="flex items-start gap-4">
+                          <Wrench className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>1 Free Repair Service</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>We pick up, fix, and return</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                          <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Better Resale Value</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>10-20% higher value</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>30% OFF Warranty</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>One-time use</p>
+                          </div>
+                        </div>
                       </div>
+                      <div className="border-t pt-4 text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Validity 24 months</div>
                     </div>
-                    <div className="p-5 sm:p-6 flex-grow">
-                      <ul className="space-y-3 text-white text-sm">
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Free Device Repair*</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>30% OFF your Extended Warranty Purchase</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Get resale value up to 20 percent higher than standard market rates</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Validity: 24 months</span>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="p-4 sm:p-6 pt-0">
-                      <button
-                        onClick={scrollToForm}
-                        className="w-full py-3 rounded-lg bg-white text-blue-600 font-semibold hover:bg-gray-100 transition-colors"
-                        data-testid="button-explore-mobile-extend"
-                      >
-                        Explore
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                      <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-mobile-extend">
+                        Explore Plans
                       </button>
                     </div>
                   </div>
                 </div>
 
                 {/* Mobile Bundle Card */}
-                <div className="relative w-full max-w-sm">
-                  <div className="absolute -top-2 right-4 z-10">
-                    <span className="bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full shadow-md">
-                      BEST VALUE
-                    </span>
-                  </div>
-                  <div className="rounded-2xl shadow-xl overflow-hidden bg-gradient-to-b from-[#8B5CF6] to-[#5B21B6] h-full flex flex-col">
-                    <div className="p-5 sm:p-6 text-white text-center pt-8">
-                      <h3 className="text-xl sm:text-2xl font-bold mb-2">Mobile Bundle</h3>
-                      <div className="text-4xl sm:text-5xl font-bold mb-3">
-                        {pricesLoading ? <Loader2 className="h-6 w-6 animate-spin inline" /> : `₹${getMobileBundlePrice()}`}
+                <div className="w-full h-full flex flex-col">
+                  <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                    <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                      <h3 className="text-lg sm:text-xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">BuyBack + Extend+ Bundle</h3>
+                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Repairs, better resale & savings</p>
+                      <div className="text-5xl sm:text-6xl font-bold">
+                        {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getMobileBundlePrice()}`}
                       </div>
                     </div>
-                    <div className="mx-4 sm:mx-6">
-                      <div className="bg-purple-200 py-2 px-4 rounded-lg">
-                        <p className="text-gray-800 font-semibold text-xs sm:text-sm text-center">
-                          Assured resale value, Protection and repairs
-                        </p>
+                    <div className="flex-grow p-6 sm:p-8 space-y-6">
+                      <div className="space-y-5">
+                        <div className="flex gap-4">
+                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <span className="text-sm sm:text-base font-semibold" style={{ color: "#1F2937" }}>Assured resale value</span>
+                        </div>
+                        <div className="flex gap-4">
+                          <Wrench className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>1 Free Repair Service</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>We pick up, fix, and return</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Sell from Doorstep</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Get higher resale value</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>30% OFF Warranty</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>One-time use</p>
+                          </div>
+                        </div>
                       </div>
+                      <div className="border-t pt-4 text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Validity 24 months</div>
                     </div>
-                    <div className="p-5 sm:p-6 flex-grow">
-                      <ul className="space-y-3 text-white text-sm">
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Guaranteed 70 percent future resale value*</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Free Device Repair*</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>30% OFF your Extended Warranty Purchase</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Instant payment</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="mr-2">•</span>
-                          <span>Validity: 24 months</span>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="p-4 sm:p-6 pt-0">
-                      <button
-                        onClick={scrollToForm}
-                        className="w-full py-3 rounded-lg bg-white text-purple-600 font-semibold hover:bg-gray-100 transition-colors"
-                        data-testid="button-explore-mobile-bundle"
-                      >
-                        Explore
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                      <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-mobile-bundle">
+                        Explore Plans
                       </button>
                     </div>
                   </div>

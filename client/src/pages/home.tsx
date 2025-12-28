@@ -129,228 +129,235 @@ export default function Home() {
           background: "linear-gradient(135deg, #f5f9ff 0%, #f0f7ff 50%, #fafbfe 100%)"
         }}
       >
-        <div className="max-w-4xl mx-auto">
-          {/* Single Card for Mobile/Tablet, Multiple for Desktop */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="max-w-6xl mx-auto">
+          {/* Grid: 1 column on mobile, 2 columns on tablet/desktop */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
             
-            {/* BuyBack Guarantee Card - Mobile/Tablet Focus */}
+            {/* BuyBack Guarantee Card */}
             <div
-              className="lg:col-span-1 transition-all duration-300 hover:shadow-lg"
+              className="group transition-all duration-300 hover:shadow-lg"
               style={{
-                borderRadius: "24px",
+                borderRadius: "20px",
                 overflow: "hidden",
-                background: "white",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)"
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.07)"
               }}
             >
-              <div className="flex flex-col h-full">
-                {/* Header - Blue */}
+              {/* Border wrapper */}
+              <div
+                style={{
+                  borderRadius: "20px",
+                  padding: "2px",
+                  background: "linear-gradient(135deg, #d4e3ff 0%, #1a5db0 50%, #0f3a5f 100%)"
+                }}
+              >
+                {/* Content */}
                 <div
-                  className="p-6 sm:p-8 text-white text-center"
-                  style={{
-                    background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)"
+                  className="p-6 sm:p-7 lg:p-8 text-center h-full flex flex-col"
+                  style={{ 
+                    borderRadius: "18px",
+                    background: "#f9fbff"
                   }}
                 >
-                  <h3 className="text-xl sm:text-2xl font-bold mb-1">BuyBack Guarantee</h3>
-                  <p className="text-sm sm:text-base mb-4 opacity-90">Lock your phone's resale value</p>
-                  <div className="text-4xl sm:text-5xl font-bold">₹299</div>
-                </div>
+                  {/* Title */}
+                  <h3 
+                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-2"
+                    style={{ color: "#1F4B88", lineHeight: "1.3" }}
+                    data-testid="heading-bbg-compact"
+                  >
+                    BuyBack Guarantee:
+                  </h3>
+                  
+                  {/* Subtitle */}
+                  <p 
+                    className="text-sm sm:text-base lg:text-base mb-6 sm:mb-8 font-medium leading-relaxed flex-shrink-0"
+                    style={{ color: "#4b5563" }}
+                  >
+                    Lock Resale Value of your Mobile & Laptop
+                  </p>
 
-                {/* Body - White */}
-                <div className="p-6 sm:p-8 flex-grow flex flex-col">
-                  {/* Key Features */}
-                  <div className="space-y-3 mb-6">
-                    <div className="flex items-start gap-3">
-                      <Shield className="w-5 h-5 mt-1 flex-shrink-0" style={{ color: "#2563eb" }} />
-                      <span className="text-sm font-medium" style={{ color: "#475569" }}>Assured resale value</span>
+                  {/* Features Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-7 sm:mb-8 flex-grow flex items-center justify-center">
+                    {/* Feature 1 */}
+                    <div className="flex flex-col items-center">
+                      <div className="mb-3">
+                        <Clock 
+                          className="w-11 h-11 sm:w-12 sm:h-12" 
+                          style={{ color: "#1F4B88" }} 
+                        />
+                      </div>
+                      <p className="text-xs sm:text-sm font-semibold text-center leading-snug" style={{ color: "#303e58" }}>
+                        For devices<br className="sm:hidden" />up to 6<br className="sm:hidden" />months old
+                      </p>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <Package className="w-5 h-5 mt-1 flex-shrink-0" style={{ color: "#2563eb" }} />
-                      <span className="text-sm font-medium" style={{ color: "#475569" }}>Sell your device at doorstep</span>
+                    
+                    {/* Feature 2 */}
+                    <div className="flex flex-col items-center">
+                      <div className="mb-3">
+                        <TrendingUp 
+                          className="w-11 h-11 sm:w-12 sm:h-12" 
+                          style={{ color: "#1F4B88" }} 
+                        />
+                      </div>
+                      <p className="text-xs sm:text-sm font-semibold text-center leading-snug" style={{ color: "#303e58" }}>
+                        Upto 70%<br />Resale Value
+                      </p>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <TrendingUp className="w-5 h-5 mt-1 flex-shrink-0" style={{ color: "#2563eb" }} />
-                      <span className="text-sm font-medium" style={{ color: "#475569" }}>Fast &amp; secure payment</span>
+                    
+                    {/* Feature 3 */}
+                    <div className="flex flex-col items-center">
+                      <div className="mb-3">
+                        <Package 
+                          className="w-11 h-11 sm:w-12 sm:h-12" 
+                          style={{ color: "#1F4B88" }} 
+                        />
+                      </div>
+                      <p className="text-xs sm:text-sm font-semibold text-center leading-snug" style={{ color: "#303e58" }}>
+                        Sell at<br className="sm:hidden" />doorstep
+                      </p>
+                    </div>
+                    
+                    {/* Feature 4 */}
+                    <div className="flex flex-col items-center">
+                      <div className="mb-3">
+                        <Shield 
+                          className="w-11 h-11 sm:w-12 sm:h-12" 
+                          style={{ color: "#1F4B88" }} 
+                        />
+                      </div>
+                      <p className="text-xs sm:text-sm font-semibold text-center leading-snug" style={{ color: "#303e58" }}>
+                        Fast &amp;<br className="sm:hidden" />Secure<br className="sm:hidden" />Payment
+                      </p>
                     </div>
                   </div>
-
-                  {/* Price Slab */}
-                  <div className="mb-6 flex-grow">
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ background: "#f0f9ff" }}>
-                        <span className="text-sm font-medium" style={{ color: "#475569" }}>4-6 months</span>
-                        <span className="text-sm font-bold" style={{ color: "#2563eb" }}>Get back 70%</span>
-                      </div>
-                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ background: "#f0f9ff" }}>
-                        <span className="text-sm font-medium" style={{ color: "#475569" }}>7-9 months</span>
-                        <span className="text-sm font-bold" style={{ color: "#2563eb" }}>Get back 60%</span>
-                      </div>
-                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ background: "#f0f9ff" }}>
-                        <span className="text-sm font-medium" style={{ color: "#475569" }}>10-12 months</span>
-                        <span className="text-sm font-bold" style={{ color: "#2563eb" }}>Get back 50%</span>
-                      </div>
-                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ background: "#f0f9ff" }}>
-                        <span className="text-sm font-medium" style={{ color: "#475569" }}>13-15 months</span>
-                        <span className="text-sm font-bold" style={{ color: "#2563eb" }}>Get back 40%</span>
-                      </div>
-                      <div className="flex justify-between items-center p-3 rounded-lg" style={{ background: "#f0f9ff" }}>
-                        <span className="text-sm font-medium" style={{ color: "#475569" }}>16-18 months</span>
-                        <span className="text-sm font-bold" style={{ color: "#2563eb" }}>Get back 30%</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Validity */}
-                  <p className="text-xs text-center mb-4" style={{ color: "#94a3b8" }}>Validity 18 months</p>
 
                   {/* CTA Button */}
                   <Button
                     onClick={scrollToForm}
-                    className="w-full text-white font-semibold rounded-full text-base transition-all duration-300 hover:shadow-md active:scale-95"
+                    className="mt-auto w-full sm:w-auto sm:mx-auto text-white font-semibold rounded-full text-sm sm:text-base transition-all duration-300 hover:shadow-md active:scale-95"
                     style={{
-                      background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
-                      padding: "12px 24px",
-                      minHeight: "44px"
+                      background: "linear-gradient(90deg, #1F4B88, #245AA3)",
+                      padding: "11px 28px",
+                      minHeight: "44px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center"
                     }}
                     data-testid="button-bbg-compact"
                   >
-                    Buy Now
+                    Get BuyBack Guarantee
                   </Button>
                 </div>
               </div>
             </div>
 
-            {/* Laptop BBG Card - Desktop */}
+            {/* Extend+ Protection Card */}
             <div
-              className="hidden lg:flex lg:flex-col transition-all duration-300 hover:shadow-lg"
+              className="group transition-all duration-300 hover:shadow-lg"
               style={{
-                borderRadius: "24px",
+                borderRadius: "20px",
                 overflow: "hidden",
-                background: "white",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)"
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.07)"
               }}
             >
-              <div className="flex flex-col h-full">
+              {/* Border wrapper */}
+              <div
+                style={{
+                  borderRadius: "20px",
+                  padding: "2px",
+                  background: "linear-gradient(135deg, #5a8fd9, #1a3a6b, #0f1f35)"
+                }}
+              >
+                {/* Content */}
                 <div
-                  className="p-6 text-white text-center"
-                  style={{
-                    background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)"
+                  className="p-6 sm:p-7 lg:p-8 text-center text-white h-full flex flex-col"
+                  style={{ 
+                    borderRadius: "18px",
+                    background: "linear-gradient(180deg, rgba(26, 58, 107, 0.98) 0%, rgba(42, 95, 168, 0.98) 100%)"
                   }}
                 >
-                  <h3 className="text-xl font-bold mb-1">Laptop BBG</h3>
-                  <div className="text-4xl font-bold">₹499</div>
-                </div>
-
-                <div className="p-6 flex-grow flex flex-col">
-                  <div
-                    className="p-3 rounded-lg text-center mb-4 text-sm font-medium"
-                    style={{
-                      background: "#f0f9ff",
-                      color: "#1e40af"
-                    }}
+                  {/* Title */}
+                  <h3 
+                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-2"
+                    style={{ lineHeight: "1.3" }}
+                    data-testid="heading-extend-compact"
                   >
-                    Assured buyback value for your Laptop
+                    Extend+: Protection for
+                  </h3>
+                  
+                  {/* Subtitle */}
+                  <p 
+                    className="text-sm sm:text-base lg:text-base mb-6 sm:mb-8 font-medium leading-relaxed flex-shrink-0"
+                  >
+                    Your Mobile & Laptop
+                  </p>
+
+                  {/* Features Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-7 sm:mb-8 flex-grow flex items-center justify-center">
+                    {/* Feature 1 */}
+                    <div className="flex flex-col items-center">
+                      <div className="mb-3">
+                        <Clock 
+                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
+                        />
+                      </div>
+                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-snug">
+                        For devices<br className="sm:hidden" />up to 3<br className="sm:hidden" />years old
+                      </p>
+                    </div>
+                    
+                    {/* Feature 2 */}
+                    <div className="flex flex-col items-center">
+                      <div className="mb-3">
+                        <Wrench 
+                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
+                        />
+                      </div>
+                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-snug">
+                        1 Free<br />Device<br className="sm:hidden" />Repair*
+                      </p>
+                    </div>
+                    
+                    {/* Feature 3 */}
+                    <div className="flex flex-col items-center">
+                      <div className="mb-3">
+                        <TrendingUp 
+                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
+                        />
+                      </div>
+                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-snug">
+                        10-20%<br />Better<br className="sm:hidden" />Resale Value
+                      </p>
+                    </div>
+                    
+                    {/* Feature 4 */}
+                    <div className="flex flex-col items-center">
+                      <div className="mb-3">
+                        <Award 
+                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
+                        />
+                      </div>
+                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-snug">
+                        30%<br />discount on<br className="sm:hidden" />Warranty
+                      </p>
+                    </div>
                   </div>
 
-                  <ul className="space-y-2 mb-6 flex-grow text-sm" style={{ color: "#475569" }}>
-                    <li className="flex items-start gap-2">
-                      <span className="text-lg leading-none">•</span>
-                      <span>Guaranteed 70 percent future resale value*</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-lg leading-none">•</span>
-                      <span>Free doorstep pickup</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-lg leading-none">•</span>
-                      <span>Instant payment</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-lg leading-none">•</span>
-                      <span>Validity: 36 months</span>
-                    </li>
-                  </ul>
-
+                  {/* CTA Button */}
                   <Button
                     onClick={scrollToForm}
-                    className="w-full text-white font-semibold rounded-lg text-base transition-all duration-300"
+                    className="mt-auto w-full sm:w-auto sm:mx-auto text-white font-semibold rounded-full text-sm sm:text-base transition-all duration-300 hover:shadow-md active:scale-95"
                     style={{
-                      background: "white",
-                      color: "#2563eb",
-                      padding: "12px 24px",
-                      minHeight: "44px"
+                      background: "rgba(255, 255, 255, 0.15)",
+                      border: "2px solid rgba(255, 255, 255, 0.35)",
+                      padding: "11px 28px",
+                      minHeight: "44px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center"
                     }}
-                    data-testid="button-laptop-bbg"
+                    data-testid="button-extend-compact"
                   >
-                    Explore
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Laptop Extend+ Card - Desktop */}
-            <div
-              className="hidden lg:flex lg:flex-col transition-all duration-300 hover:shadow-lg"
-              style={{
-                borderRadius: "24px",
-                overflow: "hidden",
-                background: "white",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)"
-              }}
-            >
-              <div className="flex flex-col h-full">
-                <div
-                  className="p-6 text-white text-center"
-                  style={{
-                    background: "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)"
-                  }}
-                >
-                  <h3 className="text-xl font-bold mb-1">Laptop Extend+</h3>
-                  <div className="text-4xl font-bold">₹499</div>
-                </div>
-
-                <div className="p-6 flex-grow flex flex-col">
-                  <div
-                    className="p-3 rounded-lg text-center mb-4 text-sm font-medium"
-                    style={{
-                      background: "#dbeafe",
-                      color: "#1e40af"
-                    }}
-                  >
-                    Protection, repairs, and better resale
-                  </div>
-
-                  <ul className="space-y-2 mb-6 flex-grow text-sm" style={{ color: "#475569" }}>
-                    <li className="flex items-start gap-2">
-                      <span className="text-lg leading-none">•</span>
-                      <span>Free Device Repair*</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-lg leading-none">•</span>
-                      <span>30% OFF your Extended Warranty Purchase</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-lg leading-none">•</span>
-                      <span>Get resale value up to 20 percent higher</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-lg leading-none">•</span>
-                      <span>Validity: 24 months</span>
-                    </li>
-                  </ul>
-
-                  <Button
-                    onClick={scrollToForm}
-                    className="w-full text-white font-semibold rounded-lg text-base transition-all duration-300"
-                    style={{
-                      background: "white",
-                      color: "#3b82f6",
-                      padding: "12px 24px",
-                      minHeight: "44px"
-                    }}
-                    data-testid="button-laptop-extend"
-                  >
-                    Explore
+                    Get Extend+ Protection
                   </Button>
                 </div>
               </div>
@@ -570,226 +577,6 @@ export default function Home() {
       </section>
       {/* BBG vs Extend+ Comparison Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {/* BBG Mobile Card */}
-            <div
-              className="flex flex-col h-full transition-all duration-300 hover:shadow-lg"
-              style={{
-                borderRadius: "20px",
-                overflow: "hidden",
-                background: "white",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)"
-              }}
-            >
-              {/* Blue Header */}
-              <div
-                className="p-6 text-white text-center"
-                style={{
-                  background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)"
-                }}
-              >
-                <h3 className="text-xl sm:text-2xl font-bold mb-2">Mobile BBG</h3>
-                <div className="text-4xl font-bold">₹299</div>
-              </div>
-
-              {/* White Body */}
-              <div className="p-6 flex-grow flex flex-col">
-                <div
-                  className="p-3 rounded-lg text-center mb-4 text-sm font-medium"
-                  style={{
-                    background: "#f0f9ff",
-                    color: "#1e40af"
-                  }}
-                >
-                  Assured resale value for your Mobile
-                </div>
-
-                <ul className="space-y-3 mb-6 flex-grow text-sm" style={{ color: "#475569" }}>
-                  <li className="flex items-start gap-2">
-                    <span className="text-lg leading-none">•</span>
-                    <span>Guaranteed 70 percent future resale value*</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-lg leading-none">•</span>
-                    <span>Free doorstep pickup</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-lg leading-none">•</span>
-                    <span>Instant payment</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-lg leading-none">•</span>
-                    <span>Validity: 18 months</span>
-                  </li>
-                </ul>
-
-                <Button
-                  onClick={scrollToForm}
-                  className="w-full text-white font-semibold rounded-lg text-base transition-all duration-300"
-                  style={{
-                    background: "white",
-                    color: "#2563eb",
-                    padding: "12px 24px",
-                    minHeight: "44px"
-                  }}
-                  data-testid="button-explore-mobile-bbg"
-                >
-                  Explore
-                </Button>
-              </div>
-            </div>
-
-            {/* Extend+ Mobile Card */}
-            <div
-              className="flex flex-col h-full transition-all duration-300 hover:shadow-lg"
-              style={{
-                borderRadius: "20px",
-                overflow: "hidden",
-                background: "white",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)"
-              }}
-            >
-              {/* Blue Header */}
-              <div
-                className="p-6 text-white text-center"
-                style={{
-                  background: "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)"
-                }}
-              >
-                <h3 className="text-xl sm:text-2xl font-bold mb-2">Mobile Extend+</h3>
-                <div className="text-4xl font-bold">₹199</div>
-              </div>
-
-              {/* White Body */}
-              <div className="p-6 flex-grow flex flex-col">
-                <div
-                  className="p-3 rounded-lg text-center mb-4 text-sm font-medium"
-                  style={{
-                    background: "#dbeafe",
-                    color: "#1e40af"
-                  }}
-                >
-                  Protection, repairs, and better resale
-                </div>
-
-                <ul className="space-y-3 mb-6 flex-grow text-sm" style={{ color: "#475569" }}>
-                  <li className="flex items-start gap-2">
-                    <span className="text-lg leading-none">•</span>
-                    <span>Free Device Repair*</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-lg leading-none">•</span>
-                    <span>30% OFF your Extended Warranty Purchase</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-lg leading-none">•</span>
-                    <span>Get resale value up to 20 percent higher</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-lg leading-none">•</span>
-                    <span>Validity: 12 months</span>
-                  </li>
-                </ul>
-
-                <Button
-                  onClick={scrollToForm}
-                  className="w-full text-white font-semibold rounded-lg text-base transition-all duration-300"
-                  style={{
-                    background: "white",
-                    color: "#3b82f6",
-                    padding: "12px 24px",
-                    minHeight: "44px"
-                  }}
-                  data-testid="button-explore-mobile-extend"
-                >
-                  Explore
-                </Button>
-              </div>
-            </div>
-
-            {/* Mobile Bundle Card */}
-            <div
-              className="flex flex-col h-full transition-all duration-300 hover:shadow-lg md:col-span-2 lg:col-span-1"
-              style={{
-                borderRadius: "20px",
-                overflow: "hidden",
-                background: "white",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)"
-              }}
-            >
-              {/* Purple Header with Badge */}
-              <div
-                className="p-6 text-white text-center relative"
-                style={{
-                  background: "linear-gradient(135deg, #9333ea 0%, #7e22ce 100%)"
-                }}
-              >
-                <div 
-                  className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold"
-                  style={{
-                    background: "#fbbf24",
-                    color: "#000"
-                  }}
-                >
-                  BEST VALUE
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-2">Mobile Bundle</h3>
-                <div className="text-4xl font-bold">₹499</div>
-              </div>
-
-              {/* White Body */}
-              <div className="p-6 flex-grow flex flex-col">
-                <div
-                  className="p-3 rounded-lg text-center mb-4 text-sm font-medium"
-                  style={{
-                    background: "#f3e8ff",
-                    color: "#7e22ce"
-                  }}
-                >
-                  Assured resale value, Protection and repairs
-                </div>
-
-                <ul className="space-y-3 mb-6 flex-grow text-sm" style={{ color: "#475569" }}>
-                  <li className="flex items-start gap-2">
-                    <span className="text-lg leading-none">•</span>
-                    <span>Guaranteed 70 percent future resale value*</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-lg leading-none">•</span>
-                    <span>Free Device Repair*</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-lg leading-none">•</span>
-                    <span>30% OFF your Extended Warranty Purchase</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-lg leading-none">•</span>
-                    <span>Validity: 18 months</span>
-                  </li>
-                </ul>
-
-                <Button
-                  onClick={scrollToForm}
-                  className="w-full text-white font-semibold rounded-lg text-base transition-all duration-300"
-                  style={{
-                    background: "white",
-                    color: "#9333ea",
-                    padding: "12px 24px",
-                    minHeight: "44px"
-                  }}
-                  data-testid="button-explore-mobile-bundle"
-                >
-                  Explore
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* BBG vs Extend+ Comparison Section - HIDDEN */}
-      <section className="hidden bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
             {/* BBG Card */}

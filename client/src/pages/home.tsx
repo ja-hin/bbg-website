@@ -147,7 +147,7 @@ export default function Home() {
                 }}
               >
                 <h3 
-                  className="text-lg sm:text-xl font-bold mb-2"
+                  className="text-xl sm:text-2xl font-bold mb-2"
                   style={{ color: "#1F4B88" }}
                   data-testid="heading-bbg-compact"
                 >
@@ -155,7 +155,7 @@ export default function Home() {
                 </h3>
                 
                 <p 
-                  className="text-xs sm:text-sm mb-4 font-medium"
+                  className="text-sm sm:text-base mb-4 font-medium"
                   style={{ color: "#4b5563" }}
                 >
                   Lock resale value of your device
@@ -163,26 +163,26 @@ export default function Home() {
 
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   <div className="flex flex-col items-center">
-                    <Clock className="w-6 h-6 mb-1" style={{ color: "#1F4B88" }} />
-                    <p className="text-xs font-semibold" style={{ color: "#303e58" }}>
+                    <Clock className="w-7 h-7 mb-1" style={{ color: "#1F4B88" }} />
+                    <p className="text-sm font-semibold" style={{ color: "#303e58" }}>
                       6 months old
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <TrendingUp className="w-6 h-6 mb-1" style={{ color: "#1F4B88" }} />
-                    <p className="text-xs font-semibold" style={{ color: "#303e58" }}>
+                    <TrendingUp className="w-7 h-7 mb-1" style={{ color: "#1F4B88" }} />
+                    <p className="text-sm font-semibold" style={{ color: "#303e58" }}>
                       Upto 70%
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <Package className="w-6 h-6 mb-1" style={{ color: "#1F4B88" }} />
-                    <p className="text-xs font-semibold" style={{ color: "#303e58" }}>
+                    <Package className="w-7 h-7 mb-1" style={{ color: "#1F4B88" }} />
+                    <p className="text-sm font-semibold" style={{ color: "#303e58" }}>
                       Doorstep
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <Shield className="w-6 h-6 mb-1" style={{ color: "#1F4B88" }} />
-                    <p className="text-xs font-semibold" style={{ color: "#303e58" }}>
+                    <Shield className="w-7 h-7 mb-1" style={{ color: "#1F4B88" }} />
+                    <p className="text-sm font-semibold" style={{ color: "#303e58" }}>
                       Secure
                     </p>
                   </div>
@@ -190,7 +190,7 @@ export default function Home() {
 
                 <Button
                   onClick={scrollToForm}
-                  className="w-full text-white font-semibold py-2 px-4 rounded-full text-xs sm:text-sm transition-all"
+                  className="w-full text-white font-semibold py-2 px-4 rounded-full text-sm sm:text-base transition-all"
                   style={{
                     background: "linear-gradient(90deg, #1F4B88, #245AA3)",
                   }}
@@ -217,40 +217,40 @@ export default function Home() {
                 }}
               >
                 <h3 
-                  className="text-lg sm:text-xl font-bold mb-2"
+                  className="text-xl sm:text-2xl font-bold mb-2"
                   data-testid="heading-extend-compact"
                 >
                   Extend+
                 </h3>
                 
                 <p 
-                  className="text-xs sm:text-sm mb-4 font-medium opacity-90"
+                  className="text-sm sm:text-base mb-4 font-medium opacity-90"
                 >
                   Protection beyond warranty
                 </p>
 
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   <div className="flex flex-col items-center">
-                    <Clock className="w-6 h-6 mb-1 text-white" />
-                    <p className="text-xs font-semibold text-white">
+                    <Clock className="w-7 h-7 mb-1 text-white" />
+                    <p className="text-sm font-semibold text-white">
                       3 years old
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <Wrench className="w-6 h-6 mb-1 text-white" />
-                    <p className="text-xs font-semibold text-white">
+                    <Wrench className="w-7 h-7 mb-1 text-white" />
+                    <p className="text-sm font-semibold text-white">
                       1 Free Repair
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <TrendingUp className="w-6 h-6 mb-1 text-white" />
-                    <p className="text-xs font-semibold text-white">
+                    <TrendingUp className="w-7 h-7 mb-1 text-white" />
+                    <p className="text-sm font-semibold text-white">
                       10-20% Better
                     </p>
                   </div>
                   <div className="flex flex-col items-center">
-                    <Award className="w-6 h-6 mb-1 text-white" />
-                    <p className="text-xs font-semibold text-white">
+                    <Award className="w-7 h-7 mb-1 text-white" />
+                    <p className="text-sm font-semibold text-white">
                       30% Discount
                     </p>
                   </div>
@@ -258,7 +258,7 @@ export default function Home() {
 
                 <Button
                   onClick={scrollToForm}
-                  className="w-full font-semibold py-2 px-4 rounded-full text-xs sm:text-sm transition-all text-white"
+                  className="w-full font-semibold py-2 px-4 rounded-full text-sm sm:text-base transition-all text-white"
                   style={{
                     background: "rgba(255, 255, 255, 0.2)",
                     border: "2px solid rgba(255, 255, 255, 0.4)",

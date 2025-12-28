@@ -435,6 +435,9 @@ export class SqlServerStorage implements IStorage {
             voucher_code NVARCHAR(100) NOT NULL UNIQUE,
             is_verified BIT DEFAULT 1,
             registration_source NVARCHAR(50) DEFAULT 'post_purchase',
+            email_template_id INT NULL,
+            sms_template_id INT NULL,
+            whatsapp_template_id INT NULL,
             created_at DATETIME2 DEFAULT GETDATE()
           );
           PRINT 'Device registrations table created for post-purchase registrations';
@@ -442,6 +445,13 @@ export class SqlServerStorage implements IStorage {
         ELSE
         BEGIN
           PRINT 'Device registrations table already exists, preserving current data';
+          -- Add template columns if they don't exist
+          IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('device_registrations') AND name = 'email_template_id')
+          BEGIN
+            ALTER TABLE device_registrations ADD email_template_id INT NULL;
+            ALTER TABLE device_registrations ADD sms_template_id INT NULL;
+            ALTER TABLE device_registrations ADD whatsapp_template_id INT NULL;
+          END
         END
       `;
       

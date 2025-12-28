@@ -729,15 +729,15 @@ export default function ThankYou() {
       case 'customer':
         return {
           icon: <Smartphone className="h-16 w-16 text-green-600" />,
-          title: "Registration Successful!",
-          subtitle: "BBG Registration Complete",
-          message: "Thank you for choosing XtraCover BBG. Your device is now protected with our comprehensive buyback guarantee.",
+          title: "Purchase Successful!",
+          subtitle: "Thank you for choosing XtraCover",
+          message: `You’ve taken a smart step to safeguard your device and its future value.\nMore value for you. Less waste for the planet.`,
           code: voucherCode,
           codeLabel: "Your BBG Voucher Code:",
           isFailure: false,
           details: [
             "Confirmation email sent to your registered email address",
-            "BBG will be activated within 24-48 hours after verification",
+            "Complete your device registration with IMEI / Serial No.",
             "Keep your voucher code safe for future claims",
             "Contact support for any queries or assistance"
           ]
@@ -876,19 +876,48 @@ export default function ThankYou() {
 
             {/* Contact Information */}
             <div className="mt-12 pt-8 border-t border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Need Help?</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-                <div className="text-center">
-                  <div className="text-xtra-primary font-semibold">Email Support</div>
-                  <div className="text-gray-600">contactus@xtracover.com</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xtra-primary font-semibold">Phone Support</div>
-                  <div className="text-gray-600">+91-8860396039</div>
-                  <p className="text-xs mt-1">between 09:30 to 18:30 IST</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-6 text-center">
+                Need Help?
+              </h3>
+
+              {/* Constrain width so left/right don't fly to the edges */}
+              <div className="mx-auto max-w-3xl">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 text-sm sm:items-start">
+
+                  {/* Email */}
+                  <div className="text-center sm:text-left">
+                    <div className="text-xtra-primary font-semibold text-base">
+                      Email Support
+                    </div>
+                    <a
+                      href="mailto:contactus@xtracover.com"
+                      className="text-gray-700 hover:text-gray-900"
+                    >
+                      contactus@xtracover.com
+                    </a>
+                  </div>
+
+                  {/* Phone */}
+                  <div className="text-center sm:text-right">
+                    <div className="text-xtra-primary font-semibold text-base">
+                      Phone Support
+                    </div>
+                    <a
+                      href="tel:+918860396039"
+                      className="text-gray-700 hover:text-gray-900"
+                    >
+                      +91-8860396039
+                    </a>
+                    <p className="text-xs text-gray-500 mt-1 leading-tight">
+                      between 09:30 to 18:30 IST
+                    </p>
+                  </div>
+
                 </div>
               </div>
             </div>
+
+
           </CardContent>
         </Card>
       </div>

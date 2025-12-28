@@ -61,6 +61,9 @@ export class TemplateService {
       // Insert default templates if none exist
       await this.createDefaultTemplates();
       
+      // Create registration-specific template mappings
+      await this.createRegistrationTemplates();
+      
       // Apply one-time template migrations
       await this.applyTemplateMigrations();
     } catch (error) {
@@ -1930,6 +1933,87 @@ For support: contactus@xtracover.com`,
     });
     
     return rendered;
+  }
+
+  // Create registration-specific template mappings and link them to device_registrations
+  async createRegistrationTemplates(): Promise<void> {
+    try {
+      await db.connectDB();
+      
+      // Fetch existing registration templates
+      const registrationEvents = [
+        'device_registration_within_6_months',
+        'device_registration_over_6_months',
+        'acer_registration_within_6_months',
+        'acer_registration_over_6_months',
+        'amazon_bbg_registration'
+      ];
+      
+      console.log('📋 Starting registration template mapping process...');
+      
+      for (const event of registrationEvents) {
+        try {
+          // Get all device registration records that need this template
+          const registrationsResult = await db.pool.request()
+            .input('registrationSource', sql.NVarChar, 
+              event === 'device_registration_within_6_months' || event === 'device_registration_over_6_months' ? 'post_purchase' :
+              event === 'acer_registration_within_6_months' || event === 'acer_registration_over_6_months' ? 'acer_bbg' :
+              'amazon_bbg'
+            )
+            .query('SELECT id, device_type FROM device_registrations WHERE registration_source = @registrationSource');
+          
+          if (registrationsResult.recordset.length === 0) {
+            console.log(`ℹ️ No device registrations found for event "${event}"`);
+            continue;
+          }
+          
+          // Get or create templates for this event type (email, sms, whatsapp)
+          const templateTypes = ['email', 'sms', 'whatsapp'];
+          const templateIds: Record<string, number | null> = {
+            email: null,
+            sms: null,
+            whatsapp: null
+          };
+          
+          for (const type of templateTypes) {
+            const existingTemplate = await db.pool.request()
+              .input('event', sql.NVarChar, event)
+              .input('type', sql.NVarChar, type)
+              .query(`SELECT id FROM message_templates WHERE event = @event AND type = @type`);
+            
+            if (existingTemplate.recordset.length > 0) {
+              templateIds[type] = existingTemplate.recordset[0].id;
+            }
+          }
+          
+          // Link templates to device registrations
+          if (templateIds.email || templateIds.sms || templateIds.whatsapp) {
+            await db.pool.request()
+              .input('registrationSource', sql.NVarChar, 
+                event === 'device_registration_within_6_months' || event === 'device_registration_over_6_months' ? 'post_purchase' :
+                event === 'acer_registration_within_6_months' || event === 'acer_registration_over_6_months' ? 'acer_bbg' :
+                'amazon_bbg'
+              )
+              .input('emailTemplateId', sql.Int, templateIds.email)
+              .input('smsTemplateId', sql.Int, templateIds.sms)
+              .input('whatsappTemplateId', sql.Int, templateIds.whatsapp)
+              .query(`UPDATE device_registrations SET 
+                        email_template_id = @emailTemplateId,
+                        sms_template_id = @smsTemplateId,
+                        whatsapp_template_id = @whatsappTemplateId
+                      WHERE registration_source = @registrationSource`);
+            
+            console.log(`✅ Mapped templates for "${event}": Email=${templateIds.email}, SMS=${templateIds.sms}, WhatsApp=${templateIds.whatsapp}`);
+          }
+        } catch (error: any) {
+          console.log(`⚠️ Error mapping templates for event "${event}":`, error.message);
+        }
+      }
+      
+      console.log('✅ Registration template mapping completed successfully');
+    } catch (error: any) {
+      console.log('⚠️ Registration template mapping process failed:', error.message);
+    }
   }
 
   // Get available template variables by event

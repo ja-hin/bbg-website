@@ -192,9 +192,9 @@ export function DevicePlanSelectorForm({
           >
             How old is your device?
           </label>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <label
-              className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-all hover:bg-blue-50"
+              className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-all hover:bg-blue-50 flex-1"
               style={{
                 borderColor: deviceAgeSelection === "1" ? "#254696" : "rgba(37, 70, 150, 0.2)",
                 backgroundColor: deviceAgeSelection === "1" ? "rgba(37, 70, 150, 0.05)" : "#ffffff"
@@ -206,7 +206,7 @@ export function DevicePlanSelectorForm({
                 value="1"
                 checked={deviceAgeSelection === "1"}
                 onChange={(e) => setDeviceAgeSelection(e.target.value as "1" | "2")}
-                className="w-4 h-4 accent-blue-600 border-gray-300 focus:ring-blue-500 cursor-pointer"
+                className="w-4 h-4 accent-blue-600 border-gray-300 focus:ring-blue-500 cursor-pointer flex-shrink-0"
                 style={{ accentColor: "#254696" }}
                 data-testid="radio-within-6-months"
               />
@@ -215,7 +215,7 @@ export function DevicePlanSelectorForm({
               </span>
             </label>
             <label
-              className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-all hover:bg-blue-50"
+              className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-all hover:bg-blue-50 flex-1"
               style={{
                 borderColor: deviceAgeSelection === "2" ? "#254696" : "rgba(37, 70, 150, 0.2)",
                 backgroundColor: deviceAgeSelection === "2" ? "rgba(37, 70, 150, 0.05)" : "#ffffff"
@@ -227,7 +227,7 @@ export function DevicePlanSelectorForm({
                 value="2"
                 checked={deviceAgeSelection === "2"}
                 onChange={(e) => setDeviceAgeSelection(e.target.value as "1" | "2")}
-                className="w-4 h-4 accent-blue-600 border-gray-300 focus:ring-blue-500 cursor-pointer"
+                className="w-4 h-4 accent-blue-600 border-gray-300 focus:ring-blue-500 cursor-pointer flex-shrink-0"
                 style={{ accentColor: "#254696" }}
                 data-testid="radio-more-than-6-months"
               />

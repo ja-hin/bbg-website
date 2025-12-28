@@ -124,7 +124,7 @@ export default function Home() {
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Featured Plans Section */}
       <section 
-        className="py-8 sm:py-10 lg:py-12 px-4 sm:px-6 lg:px-8"
+        className="hidden py-8 sm:py-10 lg:py-12 px-4 sm:px-6 lg:px-8"
         style={{
           background: "linear-gradient(135deg, #f5f9ff 0%, #f0f7ff 50%, #fafbfe 100%)"
         }}
@@ -570,6 +570,226 @@ export default function Home() {
       </section>
       {/* BBG vs Extend+ Comparison Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {/* BBG Mobile Card */}
+            <div
+              className="flex flex-col h-full transition-all duration-300 hover:shadow-lg"
+              style={{
+                borderRadius: "20px",
+                overflow: "hidden",
+                background: "white",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)"
+              }}
+            >
+              {/* Blue Header */}
+              <div
+                className="p-6 text-white text-center"
+                style={{
+                  background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)"
+                }}
+              >
+                <h3 className="text-xl sm:text-2xl font-bold mb-2">Mobile BBG</h3>
+                <div className="text-4xl font-bold">₹299</div>
+              </div>
+
+              {/* White Body */}
+              <div className="p-6 flex-grow flex flex-col">
+                <div
+                  className="p-3 rounded-lg text-center mb-4 text-sm font-medium"
+                  style={{
+                    background: "#f0f9ff",
+                    color: "#1e40af"
+                  }}
+                >
+                  Assured resale value for your Mobile
+                </div>
+
+                <ul className="space-y-3 mb-6 flex-grow text-sm" style={{ color: "#475569" }}>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">•</span>
+                    <span>Guaranteed 70 percent future resale value*</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">•</span>
+                    <span>Free doorstep pickup</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">•</span>
+                    <span>Instant payment</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">•</span>
+                    <span>Validity: 18 months</span>
+                  </li>
+                </ul>
+
+                <Button
+                  onClick={scrollToForm}
+                  className="w-full text-white font-semibold rounded-lg text-base transition-all duration-300"
+                  style={{
+                    background: "white",
+                    color: "#2563eb",
+                    padding: "12px 24px",
+                    minHeight: "44px"
+                  }}
+                  data-testid="button-explore-mobile-bbg"
+                >
+                  Explore
+                </Button>
+              </div>
+            </div>
+
+            {/* Extend+ Mobile Card */}
+            <div
+              className="flex flex-col h-full transition-all duration-300 hover:shadow-lg"
+              style={{
+                borderRadius: "20px",
+                overflow: "hidden",
+                background: "white",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)"
+              }}
+            >
+              {/* Blue Header */}
+              <div
+                className="p-6 text-white text-center"
+                style={{
+                  background: "linear-gradient(135deg, #3b82f6 0%, #1e40af 100%)"
+                }}
+              >
+                <h3 className="text-xl sm:text-2xl font-bold mb-2">Mobile Extend+</h3>
+                <div className="text-4xl font-bold">₹199</div>
+              </div>
+
+              {/* White Body */}
+              <div className="p-6 flex-grow flex flex-col">
+                <div
+                  className="p-3 rounded-lg text-center mb-4 text-sm font-medium"
+                  style={{
+                    background: "#dbeafe",
+                    color: "#1e40af"
+                  }}
+                >
+                  Protection, repairs, and better resale
+                </div>
+
+                <ul className="space-y-3 mb-6 flex-grow text-sm" style={{ color: "#475569" }}>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">•</span>
+                    <span>Free Device Repair*</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">•</span>
+                    <span>30% OFF your Extended Warranty Purchase</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">•</span>
+                    <span>Get resale value up to 20 percent higher</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">•</span>
+                    <span>Validity: 12 months</span>
+                  </li>
+                </ul>
+
+                <Button
+                  onClick={scrollToForm}
+                  className="w-full text-white font-semibold rounded-lg text-base transition-all duration-300"
+                  style={{
+                    background: "white",
+                    color: "#3b82f6",
+                    padding: "12px 24px",
+                    minHeight: "44px"
+                  }}
+                  data-testid="button-explore-mobile-extend"
+                >
+                  Explore
+                </Button>
+              </div>
+            </div>
+
+            {/* Mobile Bundle Card */}
+            <div
+              className="flex flex-col h-full transition-all duration-300 hover:shadow-lg md:col-span-2 lg:col-span-1"
+              style={{
+                borderRadius: "20px",
+                overflow: "hidden",
+                background: "white",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)"
+              }}
+            >
+              {/* Purple Header with Badge */}
+              <div
+                className="p-6 text-white text-center relative"
+                style={{
+                  background: "linear-gradient(135deg, #9333ea 0%, #7e22ce 100%)"
+                }}
+              >
+                <div 
+                  className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold"
+                  style={{
+                    background: "#fbbf24",
+                    color: "#000"
+                  }}
+                >
+                  BEST VALUE
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold mb-2">Mobile Bundle</h3>
+                <div className="text-4xl font-bold">₹499</div>
+              </div>
+
+              {/* White Body */}
+              <div className="p-6 flex-grow flex flex-col">
+                <div
+                  className="p-3 rounded-lg text-center mb-4 text-sm font-medium"
+                  style={{
+                    background: "#f3e8ff",
+                    color: "#7e22ce"
+                  }}
+                >
+                  Assured resale value, Protection and repairs
+                </div>
+
+                <ul className="space-y-3 mb-6 flex-grow text-sm" style={{ color: "#475569" }}>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">•</span>
+                    <span>Guaranteed 70 percent future resale value*</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">•</span>
+                    <span>Free Device Repair*</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">•</span>
+                    <span>30% OFF your Extended Warranty Purchase</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-lg leading-none">•</span>
+                    <span>Validity: 18 months</span>
+                  </li>
+                </ul>
+
+                <Button
+                  onClick={scrollToForm}
+                  className="w-full text-white font-semibold rounded-lg text-base transition-all duration-300"
+                  style={{
+                    background: "white",
+                    color: "#9333ea",
+                    padding: "12px 24px",
+                    minHeight: "44px"
+                  }}
+                  data-testid="button-explore-mobile-bundle"
+                >
+                  Explore
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* BBG vs Extend+ Comparison Section - HIDDEN */}
+      <section className="hidden bg-white py-8 sm:py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
             {/* BBG Card */}

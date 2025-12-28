@@ -204,74 +204,129 @@ export default function Home() {
 
       {/* BuyBack Guarantee Featured Card Section */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div
-            className="rounded-2xl overflow-hidden p-8 sm:p-12 text-white text-center"
             style={{
-              background: "linear-gradient(135deg, rgba(20, 50, 100, 0.9) 0%, rgba(15, 35, 80, 0.85) 100%), url('data:image/svg+xml,%3Csvg width=%22100%22 height=%22100%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cdefs%3E%3CpatternId=%22grid%22x=%2220%22 y=%2220%22 width=%22100%22 height=%22100%22 patternUnits=%22userSpaceOnUse%22%3E%3Cpath d=%22M 20 0 L 0 0 0 20%22 fill=%22none%22 stroke=%22rgba(255,255,255,0.05)%22 stroke-width=%221%22/%3E%3C/pattern%3E%3C/defs%3E%3Crect width=%22100%22 height=%22100%22 fill=%22url(%23grid)%22/%3E%3C/svg%3E')",
-              backgroundSize: "cover, auto",
-              backgroundPosition: "center",
+              borderRadius: "35px",
+              padding: "1px",
+              background: "radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)",
             }}
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
-              BuyBack Guarantee:<br />
-              Lock Resale Value of your Mobile<br />
-              & Laptop
-            </h2>
-            
-            <p className="text-lg sm:text-xl mb-10 opacity-90 font-light">
-              Secure your device's resale value and upgrade worry-free.
-            </p>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-10">
-              {/* Feature 1 */}
-              <div className="flex flex-col items-center">
-                <div className="bg-white rounded-full p-4 mb-4 flex items-center justify-center">
-                  <Clock className="w-8 h-8" style={{ color: "#1a3a6b" }} />
-                </div>
-                <p className="text-sm sm:text-base font-medium">
-                  For devices up<br />to 6 months old
-                </p>
-              </div>
-
-              {/* Feature 2 */}
-              <div className="flex flex-col items-center">
-                <div className="bg-white rounded-full p-4 mb-4 flex items-center justify-center">
-                  <Wrench className="w-8 h-8" style={{ color: "#1a3a6b" }} />
-                </div>
-                <p className="text-sm sm:text-base font-medium">
-                  Upto 70%<br />Resale Value
-                </p>
-              </div>
-
-              {/* Feature 3 */}
-              <div className="flex flex-col items-center">
-                <div className="bg-white rounded-full p-4 mb-4 flex items-center justify-center">
-                  <Package className="w-8 h-8" style={{ color: "#1a3a6b" }} />
-                </div>
-                <p className="text-sm sm:text-base font-medium">
-                  Sell your device<br />at doorstep
-                </p>
-              </div>
-
-              {/* Feature 4 */}
-              <div className="flex flex-col items-center">
-                <div className="bg-white rounded-full p-4 mb-4 flex items-center justify-center">
-                  <Shield className="w-8 h-8" style={{ color: "#1a3a6b" }} />
-                </div>
-                <p className="text-sm sm:text-base font-medium">
-                  Fast and Secure<br />Payment
-                </p>
-              </div>
-            </div>
-
-            <Button
-              onClick={scrollToForm}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-colors"
-              data-testid="button-get-bbg-guarantee"
+            <div
+              className="p-8 sm:p-10 lg:p-12 bg-white text-center"
+              style={{ borderRadius: "35px" }}
             >
-              Get BuyBack Guarantee
-            </Button>
+              <h2 
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 leading-tight"
+                style={{ color: "#1F4B88" }}
+                data-testid="heading-buyback-featured"
+              >
+                BuyBack Guarantee:<br />
+                Lock Resale Value of your Mobile<br />
+                & Laptop
+              </h2>
+              
+              <p 
+                className="text-base sm:text-lg lg:text-xl mb-10 font-medium"
+                style={{ color: "#4b5563" }}
+                data-testid="text-buyback-featured-desc"
+              >
+                Secure your device's resale value and upgrade worry-free.
+              </p>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-10">
+                {/* Feature 1 */}
+                <div className="flex flex-col items-center">
+                  <div 
+                    className="rounded-full p-4 mb-4 flex items-center justify-center"
+                    style={{
+                      background: "linear-gradient(135deg, #e8f4f8 0%, #f0f7ff 100%)",
+                      width: "70px",
+                      height: "70px",
+                    }}
+                  >
+                    <Clock className="w-9 h-9" style={{ color: "#1F4B88" }} />
+                  </div>
+                  <p 
+                    className="text-sm sm:text-base font-semibold text-center"
+                    style={{ color: "#303e58" }}
+                  >
+                    For devices up<br />to 6 months old
+                  </p>
+                </div>
+
+                {/* Feature 2 */}
+                <div className="flex flex-col items-center">
+                  <div 
+                    className="rounded-full p-4 mb-4 flex items-center justify-center"
+                    style={{
+                      background: "linear-gradient(135deg, #e8f4f8 0%, #f0f7ff 100%)",
+                      width: "70px",
+                      height: "70px",
+                    }}
+                  >
+                    <TrendingUp className="w-9 h-9" style={{ color: "#1F4B88" }} />
+                  </div>
+                  <p 
+                    className="text-sm sm:text-base font-semibold text-center"
+                    style={{ color: "#303e58" }}
+                  >
+                    Upto 70%<br />Resale Value
+                  </p>
+                </div>
+
+                {/* Feature 3 */}
+                <div className="flex flex-col items-center">
+                  <div 
+                    className="rounded-full p-4 mb-4 flex items-center justify-center"
+                    style={{
+                      background: "linear-gradient(135deg, #e8f4f8 0%, #f0f7ff 100%)",
+                      width: "70px",
+                      height: "70px",
+                    }}
+                  >
+                    <Package className="w-9 h-9" style={{ color: "#1F4B88" }} />
+                  </div>
+                  <p 
+                    className="text-sm sm:text-base font-semibold text-center"
+                    style={{ color: "#303e58" }}
+                  >
+                    Sell your device<br />at doorstep
+                  </p>
+                </div>
+
+                {/* Feature 4 */}
+                <div className="flex flex-col items-center">
+                  <div 
+                    className="rounded-full p-4 mb-4 flex items-center justify-center"
+                    style={{
+                      background: "linear-gradient(135deg, #e8f4f8 0%, #f0f7ff 100%)",
+                      width: "70px",
+                      height: "70px",
+                    }}
+                  >
+                    <Shield className="w-9 h-9" style={{ color: "#1F4B88" }} />
+                  </div>
+                  <p 
+                    className="text-sm sm:text-base font-semibold text-center"
+                    style={{ color: "#303e58" }}
+                  >
+                    Fast and Secure<br />Payment
+                  </p>
+                </div>
+              </div>
+
+              <Button
+                onClick={scrollToForm}
+                className="text-white font-bold py-3 px-8 rounded-full text-base sm:text-lg transition-all"
+                style={{
+                  background: "linear-gradient(90deg, #1F4B88, #245AA3)",
+                }}
+                data-testid="button-get-bbg-guarantee"
+              >
+                Get BuyBack Guarantee
+              </Button>
+            </div>
           </div>
         </div>
       </section>

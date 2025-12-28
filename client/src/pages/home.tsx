@@ -27,8 +27,6 @@ import {
   Clock,
   Wrench,
   Package,
-  Truck,
-  Lock,
 } from "lucide-react";
 import { HomepageCarousel } from "@/components/homepage-carousel";
 import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png";
@@ -491,88 +489,47 @@ export default function Home() {
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-6xl mx-auto">
-            {/* BBG BuyBack Guarantee Card - New Design */}
+            {/* BBG BuyBack Guarantee Card */}
             <div
-              className="rounded-3xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl"
               style={{
-                background: "linear-gradient(135deg, #5a8fd9 0%, #254696 50%, #1a3a6b 100%)"
+                borderRadius: "24px 24px 0 0",
+                overflow: "hidden",
+                background:
+                  "radial-gradient(circle at 50% 50%, #c6d8ff, #0f5eb4, #303e59)",
+                padding: "1px",
               }}
             >
-              <div className="p-6 sm:p-8 text-white h-full flex flex-col">
-                {/* Title */}
-                <h3 
-                  className="text-2xl sm:text-3xl font-bold mb-1"
-                  style={{ fontFamily: "Poppins, sans-serif" }}
-                  data-testid="heading-bbg-card"
+              <div
+                style={{
+                  borderRadius: "24px 24px 0 0",
+                  overflow: "hidden",
+                  background: "white",
+                }}
+              >
+                <div
+                  className="text-white px-6 sm:px-8 py-3 sm:py-4"
+                  style={{
+                    background: "linear-gradient(-90deg, #232d35, #5e6271)",
+                  }}
                 >
-                  BuyBack Guarantee
-                </h3>
-                
-                {/* Subtitle */}
-                <p className="text-base sm:text-lg mb-4 opacity-90">
-                  Lock your phone's resale value
-                </p>
-
-                {/* Price */}
-                <div className="mb-6 flex items-baseline gap-1">
-                  <span className="text-4xl sm:text-5xl font-bold">₹{getLaptopBBGPrice()}</span>
+                  <h3
+                    className="text-2xl sm:text-3xl font-bold italic text-center"
+                    data-testid="heading-bbg-buyback"
+                  >Buy Back Guarantee</h3>
                 </div>
-
-                {/* Three USPs */}
-                <div className="space-y-3 mb-8 flex-grow">
-                  <div className="flex items-start gap-3">
-                    <Shield className="w-5 h-5 flex-shrink-0 mt-1" style={{ color: "#E72829" }} />
-                    <span className="text-sm sm:text-base font-medium">Assured resale value</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Truck className="w-5 h-5 flex-shrink-0 mt-1" style={{ color: "#E72829" }} />
-                    <span className="text-sm sm:text-base font-medium">Sell your device at doorstep</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Lock className="w-5 h-5 flex-shrink-0 mt-1" style={{ color: "#E72829" }} />
-                    <span className="text-sm sm:text-base font-medium">Fast & secure payment</span>
-                  </div>
-                </div>
-
-                {/* Claim Value Slabs */}
-                <div className="mb-8 bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
-                      <span>4-6 months</span>
-                      <span className="font-bold bg-white text-blue-600 px-3 py-1 rounded-full text-xs sm:text-sm">Get back 70%</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span>7-12 months</span>
-                      <span className="font-bold bg-white text-blue-600 px-3 py-1 rounded-full text-xs sm:text-sm">Get back 60%</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span>13-18 months</span>
-                      <span className="font-bold bg-white text-blue-600 px-3 py-1 rounded-full text-xs sm:text-sm">Get back 45%</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span>19-24 months</span>
-                      <span className="font-bold bg-white text-blue-600 px-3 py-1 rounded-full text-xs sm:text-sm">Get back 40%</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span>31-36 months</span>
-                      <span className="font-bold bg-white text-blue-600 px-3 py-1 rounded-full text-xs sm:text-sm">Get back 25%</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Validity */}
-                <p className="text-center text-sm mb-6 opacity-90">
-                  Validity 36 months
-                </p>
-
-                {/* CTA Button */}
-                <Button
-                  onClick={scrollToForm}
-                  className="w-full text-blue-600 font-bold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg active:scale-95 bg-white"
-                  data-testid="button-bbg-buy-now"
+                <div
+                  className="bg-white py-3 sm:py-4"
+                  style={{ paddingLeft: "0.5rem", paddingRight: "0.5rem" }}
                 >
-                  Buy Now
-                </Button>
+                  <p
+                    className="text-gray-800 text-sm sm:text-base lg:text-lg leading-relaxed text-center font-normal"
+                    style={{ fontFamily: "Inter, sans-serif" }}
+                    data-testid="text-bbg-buyback-desc"
+                  >
+                    Guarantees your new device's future resale value, activated
+                    within 6 months for predictable, assured upgrades.
+                  </p>
+                </div>
               </div>
             </div>
 

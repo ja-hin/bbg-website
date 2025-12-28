@@ -339,6 +339,142 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Extend+ Protection Featured Card Section */}
+      <section 
+        className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8"
+        style={{
+          background: "linear-gradient(135deg, #1a3a6b 0%, #2a5fa8 50%, #1a3a6b 100%)"
+        }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <div
+            style={{
+              borderRadius: "35px",
+              padding: "1px",
+              background: "radial-gradient(circle at 50% 50%, #4a7fd9, #1a3a6b, #0f2847)",
+            }}
+          >
+            <div
+              className="p-8 sm:p-10 lg:p-12 text-center text-white"
+              style={{ 
+                borderRadius: "35px",
+                background: "linear-gradient(135deg, rgba(26, 58, 107, 0.95) 0%, rgba(42, 95, 168, 0.95) 50%, rgba(26, 58, 107, 0.95) 100%)"
+              }}
+            >
+              <h2 
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 leading-tight"
+                data-testid="heading-extend-featured"
+              >
+                Extend+: Protection for<br />
+                Your Mobile & Laptop
+              </h2>
+              
+              <p 
+                className="text-base sm:text-lg lg:text-xl mb-10 font-medium opacity-90"
+                data-testid="text-extend-featured-desc"
+              >
+                Keep your devices covered beyond their standard warranty<br />
+                with added benefits.
+              </p>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-10">
+                {/* Feature 1 */}
+                <div className="flex flex-col items-center">
+                  <div 
+                    className="rounded-full p-4 mb-4 flex items-center justify-center"
+                    style={{
+                      background: "rgba(255, 255, 255, 0.15)",
+                      width: "70px",
+                      height: "70px",
+                      backdropFilter: "blur(10px)",
+                    }}
+                  >
+                    <Clock className="w-9 h-9 text-white" />
+                  </div>
+                  <p 
+                    className="text-sm sm:text-base font-semibold text-center text-white"
+                  >
+                    For devices up<br />to 3 years old
+                  </p>
+                </div>
+
+                {/* Feature 2 */}
+                <div className="flex flex-col items-center">
+                  <div 
+                    className="rounded-full p-4 mb-4 flex items-center justify-center"
+                    style={{
+                      background: "rgba(255, 255, 255, 0.15)",
+                      width: "70px",
+                      height: "70px",
+                      backdropFilter: "blur(10px)",
+                    }}
+                  >
+                    <Wrench className="w-9 h-9 text-white" />
+                  </div>
+                  <p 
+                    className="text-sm sm:text-base font-semibold text-center text-white"
+                  >
+                    1 Free Device<br />Repair*
+                  </p>
+                </div>
+
+                {/* Feature 3 */}
+                <div className="flex flex-col items-center">
+                  <div 
+                    className="rounded-full p-4 mb-4 flex items-center justify-center"
+                    style={{
+                      background: "rgba(255, 255, 255, 0.15)",
+                      width: "70px",
+                      height: "70px",
+                      backdropFilter: "blur(10px)",
+                    }}
+                  >
+                    <TrendingUp className="w-9 h-9 text-white" />
+                  </div>
+                  <p 
+                    className="text-sm sm:text-base font-semibold text-center text-white"
+                  >
+                    10-20% Better<br />Resale Value
+                  </p>
+                </div>
+
+                {/* Feature 4 */}
+                <div className="flex flex-col items-center">
+                  <div 
+                    className="rounded-full p-4 mb-4 flex items-center justify-center"
+                    style={{
+                      background: "rgba(255, 255, 255, 0.15)",
+                      width: "70px",
+                      height: "70px",
+                      backdropFilter: "blur(10px)",
+                    }}
+                  >
+                    <Award className="w-9 h-9 text-white" />
+                  </div>
+                  <p 
+                    className="text-sm sm:text-base font-semibold text-center text-white"
+                  >
+                    30% discount on<br />Extended Warranty
+                  </p>
+                </div>
+              </div>
+
+              <Button
+                onClick={scrollToForm}
+                className="text-white font-bold py-3 px-8 rounded-full text-base sm:text-lg transition-all"
+                style={{
+                  background: "rgba(255, 255, 255, 0.2)",
+                  border: "2px solid rgba(255, 255, 255, 0.4)",
+                }}
+                data-testid="button-get-extend-protection"
+              >
+                Get Extend+ Protection
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* BBG Guarantee Cards Section */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">

@@ -203,7 +203,12 @@ export default function Home() {
       </section>
 
       {/* BuyBack Guarantee Featured Card Section */}
-      <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
+      <section 
+        className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8"
+        style={{
+          background: "linear-gradient(135deg, #f5f9ff 0%, #f0f7ff 50%, #fafbfe 100%)"
+        }}
+      >
         <div className="max-w-5xl mx-auto">
           <div
             style={{

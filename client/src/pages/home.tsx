@@ -515,7 +515,7 @@ export default function Home() {
                   <h3
                     className="text-2xl sm:text-3xl font-bold italic text-center"
                     data-testid="heading-bbg-buyback"
-                  >BuyBack Guarantee</h3>
+                  >Buy Back Guarantee</h3>
                 </div>
                 <div
                   className="bg-white py-3 sm:py-4"

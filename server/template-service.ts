@@ -61,7 +61,7 @@ export class TemplateService {
       // Insert default templates if none exist
       await this.createDefaultTemplates();
       
-      // Create registration-specific template mappings
+      // Create and map plan-based registration templates
       await this.createRegistrationTemplates();
       
       // Apply one-time template migrations
@@ -1935,85 +1935,255 @@ For support: contactus@xtracover.com`,
     return rendered;
   }
 
-  // Create registration-specific template mappings and link them to device_registrations
+  // Create registration templates for each plan and map them
   async createRegistrationTemplates(): Promise<void> {
     try {
       await db.connectDB();
       
-      // Fetch existing registration templates
-      const registrationEvents = [
-        'device_registration_within_6_months',
-        'device_registration_over_6_months',
-        'acer_registration_within_6_months',
-        'acer_registration_over_6_months',
-        'amazon_bbg_registration'
+      const registrationTemplates = [
+        {
+          planName: 'BBG for Mobile',
+          deviceType: 'mobile',
+          planType: 'bbg',
+          emailSubject: 'Complete Your Device Registration - XtraCover BBG',
+          emailContent: this.generateRegistrationEmailTemplate('mobile', 'BBG'),
+          smsContent: 'Register your device IMEI now to activate XtraCover BBG protection. - XtraCover',
+          whatsappContent: '📱 *Register Your Device Now*\n\nHi {{name}},\n\nTo activate your BBG protection, please register your device IMEI.\n\n👉 Register now at XtraCover\n\nThank you for choosing XtraCover! 🛡️'
+        },
+        {
+          planName: 'BBG for Laptop',
+          deviceType: 'laptop',
+          planType: 'bbg',
+          emailSubject: 'Complete Your Device Registration - XtraCover BBG',
+          emailContent: this.generateRegistrationEmailTemplate('laptop', 'BBG'),
+          smsContent: 'Register your device Serial Number now to activate XtraCover BBG protection. - XtraCover',
+          whatsappContent: '💻 *Register Your Device Now*\n\nHi {{name}},\n\nTo activate your BBG protection, please register your device Serial Number.\n\n👉 Register now at XtraCover\n\nThank you for choosing XtraCover! 🛡️'
+        },
+        {
+          planName: 'Extend+ for Mobile',
+          deviceType: 'mobile',
+          planType: 'extend_plus',
+          emailSubject: 'Complete Your Device Registration - XtraCover Extend+',
+          emailContent: this.generateRegistrationEmailTemplate('mobile', 'Extend+'),
+          smsContent: 'Register your device IMEI now to activate XtraCover Extend+ protection. - XtraCover',
+          whatsappContent: '📱 *Register Your Device Now*\n\nHi {{name}},\n\nTo activate your Extend+ protection, please register your device IMEI.\n\n👉 Register now at XtraCover\n\nThank you for choosing XtraCover! 🛡️'
+        },
+        {
+          planName: 'Extend+ for Laptop',
+          deviceType: 'laptop',
+          planType: 'extend_plus',
+          emailSubject: 'Complete Your Device Registration - XtraCover Extend+',
+          emailContent: this.generateRegistrationEmailTemplate('laptop', 'Extend+'),
+          smsContent: 'Register your device Serial Number now to activate XtraCover Extend+ protection. - XtraCover',
+          whatsappContent: '💻 *Register Your Device Now*\n\nHi {{name}},\n\nTo activate your Extend+ protection, please register your device Serial Number.\n\n👉 Register now at XtraCover\n\nThank you for choosing XtraCover! 🛡️'
+        },
+        {
+          planName: 'BBG + Extend+ Bundle for Mobile',
+          deviceType: 'mobile',
+          planType: 'bundle',
+          emailSubject: 'Complete Your Device Registration - XtraCover Bundle',
+          emailContent: this.generateRegistrationEmailTemplate('mobile', 'BBG + Extend+ Bundle'),
+          smsContent: 'Register your device IMEI now to activate XtraCover Bundle protection. - XtraCover',
+          whatsappContent: '📱 *Register Your Device Now*\n\nHi {{name}},\n\nTo activate your complete protection bundle, please register your device IMEI.\n\n👉 Register now at XtraCover\n\nThank you for choosing XtraCover! 🛡️'
+        },
+        {
+          planName: 'BBG + Extend+ Bundle for Laptop',
+          deviceType: 'laptop',
+          planType: 'bundle',
+          emailSubject: 'Complete Your Device Registration - XtraCover Bundle',
+          emailContent: this.generateRegistrationEmailTemplate('laptop', 'BBG + Extend+ Bundle'),
+          smsContent: 'Register your device Serial Number now to activate XtraCover Bundle protection. - XtraCover',
+          whatsappContent: '💻 *Register Your Device Now*\n\nHi {{name}},\n\nTo activate your complete protection bundle, please register your device Serial Number.\n\n👉 Register now at XtraCover\n\nThank you for choosing XtraCover! 🛡️'
+        }
       ];
       
-      console.log('📋 Starting registration template mapping process...');
+      const variables = ['name', 'email', 'contact', 'voucherCode', 'brand', 'modelName', 'deviceType'];
       
-      for (const event of registrationEvents) {
+      console.log('📋 Creating registration templates and mapping to plans...');
+      
+      for (const regTemplate of registrationTemplates) {
         try {
-          // Get all device registration records that need this template
-          const registrationsResult = await db.pool.request()
-            .input('registrationSource', sql.NVarChar, 
-              event === 'device_registration_within_6_months' || event === 'device_registration_over_6_months' ? 'post_purchase' :
-              event === 'acer_registration_within_6_months' || event === 'acer_registration_over_6_months' ? 'acer_bbg' :
-              'amazon_bbg'
-            )
-            .query('SELECT id, device_type FROM device_registrations WHERE registration_source = @registrationSource');
+          // Get plan from database
+          const planResult = await db.pool.request()
+            .input('planName', sql.NVarChar, regTemplate.planName)
+            .query('SELECT id, registration_email_template_id, registration_sms_template_id, registration_whatsapp_template_id FROM plans WHERE plan_name = @planName');
           
-          if (registrationsResult.recordset.length === 0) {
-            console.log(`ℹ️ No device registrations found for event "${event}"`);
+          if (planResult.recordset.length === 0) {
+            console.log(`⚠️ Plan "${regTemplate.planName}" not found in database, skipping registration templates`);
             continue;
           }
           
-          // Get or create templates for this event type (email, sms, whatsapp)
-          const templateTypes = ['email', 'sms', 'whatsapp'];
-          const templateIds: Record<string, number | null> = {
-            email: null,
-            sms: null,
-            whatsapp: null
-          };
+          const plan = planResult.recordset[0];
+          let emailTemplateId = plan.registration_email_template_id;
+          let smsTemplateId = plan.registration_sms_template_id;
+          let whatsappTemplateId = plan.registration_whatsapp_template_id;
           
-          for (const type of templateTypes) {
-            const existingTemplate = await db.pool.request()
-              .input('event', sql.NVarChar, event)
-              .input('type', sql.NVarChar, type)
-              .query(`SELECT id FROM message_templates WHERE event = @event AND type = @type`);
+          // Create Email template if not exists
+          if (!emailTemplateId) {
+            const emailName = `${regTemplate.planName} - Registration Email`;
+            const existingEmail = await db.pool.request()
+              .input('name', sql.NVarChar, emailName)
+              .query('SELECT id FROM message_templates WHERE name = @name');
             
-            if (existingTemplate.recordset.length > 0) {
-              templateIds[type] = existingTemplate.recordset[0].id;
+            if (existingEmail.recordset.length > 0) {
+              emailTemplateId = existingEmail.recordset[0].id;
+              await db.pool.request()
+                .input('id', sql.Int, emailTemplateId)
+                .input('content', sql.NText, regTemplate.emailContent)
+                .input('subject', sql.NVarChar, regTemplate.emailSubject)
+                .query('UPDATE message_templates SET content = @content, subject = @subject WHERE id = @id');
+              console.log(`📧 Updated registration email template for "${regTemplate.planName}": ID ${emailTemplateId}`);
+            } else {
+              const regEvent = `registration_${regTemplate.planType}_${regTemplate.deviceType}`;
+              const insertResult = await db.pool.request()
+                .input('name', sql.NVarChar, emailName)
+                .input('type', sql.NVarChar, 'email')
+                .input('event', sql.NVarChar, regEvent)
+                .input('deviceType', sql.NVarChar, regTemplate.deviceType)
+                .input('subject', sql.NVarChar, regTemplate.emailSubject)
+                .input('content', sql.NText, regTemplate.emailContent)
+                .input('variables', sql.NText, JSON.stringify(variables))
+                .query(`INSERT INTO message_templates (name, type, event, device_type, subject, content, variables, is_active) 
+                        OUTPUT INSERTED.id 
+                        VALUES (@name, @type, @event, @deviceType, @subject, @content, @variables, 1)`);
+              emailTemplateId = insertResult.recordset[0].id;
+              console.log(`✅ Created registration email template for "${regTemplate.planName}": ID ${emailTemplateId}`);
             }
           }
           
-          // Link templates to device registrations
-          if (templateIds.email || templateIds.sms || templateIds.whatsapp) {
-            await db.pool.request()
-              .input('registrationSource', sql.NVarChar, 
-                event === 'device_registration_within_6_months' || event === 'device_registration_over_6_months' ? 'post_purchase' :
-                event === 'acer_registration_within_6_months' || event === 'acer_registration_over_6_months' ? 'acer_bbg' :
-                'amazon_bbg'
-              )
-              .input('emailTemplateId', sql.Int, templateIds.email)
-              .input('smsTemplateId', sql.Int, templateIds.sms)
-              .input('whatsappTemplateId', sql.Int, templateIds.whatsapp)
-              .query(`UPDATE device_registrations SET 
-                        email_template_id = @emailTemplateId,
-                        sms_template_id = @smsTemplateId,
-                        whatsapp_template_id = @whatsappTemplateId
-                      WHERE registration_source = @registrationSource`);
+          // Create SMS template if not exists
+          if (!smsTemplateId) {
+            const smsName = `${regTemplate.planName} - Registration SMS`;
+            const existingSms = await db.pool.request()
+              .input('name', sql.NVarChar, smsName)
+              .query('SELECT id FROM message_templates WHERE name = @name');
             
-            console.log(`✅ Mapped templates for "${event}": Email=${templateIds.email}, SMS=${templateIds.sms}, WhatsApp=${templateIds.whatsapp}`);
+            if (existingSms.recordset.length > 0) {
+              smsTemplateId = existingSms.recordset[0].id;
+              await db.pool.request()
+                .input('id', sql.Int, smsTemplateId)
+                .input('content', sql.NText, regTemplate.smsContent)
+                .query('UPDATE message_templates SET content = @content WHERE id = @id');
+              console.log(`📱 Updated registration SMS template for "${regTemplate.planName}": ID ${smsTemplateId}`);
+            } else {
+              const regEvent = `registration_${regTemplate.planType}_${regTemplate.deviceType}`;
+              const insertResult = await db.pool.request()
+                .input('name', sql.NVarChar, smsName)
+                .input('type', sql.NVarChar, 'sms')
+                .input('event', sql.NVarChar, regEvent)
+                .input('deviceType', sql.NVarChar, regTemplate.deviceType)
+                .input('content', sql.NText, regTemplate.smsContent)
+                .input('variables', sql.NText, JSON.stringify(variables))
+                .query(`INSERT INTO message_templates (name, type, event, device_type, content, variables, is_active) 
+                        OUTPUT INSERTED.id 
+                        VALUES (@name, @type, @event, @deviceType, @content, @variables, 1)`);
+              smsTemplateId = insertResult.recordset[0].id;
+              console.log(`✅ Created registration SMS template for "${regTemplate.planName}": ID ${smsTemplateId}`);
+            }
           }
+          
+          // Create WhatsApp template if not exists
+          if (!whatsappTemplateId) {
+            const whatsappName = `${regTemplate.planName} - Registration WhatsApp`;
+            const existingWhatsapp = await db.pool.request()
+              .input('name', sql.NVarChar, whatsappName)
+              .query('SELECT id FROM message_templates WHERE name = @name');
+            
+            if (existingWhatsapp.recordset.length > 0) {
+              whatsappTemplateId = existingWhatsapp.recordset[0].id;
+              await db.pool.request()
+                .input('id', sql.Int, whatsappTemplateId)
+                .input('content', sql.NText, regTemplate.whatsappContent)
+                .query('UPDATE message_templates SET content = @content WHERE id = @id');
+              console.log(`💬 Updated registration WhatsApp template for "${regTemplate.planName}": ID ${whatsappTemplateId}`);
+            } else {
+              const regEvent = `registration_${regTemplate.planType}_${regTemplate.deviceType}`;
+              const insertResult = await db.pool.request()
+                .input('name', sql.NVarChar, whatsappName)
+                .input('type', sql.NVarChar, 'whatsapp')
+                .input('event', sql.NVarChar, regEvent)
+                .input('deviceType', sql.NVarChar, regTemplate.deviceType)
+                .input('content', sql.NText, regTemplate.whatsappContent)
+                .input('variables', sql.NText, JSON.stringify(variables))
+                .query(`INSERT INTO message_templates (name, type, event, device_type, content, variables, is_active) 
+                        OUTPUT INSERTED.id 
+                        VALUES (@name, @type, @event, @deviceType, @content, @variables, 1)`);
+              whatsappTemplateId = insertResult.recordset[0].id;
+              console.log(`✅ Created registration WhatsApp template for "${regTemplate.planName}": ID ${whatsappTemplateId}`);
+            }
+          }
+          
+          // Update plan with registration template IDs
+          await db.pool.request()
+            .input('planId', sql.Int, plan.id)
+            .input('emailTemplateId', sql.Int, emailTemplateId)
+            .input('smsTemplateId', sql.Int, smsTemplateId)
+            .input('whatsappTemplateId', sql.Int, whatsappTemplateId)
+            .query(`UPDATE plans SET 
+                      registration_email_template_id = @emailTemplateId, 
+                      registration_sms_template_id = @smsTemplateId, 
+                      registration_whatsapp_template_id = @whatsappTemplateId 
+                    WHERE id = @planId`);
+          
+          console.log(`✅ Mapped registration templates to plan "${regTemplate.planName}": Email=${emailTemplateId}, SMS=${smsTemplateId}, WhatsApp=${whatsappTemplateId}`);
         } catch (error: any) {
-          console.log(`⚠️ Error mapping templates for event "${event}":`, error.message);
+          console.log(`⚠️ Error creating registration templates for "${regTemplate.planName}":`, error.message);
         }
       }
       
-      console.log('✅ Registration template mapping completed successfully');
+      console.log('✅ Registration templates created and mapped to plans successfully');
     } catch (error: any) {
-      console.log('⚠️ Registration template mapping process failed:', error.message);
+      console.log('⚠️ Registration template creation process failed:', error.message);
     }
+  }
+  
+  // Generate registration email template
+  private generateRegistrationEmailTemplate(deviceType: 'mobile' | 'laptop', planName: string): string {
+    const serialLabel = deviceType === 'mobile' ? 'IMEI' : 'Serial Number';
+    
+    return `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #dc2626;">XtraCover ${planName}</h1>
+    <h2 style="color: #374151;">Complete Your Registration</h2>
+  </div>
+  
+  <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h3 style="color: #374151; margin-top: 0;">Hi {{name}},</h3>
+    <p>Thank you for purchasing XtraCover ${planName}! To activate your protection, please register your device with us.</p>
+    
+    <div style="background: #fef3c7; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #f59e0b;">
+      <strong style="color: #92400e;">⚠️ Important:</strong> Device registration is required to activate your coverage. Your Voucher Code is: {{voucherCode}}
+    </div>
+    
+    <p style="color: #6b7280; margin-bottom: 20px;">
+      <strong>To Register Your Device:</strong><br>
+      1. Visit our registration portal<br>
+      2. Enter your device ${serialLabel}<br>
+      3. Device: {{brand}} {{modelName}}<br>
+      4. Confirm your contact details
+    </p>
+  </div>
+  
+  <div style="text-align: center; margin: 30px 0;">
+    <a href="{{registrationUrl}}" style="background: #254696; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">Register Your Device Now</a>
+  </div>
+  
+  <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h4 style="color: #0277bd; margin-top: 0;">Why Register?</h4>
+    <ul style="color: #424242; margin: 10px 0;">
+      <li>✅ Activate your protection coverage</li>
+      <li>✅ Faster claim processing</li>
+      <li>✅ Direct communication for claim updates</li>
+      <li>✅ Easy access to claim history</li>
+    </ul>
+  </div>
+  
+  <p style="color: #9ca3af; font-size: 12px; text-align: center;">
+    Questions? Contact us at support@xtracover.com or call 1800-XXX-XXXX
+  </p>
+</div>
+    `;
   }
 
   // Get available template variables by event

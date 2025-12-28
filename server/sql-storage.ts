@@ -535,6 +535,24 @@ export class SqlServerStorage implements IStorage {
             ALTER TABLE plans ADD sms_template_id INT NULL;
             PRINT 'Added sms_template_id column to plans table';
           END
+          
+          IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('plans') AND name = 'registration_email_template_id')
+          BEGIN
+            ALTER TABLE plans ADD registration_email_template_id INT NULL;
+            PRINT 'Added registration_email_template_id column to plans table';
+          END
+          
+          IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('plans') AND name = 'registration_sms_template_id')
+          BEGIN
+            ALTER TABLE plans ADD registration_sms_template_id INT NULL;
+            PRINT 'Added registration_sms_template_id column to plans table';
+          END
+          
+          IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('plans') AND name = 'registration_whatsapp_template_id')
+          BEGIN
+            ALTER TABLE plans ADD registration_whatsapp_template_id INT NULL;
+            PRINT 'Added registration_whatsapp_template_id column to plans table';
+          END
         END
       `;
       const plansTemplatesRequest = db.pool.request();

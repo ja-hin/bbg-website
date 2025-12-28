@@ -306,31 +306,31 @@ export default function Plans() {
           alt="Background pattern"
           className="absolute inset-0 w-full h-full object-fill z-0"
         />
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Amazon and Acer purchase links */}
           
 
-          <div className="grid gap-8 lg:gap-12 items-stretch [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
+          <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
             {showLaptopBBG && (
               <div
                 className="w-full h-full flex flex-col"
                 data-testid="card-laptop-bbg"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
                   {/* Blue Header */}
                   <div
-                    className="p-6 sm:p-8 text-white text-center"
+                    className="p-6 sm:p-7 text-white text-center"
                     style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                   >
-                    <h3 className="text-2xl sm:text-3xl font-bold mb-2">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
                       BuyBack Guarantee
                     </h3>
-                    <p className="text-sm sm:text-base mb-4 opacity-90">
+                    <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
                       Lock your laptop's resale value
                     </p>
-                    <div className="text-5xl sm:text-7xl font-bold">
+                    <div className="text-5xl sm:text-6xl font-bold">
                       {pricesLoading ? (
-                        <Loader2 className="h-8 w-8 sm:h-12 sm:w-12 animate-spin inline" />
+                        <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
                       ) : (
                         `₹${laptopBBGPlan?.planPrice || "--"}`
                       )}
@@ -408,21 +408,21 @@ export default function Plans() {
                 className="w-full h-full flex flex-col"
                 data-testid="card-mobile-bbg"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
                   {/* Blue Header */}
                   <div
-                    className="p-6 sm:p-8 text-white text-center"
+                    className="p-6 sm:p-7 text-white text-center"
                     style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                   >
-                    <h3 className="text-2xl sm:text-3xl font-bold mb-2">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
                       BuyBack Guarantee
                     </h3>
-                    <p className="text-sm sm:text-base mb-4 opacity-90">
+                    <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
                       Lock your mobile's resale value
                     </p>
-                    <div className="text-5xl sm:text-7xl font-bold">
+                    <div className="text-5xl sm:text-6xl font-bold">
                       {pricesLoading ? (
-                        <Loader2 className="h-8 w-8 sm:h-12 sm:w-12 animate-spin inline" />
+                        <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
                       ) : (
                         `₹${mobileBBGPlan?.planPrice || "--"}`
                       )}
@@ -500,21 +500,21 @@ export default function Plans() {
                 className="w-full h-full flex flex-col"
                 data-testid="card-laptop-extend"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
                   {/* Blue Header */}
                   <div
-                    className="p-6 sm:p-8 text-white text-center"
+                    className="p-6 sm:p-7 text-white text-center"
                     style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                   >
-                    <h3 className="text-2xl sm:text-3xl font-bold mb-2">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap">
                       Extend+
                     </h3>
-                    <p className="text-sm sm:text-base mb-4 opacity-90">
-                      Repairs, better resale & extra savings for your laptop
+                    <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
+                      Repairs, better resale & extra savings
                     </p>
-                    <div className="text-5xl sm:text-7xl font-bold">
+                    <div className="text-5xl sm:text-6xl font-bold">
                       {pricesLoading ? (
-                        <Loader2 className="h-8 w-8 sm:h-12 sm:w-12 animate-spin inline" />
+                        <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
                       ) : (
                         `₹${laptopExtendPlan?.planPrice || "--"}`
                       )}
@@ -602,21 +602,21 @@ export default function Plans() {
                 className="w-full h-full flex flex-col"
                 data-testid="card-mobile-extend"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
                   {/* Blue Header */}
                   <div
-                    className="p-6 sm:p-8 text-white text-center"
+                    className="p-6 sm:p-7 text-white text-center"
                     style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                   >
-                    <h3 className="text-2xl sm:text-3xl font-bold mb-2">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap">
                       Extend+
                     </h3>
-                    <p className="text-sm sm:text-base mb-4 opacity-90">
-                      Repairs, better resale & extra savings for your phone
+                    <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
+                      Repairs, better resale & extra savings
                     </p>
-                    <div className="text-5xl sm:text-7xl font-bold">
+                    <div className="text-5xl sm:text-6xl font-bold">
                       {pricesLoading ? (
-                        <Loader2 className="h-8 w-8 sm:h-12 sm:w-12 animate-spin inline" />
+                        <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
                       ) : (
                         `₹${mobileExtendPlan?.planPrice || "--"}`
                       )}
@@ -704,21 +704,21 @@ export default function Plans() {
                 className="w-full h-full flex flex-col"
                 data-testid="card-laptop-bundle"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
                   {/* Blue Header */}
                   <div
-                    className="p-6 sm:p-8 text-white text-center"
+                    className="p-6 sm:p-7 text-white text-center"
                     style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                   >
-                    <h3 className="text-2xl sm:text-3xl font-bold mb-2">
+                    <h3 className="text-lg sm:text-xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
                       BuyBack + Extend+ Bundle
                     </h3>
-                    <p className="text-sm sm:text-base mb-4 opacity-90">
-                      Repairs, better resale & extra savings for your laptop
+                    <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
+                      Repairs, better resale & savings
                     </p>
-                    <div className="text-5xl sm:text-7xl font-bold">
+                    <div className="text-5xl sm:text-6xl font-bold">
                       {pricesLoading ? (
-                        <Loader2 className="h-8 w-8 sm:h-12 sm:w-12 animate-spin inline" />
+                        <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
                       ) : (
                         `₹${laptopBundlePlan?.planPrice || "--"}`
                       )}
@@ -820,21 +820,21 @@ export default function Plans() {
                 className="w-full h-full flex flex-col"
                 data-testid="card-mobile-bundle"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
                   {/* Blue Header */}
                   <div
-                    className="p-6 sm:p-8 text-white text-center"
+                    className="p-6 sm:p-7 text-white text-center"
                     style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                   >
-                    <h3 className="text-2xl sm:text-3xl font-bold mb-2">
+                    <h3 className="text-lg sm:text-xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
                       BuyBack + Extend+ Bundle
                     </h3>
-                    <p className="text-sm sm:text-base mb-4 opacity-90">
-                      Repairs, better resale & extra savings for your phone
+                    <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
+                      Repairs, better resale & savings
                     </p>
-                    <div className="text-5xl sm:text-7xl font-bold">
+                    <div className="text-5xl sm:text-6xl font-bold">
                       {pricesLoading ? (
-                        <Loader2 className="h-8 w-8 sm:h-12 sm:w-12 animate-spin inline" />
+                        <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
                       ) : (
                         `₹${mobileBundlePlan?.planPrice || "--"}`
                       )}

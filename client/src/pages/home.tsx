@@ -365,7 +365,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Homepage Carousel - Critical path, loads first */}
       <HomepageCarousel onFirstImageLoaded={handleCarouselFirstImageLoaded} />
       {/* Smart Plans Section with Form */}
@@ -486,8 +485,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-
       {/* BBG Guarantee Cards Section */}
       <section className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
@@ -518,7 +515,7 @@ export default function Home() {
                   <h3
                     className="text-2xl sm:text-3xl font-bold italic text-center"
                     data-testid="heading-bbg-buyback"
-                  >BBG (BuyBack Guarantee)</h3>
+                  >BuyBack Guarantee</h3>
                 </div>
                 <div
                   className="bg-white py-3 sm:py-4"
@@ -1256,7 +1253,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* What happens when you raise a request Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

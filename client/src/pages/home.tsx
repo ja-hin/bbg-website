@@ -371,64 +371,105 @@ export default function Home() {
       {/* Smart Plans Section with Form */}
       <section
         className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8"
-        style={{ background: "linear-gradient(135deg, #e8f4f8 0%, #f0f7ff 50%, #f7f5ef 100%)" }}
+        style={{ 
+          background: "linear-gradient(135deg, #f0f6fb 0%, #f5f9ff 50%, #faf8ff 100%)"
+        }}
       >
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-16 items-center">
             {/* Left Side - Text + Benefits - Hidden on mobile, only form shows */}
             <div className="hidden lg:block">
+              <div className="mb-2">
+                <span 
+                  className="inline-block text-xs sm:text-sm font-semibold tracking-wider uppercase rounded-full px-4 py-2"
+                  style={{ 
+                    background: "rgba(37, 70, 150, 0.1)",
+                    color: "#254696"
+                  }}
+                >
+                  Find Your Perfect Plan
+                </span>
+              </div>
+              
               <h2
-                className="text-3xl sm:text-4xl font-bold leading-tight mb-6"
-                style={{ color: "#1a1a1a" }}
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-8 mt-4"
+                style={{ color: "#1a1a1a", fontFamily: "Poppins, sans-serif" }}
               >
                 Smart plans for stronger resale value and repair support
               </h2>
 
-              <div className="space-y-4 mt-4">
-                <div className="flex items-start">
-                  <BsCheckLg
-                    className="text-3xl mr-3 mt-1 font-bold"
-                    style={{ color: "#16a34a" }}
-                  />
-                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
-                  Assured resale value                  </p>
+              <div className="space-y-5 mt-8">
+                <div className="flex items-start gap-4">
+                  <div 
+                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1"
+                    style={{ background: "rgba(37, 70, 150, 0.15)" }}
+                  >
+                    <BsCheckLg
+                      className="text-lg font-bold"
+                      style={{ color: "#254696" }}
+                    />
+                  </div>
+                  <p className="text-base sm:text-lg leading-relaxed" style={{ color: "#4b5563" }}>
+                    Assured resale value
+                  </p>
                 </div>
 
-                <div className="flex items-start">
-                  <BsCheckLg
-                    className="text-3xl mr-3 mt-1 font-bold"
-                    style={{ color: "#16a34a" }}
-                  />
-                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
+                <div className="flex items-start gap-4">
+                  <div 
+                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1"
+                    style={{ background: "rgba(37, 70, 150, 0.15)" }}
+                  >
+                    <BsCheckLg
+                      className="text-lg font-bold"
+                      style={{ color: "#254696" }}
+                    />
+                  </div>
+                  <p className="text-base sm:text-lg leading-relaxed" style={{ color: "#4b5563" }}>
                     Free repair service
                   </p>
                 </div>
 
-                <div className="flex items-start">
-                  <BsCheckLg
-                    className="text-3xl mr-3 mt-1 font-bold"
-                    style={{ color: "#16a34a" }}
-                  />
-
-                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
-                    Free Doorstep Pickup 
+                <div className="flex items-start gap-4">
+                  <div 
+                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1"
+                    style={{ background: "rgba(37, 70, 150, 0.15)" }}
+                  >
+                    <BsCheckLg
+                      className="text-lg font-bold"
+                      style={{ color: "#254696" }}
+                    />
+                  </div>
+                  <p className="text-base sm:text-lg leading-relaxed" style={{ color: "#4b5563" }}>
+                    Free Doorstep Pickup
                   </p>
                 </div>
-                <div className="flex items-start">
-                  <BsCheckLg
-                    className="text-3xl mr-3 mt-1 font-bold"
-                    style={{ color: "#16a34a" }}
-                  />
-                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
+
+                <div className="flex items-start gap-4">
+                  <div 
+                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1"
+                    style={{ background: "rgba(37, 70, 150, 0.15)" }}
+                  >
+                    <BsCheckLg
+                      className="text-lg font-bold"
+                      style={{ color: "#254696" }}
+                    />
+                  </div>
+                  <p className="text-base sm:text-lg leading-relaxed" style={{ color: "#4b5563" }}>
                     Supports all major mobile and laptop brands
                   </p>
                 </div>
-                <div className="flex items-start">
-                  <BsCheckLg
-                    className="text-3xl mr-3 mt-1 font-bold"
-                    style={{ color: "#16a34a" }}
-                  />
-                  <p className="text-base sm:text-lg" style={{ color: "#4b5563" }}>
+
+                <div className="flex items-start gap-4">
+                  <div 
+                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1"
+                    style={{ background: "rgba(37, 70, 150, 0.15)" }}
+                  >
+                    <BsCheckLg
+                      className="text-lg font-bold"
+                      style={{ color: "#254696" }}
+                    />
+                  </div>
+                  <p className="text-base sm:text-lg leading-relaxed" style={{ color: "#4b5563" }}>
                     100% authorized services
                   </p>
                 </div>

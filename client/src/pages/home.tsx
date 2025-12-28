@@ -124,7 +124,7 @@ export default function Home() {
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Featured Plans Section */}
       <section 
-        className="py-8 sm:py-10 lg:py-12 px-4 sm:px-6 lg:px-8"
+        className="hidden py-8 sm:py-10 lg:py-12 px-4 sm:px-6 lg:px-8"
         style={{
           background: "linear-gradient(135deg, #f5f9ff 0%, #f0f7ff 50%, #fafbfe 100%)"
         }}

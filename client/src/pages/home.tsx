@@ -206,8 +206,8 @@ export default function Home() {
                 >
                   {/* Title */}
                   <h3 
-                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-3"
-                    style={{ lineHeight: "1.3" }}
+                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-4"
+                    style={{ lineHeight: "1.4", letterSpacing: "-0.5px" }}
                     data-testid="heading-bbg-compact"
                   >
                     BuyBack Guarantee:<br />Lock Resale Value of your Mobile<br />& Laptop
@@ -215,9 +215,9 @@ export default function Home() {
                   
                   {/* Subtitle */}
                   <p 
-                    className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-medium leading-relaxed flex-shrink-0"
+                    className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-normal leading-snug flex-shrink-0"
                   >
-                    Secure your device's resale value and upgrade worry-free.
+                    Secure your device's resale value and<br />upgrade worry-free.
                   </p>
 
                   {/* Features Grid */}
@@ -318,8 +318,8 @@ export default function Home() {
                 >
                   {/* Title */}
                   <h3 
-                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-3"
-                    style={{ lineHeight: "1.3" }}
+                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-4"
+                    style={{ lineHeight: "1.4", letterSpacing: "-0.5px" }}
                     data-testid="heading-extend-compact"
                   >
                     Extend+: Protection for<br />Your Mobile &amp; Laptop
@@ -327,9 +327,9 @@ export default function Home() {
                   
                   {/* Subtitle */}
                   <p 
-                    className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-medium leading-relaxed flex-shrink-0"
+                    className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-normal leading-snug flex-shrink-0"
                   >
-                    Keep your devices covered beyond their standard warranty with added benefits.
+                    Keep your devices covered beyond their<br />standard warranty with added benefits.
                   </p>
 
                   {/* Features Grid */}

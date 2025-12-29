@@ -26,11 +26,23 @@ const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
     );
   }
 
+  // Format age range from min_months and max_months
+  const formatAgeRange = (slab: any) => {
+    const min = slab.minMonths || slab.min_months;
+    const max = slab.maxMonths || slab.max_months;
+    
+    if (!min || !max) {
+      return slab.deviceAge || slab.ageRange || slab.range || 'Unknown';
+    }
+    
+    return `${min}–${max} months`;
+  };
+
   return (
     <div className="bg-gray-50 rounded-lg p-4 space-y-3">
       {slabs.map((slab, idx) => (
         <div key={idx} className="flex justify-between items-center text-sm">
-          <span style={{ color: "#666666" }}>{slab.deviceAge || slab.ageRange || slab.range}</span>
+          <span style={{ color: "#666666" }}>{formatAgeRange(slab)}</span>
           <span style={{ color: "#254696", fontWeight: "600" }}>Get back {slab.resalePercentage || slab.percentage}%</span>
         </div>
       ))}

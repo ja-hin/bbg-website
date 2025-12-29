@@ -10889,10 +10889,19 @@ Required: GUPSHUP_API_KEY environment variable
       
       // Fetch claim value slabs for each plan and attach them
       const plansWithSlabs = await Promise.all(plans.map(async (plan) => {
-        const slabs = await storage.getActiveClaimValueSlabsByDeviceType(plan.deviceType);
+        const allSlabs = await storage.getActiveClaimValueSlabsByDeviceType(plan.deviceType);
+        
+        // Deduplicate slabs by device_type + min_months + max_months (keeps only the first occurrence)
+        const uniqueSlabs = Array.from(
+          new Map(allSlabs.map(slab => [
+            `${slab.deviceType}_${slab.minMonths}_${slab.maxMonths}`,
+            slab
+          ])).values()
+        );
+        
         return {
           ...plan,
-          claimValueSlabs: slabs
+          claimValueSlabs: uniqueSlabs
         };
       }));
       

@@ -224,49 +224,49 @@ export default function Home() {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6 mb-8 sm:mb-10 flex-grow flex items-center justify-center">
                     {/* Feature 1 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-4">
+                      <div className="mb-3">
                         <Clock 
-                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
+                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
-                        For devices up<br className="sm:hidden" />to 6<br className="sm:hidden" />months old
+                      <p className="text-xs font-semibold text-white text-center leading-tight">
+                        For devices upto<br />6 months old
                       </p>
                     </div>
                     
                     {/* Feature 2 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-4">
+                      <div className="mb-3">
                         <Hand 
-                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
+                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
+                      <p className="text-xs font-semibold text-white text-center leading-tight">
                         Upto 70%<br />Resale Value
                       </p>
                     </div>
                     
                     {/* Feature 3 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-4">
+                      <div className="mb-3">
                         <Package 
-                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
+                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
-                        Sell your device<br className="sm:hidden" />at<br className="sm:hidden" />doorstep
+                      <p className="text-xs font-semibold text-white text-center leading-tight">
+                        Sell your device<br />at doorstep
                       </p>
                     </div>
                     
                     {/* Feature 4 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-4">
+                      <div className="mb-3">
                         <ShieldCheck 
-                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
+                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
-                        Fast and Secure<br className="sm:hidden" />Payment
+                      <p className="text-xs font-semibold text-white text-center leading-tight">
+                        Fast and Secure<br />Payment
                       </p>
                     </div>
                   </div>
@@ -336,49 +336,49 @@ export default function Home() {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6 mb-8 sm:mb-10 flex-grow flex items-center justify-center">
                     {/* Feature 1 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-4">
+                      <div className="mb-3">
                         <Clock 
-                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
+                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
-                        For devices up<br className="sm:hidden" />to 3 years old
+                      <p className="text-xs font-semibold text-white text-center leading-tight">
+                        For devices upto<br />3 years old
                       </p>
                     </div>
                     
                     {/* Feature 2 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-4">
+                      <div className="mb-3">
                         <Wrench 
-                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
+                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
-                        1 Free Device<br className="sm:hidden" />Repair*
+                      <p className="text-xs font-semibold text-white text-center leading-tight">
+                        1 Free Device<br />Repair*
                       </p>
                     </div>
                     
                     {/* Feature 3 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-4">
+                      <div className="mb-3">
                         <TrendingUp 
-                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
+                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
+                      <p className="text-xs font-semibold text-white text-center leading-tight">
                         10-20% Better<br />Resale Value
                       </p>
                     </div>
                     
                     {/* Feature 4 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-4">
+                      <div className="mb-3">
                         <Percent 
-                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
+                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
-                        30% discount on<br className="sm:hidden" />Extended<br className="sm:hidden" />Warranty purchase
+                      <p className="text-xs font-semibold text-white text-center leading-tight">
+                        30% discount on<br />Extended Warranty<br />purchase
                       </p>
                     </div>
                   </div>

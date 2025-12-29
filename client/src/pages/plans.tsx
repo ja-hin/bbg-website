@@ -290,103 +290,122 @@ export default function Plans() {
                 className="w-full h-full flex flex-col flip-card"
                 data-testid="card-laptop-bbg"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100 flip-card-inner">
-                  {/* Blue Header */}
-                  <div
-                    className="p-6 sm:p-7 text-white text-center"
-                    style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
-                  >
-                    <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                      BuyBack Guarantee
-                    </h3>
-                    <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
-                      Lock your laptop's resale value
-                    </p>
-                    <div className="text-5xl sm:text-6xl font-bold">
-                      {pricesLoading ? (
-                        <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
-                      ) : (
-                        `₹${laptopBBGPlan?.planPrice || "--"}`
-                      )}
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full relative bg-white border border-gray-100 flip-card-inner">
+                  {/* Front Face */}
+                  <div className="flip-card-front rounded-3xl overflow-hidden flex flex-col">
+                    {/* Blue Header */}
+                    <div
+                      className="p-6 sm:p-7 text-white text-center"
+                      style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
+                    >
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                        BuyBack Guarantee
+                      </h3>
+                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
+                        Lock your laptop's resale value
+                      </p>
+                      <div className="text-5xl sm:text-6xl font-bold">
+                        {pricesLoading ? (
+                          <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
+                        ) : (
+                          `₹${laptopBBGPlan?.planPrice || "--"}`
+                        )}
+                      </div>
+                    </div>
+
+                    {/* White Content Area */}
+                    <div className="flex-grow p-6 sm:p-8 space-y-6">
+                      {/* Benefits with Icons */}
+                      <div className="space-y-5">
+                        <div className="flex gap-4">
+                          <Shield
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                              Assured resale value
+                            </p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                              Get back up to 70% of your device's purchase price*
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <Car
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                              Sell your device at doorstep
+                            </p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                              Free pickup from your location
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <DollarSign
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                              Fast & secure payment
+                            </p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                              Instant payout to your bank
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Validity */}
+                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
+                        Validity 36 months
+                      </div>
+                    </div>
+
+                    {/* Buy Now Button */}
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                      <Button
+                        className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{
+                          background: "linear-gradient(90deg, #254696, #1F4B88)",
+                        }}
+                        onClick={() => handleBuyNow(laptopBBGPlan)}
+                        disabled={pricesLoading || !laptopBBGPlan}
+                        data-testid="button-buy-laptop-bbg"
+                      >
+                        {pricesLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          "Buy Now"
+                        )}
+                      </Button>
                     </div>
                   </div>
 
-                  {/* White Content Area */}
-                  <div className="flex-grow p-6 sm:p-8 space-y-6">
-                    {/* Benefits with Icons */}
-                    <div className="space-y-5">
-                      <div className="flex gap-4">
-                        <Shield
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                          style={{ color: "#254696" }}
-                        />
-                        <div>
-                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                            Assured resale value
-                          </p>
-                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Get back up to 70% of your device's purchase price*
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-4">
-                        <Car
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                          style={{ color: "#254696" }}
-                        />
-                        <div>
-                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                            Sell your device at doorstep
-                          </p>
-                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Free pickup from your location
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-4">
-                        <DollarSign
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                          style={{ color: "#254696" }}
-                        />
-                        <div>
-                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                            Fast & secure payment
-                          </p>
-                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Instant payout to your bank
-                          </p>
-                        </div>
-                      </div>
+                  {/* Back Face */}
+                  <div className="flip-card-back rounded-3xl overflow-hidden flex flex-col">
+                    {/* Blue Header */}
+                    <div
+                      className="p-6 sm:p-7 text-white text-center"
+                      style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
+                    >
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                        Claim Value Slabs
+                      </h3>
+                      <p className="text-xs sm:text-sm mb-3 opacity-95">
+                        Device age based claims
+                      </p>
                     </div>
 
                     {/* Device Age Slabs */}
-                    <div className="border-t pt-4">
+                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center">
                       <ClaimValueSlabs deviceType="laptop" />
                     </div>
-
-                    {/* Validity */}
-                    <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
-                      Validity 36 months
-                    </div>
-                  </div>
-
-                  {/* Buy Now Button */}
-                  <div className="p-6 sm:p-8 pt-4 sm:pt-6">
-                    <Button
-                      className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{
-                        background: "linear-gradient(90deg, #254696, #1F4B88)",
-                      }}
-                      onClick={() => handleBuyNow(laptopBBGPlan)}
-                      disabled={pricesLoading || !laptopBBGPlan}
-                      data-testid="button-buy-laptop-bbg"
-                    >
-                      {pricesLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        "Buy Now"
-                      )}
-                    </Button>
                   </div>
                 </div>
               </div>
@@ -397,103 +416,122 @@ export default function Plans() {
                 className="w-full h-full flex flex-col flip-card"
                 data-testid="card-mobile-bbg"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100 flip-card-inner">
-                  {/* Blue Header */}
-                  <div
-                    className="p-6 sm:p-7 text-white text-center"
-                    style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
-                  >
-                    <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                      BuyBack Guarantee
-                    </h3>
-                    <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
-                      Lock your mobile's resale value
-                    </p>
-                    <div className="text-5xl sm:text-6xl font-bold">
-                      {pricesLoading ? (
-                        <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
-                      ) : (
-                        `₹${mobileBBGPlan?.planPrice || "--"}`
-                      )}
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full relative bg-white border border-gray-100 flip-card-inner">
+                  {/* Front Face */}
+                  <div className="flip-card-front rounded-3xl overflow-hidden flex flex-col">
+                    {/* Blue Header */}
+                    <div
+                      className="p-6 sm:p-7 text-white text-center"
+                      style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
+                    >
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                        BuyBack Guarantee
+                      </h3>
+                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
+                        Lock your mobile's resale value
+                      </p>
+                      <div className="text-5xl sm:text-6xl font-bold">
+                        {pricesLoading ? (
+                          <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
+                        ) : (
+                          `₹${mobileBBGPlan?.planPrice || "--"}`
+                        )}
+                      </div>
+                    </div>
+
+                    {/* White Content Area */}
+                    <div className="flex-grow p-6 sm:p-8 space-y-6">
+                      {/* Benefits with Icons */}
+                      <div className="space-y-5">
+                        <div className="flex gap-4">
+                          <Shield
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                              Assured resale value
+                            </p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                              Get back up to 70% of your device's purchase price*
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <Car
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                              Sell your device at doorstep
+                            </p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                              Free pickup from your location
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <DollarSign
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                              Fast & secure payment
+                            </p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                              Instant payout to your bank
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Validity */}
+                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
+                        Validity 36 months
+                      </div>
+                    </div>
+
+                    {/* Buy Now Button */}
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                      <Button
+                        className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{
+                          background: "linear-gradient(90deg, #254696, #1F4B88)",
+                        }}
+                        onClick={() => handleBuyNow(mobileBBGPlan)}
+                        disabled={pricesLoading || !mobileBBGPlan}
+                        data-testid="button-buy-mobile-bbg"
+                      >
+                        {pricesLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          "Buy Now"
+                        )}
+                      </Button>
                     </div>
                   </div>
 
-                  {/* White Content Area */}
-                  <div className="flex-grow p-6 sm:p-8 space-y-6">
-                    {/* Benefits with Icons */}
-                    <div className="space-y-5">
-                      <div className="flex gap-4">
-                        <Shield
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                          style={{ color: "#254696" }}
-                        />
-                        <div>
-                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                            Assured resale value
-                          </p>
-                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Get back up to 70% of your device's purchase price*
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-4">
-                        <Car
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                          style={{ color: "#254696" }}
-                        />
-                        <div>
-                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                            Sell your device at doorstep
-                          </p>
-                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Free pickup from your location
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-4">
-                        <DollarSign
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                          style={{ color: "#254696" }}
-                        />
-                        <div>
-                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                            Fast & secure payment
-                          </p>
-                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Instant payout to your bank
-                          </p>
-                        </div>
-                      </div>
+                  {/* Back Face */}
+                  <div className="flip-card-back rounded-3xl overflow-hidden flex flex-col">
+                    {/* Blue Header */}
+                    <div
+                      className="p-6 sm:p-7 text-white text-center"
+                      style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
+                    >
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                        Claim Value Slabs
+                      </h3>
+                      <p className="text-xs sm:text-sm mb-3 opacity-95">
+                        Device age based claims
+                      </p>
                     </div>
 
                     {/* Device Age Slabs */}
-                    <div className="border-t pt-4">
+                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center">
                       <ClaimValueSlabs deviceType="mobile" />
                     </div>
-
-                    {/* Validity */}
-                    <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
-                      Validity 18 months
-                    </div>
-                  </div>
-
-                  {/* Buy Now Button */}
-                  <div className="p-6 sm:p-8 pt-4 sm:pt-6">
-                    <Button
-                      className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{
-                        background: "linear-gradient(90deg, #254696, #1F4B88)",
-                      }}
-                      onClick={() => handleBuyNow(mobileBBGPlan)}
-                      disabled={pricesLoading || !mobileBBGPlan}
-                      data-testid="button-buy-mobile-bbg"
-                    >
-                      {pricesLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        "Buy Now"
-                      )}
-                    </Button>
                   </div>
                 </div>
               </div>
@@ -501,10 +539,10 @@ export default function Plans() {
 
             {showLaptopExtend && (
               <div
-                className="w-full h-full flex flex-col flip-card"
+                className="w-full h-full flex flex-col"
                 data-testid="card-laptop-extend"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100 flip-card-inner">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
                   {/* Blue Header */}
                   <div
                     className="p-6 sm:p-7 text-white text-center"
@@ -603,10 +641,10 @@ export default function Plans() {
 
             {showMobileExtend && (
               <div
-                className="w-full h-full flex flex-col flip-card"
+                className="w-full h-full flex flex-col"
                 data-testid="card-mobile-extend"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100 flip-card-inner">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
                   {/* Blue Header */}
                   <div
                     className="p-6 sm:p-7 text-white text-center"
@@ -708,103 +746,150 @@ export default function Plans() {
                 className="w-full h-full flex flex-col flip-card"
                 data-testid="card-laptop-bundle"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100 flip-card-inner">
-                  {/* Blue Header */}
-                  <div
-                    className="p-6 sm:p-7 text-white text-center"
-                    style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
-                  >
-                    <h3 className="text-lg sm:text-xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                      BuyBack + Extend+ Bundle
-                    </h3>
-                    <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
-                      Repairs, better resale & savings
-                    </p>
-                    <div className="text-5xl sm:text-6xl font-bold">
-                      {pricesLoading ? (
-                        <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
-                      ) : (
-                        `₹${laptopBundlePlan?.planPrice || "--"}`
-                      )}
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full relative bg-white border border-gray-100 flip-card-inner">
+                  {/* Front Face */}
+                  <div className="flip-card-front rounded-3xl overflow-hidden flex flex-col">
+                    {/* Blue Header */}
+                    <div
+                      className="p-6 sm:p-7 text-white text-center"
+                      style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
+                    >
+                      <h3 className="text-lg sm:text-xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                        BuyBack + Extend+ Bundle
+                      </h3>
+                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
+                        Repairs, better resale & savings
+                      </p>
+                      <div className="text-5xl sm:text-6xl font-bold">
+                        {pricesLoading ? (
+                          <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
+                        ) : (
+                          `₹${laptopBundlePlan?.planPrice || "--"}`
+                        )}
+                      </div>
+                    </div>
+
+                    {/* White Content Area */}
+                    <div className="flex-grow p-6 sm:p-8 space-y-6">
+                      {/* Benefits with Icons */}
+                      <div className="space-y-5">
+                        <div className="flex gap-4">
+                          <Shield
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                              Assured resale value
+                            </p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                              Get back up to 70% of your device's purchase price*
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <Car
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                              Sell your device at doorstep
+                            </p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                              Free pickup from your location
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <DollarSign
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                              Fast & secure payment
+                            </p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                              Instant payout to your bank
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <Wrench
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                              1 Free Repair Service*
+                            </p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                              We pick up, fix, and return your device
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <Shield
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                              30% OFF XtraCover Warranty Plans
+                            </p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                              One-time use during validity
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Validity */}
+                      <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
+                        Validity: 36 months
+                      </div>
+                    </div>
+
+                    {/* Buy Now Button */}
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                      <Button
+                        className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{
+                          background: "linear-gradient(90deg, #254696, #1F4B88)",
+                        }}
+                        onClick={() => handleBuyNow(laptopBundlePlan)}
+                        disabled={pricesLoading || !laptopBundlePlan}
+                        data-testid="button-buy-laptop-bundle"
+                      >
+                        {pricesLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          "Buy Now"
+                        )}
+                      </Button>
                     </div>
                   </div>
 
-                  {/* White Content Area */}
-                  <div className="flex-grow p-6 sm:p-8 space-y-6">
-                    {/* Benefits with Icons */}
-                    <div className="space-y-5">
-                      <div className="flex gap-4">
-                        <Shield
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                          style={{ color: "#254696" }}
-                        />
-                        <div>
-                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                            Assured resale value
-                          </p>
-                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Get back up to 70% of your device's purchase price*
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-4">
-                        <Wrench
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                          style={{ color: "#254696" }}
-                        />
-                        <div>
-                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                            1 Free Repair Service*
-                          </p>
-                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            We pick up, fix, and return your device
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-4">
-                        <Shield
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                          style={{ color: "#254696" }}
-                        />
-                        <div>
-                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                            30% OFF XtraCover Warranty Plans
-                          </p>
-                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            One-time use during validity
-                          </p>
-                        </div>
-                      </div>
+                  {/* Back Face */}
+                  <div className="flip-card-back rounded-3xl overflow-hidden flex flex-col">
+                    {/* Blue Header */}
+                    <div
+                      className="p-6 sm:p-7 text-white text-center"
+                      style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
+                    >
+                      <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                        Claim Value Slabs
+                      </h3>
+                      <p className="text-xs sm:text-sm mb-3 opacity-95">
+                        Device age based claims
+                      </p>
                     </div>
 
                     {/* Device Age Slabs */}
-                    <div className="border-t pt-4">
+                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center">
                       <ClaimValueSlabs deviceType="laptop" isBundle={true} />
                     </div>
-
-                    {/* Validity */}
-                    <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
-                      Validity: 36 months
-                    </div>
-                  </div>
-
-                  {/* Buy Now Button */}
-                  <div className="p-6 sm:p-8 pt-4 sm:pt-6">
-                    <Button
-                      className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{
-                        background: "linear-gradient(90deg, #254696, #1F4B88)",
-                      }}
-                      onClick={() => handleBuyNow(laptopBundlePlan)}
-                      disabled={pricesLoading || !laptopBundlePlan}
-                      data-testid="button-buy-laptop-bundle"
-                    >
-                      {pricesLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        "Buy Now"
-                      )}
-                    </Button>
                   </div>
                 </div>
               </div>
@@ -815,7 +900,7 @@ export default function Plans() {
                 className="w-full h-full flex flex-col flip-card"
                 data-testid="card-mobile-bundle"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100 flip-card-inner">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full relative bg-white border border-gray-100 flip-card-inner">
                   {/* Blue Header */}
                   <div
                     className="p-6 sm:p-7 text-white text-center"
@@ -886,11 +971,6 @@ export default function Plans() {
                       </div>
                     </div>
 
-                    {/* Device Age Slabs */}
-                    <div className="border-t pt-4">
-                      <ClaimValueSlabs deviceType="mobile" isBundle={true} />
-                    </div>
-
                     {/* Validity */}
                     <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
                       Validity: 24 months
@@ -914,6 +994,27 @@ export default function Plans() {
                         "Buy Now"
                       )}
                     </Button>
+                  </div>
+                </div>
+
+                {/* Back Face */}
+                <div className="flip-card-back rounded-3xl overflow-hidden flex flex-col" style={{ position: 'absolute', width: '100%', height: '100%' }}>
+                  {/* Blue Header */}
+                  <div
+                    className="p-6 sm:p-7 text-white text-center"
+                    style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
+                  >
+                    <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                      Claim Value Slabs
+                    </h3>
+                    <p className="text-xs sm:text-sm mb-3 opacity-95">
+                      Device age based claims
+                    </p>
+                  </div>
+
+                  {/* Device Age Slabs */}
+                  <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center">
+                    <ClaimValueSlabs deviceType="mobile" isBundle={true} />
                   </div>
                 </div>
               </div>

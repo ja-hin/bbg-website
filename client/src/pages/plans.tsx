@@ -322,7 +322,7 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="flex-grow p-6 sm:p-8 flex flex-col">
+                    <div className="p-6 sm:p-8 space-y-3">
                       {/* Benefits with Icons */}
                       <div className="space-y-3">
                         <div className="flex gap-4">
@@ -370,7 +370,7 @@ export default function Plans() {
                       </div>
 
                       {/* Validity */}
-                      <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
+                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
                         Validity {(laptopBBGPlan?.coverage || '36').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
@@ -427,7 +427,7 @@ export default function Plans() {
                     </div>
 
                     {/* Back and Buy Now Buttons */}
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
                       <button
                         onClick={() => setLaptopBBGFlipped(false)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -486,7 +486,7 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="flex-grow p-6 sm:p-8 flex flex-col">
+                    <div className="p-6 sm:p-8 space-y-3">
                       {/* Benefits with Icons */}
                       <div className="space-y-3">
                         <div className="flex gap-4">
@@ -534,7 +534,7 @@ export default function Plans() {
                       </div>
 
                       {/* Validity */}
-                      <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
+                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
                         Validity {(mobileBBGPlan?.coverage || '36').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
@@ -591,7 +591,7 @@ export default function Plans() {
                     </div>
 
                     {/* Back and Buy Now Buttons */}
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
                       <button
                         onClick={() => setMobileBBGFlipped(false)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -648,7 +648,7 @@ export default function Plans() {
                   </div>
 
                   {/* White Content Area */}
-                  <div className="flex-grow p-6 sm:p-8 flex flex-col">
+                  <div className="p-6 sm:p-8 space-y-3">
                     {/* Benefits with Icons */}
                     <div className="space-y-3">
                       <div className="flex gap-4">
@@ -696,7 +696,7 @@ export default function Plans() {
                     </div>
 
                     {/* Validity */}
-                    <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
+                    <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
                       Validity: {(laptopExtendPlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                     </div>
                   </div>
@@ -750,7 +750,7 @@ export default function Plans() {
                   </div>
 
                   {/* White Content Area */}
-                  <div className="flex-grow p-6 sm:p-8 flex flex-col">
+                  <div className="p-6 sm:p-8 space-y-3">
                     {/* Benefits with Icons */}
                     <div className="space-y-3">
                       <div className="flex gap-4">
@@ -798,7 +798,7 @@ export default function Plans() {
                     </div>
 
                     {/* Validity */}
-                    <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
+                    <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
                       Validity: {(mobileExtendPlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                     </div>
                   </div>
@@ -854,7 +854,7 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="flex-grow p-6 sm:p-8 flex flex-col">
+                    <div className="p-6 sm:p-8 space-y-3">
                       {/* Benefits with Icons */}
                       <div className="space-y-3">
                         <div className="flex gap-4">
@@ -902,7 +902,7 @@ export default function Plans() {
                       </div>
 
                       {/* Validity */}
-                      <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
+                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
                         Validity: {(laptopBundlePlan?.coverage || '36').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
@@ -959,7 +959,7 @@ export default function Plans() {
                     </div>
 
                     {/* Back and Buy Now Buttons */}
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
                       <button
                         onClick={() => setLaptopBundleFlipped(false)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -1018,7 +1018,7 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="flex-grow p-6 sm:p-8 flex flex-col">
+                    <div className="p-6 sm:p-8 space-y-3">
                       {/* Benefits with Icons */}
                       <div className="space-y-3">
                         <div className="flex gap-4">
@@ -1066,7 +1066,7 @@ export default function Plans() {
                       </div>
 
                       {/* Validity */}
-                      <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
+                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
                         Validity: {(mobileBundlePlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
@@ -1123,7 +1123,7 @@ export default function Plans() {
                     </div>
 
                     {/* Back and Buy Now Buttons */}
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
                       <button
                         onClick={() => setMobileBundleFlipped(false)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"

@@ -36,6 +36,7 @@ import {
   DollarSign,
   Hand,
   ShieldCheck,
+  Percent,
 } from "lucide-react";
 import { HomepageCarousel } from "@/components/homepage-carousel";
 import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png";
@@ -322,18 +323,18 @@ export default function Home() {
                 >
                   {/* Title */}
                   <h3 
-                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-2"
+                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-3"
                     style={{ lineHeight: "1.3" }}
                     data-testid="heading-extend-compact"
                   >
-                    Extend+: Protection for
+                    Extend+: Protection for<br />Your Mobile &amp; Laptop
                   </h3>
                   
                   {/* Subtitle */}
                   <p 
                     className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-medium leading-relaxed flex-shrink-0"
                   >
-                    Complete protection &amp; resale support for devices up to 3 years old
+                    Keep your devices covered beyond their standard warranty with added benefits.
                   </p>
 
                   {/* Features Grid */}
@@ -341,12 +342,12 @@ export default function Home() {
                     {/* Feature 1 */}
                     <div className="flex flex-col items-center">
                       <div className="mb-4">
-                        <Calendar 
+                        <Clock 
                           className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
                         />
                       </div>
                       <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
-                        Coverage up<br />to 3<br className="sm:hidden" />years
+                        For devices up<br className="sm:hidden" />to 3 years old
                       </p>
                     </div>
                     
@@ -358,7 +359,7 @@ export default function Home() {
                         />
                       </div>
                       <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
-                        Free repair<br className="sm:hidden" />service<br className="sm:hidden" />&amp; pickup
+                        1 Free Device<br className="sm:hidden" />Repair*
                       </p>
                     </div>
                     
@@ -370,19 +371,19 @@ export default function Home() {
                         />
                       </div>
                       <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
-                        Sell for<br />10-20%<br className="sm:hidden" />more value
+                        10-20% Better<br />Resale Value
                       </p>
                     </div>
                     
                     {/* Feature 4 */}
                     <div className="flex flex-col items-center">
                       <div className="mb-4">
-                        <Gift 
+                        <Percent 
                           className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
                         />
                       </div>
                       <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
-                        30% off<br />extended<br className="sm:hidden" />warranty
+                        30% discount on<br className="sm:hidden" />Extended<br className="sm:hidden" />Warranty purchase
                       </p>
                     </div>
                   </div>

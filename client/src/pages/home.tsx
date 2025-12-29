@@ -170,138 +170,231 @@ export default function Home() {
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Featured Plans Section */}
       <section 
-        className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8"
+        className="py-10 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8"
         style={{
           background: "linear-gradient(135deg, #0f2341 0%, #1a3e5f 50%, #162e47 100%)"
         }}
       >
-        <div className="max-w-5xl mx-auto">
-          {/* BuyBack Guarantee Card */}
-          <div
-            className="group transition-all duration-300 hover:shadow-xl"
-            style={{
-              borderRadius: "24px",
-              overflow: "hidden",
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)"
-            }}
-          >
-            {/* Border wrapper with cyan border */}
+        <div className="max-w-6xl mx-auto">
+          {/* Grid: 1 column on mobile, 2 columns on desktop */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
+            {/* BuyBack Guarantee Card */}
             <div
+              className="group transition-all duration-300 hover:shadow-xl"
               style={{
                 borderRadius: "24px",
-                padding: "3px",
-                background: "linear-gradient(135deg, #4a9fd8, #2a7aac, #1a5f8f)"
+                overflow: "hidden",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)"
               }}
             >
-              {/* Content */}
               <div
-                className="p-8 sm:p-10 lg:p-12 text-center text-white flex flex-col"
-                style={{ 
-                  borderRadius: "21px",
-                  background: "linear-gradient(180deg, rgba(15, 35, 65, 0.95) 0%, rgba(26, 62, 95, 0.95) 100%)",
-                  minHeight: "480px"
+                style={{
+                  borderRadius: "24px",
+                  padding: "2px",
+                  background: "linear-gradient(135deg, #4a9fd8, #2a7aac, #1a5f8f)"
                 }}
               >
-                {/* Title */}
-                <h2 
-                  className="text-3xl sm:text-4xl lg:text-4xl font-bold mb-8"
-                  style={{ lineHeight: "1.3" }}
-                  data-testid="heading-bbg-featured"
-                >
-                  BuyBack Guarantee
-                </h2>
-                
-                {/* Visual/Illustration Area */}
-                <div className="mb-8 flex-grow flex items-center justify-center">
-                  <div className="w-full max-w-xs h-32 sm:h-40 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
-                    <p className="text-white/40 text-sm">Device illustration area</p>
-                  </div>
-                </div>
-
-                {/* Features Grid - 4 circles at bottom */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mb-8">
-                  {/* Feature 1 */}
-                  <div className="flex flex-col items-center">
-                    <div 
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-3"
-                      style={{ background: "white" }}
-                    >
-                      <Clock 
-                        className="w-8 h-8 sm:w-10 sm:h-10" 
-                        style={{ color: "#0f2341" }}
-                      />
-                    </div>
-                    <p className="text-xs sm:text-sm font-semibold text-white text-center">
-                      Upto<br />6 Months
-                    </p>
-                  </div>
-                  
-                  {/* Feature 2 */}
-                  <div className="flex flex-col items-center">
-                    <div 
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-3"
-                      style={{ background: "white" }}
-                    >
-                      <Hand 
-                        className="w-8 h-8 sm:w-10 sm:h-10" 
-                        style={{ color: "#0f2341" }}
-                      />
-                    </div>
-                    <p className="text-xs sm:text-sm font-semibold text-white text-center">
-                      Upto 70%<br />Resale Value
-                    </p>
-                  </div>
-                  
-                  {/* Feature 3 */}
-                  <div className="flex flex-col items-center">
-                    <div 
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-3"
-                      style={{ background: "white" }}
-                    >
-                      <Package 
-                        className="w-8 h-8 sm:w-10 sm:h-10" 
-                        style={{ color: "#0f2341" }}
-                      />
-                    </div>
-                    <p className="text-xs sm:text-sm font-semibold text-white text-center">
-                      Doorstep<br />Pickup
-                    </p>
-                  </div>
-                  
-                  {/* Feature 4 */}
-                  <div className="flex flex-col items-center">
-                    <div 
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-3"
-                      style={{ background: "white" }}
-                    >
-                      <ShieldCheck 
-                        className="w-8 h-8 sm:w-10 sm:h-10" 
-                        style={{ color: "#0f2341" }}
-                      />
-                    </div>
-                    <p className="text-xs sm:text-sm font-semibold text-white text-center">
-                      Fast & Secure<br />Payment
-                    </p>
-                  </div>
-                </div>
-
-                {/* CTA Button */}
-                <Button
-                  onClick={scrollToForm}
-                  className="mt-auto text-white font-semibold rounded-full text-base transition-all duration-300 hover:shadow-lg active:scale-95"
-                  style={{
-                    background: "linear-gradient(90deg, #4a8ed8, #5a9ee8)",
-                    padding: "14px 42px",
-                    minHeight: "48px",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    alignSelf: "center"
+                <div
+                  className="aspect-square sm:aspect-auto p-6 sm:p-8 text-center text-white flex flex-col justify-between"
+                  style={{ 
+                    borderRadius: "22px",
+                    background: "linear-gradient(180deg, rgba(15, 35, 65, 0.95) 0%, rgba(26, 62, 95, 0.95) 100%)",
+                    minHeight: "420px"
                   }}
-                  data-testid="button-bbg-featured"
                 >
-                  Get BuyBack Guarantee
-                </Button>
+                  <h2 
+                    className="text-2xl sm:text-3xl font-bold mb-4"
+                    style={{ lineHeight: "1.3" }}
+                    data-testid="heading-bbg-card"
+                  >
+                    BuyBack Guarantee
+                  </h2>
+                  
+                  <div className="flex-grow flex items-center justify-center mb-4">
+                    <div className="text-white/50 text-sm">Premium card design</div>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                    <div className="flex flex-col items-center">
+                      <div 
+                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2"
+                        style={{ background: "white" }}
+                      >
+                        <Clock 
+                          className="w-6 h-6 sm:w-8 sm:h-8" 
+                          style={{ color: "#0f2341" }}
+                        />
+                      </div>
+                      <p className="text-xs font-semibold text-white text-center">Upto 6 Months</p>
+                    </div>
+                    
+                    <div className="flex flex-col items-center">
+                      <div 
+                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2"
+                        style={{ background: "white" }}
+                      >
+                        <Hand 
+                          className="w-6 h-6 sm:w-8 sm:h-8" 
+                          style={{ color: "#0f2341" }}
+                        />
+                      </div>
+                      <p className="text-xs font-semibold text-white text-center">Upto 70% Value</p>
+                    </div>
+                    
+                    <div className="flex flex-col items-center">
+                      <div 
+                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2"
+                        style={{ background: "white" }}
+                      >
+                        <Package 
+                          className="w-6 h-6 sm:w-8 sm:h-8" 
+                          style={{ color: "#0f2341" }}
+                        />
+                      </div>
+                      <p className="text-xs font-semibold text-white text-center">Doorstep Pickup</p>
+                    </div>
+                    
+                    <div className="flex flex-col items-center">
+                      <div 
+                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2"
+                        style={{ background: "white" }}
+                      >
+                        <ShieldCheck 
+                          className="w-6 h-6 sm:w-8 sm:h-8" 
+                          style={{ color: "#0f2341" }}
+                        />
+                      </div>
+                      <p className="text-xs font-semibold text-white text-center">Fast & Secure</p>
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={scrollToForm}
+                    className="text-white font-semibold rounded-full text-sm sm:text-base transition-all duration-300 hover:shadow-lg active:scale-95"
+                    style={{
+                      background: "linear-gradient(90deg, #4a8ed8, #5a9ee8)",
+                      padding: "12px 32px",
+                      minHeight: "44px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      alignSelf: "center"
+                    }}
+                    data-testid="button-bbg-card"
+                  >
+                    Get BuyBack Guarantee
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Extend+ Protection Card */}
+            <div
+              className="group transition-all duration-300 hover:shadow-xl"
+              style={{
+                borderRadius: "24px",
+                overflow: "hidden",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)"
+              }}
+            >
+              <div
+                style={{
+                  borderRadius: "24px",
+                  padding: "2px",
+                  background: "linear-gradient(135deg, #4a9fd8, #2a7aac, #1a5f8f)"
+                }}
+              >
+                <div
+                  className="aspect-square sm:aspect-auto p-6 sm:p-8 text-center text-white flex flex-col justify-between"
+                  style={{ 
+                    borderRadius: "22px",
+                    background: "linear-gradient(180deg, rgba(15, 35, 65, 0.95) 0%, rgba(26, 62, 95, 0.95) 100%)",
+                    minHeight: "420px"
+                  }}
+                >
+                  <h2 
+                    className="text-2xl sm:text-3xl font-bold mb-4"
+                    style={{ lineHeight: "1.3" }}
+                    data-testid="heading-extend-card"
+                  >
+                    Extend+
+                  </h2>
+                  
+                  <div className="flex-grow flex items-center justify-center mb-4">
+                    <div className="text-white/50 text-sm">Premium card design</div>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                    <div className="flex flex-col items-center">
+                      <div 
+                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2"
+                        style={{ background: "white" }}
+                      >
+                        <Clock 
+                          className="w-6 h-6 sm:w-8 sm:h-8" 
+                          style={{ color: "#0f2341" }}
+                        />
+                      </div>
+                      <p className="text-xs font-semibold text-white text-center">Upto 3 Years</p>
+                    </div>
+                    
+                    <div className="flex flex-col items-center">
+                      <div 
+                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2"
+                        style={{ background: "white" }}
+                      >
+                        <Wrench 
+                          className="w-6 h-6 sm:w-8 sm:h-8" 
+                          style={{ color: "#0f2341" }}
+                        />
+                      </div>
+                      <p className="text-xs font-semibold text-white text-center">Free Repair</p>
+                    </div>
+                    
+                    <div className="flex flex-col items-center">
+                      <div 
+                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2"
+                        style={{ background: "white" }}
+                      >
+                        <Package 
+                          className="w-6 h-6 sm:w-8 sm:h-8" 
+                          style={{ color: "#0f2341" }}
+                        />
+                      </div>
+                      <p className="text-xs font-semibold text-white text-center">Doorstep Pickup</p>
+                    </div>
+                    
+                    <div className="flex flex-col items-center">
+                      <div 
+                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-2"
+                        style={{ background: "white" }}
+                      >
+                        <Percent 
+                          className="w-6 h-6 sm:w-8 sm:h-8" 
+                          style={{ color: "#0f2341" }}
+                        />
+                      </div>
+                      <p className="text-xs font-semibold text-white text-center">30% OFF</p>
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={scrollToForm}
+                    className="text-white font-semibold rounded-full text-sm sm:text-base transition-all duration-300 hover:shadow-lg active:scale-95"
+                    style={{
+                      background: "linear-gradient(90deg, #4a8ed8, #5a9ee8)",
+                      padding: "12px 32px",
+                      minHeight: "44px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      alignSelf: "center"
+                    }}
+                    data-testid="button-extend-card"
+                  >
+                    Get Extend+ Protection
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

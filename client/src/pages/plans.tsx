@@ -11,7 +11,7 @@ import {
   Laptop,
   Shield,
   Car,
-  DollarSign,
+  IndianRupee,
   Wrench,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -354,7 +354,7 @@ export default function Plans() {
                           </div>
                         </div>
                         <div className="flex gap-4">
-                          <DollarSign
+                          <IndianRupee
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                             style={{ color: "#254696" }}
                           />
@@ -518,7 +518,7 @@ export default function Plans() {
                           </div>
                         </div>
                         <div className="flex gap-4">
-                          <DollarSign
+                          <IndianRupee
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                             style={{ color: "#254696" }}
                           />
@@ -696,7 +696,7 @@ export default function Plans() {
                     </div>
 
                     {/* Validity */}
-                    <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
+                    <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
                       Validity: {(laptopExtendPlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                     </div>
                   </div>
@@ -798,7 +798,7 @@ export default function Plans() {
                     </div>
 
                     {/* Validity */}
-                    <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
+                    <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
                       Validity: {(mobileExtendPlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                     </div>
                   </div>

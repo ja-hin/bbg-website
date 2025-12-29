@@ -50,7 +50,7 @@ import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.
 import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_1764254452404.png";
 import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.png";
 import bannerImg from "@assets/BBG Banners Revised (1)_1764328416967.png";
-import buybackGuaranteeImg from "@assets/wmremove-transformed_1767022612512.png";
+import buybackGuaranteeImg from "@assets/wmremove-transformed_1767022747924.png";
 import extendPlusImg from "@assets/Extend+cropped_(1)_1767021849857.jpg";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {

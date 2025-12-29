@@ -76,6 +76,7 @@
 @layer utilities {
   .flip-card {
     perspective: 1000px;
+    height: 100%;
   }
 
   .flip-card-inner {
@@ -93,25 +94,25 @@
   .flip-card-front,
   .flip-card-back {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
     display: flex;
     flex-direction: column;
-    -webkit-backface-visibility: hidden;
   }
 
   .flip-card-front {
     background-color: white;
     color: black;
-    z-index: 2;
   }
 
   .flip-card-back {
     background-color: white;
     color: black;
     transform: rotateY(180deg);
-    z-index: 1;
   }
 }
 

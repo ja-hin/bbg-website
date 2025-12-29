@@ -287,10 +287,10 @@ export default function Plans() {
           <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
             {showLaptopBBG && (
               <div
-                className="w-full h-full flex flex-col"
+                className="w-full h-full flex flex-col flip-card"
                 data-testid="card-laptop-bbg"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100 flip-card-inner">
                   {/* Blue Header */}
                   <div
                     className="p-6 sm:p-7 text-white text-center"
@@ -394,10 +394,10 @@ export default function Plans() {
 
             {showMobileBBG && (
               <div
-                className="w-full h-full flex flex-col"
+                className="w-full h-full flex flex-col flip-card"
                 data-testid="card-mobile-bbg"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100 flip-card-inner">
                   {/* Blue Header */}
                   <div
                     className="p-6 sm:p-7 text-white text-center"
@@ -501,10 +501,10 @@ export default function Plans() {
 
             {showLaptopExtend && (
               <div
-                className="w-full h-full flex flex-col"
+                className="w-full h-full flex flex-col flip-card"
                 data-testid="card-laptop-extend"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100 flip-card-inner">
                   {/* Blue Header */}
                   <div
                     className="p-6 sm:p-7 text-white text-center"
@@ -603,10 +603,10 @@ export default function Plans() {
 
             {showMobileExtend && (
               <div
-                className="w-full h-full flex flex-col"
+                className="w-full h-full flex flex-col flip-card"
                 data-testid="card-mobile-extend"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100 flip-card-inner">
                   {/* Blue Header */}
                   <div
                     className="p-6 sm:p-7 text-white text-center"
@@ -705,10 +705,10 @@ export default function Plans() {
 
             {showLaptopBundle && (
               <div
-                className="w-full h-full flex flex-col"
+                className="w-full h-full flex flex-col flip-card"
                 data-testid="card-laptop-bundle"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100 flip-card-inner">
                   {/* Blue Header */}
                   <div
                     className="p-6 sm:p-7 text-white text-center"
@@ -744,34 +744,6 @@ export default function Plans() {
                           </p>
                           <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
                             Get back up to 70% of your device's purchase price*
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-4">
-                        <Car
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                          style={{ color: "#254696" }}
-                        />
-                        <div>
-                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                            Sell your device at doorstep
-                          </p>
-                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Free pickup from your location
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-4">
-                        <DollarSign
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                          style={{ color: "#254696" }}
-                        />
-                        <div>
-                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                            Fast & secure payment
-                          </p>
-                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Instant payout to your bank
                           </p>
                         </div>
                       </div>
@@ -840,10 +812,10 @@ export default function Plans() {
 
             {showMobileBundle && (
               <div
-                className="w-full h-full flex flex-col"
+                className="w-full h-full flex flex-col flip-card"
                 data-testid="card-mobile-bundle"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100 flip-card-inner">
                   {/* Blue Header */}
                   <div
                     className="p-6 sm:p-7 text-white text-center"
@@ -882,34 +854,8 @@ export default function Plans() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex gap-4">
-                        <Car
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                          style={{ color: "#254696" }}
-                        />
-                        <div>
-                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                            Sell your device at doorstep
-                          </p>
-                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Free pickup from your location
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-4">
-                        <DollarSign
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                          style={{ color: "#254696" }}
-                        />
-                        <div>
-                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                            Fast & secure payment
-                          </p>
-                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Instant payout to your bank
-                          </p>
-                        </div>
-                      </div>
+                      
+                      
                       <div className="flex gap-4">
                         <Wrench
                           className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"

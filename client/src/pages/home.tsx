@@ -28,7 +28,7 @@ import {
   Wrench,
   Package,
   Car,
-  DollarSign,
+  IndianRupee,
 } from "lucide-react";
 import { HomepageCarousel } from "@/components/homepage-carousel";
 import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png";
@@ -841,24 +841,33 @@ export default function Home() {
                         {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getLaptopBBGPrice()}`}
                       </div>
                     </div>
-                    <div className="flex-grow p-6 sm:p-8 space-y-6">
-                      <div className="space-y-4">
-                        <div className="flex items-start gap-4">
+                    <div className="p-6 sm:p-8 space-y-3">
+                      <div className="space-y-3">
+                        <div className="flex gap-4">
                           <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <span className="text-sm sm:text-base" style={{ color: "#374151" }}>Assured resale value</span>
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Assured resale value</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Get back up to 70% of your device's purchase price*</p>
+                          </div>
                         </div>
-                        <div className="flex items-start gap-4">
+                        <div className="flex gap-4">
                           <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <span className="text-sm sm:text-base" style={{ color: "#374151" }}>Sell your device at doorstep</span>
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Sell your device at doorstep</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Free pickup from your location</p>
+                          </div>
                         </div>
-                        <div className="flex items-start gap-4">
-                          <DollarSign className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <span className="text-sm sm:text-base" style={{ color: "#374151" }}>Fast & secure payment</span>
+                        <div className="flex gap-4">
+                          <IndianRupee className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Fast & secure payment</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Instant payout to your bank</p>
+                          </div>
                         </div>
                       </div>
-                      <div className="border-t pt-4 text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Validity 36 months</div>
+                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>Validity 36 months</div>
                     </div>
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                    <div className="px-6 sm:px-8 pb-6 sm:pb-8">
                       <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-laptop-bbg">
                         Explore Plans
                       </button>
@@ -975,24 +984,33 @@ export default function Home() {
                         {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getMobileBBGPrice()}`}
                       </div>
                     </div>
-                    <div className="flex-grow p-6 sm:p-8 space-y-6">
-                      <div className="space-y-4">
-                        <div className="flex items-start gap-4">
+                    <div className="p-6 sm:p-8 space-y-3">
+                      <div className="space-y-3">
+                        <div className="flex gap-4">
                           <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <span className="text-sm sm:text-base" style={{ color: "#374151" }}>Assured resale value</span>
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Assured resale value</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Get back up to 70% of your device's purchase price*</p>
+                          </div>
                         </div>
-                        <div className="flex items-start gap-4">
+                        <div className="flex gap-4">
                           <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <span className="text-sm sm:text-base" style={{ color: "#374151" }}>Sell your device at doorstep</span>
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Sell your device at doorstep</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Free pickup from your location</p>
+                          </div>
                         </div>
-                        <div className="flex items-start gap-4">
-                          <DollarSign className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <span className="text-sm sm:text-base" style={{ color: "#374151" }}>Fast & secure payment</span>
+                        <div className="flex gap-4">
+                          <IndianRupee className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Fast & secure payment</p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Instant payout to your bank</p>
+                          </div>
                         </div>
                       </div>
-                      <div className="border-t pt-4 text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Validity 18 months</div>
+                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>Validity 18 months</div>
                     </div>
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                    <div className="px-6 sm:px-8 pb-6 sm:pb-8">
                       <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-mobile-bbg">
                         Explore Plans
                       </button>

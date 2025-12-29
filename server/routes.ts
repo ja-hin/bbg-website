@@ -10886,7 +10886,17 @@ Required: GUPSHUP_API_KEY environment variable
   app.get('/api/plans', async (req, res) => {
     try {
       const plans = await storage.getAllPlans();
-      res.json(plans);
+      
+      // Fetch claim value slabs for each plan and attach them
+      const plansWithSlabs = await Promise.all(plans.map(async (plan) => {
+        const slabs = await storage.getActiveClaimValueSlabsByDeviceType(plan.deviceType);
+        return {
+          ...plan,
+          claimValueSlabs: slabs
+        };
+      }));
+      
+      res.json(plansWithSlabs);
     } catch (error: any) {
       console.error('Error fetching all plans:', error);
       res.status(500).json({ message: 'Failed to fetch plans', error: error.message });

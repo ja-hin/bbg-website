@@ -17,29 +17,21 @@ import {
 import { Button } from "@/components/ui/button";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
 
-const ClaimValueSlabs = ({ deviceType, isBundle }: { deviceType: string; isBundle?: boolean }) => {
-  const slabs = isBundle
-    ? [
-        { range: "4-6 months", percentage: "70%" },
-        { range: "7-9 months", percentage: "60%" },
-        { range: "10-12 months", percentage: "50%" },
-        { range: "13-15 months", percentage: "40%" },
-        { range: "16-18 months", percentage: "30%" },
-      ]
-    : [
-        { range: "4-6 months", percentage: "70%" },
-        { range: "7-12 months", percentage: "50%" },
-        { range: "13-18 months", percentage: "45%" },
-        { range: "19-24 months", percentage: "40%" },
-        { range: "31-36 months", percentage: "25%" },
-      ];
+const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
+  if (!slabs || slabs.length === 0) {
+    return (
+      <div className="bg-gray-50 rounded-lg p-4">
+        <p style={{ color: "#666666" }} className="text-sm text-center">No claim value slabs available</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 rounded-lg p-4 space-y-3">
       {slabs.map((slab, idx) => (
         <div key={idx} className="flex justify-between items-center text-sm">
-          <span style={{ color: "#666666" }}>{slab.range}</span>
-          <span style={{ color: "#254696", fontWeight: "600" }}>Get back {slab.percentage}</span>
+          <span style={{ color: "#666666" }}>{slab.deviceAge || slab.ageRange || slab.range}</span>
+          <span style={{ color: "#254696", fontWeight: "600" }}>Get back {slab.resalePercentage || slab.percentage}%</span>
         </div>
       ))}
     </div>
@@ -367,7 +359,7 @@ export default function Plans() {
 
                       {/* Validity */}
                       <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
-                        Validity 36 months
+                        Validity {laptopBBGPlan?.coverage || '36'} months
                       </div>
                     </div>
 
@@ -416,7 +408,7 @@ export default function Plans() {
 
                     {/* Device Age Slabs */}
                     <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
-                      <ClaimValueSlabs deviceType="laptop" />
+                      <ClaimValueSlabs slabs={laptopBBGPlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
                         Resale value is calculated as a percentage of your original device purchase price
                       </p>
@@ -531,7 +523,7 @@ export default function Plans() {
 
                       {/* Validity */}
                       <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
-                        Validity 36 months
+                        Validity {mobileBBGPlan?.coverage || '36'} months
                       </div>
                     </div>
 
@@ -580,7 +572,7 @@ export default function Plans() {
 
                     {/* Device Age Slabs */}
                     <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
-                      <ClaimValueSlabs deviceType="mobile" />
+                      <ClaimValueSlabs slabs={mobileBBGPlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
                         Resale value is calculated as a percentage of your original device purchase price
                       </p>
@@ -693,7 +685,7 @@ export default function Plans() {
 
                     {/* Validity */}
                     <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
-                      Validity: 24 months
+                      Validity: {laptopExtendPlan?.coverage || '24'} months
                     </div>
                   </div>
 
@@ -795,7 +787,7 @@ export default function Plans() {
 
                     {/* Validity */}
                     <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
-                      Validity: 24 months
+                      Validity: {mobileExtendPlan?.coverage || '24'} months
                     </div>
                   </div>
 
@@ -899,7 +891,7 @@ export default function Plans() {
 
                       {/* Validity */}
                       <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
-                        Validity: 36 months
+                        Validity: {laptopBundlePlan?.coverage || '36'} months
                       </div>
                     </div>
 
@@ -948,7 +940,7 @@ export default function Plans() {
 
                     {/* Device Age Slabs */}
                     <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
-                      <ClaimValueSlabs deviceType="laptop" isBundle={true} />
+                      <ClaimValueSlabs slabs={laptopBundlePlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
                         Resale value is calculated as a percentage of your original device purchase price
                       </p>
@@ -1063,7 +1055,7 @@ export default function Plans() {
 
                       {/* Validity */}
                       <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
-                        Validity: 24 months
+                        Validity: {mobileBundlePlan?.coverage || '24'} months
                       </div>
                     </div>
 
@@ -1112,7 +1104,7 @@ export default function Plans() {
 
                     {/* Device Age Slabs */}
                     <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
-                      <ClaimValueSlabs deviceType="mobile" isBundle={true} />
+                      <ClaimValueSlabs slabs={mobileBundlePlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
                         Resale value is calculated as a percentage of your original device purchase price
                       </p>

@@ -231,33 +231,7 @@ export default function Plans() {
             )}
           </div>
 
-          {/* Benefit Strip */}
-          <div className="mt-4 mb-1 flex flex-wrap items-center justify-center gap-6 sm:gap-10">
-            <div className="flex flex-col items-center text-center w-20 sm:w-24">
-              <ShieldCheck className="w-10 h-10 sm:w-12 sm:h-12 text-[#254696] mb-2" />
-              <span className="text-xs sm:text-sm text-gray-700 font-medium">
-                No Hidden Charges
-              </span>
-            </div>
-            <div className="flex flex-col items-center text-center w-20 sm:w-24">
-              <Truck className="w-10 h-10 sm:w-12 sm:h-12 text-[#254696] mb-2" />
-              <span className="text-xs sm:text-sm text-gray-700 font-medium">
-                Free Doorstep Pickup
-              </span>
-            </div>
-            <div className="flex flex-col items-center text-center w-20 sm:w-24">
-              <Wallet className="w-10 h-10 sm:w-12 sm:h-12 text-[#254696] mb-2" />
-              <span className="text-xs sm:text-sm text-gray-700 font-medium">
-                Instant Payouts
-              </span>
-            </div>
-            <div className="flex flex-col items-center text-center w-20 sm:w-24">
-              <Smartphone className="w-10 h-10 sm:w-12 sm:h-12 text-[#254696] mb-2" />
-              <span className="text-xs sm:text-sm text-gray-700 font-medium">
-                Completely Digital
-              </span>
-            </div>
-          </div>
+          
         </div>
       </section>
 

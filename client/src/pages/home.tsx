@@ -175,7 +175,7 @@ export default function Home() {
           background: "linear-gradient(135deg, #f5f9ff 0%, #f0f7ff 50%, #fafbfe 100%)"
         }}
       >
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {/* Grid: 1 column on mobile, 2 columns on tablet/desktop */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
             
@@ -193,32 +193,31 @@ export default function Home() {
                 style={{
                   borderRadius: "20px",
                   padding: "2px",
-                  background: "linear-gradient(135deg, #d4e3ff 0%, #1a5db0 50%, #0f3a5f 100%)"
+                  background: "linear-gradient(135deg, #5a8fd9, #1a3a6b, #0f1f35)"
                 }}
               >
                 {/* Content */}
                 <div
-                  className="p-6 sm:p-7 lg:p-8 text-center h-full flex flex-col"
+                  className="p-6 sm:p-7 lg:p-8 text-center text-white h-full flex flex-col"
                   style={{ 
                     borderRadius: "18px",
-                    background: "#f9fbff"
+                    background: "linear-gradient(180deg, rgba(26, 58, 107, 0.98) 0%, rgba(42, 95, 168, 0.98) 100%)"
                   }}
                 >
                   {/* Title */}
                   <h3 
-                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-2"
-                    style={{ color: "#1F4B88", lineHeight: "1.3" }}
+                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-3"
+                    style={{ lineHeight: "1.3" }}
                     data-testid="heading-bbg-compact"
                   >
-                    BuyBack Guarantee:
+                    BuyBack Guarantee:<br />Lock Resale Value of your Mobile<br />& Laptop
                   </h3>
                   
                   {/* Subtitle */}
                   <p 
                     className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-medium leading-relaxed flex-shrink-0"
-                    style={{ color: "#4b5563" }}
                   >
-                    Get assured resale value within 6 months of purchase
+                    Secure your device's resale value and upgrade worry-free.
                   </p>
 
                   {/* Features Grid */}
@@ -227,11 +226,10 @@ export default function Home() {
                     <div className="flex flex-col items-center">
                       <div className="mb-4">
                         <Clock 
-                          className="w-11 h-11 sm:w-12 sm:h-12" 
-                          style={{ color: "#1F4B88" }} 
+                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-center leading-relaxed" style={{ color: "#303e58" }}>
+                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
                         For devices up<br className="sm:hidden" />to 6<br className="sm:hidden" />months old
                       </p>
                     </div>
@@ -240,11 +238,10 @@ export default function Home() {
                     <div className="flex flex-col items-center">
                       <div className="mb-4">
                         <Hand 
-                          className="w-11 h-11 sm:w-12 sm:h-12" 
-                          style={{ color: "#1F4B88" }} 
+                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-center leading-relaxed" style={{ color: "#303e58" }}>
+                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
                         Upto 70%<br />Resale Value
                       </p>
                     </div>
@@ -253,11 +250,10 @@ export default function Home() {
                     <div className="flex flex-col items-center">
                       <div className="mb-4">
                         <Package 
-                          className="w-11 h-11 sm:w-12 sm:h-12" 
-                          style={{ color: "#1F4B88" }} 
+                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-center leading-relaxed" style={{ color: "#303e58" }}>
+                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
                         Sell your device<br className="sm:hidden" />at<br className="sm:hidden" />doorstep
                       </p>
                     </div>
@@ -266,11 +262,10 @@ export default function Home() {
                     <div className="flex flex-col items-center">
                       <div className="mb-4">
                         <ShieldCheck 
-                          className="w-11 h-11 sm:w-12 sm:h-12" 
-                          style={{ color: "#1F4B88" }} 
+                          className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-center leading-relaxed" style={{ color: "#303e58" }}>
+                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
                         Fast and Secure<br className="sm:hidden" />Payment
                       </p>
                     </div>
@@ -281,7 +276,7 @@ export default function Home() {
                     onClick={scrollToForm}
                     className="mt-auto w-full sm:w-auto sm:mx-auto text-white font-semibold rounded-full text-sm sm:text-base transition-all duration-300 hover:shadow-md active:scale-95"
                     style={{
-                      background: "linear-gradient(90deg, #1F4B88, #245AA3)",
+                      background: "linear-gradient(90deg, #3B6FB8, #4A7FD8)",
                       padding: "11px 28px",
                       minHeight: "44px",
                       display: "inline-flex",

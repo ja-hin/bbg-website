@@ -172,38 +172,38 @@ export default function Home() {
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Featured Plans Section */}
       <section 
-        className="px-0"
+        className="px-3 sm:px-6 lg:px-8 py-4 sm:py-6"
         style={{
           background: "linear-gradient(135deg, #0f2341 0%, #1a3e5f 50%, #162e47 100%)"
         }}
       >
-        <div className="max-w-full">
+        <div className="max-w-7xl mx-auto">
           {/* Grid: 1 column on mobile, 2 columns on desktop */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {/* BuyBack Guarantee Image */}
             <div 
-              className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90"
+              className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
               onClick={scrollToForm}
               data-testid="button-featured-bbg"
             >
               <img 
                 src={buybackGuaranteeImg} 
                 alt="BuyBack Guarantee" 
-                className="w-full h-auto"
+                className="w-full h-auto object-cover"
                 data-testid="image-buyback-guarantee"
               />
             </div>
 
             {/* Extend+ Protection Image */}
             <div 
-              className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90"
+              className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
               onClick={scrollToForm}
               data-testid="button-featured-extend"
             >
               <img 
                 src={extendPlusImg} 
                 alt="Extend+ Protection" 
-                className="w-full h-auto"
+                className="w-full h-auto object-cover"
                 data-testid="image-extend-plus"
               />
             </div>

@@ -172,16 +172,20 @@ export default function Home() {
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Featured Plans Section */}
       <section 
-        className="px-2 sm:px-4"
+        className="px-0"
         style={{
           background: "linear-gradient(135deg, #0f2341 0%, #1a3e5f 50%, #162e47 100%)"
         }}
       >
         <div className="max-w-full">
           {/* Grid: 1 column on mobile, 2 columns on desktop */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
             {/* BuyBack Guarantee Image */}
-            <div className="overflow-hidden">
+            <div 
+              className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90"
+              onClick={scrollToForm}
+              data-testid="button-featured-bbg"
+            >
               <img 
                 src={buybackGuaranteeImg} 
                 alt="BuyBack Guarantee" 
@@ -191,7 +195,11 @@ export default function Home() {
             </div>
 
             {/* Extend+ Protection Image */}
-            <div className="overflow-hidden">
+            <div 
+              className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90"
+              onClick={scrollToForm}
+              data-testid="button-featured-extend"
+            >
               <img 
                 src={extendPlusImg} 
                 alt="Extend+ Protection" 

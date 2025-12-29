@@ -623,10 +623,10 @@ export default function Plans() {
 
             {showLaptopExtend && (
               <div
-                className="w-full h-full flex flex-col"
+                className="w-full flex flex-col min-h-96"
                 data-testid="card-laptop-extend"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
                   {/* Blue Header */}
                   <div
                     className="p-6 sm:p-7 text-white text-center"
@@ -725,10 +725,10 @@ export default function Plans() {
 
             {showMobileExtend && (
               <div
-                className="w-full h-full flex flex-col"
+                className="w-full flex flex-col min-h-96"
                 data-testid="card-mobile-extend"
               >
-                <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
+                <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
                   {/* Blue Header */}
                   <div
                     className="p-6 sm:p-7 text-white text-center"

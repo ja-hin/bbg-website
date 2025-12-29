@@ -211,7 +211,9 @@ export default function Home() {
         </div>
       </section>
       {/* Homepage Carousel - Critical path, loads first */}
-      <HomepageCarousel onFirstImageLoaded={handleCarouselFirstImageLoaded} />
+      <div className="hidden">
+        <HomepageCarousel onFirstImageLoaded={handleCarouselFirstImageLoaded} />
+      </div>
       {/* Smart Plans Section with Form */}
       <section
         className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8"

@@ -788,34 +788,6 @@ export default function Plans() {
                           </div>
                         </div>
                         <div className="flex gap-4">
-                          <Car
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                            style={{ color: "#254696" }}
-                          />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                              Sell your device at doorstep
-                            </p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                              Free pickup from your location
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex gap-4">
-                          <DollarSign
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                            style={{ color: "#254696" }}
-                          />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                              Fast & secure payment
-                            </p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                              Instant payout to your bank
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex gap-4">
                           <Wrench
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                             style={{ color: "#254696" }}
@@ -938,34 +910,6 @@ export default function Plans() {
                             </p>
                             <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
                               Get back up to 70% of your device's purchase price*
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex gap-4">
-                          <Car
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                            style={{ color: "#254696" }}
-                          />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                              Sell your device at doorstep
-                            </p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                              Free pickup from your location
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex gap-4">
-                          <DollarSign
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
-                            style={{ color: "#254696" }}
-                          />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                              Fast & secure payment
-                            </p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                              Instant payout to your bank
                             </p>
                           </div>
                         </div>

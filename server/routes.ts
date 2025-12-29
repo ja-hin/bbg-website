@@ -10908,12 +10908,25 @@ Required: GUPSHUP_API_KEY environment variable
         });
         
         // Deduplicate slabs by device_type + min_months + max_months (keeps only the first occurrence)
-        const uniqueSlabs = Array.from(
+        let uniqueSlabs = Array.from(
           new Map(filteredSlabs.map(slab => [
             `${slab.deviceType}_${slab.minMonths}_${slab.maxMonths}`,
             slab
           ])).values()
         );
+        
+        // For laptop slabs, filter out overlapping ranges to keep only the correct ones
+        if (plan.deviceType === 'laptop') {
+          uniqueSlabs = uniqueSlabs.filter(slab => {
+            const minMonths = slab.minMonths || slab.min_months;
+            const maxMonths = slab.maxMonths || slab.max_months;
+            // Remove the 6-12 months slab (it overlaps with 4-6 and 7-12)
+            if (minMonths === 6 && maxMonths === 12) {
+              return false;
+            }
+            return true;
+          });
+        }
         
         return {
           ...plan,

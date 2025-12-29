@@ -76,15 +76,19 @@
 @layer utilities {
   .flip-card {
     perspective: 1000px;
-    height: 100%;
+    min-height: 100%;
+    width: 100%;
   }
 
   .flip-card-inner {
     position: relative;
     width: 100%;
     height: 100%;
+    min-height: 100%;
     transition: transform 0.6s;
     transform-style: preserve-3d;
+    display: flex;
+    flex-direction: column;
   }
 
   .flip-card:hover .flip-card-inner {
@@ -93,11 +97,9 @@
 
   .flip-card-front,
   .flip-card-back {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
+    min-height: 100%;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     display: flex;
@@ -113,6 +115,9 @@
     background-color: white;
     color: black;
     transform: rotateY(180deg);
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 }
 

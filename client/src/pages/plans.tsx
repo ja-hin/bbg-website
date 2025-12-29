@@ -287,12 +287,12 @@ export default function Plans() {
           <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
             {showLaptopBBG && (
               <div
-                className="w-full h-full flex flex-col flip-card"
+                className="w-full flex flex-col flip-card min-h-96"
                 data-testid="card-laptop-bbg"
               >
-                <div className="rounded-3xl shadow-xl overflow-visible h-full relative flip-card-inner">
+                <div className="rounded-3xl shadow-xl overflow-visible relative flip-card-inner">
                   {/* Front Face */}
-                  <div className="flip-card-front rounded-3xl overflow-hidden flex flex-col bg-white border border-gray-100">
+                  <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
                       className="p-6 sm:p-7 text-white text-center"
@@ -388,7 +388,7 @@ export default function Plans() {
                   </div>
 
                   {/* Back Face */}
-                  <div className="flip-card-back rounded-3xl overflow-hidden flex flex-col bg-white border border-gray-100">
+                  <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
                       className="p-6 sm:p-7 text-white text-center"
@@ -413,12 +413,12 @@ export default function Plans() {
 
             {showMobileBBG && (
               <div
-                className="w-full h-full flex flex-col flip-card"
+                className="w-full flex flex-col flip-card min-h-96"
                 data-testid="card-mobile-bbg"
               >
-                <div className="rounded-3xl shadow-xl overflow-visible h-full relative flip-card-inner">
+                <div className="rounded-3xl shadow-xl overflow-visible relative flip-card-inner">
                   {/* Front Face */}
-                  <div className="flip-card-front rounded-3xl overflow-hidden flex flex-col bg-white border border-gray-100">
+                  <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
                       className="p-6 sm:p-7 text-white text-center"
@@ -514,7 +514,7 @@ export default function Plans() {
                   </div>
 
                   {/* Back Face */}
-                  <div className="flip-card-back rounded-3xl overflow-hidden flex flex-col bg-white border border-gray-100">
+                  <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
                       className="p-6 sm:p-7 text-white text-center"
@@ -743,12 +743,12 @@ export default function Plans() {
 
             {showLaptopBundle && (
               <div
-                className="w-full h-full flex flex-col flip-card"
+                className="w-full flex flex-col flip-card min-h-96"
                 data-testid="card-laptop-bundle"
               >
-                <div className="rounded-3xl shadow-xl overflow-visible h-full relative flip-card-inner">
+                <div className="rounded-3xl shadow-xl overflow-visible relative flip-card-inner">
                   {/* Front Face */}
-                  <div className="flip-card-front rounded-3xl overflow-hidden flex flex-col bg-white border border-gray-100">
+                  <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
                       className="p-6 sm:p-7 text-white text-center"
@@ -872,7 +872,7 @@ export default function Plans() {
                   </div>
 
                   {/* Back Face */}
-                  <div className="flip-card-back rounded-3xl overflow-hidden flex flex-col bg-white border border-gray-100">
+                  <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
                       className="p-6 sm:p-7 text-white text-center"
@@ -897,12 +897,12 @@ export default function Plans() {
 
             {showMobileBundle && (
               <div
-                className="w-full h-full flex flex-col flip-card"
+                className="w-full flex flex-col flip-card min-h-96"
                 data-testid="card-mobile-bundle"
               >
-                <div className="rounded-3xl shadow-xl overflow-visible h-full relative flip-card-inner">
+                <div className="rounded-3xl shadow-xl overflow-visible relative flip-card-inner">
                   {/* Front Face */}
-                  <div className="flip-card-front rounded-3xl overflow-hidden flex flex-col bg-white border border-gray-100">
+                  <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
                       className="p-6 sm:p-7 text-white text-center"
@@ -1026,7 +1026,7 @@ export default function Plans() {
                   </div>
 
                   {/* Back Face */}
-                  <div className="flip-card-back rounded-3xl overflow-hidden flex flex-col bg-white border border-gray-100">
+                  <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
                       className="p-6 sm:p-7 text-white text-center"

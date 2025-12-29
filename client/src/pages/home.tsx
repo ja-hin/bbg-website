@@ -170,237 +170,138 @@ export default function Home() {
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Featured Plans Section */}
       <section 
-        className="py-8 sm:py-10 lg:py-12 px-4 sm:px-6 lg:px-8"
+        className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8"
         style={{
-          background: "linear-gradient(135deg, #f5f9ff 0%, #f0f7ff 50%, #fafbfe 100%)"
+          background: "linear-gradient(135deg, #0f2341 0%, #1a3e5f 50%, #162e47 100%)"
         }}
       >
-        <div className="max-w-7xl mx-auto">
-          {/* Grid: 1 column on mobile, 2 columns on tablet/desktop */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-            
-            {/* BuyBack Guarantee Card */}
+        <div className="max-w-5xl mx-auto">
+          {/* BuyBack Guarantee Card */}
+          <div
+            className="group transition-all duration-300 hover:shadow-xl"
+            style={{
+              borderRadius: "24px",
+              overflow: "hidden",
+              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)"
+            }}
+          >
+            {/* Border wrapper with cyan border */}
             <div
-              className="group transition-all duration-300 hover:shadow-lg"
               style={{
-                borderRadius: "20px",
-                overflow: "hidden",
-                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.07)"
+                borderRadius: "24px",
+                padding: "3px",
+                background: "linear-gradient(135deg, #4a9fd8, #2a7aac, #1a5f8f)"
               }}
             >
-              {/* Border wrapper */}
+              {/* Content */}
               <div
-                style={{
-                  borderRadius: "20px",
-                  padding: "2px",
-                  background: "linear-gradient(135deg, #5a8fd9, #1a3a6b, #0f1f35)"
+                className="p-8 sm:p-10 lg:p-12 text-center text-white flex flex-col"
+                style={{ 
+                  borderRadius: "21px",
+                  background: "linear-gradient(180deg, rgba(15, 35, 65, 0.95) 0%, rgba(26, 62, 95, 0.95) 100%)",
+                  minHeight: "480px"
                 }}
               >
-                {/* Content */}
-                <div
-                  className="p-6 sm:p-7 lg:p-8 text-center text-white h-full flex flex-col"
-                  style={{ 
-                    borderRadius: "18px",
-                    background: "linear-gradient(180deg, rgba(26, 58, 107, 0.98) 0%, rgba(42, 95, 168, 0.98) 100%)"
-                  }}
+                {/* Title */}
+                <h2 
+                  className="text-3xl sm:text-4xl lg:text-4xl font-bold mb-8"
+                  style={{ lineHeight: "1.3" }}
+                  data-testid="heading-bbg-featured"
                 >
-                  {/* Title */}
-                  <h3 
-                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-4 px-2"
-                    style={{ lineHeight: "1.4", letterSpacing: "-0.5px" }}
-                    data-testid="heading-bbg-compact"
-                  >
-                    BuyBack Guarantee:<br />Lock Resale Value of your Mobile & Laptop
-                  </h3>
-                  
-                  {/* Subtitle */}
-                  <p 
-                    className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-normal leading-snug flex-shrink-0 px-2"
-                  >
-                    Secure your device's resale value and<br />upgrade worry-free.
-                  </p>
-
-                  {/* Features Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6 mb-8 sm:mb-10 flex-grow flex items-center justify-center">
-                    {/* Feature 1 */}
-                    <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <Clock 
-                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
-                        />
-                      </div>
-                      <p className="text-xs font-semibold text-white text-center leading-tight">
-                        For devices upto<br />6 months old
-                      </p>
-                    </div>
-                    
-                    {/* Feature 2 */}
-                    <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <Hand 
-                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
-                        />
-                      </div>
-                      <p className="text-xs font-semibold text-white text-center leading-tight">
-                        Upto 70%<br />Resale Value
-                      </p>
-                    </div>
-                    
-                    {/* Feature 3 */}
-                    <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <Package 
-                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
-                        />
-                      </div>
-                      <p className="text-xs font-semibold text-white text-center leading-tight">
-                        Sell your device<br />at doorstep
-                      </p>
-                    </div>
-                    
-                    {/* Feature 4 */}
-                    <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <ShieldCheck 
-                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
-                        />
-                      </div>
-                      <p className="text-xs font-semibold text-white text-center leading-tight">
-                        Fast and Secure<br />Payment
-                      </p>
-                    </div>
+                  BuyBack Guarantee
+                </h2>
+                
+                {/* Visual/Illustration Area */}
+                <div className="mb-8 flex-grow flex items-center justify-center">
+                  <div className="w-full max-w-xs h-32 sm:h-40 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                    <p className="text-white/40 text-sm">Device illustration area</p>
                   </div>
-
-                  {/* CTA Button */}
-                  <Button
-                    onClick={scrollToForm}
-                    className="mt-auto w-full sm:w-auto sm:mx-auto text-white font-semibold rounded-full text-sm sm:text-base transition-all duration-300 hover:shadow-md active:scale-95"
-                    style={{
-                      background: "linear-gradient(90deg, #3B6FB8, #4A7FD8)",
-                      padding: "11px 28px",
-                      minHeight: "44px",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center"
-                    }}
-                    data-testid="button-bbg-compact"
-                  >
-                    Get BuyBack Guarantee
-                  </Button>
                 </div>
-              </div>
-            </div>
 
-            {/* Extend+ Protection Card */}
-            <div
-              className="group transition-all duration-300 hover:shadow-lg"
-              style={{
-                borderRadius: "20px",
-                overflow: "hidden",
-                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.07)"
-              }}
-            >
-              {/* Border wrapper */}
-              <div
-                style={{
-                  borderRadius: "20px",
-                  padding: "2px",
-                  background: "linear-gradient(135deg, #5a8fd9, #1a3a6b, #0f1f35)"
-                }}
-              >
-                {/* Content */}
-                <div
-                  className="p-6 sm:p-7 lg:p-8 text-center text-white h-full flex flex-col"
-                  style={{ 
-                    borderRadius: "18px",
-                    background: "linear-gradient(180deg, rgba(26, 58, 107, 0.98) 0%, rgba(42, 95, 168, 0.98) 100%)"
+                {/* Features Grid - 4 circles at bottom */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mb-8">
+                  {/* Feature 1 */}
+                  <div className="flex flex-col items-center">
+                    <div 
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-3"
+                      style={{ background: "white" }}
+                    >
+                      <Clock 
+                        className="w-8 h-8 sm:w-10 sm:h-10" 
+                        style={{ color: "#0f2341" }}
+                      />
+                    </div>
+                    <p className="text-xs sm:text-sm font-semibold text-white text-center">
+                      Upto<br />6 Months
+                    </p>
+                  </div>
+                  
+                  {/* Feature 2 */}
+                  <div className="flex flex-col items-center">
+                    <div 
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-3"
+                      style={{ background: "white" }}
+                    >
+                      <Hand 
+                        className="w-8 h-8 sm:w-10 sm:h-10" 
+                        style={{ color: "#0f2341" }}
+                      />
+                    </div>
+                    <p className="text-xs sm:text-sm font-semibold text-white text-center">
+                      Upto 70%<br />Resale Value
+                    </p>
+                  </div>
+                  
+                  {/* Feature 3 */}
+                  <div className="flex flex-col items-center">
+                    <div 
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-3"
+                      style={{ background: "white" }}
+                    >
+                      <Package 
+                        className="w-8 h-8 sm:w-10 sm:h-10" 
+                        style={{ color: "#0f2341" }}
+                      />
+                    </div>
+                    <p className="text-xs sm:text-sm font-semibold text-white text-center">
+                      Doorstep<br />Pickup
+                    </p>
+                  </div>
+                  
+                  {/* Feature 4 */}
+                  <div className="flex flex-col items-center">
+                    <div 
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-3"
+                      style={{ background: "white" }}
+                    >
+                      <ShieldCheck 
+                        className="w-8 h-8 sm:w-10 sm:h-10" 
+                        style={{ color: "#0f2341" }}
+                      />
+                    </div>
+                    <p className="text-xs sm:text-sm font-semibold text-white text-center">
+                      Fast & Secure<br />Payment
+                    </p>
+                  </div>
+                </div>
+
+                {/* CTA Button */}
+                <Button
+                  onClick={scrollToForm}
+                  className="mt-auto text-white font-semibold rounded-full text-base transition-all duration-300 hover:shadow-lg active:scale-95"
+                  style={{
+                    background: "linear-gradient(90deg, #4a8ed8, #5a9ee8)",
+                    padding: "14px 42px",
+                    minHeight: "48px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    alignSelf: "center"
                   }}
+                  data-testid="button-bbg-featured"
                 >
-                  {/* Title */}
-                  <h3 
-                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-4 px-2"
-                    style={{ lineHeight: "1.4", letterSpacing: "-0.5px" }}
-                    data-testid="heading-extend-compact"
-                  >
-                    Extend+: Protection for<br />Your Mobile &amp; Laptop
-                  </h3>
-                  
-                  {/* Subtitle */}
-                  <p 
-                    className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-normal leading-snug flex-shrink-0 px-2"
-                  >
-                    Keep your devices covered beyond their<br />standard warranty with added benefits.
-                  </p>
-
-                  {/* Features Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6 mb-8 sm:mb-10 flex-grow flex items-center justify-center">
-                    {/* Feature 1 */}
-                    <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <Clock 
-                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
-                        />
-                      </div>
-                      <p className="text-xs font-semibold text-white text-center leading-tight">
-                        For devices upto<br />3 years old
-                      </p>
-                    </div>
-                    
-                    {/* Feature 2 */}
-                    <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <Wrench 
-                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
-                        />
-                      </div>
-                      <p className="text-xs font-semibold text-white text-center leading-tight">
-                        1 Free Device<br />Repair*
-                      </p>
-                    </div>
-                    
-                    {/* Feature 3 */}
-                    <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <TrendingUp 
-                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
-                        />
-                      </div>
-                      <p className="text-xs font-semibold text-white text-center leading-tight">
-                        10-20% Better<br />Resale Value
-                      </p>
-                    </div>
-                    
-                    {/* Feature 4 */}
-                    <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <Percent 
-                          className="w-10 h-10 sm:w-11 sm:h-11 text-white" 
-                        />
-                      </div>
-                      <p className="text-xs font-semibold text-white text-center leading-tight">
-                        30% discount on<br />Extended Warranty<br />purchase
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* CTA Button */}
-                  <Button
-                    onClick={scrollToForm}
-                    className="mt-auto w-full sm:w-auto sm:mx-auto text-white font-semibold rounded-full text-sm sm:text-base transition-all duration-300 hover:shadow-md active:scale-95"
-                    style={{
-                      background: "rgba(255, 255, 255, 0.15)",
-                      border: "2px solid rgba(255, 255, 255, 0.35)",
-                      padding: "11px 28px",
-                      minHeight: "44px",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center"
-                    }}
-                    data-testid="button-extend-compact"
-                  >
-                    Get Extend+ Protection
-                  </Button>
-                </div>
+                  Get BuyBack Guarantee
+                </Button>
               </div>
             </div>
           </div>

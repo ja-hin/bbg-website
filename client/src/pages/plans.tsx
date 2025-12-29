@@ -322,9 +322,9 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="flex-grow p-6 sm:p-8 space-y-6">
+                    <div className="p-6 sm:p-8 space-y-3">
                       {/* Benefits with Icons */}
-                      <div className="space-y-5">
+                      <div className="space-y-3">
                         <div className="flex gap-4">
                           <Shield
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
@@ -376,7 +376,7 @@ export default function Plans() {
                     </div>
 
                     {/* Know More Button and Buy Now Button */}
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
                       <button
                         onClick={() => setLaptopBBGFlipped(!laptopBBGFlipped)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -486,9 +486,9 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="flex-grow p-6 sm:p-8 space-y-6">
+                    <div className="p-6 sm:p-8 space-y-3">
                       {/* Benefits with Icons */}
-                      <div className="space-y-5">
+                      <div className="space-y-3">
                         <div className="flex gap-4">
                           <Shield
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
@@ -540,7 +540,7 @@ export default function Plans() {
                     </div>
 
                     {/* Know More Button and Buy Now Button */}
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
                       <button
                         onClick={() => setMobileBBGFlipped(!mobileBBGFlipped)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -854,9 +854,9 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="flex-grow p-6 sm:p-8 space-y-6">
+                    <div className="p-6 sm:p-8 space-y-3">
                       {/* Benefits with Icons */}
-                      <div className="space-y-5">
+                      <div className="space-y-3">
                         <div className="flex gap-4">
                           <Shield
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
@@ -902,13 +902,13 @@ export default function Plans() {
                       </div>
 
                       {/* Validity */}
-                      <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
+                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
                         Validity: {(laptopBundlePlan?.coverage || '36').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
 
                     {/* Know More Button and Buy Now Button */}
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
                       <button
                         onClick={() => setLaptopBundleFlipped(!laptopBundleFlipped)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -1018,9 +1018,9 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="flex-grow p-6 sm:p-8 space-y-6">
+                    <div className="p-6 sm:p-8 space-y-3">
                       {/* Benefits with Icons */}
-                      <div className="space-y-5">
+                      <div className="space-y-3">
                         <div className="flex gap-4">
                           <Shield
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
@@ -1066,13 +1066,13 @@ export default function Plans() {
                       </div>
 
                       {/* Validity */}
-                      <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
+                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
                         Validity: {(mobileBundlePlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
 
                     {/* Know More Button and Buy Now Button */}
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
                       <button
                         onClick={() => setMobileBundleFlipped(!mobileBundleFlipped)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"

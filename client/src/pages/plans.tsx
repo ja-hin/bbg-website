@@ -415,8 +415,38 @@ export default function Plans() {
                     </div>
 
                     {/* Device Age Slabs */}
-                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center">
+                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
                       <ClaimValueSlabs deviceType="laptop" />
+                      <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
+                        Resale value is calculated as a percentage of your original device purchase price
+                      </p>
+                    </div>
+
+                    {/* Back and Buy Now Buttons */}
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                      <button
+                        onClick={() => setLaptopBBGFlipped(false)}
+                        className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
+                        style={{ color: "#254696" }}
+                        data-testid="button-back-laptop-bbg"
+                      >
+                        Back
+                      </button>
+                      <Button
+                        className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{
+                          background: "linear-gradient(90deg, #254696, #1F4B88)",
+                        }}
+                        onClick={() => handleBuyNow(laptopBBGPlan)}
+                        disabled={pricesLoading || !laptopBBGPlan}
+                        data-testid="button-buy-flipped-laptop-bbg"
+                      >
+                        {pricesLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          "Buy Now"
+                        )}
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -549,8 +579,38 @@ export default function Plans() {
                     </div>
 
                     {/* Device Age Slabs */}
-                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center">
+                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
                       <ClaimValueSlabs deviceType="mobile" />
+                      <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
+                        Resale value is calculated as a percentage of your original device purchase price
+                      </p>
+                    </div>
+
+                    {/* Back and Buy Now Buttons */}
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                      <button
+                        onClick={() => setMobileBBGFlipped(false)}
+                        className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
+                        style={{ color: "#254696" }}
+                        data-testid="button-back-mobile-bbg"
+                      >
+                        Back
+                      </button>
+                      <Button
+                        className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{
+                          background: "linear-gradient(90deg, #254696, #1F4B88)",
+                        }}
+                        onClick={() => handleBuyNow(mobileBBGPlan)}
+                        disabled={pricesLoading || !mobileBBGPlan}
+                        data-testid="button-buy-flipped-mobile-bbg"
+                      >
+                        {pricesLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          "Buy Now"
+                        )}
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -887,8 +947,38 @@ export default function Plans() {
                     </div>
 
                     {/* Device Age Slabs */}
-                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center">
+                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
                       <ClaimValueSlabs deviceType="laptop" isBundle={true} />
+                      <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
+                        Resale value is calculated as a percentage of your original device purchase price
+                      </p>
+                    </div>
+
+                    {/* Back and Buy Now Buttons */}
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                      <button
+                        onClick={() => setLaptopBundleFlipped(false)}
+                        className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
+                        style={{ color: "#254696" }}
+                        data-testid="button-back-laptop-bundle"
+                      >
+                        Back
+                      </button>
+                      <Button
+                        className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{
+                          background: "linear-gradient(90deg, #254696, #1F4B88)",
+                        }}
+                        onClick={() => handleBuyNow(laptopBundlePlan)}
+                        disabled={pricesLoading || !laptopBundlePlan}
+                        data-testid="button-buy-flipped-laptop-bundle"
+                      >
+                        {pricesLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          "Buy Now"
+                        )}
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -1021,8 +1111,38 @@ export default function Plans() {
                     </div>
 
                     {/* Device Age Slabs */}
-                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center">
+                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
                       <ClaimValueSlabs deviceType="mobile" isBundle={true} />
+                      <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
+                        Resale value is calculated as a percentage of your original device purchase price
+                      </p>
+                    </div>
+
+                    {/* Back and Buy Now Buttons */}
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                      <button
+                        onClick={() => setMobileBundleFlipped(false)}
+                        className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
+                        style={{ color: "#254696" }}
+                        data-testid="button-back-mobile-bundle"
+                      >
+                        Back
+                      </button>
+                      <Button
+                        className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{
+                          background: "linear-gradient(90deg, #254696, #1F4B88)",
+                        }}
+                        onClick={() => handleBuyNow(mobileBundlePlan)}
+                        disabled={pricesLoading || !mobileBundlePlan}
+                        data-testid="button-buy-flipped-mobile-bundle"
+                      >
+                        {pricesLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          "Buy Now"
+                        )}
+                      </Button>
                     </div>
                   </div>
                 </div>

@@ -43,12 +43,48 @@ import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_17642544524
 import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.png";
 import bannerImg from "@assets/BBG Banners Revised (1)_1764328416967.png";
 
+const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
+  if (!slabs || slabs.length === 0) {
+    return (
+      <div className="bg-gray-50 rounded-lg p-4">
+        <p style={{ color: "#666666" }} className="text-sm text-center">No claim value slabs available</p>
+      </div>
+    );
+  }
+
+  const formatAgeRange = (slab: any) => {
+    const min = slab.minMonths || slab.min_months;
+    const max = slab.maxMonths || slab.max_months;
+    
+    if (!min || !max) {
+      return slab.deviceAge || slab.ageRange || slab.range || 'Unknown';
+    }
+    
+    return `${min}–${max} months`;
+  };
+
+  return (
+    <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+      {slabs.map((slab, idx) => (
+        <div key={idx} className="flex justify-between items-center text-sm">
+          <span style={{ color: "#666666" }}>{formatAgeRange(slab)}</span>
+          <span style={{ color: "#254696", fontWeight: "600" }}>Get back {slab.resalePercentage || slab.percentage}%</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 export default function Home() {
   const [isBBGExpanded, setIsBBGExpanded] = useState(false);
   const [isExtendExpanded, setIsExtendExpanded] = useState(false);
   const [selectedDeviceTypeFromCard, setSelectedDeviceTypeFromCard] = useState<string | undefined>();
   const [carouselLoaded, setCarouselLoaded] = useState(false);
   const [pricingView, setPricingView] = useState<"laptop" | "mobile">("laptop");
+  const [laptopBBGFlipped, setLaptopBBGFlipped] = useState(false);
+  const [mobileBBGFlipped, setMobileBBGFlipped] = useState(false);
+  const [laptopBundleFlipped, setLaptopBundleFlipped] = useState(false);
+  const [mobileBundleFlipped, setMobileBundleFlipped] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
   const handleCarouselFirstImageLoaded = useCallback(() => {
@@ -830,47 +866,70 @@ export default function Home() {
             {pricingView === "laptop" && (
               <>
                 {/* Laptop BBG Card */}
-                <div className="w-full h-full flex flex-col">
-                  <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
-                    <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
-                      <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                        BuyBack Guarantee
-                      </h3>
-                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Lock your laptop's resale value</p>
-                      <div className="text-5xl sm:text-6xl font-bold">
-                        {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getLaptopBBGPrice()}`}
-                      </div>
-                    </div>
-                    <div className="p-6 sm:p-8 space-y-3">
-                      <div className="space-y-3">
-                        <div className="flex gap-4">
-                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Assured resale value</p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Get back up to 70% of your device's purchase price*</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-4">
-                          <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Sell your device at doorstep</p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Free pickup from your location</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-4">
-                          <IndianRupee className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Fast & secure payment</p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Instant payout to your bank</p>
-                          </div>
+                <div className="w-full flex flex-col flip-card min-h-96" data-testid="card-laptop-bbg">
+                  <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopBBGFlipped ? 'flipped' : ''}`}>
+                    {/* Front Face */}
+                    <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
+                      <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">BuyBack Guarantee</h3>
+                        <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Lock your laptop's resale value</p>
+                        <div className="text-5xl sm:text-6xl font-bold">
+                          {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getLaptopBBGPrice()}`}
                         </div>
                       </div>
-                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>Validity 36 months</div>
+                      <div className="p-6 sm:p-8 space-y-3">
+                        <div className="space-y-3">
+                          <div className="flex gap-4">
+                            <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Assured resale value</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Get back up to 70% of your device's purchase price*</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-4">
+                            <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Sell your device at doorstep</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Free pickup from your location</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-4">
+                            <IndianRupee className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Fast & secure payment</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Instant payout to your bank</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>Validity 36 months</div>
+                      </div>
+                      <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                        <button onClick={() => setLaptopBBGFlipped(!laptopBBGFlipped)} className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline" style={{ color: "#254696" }} data-testid="button-know-more-laptop-bbg">
+                          Know More
+                        </button>
+                        <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-laptop-bbg">
+                          Explore Plans
+                        </button>
+                      </div>
                     </div>
-                    <div className="px-6 sm:px-8 pb-6 sm:pb-8">
-                      <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-laptop-bbg">
-                        Explore Plans
-                      </button>
+                    {/* Back Face */}
+                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
+                      <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">Claim Value Slabs</h3>
+                        <p className="text-xs sm:text-sm mb-3 opacity-95">Device age based claims</p>
+                      </div>
+                      <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
+                        <ClaimValueSlabs slabs={allPlans.find((p: any) => p.deviceType === "laptop" && p.planType === "bbg")?.claimValueSlabs || []} />
+                        <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Resale value is calculated as a percentage of your original device purchase price</p>
+                      </div>
+                      <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                        <button onClick={() => setLaptopBBGFlipped(false)} className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline" style={{ color: "#254696" }} data-testid="button-back-laptop-bbg">
+                          Back
+                        </button>
+                        <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-flipped-laptop-bbg">
+                          Explore Plans
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -920,49 +979,77 @@ export default function Home() {
                 </div>
 
                 {/* Laptop Bundle Card */}
-                <div className="w-full h-full flex flex-col">
-                  <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
-                    <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
-                      <h3 className="text-lg sm:text-xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">BuyBack + Extend+ Bundle</h3>
-                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Repairs, better resale & savings</p>
-                      <div className="text-5xl sm:text-6xl font-bold">
-                        {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getLaptopBundlePrice()}`}
-                      </div>
-                    </div>
-                    <div className="flex-grow p-6 sm:p-8 space-y-6">
-                      <div className="space-y-5">
-                        <div className="flex gap-4">
-                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <span className="text-sm sm:text-base font-semibold" style={{ color: "#1F2937" }}>Assured resale value</span>
-                        </div>
-                        <div className="flex gap-4">
-                          <Wrench className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>1 Free Repair Service</p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>We pick up, fix, and return</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-4">
-                          <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Sell from Doorstep</p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Get higher resale value</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-4">
-                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>30% OFF Warranty</p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>One-time use</p>
-                          </div>
+                <div className="w-full flex flex-col flip-card min-h-96" data-testid="card-laptop-bundle">
+                  <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopBundleFlipped ? 'flipped' : ''}`}>
+                    {/* Front Face */}
+                    <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
+                      <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                        <h3 className="text-lg sm:text-xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">BuyBack + Extend+ Bundle</h3>
+                        <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Repairs, better resale & savings</p>
+                        <div className="text-5xl sm:text-6xl font-bold">
+                          {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getLaptopBundlePrice()}`}
                         </div>
                       </div>
-                      <div className="border-t pt-4 text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Validity 36 months</div>
+                      <div className="p-6 sm:p-8 space-y-3">
+                        <div className="space-y-3">
+                          <div className="flex gap-4">
+                            <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Assured resale value</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Get back up to 70% of purchase price*</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-4">
+                            <Wrench className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>1 Free Repair Service</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>We pick up, fix, and return</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-4">
+                            <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Sell from Doorstep</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>10-20% higher resale value</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-4">
+                            <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>30% OFF Warranty</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>One-time use</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>Validity 36 months</div>
+                      </div>
+                      <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                        <button onClick={() => setLaptopBundleFlipped(!laptopBundleFlipped)} className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline" style={{ color: "#254696" }} data-testid="button-know-more-laptop-bundle">
+                          Know More
+                        </button>
+                        <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-laptop-bundle">
+                          Explore Plans
+                        </button>
+                      </div>
                     </div>
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
-                      <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-laptop-bundle">
-                        Explore Plans
-                      </button>
+                    {/* Back Face */}
+                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
+                      <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">Claim Value Slabs</h3>
+                        <p className="text-xs sm:text-sm mb-3 opacity-95">Device age based claims</p>
+                      </div>
+                      <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
+                        <ClaimValueSlabs slabs={allPlans.find((p: any) => p.deviceType === "laptop" && p.planType === "bundle")?.claimValueSlabs || []} />
+                        <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Resale value is calculated as a percentage of your original device purchase price</p>
+                      </div>
+                      <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                        <button onClick={() => setLaptopBundleFlipped(false)} className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline" style={{ color: "#254696" }} data-testid="button-back-laptop-bundle">
+                          Back
+                        </button>
+                        <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-flipped-laptop-bundle">
+                          Explore Plans
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -973,47 +1060,70 @@ export default function Home() {
             {pricingView === "mobile" && (
               <>
                 {/* Mobile BBG Card */}
-                <div className="w-full h-full flex flex-col">
-                  <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
-                    <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
-                      <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                        BuyBack Guarantee
-                      </h3>
-                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Lock your mobile's resale value</p>
-                      <div className="text-5xl sm:text-6xl font-bold">
-                        {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getMobileBBGPrice()}`}
-                      </div>
-                    </div>
-                    <div className="p-6 sm:p-8 space-y-3">
-                      <div className="space-y-3">
-                        <div className="flex gap-4">
-                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Assured resale value</p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Get back up to 70% of your device's purchase price*</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-4">
-                          <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Sell your device at doorstep</p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Free pickup from your location</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-4">
-                          <IndianRupee className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Fast & secure payment</p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Instant payout to your bank</p>
-                          </div>
+                <div className="w-full flex flex-col flip-card min-h-96" data-testid="card-mobile-bbg">
+                  <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileBBGFlipped ? 'flipped' : ''}`}>
+                    {/* Front Face */}
+                    <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
+                      <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">BuyBack Guarantee</h3>
+                        <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Lock your mobile's resale value</p>
+                        <div className="text-5xl sm:text-6xl font-bold">
+                          {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getMobileBBGPrice()}`}
                         </div>
                       </div>
-                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>Validity 18 months</div>
+                      <div className="p-6 sm:p-8 space-y-3">
+                        <div className="space-y-3">
+                          <div className="flex gap-4">
+                            <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Assured resale value</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Get back up to 70% of your device's purchase price*</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-4">
+                            <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Sell your device at doorstep</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Free pickup from your location</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-4">
+                            <IndianRupee className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Fast & secure payment</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Instant payout to your bank</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>Validity 18 months</div>
+                      </div>
+                      <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                        <button onClick={() => setMobileBBGFlipped(!mobileBBGFlipped)} className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline" style={{ color: "#254696" }} data-testid="button-know-more-mobile-bbg">
+                          Know More
+                        </button>
+                        <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-mobile-bbg">
+                          Explore Plans
+                        </button>
+                      </div>
                     </div>
-                    <div className="px-6 sm:px-8 pb-6 sm:pb-8">
-                      <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-mobile-bbg">
-                        Explore Plans
-                      </button>
+                    {/* Back Face */}
+                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
+                      <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">Claim Value Slabs</h3>
+                        <p className="text-xs sm:text-sm mb-3 opacity-95">Device age based claims</p>
+                      </div>
+                      <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
+                        <ClaimValueSlabs slabs={allPlans.find((p: any) => p.deviceType === "mobile" && p.planType === "bbg")?.claimValueSlabs || []} />
+                        <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Resale value is calculated as a percentage of your original device purchase price</p>
+                      </div>
+                      <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                        <button onClick={() => setMobileBBGFlipped(false)} className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline" style={{ color: "#254696" }} data-testid="button-back-mobile-bbg">
+                          Back
+                        </button>
+                        <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-flipped-mobile-bbg">
+                          Explore Plans
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1063,49 +1173,77 @@ export default function Home() {
                 </div>
 
                 {/* Mobile Bundle Card */}
-                <div className="w-full h-full flex flex-col">
-                  <div className="rounded-3xl shadow-xl overflow-hidden h-full flex flex-col bg-white border border-gray-100">
-                    <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
-                      <h3 className="text-lg sm:text-xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">BuyBack + Extend+ Bundle</h3>
-                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Repairs, better resale & savings</p>
-                      <div className="text-5xl sm:text-6xl font-bold">
-                        {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getMobileBundlePrice()}`}
-                      </div>
-                    </div>
-                    <div className="flex-grow p-6 sm:p-8 space-y-6">
-                      <div className="space-y-5">
-                        <div className="flex gap-4">
-                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <span className="text-sm sm:text-base font-semibold" style={{ color: "#1F2937" }}>Assured resale value</span>
-                        </div>
-                        <div className="flex gap-4">
-                          <Wrench className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>1 Free Repair Service</p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>We pick up, fix, and return</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-4">
-                          <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Sell from Doorstep</p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Get higher resale value</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-4">
-                          <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
-                          <div>
-                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>30% OFF Warranty</p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>One-time use</p>
-                          </div>
+                <div className="w-full flex flex-col flip-card min-h-96" data-testid="card-mobile-bundle">
+                  <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileBundleFlipped ? 'flipped' : ''}`}>
+                    {/* Front Face */}
+                    <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
+                      <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                        <h3 className="text-lg sm:text-xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">BuyBack + Extend+ Bundle</h3>
+                        <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">Repairs, better resale & savings</p>
+                        <div className="text-5xl sm:text-6xl font-bold">
+                          {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getMobileBundlePrice()}`}
                         </div>
                       </div>
-                      <div className="border-t pt-4 text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Validity 24 months</div>
+                      <div className="p-6 sm:p-8 space-y-3">
+                        <div className="space-y-3">
+                          <div className="flex gap-4">
+                            <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Assured resale value</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>Get back up to 70% of purchase price*</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-4">
+                            <Wrench className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>1 Free Repair Service</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>We pick up, fix, and return</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-4">
+                            <Car className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>Sell from Doorstep</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>10-20% higher resale value</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-4">
+                            <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
+                            <div>
+                              <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>30% OFF Warranty</p>
+                              <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>One-time use</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>Validity 36 months</div>
+                      </div>
+                      <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                        <button onClick={() => setMobileBundleFlipped(!mobileBundleFlipped)} className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline" style={{ color: "#254696" }} data-testid="button-know-more-mobile-bundle">
+                          Know More
+                        </button>
+                        <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-mobile-bundle">
+                          Explore Plans
+                        </button>
+                      </div>
                     </div>
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
-                      <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-mobile-bundle">
-                        Explore Plans
-                      </button>
+                    {/* Back Face */}
+                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
+                      <div className="p-6 sm:p-7 text-white text-center" style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}>
+                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">Claim Value Slabs</h3>
+                        <p className="text-xs sm:text-sm mb-3 opacity-95">Device age based claims</p>
+                      </div>
+                      <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
+                        <ClaimValueSlabs slabs={allPlans.find((p: any) => p.deviceType === "mobile" && p.planType === "bundle")?.claimValueSlabs || []} />
+                        <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>Resale value is calculated as a percentage of your original device purchase price</p>
+                      </div>
+                      <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                        <button onClick={() => setMobileBundleFlipped(false)} className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline" style={{ color: "#254696" }} data-testid="button-back-mobile-bundle">
+                          Back
+                        </button>
+                        <button onClick={scrollToForm} className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg" style={{ background: "linear-gradient(90deg, #254696, #1F4B88)" }} data-testid="button-explore-flipped-mobile-bundle">
+                          Explore Plans
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -34,6 +34,8 @@ import {
   Zap,
   Gift,
   DollarSign,
+  Hand,
+  ShieldCheck,
 } from "lucide-react";
 import { HomepageCarousel } from "@/components/homepage-carousel";
 import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png";
@@ -223,52 +225,52 @@ export default function Home() {
                     {/* Feature 1 */}
                     <div className="flex flex-col items-center">
                       <div className="mb-4">
-                        <Calendar 
+                        <Clock 
                           className="w-11 h-11 sm:w-12 sm:h-12" 
                           style={{ color: "#1F4B88" }} 
                         />
                       </div>
                       <p className="text-xs sm:text-sm font-semibold text-center leading-relaxed" style={{ color: "#303e58" }}>
-                        Register<br className="sm:hidden" />within<br className="sm:hidden" />6 months
+                        For devices up<br className="sm:hidden" />to 6<br className="sm:hidden" />months old
                       </p>
                     </div>
                     
                     {/* Feature 2 */}
                     <div className="flex flex-col items-center">
                       <div className="mb-4">
-                        <DollarSign 
+                        <Hand 
                           className="w-11 h-11 sm:w-12 sm:h-12" 
                           style={{ color: "#1F4B88" }} 
                         />
                       </div>
                       <p className="text-xs sm:text-sm font-semibold text-center leading-relaxed" style={{ color: "#303e58" }}>
-                        Claim up to<br />70% value
+                        Upto 70%<br />Resale Value
                       </p>
                     </div>
                     
                     {/* Feature 3 */}
                     <div className="flex flex-col items-center">
                       <div className="mb-4">
-                        <Truck 
+                        <Package 
                           className="w-11 h-11 sm:w-12 sm:h-12" 
                           style={{ color: "#1F4B88" }} 
                         />
                       </div>
                       <p className="text-xs sm:text-sm font-semibold text-center leading-relaxed" style={{ color: "#303e58" }}>
-                        Doorstep<br className="sm:hidden" />pickup &amp;<br className="sm:hidden" />sale
+                        Sell your device<br className="sm:hidden" />at<br className="sm:hidden" />doorstep
                       </p>
                     </div>
                     
                     {/* Feature 4 */}
                     <div className="flex flex-col items-center">
                       <div className="mb-4">
-                        <Zap 
+                        <ShieldCheck 
                           className="w-11 h-11 sm:w-12 sm:h-12" 
                           style={{ color: "#1F4B88" }} 
                         />
                       </div>
                       <p className="text-xs sm:text-sm font-semibold text-center leading-relaxed" style={{ color: "#303e58" }}>
-                        Instant<br className="sm:hidden" />payout<br className="sm:hidden" />transfer
+                        Fast and Secure<br className="sm:hidden" />Payment
                       </p>
                     </div>
                   </div>

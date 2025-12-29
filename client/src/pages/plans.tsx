@@ -314,33 +314,48 @@ export default function Plans() {
                   {/* White Content Area */}
                   <div className="flex-grow p-6 sm:p-8 space-y-6">
                     {/* Benefits with Icons */}
-                    <div className="space-y-4">
-                      <div className="flex items-start gap-4">
+                    <div className="space-y-5">
+                      <div className="flex gap-4">
                         <Shield
                           className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                           style={{ color: "#254696" }}
                         />
-                        <span className="text-sm sm:text-base" style={{ color: "#374151" }}>
-                          Assured resale value
-                        </span>
+                        <div>
+                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                            Assured resale value
+                          </p>
+                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                            Get back up to 70% of your device's purchase price*
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex items-start gap-4">
+                      <div className="flex gap-4">
                         <Car
                           className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                           style={{ color: "#254696" }}
                         />
-                        <span className="text-sm sm:text-base" style={{ color: "#374151" }}>
-                          Sell your device at doorstep
-                        </span>
+                        <div>
+                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                            Sell your device at doorstep
+                          </p>
+                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                            Free pickup from your location
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex items-start gap-4">
+                      <div className="flex gap-4">
                         <DollarSign
                           className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                           style={{ color: "#254696" }}
                         />
-                        <span className="text-sm sm:text-base" style={{ color: "#374151" }}>
-                          Fast & secure payment
-                        </span>
+                        <div>
+                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                            Fast & secure payment
+                          </p>
+                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                            Instant payout to your bank
+                          </p>
+                        </div>
                       </div>
                     </div>
 
@@ -406,33 +421,48 @@ export default function Plans() {
                   {/* White Content Area */}
                   <div className="flex-grow p-6 sm:p-8 space-y-6">
                     {/* Benefits with Icons */}
-                    <div className="space-y-4">
-                      <div className="flex items-start gap-4">
+                    <div className="space-y-5">
+                      <div className="flex gap-4">
                         <Shield
                           className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                           style={{ color: "#254696" }}
                         />
-                        <span className="text-sm sm:text-base" style={{ color: "#374151" }}>
-                          Assured resale value
-                        </span>
+                        <div>
+                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                            Assured resale value
+                          </p>
+                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                            Get back up to 70% of your device's purchase price*
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex items-start gap-4">
+                      <div className="flex gap-4">
                         <Car
                           className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                           style={{ color: "#254696" }}
                         />
-                        <span className="text-sm sm:text-base" style={{ color: "#374151" }}>
-                          Sell your device at doorstep
-                        </span>
+                        <div>
+                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                            Sell your device at doorstep
+                          </p>
+                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                            Free pickup from your location
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex items-start gap-4">
+                      <div className="flex gap-4">
                         <DollarSign
                           className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                           style={{ color: "#254696" }}
                         />
-                        <span className="text-sm sm:text-base" style={{ color: "#374151" }}>
-                          Fast & secure payment
-                        </span>
+                        <div>
+                          <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                            Fast & secure payment
+                          </p>
+                          <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                            Instant payout to your bank
+                          </p>
+                        </div>
                       </div>
                     </div>
 

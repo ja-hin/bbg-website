@@ -29,6 +29,11 @@ import {
   Package,
   Car,
   IndianRupee,
+  Calendar,
+  Truck,
+  Zap,
+  Gift,
+  DollarSign,
 } from "lucide-react";
 import { HomepageCarousel } from "@/components/homepage-carousel";
 import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png";
@@ -207,63 +212,63 @@ export default function Home() {
                   
                   {/* Subtitle */}
                   <p 
-                    className="text-sm sm:text-base lg:text-base mb-6 sm:mb-8 font-medium leading-relaxed flex-shrink-0"
+                    className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-medium leading-relaxed flex-shrink-0"
                     style={{ color: "#4b5563" }}
                   >
-                    Lock Resale Value of your Mobile & Laptop
+                    Get assured resale value within 6 months of purchase
                   </p>
 
                   {/* Features Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-7 sm:mb-8 flex-grow flex items-center justify-center">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6 mb-8 sm:mb-10 flex-grow flex items-center justify-center">
                     {/* Feature 1 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <Clock 
+                      <div className="mb-4">
+                        <Calendar 
                           className="w-11 h-11 sm:w-12 sm:h-12" 
                           style={{ color: "#1F4B88" }} 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-center leading-snug" style={{ color: "#303e58" }}>
-                        For devices<br className="sm:hidden" />up to 6<br className="sm:hidden" />months old
+                      <p className="text-xs sm:text-sm font-semibold text-center leading-relaxed" style={{ color: "#303e58" }}>
+                        Register<br className="sm:hidden" />within<br className="sm:hidden" />6 months
                       </p>
                     </div>
                     
                     {/* Feature 2 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <TrendingUp 
+                      <div className="mb-4">
+                        <DollarSign 
                           className="w-11 h-11 sm:w-12 sm:h-12" 
                           style={{ color: "#1F4B88" }} 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-center leading-snug" style={{ color: "#303e58" }}>
-                        Upto 70%<br />Resale Value
+                      <p className="text-xs sm:text-sm font-semibold text-center leading-relaxed" style={{ color: "#303e58" }}>
+                        Claim up to<br />70% value
                       </p>
                     </div>
                     
                     {/* Feature 3 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <Package 
+                      <div className="mb-4">
+                        <Truck 
                           className="w-11 h-11 sm:w-12 sm:h-12" 
                           style={{ color: "#1F4B88" }} 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-center leading-snug" style={{ color: "#303e58" }}>
-                        Sell at<br className="sm:hidden" />doorstep
+                      <p className="text-xs sm:text-sm font-semibold text-center leading-relaxed" style={{ color: "#303e58" }}>
+                        Doorstep<br className="sm:hidden" />pickup &amp;<br className="sm:hidden" />sale
                       </p>
                     </div>
                     
                     {/* Feature 4 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <Shield 
+                      <div className="mb-4">
+                        <Zap 
                           className="w-11 h-11 sm:w-12 sm:h-12" 
                           style={{ color: "#1F4B88" }} 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-center leading-snug" style={{ color: "#303e58" }}>
-                        Fast &amp;<br className="sm:hidden" />Secure<br className="sm:hidden" />Payment
+                      <p className="text-xs sm:text-sm font-semibold text-center leading-relaxed" style={{ color: "#303e58" }}>
+                        Instant<br className="sm:hidden" />payout<br className="sm:hidden" />transfer
                       </p>
                     </div>
                   </div>
@@ -324,58 +329,58 @@ export default function Home() {
                   
                   {/* Subtitle */}
                   <p 
-                    className="text-sm sm:text-base lg:text-base mb-6 sm:mb-8 font-medium leading-relaxed flex-shrink-0"
+                    className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-medium leading-relaxed flex-shrink-0"
                   >
-                    Your Mobile & Laptop
+                    Complete protection &amp; resale support for devices up to 3 years old
                   </p>
 
                   {/* Features Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-7 sm:mb-8 flex-grow flex items-center justify-center">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6 mb-8 sm:mb-10 flex-grow flex items-center justify-center">
                     {/* Feature 1 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <Clock 
+                      <div className="mb-4">
+                        <Calendar 
                           className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-snug">
-                        For devices<br className="sm:hidden" />up to 3<br className="sm:hidden" />years old
+                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
+                        Coverage up<br />to 3<br className="sm:hidden" />years
                       </p>
                     </div>
                     
                     {/* Feature 2 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-3">
+                      <div className="mb-4">
                         <Wrench 
                           className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-snug">
-                        1 Free<br />Device<br className="sm:hidden" />Repair*
+                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
+                        Free repair<br className="sm:hidden" />service<br className="sm:hidden" />&amp; pickup
                       </p>
                     </div>
                     
                     {/* Feature 3 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-3">
+                      <div className="mb-4">
                         <TrendingUp 
                           className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-snug">
-                        10-20%<br />Better<br className="sm:hidden" />Resale Value
+                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
+                        Sell for<br />10-20%<br className="sm:hidden" />more value
                       </p>
                     </div>
                     
                     {/* Feature 4 */}
                     <div className="flex flex-col items-center">
-                      <div className="mb-3">
-                        <Award 
+                      <div className="mb-4">
+                        <Gift 
                           className="w-11 h-11 sm:w-12 sm:h-12 text-white" 
                         />
                       </div>
-                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-snug">
-                        30%<br />discount on<br className="sm:hidden" />Warranty
+                      <p className="text-xs sm:text-sm font-semibold text-white text-center leading-relaxed">
+                        30% off<br />extended<br className="sm:hidden" />warranty
                       </p>
                     </div>
                   </div>

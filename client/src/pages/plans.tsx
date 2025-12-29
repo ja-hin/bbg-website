@@ -48,6 +48,10 @@ const ClaimValueSlabs = ({ deviceType, isBundle }: { deviceType: string; isBundl
 
 export default function Plans() {
   const [, setLocation] = useLocation();
+  const [laptopBBGFlipped, setLaptopBBGFlipped] = useState(false);
+  const [mobileBBGFlipped, setMobileBBGFlipped] = useState(false);
+  const [laptopBundleFlipped, setLaptopBundleFlipped] = useState(false);
+  const [mobileBundleFlipped, setMobileBundleFlipped] = useState(false);
 
   // First try URL params, then fall back to sessionStorage for back navigation support
   let searchParams = new URLSearchParams(window.location.search);
@@ -290,7 +294,7 @@ export default function Plans() {
                 className="w-full flex flex-col flip-card min-h-96"
                 data-testid="card-laptop-bbg"
               >
-                <div className="rounded-3xl shadow-xl overflow-visible relative flip-card-inner">
+                <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopBBGFlipped ? 'flipped' : ''}`}>
                   {/* Front Face */}
                   <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
@@ -367,8 +371,16 @@ export default function Plans() {
                       </div>
                     </div>
 
-                    {/* Buy Now Button */}
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                    {/* Know More Button and Buy Now Button */}
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                      <button
+                        onClick={() => setLaptopBBGFlipped(!laptopBBGFlipped)}
+                        className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
+                        style={{ color: "#254696" }}
+                        data-testid="button-know-more-laptop-bbg"
+                      >
+                        Know More
+                      </button>
                       <Button
                         className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{
@@ -416,7 +428,7 @@ export default function Plans() {
                 className="w-full flex flex-col flip-card min-h-96"
                 data-testid="card-mobile-bbg"
               >
-                <div className="rounded-3xl shadow-xl overflow-visible relative flip-card-inner">
+                <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileBBGFlipped ? 'flipped' : ''}`}>
                   {/* Front Face */}
                   <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
@@ -493,8 +505,16 @@ export default function Plans() {
                       </div>
                     </div>
 
-                    {/* Buy Now Button */}
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                    {/* Know More Button and Buy Now Button */}
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                      <button
+                        onClick={() => setMobileBBGFlipped(!mobileBBGFlipped)}
+                        className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
+                        style={{ color: "#254696" }}
+                        data-testid="button-know-more-mobile-bbg"
+                      >
+                        Know More
+                      </button>
                       <Button
                         className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{
@@ -746,7 +766,7 @@ export default function Plans() {
                 className="w-full flex flex-col flip-card min-h-96"
                 data-testid="card-laptop-bundle"
               >
-                <div className="rounded-3xl shadow-xl overflow-visible relative flip-card-inner">
+                <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopBundleFlipped ? 'flipped' : ''}`}>
                   {/* Front Face */}
                   <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
@@ -823,8 +843,16 @@ export default function Plans() {
                       </div>
                     </div>
 
-                    {/* Buy Now Button */}
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                    {/* Know More Button and Buy Now Button */}
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                      <button
+                        onClick={() => setLaptopBundleFlipped(!laptopBundleFlipped)}
+                        className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
+                        style={{ color: "#254696" }}
+                        data-testid="button-know-more-laptop-bundle"
+                      >
+                        Know More
+                      </button>
                       <Button
                         className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{
@@ -872,7 +900,7 @@ export default function Plans() {
                 className="w-full flex flex-col flip-card min-h-96"
                 data-testid="card-mobile-bundle"
               >
-                <div className="rounded-3xl shadow-xl overflow-visible relative flip-card-inner">
+                <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileBundleFlipped ? 'flipped' : ''}`}>
                   {/* Front Face */}
                   <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
@@ -949,8 +977,16 @@ export default function Plans() {
                       </div>
                     </div>
 
-                    {/* Buy Now Button */}
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                    {/* Know More Button and Buy Now Button */}
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 space-y-3">
+                      <button
+                        onClick={() => setMobileBundleFlipped(!mobileBundleFlipped)}
+                        className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
+                        style={{ color: "#254696" }}
+                        data-testid="button-know-more-mobile-bundle"
+                      >
+                        Know More
+                      </button>
                       <Button
                         className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{

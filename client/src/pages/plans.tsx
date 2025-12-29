@@ -359,7 +359,7 @@ export default function Plans() {
 
                       {/* Validity */}
                       <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
-                        Validity {laptopBBGPlan?.coverage || '36'} months
+                        Validity {(laptopBBGPlan?.coverage || '36').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
 
@@ -523,7 +523,7 @@ export default function Plans() {
 
                       {/* Validity */}
                       <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
-                        Validity {mobileBBGPlan?.coverage || '36'} months
+                        Validity {(mobileBBGPlan?.coverage || '36').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
 
@@ -685,7 +685,7 @@ export default function Plans() {
 
                     {/* Validity */}
                     <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
-                      Validity: {laptopExtendPlan?.coverage || '24'} months
+                      Validity: {(laptopExtendPlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                     </div>
                   </div>
 
@@ -787,7 +787,7 @@ export default function Plans() {
 
                     {/* Validity */}
                     <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
-                      Validity: {mobileExtendPlan?.coverage || '24'} months
+                      Validity: {(mobileExtendPlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                     </div>
                   </div>
 
@@ -891,7 +891,7 @@ export default function Plans() {
 
                       {/* Validity */}
                       <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
-                        Validity: {laptopBundlePlan?.coverage || '36'} months
+                        Validity: {(laptopBundlePlan?.coverage || '36').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
 
@@ -1055,7 +1055,7 @@ export default function Plans() {
 
                       {/* Validity */}
                       <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
-                        Validity: {mobileBundlePlan?.coverage || '24'} months
+                        Validity: {(mobileBundlePlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
 

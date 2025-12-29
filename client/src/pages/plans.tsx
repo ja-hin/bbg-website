@@ -648,7 +648,7 @@ export default function Plans() {
                   </div>
 
                   {/* White Content Area */}
-                  <div className="p-6 sm:p-8 space-y-3">
+                  <div className="flex-grow p-6 sm:p-8 flex flex-col space-y-3">
                     {/* Benefits with Icons */}
                     <div className="space-y-3">
                       <div className="flex gap-4">
@@ -750,7 +750,7 @@ export default function Plans() {
                   </div>
 
                   {/* White Content Area */}
-                  <div className="p-6 sm:p-8 space-y-3">
+                  <div className="flex-grow p-6 sm:p-8 flex flex-col space-y-3">
                     {/* Benefits with Icons */}
                     <div className="space-y-3">
                       <div className="flex gap-4">

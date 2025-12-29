@@ -10891,9 +10891,25 @@ Required: GUPSHUP_API_KEY environment variable
       const plansWithSlabs = await Promise.all(plans.map(async (plan) => {
         const allSlabs = await storage.getActiveClaimValueSlabsByDeviceType(plan.deviceType);
         
+        // Extract coverage period in months (handle formats like "36", "36_months", "36 months")
+        let coverageMonths = 36; // default
+        if (plan.coverage) {
+          const coverageStr = plan.coverage.toString().replace(/_months/g, '').replace(/months/g, '').trim();
+          const parsed = parseInt(coverageStr);
+          if (!isNaN(parsed)) {
+            coverageMonths = parsed;
+          }
+        }
+        
+        // Filter slabs to only include those within the plan's coverage period
+        const filteredSlabs = allSlabs.filter(slab => {
+          const maxMonths = slab.maxMonths || slab.max_months || 0;
+          return maxMonths <= coverageMonths;
+        });
+        
         // Deduplicate slabs by device_type + min_months + max_months (keeps only the first occurrence)
         const uniqueSlabs = Array.from(
-          new Map(allSlabs.map(slab => [
+          new Map(filteredSlabs.map(slab => [
             `${slab.deviceType}_${slab.minMonths}_${slab.maxMonths}`,
             slab
           ])).values()

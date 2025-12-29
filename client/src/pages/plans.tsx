@@ -322,7 +322,7 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="p-6 sm:p-8 space-y-3">
+                    <div className="flex-grow p-6 sm:p-8 flex flex-col">
                       {/* Benefits with Icons */}
                       <div className="space-y-3">
                         <div className="flex gap-4">
@@ -370,7 +370,7 @@ export default function Plans() {
                       </div>
 
                       {/* Validity */}
-                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
+                      <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
                         Validity {(laptopBBGPlan?.coverage || '36').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
@@ -486,7 +486,7 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="p-6 sm:p-8 space-y-3">
+                    <div className="flex-grow p-6 sm:p-8 flex flex-col">
                       {/* Benefits with Icons */}
                       <div className="space-y-3">
                         <div className="flex gap-4">
@@ -534,7 +534,7 @@ export default function Plans() {
                       </div>
 
                       {/* Validity */}
-                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
+                      <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
                         Validity {(mobileBBGPlan?.coverage || '36').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
@@ -648,9 +648,9 @@ export default function Plans() {
                   </div>
 
                   {/* White Content Area */}
-                  <div className="flex-grow p-6 sm:p-8 space-y-6">
+                  <div className="flex-grow p-6 sm:p-8 flex flex-col">
                     {/* Benefits with Icons */}
-                    <div className="space-y-5">
+                    <div className="space-y-3">
                       <div className="flex gap-4">
                         <Wrench
                           className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
@@ -696,13 +696,13 @@ export default function Plans() {
                     </div>
 
                     {/* Validity */}
-                    <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
+                    <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
                       Validity: {(laptopExtendPlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                     </div>
                   </div>
 
                   {/* Buy Now Button */}
-                  <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                  <div className="px-6 sm:px-8 pb-6 sm:pb-8">
                     <Button
                       className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{
@@ -750,9 +750,9 @@ export default function Plans() {
                   </div>
 
                   {/* White Content Area */}
-                  <div className="flex-grow p-6 sm:p-8 space-y-6">
+                  <div className="flex-grow p-6 sm:p-8 flex flex-col">
                     {/* Benefits with Icons */}
-                    <div className="space-y-5">
+                    <div className="space-y-3">
                       <div className="flex gap-4">
                         <Wrench
                           className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
@@ -798,13 +798,13 @@ export default function Plans() {
                     </div>
 
                     {/* Validity */}
-                    <div className="text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
+                    <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
                       Validity: {(mobileExtendPlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                     </div>
                   </div>
 
                   {/* Buy Now Button */}
-                  <div className="p-6 sm:p-8 pt-4 sm:pt-6">
+                  <div className="px-6 sm:px-8 pb-6 sm:pb-8">
                     <Button
                       className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{
@@ -854,7 +854,7 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="p-6 sm:p-8 space-y-3">
+                    <div className="flex-grow p-6 sm:p-8 flex flex-col">
                       {/* Benefits with Icons */}
                       <div className="space-y-3">
                         <div className="flex gap-4">
@@ -902,7 +902,7 @@ export default function Plans() {
                       </div>
 
                       {/* Validity */}
-                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
+                      <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
                         Validity: {(laptopBundlePlan?.coverage || '36').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
@@ -1018,7 +1018,7 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="p-6 sm:p-8 space-y-3">
+                    <div className="flex-grow p-6 sm:p-8 flex flex-col">
                       {/* Benefits with Icons */}
                       <div className="space-y-3">
                         <div className="flex gap-4">
@@ -1066,7 +1066,7 @@ export default function Plans() {
                       </div>
 
                       {/* Validity */}
-                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
+                      <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
                         Validity: {(mobileBundlePlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>

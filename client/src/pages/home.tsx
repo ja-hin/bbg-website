@@ -877,7 +877,7 @@ export default function Home() {
                           {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getLaptopBBGPrice()}`}
                         </div>
                       </div>
-                      <div className="p-6 sm:p-8 space-y-3">
+                      <div className="flex-grow p-6 sm:p-8 space-y-3 flex flex-col">
                         <div className="space-y-3">
                           <div className="flex gap-4">
                             <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
@@ -990,7 +990,7 @@ export default function Home() {
                           {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getLaptopBundlePrice()}`}
                         </div>
                       </div>
-                      <div className="p-6 sm:p-8 space-y-3">
+                      <div className="flex-grow p-6 sm:p-8 space-y-3 flex flex-col">
                         <div className="space-y-3">
                           <div className="flex gap-4">
                             <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
@@ -1071,7 +1071,7 @@ export default function Home() {
                           {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getMobileBBGPrice()}`}
                         </div>
                       </div>
-                      <div className="p-6 sm:p-8 space-y-3">
+                      <div className="flex-grow p-6 sm:p-8 space-y-3 flex flex-col">
                         <div className="space-y-3">
                           <div className="flex gap-4">
                             <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />
@@ -1184,7 +1184,7 @@ export default function Home() {
                           {pricesLoading ? <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" /> : `₹${getMobileBundlePrice()}`}
                         </div>
                       </div>
-                      <div className="p-6 sm:p-8 space-y-3">
+                      <div className="flex-grow p-6 sm:p-8 space-y-3 flex flex-col">
                         <div className="space-y-3">
                           <div className="flex gap-4">
                             <Shield className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1" style={{ color: "#254696" }} />

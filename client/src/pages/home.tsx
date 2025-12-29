@@ -172,30 +172,30 @@ export default function Home() {
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Featured Plans Section */}
       <section 
-        className="py-8 sm:py-10 lg:py-12 px-4 sm:px-6 lg:px-8"
+        className="px-2 sm:px-4"
         style={{
           background: "linear-gradient(135deg, #0f2341 0%, #1a3e5f 50%, #162e47 100%)"
         }}
       >
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-full">
           {/* Grid: 1 column on mobile, 2 columns on desktop */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             {/* BuyBack Guarantee Image */}
-            <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <div className="overflow-hidden">
               <img 
                 src={buybackGuaranteeImg} 
                 alt="BuyBack Guarantee" 
-                className="w-full h-auto object-cover"
+                className="w-full h-auto"
                 data-testid="image-buyback-guarantee"
               />
             </div>
 
             {/* Extend+ Protection Image */}
-            <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <div className="overflow-hidden">
               <img 
                 src={extendPlusImg} 
                 alt="Extend+ Protection" 
-                className="w-full h-auto object-cover"
+                className="w-full h-auto"
                 data-testid="image-extend-plus"
               />
             </div>

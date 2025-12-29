@@ -206,16 +206,16 @@ export default function Home() {
                 >
                   {/* Title */}
                   <h3 
-                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-4"
+                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-4 px-2"
                     style={{ lineHeight: "1.4", letterSpacing: "-0.5px" }}
                     data-testid="heading-bbg-compact"
                   >
-                    BuyBack Guarantee:<br />Lock Resale Value of your Mobile<br />& Laptop
+                    BuyBack Guarantee:<br />Lock Resale Value of your Mobile & Laptop
                   </h3>
                   
                   {/* Subtitle */}
                   <p 
-                    className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-normal leading-snug flex-shrink-0"
+                    className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-normal leading-snug flex-shrink-0 px-2"
                   >
                     Secure your device's resale value and<br />upgrade worry-free.
                   </p>
@@ -318,7 +318,7 @@ export default function Home() {
                 >
                   {/* Title */}
                   <h3 
-                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-4"
+                    className="text-xl sm:text-2xl lg:text-2xl font-bold mb-4 px-2"
                     style={{ lineHeight: "1.4", letterSpacing: "-0.5px" }}
                     data-testid="heading-extend-compact"
                   >
@@ -327,7 +327,7 @@ export default function Home() {
                   
                   {/* Subtitle */}
                   <p 
-                    className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-normal leading-snug flex-shrink-0"
+                    className="text-sm sm:text-base lg:text-base mb-8 sm:mb-10 font-normal leading-snug flex-shrink-0 px-2"
                   >
                     Keep your devices covered beyond their<br />standard warranty with added benefits.
                   </p>

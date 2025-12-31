@@ -293,7 +293,7 @@ export default function Plans() {
           
 
           <div className="flex justify-center">
-            <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch max-w-5xl [grid-template-columns:repeat(auto-fit,minmax(320px,380px))]">
+            <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch max-w-7xl [grid-template-columns:repeat(auto-fit,minmax(320px,380px))]">
             {showLaptopBBG && (
               <div
                 className="w-full flex flex-col flip-card min-h-96"

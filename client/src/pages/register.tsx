@@ -31,26 +31,26 @@ import {
 } from "@/components/ui/form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import {
-  CheckCircle,
-  Smartphone,
-  Hash,
-  Info,
-  Loader2,
-} from "lucide-react";
+import { CheckCircle, Smartphone, Hash, Info, Loader2 } from "lucide-react";
 import { ValidatedField } from "@/components/validated-field";
 import { SuccessConfetti } from "@/components/confetti";
 
 const postPurchaseRegistrationSchema = z.object({
   // BBG Details
   voucherCode: z.string().min(1, "BBG voucher code is required"),
-  imeiSerial: z.string().min(7, "IMEI/Serial number must be at least 7 characters"),
+  imeiSerial: z
+    .string()
+    .min(7, "IMEI/Serial number must be at least 7 characters"),
 });
 
-type PostPurchaseRegistrationData = z.infer<typeof postPurchaseRegistrationSchema>;
+type PostPurchaseRegistrationData = z.infer<
+  typeof postPurchaseRegistrationSchema
+>;
 
 export default function Register() {
-  const [registrationType, setRegistrationType] = useState<'acer' | 'website' | 'amazon' | null>(null);
+  const [registrationType, setRegistrationType] = useState<
+    "acer" | "website" | "amazon" | null
+  >(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [voucherValidated, setVoucherValidated] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<any>(null);
@@ -85,7 +85,8 @@ export default function Register() {
       setCustomerInfo(null);
       toast({
         title: "Invalid Voucher Code",
-        description: error.message || "Please check your voucher code and try again",
+        description:
+          error.message || "Please check your voucher code and try again",
         variant: "destructive",
       });
     },
@@ -157,11 +158,13 @@ export default function Register() {
     registrationMutation.mutate(data);
   };
 
-  const handleRegistrationTypeSelect = (type: 'acer' | 'website' | 'amazon') => {
-    if (type === 'acer') {
-      window.location.href = '/acer';
-    } else if (type === 'amazon') {
-      window.location.href = '/amazon';
+  const handleRegistrationTypeSelect = (
+    type: "acer" | "website" | "amazon",
+  ) => {
+    if (type === "acer") {
+      window.location.href = "/acer";
+    } else if (type === "amazon") {
+      window.location.href = "/amazon";
     } else {
       setRegistrationType(type);
     }
@@ -184,7 +187,8 @@ export default function Register() {
               Device Registration
             </h1>
             <p className="text-lg text-gray-600 max-w-xl mx-auto">
-              Please select where you purchased your device to proceed with registration.
+              Please select where you purchased your device to proceed with
+              registration.
             </p>
           </div>
 
@@ -198,7 +202,15 @@ export default function Register() {
                     Acer E-Store
                   </h3>
                   <p className="text-sm text-gray-600 mb-6">
-                    Purchased directly from the Acer online store. Requires order confirmation email.
+                    Purchased directly from the{" "}
+                    <a
+                      href="https://store.acer.com/en-in/"
+                      className="text-primary font-bold"
+                      target="_blank"
+                    >
+                      Acer
+                    </a>{" "}
+                    online store
                   </p>
                   <Button
                     onClick={() => handleRegistrationTypeSelect("acer")}
@@ -215,8 +227,11 @@ export default function Register() {
                     Website Purchase
                   </h3>
                   <p className="text-sm text-gray-600 mb-6">
-                    Purchased from a registered retailer&apos;s website (e.g., Best Buy, Newegg).
-                    Requires digital receipt.
+                    Purchased from this website or{" "}
+                    <a href="https://www.xtracover.com/" className="text-primary font-bold"
+                      target="_blank">
+                      Xtracover Marketplace
+                    </a>
                   </p>
                   <Button
                     onClick={() => handleRegistrationTypeSelect("website")}
@@ -233,7 +248,8 @@ export default function Register() {
                     Amazon
                   </h3>
                   <p className="text-sm text-gray-600 mb-6">
-                    Purchased from the Amazon marketplace. Requires order number or invoice.
+                    Purchased from the <a href="https://www.amazon.in/stores/XTRACOVER/page/9AAEC258-9B50-4F35-8DEE-37397496FCCB?lp_asin=B0FW4L6NBY&ref_=ast_bln&store_ref=bl_ast_dp_brandLogo_sto#" className="text-primary font-bold"
+                                         target="_blank">Amazon</a> India Marketplace
                   </p>
                   <Button
                     onClick={() => handleRegistrationTypeSelect("amazon")}
@@ -260,7 +276,6 @@ export default function Register() {
           </div>
         </div>
       </div>
-
     );
   }
 
@@ -281,7 +296,8 @@ export default function Register() {
             Website Device Registration
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Enter your BBG voucher code and device IMEI/serial number to complete registration.
+            Enter your BBG voucher code and device IMEI/serial number to
+            complete registration.
           </p>
         </div>
 
@@ -361,10 +377,18 @@ export default function Register() {
                       <div className="flex items-start space-x-3">
                         <Info className="h-5 w-5 text-blue-600 mt-0.5" />
                         <div className="text-sm text-blue-800">
-                          <p className="font-medium mb-2">Where to find your BBG voucher code:</p>
+                          <p className="font-medium mb-2">
+                            Where to find your BBG voucher code:
+                          </p>
                           <ul className="space-y-1 text-xs">
-                            <li>📧 <strong>Email:</strong> Check your BBG purchase confirmation email</li>
-                            <li>📱 <strong>SMS:</strong> Sent to your registered mobile number</li>
+                            <li>
+                              📧 <strong>Email:</strong> Check your BBG purchase
+                              confirmation email
+                            </li>
+                            <li>
+                              📱 <strong>SMS:</strong> Sent to your registered
+                              mobile number
+                            </li>
                           </ul>
                         </div>
                       </div>
@@ -380,11 +404,21 @@ export default function Register() {
                       <div className="flex items-start space-x-3">
                         <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
                         <div className="text-sm text-green-800">
-                          <p className="font-medium mb-2">✅ Valid BBG Voucher Code</p>
+                          <p className="font-medium mb-2">
+                            ✅ Valid BBG Voucher Code
+                          </p>
                           <div className="space-y-1 text-xs">
-                            <p><strong>Customer:</strong> {customerInfo.name}</p>
-                            <p><strong>Device:</strong> {customerInfo.brand} {customerInfo.deviceType}</p>
-                            <p><strong>Voucher:</strong> {customerInfo.voucherCode}</p>
+                            <p>
+                              <strong>Customer:</strong> {customerInfo.name}
+                            </p>
+                            <p>
+                              <strong>Device:</strong> {customerInfo.brand}{" "}
+                              {customerInfo.deviceType}
+                            </p>
+                            <p>
+                              <strong>Voucher:</strong>{" "}
+                              {customerInfo.voucherCode}
+                            </p>
                           </div>
                           <Button
                             type="button"
@@ -434,10 +468,18 @@ export default function Register() {
                       <div className="flex items-start space-x-3">
                         <Info className="h-5 w-5 text-blue-600 mt-0.5" />
                         <div className="text-sm text-blue-800">
-                          <p className="font-medium mb-2">How to find your device details:</p>
+                          <p className="font-medium mb-2">
+                            How to find your device details:
+                          </p>
                           <ul className="space-y-1 text-xs">
-                            <li>📱 <strong>Mobile IMEI:</strong> Dial *#06# or Settings → About Phone</li>
-                            <li>💻 <strong>Laptop Serial:</strong> Sticker on bottom/back or System Info</li>
+                            <li>
+                              📱 <strong>Mobile IMEI:</strong> Dial *#06# or
+                              Settings → About Phone
+                            </li>
+                            <li>
+                              💻 <strong>Laptop Serial:</strong> Sticker on
+                              bottom/back or System Info
+                            </li>
                           </ul>
                         </div>
                       </div>
@@ -482,13 +524,17 @@ export default function Register() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
-                <div className="text-2xl font-bold text-green-600 mb-1">*Up to 70%</div>
+                <div className="text-2xl font-bold text-green-600 mb-1">
+                  *Up to 70%
+                </div>
                 <div className="text-sm text-green-700">
                   Maximum buyback value
                 </div>
               </div>
               <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <div className="text-2xl font-bold text-blue-600 mb-1">*Upto 36 Months</div>
+                <div className="text-2xl font-bold text-blue-600 mb-1">
+                  *Upto 36 Months
+                </div>
                 <div className="text-sm text-blue-700">Coverage period</div>
               </div>
               <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">

@@ -211,7 +211,7 @@ export function DevicePlanSelectorForm({
                 data-testid="radio-within-6-months"
               />
               <span className="text-sm sm:text-base font-medium" style={{ color: "#374151" }}>
-                Within 6 months
+                Less than 6 months
               </span>
             </label>
             <label

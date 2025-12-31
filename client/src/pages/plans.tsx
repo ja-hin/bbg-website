@@ -292,7 +292,8 @@ export default function Plans() {
           {/* Amazon and Acer purchase links */}
           
 
-          <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
+          <div className="flex justify-center">
+            <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch w-full max-w-5xl [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
             {showLaptopBBG && (
               <div
                 className="w-full flex flex-col flip-card min-h-96"
@@ -1152,6 +1153,7 @@ export default function Plans() {
                 </div>
               </div>
             )}
+            </div>
           </div>
         </div>
       </section>

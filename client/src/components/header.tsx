@@ -1,30 +1,85 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, User, ShoppingCart, ChevronDown, LogOut } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { useTheme } from "@/hooks/useTheme";
+import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { BuyModal } from "./buy-modal";
+import { CustomerLoginModal } from "./customer-login-modal";
 import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.png";
 
 export default function Header() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [pendingRedirect, setPendingRedirect] = useState<string | null>(null);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const profileDropdownRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
+  const { isAuthenticated, logout } = useCustomerAuth();
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target as Node)) {
+        setIsProfileDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const navigationItems = [
     { href: "/", label: "Home" },
     { href: "#", label: "Buy", onClick: () => setIsBuyModalOpen(true) },
     { href: "/register", label: "Register" },
-    { href: "/claim-bbg", label: "Claim" },
-    { href: "/referral-partner-registration", label: "Join Referral Program" },
+    { href: "https://www.xtracover.com/about-us", label: "About Us", external: true },
+    { href: "https://www.xtracover.com/contact-us", label: "Contact Us", external: true },
+  ];
+
+  const profileMenuItems = [
+    { href: "/customer-dashboard", label: "My Orders", requiresAuth: true },
+    { href: "/claim-bbg", label: "My Claims", requiresAuth: true },
+    { href: "/customer-dashboard", label: "Manage Addresses", requiresAuth: true },
   ];
 
   const isActiveLink = (href: string) => {
     if (href === "/" && location === "/") return true;
-    if (href !== "/" && location.startsWith(href)) return true;
+    if (href !== "/" && href !== "#" && location.startsWith(href)) return true;
     return false;
+  };
+
+  const handleProtectedNavigation = (path: string) => {
+    if (isAuthenticated) {
+      navigate(path);
+    } else {
+      setPendingRedirect(path);
+      setIsLoginModalOpen(true);
+    }
+    setIsProfileDropdownOpen(false);
+  };
+
+  const handleCartClick = () => {
+    if (isAuthenticated) {
+      navigate("/checkout");
+    } else {
+      setPendingRedirect("/checkout");
+      setIsLoginModalOpen(true);
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    if (pendingRedirect) {
+      navigate(pendingRedirect);
+      setPendingRedirect(null);
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsProfileDropdownOpen(false);
+    navigate("/");
   };
 
   const NavLinks = ({ mobile = false, onItemClick = () => {} }) => (
@@ -41,23 +96,45 @@ export default function Header() {
                 if (mobile) {
                   onItemClick();
                   setTimeout(() => {
-                    item.onClick();
+                    item.onClick!();
                   }, 150);
                 } else {
-                  item.onClick();
+                  item.onClick!();
                 }
               }}
               className={`
-                px-4 py-2 text-sm transition-colors rounded-full cursor-pointer
+                px-4 py-2 text-sm transition-all cursor-pointer
                 ${
                   mobile
-                    ? "block text-base text-gray-800 hover:bg-gray-100 font-normal text-left w-full"
-                    : "bg-white text-black hover:bg-white/90 font-normal"
+                    ? "block text-base text-gray-800 hover:bg-gray-100 font-normal text-left w-full rounded-lg"
+                    : "text-white hover:opacity-80 font-medium"
                 }
               `}
             >
               {item.label}
             </button>
+          );
+        }
+
+        if (item.external) {
+          return (
+            <a
+              key={item.href}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={onItemClick}
+              className={`
+                px-4 py-2 text-sm transition-all
+                ${
+                  mobile
+                    ? "block text-base text-gray-800 hover:bg-gray-100 font-normal rounded-lg"
+                    : "text-white hover:opacity-80 font-medium"
+                }
+              `}
+            >
+              {item.label}
+            </a>
           );
         }
 
@@ -67,13 +144,13 @@ export default function Header() {
             href={item.href}
             onClick={onItemClick}
             className={`
-              px-4 py-2 text-sm transition-colors rounded-full
+              px-4 py-2 text-sm transition-all
               ${
                 mobile
-                  ? "block text-base text-gray-800 hover:bg-gray-100 font-normal"
+                  ? "block text-base text-gray-800 hover:bg-gray-100 font-normal rounded-lg"
                   : isActive
-                    ? "text-white bg-transparent font-bold"
-                    : "bg-white text-black hover:bg-white/90 font-normal"
+                    ? "text-white font-bold"
+                    : "text-white hover:opacity-80 font-medium"
               }
             `}
           >
@@ -81,33 +158,43 @@ export default function Header() {
           </Link>
         );
       })}
-
-      {/* Referral Partner Login Button */}
-      <Link href="/distributor/login" onClick={onItemClick}>
-        <Button
-          className={`
-            ${mobile ? "w-full mt-2" : ""}
-            bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded-full transition-colors
-          `}
-          size="sm"
-        >
-          Referral Partner Login
-        </Button>
-      </Link>
     </>
   );
 
   return (
     <header className="z-50 shadow-md">
-      {/* 4px Red line at top */}
+      {/* Top Utility Bar */}
+      <div className="bg-gray-100 border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-end items-center h-8 gap-4">
+            <Link 
+              href="/referral-partner-registration"
+              className="text-xs text-gray-600 hover:text-[#254696] transition-colors"
+            >
+              Become a Partner
+            </Link>
+            <Link href="/distributor/login">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-6 px-3 text-xs border-[#254696] text-[#254696] hover:bg-[#254696] hover:text-white"
+              >
+                Partner Login
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* 4px Red line */}
       <div className="h-1 bg-xtra-primary"></div>
+
       {/* Logo Section - White Background */}
       <div className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center space-x-3">
-              {/* XTRACOVER Logo - External Link */}
               <Link href="/" className="hover:opacity-80 transition-opacity">
                 <img
                   src={bbgLogo}
@@ -155,6 +242,58 @@ export default function Header() {
                         onItemClick={() => setIsOpen(false)}
                       />
                     </nav>
+
+                    {/* Mobile Profile Section */}
+                    <div className="border-t border-gray-200 pt-4">
+                      <p className="text-sm font-medium text-gray-500 mb-2">Account</p>
+                      {isAuthenticated ? (
+                        <>
+                          {profileMenuItems.map((item) => (
+                            <button
+                              key={item.label}
+                              onClick={() => {
+                                setIsOpen(false);
+                                handleProtectedNavigation(item.href);
+                              }}
+                              className="block w-full text-left text-base text-gray-800 hover:bg-gray-100 font-normal rounded-lg px-4 py-2"
+                            >
+                              {item.label}
+                            </button>
+                          ))}
+                          <button
+                            onClick={() => {
+                              setIsOpen(false);
+                              handleLogout();
+                            }}
+                            className="block w-full text-left text-base text-red-600 hover:bg-red-50 font-normal rounded-lg px-4 py-2 mt-2"
+                          >
+                            Sign Out
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setIsOpen(false);
+                            setIsLoginModalOpen(true);
+                          }}
+                          className="block w-full text-left text-base text-[#254696] hover:bg-gray-100 font-medium rounded-lg px-4 py-2"
+                        >
+                          Sign In
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Mobile Cart */}
+                    <button
+                      onClick={() => {
+                        setIsOpen(false);
+                        handleCartClick();
+                      }}
+                      className="flex items-center gap-2 text-base text-gray-800 hover:bg-gray-100 font-normal rounded-lg px-4 py-2"
+                    >
+                      <ShoppingCart className="h-5 w-5" />
+                      Cart
+                    </button>
                   </div>
                 </SheetContent>
               </Sheet>
@@ -162,21 +301,105 @@ export default function Header() {
           </div>
         </div>
       </div>
+
       {/* Navigation Section - Theme Color Background */}
       <div
         className="hidden lg:block"
         style={{ backgroundColor: (theme as any)?.primaryColor || "#254696" }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav
-            className="flex items-center justify-center py-3"
-            style={{ gap: "23px" }}
-          >
-            <NavLinks />
+          <nav className="flex items-center justify-between py-3">
+            {/* Left spacer for balance */}
+            <div className="w-32"></div>
+
+            {/* Center Navigation Links */}
+            <div className="flex items-center" style={{ gap: "20px" }}>
+              <NavLinks />
+            </div>
+
+            {/* Right - Profile & Cart */}
+            <div className="flex items-center gap-4">
+              {/* Profile Dropdown */}
+              <div className="relative" ref={profileDropdownRef}>
+                <button
+                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                  className="flex items-center gap-1 text-white hover:opacity-80 transition-opacity"
+                >
+                  <User className="h-5 w-5" />
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+
+                {isProfileDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    {isAuthenticated ? (
+                      <>
+                        {profileMenuItems.map((item) => (
+                          <button
+                            key={item.label}
+                            onClick={() => handleProtectedNavigation(item.href)}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            {item.label}
+                          </button>
+                        ))}
+                        <hr className="my-2 border-gray-200" />
+                        <button
+                          onClick={handleLogout}
+                          className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                        >
+                          <LogOut className="h-4 w-4" />
+                          Sign Out
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => {
+                            setIsProfileDropdownOpen(false);
+                            setIsLoginModalOpen(true);
+                          }}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium"
+                        >
+                          Sign In
+                        </button>
+                        <hr className="my-2 border-gray-200" />
+                        {profileMenuItems.map((item) => (
+                          <button
+                            key={item.label}
+                            onClick={() => handleProtectedNavigation(item.href)}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-gray-100"
+                          >
+                            {item.label}
+                          </button>
+                        ))}
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Cart Icon */}
+              <button
+                onClick={handleCartClick}
+                className="text-white hover:opacity-80 transition-opacity"
+              >
+                <ShoppingCart className="h-5 w-5" />
+              </button>
+            </div>
           </nav>
         </div>
       </div>
+
       <BuyModal isOpen={isBuyModalOpen} onClose={() => setIsBuyModalOpen(false)} />
+      <CustomerLoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => {
+          setIsLoginModalOpen(false);
+          setPendingRedirect(null);
+        }}
+        onSuccess={handleLoginSuccess}
+        redirectPath={pendingRedirect || undefined}
+      />
     </header>
   );
 }

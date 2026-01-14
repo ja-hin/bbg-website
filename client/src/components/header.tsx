@@ -163,29 +163,6 @@ export default function Header() {
 
   return (
     <header className="z-50 shadow-md">
-      {/* Top Utility Bar */}
-      <div className="bg-gray-100 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-end items-center h-8 gap-4">
-            <Link 
-              href="/referral-partner-registration"
-              className="text-xs text-gray-600 hover:text-[#254696] transition-colors"
-            >
-              Become a Partner
-            </Link>
-            <Link href="/distributor/login">
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-6 px-3 text-xs border-[#254696] text-[#254696] hover:bg-[#254696] hover:text-white"
-              >
-                Partner Login
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
       {/* 4px Red line */}
       <div className="h-1 bg-xtra-primary"></div>
 
@@ -201,6 +178,25 @@ export default function Header() {
                   alt="BBG Logo"
                   className="h-32 w-auto"
                 />
+              </Link>
+            </div>
+
+            {/* Partner Links - Right Aligned in White Section */}
+            <div className="hidden lg:flex items-center gap-4 ml-auto mr-8">
+              <Link 
+                href="/referral-partner-registration"
+                className="text-sm text-gray-600 hover:text-[#254696] font-medium transition-colors"
+              >
+                Become a Partner
+              </Link>
+              <Link href="/distributor/login">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 px-4 text-sm border-[#254696] text-[#254696] hover:bg-[#254696] hover:text-white"
+                >
+                  Partner Login
+                </Button>
               </Link>
             </div>
 
@@ -241,6 +237,25 @@ export default function Header() {
                         mobile={true}
                         onItemClick={() => setIsOpen(false)}
                       />
+                      <hr className="my-2 border-gray-100" />
+                      <Link 
+                        href="/referral-partner-registration"
+                        className="block px-4 py-2 text-base text-gray-800 hover:bg-gray-100 font-normal rounded-lg"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Become a Partner
+                      </Link>
+                      <Link 
+                        href="/distributor/login"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start h-10 px-4 text-base border-[#254696] text-[#254696]"
+                        >
+                          Partner Login
+                        </Button>
+                      </Link>
                     </nav>
 
                     {/* Mobile Profile Section */}

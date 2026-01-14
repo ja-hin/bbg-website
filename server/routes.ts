@@ -8078,6 +8078,292 @@ Required: GUPSHUP_API_KEY environment variable
     }
   });
 
+  // ===== CUSTOMER DASHBOARD API ENDPOINTS =====
+
+  // Get customer orders with claim status
+  app.get("/api/customer/orders", async (req, res) => {
+    try {
+      const phone = req.query.phone as string;
+      if (!phone) {
+        return res.status(400).json({ message: "Phone number is required" });
+      }
+
+      const phoneRegex = /^[6-9]\d{9}$/;
+      if (!phoneRegex.test(phone)) {
+        return res.status(400).json({ message: "Invalid phone number format" });
+      }
+
+      await db.connectDB();
+      const request = db.pool.request();
+      request.input("phone", sql.VarChar, phone);
+
+      const result = await request.query(`
+        SELECT 
+          c.id,
+          c.voucher_code as voucherCode,
+          c.name,
+          c.contact,
+          c.email,
+          c.pincode,
+          c.device_type as deviceType,
+          c.serial_number as serialNumber,
+          c.brand,
+          c.model_name as modelName,
+          c.invoice_value as invoiceValue,
+          c.date_of_purchase as dateOfPurchase,
+          c.created_at as registrationDate,
+          c.seller_code as sellerCode,
+          c.registration_source as registrationSource,
+          c.is_verified as isVerified,
+          c.invoice_file as invoiceFile,
+          p.plan_name as planName,
+          c.benefit_type as benefitType,
+          cl.status as claimStatus
+        FROM customers c
+        LEFT JOIN plans p ON c.plan_id = p.id
+        LEFT JOIN claims cl ON c.voucher_code = cl.voucher_code
+        WHERE c.contact = @phone 
+        ORDER BY c.created_at DESC
+      `);
+
+      res.json(result.recordset);
+    } catch (error) {
+      console.error("Error fetching customer orders:", error);
+      res.status(500).json({ message: "Failed to fetch orders" });
+    }
+  });
+
+  // Get customer claims history
+  app.get("/api/customer/claims", async (req, res) => {
+    try {
+      const phone = req.query.phone as string;
+      if (!phone) {
+        return res.status(400).json({ message: "Phone number is required" });
+      }
+
+      await db.connectDB();
+      const request = db.pool.request();
+      request.input("phone", sql.VarChar, phone);
+
+      const result = await request.query(`
+        SELECT 
+          cl.id,
+          cl.voucher_code as voucherCode,
+          cl.device_age_months as deviceAgeMonths,
+          cl.claim_percentage as claimPercentage,
+          cl.claim_amount as claimAmount,
+          cl.status,
+          cl.created_at as createdAt,
+          c.device_type as deviceType,
+          c.brand,
+          c.model_name as modelName
+        FROM claims cl
+        JOIN customers c ON cl.voucher_code = c.voucher_code
+        WHERE cl.contact = @phone
+        ORDER BY cl.created_at DESC
+      `);
+
+      res.json(result.recordset);
+    } catch (error) {
+      console.error("Error fetching customer claims:", error);
+      res.status(500).json({ message: "Failed to fetch claims" });
+    }
+  });
+
+  // Get customer bank details
+  app.get("/api/customer/bank-details", async (req, res) => {
+    try {
+      const phone = req.query.phone as string;
+      if (!phone) {
+        return res.status(400).json({ message: "Phone number is required" });
+      }
+
+      await db.connectDB();
+      const request = db.pool.request();
+      request.input("phone", sql.VarChar, phone);
+
+      const result = await request.query(`
+        SELECT 
+          id,
+          account_holder_name as accountHolderName,
+          account_number as accountNumber,
+          ifsc_code as ifscCode,
+          upi_id as upiId
+        FROM customer_bank_details
+        WHERE contact = @phone
+      `);
+
+      if (result.recordset.length === 0) {
+        return res.status(404).json({ message: "No bank details found" });
+      }
+
+      res.json(result.recordset[0]);
+    } catch (error) {
+      console.error("Error fetching bank details:", error);
+      res.status(500).json({ message: "Failed to fetch bank details" });
+    }
+  });
+
+  // Save customer bank details
+  app.post("/api/customer/bank-details", async (req, res) => {
+    try {
+      const { phone, accountHolderName, accountNumber, ifscCode, upiId } = req.body;
+      
+      if (!phone || !accountHolderName || !accountNumber || !ifscCode) {
+        return res.status(400).json({ message: "Required fields missing" });
+      }
+
+      await db.connectDB();
+      
+      // Check if bank details exist
+      const checkRequest = db.pool.request();
+      checkRequest.input("phone", sql.VarChar, phone);
+      const existing = await checkRequest.query(`SELECT id FROM customer_bank_details WHERE contact = @phone`);
+      
+      const request = db.pool.request();
+      request.input("phone", sql.VarChar, phone);
+      request.input("accountHolderName", sql.NVarChar, accountHolderName);
+      request.input("accountNumber", sql.VarChar, accountNumber);
+      request.input("ifscCode", sql.VarChar, ifscCode);
+      request.input("upiId", sql.VarChar, upiId || null);
+
+      if (existing.recordset.length > 0) {
+        await request.query(`
+          UPDATE customer_bank_details 
+          SET account_holder_name = @accountHolderName,
+              account_number = @accountNumber,
+              ifsc_code = @ifscCode,
+              upi_id = @upiId,
+              updated_at = GETDATE()
+          WHERE contact = @phone
+        `);
+      } else {
+        await request.query(`
+          INSERT INTO customer_bank_details (contact, account_holder_name, account_number, ifsc_code, upi_id)
+          VALUES (@phone, @accountHolderName, @accountNumber, @ifscCode, @upiId)
+        `);
+      }
+
+      res.json({ success: true, message: "Bank details saved successfully" });
+    } catch (error) {
+      console.error("Error saving bank details:", error);
+      res.status(500).json({ message: "Failed to save bank details" });
+    }
+  });
+
+  // Get customer addresses
+  app.get("/api/customer/addresses", async (req, res) => {
+    try {
+      const phone = req.query.phone as string;
+      if (!phone) {
+        return res.status(400).json({ message: "Phone number is required" });
+      }
+
+      await db.connectDB();
+      const request = db.pool.request();
+      request.input("phone", sql.VarChar, phone);
+
+      const result = await request.query(`
+        SELECT 
+          id,
+          label,
+          address_line1 as addressLine1,
+          address_line2 as addressLine2,
+          city,
+          state,
+          pincode,
+          is_default as isDefault
+        FROM customer_addresses
+        WHERE contact = @phone
+        ORDER BY is_default DESC, created_at DESC
+      `);
+
+      res.json(result.recordset);
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+      res.status(500).json({ message: "Failed to fetch addresses" });
+    }
+  });
+
+  // Save customer address
+  app.post("/api/customer/addresses", async (req, res) => {
+    try {
+      const { phone, label, addressLine1, addressLine2, city, state, pincode, isDefault } = req.body;
+      
+      if (!phone || !label || !addressLine1 || !city || !state || !pincode) {
+        return res.status(400).json({ message: "Required fields missing" });
+      }
+
+      await db.connectDB();
+      
+      // If setting as default, clear existing defaults
+      if (isDefault) {
+        const clearRequest = db.pool.request();
+        clearRequest.input("phone", sql.VarChar, phone);
+        await clearRequest.query(`UPDATE customer_addresses SET is_default = 0 WHERE contact = @phone`);
+      }
+
+      const request = db.pool.request();
+      request.input("phone", sql.VarChar, phone);
+      request.input("label", sql.NVarChar, label);
+      request.input("addressLine1", sql.NVarChar, addressLine1);
+      request.input("addressLine2", sql.NVarChar, addressLine2 || null);
+      request.input("city", sql.NVarChar, city);
+      request.input("state", sql.NVarChar, state);
+      request.input("pincode", sql.VarChar, pincode);
+      request.input("isDefault", sql.Bit, isDefault ? 1 : 0);
+
+      await request.query(`
+        INSERT INTO customer_addresses (contact, label, address_line1, address_line2, city, state, pincode, is_default)
+        VALUES (@phone, @label, @addressLine1, @addressLine2, @city, @state, @pincode, @isDefault)
+      `);
+
+      res.json({ success: true, message: "Address saved successfully" });
+    } catch (error) {
+      console.error("Error saving address:", error);
+      res.status(500).json({ message: "Failed to save address" });
+    }
+  });
+
+  // Upload invoice for customer order
+  app.post("/api/customer/upload-invoice", upload.single('invoice'), async (req, res) => {
+    try {
+      const { orderId, phone } = req.body;
+      
+      if (!orderId || !phone) {
+        return res.status(400).json({ message: "Order ID and phone number required" });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ message: "Invoice file is required" });
+      }
+
+      const invoiceFilePath = (req.file as any).location || (req.file as any).key;
+
+      await db.connectDB();
+      const request = db.pool.request();
+      request.input("orderId", sql.Int, parseInt(orderId));
+      request.input("phone", sql.VarChar, phone);
+      request.input("invoiceFile", sql.NVarChar, invoiceFilePath);
+
+      // Verify ownership before updating
+      const result = await request.query(`
+        UPDATE customers 
+        SET invoice_file = @invoiceFile 
+        WHERE id = @orderId AND contact = @phone
+      `);
+
+      if (result.rowsAffected[0] === 0) {
+        return res.status(404).json({ message: "Order not found or unauthorized" });
+      }
+
+      res.json({ success: true, message: "Invoice uploaded successfully", filePath: invoiceFilePath });
+    } catch (error) {
+      console.error("Error uploading invoice:", error);
+      res.status(500).json({ message: "Failed to upload invoice" });
+    }
+  });
+
   // ===== ADMIN EXPORT ROUTES =====
 
   // Export customers data with all details including BBG voucher codes

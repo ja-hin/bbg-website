@@ -207,6 +207,9 @@ export class SqlServerStorage implements IStorage {
       // Create homepage_banners table as well
       await this.createHomepageBannersTableAtAnyCost();
       
+      // Create customer bank details and addresses tables
+      await this.createCustomerDetailsTables();
+      
       await this.createTablesIfNotExist();
       await this.ensureDefaultBrandsExist();
       console.log('SQL Server database initialized successfully');
@@ -1286,6 +1289,61 @@ export class SqlServerStorage implements IStorage {
       
     } catch (error) {
       console.error('❌ HOMEPAGE_BANNERS TABLE CREATION FAILED:', error);
+    }
+  }
+
+  // Create customer bank details and addresses tables
+  private async createCustomerDetailsTables() {
+    try {
+      await db.connectDB();
+      
+      console.log('🔥 ENSURING CUSTOMER_BANK_DETAILS TABLE EXISTS IN DATABASE...');
+      const bankDetailsTableQuery = `
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'customer_bank_details')
+        BEGIN
+          CREATE TABLE customer_bank_details (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            contact NVARCHAR(10) NOT NULL UNIQUE,
+            account_holder_name NVARCHAR(255) NOT NULL,
+            account_number NVARCHAR(50) NOT NULL,
+            ifsc_code NVARCHAR(11) NOT NULL,
+            upi_id NVARCHAR(255),
+            created_at DATETIME2 DEFAULT GETDATE(),
+            updated_at DATETIME2 DEFAULT GETDATE()
+          );
+          PRINT 'Customer bank details table created';
+        END
+      `;
+      
+      await db.pool.request().query(bankDetailsTableQuery);
+      console.log('✅ CUSTOMER_BANK_DETAILS TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+
+      console.log('🔥 ENSURING CUSTOMER_ADDRESSES TABLE EXISTS IN DATABASE...');
+      const addressesTableQuery = `
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'customer_addresses')
+        BEGIN
+          CREATE TABLE customer_addresses (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            contact NVARCHAR(10) NOT NULL,
+            label NVARCHAR(50) NOT NULL,
+            address_line1 NVARCHAR(500) NOT NULL,
+            address_line2 NVARCHAR(500),
+            city NVARCHAR(100) NOT NULL,
+            state NVARCHAR(100) NOT NULL,
+            pincode NVARCHAR(6) NOT NULL,
+            is_default BIT DEFAULT 0,
+            created_at DATETIME2 DEFAULT GETDATE(),
+            updated_at DATETIME2 DEFAULT GETDATE()
+          );
+          PRINT 'Customer addresses table created';
+        END
+      `;
+      
+      await db.pool.request().query(addressesTableQuery);
+      console.log('✅ CUSTOMER_ADDRESSES TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+      
+    } catch (error) {
+      console.error('❌ CUSTOMER DETAILS TABLES CREATION FAILED:', error);
     }
   }
 

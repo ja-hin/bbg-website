@@ -231,7 +231,24 @@ export default function CustomerOrdersPage() {
                                   </DropdownMenuItem>
                                 ) : (
                                   !order.claimStatus && order.isVerified && !needsInvoice && (
-                                    <DropdownMenuItem onClick={() => window.location.href = `/customer/claims?voucher=${order.voucherCode}`}>
+                                    <DropdownMenuItem onClick={async () => {
+                                      // Check eligibility before redirecting or showing the action
+                                      try {
+                                        const response = await fetch('/api/claims/check', {
+                                          method: 'POST',
+                                          headers: { 'Content-Type': 'application/json' },
+                                          body: JSON.stringify({ voucherCode: order.voucherCode })
+                                        });
+                                        if (response.ok) {
+                                          window.location.href = `/customer/claims?voucher=${order.voucherCode}`;
+                                        } else {
+                                          const data = await response.json();
+                                          toast({ title: "Not Eligible", description: data.message || "You are not eligible for a claim yet.", variant: "destructive" });
+                                        }
+                                      } catch (error) {
+                                        toast({ title: "Error", description: "Failed to check eligibility", variant: "destructive" });
+                                      }
+                                    }}>
                                       <FileText className="h-4 w-4 mr-2" />
                                       Claim BBG
                                     </DropdownMenuItem>

@@ -72,16 +72,16 @@ export function CustomerLayout({ children, title, description }: CustomerLayoutP
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen h-screen bg-gray-50 flex overflow-hidden">
       {/* Static Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex-shrink-0 hidden lg:flex flex-col">
-        <div className="border-b border-gray-100 flex items-center justify-center overflow-hidden h-24">
+      <aside className="w-64 bg-white border-r border-gray-200 flex-shrink-0 hidden lg:flex flex-col h-full sticky top-0">
+        <div className="border-b border-gray-100 flex items-center justify-center overflow-hidden h-24 shrink-0">
           <Link href="/">
             <img src={bbgLogo} alt="BBG Logo" className="h-32 w-auto cursor-pointer" />
           </Link>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
           {navItems.map((item) => {
             const isActive = location === item.path;
             return (
@@ -108,7 +108,7 @@ export function CustomerLayout({ children, title, description }: CustomerLayoutP
           </div>
         </nav>
 
-        <div className="p-4 border-t border-gray-100 bg-gray-50/50">
+        <div className="p-4 border-t border-gray-100 bg-gray-50/50 shrink-0">
           <div className="flex items-center gap-3 px-2 mb-3">
             <div className="w-9 h-9 rounded-full bg-[#254696] flex items-center justify-center text-white">
               <User className="h-4 w-4" />
@@ -133,15 +133,17 @@ export function CustomerLayout({ children, title, description }: CustomerLayoutP
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-white border-b border-gray-200 z-50 flex items-center justify-between px-4">
         <Link href="/">
-          <img src={bbgLogo} alt="BBG Logo" className="h-8 w-auto cursor-pointer" />
+          <div className="h-20 w-32 flex items-center justify-center overflow-hidden">
+            <img src={bbgLogo} alt="BBG Logo" className="h-full w-auto scale-150 cursor-pointer" />
+          </div>
         </Link>
         <Button variant="ghost" size="sm" onClick={handleLogout} className="text-red-600">
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-5 w-5" />
         </Button>
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-200 z-50 flex items-center justify-around px-2">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-200 z-50 flex items-center justify-around px-2 pb-safe">
         {navItems.slice(0, 5).map((item) => {
           const isActive = location === item.path;
           return (
@@ -149,8 +151,8 @@ export function CustomerLayout({ children, title, description }: CustomerLayoutP
               <div className={`flex flex-col items-center justify-center p-2 rounded-lg transition-all cursor-pointer ${
                 isActive ? 'text-[#254696]' : 'text-gray-400'
               }`}>
-                <item.icon className="h-5 w-5" />
-                <span className="text-[10px] mt-1 font-medium">{item.label.split(' ')[0]}</span>
+                <item.icon className="h-6 w-6" />
+                <span className="text-[10px] mt-1 font-semibold tracking-tight">{item.label.split(' ')[0]}</span>
               </div>
             </Link>
           );
@@ -158,8 +160,8 @@ export function CustomerLayout({ children, title, description }: CustomerLayoutP
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden lg:pt-0 pt-14 pb-16 lg:pb-0">
-        <div className="flex-1 overflow-y-auto p-4 lg:p-8">
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden lg:pt-0 pt-14 pb-16 lg:pb-0 h-full relative">
+        <div className="flex-1 overflow-y-auto p-4 lg:p-8 custom-scrollbar scroll-smooth">
           <div className="max-w-6xl mx-auto">
             <div className="mb-6">
               <h1 className="text-2xl font-bold text-gray-900">{title}</h1>

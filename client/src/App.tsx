@@ -14,7 +14,6 @@ const Footer = lazy(() => import("@/components/footer"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 const DistributorRegistration = lazy(() => import("@/pages/distributor-registration"));
 const CustomerRegistration = lazy(() => import("@/pages/customer-registration"));
-const ClaimBBG = lazy(() => import("@/pages/claim-bbg"));
 const ThankYou = lazy(() => import("@/pages/thank-you"));
 const AcerBBG = lazy(() => import("@/pages/acer-bbg"));
 const AcerThankYou = lazy(() => import("@/pages/acer-thank-you"));
@@ -22,7 +21,6 @@ const AmazonBBG = lazy(() => import("@/pages/amazon-bbg"));
 const AmazonThankYou = lazy(() => import("@/pages/amazon-thank-you"));
 const Register = lazy(() => import("@/pages/register"));
 const RegistrationThankYou = lazy(() => import("@/pages/registration-thank-you"));
-const CustomerDashboard = lazy(() => import("@/pages/customer-dashboard"));
 const CustomerLogin = lazy(() => import("@/pages/customer-login"));
 const AdminLogin = lazy(() => import("@/pages/admin-login"));
 const AdminDashboardNew = lazy(() => import("@/pages/admin-dashboard-new"));
@@ -58,6 +56,13 @@ const Plans = lazy(() => import("@/pages/plans"));
 const Checkout = lazy(() => import("@/pages/checkout"));
 const ScrollToTopButton = lazy(() => import("@/components/scroll-to-top-button").then(m => ({ default: m.ScrollToTopButton })));
 const ThemeLoader = lazy(() => import("@/components/theme-loader").then(m => ({ default: m.ThemeLoader })));
+
+const CustomerDashboard = lazy(() => import("@/pages/customer/dashboard"));
+const CustomerOrders = lazy(() => import("@/pages/customer/orders"));
+const CustomerClaims = lazy(() => import("@/pages/customer/claims"));
+const CustomerBankDetails = lazy(() => import("@/pages/customer/bank-details"));
+const CustomerAddress = lazy(() => import("@/pages/customer/address"));
+const CustomerProfile = lazy(() => import("@/pages/customer/profile"));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -122,44 +127,42 @@ function Router() {
         <Route path="/distributor/login" component={DistributorLogin} />
         <Route path="/distributor/dashboard" component={DistributorDashboard} />
         
+        {/* Customer portal routes (protected, no header/footer) */}
+        <Route path="/customer/dashboard" component={CustomerDashboard} />
+        <Route path="/customer/orders" component={CustomerOrders} />
+        <Route path="/customer/claims" component={CustomerClaims} />
+        <Route path="/customer/bank-details" component={CustomerBankDetails} />
+        <Route path="/customer/address" component={CustomerAddress} />
+        <Route path="/customer/profile" component={CustomerProfile} />
+        
         {/* Regular routes with header/footer */}
         <Route>
           <div className="min-h-screen flex flex-col">
-            <Switch>
-              <Route path="/customer-dashboard">
-                <CustomerDashboard />
-              </Route>
-              <Route>
-                <>
-                  <Header />
-                  <main className="flex-1">
-                    <Switch>
-                      <Route path="/" component={Home} />
-                      <Route path="/plans" component={Plans} />
-                      <Route path="/checkout" component={Checkout} />
-                      <Route path="/referral-partner-registration" component={DistributorRegistration} />
-                      <Route path="/buy-bbg" component={CustomerRegistration} />
-                      <Route path="/claim-bbg" component={ClaimBBG} />
-                      <Route path="/thank-you" component={ThankYou} />
-                      <Route path="/acer" component={AcerBBG} />
-                      <Route path="/acer-bbg" component={AcerBBG} />
-                      <Route path="/acer-thank-you" component={AcerThankYou} />
-                      <Route path="/amazon" component={AmazonBBG} />
-                      <Route path="/amazon-bbg" component={AmazonBBG} />
-                      <Route path="/amazon-thank-you" component={AmazonThankYou} />
-                      <Route path="/register" component={Register} />
-                      <Route path="/registration-thank-you" component={RegistrationThankYou} />
-                      <Route path="/customer/login" component={CustomerLogin} />
-                      <Route path="/terms-and-conditions" component={TermsAndConditions} />
-                      <Route component={NotFound} />
-                    </Switch>
-                  </main>
-                  <Suspense fallback={null}>
-                    <Footer />
-                  </Suspense>
-                </>
-              </Route>
-            </Switch>
+            <Header />
+            <main className="flex-1">
+              <Switch>
+                <Route path="/" component={Home} />
+                <Route path="/plans" component={Plans} />
+                <Route path="/checkout" component={Checkout} />
+                <Route path="/referral-partner-registration" component={DistributorRegistration} />
+                <Route path="/buy-bbg" component={CustomerRegistration} />
+                <Route path="/thank-you" component={ThankYou} />
+                <Route path="/acer" component={AcerBBG} />
+                <Route path="/acer-bbg" component={AcerBBG} />
+                <Route path="/acer-thank-you" component={AcerThankYou} />
+                <Route path="/amazon" component={AmazonBBG} />
+                <Route path="/amazon-bbg" component={AmazonBBG} />
+                <Route path="/amazon-thank-you" component={AmazonThankYou} />
+                <Route path="/register" component={Register} />
+                <Route path="/registration-thank-you" component={RegistrationThankYou} />
+                <Route path="/customer/login" component={CustomerLogin} />
+                <Route path="/terms-and-conditions" component={TermsAndConditions} />
+                <Route component={NotFound} />
+              </Switch>
+            </main>
+            <Suspense fallback={null}>
+              <Footer />
+            </Suspense>
             <Suspense fallback={null}>
               <ScrollToTopButton />
             </Suspense>

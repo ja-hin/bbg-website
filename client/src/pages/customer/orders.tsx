@@ -1,0 +1,287 @@
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { CustomerLayout, useCustomerAuth } from '@/components/customer/customer-layout';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useToast } from '@/hooks/use-toast';
+import { queryClient } from '@/lib/queryClient';
+import { Package, Upload, Clock, CheckCircle, Search, ChevronLeft, ChevronRight, Smartphone, Laptop, FileText } from 'lucide-react';
+
+interface CustomerOrder {
+  id: number;
+  voucherCode: string;
+  name: string;
+  contact: string;
+  deviceType: string;
+  serialNumber: string;
+  brand: string;
+  modelName: string;
+  invoiceValue: number;
+  dateOfPurchase: string;
+  registrationDate: string;
+  isVerified: boolean;
+  invoiceFile?: string;
+  planName?: string;
+  claimStatus?: string;
+}
+
+export default function CustomerOrdersPage() {
+  const { customerPhone, isAuthenticated } = useCustomerAuth();
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [uploadingInvoice, setUploadingInvoice] = useState<number | null>(null);
+  const itemsPerPage = 10;
+
+  const { data: orders = [], isLoading } = useQuery<CustomerOrder[]>({
+    queryKey: ['/api/customer/orders', customerPhone],
+    queryFn: async () => {
+      const response = await fetch(`/api/customer/orders?phone=${customerPhone}`);
+      if (!response.ok) throw new Error('Failed to fetch orders');
+      return response.json();
+    },
+    enabled: isAuthenticated && !!customerPhone
+  });
+
+  const filteredOrders = orders.filter(order => 
+    order.voucherCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    order.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    order.modelName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    order.serialNumber.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+  const paginatedOrders = filteredOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handleInvoiceUpload = async (orderId: number, file: File) => {
+    setUploadingInvoice(orderId);
+    const formData = new FormData();
+    formData.append('invoice', file);
+    formData.append('orderId', orderId.toString());
+    formData.append('phone', customerPhone);
+
+    try {
+      const response = await fetch('/api/customer/upload-invoice', {
+        method: 'POST',
+        body: formData
+      });
+      if (!response.ok) throw new Error('Failed to upload invoice');
+      queryClient.invalidateQueries({ queryKey: ['/api/customer/orders', customerPhone] });
+      toast({ title: "Success", description: "Invoice uploaded successfully" });
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setUploadingInvoice(null);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      day: '2-digit', month: 'short', year: 'numeric'
+    });
+  };
+
+  const isInvoiceMissing = (invoiceFile: string | undefined) => {
+    return !invoiceFile || invoiceFile === 'N/A' || invoiceFile.trim() === '';
+  };
+
+  const getStatusBadge = (order: CustomerOrder) => {
+    if (order.claimStatus === 'approved' || order.claimStatus === 'paid') {
+      return <Badge className="bg-purple-100 text-purple-700">Claimed</Badge>;
+    }
+    if (order.claimStatus === 'pending' || order.claimStatus === 'processing') {
+      return <Badge className="bg-orange-100 text-orange-700">Claim Processing</Badge>;
+    }
+    if (order.isVerified) {
+      return <Badge className="bg-green-100 text-green-700">Verified</Badge>;
+    }
+    return <Badge className="bg-yellow-100 text-yellow-700">Pending</Badge>;
+  };
+
+  return (
+    <CustomerLayout title="My Orders" description="View and manage your protected devices">
+      <Card className="rounded-xl border-gray-100">
+        <CardContent className="p-0">
+          <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3 justify-between">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search orders..."
+                value={searchTerm}
+                onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                className="pl-10 rounded-lg border-gray-200"
+              />
+            </div>
+            <div className="text-sm text-gray-500">
+              Showing {paginatedOrders.length} of {filteredOrders.length} orders
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div className="p-8 text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#254696] mx-auto"></div>
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="p-12 text-center">
+              <Package className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-gray-900 mb-2">No Orders Yet</h3>
+              <p className="text-gray-500 mb-4">You haven't purchased any BBG protection plans yet.</p>
+              <Button onClick={() => window.location.href = '/buy-bbg'} className="bg-[#254696]">
+                Get Protected
+              </Button>
+            </div>
+          ) : (
+            <>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-gray-50">
+                      <TableHead className="font-bold text-gray-700">Device</TableHead>
+                      <TableHead className="font-bold text-gray-700">Voucher Code</TableHead>
+                      <TableHead className="font-bold text-gray-700">Serial/IMEI</TableHead>
+                      <TableHead className="font-bold text-gray-700">Invoice Value</TableHead>
+                      <TableHead className="font-bold text-gray-700">Purchase Date</TableHead>
+                      <TableHead className="font-bold text-gray-700">Status</TableHead>
+                      <TableHead className="font-bold text-gray-700">Invoice</TableHead>
+                      <TableHead className="font-bold text-gray-700">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {paginatedOrders.map((order) => {
+                      const DeviceIcon = order.deviceType?.toLowerCase() === 'laptop' ? Laptop : Smartphone;
+                      const needsInvoice = isInvoiceMissing(order.invoiceFile);
+
+                      return (
+                        <TableRow key={order.id} className={needsInvoice ? 'bg-orange-50/50' : ''}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                                <DeviceIcon className="h-4 w-4 text-gray-600" />
+                              </div>
+                              <div>
+                                <p className="font-semibold text-gray-900 text-sm">{order.brand}</p>
+                                <p className="text-xs text-gray-500">{order.modelName}</p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <span className="font-mono text-sm text-[#254696]">{order.voucherCode}</span>
+                          </TableCell>
+                          <TableCell>
+                            <span className="font-mono text-xs text-gray-600">{order.serialNumber}</span>
+                          </TableCell>
+                          <TableCell>
+                            <span className="font-bold text-gray-900">₹{order.invoiceValue?.toLocaleString()}</span>
+                          </TableCell>
+                          <TableCell>
+                            <span className="text-sm text-gray-600">{formatDate(order.dateOfPurchase)}</span>
+                          </TableCell>
+                          <TableCell>{getStatusBadge(order)}</TableCell>
+                          <TableCell>
+                            {needsInvoice ? (
+                              <Badge className="bg-orange-100 text-orange-700">Missing</Badge>
+                            ) : (
+                              <Badge className="bg-green-100 text-green-700 flex items-center gap-1 w-fit">
+                                <FileText className="h-3 w-3" /> Uploaded
+                              </Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              {needsInvoice && (
+                                <div className="relative">
+                                  <input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) handleInvoiceUpload(order.id, file);
+                                    }}
+                                    disabled={uploadingInvoice === order.id}
+                                  />
+                                  <Button size="sm" variant="outline" className="text-xs h-8" disabled={uploadingInvoice === order.id}>
+                                    {uploadingInvoice === order.id ? (
+                                      <Clock className="h-3 w-3 animate-spin" />
+                                    ) : (
+                                      <><Upload className="h-3 w-3 mr-1" /> Upload</>
+                                    )}
+                                  </Button>
+                                </div>
+                              )}
+                              {!order.claimStatus && order.isVerified && !needsInvoice && (
+                                <Button 
+                                  size="sm" 
+                                  className="bg-[#254696] text-xs h-8"
+                                  onClick={() => window.location.href = `/customer/claims?voucher=${order.voucherCode}`}
+                                >
+                                  Claim BBG
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {totalPages > 1 && (
+                <div className="p-4 border-t border-gray-100 flex items-center justify-between">
+                  <p className="text-sm text-gray-500">
+                    Page {currentPage} of {totalPages}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={currentPage === pageNum ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={currentPage === pageNum ? 'bg-[#254696]' : ''}
+                        >
+                          {pageNum}
+                        </Button>
+                      );
+                    })}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </CustomerLayout>
+  );
+}

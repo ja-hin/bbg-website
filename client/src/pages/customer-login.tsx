@@ -21,7 +21,7 @@ export default function CustomerLogin() {
 
   // Get redirect path from URL
   const searchParams = new URLSearchParams(window.location.search);
-  const redirectPath = searchParams.get("redirect") || "/customer-dashboard";
+  const redirectPath = searchParams.get("redirect") || "/customer/dashboard";
 
   // Send OTP mutation
   const sendOtpMutation = useMutation({
@@ -132,7 +132,7 @@ export default function CustomerLogin() {
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-600/20 rounded-full -ml-32 -mb-32 blur-3xl"></div>
           
           <div className="relative z-10">
-            <img src={bbgLogo} alt="BBG Logo" className="h-20 w-auto brightness-0 invert mb-8" />
+            <img src={bbgLogo} alt="BBG Logo" className="h-14 w-auto brightness-0 invert mb-8" />
             <h2 className="text-3xl font-bold text-white mb-4">Welcome Back!</h2>
             <p className="text-blue-100 text-lg">
               Securely access your BuyBack Guarantee dashboard to manage your protected devices, view claims, and update your profile.

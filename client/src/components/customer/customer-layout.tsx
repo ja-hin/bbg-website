@@ -75,9 +75,9 @@ export function CustomerLayout({ children, title, description }: CustomerLayoutP
     <div className="min-h-screen bg-gray-50 flex">
       {/* Static Sidebar */}
       <aside className="w-64 bg-white border-r border-gray-200 flex-shrink-0 hidden lg:flex flex-col">
-        <div className="p-6 border-b border-gray-100 flex items-center justify-center">
+        <div className="border-b border-gray-100 flex items-center justify-center overflow-hidden h-24">
           <Link href="/">
-            <img src={bbgLogo} alt="BBG Logo" className="h-20 w-auto cursor-pointer" />
+            <img src={bbgLogo} alt="BBG Logo" className="h-32 w-auto cursor-pointer" />
           </Link>
         </div>
 

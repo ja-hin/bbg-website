@@ -140,12 +140,6 @@ export default function CustomerLogin() {
           </div>
           
           <div className="relative z-10 space-y-4">
-            <div className="flex items-center gap-3 text-white/90">
-              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                <Shield className="h-4 w-4" />
-              </div>
-              <span>Secured by industry-standard encryption</span>
-            </div>
           </div>
         </div>
 

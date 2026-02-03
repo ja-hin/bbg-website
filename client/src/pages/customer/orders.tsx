@@ -131,7 +131,7 @@ export default function CustomerOrdersPage() {
               <Package className="h-12 w-12 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-bold text-gray-900 mb-2">No Orders Yet</h3>
               <p className="text-gray-500 mb-4">You haven't purchased any BBG protection plans yet.</p>
-              <Button onClick={() => window.location.href = '/buy-bbg'} className="bg-[#254696]">
+              <Button onClick={() => window.location.href = '/'} className="bg-[#254696]">
                 Get Protected
               </Button>
             </div>

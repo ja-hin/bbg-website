@@ -41,6 +41,11 @@ export default function CustomerDashboardPage() {
     enabled: isAuthenticated && !!customerPhone
   });
 
+  const customerName = orders.length > 0 ? orders[0].name : 'Customer';
+  if (orders.length > 0) {
+    sessionStorage.setItem('customerName', customerName);
+  }
+
   const ordersNeedingInvoice = orders.filter(o => !o.invoiceFile || o.invoiceFile === 'N/A');
   const hasBankDetails = !!bankDetails;
   const pendingClaims = claims.filter(c => c.status === 'pending' || c.status === 'processing');
@@ -206,8 +211,8 @@ export default function CustomerDashboardPage() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-gray-900">Quick Actions</h3>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <Link href="/buy-bbg">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <Link href="/">
               <Button variant="outline" className="w-full h-auto py-4 flex-col gap-2 rounded-xl border-gray-200 hover:border-[#254696] hover:bg-blue-50">
                 <Package className="h-5 w-5 text-[#254696]" />
                 <span className="text-xs font-medium">New Protection</span>

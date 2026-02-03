@@ -114,7 +114,7 @@ export function CustomerLayout({ children, title, description }: CustomerLayoutP
               <User className="h-4 w-4" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold text-gray-900 truncate">Customer</p>
+              <p className="text-xs font-bold text-gray-900 truncate">{sessionStorage.getItem('customerName') || 'Customer'}</p>
               <p className="text-xs text-gray-500 truncate">{customerPhone}</p>
             </div>
           </div>

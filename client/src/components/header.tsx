@@ -54,8 +54,7 @@ export default function Header() {
     if (isAuthenticated) {
       navigate(path);
     } else {
-      setPendingRedirect(path);
-      setIsLoginModalOpen(true);
+      navigate(`/customer/login?redirect=${encodeURIComponent(path)}`);
     }
     setIsProfileDropdownOpen(false);
   };
@@ -64,15 +63,7 @@ export default function Header() {
     if (isAuthenticated) {
       navigate("/checkout");
     } else {
-      setPendingRedirect("/checkout");
-      setIsLoginModalOpen(true);
-    }
-  };
-
-  const handleLoginSuccess = () => {
-    if (pendingRedirect) {
-      navigate(pendingRedirect);
-      setPendingRedirect(null);
+      navigate(`/customer/login?redirect=${encodeURIComponent("/checkout")}`);
     }
   };
 
@@ -289,7 +280,7 @@ export default function Header() {
                         <button
                           onClick={() => {
                             setIsOpen(false);
-                            setIsLoginModalOpen(true);
+                            navigate("/customer/login");
                           }}
                           className="block w-full text-left text-base text-[#254696] hover:bg-gray-100 font-medium rounded-lg px-4 py-2"
                         >
@@ -371,7 +362,7 @@ export default function Header() {
                         <button
                           onClick={() => {
                             setIsProfileDropdownOpen(false);
-                            setIsLoginModalOpen(true);
+                            navigate("/customer/login");
                           }}
                           className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 font-medium"
                         >
@@ -406,15 +397,6 @@ export default function Header() {
       </div>
 
       <BuyModal isOpen={isBuyModalOpen} onClose={() => setIsBuyModalOpen(false)} />
-      <CustomerLoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => {
-          setIsLoginModalOpen(false);
-          setPendingRedirect(null);
-        }}
-        onSuccess={handleLoginSuccess}
-        redirectPath={pendingRedirect || undefined}
-      />
     </header>
   );
 }

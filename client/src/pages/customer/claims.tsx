@@ -234,6 +234,171 @@ export default function CustomerClaimsPage() {
     return date.toISOString().split('T')[0];
   };
 
+  if (selectedOrder && showClaimDialog) {
+    return (
+      <CustomerLayout title="File BBG Claim" description={`Submit a claim for ${selectedOrder.brand} ${selectedOrder.modelName}`}>
+        <div className="max-w-2xl mx-auto">
+          <Button 
+            variant="ghost" 
+            onClick={() => {
+              setShowClaimDialog(false);
+              setSelectedOrder(null);
+              setClaimDetails(null);
+              // Clear URL param if present
+              if (window.location.search.includes('voucher=')) {
+                window.history.pushState({}, '', '/customer/claims');
+              }
+            }}
+            className="mb-6"
+          >
+            <ChevronLeft className="h-4 w-4 mr-2" /> Back to Claims
+          </Button>
+
+          <Card className="rounded-2xl border-gray-100 shadow-sm">
+            <CardContent className="p-6">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-900">Claim Details</h2>
+                <p className="text-sm text-gray-500">Device: {selectedOrder.brand} {selectedOrder.modelName} ({selectedOrder.voucherCode})</p>
+              </div>
+
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit((data) => submitClaimMutation.mutate(data))} className="space-y-6">
+                  {claimDetails && (
+                    <div className="p-4 bg-green-50 border border-green-200 rounded-xl">
+                      <div className="flex items-center gap-2 mb-3">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <span className="font-bold text-green-800">Eligible for Claim!</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="bg-white/50 p-2 rounded-lg">
+                          <span className="text-gray-600 block text-xs uppercase font-semibold">Device Age</span>
+                          <span className="font-bold text-gray-900">{claimDetails.deviceAge} months</span>
+                        </div>
+                        <div className="bg-white/50 p-2 rounded-lg">
+                          <span className="text-gray-600 block text-xs uppercase font-semibold">Claim %</span>
+                          <span className="font-bold text-gray-900">{claimDetails.claimPercentage}%</span>
+                        </div>
+                        <div className="col-span-2 bg-green-100/50 p-3 rounded-lg flex justify-between items-center">
+                          <span className="text-green-800 font-semibold">Claim Amount:</span>
+                          <span className="font-black text-2xl text-green-700">₹{claimDetails.claimAmount?.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-gray-700 font-semibold">Pickup Address</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} placeholder="Enter complete address for device pickup" className="rounded-xl min-h-[100px] border-gray-200 focus:border-[#254696] focus:ring-[#254696]" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="pickupDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 font-semibold">Pickup Date</FormLabel>
+                          <FormControl>
+                            <Input type="date" {...field} min={getMinDate()} className="rounded-xl border-gray-200 focus:border-[#254696]" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="pickupTimeSlot"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 font-semibold">Time Slot</FormLabel>
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <FormControl>
+                              <SelectTrigger className="rounded-xl border-gray-200 focus:border-[#254696]">
+                                <SelectValue placeholder="Select time" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="9am-12pm">9 AM - 12 PM</SelectItem>
+                              <SelectItem value="12pm-3pm">12 PM - 3 PM</SelectItem>
+                              <SelectItem value="3pm-6pm">3 PM - 6 PM</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div>
+                    <FormLabel className="text-gray-700 font-semibold">Invoice Document (Optional)</FormLabel>
+                    <div className="mt-2 border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-[#254696] transition-colors">
+                      <input
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        onChange={(e) => setInvoiceFile(e.target.files?.[0] || null)}
+                        className="hidden"
+                        id="invoice-upload"
+                      />
+                      <label htmlFor="invoice-upload" className="cursor-pointer">
+                        {invoiceFile ? (
+                          <div className="flex flex-col items-center gap-2 text-green-600">
+                            <FileText className="h-10 w-10" />
+                            <span className="font-bold">{invoiceFile.name}</span>
+                            <span className="text-xs text-gray-500">Click to change file</span>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center gap-3 text-gray-500">
+                            <Upload className="h-10 w-10 text-gray-300" />
+                            <div>
+                              <p className="font-bold text-gray-700">Click to upload invoice</p>
+                              <p className="text-xs">PDF, JPG, PNG (Max 5MB)</p>
+                            </div>
+                          </div>
+                        )}
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 flex gap-3">
+                    <Button 
+                      type="button" 
+                      variant="outline"
+                      className="flex-1 rounded-xl h-12"
+                      onClick={() => {
+                        setShowClaimDialog(false);
+                        setSelectedOrder(null);
+                        setClaimDetails(null);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      type="submit" 
+                      className="flex-[2] bg-[#254696] hover:bg-[#1a326b] rounded-xl h-12 font-bold shadow-lg shadow-blue-900/10" 
+                      disabled={submitClaimMutation.isPending || !claimDetails}
+                    >
+                      {submitClaimMutation.isPending ? 'Submitting...' : 'Confirm & Submit Claim'}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </div>
+      </CustomerLayout>
+    );
+  }
+
   return (
     <CustomerLayout title="My Claims" description="View and file BBG claims">
       <div className="flex justify-between items-center mb-6">
@@ -364,7 +529,7 @@ export default function CustomerClaimsPage() {
         </CardContent>
       </Card>
 
-      <Dialog open={showClaimDialog} onOpenChange={setShowClaimDialog}>
+      <Dialog open={false} onOpenChange={() => {}}>
         <DialogContent className="max-w-lg rounded-2xl">
           <DialogHeader>
             <DialogTitle>File BBG Claim</DialogTitle>

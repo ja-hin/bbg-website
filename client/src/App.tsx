@@ -125,33 +125,41 @@ function Router() {
         {/* Regular routes with header/footer */}
         <Route>
           <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-1">
-              <Switch>
-                <Route path="/" component={Home} />
-                <Route path="/plans" component={Plans} />
-                <Route path="/checkout" component={Checkout} />
-                <Route path="/referral-partner-registration" component={DistributorRegistration} />
-                <Route path="/buy-bbg" component={CustomerRegistration} />
-                <Route path="/claim-bbg" component={ClaimBBG} />
-                <Route path="/thank-you" component={ThankYou} />
-                <Route path="/acer" component={AcerBBG} />
-                <Route path="/acer-bbg" component={AcerBBG} />
-                <Route path="/acer-thank-you" component={AcerThankYou} />
-                <Route path="/amazon" component={AmazonBBG} />
-                <Route path="/amazon-bbg" component={AmazonBBG} />
-                <Route path="/amazon-thank-you" component={AmazonThankYou} />
-                <Route path="/register" component={Register} />
-                <Route path="/registration-thank-you" component={RegistrationThankYou} />
-                <Route path="/customer/login" component={CustomerLogin} />
-                <Route path="/customer-dashboard" component={CustomerDashboard} />
-                <Route path="/terms-and-conditions" component={TermsAndConditions} />
-                <Route component={NotFound} />
-              </Switch>
-            </main>
-            <Suspense fallback={null}>
-              <Footer />
-            </Suspense>
+            <Switch>
+              <Route path="/customer-dashboard">
+                <CustomerDashboard />
+              </Route>
+              <Route>
+                <>
+                  <Header />
+                  <main className="flex-1">
+                    <Switch>
+                      <Route path="/" component={Home} />
+                      <Route path="/plans" component={Plans} />
+                      <Route path="/checkout" component={Checkout} />
+                      <Route path="/referral-partner-registration" component={DistributorRegistration} />
+                      <Route path="/buy-bbg" component={CustomerRegistration} />
+                      <Route path="/claim-bbg" component={ClaimBBG} />
+                      <Route path="/thank-you" component={ThankYou} />
+                      <Route path="/acer" component={AcerBBG} />
+                      <Route path="/acer-bbg" component={AcerBBG} />
+                      <Route path="/acer-thank-you" component={AcerThankYou} />
+                      <Route path="/amazon" component={AmazonBBG} />
+                      <Route path="/amazon-bbg" component={AmazonBBG} />
+                      <Route path="/amazon-thank-you" component={AmazonThankYou} />
+                      <Route path="/register" component={Register} />
+                      <Route path="/registration-thank-you" component={RegistrationThankYou} />
+                      <Route path="/customer/login" component={CustomerLogin} />
+                      <Route path="/terms-and-conditions" component={TermsAndConditions} />
+                      <Route component={NotFound} />
+                    </Switch>
+                  </main>
+                  <Suspense fallback={null}>
+                    <Footer />
+                  </Suspense>
+                </>
+              </Route>
+            </Switch>
             <Suspense fallback={null}>
               <ScrollToTopButton />
             </Suspense>

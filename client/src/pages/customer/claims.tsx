@@ -113,12 +113,16 @@ export default function CustomerClaimsPage() {
 
   const checkEligibility = async (voucherCode: string, contact: string) => {
     try {
-      const response = await fetch(`/api/claim/verify?voucherCode=${voucherCode}&contact=${contact}`);
+      const response = await fetch('/api/claims/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ voucherCode })
+      });
       const data = await response.json();
-      if (data.eligible) {
+      if (response.ok) {
         setClaimDetails(data);
       } else {
-        toast({ title: "Not Eligible", description: data.message, variant: "destructive" });
+        toast({ title: "Not Eligible", description: data.message || "Failed to check eligibility", variant: "destructive" });
         setShowClaimDialog(false);
       }
     } catch (error) {
@@ -142,7 +146,7 @@ export default function CustomerClaimsPage() {
         formData.append('invoiceFile', invoiceFile);
       }
 
-      const response = await fetch('/api/claims', {
+      const response = await fetch('/api/claims/submit', {
         method: 'POST',
         body: formData
       });

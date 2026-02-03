@@ -2,7 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { CustomerLayout, useCustomerAuth } from '@/components/customer/customer-layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, Phone, Mail, MapPin, Calendar, Shield, Package, ClipboardList } from 'lucide-react';
+import { User, Phone, Mail, Calendar, Shield, Package, ClipboardList, Laptop, Smartphone, ArrowRight } from 'lucide-react';
+import { Link } from 'wouter';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export default function CustomerProfilePage() {
   const { customerPhone, isAuthenticated } = useCustomerAuth();
@@ -47,6 +49,19 @@ export default function CustomerProfilePage() {
   const totalClaimValue = claims
     .filter((c: any) => c.status === 'approved' || c.status === 'paid')
     .reduce((sum: number, c: any) => sum + (c.claimAmount || 0), 0);
+
+  const getStatusBadge = (order: any) => {
+    if (order.claimStatus === 'approved' || order.claimStatus === 'paid') {
+      return <Badge className="bg-purple-100 text-purple-700">Claimed</Badge>;
+    }
+    if (order.claimStatus === 'pending' || order.claimStatus === 'processing') {
+      return <Badge className="bg-orange-100 text-orange-700">Claim Processing</Badge>;
+    }
+    if (order.isVerified) {
+      return <Badge className="bg-green-100 text-green-700">Verified</Badge>;
+    }
+    return <Badge className="bg-yellow-100 text-yellow-700">Pending</Badge>;
+  };
 
   return (
     <CustomerLayout title="My Profile" description="Your account details and activity summary">
@@ -120,73 +135,52 @@ export default function CustomerProfilePage() {
           </div>
 
           <Card className="rounded-xl border-gray-100">
-            <CardContent className="p-6">
-              <h3 className="font-bold text-gray-900 mb-4">Account Security</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <Phone className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">Phone Verification</p>
-                      <p className="text-xs text-gray-500">Your phone is verified via OTP</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700">Verified</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <Shield className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">Session Security</p>
-                      <p className="text-xs text-gray-500">Your session is encrypted and secure</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700">Active</Badge>
-                </div>
+            <CardContent className="p-0">
+              <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                <h3 className="font-bold text-gray-900">Recent Orders</h3>
+                <Link href="/customer/orders" className="text-xs font-bold text-[#254696] flex items-center gap-1 hover:underline">
+                  View All <ArrowRight className="h-3 w-3" />
+                </Link>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="rounded-xl border-gray-100">
-            <CardContent className="p-6">
-              <h3 className="font-bold text-gray-900 mb-4">Recent Activity</h3>
-              {orders.length === 0 && claims.length === 0 ? (
-                <p className="text-gray-500 text-sm">No recent activity to show.</p>
-              ) : (
-                <div className="space-y-3">
-                  {orders.slice(0, 3).map((order: any, index: number) => (
-                    <div key={order.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Package className="h-4 w-4 text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-gray-900">
-                          Registered {order.brand} {order.modelName}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {new Date(order.registrationDate).toLocaleDateString('en-IN')}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                  {claims.slice(0, 2).map((claim: any) => (
-                    <div key={claim.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <ClipboardList className="h-4 w-4 text-purple-600" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-gray-900">
-                          Claimed ₹{claim.claimAmount?.toLocaleString()}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {new Date(claim.createdAt).toLocaleDateString('en-IN')} • {claim.status}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-gray-50/50">
+                      <TableHead className="text-xs font-bold">Device</TableHead>
+                      <TableHead className="text-xs font-bold">Voucher</TableHead>
+                      <TableHead className="text-xs font-bold">Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {orders.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={3} className="text-center py-8 text-gray-500 text-sm">
+                          No orders found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      orders.slice(0, 5).map((order: any) => {
+                        const DeviceIcon = order.deviceType?.toLowerCase() === 'laptop' ? Laptop : Smartphone;
+                        return (
+                          <TableRow key={order.id}>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <DeviceIcon className="h-4 w-4 text-gray-400" />
+                                <div className="text-xs">
+                                  <p className="font-semibold text-gray-900">{order.brand}</p>
+                                  <p className="text-gray-500">{order.modelName}</p>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="font-mono text-xs text-[#254696]">{order.voucherCode}</TableCell>
+                            <TableCell>{getStatusBadge(order)}</TableCell>
+                          </TableRow>
+                        );
+                      })
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </div>

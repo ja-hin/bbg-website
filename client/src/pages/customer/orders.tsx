@@ -202,12 +202,15 @@ export default function CustomerOrdersPage() {
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 {needsInvoice && (
-                                  <DropdownMenuItem asChild>
-                                    <div className="relative cursor-pointer">
+                                  <DropdownMenuItem 
+                                    onSelect={(e) => e.preventDefault()}
+                                    className="cursor-default"
+                                  >
+                                    <div className="relative w-full">
                                       <input
                                         type="file"
                                         accept=".pdf,.jpg,.jpeg,.png"
-                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                         onChange={(e) => {
                                           const file = e.target.files?.[0];
                                           if (file) handleInvoiceUpload(order.id, file);

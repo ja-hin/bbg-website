@@ -256,7 +256,7 @@ export default function CustomerLogin() {
           <div className="mt-8 pt-8 border-t border-gray-100 text-center">
             <p className="text-sm text-gray-500">
               New to BuyBack Guarantee?{" "}
-              <Link href="/buy-bbg" className="text-[#254696] font-bold hover:underline">
+              <Link href="/" className="text-[#254696] font-bold hover:underline">
                 Get Protected Now
               </Link>
             </p>

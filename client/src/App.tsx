@@ -13,7 +13,6 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 const Footer = lazy(() => import("@/components/footer"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 const DistributorRegistration = lazy(() => import("@/pages/distributor-registration"));
-const CustomerRegistration = lazy(() => import("@/pages/customer-registration"));
 const ThankYou = lazy(() => import("@/pages/thank-you"));
 const AcerBBG = lazy(() => import("@/pages/acer-bbg"));
 const AcerThankYou = lazy(() => import("@/pages/acer-thank-you"));
@@ -145,7 +144,6 @@ function Router() {
                 <Route path="/plans" component={Plans} />
                 <Route path="/checkout" component={Checkout} />
                 <Route path="/referral-partner-registration" component={DistributorRegistration} />
-                <Route path="/buy-bbg" component={CustomerRegistration} />
                 <Route path="/thank-you" component={ThankYou} />
                 <Route path="/acer" component={AcerBBG} />
                 <Route path="/acer-bbg" component={AcerBBG} />

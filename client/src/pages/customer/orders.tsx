@@ -28,6 +28,7 @@ interface CustomerOrder {
   invoiceFile?: string;
   planName?: string;
   claimStatus?: string;
+  registrationSource?: string;
 }
 
 export default function CustomerOrdersPage() {
@@ -141,8 +142,8 @@ export default function CustomerOrdersPage() {
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-gray-50">
-                      <TableHead className="font-bold text-gray-700">Device</TableHead>
-                      <TableHead className="font-bold text-gray-700">Voucher Code</TableHead>
+                      <TableHead className="font-bold text-gray-700">Device & Voucher</TableHead>
+                      <TableHead className="font-bold text-gray-700">Source</TableHead>
                       <TableHead className="font-bold text-gray-700">Serial/IMEI</TableHead>
                       <TableHead className="font-bold text-gray-700">Invoice Value</TableHead>
                       <TableHead className="font-bold text-gray-700">Purchase Date</TableHead>
@@ -155,6 +156,11 @@ export default function CustomerOrdersPage() {
                     {paginatedOrders.map((order) => {
                       const DeviceIcon = order.deviceType?.toLowerCase() === 'laptop' ? Laptop : Smartphone;
                       const needsInvoice = isInvoiceMissing(order.invoiceFile);
+                      
+                      // Format registration source for display
+                      const sourceDisplay = order.registrationSource 
+                        ? order.registrationSource.charAt(0).toUpperCase() + order.registrationSource.slice(1).toLowerCase()
+                        : 'Website';
 
                       return (
                         <TableRow key={order.id} className={needsInvoice ? 'bg-orange-50/50' : ''}>
@@ -164,13 +170,15 @@ export default function CustomerOrdersPage() {
                                 <DeviceIcon className="h-4 w-4 text-gray-600" />
                               </div>
                               <div>
-                                <p className="font-semibold text-gray-900 text-sm">{order.brand}</p>
-                                <p className="text-xs text-gray-500">{order.modelName}</p>
+                                <p className="font-semibold text-gray-900 text-sm">{order.brand} {order.modelName}</p>
+                                <p className="font-mono text-[10px] text-[#254696] bg-blue-50 px-1.5 py-0.5 rounded w-fit mt-0.5">{order.voucherCode}</p>
                               </div>
                             </div>
                           </TableCell>
                           <TableCell>
-                            <span className="font-mono text-sm text-[#254696]">{order.voucherCode}</span>
+                            <Badge variant="outline" className="text-xs font-medium border-gray-200">
+                              {sourceDisplay}
+                            </Badge>
                           </TableCell>
                           <TableCell>
                             <span className="font-mono text-xs text-gray-600">

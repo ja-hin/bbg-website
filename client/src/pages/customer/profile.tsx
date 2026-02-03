@@ -146,8 +146,8 @@ export default function CustomerProfilePage() {
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-gray-50/50">
-                      <TableHead className="text-xs font-bold">Device</TableHead>
-                      <TableHead className="text-xs font-bold">Voucher</TableHead>
+                      <TableHead className="text-xs font-bold">Device & Voucher</TableHead>
+                      <TableHead className="text-xs font-bold">Source</TableHead>
                       <TableHead className="text-xs font-bold">Status</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -161,18 +161,26 @@ export default function CustomerProfilePage() {
                     ) : (
                       orders.slice(0, 5).map((order: any) => {
                         const DeviceIcon = order.deviceType?.toLowerCase() === 'laptop' ? Laptop : Smartphone;
+                        const sourceDisplay = order.registrationSource 
+                          ? order.registrationSource.charAt(0).toUpperCase() + order.registrationSource.slice(1).toLowerCase()
+                          : 'Website';
+                        
                         return (
                           <TableRow key={order.id}>
                             <TableCell>
                               <div className="flex items-center gap-2">
                                 <DeviceIcon className="h-4 w-4 text-gray-400" />
-                                <div className="text-xs">
-                                  <p className="font-semibold text-gray-900">{order.brand}</p>
-                                  <p className="text-gray-500">{order.modelName}</p>
+                                <div className="text-[10px]">
+                                  <p className="font-semibold text-gray-900">{order.brand} {order.modelName}</p>
+                                  <p className="font-mono text-[#254696] mt-0.5">{order.voucherCode}</p>
                                 </div>
                               </div>
                             </TableCell>
-                            <TableCell className="font-mono text-xs text-[#254696]">{order.voucherCode}</TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-gray-200">
+                                {sourceDisplay}
+                              </Badge>
+                            </TableCell>
                             <TableCell>{getStatusBadge(order)}</TableCell>
                           </TableRow>
                         );

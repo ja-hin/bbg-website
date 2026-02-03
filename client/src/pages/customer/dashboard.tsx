@@ -171,7 +171,7 @@ export default function CustomerDashboardPage() {
                           size="sm" 
                           variant="ghost" 
                           className="h-7 text-[10px] text-[#254696] hover:text-[#1a326b] p-1 font-bold"
-                          onClick={() => window.location.href = `/register?voucher=${order.voucherCode}`}
+                          onClick={() => window.location.href = '/register'}
                         >
                           Register Now
                         </Button>

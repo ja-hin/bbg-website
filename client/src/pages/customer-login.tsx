@@ -124,8 +124,8 @@ export default function CustomerLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl flex flex-col md:flex-row bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-0 md:p-4">
+      <div className="w-full max-w-4xl min-h-screen md:min-h-0 flex flex-col md:flex-row bg-white md:rounded-2xl shadow-xl overflow-hidden">
         {/* Left Side - Visual/Info */}
         <div className="hidden md:flex md:w-1/2 bg-[#254696] p-12 flex-col justify-between relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>

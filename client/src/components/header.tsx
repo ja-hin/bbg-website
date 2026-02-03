@@ -39,9 +39,9 @@ export default function Header() {
   ];
 
   const profileMenuItems = [
-    { href: "/customer-dashboard", label: "My Orders", requiresAuth: true },
-    { href: "/claim-bbg", label: "My Claims", requiresAuth: true },
-    { href: "/customer-dashboard", label: "Manage Addresses", requiresAuth: true },
+    { href: "/customer/orders", label: "My Orders", requiresAuth: true },
+    { href: "/customer/claims", label: "My Claims", requiresAuth: true },
+    { href: "/customer/address", label: "Manage Addresses", requiresAuth: true },
   ];
 
   const isActiveLink = (href: string) => {

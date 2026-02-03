@@ -146,7 +146,8 @@ export default function CustomerProfilePage() {
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-gray-50/50">
-                      <TableHead className="text-xs font-bold">Device & Voucher</TableHead>
+                      <TableHead className="text-xs font-bold">Device Details</TableHead>
+                      <TableHead className="text-xs font-bold">Voucher</TableHead>
                       <TableHead className="text-xs font-bold">Source</TableHead>
                       <TableHead className="text-xs font-bold">Status</TableHead>
                     </TableRow>
@@ -154,7 +155,7 @@ export default function CustomerProfilePage() {
                   <TableBody>
                     {orders.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={3} className="text-center py-8 text-gray-500 text-sm">
+                        <TableCell colSpan={4} className="text-center py-8 text-gray-500 text-sm">
                           No orders found
                         </TableCell>
                       </TableRow>
@@ -171,10 +172,14 @@ export default function CustomerProfilePage() {
                               <div className="flex items-center gap-2">
                                 <DeviceIcon className="h-4 w-4 text-gray-400" />
                                 <div className="text-[10px]">
-                                  <p className="font-semibold text-gray-900">{order.brand} {order.modelName}</p>
-                                  <p className="font-mono text-[#254696] mt-0.5">{order.voucherCode}</p>
+                                  <p className="font-semibold text-gray-900">{order.brand}</p>
+                                  <p className="text-gray-500">{order.modelName}</p>
+                                  <p className="font-mono text-gray-400">IMEI: {order.serialNumber?.startsWith('AUTO_') ? '-' : order.serialNumber}</p>
                                 </div>
                               </div>
+                            </TableCell>
+                            <TableCell className="font-mono text-[10px] text-[#254696]">
+                              {order.voucherCode}
                             </TableCell>
                             <TableCell>
                               <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-gray-200">

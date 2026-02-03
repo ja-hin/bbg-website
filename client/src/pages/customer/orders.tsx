@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import { queryClient } from '@/lib/queryClient';
-import { Package, Upload, Clock, CheckCircle, Search, ChevronLeft, ChevronRight, Smartphone, Laptop, FileText } from 'lucide-react';
+import { Package, Upload, Clock, CheckCircle, Search, ChevronLeft, ChevronRight, Smartphone, Laptop, FileText, MoreVertical } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 interface CustomerOrder {
   id: number;
@@ -190,38 +191,53 @@ export default function CustomerOrdersPage() {
                             )}
                           </TableCell>
                           <TableCell>
-                            <div className="flex items-center gap-2">
-                              {needsInvoice && (
-                                <div className="relative">
-                                  <input
-                                    type="file"
-                                    accept=".pdf,.jpg,.jpeg,.png"
-                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                    onChange={(e) => {
-                                      const file = e.target.files?.[0];
-                                      if (file) handleInvoiceUpload(order.id, file);
-                                    }}
-                                    disabled={uploadingInvoice === order.id}
-                                  />
-                                  <Button size="sm" variant="outline" className="text-xs h-8" disabled={uploadingInvoice === order.id}>
-                                    {uploadingInvoice === order.id ? (
-                                      <Clock className="h-3 w-3 animate-spin" />
-                                    ) : (
-                                      <><Upload className="h-3 w-3 mr-1" /> Upload</>
-                                    )}
-                                  </Button>
-                                </div>
-                              )}
-                              {!order.claimStatus && order.isVerified && !needsInvoice && (
-                                <Button 
-                                  size="sm" 
-                                  className="bg-[#254696] text-xs h-8"
-                                  onClick={() => window.location.href = `/customer/claims?voucher=${order.voucherCode}`}
-                                >
-                                  Claim BBG
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                  <MoreVertical className="h-4 w-4" />
                                 </Button>
-                              )}
-                            </div>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                {needsInvoice && (
+                                  <DropdownMenuItem asChild>
+                                    <div className="relative cursor-pointer">
+                                      <input
+                                        type="file"
+                                        accept=".pdf,.jpg,.jpeg,.png"
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        onChange={(e) => {
+                                          const file = e.target.files?.[0];
+                                          if (file) handleInvoiceUpload(order.id, file);
+                                        }}
+                                        disabled={uploadingInvoice === order.id}
+                                      />
+                                      <div className="flex items-center">
+                                        {uploadingInvoice === order.id ? (
+                                          <Clock className="h-4 w-4 mr-2 animate-spin" />
+                                        ) : (
+                                          <Upload className="h-4 w-4 mr-2" />
+                                        )}
+                                        Upload Invoice
+                                      </div>
+                                    </div>
+                                  </DropdownMenuItem>
+                                )}
+                                
+                                {order.serialNumber === 'N/A' || !order.serialNumber ? (
+                                  <DropdownMenuItem onClick={() => window.location.href = `/register-bbg?voucher=${order.voucherCode}`}>
+                                    <CheckCircle className="h-4 w-4 mr-2" />
+                                    Register BBG
+                                  </DropdownMenuItem>
+                                ) : (
+                                  !order.claimStatus && order.isVerified && !needsInvoice && (
+                                    <DropdownMenuItem onClick={() => window.location.href = `/customer/claims?voucher=${order.voucherCode}`}>
+                                      <FileText className="h-4 w-4 mr-2" />
+                                      Claim BBG
+                                    </DropdownMenuItem>
+                                  )
+                                )}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </TableCell>
                         </TableRow>
                       );

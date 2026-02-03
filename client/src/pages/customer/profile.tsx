@@ -174,7 +174,9 @@ export default function CustomerProfilePage() {
                                 <div className="text-[10px]">
                                   <p className="font-semibold text-gray-900">{order.brand}</p>
                                   <p className="text-gray-500">{order.modelName}</p>
-                                  <p className="font-mono text-gray-400">IMEI: {order.serialNumber?.startsWith('AUTO_') ? '-' : order.serialNumber}</p>
+                                  <p className="font-mono text-gray-400">
+                                    {order.deviceType?.toLowerCase() === 'laptop' ? 'Serial No.' : 'IMEI'}: {order.serialNumber?.startsWith('AUTO_') ? '-' : order.serialNumber}
+                                  </p>
                                 </div>
                               </div>
                             </TableCell>

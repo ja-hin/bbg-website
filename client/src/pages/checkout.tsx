@@ -80,6 +80,7 @@ interface SelectedPlan {
   validity: string;
   coverage: string;
   brand: string | null;
+  model: string | null;
   deviceAgeSelection: string | null;
 }
 
@@ -104,16 +105,7 @@ export default function Checkout() {
   const [referralValidation, setReferralValidation] = useState<ReferralValidation | null>(null);
   const [referralValidating, setReferralValidating] = useState(false);
 
-  // Fetch brands with models for dropdown
-  const { data: brandsWithModels = [] } = useQuery<any[]>({
-    queryKey: ['/api/brands-with-models'],
-  });
 
-  // Filter models based on selected brand and device type from plan
-  // Note: device_type is on the brand object, not on individual models
-  const deviceModels = brandsWithModels
-    .filter((brand: any) => brand.name === selectedPlan?.brand && brand.device_type === selectedPlan?.deviceType)
-    .flatMap((brand: any) => brand.models || []);
 
   const getPlansUrl = () => {
     const storedPlan = sessionStorage.getItem("selectedPlan");
@@ -174,6 +166,12 @@ export default function Checkout() {
       agreeToTerms: false,
     },
   });
+
+  useEffect(() => {
+    if (selectedPlan?.model) {
+      form.setValue("deviceModel", selectedPlan.model);
+    }
+  }, [selectedPlan, form]);
 
   const watchContact = form.watch("contact");
   const watchAgreeToTerms = form.watch("agreeToTerms");
@@ -706,35 +704,7 @@ export default function Checkout() {
                 }}
               />
 
-              <FormField
-                control={form.control}
-                name="deviceModel"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-700">
-                      Device Model <span className="text-red-500">*</span>
-                    </FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger 
-                          className="border-blue-200 focus:border-blue-500"
-                          data-testid="select-device-model"
-                        >
-                          <SelectValue placeholder="Select your device model" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {deviceModels.map((model: any) => (
-                          <SelectItem key={model.id} value={model.name}>
-                            {model.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
 
               <FormField
                 control={form.control}

@@ -61,6 +61,7 @@ export default function Plans() {
   let searchParams = new URLSearchParams(window.location.search);
   let deviceType = searchParams.get("type");
   let deviceBrand = searchParams.get("brand");
+  let deviceModel = searchParams.get("model");
   let deviceAgeSelection = searchParams.get("age");
 
   // If URL params missing, try to restore from sessionStorage (for back navigation)
@@ -73,6 +74,7 @@ export default function Plans() {
           const storedParams = new URLSearchParams(parsed.plansQuery);
           deviceType = storedParams.get("type");
           deviceBrand = storedParams.get("brand");
+          deviceModel = storedParams.get("model");
           deviceAgeSelection = storedParams.get("age");
 
           // Restore URL for proper browser history
@@ -110,6 +112,8 @@ export default function Plans() {
   const mobileExtendPlan = getPlanInfo("mobile", "extend_plus");
   const laptopBundlePlan = getPlanInfo("laptop", "bundle");
   const mobileBundlePlan = getPlanInfo("mobile", "bundle");
+
+
 
   if (!deviceType || !deviceBrand || !deviceAgeSelection) {
     return (
@@ -173,7 +177,9 @@ export default function Plans() {
       planName: planInfo.planName,
       validity: planInfo.validity,
       coverage: planInfo.coverage,
+      coverage: planInfo.coverage,
       brand: deviceBrand,
+      model: deviceModel,
       deviceAgeSelection: deviceAgeSelection,
       plansQuery: window.location.search,
     };
@@ -220,6 +226,14 @@ export default function Plans() {
               >
                 <strong>Brand:</strong> {deviceBrand}
               </span>
+              {deviceModel && (
+                <span
+                  className="bg-gray-100 px-3 py-1 rounded-full"
+                  data-testid="text-device-model"
+                >
+                  <strong>Model:</strong> {deviceModel}
+                </span>
+              )}
               <span
                 className="bg-gray-100 px-3 py-1 rounded-full"
                 data-testid="text-device-age"

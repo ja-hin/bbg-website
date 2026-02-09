@@ -174,56 +174,68 @@ export default function Checkout() {
 
     // Check for authenticated customer
     const isAuth = sessionStorage.getItem("customerAuthenticated") === "true";
+    const savedPhone = sessionStorage.getItem("customerPhone");
+    const storedDetails = sessionStorage.getItem("customerDetails");
+
     if (isAuth) {
+      if (!savedPhone && !storedDetails) {
+        // Authenticated but missing critical data (likely from an old session).
+        // Redirect to login to refresh data.
+        sessionStorage.removeItem("customerAuthenticated");
+        toast({
+          title: "Session Expired",
+          description: "Please login again to sync your profile details.",
+          variant: "destructive",
+        });
+        setLocation("/customer/login?redirect=/checkout");
+        return;
+      }
+
       setOtpVerified(true);
       
       // Try to get details from session
-      const storedDetails = sessionStorage.getItem("customerDetails");
       if (storedDetails) {
         try {
           const details = JSON.parse(storedDetails);
-          if (details.name) form.setValue("name", details.name);
-          if (details.phone) form.setValue("contact", details.phone);
-          if (details.email) form.setValue("email", details.email);
-          if (details.pincode) form.setValue("pincode", details.pincode);
-          if (details.state) form.setValue("state", details.state);
+          if (details.name) form.setValue("name", details.name, { shouldValidate: true });
+          if (details.phone) form.setValue("contact", details.phone, { shouldValidate: true });
+          if (details.email) form.setValue("email", details.email, { shouldValidate: true });
+          if (details.pincode) form.setValue("pincode", details.pincode, { shouldValidate: true });
+          if (details.state) form.setValue("state", details.state, { shouldValidate: true });
         } catch (e) {
           console.error("Failed to parse customer details", e);
         }
-      } else {
+      } else if (savedPhone) {
          // If authenticated but no details (e.g. from previous session), we might want to fetch them
-         const savedPhone = sessionStorage.getItem("customerPhone");
-         if (savedPhone) {
-            form.setValue("contact", savedPhone);
+         form.setValue("contact", savedPhone, { shouldValidate: true });
             
-            // Fetch profile details
-            fetch(`/api/customer/profile/${savedPhone}`)
-              .then(res => {
-                if (res.ok) return res.json();
-                throw new Error('Failed to fetch profile');
-              })
-              .then(data => {
-                if (data) {
-                  // Update form
-                  if (data.name) form.setValue("name", data.name);
-                  if (data.email) form.setValue("email", data.email);
-                  if (data.pincode) form.setValue("pincode", data.pincode);
-                  if (data.state) form.setValue("state", data.state);
-                  
-                  // Update session storage for future use
-                  sessionStorage.setItem("customerDetails", JSON.stringify(data));
-                  
-                  toast({
-                    title: "Welcome back!",
-                    description: `Logged in as ${data.name}`,
-                  });
-                }
-              })
-              .catch(err => {
-                console.error("Error fetching profile:", err);
-              });
+         // Fetch profile details
+         fetch(`/api/customer/profile/${savedPhone}`)
+           .then(res => {
+             if (res.ok) return res.json();
+             throw new Error('Failed to fetch profile');
+           })
+           .then(data => {
+             if (data) {
+               // Update form
+               if (data.name) form.setValue("name", data.name, { shouldValidate: true });
+               if (data.email) form.setValue("email", data.email, { shouldValidate: true });
+               if (data.pincode) form.setValue("pincode", data.pincode, { shouldValidate: true });
+               if (data.state) form.setValue("state", data.state, { shouldValidate: true });
+               
+               // Update session storage for future use
+               sessionStorage.setItem("customerDetails", JSON.stringify(data));
+               
+               toast({
+                 title: "Welcome back!",
+                 description: `Logged in as ${data.name}`,
+               });
+             }
+           })
+            .catch(err => {
+              console.error("Error fetching profile:", err);
+            });
          }
-      }
     }
   }, [selectedPlan, form]);
 

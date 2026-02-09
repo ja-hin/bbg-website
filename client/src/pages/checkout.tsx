@@ -192,11 +192,36 @@ export default function Checkout() {
         }
       } else {
          // If authenticated but no details (e.g. from previous session), we might want to fetch them
-         // For now, we rely on the login flow to set them. 
-         // If missing, user can just fill them in (but contact is verified).
          const savedPhone = sessionStorage.getItem("customerPhone");
          if (savedPhone) {
             form.setValue("contact", savedPhone);
+            
+            // Fetch profile details
+            fetch(`/api/customer/profile/${savedPhone}`)
+              .then(res => {
+                if (res.ok) return res.json();
+                throw new Error('Failed to fetch profile');
+              })
+              .then(data => {
+                if (data) {
+                  // Update form
+                  if (data.name) form.setValue("name", data.name);
+                  if (data.email) form.setValue("email", data.email);
+                  if (data.pincode) form.setValue("pincode", data.pincode);
+                  if (data.state) form.setValue("state", data.state);
+                  
+                  // Update session storage for future use
+                  sessionStorage.setItem("customerDetails", JSON.stringify(data));
+                  
+                  toast({
+                    title: "Welcome back!",
+                    description: `Logged in as ${data.name}`,
+                  });
+                }
+              })
+              .catch(err => {
+                console.error("Error fetching profile:", err);
+              });
          }
       }
     }

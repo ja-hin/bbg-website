@@ -719,35 +719,37 @@ export default function Checkout() {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="state"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-700">
-                      State <span className="text-red-500">*</span>
-                    </FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger 
-                          className="border-blue-200 focus:border-blue-500"
-                          data-testid="select-state"
-                        >
-                          <SelectValue placeholder="Select your state" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {INDIAN_STATES.map((stateName) => (
-                          <SelectItem key={stateName} value={stateName}>
-                            {stateName}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="hidden">
+                <FormField
+                  control={form.control}
+                  name="state"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-700">
+                        State <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger 
+                            className="border-blue-200 focus:border-blue-500"
+                            data-testid="select-state"
+                          >
+                            <SelectValue placeholder="Select your state" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {INDIAN_STATES.map((stateName) => (
+                            <SelectItem key={stateName} value={stateName}>
+                              {stateName}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={form.control}

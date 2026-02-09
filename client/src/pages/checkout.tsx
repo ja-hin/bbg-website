@@ -236,12 +236,38 @@ export default function Checkout() {
               console.error("Error fetching profile:", err);
             });
          }
+    } else {
+      // Not authenticated - check if we can pre-fill based on recent orders
+      const savedPhoneForFill = sessionStorage.getItem("customerPhone");
+      if (savedPhoneForFill) {
+        fetch(`/api/customer/profile/${savedPhoneForFill}`)
+          .then(res => res.ok ? res.json() : null)
+          .then(data => {
+            if (data) {
+              if (data.name) form.setValue("name", data.name, { shouldValidate: true });
+              if (data.email) form.setValue("email", data.email, { shouldValidate: true });
+              if (data.pincode) form.setValue("pincode", data.pincode, { shouldValidate: true });
+              if (data.state) form.setValue("state", data.state, { shouldValidate: true });
+              if (data.phone) form.setValue("contact", data.phone, { shouldValidate: true });
+            }
+          })
+          .catch(e => console.error("Auto-fetch error:", e));
+      }
     }
   }, [selectedPlan, form]);
 
   const watchContact = form.watch("contact");
   const watchAgreeToTerms = form.watch("agreeToTerms");
+  
+  // Debug log form state
+  const formValues = form.watch();
   const isFormValid = form.formState.isValid && otpVerified && watchAgreeToTerms;
+
+  useEffect(() => {
+    if (Object.keys(form.formState.errors).length > 0) {
+      console.log("Form Validation Errors:", form.formState.errors);
+    }
+  }, [form.formState.errors]);
 
   const sendOtpMutation = useMutation({
     mutationFn: async (phone: string) => {
@@ -894,7 +920,7 @@ export default function Checkout() {
           <Button
             type="submit"
             onClick={form.handleSubmit(onSubmit)}
-            disabled={!isFormValid || paymentMutation.isPending}
+            disabled={paymentMutation.isPending}
             className="w-full bg-[#E72829] hover:bg-red-700 text-white py-6 text-lg font-semibold rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             data-testid="button-continue-payment"
           >

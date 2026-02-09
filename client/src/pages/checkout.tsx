@@ -56,7 +56,7 @@ const checkoutSchema = z.object({
     .regex(/^\d{6}$/, "Pincode must be 6 digits"),
   state: z
     .string()
-    .min(1, "State is required"),
+    .optional(),
   devicePurchaseDate: z
     .string()
     .min(1, "Device purchase date is required"),

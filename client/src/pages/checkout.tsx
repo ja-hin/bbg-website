@@ -191,9 +191,8 @@ export default function Checkout() {
         return;
       }
 
-      setOtpVerified(true);
-      
       if (savedPhone) {
+         setOtpVerified(true);
          // Fetch fresh profile details from API
          fetch(`/api/customer/profile/${savedPhone}`)
            .then(res => {
@@ -201,13 +200,13 @@ export default function Checkout() {
              throw new Error('Failed to fetch profile');
            })
            .then(data => {
-             if (data) {
+             if (data && Object.keys(data).length > 0) {
                console.log("Fetched fresh profile data:", data);
                
-               const name = data.customer_name || data.name;
-               const email = data.customer_email || data.email;
-               const pincode = data.customer_pincode || data.pincode;
-               const state = data.customer_state || data.state;
+               const name = data.name || data.customer_name;
+               const email = data.email || data.customer_email;
+               const pincode = data.pincode || data.customer_pincode;
+               const state = data.state || data.customer_state;
 
                if (name) form.setValue("name", name, { shouldValidate: true });
                if (email) form.setValue("email", email, { shouldValidate: true });
@@ -215,13 +214,15 @@ export default function Checkout() {
                if (state) form.setValue("state", state, { shouldValidate: true });
                form.setValue("contact", savedPhone, { shouldValidate: true });
                
-               // Update session storage for other parts of the app, but we used fresh data here
                sessionStorage.setItem("customerDetails", JSON.stringify(data));
                
                toast({
                  title: "Welcome back!",
                  description: `Logged in as ${name || 'Customer'}`,
                });
+             } else {
+               console.warn("API returned empty data object");
+               form.setValue("contact", savedPhone, { shouldValidate: true });
              }
            })
             .catch(err => {

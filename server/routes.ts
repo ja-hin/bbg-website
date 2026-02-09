@@ -419,24 +419,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Phone number is required" });
       }
 
+      console.log(`🔍 Fetching profile for phone: ${phone}`);
+
       // Find customer by phone number
       const customers = await storage.getCustomersByContact(phone);
+      
       if (!customers || customers.length === 0) {
+        console.log(`❌ No customer found for phone: ${phone}`);
         return res.status(404).json({ message: "Customer not found" });
       }
 
       // Get the most recent registration details
-      // Assuming getCustomersByContact returns array, user might have multiple. 
-      // We'll take the first one (most recent usually) or just valid ones.
       const customer = customers[0];
+      
+      const responseData = {
+        phone: customer.contact_number || customer.contact || phone,
+        name: customer.customer_name || customer.name,
+        email: customer.customer_email || customer.email,
+        state: customer.customer_state || customer.state,
+        pincode: customer.customer_pincode || customer.pincode,
+      };
 
-      res.json({
-        phone: customer.contact_number, // explicit mapping
-        name: customer.customer_name,
-        email: customer.customer_email,
-        state: customer.customer_state,
-        pincode: customer.customer_pincode,
-      });
+      console.log(`✅ Profile found:`, responseData);
+      res.json(responseData);
     } catch (error: any) {
       console.error("Get customer profile error:", error);
       res.status(500).json({ message: "Failed to fetch customer profile" });

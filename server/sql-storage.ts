@@ -2505,14 +2505,12 @@ export class SqlServerStorage implements IStorage {
   }
 
   private async generateVoucherCode(deviceType: string): Promise<string> {
-    const category = deviceType === 'mobile' ? 'MOB' : 'LAP';
-    const prefix = `BBG${category}`;
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excluded I, O, 0, 1 to avoid confusion
     
     // Generate random alphanumeric string for security
     const generateRandomCode = () => {
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excluded I, O, 0, 1 to avoid confusion
       let code = '';
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 5; i++) {
         code += chars.charAt(Math.floor(Math.random() * chars.length));
       }
       return code;
@@ -2520,11 +2518,10 @@ export class SqlServerStorage implements IStorage {
     
     // Keep generating until we find a unique code
     let attempts = 0;
-    const maxAttempts = 10;
+    const maxAttempts = 20;
     
     while (attempts < maxAttempts) {
-      const randomCode = generateRandomCode();
-      const voucherCode = `${prefix}${randomCode}`;
+      const voucherCode = generateRandomCode();
       
       // Check if this code already exists
       const checkQuery = `SELECT COUNT(*) as count FROM customers WHERE voucher_code = @code`;
@@ -2539,9 +2536,8 @@ export class SqlServerStorage implements IStorage {
       attempts++;
     }
     
-    // Fallback: add timestamp to ensure uniqueness
-    const timestamp = Date.now().toString(36).toUpperCase();
-    return `${prefix}${generateRandomCode()}${timestamp}`;
+    // Fallback: add random characters if collision persists
+    return generateRandomCode();
   }
 
   private generateSessionToken(): string {

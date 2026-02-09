@@ -197,11 +197,20 @@ export default function Checkout() {
       if (storedDetails) {
         try {
           const details = JSON.parse(storedDetails);
-          if (details.name) form.setValue("name", details.name, { shouldValidate: true });
-          if (details.phone) form.setValue("contact", details.phone, { shouldValidate: true });
-          if (details.email) form.setValue("email", details.email, { shouldValidate: true });
-          if (details.pincode) form.setValue("pincode", details.pincode, { shouldValidate: true });
-          if (details.state) form.setValue("state", details.state, { shouldValidate: true });
+          console.log("Details from session:", details);
+          
+          // Map potential field names from database
+          const name = details.customer_name || details.name;
+          const phone = details.contact_number || details.phone || details.contact;
+          const email = details.customer_email || details.email;
+          const pincode = details.customer_pincode || details.pincode;
+          const state = details.customer_state || details.state;
+
+          if (name) form.setValue("name", name, { shouldValidate: true });
+          if (phone) form.setValue("contact", phone, { shouldValidate: true });
+          if (email) form.setValue("email", email, { shouldValidate: true });
+          if (pincode) form.setValue("pincode", pincode, { shouldValidate: true });
+          if (state) form.setValue("state", state, { shouldValidate: true });
         } catch (e) {
           console.error("Failed to parse customer details", e);
         }
@@ -217,18 +226,24 @@ export default function Checkout() {
            })
            .then(data => {
              if (data) {
-               // Update form
-               if (data.name) form.setValue("name", data.name, { shouldValidate: true });
-               if (data.email) form.setValue("email", data.email, { shouldValidate: true });
-               if (data.pincode) form.setValue("pincode", data.pincode, { shouldValidate: true });
-               if (data.state) form.setValue("state", data.state, { shouldValidate: true });
+               console.log("Fetched profile data:", data);
+               
+               const name = data.customer_name || data.name;
+               const email = data.customer_email || data.email;
+               const pincode = data.customer_pincode || data.pincode;
+               const state = data.customer_state || data.state;
+
+               if (name) form.setValue("name", name, { shouldValidate: true });
+               if (email) form.setValue("email", email, { shouldValidate: true });
+               if (pincode) form.setValue("pincode", pincode, { shouldValidate: true });
+               if (state) form.setValue("state", state, { shouldValidate: true });
                
                // Update session storage for future use
                sessionStorage.setItem("customerDetails", JSON.stringify(data));
                
                toast({
                  title: "Welcome back!",
-                 description: `Logged in as ${data.name}`,
+                 description: `Logged in as ${name || 'Customer'}`,
                });
              }
            })
@@ -593,58 +608,60 @@ export default function Checkout() {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="contact"
-                render={({ field }) => (
-                  <FormItem className="sm:col-span-2">
-                    <FormLabel className="text-gray-700">
-                      Mobile Number <span className="text-red-500">*</span>
-                    </FormLabel>
-                    <div className="flex gap-2">
-                      <FormControl>
-                        <Input
-                          placeholder="Enter your 10 digit mobile number"
-                          {...field}
-                          className="border-blue-200 focus:border-blue-500 flex-1"
-                          disabled={otpVerified}
-                          data-testid="input-contact"
-                        />
-                      </FormControl>
-                      {!otpVerified && (
-                        <Button
-                          type="button"
-                          onClick={handleSendOtp}
-                          disabled={
-                            otpLoading ||
-                            countdown > 0 ||
-                            !/^[6-9]\d{9}$/.test(watchContact)
-                          }
-                          className="bg-blue-600 hover:bg-blue-700 whitespace-nowrap"
-                          data-testid="button-send-otp"
-                        >
-                          {otpLoading ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : countdown > 0 ? (
-                            `Resend (${countdown}s)`
-                          ) : otpSent ? (
-                            "Resend OTP"
-                          ) : (
-                            "Send OTP"
-                          )}
-                        </Button>
-                      )}
-                      {otpVerified && (
-                        <div className="flex items-center text-green-600 px-3">
-                          <CheckCircle className="w-5 h-5 mr-1" />
-                          <span className="text-sm font-medium">Verified</span>
-                        </div>
-                      )}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="hidden">
+                <FormField
+                  control={form.control}
+                  name="contact"
+                  render={({ field }) => (
+                    <FormItem className="sm:col-span-2">
+                      <FormLabel className="text-gray-700">
+                        Mobile Number <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <div className="flex gap-2">
+                        <FormControl>
+                          <Input
+                            placeholder="Enter your 10 digit mobile number"
+                            {...field}
+                            className="border-blue-200 focus:border-blue-500 flex-1"
+                            disabled={otpVerified}
+                            data-testid="input-contact"
+                          />
+                        </FormControl>
+                        {!otpVerified && (
+                          <Button
+                            type="button"
+                            onClick={handleSendOtp}
+                            disabled={
+                              otpLoading ||
+                              countdown > 0 ||
+                              !/^[6-9]\d{9}$/.test(watchContact)
+                            }
+                            className="bg-blue-600 hover:bg-blue-700 whitespace-nowrap"
+                            data-testid="button-send-otp"
+                          >
+                            {otpLoading ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : countdown > 0 ? (
+                              `Resend (${countdown}s)`
+                            ) : otpSent ? (
+                              "Resend OTP"
+                            ) : (
+                              "Send OTP"
+                            )}
+                          </Button>
+                        )}
+                        {otpVerified && (
+                          <div className="flex items-center text-green-600 px-3">
+                            <CheckCircle className="w-5 h-5 mr-1" />
+                            <span className="text-sm font-medium">Verified</span>
+                          </div>
+                        )}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               {otpSent && !otpVerified && (
                 <div className="space-y-2 sm:col-span-2">
@@ -919,7 +936,11 @@ export default function Checkout() {
         <div className="mt-6 space-y-3">
           <Button
             type="submit"
-            onClick={form.handleSubmit(onSubmit)}
+            onClick={(e) => {
+              e.preventDefault();
+              console.log("Continue to Payment clicked. Validating...");
+              form.handleSubmit(onSubmit)();
+            }}
             disabled={paymentMutation.isPending}
             className="w-full bg-[#E72829] hover:bg-red-700 text-white py-6 text-lg font-semibold rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             data-testid="button-continue-payment"

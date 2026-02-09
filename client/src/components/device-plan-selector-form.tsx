@@ -65,7 +65,7 @@ export function DevicePlanSelectorForm({
 
   // Fetch models based on selected brand
   const { data: models = [], isLoading: modelsLoading } = useQuery({
-    queryKey: ["/api/models", selectedDeviceBrand],
+    queryKey: ["/api/models", selectedDeviceBrand, selectedDeviceType],
     queryFn: async () => {
       // We can use the brands-with-models endpoint and filter, or a specific models endpoint if available.
       // Based on previous analysis, we saw brands-with-models used in checkout.tsx.
@@ -75,7 +75,7 @@ export function DevicePlanSelectorForm({
       const allBrandsWithModels = await response.json();
 
       const selectedBrandData = allBrandsWithModels.find(
-        (b: any) => b.name === selectedDeviceBrand,
+        (b: any) => b.name === selectedDeviceBrand && b.device_type === selectedDeviceType,
       );
       return selectedBrandData?.models || [];
     },

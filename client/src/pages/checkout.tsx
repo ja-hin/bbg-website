@@ -193,32 +193,8 @@ export default function Checkout() {
 
       setOtpVerified(true);
       
-      // Try to get details from session
-      if (storedDetails) {
-        try {
-          const details = JSON.parse(storedDetails);
-          console.log("Details from session:", details);
-          
-          // Map potential field names from database
-          const name = details.customer_name || details.name;
-          const phone = details.contact_number || details.phone || details.contact;
-          const email = details.customer_email || details.email;
-          const pincode = details.customer_pincode || details.pincode;
-          const state = details.customer_state || details.state;
-
-          if (name) form.setValue("name", name, { shouldValidate: true });
-          if (phone) form.setValue("contact", phone, { shouldValidate: true });
-          if (email) form.setValue("email", email, { shouldValidate: true });
-          if (pincode) form.setValue("pincode", pincode, { shouldValidate: true });
-          if (state) form.setValue("state", state, { shouldValidate: true });
-        } catch (e) {
-          console.error("Failed to parse customer details", e);
-        }
-      } else if (savedPhone) {
-         // If authenticated but no details (e.g. from previous session), we might want to fetch them
-         form.setValue("contact", savedPhone, { shouldValidate: true });
-            
-         // Fetch profile details
+      if (savedPhone) {
+         // Fetch fresh profile details from API
          fetch(`/api/customer/profile/${savedPhone}`)
            .then(res => {
              if (res.ok) return res.json();
@@ -226,7 +202,7 @@ export default function Checkout() {
            })
            .then(data => {
              if (data) {
-               console.log("Fetched profile data:", data);
+               console.log("Fetched fresh profile data:", data);
                
                const name = data.customer_name || data.name;
                const email = data.customer_email || data.email;
@@ -237,8 +213,9 @@ export default function Checkout() {
                if (email) form.setValue("email", email, { shouldValidate: true });
                if (pincode) form.setValue("pincode", pincode, { shouldValidate: true });
                if (state) form.setValue("state", state, { shouldValidate: true });
+               form.setValue("contact", savedPhone, { shouldValidate: true });
                
-               // Update session storage for future use
+               // Update session storage for other parts of the app, but we used fresh data here
                sessionStorage.setItem("customerDetails", JSON.stringify(data));
                
                toast({
@@ -249,6 +226,7 @@ export default function Checkout() {
            })
             .catch(err => {
               console.error("Error fetching profile:", err);
+              form.setValue("contact", savedPhone, { shouldValidate: true });
             });
          }
     } else {

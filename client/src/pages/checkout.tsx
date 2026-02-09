@@ -171,6 +171,35 @@ export default function Checkout() {
     if (selectedPlan?.model) {
       form.setValue("deviceModel", selectedPlan.model);
     }
+
+    // Check for authenticated customer
+    const isAuth = sessionStorage.getItem("customerAuthenticated") === "true";
+    if (isAuth) {
+      setOtpVerified(true);
+      
+      // Try to get details from session
+      const storedDetails = sessionStorage.getItem("customerDetails");
+      if (storedDetails) {
+        try {
+          const details = JSON.parse(storedDetails);
+          if (details.name) form.setValue("name", details.name);
+          if (details.phone) form.setValue("contact", details.phone);
+          if (details.email) form.setValue("email", details.email);
+          if (details.pincode) form.setValue("pincode", details.pincode);
+          if (details.state) form.setValue("state", details.state);
+        } catch (e) {
+          console.error("Failed to parse customer details", e);
+        }
+      } else {
+         // If authenticated but no details (e.g. from previous session), we might want to fetch them
+         // For now, we rely on the login flow to set them. 
+         // If missing, user can just fill them in (but contact is verified).
+         const savedPhone = sessionStorage.getItem("customerPhone");
+         if (savedPhone) {
+            form.setValue("contact", savedPhone);
+         }
+      }
+    }
   }, [selectedPlan, form]);
 
   const watchContact = form.watch("contact");

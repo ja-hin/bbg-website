@@ -70,6 +70,9 @@ export default function CustomerLogin() {
       // Store customer session
       sessionStorage.setItem('customerPhone', phone);
       sessionStorage.setItem('customerAuthenticated', 'true');
+      if (data.customer) {
+        sessionStorage.setItem('customerDetails', JSON.stringify(data.customer));
+      }
       
       toast({
         title: "Login Successful",

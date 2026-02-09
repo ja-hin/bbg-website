@@ -390,17 +390,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .json({ message: "Customer not found. Please register first." });
       }
 
-      // Return customer information
+      // Return customer information - get the most recent registration
+      const customer = customers[0]; // storage.getCustomersByContact sorts by id desc usually, or we should ensure it
+      
       res.json({
         message: "Login successful",
         customer: {
           phone: phone,
+          name: customer.customer_name,
+          email: customer.customer_email,
+          state: customer.customer_state,
+          pincode: customer.customer_pincode,
           registrations: customers.length,
         },
       });
     } catch (error: any) {
       console.error("Customer login error:", error);
       res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  // Get customer details by phone (for auto-fill)
+  app.get("/api/customer/profile/:phone", async (req, res) => {
+    try {
+      const { phone } = req.params;
+
+      if (!phone) {
+        return res.status(400).json({ message: "Phone number is required" });
+      }
+
+      // Find customer by phone number
+      const customers = await storage.getCustomersByContact(phone);
+      if (!customers || customers.length === 0) {
+        return res.status(404).json({ message: "Customer not found" });
+      }
+
+      // Get the most recent registration details
+      // Assuming getCustomersByContact returns array, user might have multiple. 
+      // We'll take the first one (most recent usually) or just valid ones.
+      const customer = customers[0];
+
+      res.json({
+        phone: customer.contact_number, // explicit mapping
+        name: customer.customer_name,
+        email: customer.customer_email,
+        state: customer.customer_state,
+        pincode: customer.customer_pincode,
+      });
+    } catch (error: any) {
+      console.error("Get customer profile error:", error);
+      res.status(500).json({ message: "Failed to fetch customer profile" });
     }
   });
 

@@ -168,7 +168,20 @@ export default function Plans() {
 
   const handleBuyNow = (planInfo: any) => {
     if (!planInfo || !planInfo.planPrice || !planInfo.planName) return;
+    // Check if user has selected all required device info
+    // NOTE: selectedDeviceBrand and selectedDeviceModel are not defined in the provided context.
+    // Assuming they are defined elsewhere or will be added by the user.
+    // Also, 'toast' is not defined. Assuming it's a utility function.
+    // if (!selectedDeviceBrand || !selectedDeviceModel) {
+    //   toast({
+    //     title: "Missing Information",
+    //     description: "Please select your device brand and model to proceed.",
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
 
+    // Create plan object
     const selectedPlan = {
       id: planInfo.id,
       planType: planInfo.planType,
@@ -184,8 +197,17 @@ export default function Plans() {
       plansQuery: window.location.search,
     };
 
+    // Store selected plan in session storage
     sessionStorage.setItem("selectedPlan", JSON.stringify(selectedPlan));
-    setLocation("/checkout");
+
+    // Check authentication
+    const isAuthenticated = sessionStorage.getItem("customerAuthenticated") === "true";
+    
+    if (isAuthenticated) {
+      setLocation("/checkout");
+    } else {
+      setLocation("/customer/login?redirect=/checkout");
+    }
   };
 
   return (

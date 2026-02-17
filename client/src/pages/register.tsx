@@ -165,6 +165,8 @@ export default function Register() {
       window.location.href = "/acer";
     } else if (type === "amazon") {
       window.location.href = "/amazon";
+    } else if (type === "website") {
+      window.location.href = "/customer/orders";
     } else {
       setRegistrationType(type);
     }

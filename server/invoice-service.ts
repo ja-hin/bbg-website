@@ -41,19 +41,52 @@ class InvoiceService {
   }
 
   private numberToWords(num: number): string {
-    const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-    const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-    const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-    
+    const ones = [
+      "",
+      "One",
+      "Two",
+      "Three",
+      "Four",
+      "Five",
+      "Six",
+      "Seven",
+      "Eight",
+      "Nine",
+    ];
+    const teens = [
+      "Ten",
+      "Eleven",
+      "Twelve",
+      "Thirteen",
+      "Fourteen",
+      "Fifteen",
+      "Sixteen",
+      "Seventeen",
+      "Eighteen",
+      "Nineteen",
+    ];
+    const tens = [
+      "",
+      "",
+      "Twenty",
+      "Thirty",
+      "Forty",
+      "Fifty",
+      "Sixty",
+      "Seventy",
+      "Eighty",
+      "Ninety",
+    ];
+
     const convertHundreds = (n: number): string => {
-      let result = '';
+      let result = "";
       if (n >= 100) {
-        result += ones[Math.floor(n / 100)] + ' Hundred ';
+        result += ones[Math.floor(n / 100)] + " Hundred ";
         n %= 100;
       }
       if (n >= 20) {
         result += tens[Math.floor(n / 10)];
-        if (n % 10 > 0) result += ' ' + ones[n % 10];
+        if (n % 10 > 0) result += " " + ones[n % 10];
       } else if (n >= 10) {
         result += teens[n - 10];
       } else if (n > 0) {
@@ -62,20 +95,20 @@ class InvoiceService {
       return result.trim();
     };
 
-    if (num === 0) return 'Zero';
-    
+    if (num === 0) return "Zero";
+
     const crores = Math.floor(num / 10000000);
     const lakhs = Math.floor((num % 10000000) / 100000);
     const thousands = Math.floor((num % 100000) / 1000);
     const remaining = num % 1000;
 
-    let result = '';
-    if (crores > 0) result += convertHundreds(crores) + ' Crore ';
-    if (lakhs > 0) result += convertHundreds(lakhs) + ' Lakh ';
-    if (thousands > 0) result += convertHundreds(thousands) + ' Thousand ';
+    let result = "";
+    if (crores > 0) result += convertHundreds(crores) + " Crore ";
+    if (lakhs > 0) result += convertHundreds(lakhs) + " Lakh ";
+    if (thousands > 0) result += convertHundreds(thousands) + " Thousand ";
     if (remaining > 0) result += convertHundreds(remaining);
 
-    return result.trim() + ' Only';
+    return result.trim() + " Only";
   }
 
   private formatDate(date: Date): string {
@@ -95,7 +128,11 @@ class InvoiceService {
       let invoiceUrl: string | undefined;
       try {
         const fileName = `invoices/${invoiceNumber}.pdf`;
-        invoiceUrl = await s3Service.uploadBuffer(pdfBuffer, fileName, "application/pdf");
+        invoiceUrl = await s3Service.uploadBuffer(
+          pdfBuffer,
+          fileName,
+          "application/pdf",
+        );
         console.log("📄 Invoice uploaded to S3:", invoiceUrl);
       } catch (s3Error) {
         console.error("Failed to upload invoice to S3:", s3Error);
@@ -117,7 +154,10 @@ class InvoiceService {
     }
   }
 
-  private createPdfBuffer(data: InvoiceData, invoiceNumber: string): Promise<Buffer> {
+  private createPdfBuffer(
+    data: InvoiceData,
+    invoiceNumber: string,
+  ): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       try {
         const doc = new PDFDocument({ size: "A4", margin: 40 });
@@ -135,10 +175,7 @@ class InvoiceService {
         let y = 40;
 
         /* ================= HEADER ================= */
-        doc
-          .fontSize(18)
-          .fillColor("#1f3c88")
-          .text("XTRACOVER", 40, y);
+        doc.fontSize(18).fillColor("#1f3c88").text("XTRACOVER", 40, y);
 
         y += 28;
 
@@ -148,15 +185,21 @@ class InvoiceService {
           .text("Xtracover Technologies Pvt Ltd (Delhi)", 40, y)
           .fontSize(8)
           .fillColor("#666")
-          .text("Near U-Lehi Chowk, 3rd Floor, A1, FIEE Complex,", 40, y + 12)
+          .text("Near C-Lal Chowk, 3rd Floor, A1, FIEE Complex,", 40, y + 12)
           .text("Okhla Estate Phase-2, New Delhi - 110020", 40, y + 22)
-          .text("GSTIN: 07A8BCD2012D1ZM | CIN: U74999DL2016PTC302763", 40, y + 32)
-          .text("Email: complaints@xtracover.com | Phone: +91-8882136586", 40, y + 42);
+          .text(
+            "GSTIN: 07A8BCD2012D1ZM | CIN: U74999DL2016PTC302763",
+            40,
+            y + 32,
+          )
+          .text(
+            "Email: compliance@xtracover.com | Phone: +91-8882136586",
+            40,
+            y + 42,
+          );
 
         /* Invoice box (right) */
-        doc
-          .roundedRect(360, y - 4, 190, 85, 6)
-          .stroke("#bbb");
+        doc.roundedRect(360, y - 4, 190, 85, 6).stroke("#bbb");
 
         doc.fontSize(10).fillColor("#1f3c88").text("Invoice Details", 370, y);
         doc.fontSize(8).fillColor("#333");
@@ -170,10 +213,13 @@ class InvoiceService {
         doc.text(data.transactionId.slice(0, 20), 450, y + 46);
 
         doc.rect(370, y + 62, 170, 16).fill("#1f3c88");
-        doc.fillColor("#fff").fontSize(8).text("Online Payment", 370, y + 66, {
-          width: 170,
-          align: "center",
-        });
+        doc
+          .fillColor("#fff")
+          .fontSize(8)
+          .text("Online Payment", 370, y + 66, {
+            width: 170,
+            align: "center",
+          });
 
         y += 100;
 
@@ -219,7 +265,10 @@ class InvoiceService {
         doc.fillColor("#333").fontSize(8);
         doc.text("1", 45, y + 6);
         doc.text(data.planName, 70, y + 6);
-        doc.fontSize(7).fillColor("#666").text(data.planType, 70, y + 16);
+        doc
+          .fontSize(7)
+          .fillColor("#666")
+          .text(data.planType, 70, y + 16);
 
         doc.fontSize(8).fillColor("#333");
         doc.text(hsn, 300, y + 6);
@@ -275,12 +324,15 @@ class InvoiceService {
         doc.fontSize(9).fillColor("#333").text("Declaration", 40, y);
         y += 12;
 
-        doc.fontSize(7).fillColor("#666").text(
-          "BBG applicable only on original device registered with valid BBG voucher and tax invoice. Xtracover is not liable for data recovery. Customer must reset and remove all data before handover.",
-          40,
-          y,
-          { width: 510 }
-        );
+        doc
+          .fontSize(7)
+          .fillColor("#666")
+          .text(
+            "BBG applicable only on original device registered with valid BBG voucher and tax invoice. Xtracover is not liable for data recovery. Customer must reset and remove all data before handover.",
+            40,
+            y,
+            { width: 510 },
+          );
 
         /* ================= FOOTER ================= */
         doc.fontSize(7.5).fillColor("#333");

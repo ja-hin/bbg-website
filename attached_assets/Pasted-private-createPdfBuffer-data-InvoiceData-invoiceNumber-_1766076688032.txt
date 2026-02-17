@@ -28,10 +28,10 @@ private createPdfBuffer(data: InvoiceData, invoiceNumber: string): Promise<Buffe
       .text("Xtracover Technologies Pvt Ltd (Delhi)", 40, y)
       .fontSize(8)
       .fillColor("#666")
-      .text("Near U-Lehi Chowk, 3rd Floor, A1, FIEE Complex,", 40, y + 12)
+      .text("Near C-Lal Chowk, 3rd Floor, A1, FIEE Complex,", 40, y + 12)
       .text("Okhla Estate Phase-2, New Delhi - 110020", 40, y + 22)
       .text("GSTIN: 07A8BCD2012D1ZM | CIN: U74999DL2016PTC302763", 40, y + 32)
-      .text("Email: complaints@xtracover.com | Phone: +91-8882136586", 40, y + 42);
+      .text("Email: compliance@xtracover.com | Phone: +91-8882136586", 40, y + 42);
 
     /* Invoice box (right) */
     doc

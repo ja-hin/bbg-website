@@ -497,6 +497,25 @@ export const insertReferralDiscountSettingsSchema = createInsertSchema(referralD
 export type ReferralDiscountSettings = typeof referralDiscountSettings.$inferSelect;
 export type InsertReferralDiscountSettings = z.infer<typeof insertReferralDiscountSettingsSchema>;
 
+// Partner Commission Settings table
+export const partnerCommissionSettings = pgTable("partner_commission_settings", {
+  id: serial("id").primaryKey(),
+  isActive: boolean("is_active").default(false),
+  mobileAmount: decimal("mobile_amount", { precision: 10, scale: 2 }).notNull().default("0.00"),
+  laptopAmount: decimal("laptop_amount", { precision: 10, scale: 2 }).notNull().default("0.00"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertPartnerCommissionSettingsSchema = createInsertSchema(partnerCommissionSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type PartnerCommissionSettings = typeof partnerCommissionSettings.$inferSelect;
+export type InsertPartnerCommissionSettings = z.infer<typeof insertPartnerCommissionSettingsSchema>;
+
 // Post-Purchase Device Registrations table
 export const deviceRegistrations = pgTable("device_registrations", {
   id: serial("id").primaryKey(),

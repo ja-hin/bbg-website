@@ -2881,6 +2881,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Partner Commission Settings Routes
+  app.get("/api/admin/partner-commission", isAdminAuthenticated, async (req, res) => {
+    try {
+      const settings = await storage.getPartnerCommissionSettings();
+      res.json(settings || { isActive: false, mobileAmount: 0, laptopAmount: 0 });
+    } catch (error: any) {
+      console.error("Error fetching partner commission settings:", error);
+      res.status(500).json({ message: "Failed to fetch settings" });
+    }
+  });
+
+  app.post("/api/admin/partner-commission", isAdminAuthenticated, async (req, res) => {
+    try {
+      const settings = await storage.updatePartnerCommissionSettings(req.body);
+      res.json(settings);
+    } catch (error: any) {
+      console.error("Error updating partner commission settings:", error);
+      res.status(500).json({ message: "Failed to update settings" });
+    }
+  });
+
   // Submit claim
   app.post("/api/claims/submit", async (req, res) => {
     try {

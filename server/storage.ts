@@ -1,7 +1,8 @@
 import { distributors, customers, claims, otpVerifications, adminUsers, pendingPayments, brands, deviceModels, userRoles, cartAbandonments, distributorSessions, commissionPayouts } from "@shared/schema";
 import type { 
   Distributor, Customer, Claim, OtpVerification, AdminUser, PendingPayment, Brand, DeviceModel, UserRole, CartAbandonment, DistributorSession, CommissionPayout,
-  InsertDistributor, InsertCustomer, InsertClaim, InsertOtp, InsertAdminUser, InsertPendingPayment, InsertBrand, InsertDeviceModel, InsertUserRole, InsertCartAbandonment
+  InsertDistributor, InsertCustomer, InsertClaim, InsertOtp, InsertAdminUser, InsertPendingPayment, InsertBrand, InsertDeviceModel, InsertUserRole, InsertCartAbandonment,
+  InsertPartnerCommissionSettings, PartnerCommissionSettings
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and } from "drizzle-orm";
@@ -113,6 +114,10 @@ export interface IStorage {
   createClaimValueSlab(slab: any): Promise<any>;
   updateClaimValueSlab(id: number, updates: any): Promise<any | undefined>;
   deleteClaimValueSlab(id: number): Promise<void>;
+
+  // Partner Commission Settings operations
+  getPartnerCommissionSettings(): Promise<PartnerCommissionSettings | null>;
+  updatePartnerCommissionSettings(settings: InsertPartnerCommissionSettings): Promise<PartnerCommissionSettings>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -266,22 +271,140 @@ export class DatabaseStorage implements IStorage {
     const sellerCode = distributor[0].sellerCode;
     
     // Get customers registered with this seller code
-    const customerCount = await db.select().from(customers).where(eq(customers.sellerCode, sellerCode));
+    const distributorCustomers = await db.select().from(customers).where(eq(customers.sellerCode, sellerCode));
     
     // Get payouts for this distributor
     const allPayouts = await db.select().from(commissionPayouts).where(eq(commissionPayouts.distributorId, distributorId));
     const pendingPayouts = allPayouts.filter(p => p.status === 'pending');
     const completedPayouts = allPayouts.filter(p => p.status === 'paid');
     
-    const totalEarnings = completedPayouts.reduce((sum, payout) => sum + Number(payout.amount), 0);
+    // Calculate total potential earnings based on current settings
+    const totalEarnings = await this.calculateCommission(distributorCustomers);
+    
     const pendingAmount = pendingPayouts.reduce((sum, payout) => sum + Number(payout.amount), 0);
 
     return {
-      totalCustomers: customerCount.length,
+      totalCustomers: distributorCustomers.length,
       totalEarnings,
       pendingPayouts: pendingAmount,
       completedPayouts: completedPayouts.length,
     };
+  }
+
+  // Partner Commission Settings operations
+  async getPartnerCommissionSettings(): Promise<PartnerCommissionSettings | null> {
+    try {
+      const pool = await sql.connect();
+      const result = await pool.request().query(`
+        SELECT TOP 1 id, is_active as isActive, mobile_amount as mobileAmount, laptop_amount as laptopAmount, 
+               created_at as createdAt, updated_at as updatedAt
+        FROM partner_commission_settings 
+        ORDER BY id DESC
+      `);
+      
+      if (result.recordset.length > 0) {
+        return {
+          id: result.recordset[0].id,
+          isActive: result.recordset[0].isActive,
+          mobileAmount: result.recordset[0].mobileAmount?.toString() || "0",
+          laptopAmount: result.recordset[0].laptopAmount?.toString() || "0",
+          createdAt: result.recordset[0].createdAt,
+          updatedAt: result.recordset[0].updatedAt
+        };
+      }
+      return null;
+    } catch (error: any) {
+      if (error.message.includes("Invalid object name 'partner_commission_settings'")) {
+        await this.createPartnerCommissionSettingsTable();
+        return null;
+      }
+      throw error;
+    }
+  }
+
+  async updatePartnerCommissionSettings(settings: InsertPartnerCommissionSettings): Promise<PartnerCommissionSettings> {
+    try {
+      const pool = await sql.connect();
+      const current = await this.getPartnerCommissionSettings();
+
+      if (current) {
+        // Update existing
+        await pool.request()
+          .input('isActive', sql.Bit, settings.isActive)
+          .input('mobileAmount', sql.Decimal(10, 2), settings.mobileAmount)
+          .input('laptopAmount', sql.Decimal(10, 2), settings.laptopAmount)
+          .query(`
+            UPDATE partner_commission_settings 
+            SET is_active = @isActive, 
+                mobile_amount = @mobileAmount, 
+                laptop_amount = @laptopAmount,
+                updated_at = GETDATE()
+            WHERE id = ${current.id}
+          `);
+      } else {
+        // Create new
+        await pool.request()
+          .input('isActive', sql.Bit, settings.isActive)
+          .input('mobileAmount', sql.Decimal(10, 2), settings.mobileAmount)
+          .input('laptopAmount', sql.Decimal(10, 2), settings.laptopAmount)
+          .query(`
+            INSERT INTO partner_commission_settings (is_active, mobile_amount, laptop_amount, created_at, updated_at)
+            VALUES (@isActive, @mobileAmount, @laptopAmount, GETDATE(), GETDATE())
+          `);
+      }
+
+      // Return updated
+      const updated = await this.getPartnerCommissionSettings();
+      if (!updated) throw new Error("Failed to retrieve updated settings");
+      return updated;
+    } catch (error: any) {
+      if (error.message.includes("Invalid object name 'partner_commission_settings'")) {
+        await this.createPartnerCommissionSettingsTable();
+        return this.updatePartnerCommissionSettings(settings); // Retry
+      }
+      throw error;
+    }
+  }
+
+  private async createPartnerCommissionSettingsTable(): Promise<void> {
+    try {
+      const pool = await sql.connect();
+      await pool.request().query(`
+        CREATE TABLE partner_commission_settings (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          is_active BIT DEFAULT 0,
+          mobile_amount DECIMAL(10, 2) DEFAULT 0.00,
+          laptop_amount DECIMAL(10, 2) DEFAULT 0.00,
+          created_at DATETIME2 DEFAULT GETDATE(),
+          updated_at DATETIME2 DEFAULT GETDATE()
+        )
+      `);
+      console.log('Created partner_commission_settings table');
+      
+      // Insert default record
+      await pool.request().query(`
+        INSERT INTO partner_commission_settings (is_active, mobile_amount, laptop_amount)
+        VALUES (1, 100.00, 175.00)
+      `);
+    } catch (error: any) {
+      console.error('Failed to create partner_commission_settings table:', error);
+      throw error;
+    }
+  }
+
+  // Calculating dynamic commissions based on settings
+  private async calculateCommission(customers: Customer[]): Promise<number> {
+    const settings = await this.getPartnerCommissionSettings();
+    if (!settings || !settings.isActive) return 0;
+
+    const mobileRate = parseFloat(settings.mobileAmount.toString());
+    const laptopRate = parseFloat(settings.laptopAmount.toString());
+
+    return customers.reduce((total, customer) => {
+      if (customer.deviceType === 'mobile') return total + mobileRate;
+      if (customer.deviceType === 'laptop') return total + laptopRate;
+      return total; // Default fallback if type unknown, could assume mobileRate or 0
+    }, 0);
   }
 
   async getDistributorCustomers(distributorId: number): Promise<Customer[]> {

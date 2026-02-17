@@ -305,7 +305,7 @@ export default function CustomerOrdersPage() {
                               variant="outline" 
                                size="sm"
                               className="h-7 text-xs border-[#254696] text-[#254696] hover:bg-[#254696] hover:text-white"
-                              onClick={() => window.location.href = '/register'}
+                              onClick={() => window.location.href = `/register?voucher=${order.voucherCode}`}
                             >
                               <CheckCircle className="h-3 w-3 mr-1.5" />
                               Register

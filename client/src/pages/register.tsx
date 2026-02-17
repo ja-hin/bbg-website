@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Smartphone, Hash, Info, Loader2 } from "lucide-react";
+import { CheckCircle, Smartphone, Hash, Info, Loader2, Upload } from "lucide-react";
 import { ValidatedField } from "@/components/validated-field";
 import { SuccessConfetti } from "@/components/confetti";
 
@@ -54,6 +54,7 @@ export default function Register() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [voucherValidated, setVoucherValidated] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<any>(null);
+  const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
   const { toast } = useToast();
 
   const form = useForm<PostPurchaseRegistrationData>({
@@ -63,6 +64,19 @@ export default function Register() {
       imeiSerial: "",
     },
   });
+
+  useEffect(() => {
+    // Check for voucher code in URL query params
+    const searchParams = new URLSearchParams(window.location.search);
+    const voucher = searchParams.get('voucher');
+    
+    if (voucher) {
+      setRegistrationType("website");
+      form.setValue("voucherCode", voucher);
+      // Auto-validate if voucher is present
+      voucherValidationMutation.mutate(voucher);
+    }
+  }, []);
 
   // Step 1: Voucher validation mutation
   const voucherValidationMutation = useMutation({
@@ -95,10 +109,38 @@ export default function Register() {
   // Step 2: Device registration mutation
   const registrationMutation = useMutation({
     mutationFn: async (data: PostPurchaseRegistrationData) => {
-      return apiRequest("/api/register", {
+      const registerResponse = await apiRequest("/api/register", {
         method: "POST",
         body: data,
       });
+
+      // If there's an invoice file, upload it immediately after registration
+      if (invoiceFile && registerResponse.registrationId) {
+        const formData = new FormData();
+        formData.append('invoice', invoiceFile);
+        formData.append('orderId', registerResponse.registrationId.toString());
+        // Use the customer phone from the validation response or form context if available
+        // Assuming validation response had it, otherwise we might need to ask user or get it from context
+        // But api/customer/upload-invoice might need it. 
+        // Let's use customerInfo.phone if available, or rely on backend session if authenticated?
+        // The upload-invoice endpoint expects 'phone'.
+        if (customerInfo?.phone) {
+           formData.append('phone', customerInfo.phone);
+        } else if (customerInfo?.contact) { // sometimes it's contact
+           formData.append('phone', customerInfo.contact);
+        }
+
+        try {
+          await fetch('/api/customer/upload-invoice', {
+            method: 'POST',
+            body: formData
+          });
+        } catch (uploadError) {
+          console.error("Invoice upload failed but registration succeeded", uploadError);
+          // We can notify user but still treat registration as success
+        }
+      }
+      return registerResponse;
     },
     onSuccess: (data) => {
       setShowConfetti(true);
@@ -111,6 +153,7 @@ export default function Register() {
       form.reset();
       setVoucherValidated(false);
       setCustomerInfo(null);
+      setInvoiceFile(null);
 
       // Store success data in session storage for thank you page
       sessionStorage.setItem(
@@ -165,8 +208,6 @@ export default function Register() {
       window.location.href = "/acer";
     } else if (type === "amazon") {
       window.location.href = "/amazon";
-    } else if (type === "website") {
-      window.location.href = "/customer/orders";
     } else {
       setRegistrationType(type);
     }
@@ -176,6 +217,7 @@ export default function Register() {
     setVoucherValidated(false);
     setCustomerInfo(null);
     form.reset();
+    setInvoiceFile(null);
   };
 
   // If no registration type is selected, show selection screen
@@ -437,10 +479,10 @@ export default function Register() {
 
                     <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
                       <Smartphone className="h-4 w-4 mr-2" />
-                      Step 2: Enter Device IMEI/Serial Number
+                      Step 2: Enter Device Details
                     </h3>
 
-                    <div className="max-w-md mx-auto">
+                    <div className="max-w-md mx-auto space-y-6">
                       <FormField
                         control={form.control}
                         name="imeiSerial"
@@ -464,6 +506,27 @@ export default function Register() {
                           </FormItem>
                         )}
                       />
+
+                      <div className="space-y-2">
+                        <FormLabel className="flex items-center text-base">
+                          <Upload className="h-5 w-5 mr-2" />
+                          Upload Invoice (Optional)
+                        </FormLabel>
+                        <div className="flex items-center gap-4">
+                          <Input 
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0] || null;
+                              setInvoiceFile(file);
+                            }}
+                            className="cursor-pointer"
+                          />
+                        </div>
+                        <p className="text-xs text-gray-500">
+                          Accepted formats: PDF, JPG, PNG. Max size: 5MB.
+                        </p>
+                      </div>
                     </div>
 
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">

@@ -142,7 +142,21 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
   });
 
   // Build hierarchical menu structure
-  const allMenuItems = (menuOrderData as any)?.menuItems || defaultMenuItems;
+  let allMenuItems = (menuOrderData as any)?.menuItems || defaultMenuItems;
+
+  // Ensure new menu items are present even if custom menu exists
+  const ensureItems = ["partner-commission-settings", "referral-discount-settings"];
+  const existingIds = new Set(allMenuItems.map((i: any) => i.id));
+  
+  ensureItems.forEach(id => {
+    if (!existingIds.has(id)) {
+      const defaultItem = defaultMenuItems.find(i => i.id === id);
+      if (defaultItem) {
+        // Find correct position or append
+        allMenuItems = [...allMenuItems, defaultItem];
+      }
+    }
+  });
   
   // Separate parent and child items
   const parentItems = allMenuItems

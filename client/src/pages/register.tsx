@@ -209,7 +209,8 @@ export default function Register() {
     } else if (type === "amazon") {
       window.location.href = "/amazon";
     } else {
-      setRegistrationType(type);
+      // For website purchases, redirect to customer orders page
+      window.location.href = "/customer/orders";
     }
   };
 

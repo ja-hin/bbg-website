@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -107,7 +107,7 @@ export default function Checkout() {
 
 
 
-  const getPlansUrl = () => {
+  const getPlansUrl = useCallback(() => {
     const storedPlan = sessionStorage.getItem("selectedPlan");
     if (storedPlan) {
       try {
@@ -118,7 +118,7 @@ export default function Checkout() {
       } catch {}
     }
     return "/plans";
-  };
+  }, []);
 
   useEffect(() => {
     const storedPlan = sessionStorage.getItem("selectedPlan");
@@ -142,7 +142,7 @@ export default function Checkout() {
     } else {
       setLocation(getPlansUrl());
     }
-  }, [setLocation]);
+  }, [setLocation, getPlansUrl]);
 
   useEffect(() => {
     if (countdown > 0) {
@@ -920,7 +920,7 @@ export default function Checkout() {
             onClick={(e) => {
               e.preventDefault();
               console.log("Continue to Payment clicked. Validating...");
-              form.handleSubmit(onSubmit)();
+              form.handleSubmit(onSubmit)(e);
             }}
             disabled={paymentMutation.isPending}
             className="w-full bg-[#E72829] hover:bg-red-700 text-white py-6 text-lg font-semibold rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"

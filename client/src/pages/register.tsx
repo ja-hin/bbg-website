@@ -48,6 +48,9 @@ type PostPurchaseRegistrationData = z.infer<
 >;
 
 export default function Register() {
+  const [registrationType, setRegistrationType] = useState<
+    "acer" | "website" | "amazon" | null
+  >(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [voucherValidated, setVoucherValidated] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<any>(null);
@@ -155,17 +158,140 @@ export default function Register() {
     registrationMutation.mutate(data);
   };
 
+  const handleRegistrationTypeSelect = (
+    type: "acer" | "website" | "amazon",
+  ) => {
+    if (type === "acer") {
+      window.location.href = "/acer";
+    } else if (type === "amazon") {
+      window.location.href = "/amazon";
+    } else {
+      setRegistrationType(type);
+    }
+  };
+
   const handleStartOver = () => {
     setVoucherValidated(false);
     setCustomerInfo(null);
     form.reset();
   };
 
+  // If no registration type is selected, show selection screen
+  if (!registrationType) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
+        <div className="container mx-auto px-4 max-w-6xl">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Device Registration
+            </h1>
+            <p className="text-lg text-gray-600 max-w-xl mx-auto">
+              Please select where you purchased your device to proceed with
+              registration.
+            </p>
+          </div>
+
+          {/* Main panel */}
+          <Card className="shadow-xl border-0 rounded-2xl bg-white">
+            <CardContent className="p-8 lg:p-10">
+              <div className="grid gap-6 md:grid-cols-3">
+                {/* Acer E-Store */}
+                <div className="flex flex-col rounded-2xl border border-blue-200 bg-blue-50/80 px-6 py-6 text-center">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Acer E-Store
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-6">
+                    Purchased directly from the{" "}
+                    <a
+                      href="https://store.acer.com/en-in/"
+                      className="text-primary font-bold"
+                      target="_blank"
+                    >
+                      Acer
+                    </a>{" "}
+                    online store
+                  </p>
+                  <Button
+                    onClick={() => handleRegistrationTypeSelect("acer")}
+                    className="mt-auto w-full h-11 text-sm font-medium bg-blue-600 hover:bg-blue-700"
+                    data-testid="button-acer-selection"
+                  >
+                    Select Acer E-Store
+                  </Button>
+                </div>
+
+                {/* Website Purchase */}
+                <div className="flex flex-col rounded-2xl border border-gray-200 bg-gray-50 px-6 py-6 text-center">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Website Purchase
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-6">
+                    Purchased from this website or{" "}
+                    <a href="https://www.xtracover.com/" className="text-primary font-bold"
+                      target="_blank">
+                      Xtracover Marketplace
+                    </a>
+                  </p>
+                  <Button
+                    onClick={() => handleRegistrationTypeSelect("website")}
+                    className="mt-auto w-full h-11 text-sm font-medium bg-gray-700 hover:bg-gray-800"
+                    data-testid="button-website-selection"
+                  >
+                    Select Website Purchase
+                  </Button>
+                </div>
+
+                {/* Amazon */}
+                <div className="flex flex-col rounded-2xl border border-amber-200 bg-amber-50 px-6 py-6 text-center">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Amazon
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-6">
+                    Purchased from the <a href="https://www.amazon.in/stores/XTRACOVER/page/9AAEC258-9B50-4F35-8DEE-37397496FCCB?lp_asin=B0FW4L6NBY&ref_=ast_bln&store_ref=bl_ast_dp_brandLogo_sto#" className="text-primary font-bold"
+                                         target="_blank">Amazon</a> India Marketplace
+                  </p>
+                  <Button
+                    onClick={() => handleRegistrationTypeSelect("amazon")}
+                    className="mt-auto w-full h-11 text-sm font-medium bg-[#FF9900] hover:bg-[#E88B00]"
+                    data-testid="button-amazon-selection"
+                  >
+                    Select Amazon
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Support link */}
+          <div className="mt-6 text-center text-sm text-gray-600">
+            Not sure?{" "}
+            <a
+              href="https://www.xtracover.com/contact-us"
+              target="_blank"
+              className="text-blue-600 font-medium hover:underline"
+            >
+              Contact Us
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-8">
+          <Button
+            variant="outline"
+            onClick={() => setRegistrationType(null)}
+            className="mb-4"
+            data-testid="button-back-to-selection"
+          >
+            ← Back to Selection
+          </Button>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Website Device Registration
           </h1>

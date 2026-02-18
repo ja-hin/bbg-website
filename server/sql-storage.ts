@@ -4187,8 +4187,8 @@ export class SqlServerStorage implements IStorage {
       query = `
         UPDATE partner_commission_settings 
         SET is_active = @isActive, 
-            commission_type = 'flat', 
-            commission_value = 0,
+            commission_type = ISNULL(@commissionType, 'flat'), 
+            commission_value = ISNULL(@commissionValue, 0),
             mobile_amount = @mobileAmount,
             laptop_amount = @laptopAmount,
             updated_at = GETDATE()
@@ -4200,13 +4200,15 @@ export class SqlServerStorage implements IStorage {
       query = `
         INSERT INTO partner_commission_settings (is_active, commission_type, commission_value, mobile_amount, laptop_amount)
         OUTPUT INSERTED.*
-        VALUES (@isActive, 'flat', 0, @mobileAmount, @laptopAmount)
+        VALUES (@isActive, ISNULL(@commissionType, 'flat'), ISNULL(@commissionValue, 0), @mobileAmount, @laptopAmount)
       `;
     }
     
     request.input('isActive', sql.Bit, settings.isActive);
     request.input('mobileAmount', sql.Decimal(10, 2), settings.mobileAmount);
     request.input('laptopAmount', sql.Decimal(10, 2), settings.laptopAmount);
+    request.input('commissionType', sql.NVarChar, settings.commissionType || 'flat');
+    request.input('commissionValue', sql.Decimal(10, 2), settings.commissionValue || 0);
     
     const result = await request.query(query);
     const row = result.recordset[0];

@@ -32,7 +32,6 @@ import {
   Info, 
   Loader2, 
   Upload, 
-  HelpCircle,
   Camera,
   FileText
 } from "lucide-react";
@@ -554,9 +553,6 @@ export default function Register() {
       <div className="hidden md:flex w-[40%] bg-white border-l border-gray-100 p-8 lg:p-12 flex-col justify-center order-2">
         <div className="max-w-md mx-auto w-full sticky top-24">
           <div className="mb-6">
-            <div className="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center mb-3 text-[#1e3a8a]">
-              <HelpCircle className="h-5 w-5" />
-            </div>
             <h2 className="text-xl font-bold text-gray-900 mb-1">Need Help?</h2>
             <p className="text-sm text-gray-500">
               Can't find your device details? We've got you covered.

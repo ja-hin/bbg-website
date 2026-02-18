@@ -32,8 +32,12 @@ export function RegistrationHelpGuide() {
               <li>Scroll down to find the <span className="font-semibold text-gray-900">IMEI</span>.</li>
               <li>Touch and hold the number to copy it.</li>
             </ol>
-            <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-100">
-              <p className="text-xs text-center text-gray-400 italic">Example: 354 678 901 234 567</p>
+            <div className="mt-4 rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+              <img 
+                src="/assets/iphone-imei.jpg" 
+                alt="iPhone IMEI Location" 
+                className="w-full h-auto object-cover"
+              />
             </div>
           </AccordionContent>
         </AccordionItem>

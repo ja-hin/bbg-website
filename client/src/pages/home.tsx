@@ -56,8 +56,8 @@ import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.webp"
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.webp";
 import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_1764254452404.webp";
 import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.webp";
-import bannerImg from "@assets/BBG Banners Revised (1)_1764328416967.webp";
-import buybackGuaranteeImg from "@assets/wmremove-transformed_1767022747924.webp";
+import bannerImg from "@assets/joinpweb.png";
+import buybackGuaranteeImg from "@assets/joinpm.png";
 import extendPlusImg from "@assets/Extend+cropped_(1)_1767021849857.webp";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {

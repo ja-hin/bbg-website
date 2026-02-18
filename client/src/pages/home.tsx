@@ -974,32 +974,21 @@ export default function Home() {
             <div className="hidden sm:block w-16 lg:w-48" style={{height: '0.125rem', backgroundColor: '#303e58'}}></div>
           </div>
 
-          {/* New Images Section: Mobile Carousel / Desktop Vertical Stack */}
-          <div className="mt-12 sm:mt-16">
-            {/* Mobile: Carousel (2 distinct images) */}
-            <div className="block md:hidden">
+          {/* Unified Images Section: Slider for both Mobile and Web */}
+          <div className="mt-8 sm:mt-12">
+            <div className="w-full max-w-5xl mx-auto">
                <Carousel opts={{ align: "start", loop: true }} className="w-full">
                  <CarouselContent>
                    <CarouselItem>
-                     <div className="px-1">
-                        <img src={doorstepPickupImg} alt="Mobile Process Step 1" className="w-full h-auto rounded-xl shadow-lg" />
-                     </div>
+                      <img src={deviceRegistrationImg} alt="Process Step 1" className="w-full h-auto block" />
                    </CarouselItem>
                    <CarouselItem>
-                     <div className="px-1">
-                        <img src={instantPaymentImg} alt="Mobile Process Step 2" className="w-full h-auto rounded-xl shadow-lg" />
-                     </div>
+                      <img src={resaleValueImg} alt="Process Step 2" className="w-full h-auto block" />
                    </CarouselItem>
                  </CarouselContent>
-                 <CarouselPrevious className="left-2" />
-                 <CarouselNext className="right-2" />
+                 <CarouselPrevious className="left-4 md:-left-12" />
+                 <CarouselNext className="right-4 md:-right-12" />
                </Carousel>
-            </div>
-
-            {/* Desktop: Vertical Stack (2 distinct images) */}
-            <div className="hidden md:flex flex-col gap-8 items-center max-w-4xl mx-auto">
-               <img src={deviceRegistrationImg} alt="Desktop Process Step 1" className="w-full h-auto rounded-2xl shadow-xl transition-transform hover:scale-[1.01]" />
-               <img src={resaleValueImg} alt="Desktop Process Step 2" className="w-full h-auto rounded-2xl shadow-xl transition-transform hover:scale-[1.01]" />
             </div>
           </div>
         </div>

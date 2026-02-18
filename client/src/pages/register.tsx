@@ -328,13 +328,7 @@ export default function Register() {
       <div className="w-full md:w-[60%] p-4 md:p-8 lg:p-12 flex flex-col bg-white order-2 md:order-1 relative">
         <div className="max-w-xl mx-auto w-full flex-grow flex flex-col justify-center">
           
-          <Button
-            variant="ghost"
-            onClick={() => setRegistrationType(null)}
-            className="self-start text-gray-500 hover:text-gray-900 pl-0 gap-2 mb-6 md:mb-8"
-          >
-            ← Back to Selection
-          </Button>
+
 
           <div className="mb-6 md:mb-8">
             <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">

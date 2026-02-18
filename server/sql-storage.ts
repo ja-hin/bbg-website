@@ -349,6 +349,20 @@ export class SqlServerStorage implements IStorage {
         BEGIN
           PRINT 'Partner commission settings table already exists, preserving current data';
         END
+
+        -- Add mobile_amount column if not exists
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('partner_commission_settings') AND name = 'mobile_amount')
+        BEGIN
+            ALTER TABLE partner_commission_settings ADD mobile_amount DECIMAL(10,2) NOT NULL DEFAULT 100.00;
+            PRINT 'Added mobile_amount column to partner_commission_settings';
+        END
+
+        -- Add laptop_amount column if not exists
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('partner_commission_settings') AND name = 'laptop_amount')
+        BEGIN
+            ALTER TABLE partner_commission_settings ADD laptop_amount DECIMAL(10,2) NOT NULL DEFAULT 175.00;
+            PRINT 'Added laptop_amount column to partner_commission_settings';
+        END
       `;
       
       const partnerCommissionRequest = db.pool.request();
@@ -4151,6 +4165,8 @@ export class SqlServerStorage implements IStorage {
       isActive: row.is_active,
       commissionType: row.commission_type,
       commissionValue: parseFloat(row.commission_value),
+      mobileAmount: parseFloat(row.mobile_amount || 100),
+      laptopAmount: parseFloat(row.laptop_amount || 175),
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };
@@ -4171,8 +4187,10 @@ export class SqlServerStorage implements IStorage {
       query = `
         UPDATE partner_commission_settings 
         SET is_active = @isActive, 
-            commission_type = @commissionType, 
-            commission_value = @commissionValue,
+            commission_type = 'flat', 
+            commission_value = 0,
+            mobile_amount = @mobileAmount,
+            laptop_amount = @laptopAmount,
             updated_at = GETDATE()
         OUTPUT INSERTED.*
         WHERE id = (SELECT TOP 1 id FROM partner_commission_settings ORDER BY id DESC)
@@ -4180,15 +4198,15 @@ export class SqlServerStorage implements IStorage {
     } else {
       // Insert new settings
       query = `
-        INSERT INTO partner_commission_settings (is_active, commission_type, commission_value)
+        INSERT INTO partner_commission_settings (is_active, commission_type, commission_value, mobile_amount, laptop_amount)
         OUTPUT INSERTED.*
-        VALUES (@isActive, @commissionType, @commissionValue)
+        VALUES (@isActive, 'flat', 0, @mobileAmount, @laptopAmount)
       `;
     }
     
     request.input('isActive', sql.Bit, settings.isActive);
-    request.input('commissionType', sql.NVarChar, settings.commissionType);
-    request.input('commissionValue', sql.Decimal(10, 2), settings.commissionValue);
+    request.input('mobileAmount', sql.Decimal(10, 2), settings.mobileAmount);
+    request.input('laptopAmount', sql.Decimal(10, 2), settings.laptopAmount);
     
     const result = await request.query(query);
     const row = result.recordset[0];
@@ -4198,6 +4216,8 @@ export class SqlServerStorage implements IStorage {
       isActive: row.is_active,
       commissionType: row.commission_type,
       commissionValue: parseFloat(row.commission_value),
+      mobileAmount: parseFloat(row.mobile_amount),
+      laptopAmount: parseFloat(row.laptop_amount),
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };

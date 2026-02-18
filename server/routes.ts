@@ -4960,7 +4960,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         console.log("Updating partner commission settings:", req.body);
 
-        const { isActive, commissionType, commissionValue } = req.body;
+        const { isActive, commissionType, commissionValue, mobileAmount, laptopAmount } = req.body;
 
         // Validate required fields
         if (typeof isActive !== 'boolean') {
@@ -4969,35 +4969,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
             .json({ message: "isActive field is required and must be boolean" });
         }
 
-        if (!commissionType || !['percentage', 'flat'].includes(commissionType)) {
+        /* Legacy validation - optional now
+        if (commissionType && !['percentage', 'flat'].includes(commissionType)) {
           return res
             .status(400)
             .json({ message: "commissionType must be either 'percentage' or 'flat'" });
         }
+        */
 
-        // Validate commission value
-        const commissionNum = parseFloat(commissionValue);
-        if (isNaN(commissionNum) || commissionNum < 0) {
-          return res
-            .status(400)
-            .json({
-              message: "Invalid commission value. Must be a non-negative number.",
-            });
+        // Validate amounts
+        if (mobileAmount !== undefined) {
+          const mobileNum = parseFloat(mobileAmount);
+          if (isNaN(mobileNum) || mobileNum < 0) {
+            return res.status(400).json({ message: "Invalid mobile commission amount" });
+          }
         }
 
-        // Additional validation for percentage
-        if (commissionType === 'percentage' && commissionNum > 100) {
-          return res
-            .status(400)
-            .json({
-              message: "Percentage commission cannot exceed 100%.",
-            });
+        if (laptopAmount !== undefined) {
+          const laptopNum = parseFloat(laptopAmount);
+          if (isNaN(laptopNum) || laptopNum < 0) {
+            return res.status(400).json({ message: "Invalid laptop commission amount" });
+          }
         }
 
         const updatedSettings = await storage.updatePartnerCommissionSettings({
           isActive,
-          commissionType,
-          commissionValue: commissionNum,
+          commissionType: commissionType || 'flat',
+          commissionValue: parseFloat(commissionValue || '0'),
+          mobileAmount: parseFloat(mobileAmount || '0'),
+          laptopAmount: parseFloat(laptopAmount || '0'),
         });
 
         console.log("Partner commission settings updated successfully");

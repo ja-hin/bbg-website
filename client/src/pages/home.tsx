@@ -1904,20 +1904,24 @@ export default function Home() {
           <div className="w-full">
             {/* Mobile Image */}
             <div className="block md:hidden">
-              <img
-                src={buybackGuaranteeImgBelow}
-                alt="Referral Program Mobile"
-                className="w-full h-auto rounded-xl shadow-lg"
-              />
+              <Link href="/referral-partner-registration">
+                <img
+                  src={buybackGuaranteeImgBelow}
+                  alt="Referral Program Mobile"
+                  className="w-full h-auto rounded-xl shadow-lg cursor-pointer transition-transform hover:scale-[1.01]"
+                />
+              </Link>
             </div>
 
             {/* Desktop Image */}
             <div className="hidden md:block">
-              <img
-                src={bannerImg}
-                alt="Referral Program Desktop"
-                className="w-full h-auto rounded-xl shadow-lg"
-              />
+              <Link href="/referral-partner-registration">
+                <img
+                  src={bannerImg}
+                  alt="Referral Program Desktop"
+                  className="w-full h-auto rounded-xl shadow-lg cursor-pointer transition-transform hover:scale-[1.01]"
+                />
+              </Link>
             </div>
           </div>
         </div>

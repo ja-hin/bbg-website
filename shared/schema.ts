@@ -43,6 +43,7 @@ export type BenefitsStructure = AuctionRepairBenefits | ClaimSlabsBenefits;
 export const distributors = pgTable("distributors", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  businessName: text("business_name"),
   contact: text("contact").notNull(),
   email: text("email").notNull(),
   pincode: text("pincode").notNull(),
@@ -70,6 +71,8 @@ export const distributors = pgTable("distributors", {
   termsAgreement: boolean("terms_agreement").default(false),
   // System fields
   sellerCode: text("seller_code").notNull().unique(),
+  commissionEarned: decimal("commission_earned", { precision: 10, scale: 2 }).default("0.00"),
+  totalCustomers: integer("total_customers").default(0),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
 });

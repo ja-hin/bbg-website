@@ -42,8 +42,8 @@ export default function DistributorRegistrations() {
     },
     {
       header: "Commission",
-      accessorKey: "commissionAmount" as const, // This might not be in the API response yet, fallback to hardcoded
-      cell: () => <span className="font-medium text-green-600">₹25.00</span>,
+      accessorKey: "commissionAmount" as const,
+      cell: (item: any) => <span className="font-medium text-green-600">₹{item.commissionAmount || 0}</span>,
     },
     {
       header: "Status",

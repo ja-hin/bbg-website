@@ -139,7 +139,7 @@ export default function DistributorDashboard() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-medium">₹25.00</p>
+                        <p className="text-sm font-medium">₹{customer.commissionAmount || 0}</p>
                         <p className={`text-xs ${customer.isVerified ? 'text-green-600' : 'text-orange-600'}`}>
                           {customer.isVerified ? 'Verified' : 'Pending'}
                         </p>

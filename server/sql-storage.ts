@@ -1450,10 +1450,10 @@ export class SqlServerStorage implements IStorage {
     request.input('cancelledChequeFile', sql.NVarChar, insertDistributor.cancelledChequeFile || null);
     
     // Declarations - map new field names
-    request.input('infoDeclaration', sql.Bit, insertDistributor.declarationAccuracy || false);
+    request.input('infoDeclaration', sql.Bit, (insertDistributor as any).declarationAccuracy || false);
     request.input('tdsUnderstanding', sql.Bit, insertDistributor.tdsUnderstanding || false);
     request.input('gstInvoiceAgreement', sql.Bit, insertDistributor.gstInvoiceAgreement || false);
-    request.input('termsAgreement', sql.Bit, insertDistributor.declarationAccuracy || insertDistributor.tdsUnderstanding || insertDistributor.gstInvoiceAgreement || false);
+    request.input('termsAgreement', sql.Bit, (insertDistributor as any).declarationAccuracy || insertDistributor.tdsUnderstanding || insertDistributor.gstInvoiceAgreement || false);
     
     request.input('sellerCode', sql.NVarChar, sellerCode);
 
@@ -1677,11 +1677,16 @@ export class SqlServerStorage implements IStorage {
     return result.recordset[0]?.monthly_commission || 0;
   }
 
-  async getDistributorCustomers(distributorId: number): Promise<Customer[]> {
+  async getDistributorCustomers(distributorId: number): Promise<any[]> {
     await db.connectDB();
     const query = `
-      SELECT c.* FROM customers c
+      SELECT 
+        c.*,
+        ISNULL(cp.amount, 0) as commission_amount,
+        cp.status as commission_status
+      FROM customers c
       INNER JOIN distributors d ON c.seller_code = d.seller_code
+      LEFT JOIN commission_payouts cp ON c.id = cp.customer_id AND cp.distributor_id = d.id
       WHERE d.id = @distributorId
       ORDER BY c.created_at DESC
     `;
@@ -1690,7 +1695,11 @@ export class SqlServerStorage implements IStorage {
     request.input('distributorId', sql.Int, distributorId);
 
     const result = await request.query(query);
-    return result.recordset.map(row => this.mapCustomerFromDb(row));
+    return result.recordset.map(row => ({
+      ...this.mapCustomerFromDb(row),
+      commissionAmount: parseFloat(row.commission_amount || 0),
+      commissionStatus: row.commission_status || 'pending'
+    }));
   }
 
   async getDistributorPayouts(distributorId: number): Promise<any[]> {
@@ -1995,7 +2004,7 @@ export class SqlServerStorage implements IStorage {
     request.input('sellerCode', sql.NVarChar, insertCustomer.sellerCode || null);
     request.input('voucherCode', sql.NVarChar, voucherCode);
     request.input('paymentIntentId', sql.NVarChar, insertCustomer.paymentIntentId || null);
-    request.input('isVerified', sql.Bit, insertCustomer.isVerified || false);
+    request.input('isVerified', sql.Bit, (insertCustomer as any).isVerified || false);
     request.input('registrationSource', sql.NVarChar, (insertCustomer as any).registrationSource || 'regular');
     // Handle invoiceFile - ensure it's a valid string or null
     const invoiceFileValue = (insertCustomer as any).invoiceFile;
@@ -2020,12 +2029,13 @@ export class SqlServerStorage implements IStorage {
             commissionAmount = (insertCustomer.invoiceValue * commissionSettings.commissionValue) / 100;
           } else if (commissionSettings.commissionType === 'flat') {
             // Check for device-specific flat amounts first, then fallback to general commissionValue
-            if (insertCustomer.deviceType === 'mobile' && commissionSettings.mobileAmount > 0) {
-              commissionAmount = commissionSettings.mobileAmount;
-            } else if (insertCustomer.deviceType === 'laptop' && commissionSettings.laptopAmount > 0) {
-              commissionAmount = commissionSettings.laptopAmount;
+            const deviceType = insertCustomer.deviceType.toLowerCase();
+            if (deviceType === 'mobile' && Number(commissionSettings.mobileAmount) > 0) {
+              commissionAmount = Number(commissionSettings.mobileAmount);
+            } else if (deviceType === 'laptop' && Number(commissionSettings.laptopAmount) > 0) {
+              commissionAmount = Number(commissionSettings.laptopAmount);
             } else {
-              commissionAmount = commissionSettings.commissionValue;
+              commissionAmount = Number(commissionSettings.commissionValue);
             }
           }
         }
@@ -3685,7 +3695,7 @@ export class SqlServerStorage implements IStorage {
     }
   }
 
-  async updateClaimValueSlab(id: number, updates: Partial<InsertClaimValueSlab>): Promise<ClaimValueSlab | undefined> {
+  async updateClaimValueSlab(id: number, updates: Partial<InsertClaimValueSlab>): Promise<void | undefined> {
     await db.connectDB();
     const setParts = [];
     const request = db.pool.request();

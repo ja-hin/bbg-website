@@ -260,7 +260,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-        </div>
       </section>
       {/* Homepage Carousel - Critical path, loads first */}
       <div className="hidden">

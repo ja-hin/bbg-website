@@ -21,7 +21,6 @@ export function RegistrationHelpGuide() {
         <AccordionItem value="iphone" className="border rounded-xl px-4 bg-white shadow-sm mb-3">
           <AccordionTrigger className="hover:no-underline py-4">
             <div className="flex items-center gap-3">
-              <Apple className="h-5 w-5 text-gray-900" />
               <span className="font-medium">Apple iPhone</span>
             </div>
           </AccordionTrigger>
@@ -46,7 +45,6 @@ export function RegistrationHelpGuide() {
         <AccordionItem value="android" className="border rounded-xl px-4 bg-white shadow-sm mb-3">
           <AccordionTrigger className="hover:no-underline py-4">
             <div className="flex items-center gap-3">
-              <Smartphone className="h-5 w-5 text-green-600" />
               <span className="font-medium">Android</span>
             </div>
           </AccordionTrigger>
@@ -64,7 +62,6 @@ export function RegistrationHelpGuide() {
         <AccordionItem value="windows" className="border rounded-xl px-4 bg-white shadow-sm mb-3">
           <AccordionTrigger className="hover:no-underline py-4">
             <div className="flex items-center gap-3">
-              <Monitor className="h-5 w-5 text-blue-600" />
               <span className="font-medium">Windows Laptop</span>
             </div>
           </AccordionTrigger>
@@ -82,7 +79,6 @@ export function RegistrationHelpGuide() {
         <AccordionItem value="macbook" className="border rounded-xl px-4 bg-white shadow-sm mb-3">
           <AccordionTrigger className="hover:no-underline py-4">
             <div className="flex items-center gap-3">
-              <Laptop className="h-5 w-5 text-gray-500" />
               <span className="font-medium">Macbook</span>
             </div>
           </AccordionTrigger>

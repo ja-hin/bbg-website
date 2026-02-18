@@ -258,7 +258,7 @@ export default function Register() {
               </div>
               
               {/* Sticky Mobile Submit Button */}
-              <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 md:static md:bg-transparent md:border-0 md:p-0 z-10">
+              <div className="pt-4 md:pt-0">
                 <Button
                   type="submit"
                   disabled={registrationMutation.isPending}

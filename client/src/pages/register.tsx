@@ -225,27 +225,26 @@ export default function Register() {
   // ─── SELECTION SCREEN ──────────────────────────────────────────────────
   if (!registrationType) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-6">
         <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Device Registration
             </h1>
-            <p className="text-lg text-gray-600 max-w-xl mx-auto">
-              Please select where you purchased your device to proceed with
-              registration.
+            <p className="text-base text-gray-600 max-w-xl mx-auto">
+              Please select where you purchased your device to proceed.
             </p>
           </div>
 
-          <Card className="shadow-xl border-0 rounded-2xl bg-white">
-            <CardContent className="p-8 lg:p-10">
-              <div className="grid gap-6 md:grid-cols-3">
+          <Card className="shadow-lg border-0 rounded-2xl bg-white">
+            <CardContent className="p-6 lg:p-8">
+              <div className="grid gap-4 md:grid-cols-3">
                 {/* Acer E-Store */}
-                <div className="flex flex-col rounded-2xl border border-blue-200 bg-blue-50/80 px-6 py-6 text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <div className="flex flex-col rounded-xl border border-blue-200 bg-blue-50/80 p-5 text-center">
+                  <h3 className="text-base font-bold text-gray-900 mb-1">
                     Acer E-Store
                   </h3>
-                  <p className="text-sm text-gray-600 mb-6">
+                  <p className="text-xs text-gray-600 mb-4">
                     Purchased directly from the{" "}
                     <a
                       href="https://store.acer.com/en-in/"
@@ -258,7 +257,7 @@ export default function Register() {
                   </p>
                   <Button
                     onClick={() => handleRegistrationTypeSelect("acer")}
-                    className="mt-auto w-full h-11 text-sm font-medium bg-blue-600 hover:bg-blue-700"
+                    className="mt-auto w-full h-10 text-sm font-medium bg-blue-600 hover:bg-blue-700"
                     data-testid="button-acer-selection"
                   >
                     Select Acer E-Store
@@ -266,11 +265,11 @@ export default function Register() {
                 </div>
 
                 {/* Website Purchase */}
-                <div className="flex flex-col rounded-2xl border border-gray-200 bg-gray-50 px-6 py-6 text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <div className="flex flex-col rounded-xl border border-gray-200 bg-gray-50 p-5 text-center">
+                  <h3 className="text-base font-bold text-gray-900 mb-1">
                     Website Purchase
                   </h3>
-                  <p className="text-sm text-gray-600 mb-6">
+                  <p className="text-xs text-gray-600 mb-4">
                     Purchased from this website or{" "}
                     <a href="https://www.xtracover.com/" className="text-primary font-bold"
                       target="_blank">
@@ -279,7 +278,7 @@ export default function Register() {
                   </p>
                   <Button
                     onClick={() => handleRegistrationTypeSelect("website")}
-                    className="mt-auto w-full h-11 text-sm font-medium bg-gray-700 hover:bg-gray-800"
+                    className="mt-auto w-full h-10 text-sm font-medium bg-gray-700 hover:bg-gray-800"
                     data-testid="button-website-selection"
                   >
                     Select Website Purchase
@@ -287,17 +286,17 @@ export default function Register() {
                 </div>
 
                 {/* Amazon */}
-                <div className="flex flex-col rounded-2xl border border-amber-200 bg-amber-50 px-6 py-6 text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <div className="flex flex-col rounded-xl border border-amber-200 bg-amber-50 p-5 text-center">
+                  <h3 className="text-base font-bold text-gray-900 mb-1">
                     Amazon
                   </h3>
-                  <p className="text-sm text-gray-600 mb-6">
+                  <p className="text-xs text-gray-600 mb-4">
                     Purchased from the <a href="https://www.amazon.in/stores/XTRACOVER/page/9AAEC258-9B50-4F35-8DEE-37397496FCCB?lp_asin=B0FW4L6NBY&ref_=ast_bln&store_ref=bl_ast_dp_brandLogo_sto#" className="text-primary font-bold"
                                          target="_blank">Amazon</a> India Marketplace
                   </p>
                   <Button
                     onClick={() => handleRegistrationTypeSelect("amazon")}
-                    className="mt-auto w-full h-11 text-sm font-medium bg-[#FF9900] hover:bg-[#E88B00]"
+                    className="mt-auto w-full h-10 text-sm font-medium bg-[#FF9900] hover:bg-[#E88B00]"
                     data-testid="button-amazon-selection"
                   >
                     Select Amazon
@@ -307,7 +306,7 @@ export default function Register() {
             </CardContent>
           </Card>
 
-          <div className="mt-6 text-center text-sm text-gray-600">
+          <div className="mt-6 text-center text-xs text-gray-500">
             Not sure?{" "}
             <a
               href="https://www.xtracover.com/contact-us"
@@ -327,28 +326,28 @@ export default function Register() {
     <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
       
       {/* ── Left Column: Form (60%) ────────────────────────────────────── */}
-      <div className="w-full md:w-[60%] p-4 md:p-12 lg:p-16 flex flex-col bg-white order-2 md:order-1 relative">
+      <div className="w-full md:w-[60%] p-4 md:p-8 lg:p-12 flex flex-col bg-white order-2 md:order-1 relative">
         <div className="max-w-xl mx-auto w-full flex-grow flex flex-col justify-center">
           
           <Button
             variant="ghost"
             onClick={() => setRegistrationType(null)}
-            className="self-start text-gray-500 hover:text-gray-900 pl-0 gap-2 mb-8 md:mb-12"
+            className="self-start text-gray-500 hover:text-gray-900 pl-0 gap-2 mb-6 md:mb-8"
           >
             ← Back to Selection
           </Button>
 
-          <div className="mb-8 md:mb-10">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">
+          <div className="mb-6 md:mb-8">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
               Register Device
             </h1>
-            <p className="text-gray-500 text-base md:text-lg">
+            <p className="text-gray-500 text-sm md:text-base">
               Validate your voucher to activate protection.
             </p>
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 pb-24 md:pb-0">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pb-24 md:pb-0">
               
               {/* Step 1: Voucher */}
               <div className={`transition-all duration-300 ${voucherValidated ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`}>
@@ -356,8 +355,8 @@ export default function Register() {
                   control={form.control}
                   name="voucherCode"
                   render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-gray-700 font-semibold text-xs uppercase tracking-wide">
                         BBG Voucher Code
                       </FormLabel>
                       <div className="flex gap-3">
@@ -368,7 +367,7 @@ export default function Register() {
                             onBlur={field.onBlur}
                             placeholder="e.g. BBG-2023-XXXX"
                             validationType="name"
-                            className="h-12 bg-gray-50 border-gray-200 focus:bg-white transition-colors rounded-xl font-medium"
+                            className="h-11 bg-gray-50 border-gray-200 focus:bg-white transition-colors rounded-xl font-medium"
                             disabled={voucherValidated}
                           />
                         </FormControl>
@@ -377,10 +376,10 @@ export default function Register() {
                             type="button"
                             onClick={handleValidateVoucher}
                             disabled={voucherValidationMutation.isPending}
-                            className="h-12 px-6 rounded-xl font-semibold bg-[#1e3a8a] text-white hover:bg-[#152861] shadow-md transition-all"
+                            className="h-11 px-5 rounded-xl font-semibold bg-[#1e3a8a] text-white hover:bg-[#152861] shadow-sm transition-all"
                           >
                             {voucherValidationMutation.isPending ? (
-                              <Loader2 className="h-5 w-5 animate-spin" />
+                              <Loader2 className="h-4 w-4 animate-spin" />
                             ) : "Validate"}
                           </Button>
                         )}
@@ -392,10 +391,10 @@ export default function Register() {
 
                 {/* Voucher Success State */}
                 {voucherValidated && customerInfo && (
-                  <div className="mt-4 p-4 bg-green-50 border border-green-100 rounded-xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
+                  <div className="mt-3 p-3 bg-green-50 border border-green-100 rounded-xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
-                      <p className="text-sm font-bold text-green-800 mb-1">Voucher Verified</p>
+                      <p className="text-sm font-bold text-green-800 mb-0.5">Voucher Verified</p>
                       <p className="text-xs text-green-700">
                         {customerInfo.name} • {customerInfo.brand} {customerInfo.deviceType}
                       </p>
@@ -415,8 +414,8 @@ export default function Register() {
 
               {/* Step 2: Device Details */}
               {voucherValidated && (
-                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="relative">
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="relative py-2">
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
                       <div className="w-full border-t border-gray-100"></div>
                     </div>
@@ -431,9 +430,9 @@ export default function Register() {
                     control={form.control}
                     name="imeiSerial"
                     render={({ field }) => (
-                      <FormItem className="space-y-3">
+                      <FormItem className="space-y-2">
                          <div className="flex justify-between items-center">
-                          <FormLabel className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
+                          <FormLabel className="text-gray-700 font-semibold text-xs uppercase tracking-wide">
                             IMEI / Serial Number
                           </FormLabel>
                           {/* Mobile-only help trigger */}
@@ -454,9 +453,9 @@ export default function Register() {
                               onBlur={field.onBlur}
                               placeholder="Enter 15-digit IMEI or Serial Number"
                               validationType="imei"
-                              className="h-14 pl-12 bg-white border-gray-200 focus:ring-2 focus:ring-[#1e3a8a]/20 rounded-xl text-lg tracking-wide placeholder:tracking-normal font-medium shadow-sm transition-all"
+                              className="h-12 pl-11 bg-white border-gray-200 focus:ring-2 focus:ring-[#1e3a8a]/20 rounded-xl text-lg tracking-wide placeholder:tracking-normal font-medium shadow-sm transition-all"
                             />
-                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
                               <Smartphone className="h-5 w-5" />
                             </div>
                           </div>
@@ -466,8 +465,8 @@ export default function Register() {
                     )}
                   />
 
-                  <div className="space-y-3">
-                    <FormLabel className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
+                  <div className="space-y-2">
+                    <FormLabel className="text-gray-700 font-semibold text-xs uppercase tracking-wide">
                       Upload Invoice (Optional)
                     </FormLabel>
                     
@@ -485,27 +484,27 @@ export default function Register() {
                       />
                       <label
                         htmlFor="invoice-upload"
-                        className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200
+                        className={`flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200
                           ${invoiceFile 
                             ? "border-green-300 bg-green-50 text-green-700" 
-                            : "border-gray-300 bg-gray-50 text-gray-500 hover:bg-gray-100 hover:border-gray-400"
+                            : "border-gray-200 bg-gray-50 text-gray-500 hover:bg-gray-100 hover:border-gray-300"
                           }
                         `}
                       >
                         {invoiceFile ? (
                           <>
-                            <FileText className="h-8 w-8 mb-2" />
+                            <FileText className="h-6 w-6 mb-2" />
                             <span className="text-sm font-medium">{invoiceFile.name}</span>
                             <span className="text-xs opacity-70 mt-1">Click to change</span>
                           </>
                         ) : (
                           <>
-                            <div className="flex gap-4 mb-2">
-                              <div className="p-2 bg-white rounded-full shadow-sm">
-                                <Upload className="h-5 w-5 text-gray-400" />
+                            <div className="flex gap-3 mb-2">
+                              <div className="p-1.5 bg-white rounded-full shadow-sm">
+                                <Upload className="h-4 w-4 text-gray-400" />
                               </div>
-                              <div className="p-2 bg-white rounded-full shadow-sm">
-                                <Camera className="h-5 w-5 text-gray-400" />
+                              <div className="p-1.5 bg-white rounded-full shadow-sm">
+                                <Camera className="h-4 w-4 text-gray-400" />
                               </div>
                             </div>
                             <span className="text-sm font-medium">Choose file or take photo</span>
@@ -524,7 +523,7 @@ export default function Register() {
                   <Button
                     type="submit"
                     disabled={registrationMutation.isPending}
-                    className="w-full h-14 md:h-12 bg-[#1e3a8a] text-white hover:bg-[#152861] text-lg md:text-base font-bold rounded-xl shadow-lg md:shadow-md transition-all active:scale-[0.98]"
+                    className="w-full h-12 md:h-12 bg-[#1e3a8a] text-white hover:bg-[#152861] text-base font-bold rounded-xl shadow-lg md:shadow-md transition-all active:scale-[0.98]"
                   >
                     {registrationMutation.isPending ? (
                       <>
@@ -552,14 +551,14 @@ export default function Register() {
       </div>
 
       {/* ── Right Column: Help Sidebar (40%) - Hidden on Mobile ──────────────── */}
-      <div className="hidden md:flex w-[40%] bg-white border-l border-gray-100 p-12 lg:p-16 flex-col justify-center order-2">
+      <div className="hidden md:flex w-[40%] bg-white border-l border-gray-100 p-8 lg:p-12 flex-col justify-center order-2">
         <div className="max-w-md mx-auto w-full sticky top-24">
-          <div className="mb-8">
-            <div className="h-12 w-12 bg-blue-50 rounded-2xl flex items-center justify-center mb-4 text-[#1e3a8a]">
-              <HelpCircle className="h-6 w-6" />
+          <div className="mb-6">
+            <div className="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center mb-3 text-[#1e3a8a]">
+              <HelpCircle className="h-5 w-5" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Need Help?</h2>
-            <p className="text-gray-500">
+            <h2 className="text-xl font-bold text-gray-900 mb-1">Need Help?</h2>
+            <p className="text-sm text-gray-500">
               Can't find your device details? We've got you covered.
             </p>
           </div>
@@ -567,11 +566,11 @@ export default function Register() {
           <RegistrationHelpGuide />
 
           {/* Additional Support Card */}
-          <div className="mt-10 p-6 bg-blue-50 rounded-2xl border border-blue-100">
-            <h3 className="font-semibold text-[#1e3a8a] mb-2 flex items-center gap-2">
-              <Info className="h-4 w-4" /> Why do we need this?
+          <div className="mt-8 p-5 bg-blue-50 rounded-xl border border-blue-100">
+            <h3 className="text-sm font-semibold text-[#1e3a8a] mb-1 flex items-center gap-2">
+              <Info className="h-3.5 w-3.5" /> Why do we need this?
             </h3>
-            <p className="text-sm text-blue-900/70 leading-relaxed">
+            <p className="text-xs text-blue-900/70 leading-relaxed">
               Your unique IMEI or Serial Number ensures that we protect the correct device. It serves as a digital fingerprint for your coverage plan.
             </p>
           </div>
@@ -582,14 +581,14 @@ export default function Register() {
       <Dialog open={isHelpOpen} onOpenChange={setIsHelpOpen}>
         <DialogContent className="sm:max-w-md h-[90vh] md:h-auto overflow-y-auto rounded-t-2xl md:rounded-2xl top-[5%] md:top-[50%] translate-y-0 md:-translate-y-1/2">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold">Find Device Details</DialogTitle>
+            <DialogTitle className="text-lg font-bold">Find Device Details</DialogTitle>
           </DialogHeader>
-          <div className="mt-4">
+          <div className="mt-2">
             <RegistrationHelpGuide />
           </div>
-          <div className="mt-6 pt-6 border-t border-gray-100">
+          <div className="mt-6 pt-4 border-t border-gray-100">
              <Button 
-              className="w-full bg-gray-100 text-gray-900 hover:bg-gray-200 font-semibold h-12 rounded-xl"
+              className="w-full bg-gray-100 text-gray-900 hover:bg-gray-200 font-semibold h-11 rounded-xl text-sm"
               onClick={() => setIsHelpOpen(false)}
             >
               Close Guide

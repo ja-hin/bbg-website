@@ -790,9 +790,10 @@ export default function ThankYou() {
               </div>
             )}
 
-            {/* Complete Registration Button for Customers */}
+            {/* Action Buttons Group for Customers */}
             {type === 'customer' && status === 'success' && content.code && (
-              <div className="mb-10 animate-in fade-in slide-in-from-bottom-4 delay-200 duration-700 fill-mode-forwards">
+              <div className="mb-10 flex flex-col sm:flex-row gap-4 justify-center items-center animate-in fade-in slide-in-from-bottom-4 delay-200 duration-700 fill-mode-forwards">
+                {/* Complete Registration Button */}
                 <Button 
                   className="w-full sm:w-auto px-8 py-6 text-lg font-bold bg-[#1e3a8a] text-white hover:bg-[#152861] shadow-xl hover:shadow-2xl rounded-xl transition-all active:scale-[0.98] group"
                   onClick={() => window.location.href = `/register?voucher=${content.code}`}
@@ -800,10 +801,23 @@ export default function ThankYou() {
                   Complete Registration 
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
-                <p className="text-sm text-gray-500 mt-3 max-w-sm mx-auto">
-                    Activate your plan now by registering your device details.
-                </p>
+
+                {/* Download Invoice Button */}
+                <Button 
+                  onClick={handleDownloadInvoice} 
+                  className="w-full sm:w-auto px-8 py-6 text-lg font-bold bg-green-600 hover:bg-green-700 text-white shadow-xl hover:shadow-2xl rounded-xl transition-all active:scale-[0.98]"
+                >
+                  <Download className="h-5 w-5 mr-2" />
+                  Download Invoice
+                </Button>
               </div>
+            )}
+            
+            {/* Helper text for registration */}
+            {type === 'customer' && status === 'success' && (
+               <p className="text-sm text-gray-500 -mt-6 mb-8 max-w-sm mx-auto">
+                  Activate your plan now by registering your device details.
+               </p>
             )}
 
             {/* Show Benefits based on benefit type for Successful Customer Registrations */}
@@ -837,19 +851,6 @@ export default function ThankYou() {
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* Download Invoice Button - Only for successful customer registrations */}
-            {type === 'customer' && status === 'success' && voucherCode && (
-              <div className="mb-8">
-                <Button 
-                  onClick={handleDownloadInvoice} 
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-3"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Download Invoice
-                </Button>
               </div>
             )}
 

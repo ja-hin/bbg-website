@@ -26,7 +26,7 @@ function CarouselSkeleton() {
   );
 }
 
-export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 15000, onFirstImageLoaded }: HomepageCarouselProps) {
+export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 5000, onFirstImageLoaded }: HomepageCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState<Record<number, boolean>>({});
   const [firstImageLoaded, setFirstImageLoaded] = useState(false);

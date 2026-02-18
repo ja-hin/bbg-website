@@ -975,19 +975,19 @@ export default function Home() {
           </div>
 
           {/* Unified Images Section: Slider for both Mobile and Web */}
-          <div className="mt-8 sm:mt-12">
-            <div className="w-full max-w-5xl mx-auto">
+          <div className="mt-4 sm:mt-6 w-full">
+            <div className="w-full">
                <Carousel opts={{ align: "start", loop: true }} className="w-full">
-                 <CarouselContent>
-                   <CarouselItem>
+                 <CarouselContent className="-ml-0">
+                   <CarouselItem className="pl-0">
                       <img src={deviceRegistrationImg} alt="Process Step 1" className="w-full h-auto block" />
                    </CarouselItem>
-                   <CarouselItem>
+                   <CarouselItem className="pl-0">
                       <img src={resaleValueImg} alt="Process Step 2" className="w-full h-auto block" />
                    </CarouselItem>
                  </CarouselContent>
-                 <CarouselPrevious className="left-4 md:-left-12" />
-                 <CarouselNext className="right-4 md:-right-12" />
+                 <CarouselPrevious className="left-4 md:left-8 bg-white/50 hover:bg-white" />
+                 <CarouselNext className="right-4 md:right-8 bg-white/50 hover:bg-white" />
                </Carousel>
             </div>
           </div>

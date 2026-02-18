@@ -1043,18 +1043,18 @@ export default function Home() {
 
           {/* New Images Section: Mobile Carousel / Desktop Vertical Stack */}
           <div className="mt-12 sm:mt-16">
-            {/* Mobile: Carousel */}
+            {/* Mobile: Carousel (2 distinct images) */}
             <div className="block md:hidden">
                <Carousel opts={{ align: "start", loop: true }} className="w-full">
                  <CarouselContent>
                    <CarouselItem>
                      <div className="px-1">
-                        <img src={deviceRegistrationImg} alt="Process Step 1" className="w-full h-auto rounded-xl shadow-lg" />
+                        <img src={doorstepPickupImg} alt="Mobile Process Step 1" className="w-full h-auto rounded-xl shadow-lg" />
                      </div>
                    </CarouselItem>
                    <CarouselItem>
                      <div className="px-1">
-                        <img src={resaleValueImg} alt="Process Step 2" className="w-full h-auto rounded-xl shadow-lg" />
+                        <img src={instantPaymentImg} alt="Mobile Process Step 2" className="w-full h-auto rounded-xl shadow-lg" />
                      </div>
                    </CarouselItem>
                  </CarouselContent>
@@ -1063,10 +1063,10 @@ export default function Home() {
                </Carousel>
             </div>
 
-            {/* Desktop: Vertical Stack */}
+            {/* Desktop: Vertical Stack (2 distinct images) */}
             <div className="hidden md:flex flex-col gap-8 items-center max-w-4xl mx-auto">
-               <img src={deviceRegistrationImg} alt="Process Step 1" className="w-full h-auto rounded-2xl shadow-xl transition-transform hover:scale-[1.01]" />
-               <img src={resaleValueImg} alt="Process Step 2" className="w-full h-auto rounded-2xl shadow-xl transition-transform hover:scale-[1.01]" />
+               <img src={deviceRegistrationImg} alt="Desktop Process Step 1" className="w-full h-auto rounded-2xl shadow-xl transition-transform hover:scale-[1.01]" />
+               <img src={resaleValueImg} alt="Desktop Process Step 2" className="w-full h-auto rounded-2xl shadow-xl transition-transform hover:scale-[1.01]" />
             </div>
           </div>
         </div>

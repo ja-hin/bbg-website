@@ -7,7 +7,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { useCustomerAuth } from "@/hooks/useCustomerAuth";
 import { BuyModal } from "./buy-modal";
 import { CustomerLoginModal } from "./customer-login-modal";
-import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.png";
+import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.webp";
 
 export default function Header() {
   const [location, navigate] = useLocation();

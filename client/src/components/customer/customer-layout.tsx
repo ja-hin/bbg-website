@@ -12,7 +12,7 @@ import {
   ArrowLeft,
   LayoutDashboard
 } from 'lucide-react';
-import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.png";
+import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.webp";
 
 interface CustomerLayoutProps {
   children: React.ReactNode;

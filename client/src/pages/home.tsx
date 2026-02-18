@@ -46,19 +46,19 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { HomepageCarousel } from "@/components/homepage-carousel";
-import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png";
-import resaleValueImg from "@assets/Untitled design (4)_1758890353128.png";
-import doorstepPickupImg from "@assets/1_1758893676653.png";
-import instantPaymentImg from "@assets/2_1758893843696.png";
+import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.webp";
+import resaleValueImg from "@assets/Untitled design (4)_1758890353128.webp";
+import doorstepPickupImg from "@assets/1_1758893676653.webp";
+import instantPaymentImg from "@assets/2_1758893843696.webp";
 import bbgVideoFile from "@assets/A_cinematic_hightech_202509271550_97ecx_1758972698482.mp4";
-import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.png";
-import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.png";
-import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
-import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_1764254452404.png";
-import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.png";
-import bannerImg from "@assets/BBG Banners Revised (1)_1764328416967.png";
-import buybackGuaranteeImg from "@assets/wmremove-transformed_1767022747924.png";
-import extendPlusImg from "@assets/Extend+cropped_(1)_1767021849857.jpg";
+import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.webp";
+import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.webp";
+import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.webp";
+import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_1764254452404.webp";
+import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.webp";
+import bannerImg from "@assets/BBG Banners Revised (1)_1764328416967.webp";
+import buybackGuaranteeImg from "@assets/wmremove-transformed_1767022747924.webp";
+import extendPlusImg from "@assets/Extend+cropped_(1)_1767021849857.webp";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {

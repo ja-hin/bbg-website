@@ -15,7 +15,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.png";
+import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.webp";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {

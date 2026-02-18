@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { PhoneCall, Key, Shield, LogIn, ArrowRight } from "lucide-react";
 import { ScrollToTopButton } from "@/components/scroll-to-top-button";
-import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.png";
+import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.webp";
 
 export default function CustomerLogin() {
   const [location, navigate] = useLocation();

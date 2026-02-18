@@ -5,7 +5,7 @@ import jsPDF from 'jspdf';
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award, Gavel, Wrench, Star } from "lucide-react";
+import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award, Gavel, Wrench, Star, ArrowRight } from "lucide-react";
 
 // Device Type Claim Values Component
 function BrandClaimValues({ sessionData }: { sessionData: any }) {
@@ -786,6 +786,22 @@ export default function ThankYou() {
                 </p>
                 <p className="text-xs text-gray-500 mt-2">
                   Please save this code for future reference
+                </p>
+              </div>
+            )}
+
+            {/* Complete Registration Button for Customers */}
+            {type === 'customer' && status === 'success' && content.code && (
+              <div className="mb-10 animate-in fade-in slide-in-from-bottom-4 delay-200 duration-700 fill-mode-forwards">
+                <Button 
+                  className="w-full sm:w-auto px-8 py-6 text-lg font-bold bg-[#1e3a8a] text-white hover:bg-[#152861] shadow-xl hover:shadow-2xl rounded-xl transition-all active:scale-[0.98] group"
+                  onClick={() => window.location.href = `/register?voucher=${content.code}`}
+                >
+                  Complete Registration 
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                <p className="text-sm text-gray-500 mt-3 max-w-sm mx-auto">
+                    Activate your plan now by registering your device details.
                 </p>
               </div>
             )}

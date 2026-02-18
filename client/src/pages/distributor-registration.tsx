@@ -182,21 +182,27 @@ export default function DistributorRegistration() {
   return (
     <div className="min-h-screen bg-white">
       {/* ── HERO SECTION ─────────────────────────────────────────────────── */}
-      <section className="relative bg-gradient-to-b from-blue-50 via-white to-white py-20 px-4 text-center overflow-hidden">
+      <section className="relative py-20 px-4 text-center overflow-hidden" 
+        style={{ background: "linear-gradient(135deg, #f0f6fb 0%, #f5f9ff 50%, #faf8ff 100%)" }}>
         {/* subtle background circles */}
-        <div className="absolute -top-24 -left-24 w-72 h-72 bg-blue-100 rounded-full opacity-40 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-indigo-100 rounded-full opacity-40 blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full opacity-40 blur-3xl pointer-events-none" style={{ background: "rgba(37, 70, 150, 0.1)" }} />
+        <div className="absolute -bottom-24 -right-24 w-72 h-72 rounded-full opacity-40 blur-3xl pointer-events-none" style={{ background: "rgba(37, 70, 150, 0.1)" }} />
 
         <div className="relative max-w-3xl mx-auto">
           {/* badge */}
-          <div className="inline-flex items-center gap-1.5 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full mb-6">
-            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+          <div className="inline-flex items-center gap-1.5 border text-xs font-semibold px-3 py-1 rounded-full mb-6"
+            style={{ 
+              background: "rgba(37, 70, 150, 0.1)", 
+              borderColor: "rgba(37, 70, 150, 0.2)",
+              color: "#254696"
+            }}>
+            <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#254696" }} />
             Official Partner Program
           </div>
 
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
             Empower Your Business with{" "}
-            <span className="text-blue-600">India's Best BBG Referral Program</span>
+            <span style={{ color: "#254696" }}>India's Best BBG Referral Program</span>
           </h1>
 
           <p className="text-gray-500 text-base md:text-lg mb-2">
@@ -217,7 +223,7 @@ export default function DistributorRegistration() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button
               size="lg"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 gap-2 shadow-lg shadow-blue-200"
+              className="px-8 gap-2 shadow-lg"
               onClick={scrollToForm}
             >
               Register as Partner <ArrowRight className="h-4 w-4" />
@@ -252,8 +258,8 @@ export default function DistributorRegistration() {
 
         <Card className="border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
           <CardContent className="p-6 flex gap-4 items-start">
-            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-              <Users className="h-5 w-5 text-blue-600" />
+            <div className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "rgba(37, 70, 150, 0.1)" }}>
+              <Users className="h-5 w-5" style={{ color: "#254696" }} />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 mb-1">Build Your Network</h3>
@@ -317,8 +323,8 @@ export default function DistributorRegistration() {
                 <div>
                   <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Referral Code</p>
                   <div className="flex items-center gap-1.5">
-                    <p className="text-sm font-bold text-blue-600">JD123</p>
-                    <Copy className="h-3.5 w-3.5 text-gray-400 cursor-pointer hover:text-blue-500" />
+                    <p className="text-sm font-bold" style={{ color: "#254696" }}>JD123</p>
+                    <Copy className="h-3.5 w-3.5 text-gray-400 cursor-pointer hover:text-[#254696]" />
                   </div>
                 </div>
               </div>
@@ -326,8 +332,8 @@ export default function DistributorRegistration() {
               {/* Stats Row */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                    <UserCheck className="h-4 w-4 text-blue-600" />
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(37, 70, 150, 0.1)" }}>
+                    <UserCheck className="h-4 w-4" style={{ color: "#254696" }} />
                   </div>
                   <div>
                     <p className="text-xs text-gray-400">Total Customers</p>
@@ -457,7 +463,7 @@ export default function DistributorRegistration() {
                   {/* Basic Information */}
                   <div className="space-y-5">
                     <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide flex items-center gap-2">
-                      <Building className="h-4 w-4 text-blue-500" />
+                      <Building className="h-4 w-4" style={{ color: "#254696" }} />
                       Basic Information
                     </h3>
 
@@ -570,7 +576,7 @@ export default function DistributorRegistration() {
                   {/* Declaration & Consent */}
                   <div className="space-y-4">
                     <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-blue-500" />
+                      <FileText className="h-4 w-4" style={{ color: "#254696" }} />
                       Declaration &amp; Consent
                     </h3>
 
@@ -624,7 +630,7 @@ export default function DistributorRegistration() {
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-100"
+                    className="w-full shadow-lg"
                     disabled={
                       !otpVerified ||
                       registerMutation.isPending ||

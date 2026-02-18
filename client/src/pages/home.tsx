@@ -1897,33 +1897,27 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* Referral Program Slider Section */}
+      {/* Referral Program Section: Single Distinct Images */}
       <section className="py-8 sm:py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="w-full">
-            <Carousel
-              opts={{ align: "start", loop: true }}
-              className="w-full"
-            >
-              <CarouselContent className="-ml-0">
-                <CarouselItem className="pl-0">
-                  <img
-                    src={bannerImg}
-                    alt="Referral Program Banner 1"
-                    className="w-full h-auto block rounded-xl"
-                  />
-                </CarouselItem>
-                <CarouselItem className="pl-0">
-                  <img
-                    src={buybackGuaranteeImg}
-                    alt="Referral Program Banner 2"
-                    className="w-full h-auto block rounded-xl"
-                  />
-                </CarouselItem>
-              </CarouselContent>
-              <CarouselPrevious className="left-4 md:left-8 bg-white/50 hover:bg-white" />
-              <CarouselNext className="right-4 md:right-8 bg-white/50 hover:bg-white" />
-            </Carousel>
+            {/* Mobile Image */}
+            <div className="block md:hidden">
+              <img
+                src={buybackGuaranteeImg}
+                alt="Referral Program Mobile"
+                className="w-full h-auto rounded-xl shadow-lg"
+              />
+            </div>
+
+            {/* Desktop Image */}
+            <div className="hidden md:block">
+              <img
+                src={bannerImg}
+                alt="Referral Program Desktop"
+                className="w-full h-auto rounded-xl shadow-lg"
+              />
+            </div>
           </div>
         </div>
       </section>

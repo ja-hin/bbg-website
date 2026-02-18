@@ -46,10 +46,10 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { HomepageCarousel } from "@/components/homepage-carousel";
-import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.webp";
-import resaleValueImg from "@assets/Untitled design (4)_1758890353128.webp";
-import doorstepPickupImg from "@assets/1_1758893676653.webp";
-import instantPaymentImg from "@assets/2_1758893843696.webp";
+import deviceRegistrationImg from "@assets/whathappendbbg.png";
+import resaleValueImg from "@assets/whathappenextendplus.png";
+import doorstepPickupImg from "@assets/whathappendbbg.png";
+import instantPaymentImg from "@assets/whathappenextendplusm.png";
 import bbgVideoFile from "@assets/A_cinematic_hightech_202509271550_97ecx_1758972698482.mp4";
 import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.webp";
 import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.webp";

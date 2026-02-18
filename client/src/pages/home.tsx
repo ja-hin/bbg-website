@@ -51,7 +51,8 @@ import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_17642544524
 import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.png";
 import bannerImg from "@assets/BBG Banners Revised (1)_1764328416967.png";
 import buybackGuaranteeImg from "@assets/bbg-image-hero.png";
-import extendPlusImg from "@assets/Extend+cropped_(1)_1767021849857.jpg";
+import extendPlusImg from "@assets/bbg-image-hero.png";
+// import extendPlusImg from "@assets/Extend+cropped_(1)_1767021849857.jpg";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {

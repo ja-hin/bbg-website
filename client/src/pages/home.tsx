@@ -1897,50 +1897,33 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* Distributor CTA Section */}
-      <section className="py-4 sm:py-6 bg-[#ffffff]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div
-            className="bg-white rounded-xl shadow-lg p-4 sm:p-8 border-l-4"
-            style={{
-              borderLeftColor: (theme as any)?.primaryColor || "#254696",
-            }}
-          >
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-6">
-              <div className="flex-shrink-0">
-                <div
-                  className="rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center"
-                  style={{
-                    backgroundColor: (theme as any)?.primaryColor || "#254696",
-                  }}
-                >
-                  <Award className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-                </div>
-              </div>
-              <div className="flex-1 text-center sm:text-left">
-                <h2 className="text-base sm:text-2xl font-bold mb-1 sm:mb-2 text-gray-900">
-                  Join Our Referral Program
-                </h2>
-                <p className="text-xs sm:text-base text-gray-600 mb-3 sm:mb-0">
-                  Start earning commission on every successful BBG registration.
-                  Easy setup and regular payouts.
-                </p>
-              </div>
-              <div className="flex-shrink-0">
-                <Link href="/referral-partner-registration">
-                  <Button
-                    className="text-white hover:opacity-90 px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-base font-semibold"
-                    style={{
-                      backgroundColor:
-                        (theme as any)?.primaryColor || "#254696",
-                    }}
-                  >
-                    Join Program{" "}
-                    <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
-                  </Button>
-                </Link>
-              </div>
-            </div>
+      {/* Referral Program Slider Section */}
+      <section className="py-8 sm:py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full">
+            <Carousel
+              opts={{ align: "start", loop: true }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-0">
+                <CarouselItem className="pl-0">
+                  <img
+                    src={bannerImg}
+                    alt="Referral Program Banner 1"
+                    className="w-full h-auto block rounded-xl"
+                  />
+                </CarouselItem>
+                <CarouselItem className="pl-0">
+                  <img
+                    src={buybackGuaranteeImg}
+                    alt="Referral Program Banner 2"
+                    className="w-full h-auto block rounded-xl"
+                  />
+                </CarouselItem>
+              </CarouselContent>
+              <CarouselPrevious className="left-4 md:left-8 bg-white/50 hover:bg-white" />
+              <CarouselNext className="right-4 md:right-8 bg-white/50 hover:bg-white" />
+            </Carousel>
           </div>
         </div>
       </section>

@@ -49,7 +49,10 @@ const AdminHomepageBanners = lazy(() => import("@/pages/admin/homepage-banners")
 const AdminCustomerRegistrations = lazy(() => import("@/pages/admin/customer-registrations"));
 const AdminTransactionHistory = lazy(() => import("@/pages/admin/admin-transaction-history"));
 const DistributorLogin = lazy(() => import("@/pages/distributor-login"));
-const DistributorDashboard = lazy(() => import("@/pages/distributor-dashboard"));
+const DistributorDashboard = lazy(() => import("@/pages/distributor/dashboard"));
+const DistributorRegistrations = lazy(() => import("@/pages/distributor/registrations"));
+const DistributorPayouts = lazy(() => import("@/pages/distributor/payouts"));
+const DistributorProfile = lazy(() => import("@/pages/distributor/profile"));
 const TermsAndConditions = lazy(() => import("@/pages/terms-and-conditions"));
 const Plans = lazy(() => import("@/pages/plans"));
 const Checkout = lazy(() => import("@/pages/checkout"));
@@ -125,6 +128,9 @@ function Router() {
         {/* Distributor routes without header/footer */}
         <Route path="/distributor/login" component={DistributorLogin} />
         <Route path="/distributor/dashboard" component={DistributorDashboard} />
+        <Route path="/distributor/registrations" component={DistributorRegistrations} />
+        <Route path="/distributor/payouts" component={DistributorPayouts} />
+        <Route path="/distributor/profile" component={DistributorProfile} />
         
         {/* Customer portal routes (protected, no header/footer) */}
         <Route path="/customer/dashboard" component={CustomerDashboard} />

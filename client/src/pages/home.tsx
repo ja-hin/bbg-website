@@ -48,7 +48,7 @@ import {
 import { HomepageCarousel } from "@/components/homepage-carousel";
 import deviceRegistrationImg from "@assets/whathappendbbg.png";
 import resaleValueImg from "@assets/whathappenextendplus.png";
-import doorstepPickupImg from "@assets/whathappendbbg.png";
+import doorstepPickupImg from "@assets/whathappendbbgm.png";
 import instantPaymentImg from "@assets/whathappenextendplusm.png";
 import bbgVideoFile from "@assets/A_cinematic_hightech_202509271550_97ecx_1758972698482.mp4";
 import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.webp";

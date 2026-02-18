@@ -38,6 +38,13 @@ import {
   ShieldCheck,
   Percent,
 } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { HomepageCarousel } from "@/components/homepage-carousel";
 import deviceRegistrationImg from "@assets/Untitled design (3)_1758887376037.png";
 import resaleValueImg from "@assets/Untitled design (4)_1758890353128.png";
@@ -178,8 +185,52 @@ export default function Home() {
         }}
       >
         <div className="max-w-7xl mx-auto">
-          {/* Grid: 1 column on mobile, 2 columns on desktop */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          {/* Mobile View: Carousel */}
+          <div className="block md:hidden">
+            <Carousel 
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent>
+                <CarouselItem>
+                  <div 
+                    className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
+                    onClick={scrollToForm}
+                    data-testid="button-featured-bbg-mobile"
+                  >
+                    <img 
+                      src={buybackGuaranteeImg} 
+                      alt="BuyBack Guarantee" 
+                      className="w-full h-auto object-cover"
+                      data-testid="image-buyback-guarantee-mobile"
+                    />
+                  </div>
+                </CarouselItem>
+                <CarouselItem>
+                  <div 
+                    className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
+                    onClick={scrollToForm}
+                    data-testid="button-featured-extend-mobile"
+                  >
+                    <img 
+                      src={extendPlusImg} 
+                      alt="Extend+ Protection" 
+                      className="w-full h-auto object-cover"
+                      data-testid="image-extend-plus-mobile"
+                    />
+                  </div>
+                </CarouselItem>
+              </CarouselContent>
+              <CarouselPrevious className="left-2" />
+              <CarouselNext className="right-2" />
+            </Carousel>
+          </div>
+
+          {/* Desktop View: Grid */}
+          <div className="hidden md:grid grid-cols-2 gap-6">
             {/* BuyBack Guarantee Image */}
             <div 
               className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
@@ -208,6 +259,7 @@ export default function Home() {
               />
             </div>
           </div>
+        </div>
         </div>
       </section>
       {/* Homepage Carousel - Critical path, loads first */}

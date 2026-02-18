@@ -308,16 +308,16 @@ export default function DistributorRegistration() {
               <div className="bg-gray-50 rounded-xl p-4 grid grid-cols-3 gap-4">
                 <div>
                   <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Name</p>
-                  <p className="text-sm font-semibold text-gray-800">Ritwik Anand Tiwary</p>
+                  <p className="text-sm font-semibold text-gray-800">John Doe</p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Contact</p>
-                  <p className="text-sm font-semibold text-gray-800">9769340476</p>
+                  <p className="text-sm font-semibold text-gray-800">9876543210</p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Referral Code</p>
                   <div className="flex items-center gap-1.5">
-                    <p className="text-sm font-bold text-blue-600">RAA76</p>
+                    <p className="text-sm font-bold text-blue-600">JD123</p>
                     <Copy className="h-3.5 w-3.5 text-gray-400 cursor-pointer hover:text-blue-500" />
                   </div>
                 </div>

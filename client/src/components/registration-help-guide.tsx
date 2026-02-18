@@ -34,7 +34,7 @@ export function RegistrationHelpGuide() {
             </ol>
             <div className="mt-4 rounded-xl overflow-hidden border border-gray-100 shadow-sm">
               <img 
-                src="/assets/iphone-imei.jpg" 
+                src="/assets/iphone-imei.png" 
                 alt="iPhone IMEI Location" 
                 className="w-full h-auto object-cover"
               />

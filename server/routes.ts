@@ -63,6 +63,15 @@ function generatePayUHash(params: any, salt: string): string {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Middleware to check if admin is authenticated
+  function isAdminAuthenticated(req: any, res: any, next: any) {
+    if (req.session && req.session.adminId) {
+      next();
+    } else {
+      res.status(401).json({ message: "Admin authentication required" });
+    }
+  }
+
   // Initialize all services with environment variables
   await initializeServices();
 
@@ -2881,14 +2890,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Middleware to check if admin is authenticated
-  const isAdminAuthenticated = (req: any, res: any, next: any) => {
-    if (req.session && req.session.adminId) {
-      next();
-    } else {
-      res.status(401).json({ message: "Admin authentication required" });
-    }
-  };
+  // Admin middleware to check authentication
+  // isAdminAuthenticated already defined at the top of registerRoutes function
 
   // Partner Commission Settings Routes
   app.get("/api/admin/partner-commission", isAdminAuthenticated, async (req, res) => {
@@ -3318,7 +3321,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin middleware to check authentication
-  // isAdminAuthenticated already defined above at line 2887
+  // isAdminAuthenticated already defined at the top of registerRoutes function
 
   // Get current admin info
   app.get("/api/admin/me", async (req: any, res) => {

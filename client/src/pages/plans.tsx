@@ -190,7 +190,6 @@ export default function Plans() {
       planName: planInfo.planName,
       validity: planInfo.validity,
       coverage: planInfo.coverage,
-      coverage: planInfo.coverage,
       brand: deviceBrand,
       model: deviceModel,
       deviceAgeSelection: deviceAgeSelection,

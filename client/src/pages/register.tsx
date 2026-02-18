@@ -2,25 +2,15 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -29,11 +19,26 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Smartphone, Hash, Info, Loader2, Upload } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { 
+  CheckCircle, 
+  Smartphone, 
+  Hash, 
+  Info, 
+  Loader2, 
+  Upload, 
+  HelpCircle,
+  Camera,
+  FileText
+} from "lucide-react";
 import { ValidatedField } from "@/components/validated-field";
 import { SuccessConfetti } from "@/components/confetti";
+import { RegistrationHelpGuide } from "@/components/registration-help-guide";
 
 const postPurchaseRegistrationSchema = z.object({
   // BBG Details
@@ -56,6 +61,7 @@ export default function Register() {
   const [customerInfo, setCustomerInfo] = useState<any>(null);
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
   const { toast } = useToast();
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   const form = useForm<PostPurchaseRegistrationData>({
     resolver: zodResolver(postPurchaseRegistrationSchema),
@@ -119,14 +125,10 @@ export default function Register() {
         const formData = new FormData();
         formData.append('invoice', invoiceFile);
         formData.append('orderId', registerResponse.registrationId.toString());
-        // Use the customer phone from the validation response or form context if available
-        // Assuming validation response had it, otherwise we might need to ask user or get it from context
-        // But api/customer/upload-invoice might need it. 
-        // Let's use customerInfo.phone if available, or rely on backend session if authenticated?
-        // The upload-invoice endpoint expects 'phone'.
+        
         if (customerInfo?.phone) {
            formData.append('phone', customerInfo.phone);
-        } else if (customerInfo?.contact) { // sometimes it's contact
+        } else if (customerInfo?.contact) { 
            formData.append('phone', customerInfo.contact);
         }
 
@@ -137,7 +139,6 @@ export default function Register() {
           });
         } catch (uploadError) {
           console.error("Invoice upload failed but registration succeeded", uploadError);
-          // We can notify user but still treat registration as success
         }
       }
       return registerResponse;
@@ -221,12 +222,11 @@ export default function Register() {
     setInvoiceFile(null);
   };
 
-  // If no registration type is selected, show selection screen
+  // ─── SELECTION SCREEN ──────────────────────────────────────────────────
   if (!registrationType) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
         <div className="container mx-auto px-4 max-w-6xl">
-          {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Device Registration
@@ -237,7 +237,6 @@ export default function Register() {
             </p>
           </div>
 
-          {/* Main panel */}
           <Card className="shadow-xl border-0 rounded-2xl bg-white">
             <CardContent className="p-8 lg:p-10">
               <div className="grid gap-6 md:grid-cols-3">
@@ -308,7 +307,6 @@ export default function Register() {
             </CardContent>
           </Card>
 
-          {/* Support link */}
           <div className="mt-6 text-center text-sm text-gray-600">
             Not sure?{" "}
             <a
@@ -324,297 +322,226 @@ export default function Register() {
     );
   }
 
+  // ─── MAIN REGISTRATION LAYOUT ────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
-      <div className="container mx-auto px-4 max-w-6xl">
-        {/* Header */}
-        <div className="text-center mb-8">
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+      
+      {/* ── Left Column: Form (60%) ────────────────────────────────────── */}
+      <div className="w-full md:w-[60%] p-4 md:p-12 lg:p-16 flex flex-col bg-white order-2 md:order-1 relative">
+        <div className="max-w-xl mx-auto w-full flex-grow flex flex-col justify-center">
+          
           <Button
-            variant="outline"
+            variant="ghost"
             onClick={() => setRegistrationType(null)}
-            className="mb-4"
-            data-testid="button-back-to-selection"
+            className="self-start text-gray-500 hover:text-gray-900 pl-0 gap-2 mb-8 md:mb-12"
           >
             ← Back to Selection
           </Button>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Website Device Registration
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Enter your BBG voucher code and device IMEI/serial number to
-            complete registration.
-          </p>
-        </div>
 
-        {/* Registration Form */}
-        <Card className="shadow-xl">
-          <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-            <CardTitle className="text-2xl flex items-center">
-              <CheckCircle className="h-6 w-6 mr-2" />
-              Device Registration Form
-            </CardTitle>
-            <CardDescription className="text-blue-100 mt-2">
-              Complete all sections to activate your BBG protection
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-8">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
-              >
-                {/* Step 1: BBG Voucher Validation */}
-                {!voucherValidated && (
-                  <div className="space-y-6">
-                    <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
-                      <Hash className="h-4 w-4 mr-2" />
-                      Step 1: Validate BBG Voucher Code
-                    </h3>
+          <div className="mb-8 md:mb-10">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">
+              Register Device
+            </h1>
+            <p className="text-gray-500 text-base md:text-lg">
+              Validate your voucher to activate protection.
+            </p>
+          </div>
 
-                    <div className="max-w-md mx-auto space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="voucherCode"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="flex items-center text-base">
-                              <Hash className="h-5 w-5 mr-2" />
-                              BBG Voucher Code *
-                            </FormLabel>
-                            <FormControl>
-                              <ValidatedField
-                                value={field.value}
-                                onChange={field.onChange}
-                                onBlur={field.onBlur}
-                                placeholder="Enter your BBG voucher code"
-                                validationType="name"
-                                className="h-12 text-lg"
-                                disabled={voucherValidationMutation.isPending}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <Button
-                        type="button"
-                        onClick={handleValidateVoucher}
-                        disabled={voucherValidationMutation.isPending}
-                        className="w-full h-12 bg-blue-600 hover:bg-blue-700"
-                        data-testid="button-validate-voucher"
-                      >
-                        {voucherValidationMutation.isPending ? (
-                          <>
-                            <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                            Validating Voucher...
-                          </>
-                        ) : (
-                          <>
-                            <CheckCircle className="h-5 w-5 mr-2" />
-                            Validate Voucher Code
-                          </>
-                        )}
-                      </Button>
-                    </div>
-
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
-                      <div className="flex items-start space-x-3">
-                        <Info className="h-5 w-5 text-blue-600 mt-0.5" />
-                        <div className="text-sm text-blue-800">
-                          <p className="font-medium mb-2">
-                            Where to find your BBG voucher code:
-                          </p>
-                          <ul className="space-y-1 text-xs">
-                            <li>
-                              📧 <strong>Email:</strong> Check your BBG purchase
-                              confirmation email
-                            </li>
-                            <li>
-                              📱 <strong>SMS:</strong> Sent to your registered
-                              mobile number
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 2: Customer Info & Device Registration */}
-                {voucherValidated && customerInfo && (
-                  <div className="space-y-6">
-                    {/* Customer Information Display */}
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
-                      <div className="flex items-start space-x-3">
-                        <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                        <div className="text-sm text-green-800">
-                          <p className="font-medium mb-2">
-                            ✅ Valid BBG Voucher Code
-                          </p>
-                          <div className="space-y-1 text-xs">
-                            <p>
-                              <strong>Customer:</strong> {customerInfo.name}
-                            </p>
-                            <p>
-                              <strong>Device:</strong> {customerInfo.brand}{" "}
-                              {customerInfo.deviceType}
-                            </p>
-                            <p>
-                              <strong>Voucher:</strong>{" "}
-                              {customerInfo.voucherCode}
-                            </p>
-                          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 pb-24 md:pb-0">
+              
+              {/* Step 1: Voucher */}
+              <div className={`transition-all duration-300 ${voucherValidated ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`}>
+                <FormField
+                  control={form.control}
+                  name="voucherCode"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
+                        BBG Voucher Code
+                      </FormLabel>
+                      <div className="flex gap-3">
+                        <FormControl>
+                          <ValidatedField
+                            value={field.value}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            placeholder="e.g. BBG-2023-XXXX"
+                            validationType="name"
+                            className="h-12 bg-gray-50 border-gray-200 focus:bg-white transition-colors rounded-xl font-medium"
+                            disabled={voucherValidated}
+                          />
+                        </FormControl>
+                        {!voucherValidated && (
                           <Button
                             type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={handleStartOver}
-                            className="mt-2 text-xs"
+                            onClick={handleValidateVoucher}
+                            disabled={voucherValidationMutation.isPending}
+                            className="h-12 px-6 rounded-xl font-semibold bg-[#1e3a8a] text-white hover:bg-[#152861] shadow-md transition-all"
                           >
-                            Use Different Voucher Code
+                            {voucherValidationMutation.isPending ? (
+                              <Loader2 className="h-5 w-5 animate-spin" />
+                            ) : "Validate"}
                           </Button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <h3 className="text-md font-semibold text-gray-900 border-b pb-1 flex items-center">
-                      <Smartphone className="h-4 w-4 mr-2" />
-                      Step 2: Enter Device Details
-                    </h3>
-
-                    <div className="max-w-md mx-auto space-y-6">
-                      <FormField
-                        control={form.control}
-                        name="imeiSerial"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="flex items-center text-base">
-                              <Smartphone className="h-5 w-5 mr-2" />
-                              IMEI / Serial Number *
-                            </FormLabel>
-                            <FormControl>
-                              <ValidatedField
-                                value={field.value}
-                                onChange={field.onChange}
-                                onBlur={field.onBlur}
-                                placeholder="Enter device IMEI or serial number"
-                                validationType="imei"
-                                className="h-12 text-lg"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
                         )}
-                      />
-
-                      <div className="space-y-2">
-                        <FormLabel className="flex items-center text-base">
-                          <Upload className="h-5 w-5 mr-2" />
-                          Upload Invoice (Optional)
-                        </FormLabel>
-                        <div className="flex items-center gap-4">
-                          <Input 
-                            type="file"
-                            accept=".pdf,.jpg,.jpeg,.png"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0] || null;
-                              setInvoiceFile(file);
-                            }}
-                            className="cursor-pointer"
-                          />
-                        </div>
-                        <p className="text-xs text-gray-500">
-                          Accepted formats: PDF, JPG, PNG. Max size: 5MB.
-                        </p>
                       </div>
-                    </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
-                      <div className="flex items-start space-x-3">
-                        <Info className="h-5 w-5 text-blue-600 mt-0.5" />
-                        <div className="text-sm text-blue-800">
-                          <p className="font-medium mb-2">
-                            How to find your device details:
-                          </p>
-                          <ul className="space-y-1 text-xs">
-                            <li>
-                              📱 <strong>Mobile IMEI:</strong> Dial *#06# or
-                              Settings → About Phone
-                            </li>
-                            <li>
-                              💻 <strong>Laptop Serial:</strong> Sticker on
-                              bottom/back or System Info
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
+                {/* Voucher Success State */}
+                {voucherValidated && customerInfo && (
+                  <div className="mt-4 p-4 bg-green-50 border border-green-100 rounded-xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-sm font-bold text-green-800 mb-1">Voucher Verified</p>
+                      <p className="text-xs text-green-700">
+                        {customerInfo.name} • {customerInfo.brand} {customerInfo.deviceType}
+                      </p>
                     </div>
-                  </div>
-                )}
-
-                {/* Submit Button - Only show when voucher is validated */}
-                {voucherValidated && (
-                  <div className="flex justify-center pt-6">
                     <Button
-                      type="submit"
-                      size="lg"
-                      disabled={registrationMutation.isPending}
-                      className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg shadow-lg transform transition hover:scale-105"
-                      data-testid="button-submit-registration"
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleStartOver}
+                      className="text-xs h-7 text-green-700 hover:text-green-900 hover:bg-green-100"
                     >
-                      {registrationMutation.isPending ? (
-                        <>
-                          <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                          Registering Device...
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle className="h-5 w-5 mr-2" />
-                          Complete Device Registration
-                        </>
-                      )}
+                      Change
                     </Button>
                   </div>
                 )}
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+              </div>
 
-        {/* BBG Benefits Card */}
-        <Card className="shadow-lg mt-8">
-          <CardContent className="p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center">
-              Your BBG Protection Benefits
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
-                <div className="text-2xl font-bold text-green-600 mb-1">
-                  *Up to 70%
-                </div>
-                <div className="text-sm text-green-700">
-                  Maximum buyback value
-                </div>
-              </div>
-              <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <div className="text-2xl font-bold text-blue-600 mb-1">
-                  *Upto 36 Months
-                </div>
-                <div className="text-sm text-blue-700">Coverage period</div>
-              </div>
-              <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
-                <div className="text-2xl font-bold text-purple-600 mb-1">
-                  Free
-                </div>
-                <div className="text-sm text-purple-700">
-                  Home pickup service
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              {/* Step 2: Device Details */}
+              {voucherValidated && (
+                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                      <div className="w-full border-t border-gray-100"></div>
+                    </div>
+                    <div className="relative flex justify-center">
+                      <span className="px-3 bg-white text-xs font-medium text-gray-400 uppercase tracking-widest">
+                        Device Details
+                      </span>
+                    </div>
+                  </div>
 
+                  <FormField
+                    control={form.control}
+                    name="imeiSerial"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                         <div className="flex justify-between items-center">
+                          <FormLabel className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
+                            IMEI / Serial Number
+                          </FormLabel>
+                          {/* Mobile-only help trigger */}
+                          <button
+                            type="button"
+                            onClick={() => setIsHelpOpen(true)}
+                            className="md:hidden flex items-center gap-1.5 text-[#1e3a8a] text-xs font-semibold hover:underline"
+                          >
+                            <Info className="h-3.5 w-3.5" />
+                            Where to find this?
+                          </button>
+                        </div>
+                        <FormControl>
+                          <div className="relative">
+                            <ValidatedField
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                              placeholder="Enter 15-digit IMEI or Serial Number"
+                              validationType="imei"
+                              className="h-14 pl-12 bg-white border-gray-200 focus:ring-2 focus:ring-[#1e3a8a]/20 rounded-xl text-lg tracking-wide placeholder:tracking-normal font-medium shadow-sm transition-all"
+                            />
+                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                              <Smartphone className="h-5 w-5" />
+                            </div>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="space-y-3">
+                    <FormLabel className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
+                      Upload Invoice (Optional)
+                    </FormLabel>
+                    
+                    <div className="relative group">
+                      <input
+                        type="file"
+                        accept="image/*,application/pdf"
+                        capture="environment" // Enables camera on mobile
+                        id="invoice-upload"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0] || null;
+                          setInvoiceFile(file);
+                        }}
+                      />
+                      <label
+                        htmlFor="invoice-upload"
+                        className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200
+                          ${invoiceFile 
+                            ? "border-green-300 bg-green-50 text-green-700" 
+                            : "border-gray-300 bg-gray-50 text-gray-500 hover:bg-gray-100 hover:border-gray-400"
+                          }
+                        `}
+                      >
+                        {invoiceFile ? (
+                          <>
+                            <FileText className="h-8 w-8 mb-2" />
+                            <span className="text-sm font-medium">{invoiceFile.name}</span>
+                            <span className="text-xs opacity-70 mt-1">Click to change</span>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex gap-4 mb-2">
+                              <div className="p-2 bg-white rounded-full shadow-sm">
+                                <Upload className="h-5 w-5 text-gray-400" />
+                              </div>
+                              <div className="p-2 bg-white rounded-full shadow-sm">
+                                <Camera className="h-5 w-5 text-gray-400" />
+                              </div>
+                            </div>
+                            <span className="text-sm font-medium">Choose file or take photo</span>
+                            <span className="text-xs text-gray-400 mt-1">PDF, JPG, PNG (Max 5MB)</span>
+                          </>
+                        )}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Sticky Mobile Submit Button */}
+              {voucherValidated && (
+                <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 md:static md:bg-transparent md:border-0 md:p-0 z-10">
+                  <Button
+                    type="submit"
+                    disabled={registrationMutation.isPending}
+                    className="w-full h-14 md:h-12 bg-[#1e3a8a] text-white hover:bg-[#152861] text-lg md:text-base font-bold rounded-xl shadow-lg md:shadow-md transition-all active:scale-[0.98]"
+                  >
+                    {registrationMutation.isPending ? (
+                      <>
+                        <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      "Complete Registration"
+                    )}
+                  </Button>
+                </div>
+              )}
+
+            </form>
+          </Form>
+        </div>
+        
         {/* Success Confetti */}
         {showConfetti && (
           <SuccessConfetti
@@ -623,6 +550,54 @@ export default function Register() {
           />
         )}
       </div>
+
+      {/* ── Right Column: Help Sidebar (40%) - Hidden on Mobile ──────────────── */}
+      <div className="hidden md:flex w-[40%] bg-white border-l border-gray-100 p-12 lg:p-16 flex-col justify-center order-2">
+        <div className="max-w-md mx-auto w-full sticky top-24">
+          <div className="mb-8">
+            <div className="h-12 w-12 bg-blue-50 rounded-2xl flex items-center justify-center mb-4 text-[#1e3a8a]">
+              <HelpCircle className="h-6 w-6" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Need Help?</h2>
+            <p className="text-gray-500">
+              Can't find your device details? We've got you covered.
+            </p>
+          </div>
+          
+          <RegistrationHelpGuide />
+
+          {/* Additional Support Card */}
+          <div className="mt-10 p-6 bg-blue-50 rounded-2xl border border-blue-100">
+            <h3 className="font-semibold text-[#1e3a8a] mb-2 flex items-center gap-2">
+              <Info className="h-4 w-4" /> Why do we need this?
+            </h3>
+            <p className="text-sm text-blue-900/70 leading-relaxed">
+              Your unique IMEI or Serial Number ensures that we protect the correct device. It serves as a digital fingerprint for your coverage plan.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Mobile Help Modal ────────────────────────────────────────────── */}
+      <Dialog open={isHelpOpen} onOpenChange={setIsHelpOpen}>
+        <DialogContent className="sm:max-w-md h-[90vh] md:h-auto overflow-y-auto rounded-t-2xl md:rounded-2xl top-[5%] md:top-[50%] translate-y-0 md:-translate-y-1/2">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Find Device Details</DialogTitle>
+          </DialogHeader>
+          <div className="mt-4">
+            <RegistrationHelpGuide />
+          </div>
+          <div className="mt-6 pt-6 border-t border-gray-100">
+             <Button 
+              className="w-full bg-gray-100 text-gray-900 hover:bg-gray-200 font-semibold h-12 rounded-xl"
+              onClick={() => setIsHelpOpen(false)}
+            >
+              Close Guide
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }

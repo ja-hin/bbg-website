@@ -2881,6 +2881,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Middleware to check if admin is authenticated
+  const isAdminAuthenticated = (req: any, res: any, next: any) => {
+    if (req.session && req.session.adminId) {
+      next();
+    } else {
+      res.status(401).json({ message: "Admin authentication required" });
+    }
+  };
+
   // Partner Commission Settings Routes
   app.get("/api/admin/partner-commission", isAdminAuthenticated, async (req, res) => {
     try {
@@ -3309,16 +3318,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin middleware to check authentication
-  const isAdminAuthenticated = (req: any, res: any, next: any) => {
-    console.log("Auth check - Session ID:", req.session?.adminId);
-    console.log("Auth check - Session object:", req.session);
-
-    if (!req.session?.adminId || req.session.adminId === undefined) {
-      console.log("Authentication failed - no valid session");
-      return res.status(401).json({ message: "Admin authentication required" });
-    }
-    next();
-  };
+  // isAdminAuthenticated already defined above at line 2887
 
   // Get current admin info
   app.get("/api/admin/me", async (req: any, res) => {

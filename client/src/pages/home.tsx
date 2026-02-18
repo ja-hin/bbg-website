@@ -174,7 +174,7 @@ export default function Home() {
       <section 
         className="px-3 sm:px-6 lg:px-8 py-4 sm:py-6"
         style={{
-          background: "linear-gradient(135deg, #0f2341 0%, #1a3e5f 50%, #162e47 100%)"
+          background: "#FFFFFF"
         }}
       >
         <div className="max-w-7xl mx-auto">

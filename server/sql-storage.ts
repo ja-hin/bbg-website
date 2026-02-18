@@ -2019,7 +2019,14 @@ export class SqlServerStorage implements IStorage {
           if (commissionSettings.commissionType === 'percentage') {
             commissionAmount = (insertCustomer.invoiceValue * commissionSettings.commissionValue) / 100;
           } else if (commissionSettings.commissionType === 'flat') {
-            commissionAmount = commissionSettings.commissionValue;
+            // Check for device-specific flat amounts first, then fallback to general commissionValue
+            if (insertCustomer.deviceType === 'mobile' && commissionSettings.mobileAmount > 0) {
+              commissionAmount = commissionSettings.mobileAmount;
+            } else if (insertCustomer.deviceType === 'laptop' && commissionSettings.laptopAmount > 0) {
+              commissionAmount = commissionSettings.laptopAmount;
+            } else {
+              commissionAmount = commissionSettings.commissionValue;
+            }
           }
         }
         

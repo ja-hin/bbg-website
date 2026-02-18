@@ -395,7 +395,7 @@ export default function DistributorRegistration() {
                 <div>
                   <p className="text-sm font-semibold text-gray-800 mb-1">Recent Registrations</p>
                   <p className="text-xs text-gray-400 mb-3">
-                    Customers who registered using your referral code: <span className="font-medium text-gray-600">RAA76</span>
+                    Customers who registered using your referral code: <span className="font-medium text-gray-600">JD123</span>
                   </p>
                   <div className="space-y-2">
                     {MOCK_REGISTRATIONS.map((reg) => (

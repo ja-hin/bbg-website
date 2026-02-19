@@ -214,34 +214,32 @@ export default function Home() {
             >
               <CarouselContent>
                 <CarouselItem>
-                  <Link href="/register">
-                    <div
-                      className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
-                      data-testid="button-featured-bbg-mobile"
-                    >
-                      <img
-                        src={buybackGuaranteeImg}
-                        alt="BuyBack Guarantee"
-                        className="w-full h-auto object-cover"
-                        data-testid="image-buyback-guarantee-mobile"
-                      />
-                    </div>
-                  </Link>
+                  <div
+                    onClick={scrollToForm}
+                    className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
+                    data-testid="button-featured-bbg-mobile"
+                  >
+                    <img
+                      src={buybackGuaranteeImg}
+                      alt="BuyBack Guarantee"
+                      className="w-full h-auto object-cover"
+                      data-testid="image-buyback-guarantee-mobile"
+                    />
+                  </div>
                 </CarouselItem>
                 <CarouselItem>
-                  <Link href="/register">
-                    <div
-                      className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
-                      data-testid="button-featured-extend-mobile"
-                    >
-                      <img
-                        src={extendPlusImg}
-                        alt="Extend+ Protection"
-                        className="w-full h-auto object-cover"
-                        data-testid="image-extend-plus-mobile"
-                      />
-                    </div>
-                  </Link>
+                  <div
+                    onClick={scrollToForm}
+                    className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
+                    data-testid="button-featured-extend-mobile"
+                  >
+                    <img
+                      src={extendPlusImg}
+                      alt="Extend+ Protection"
+                      className="w-full h-auto object-cover"
+                      data-testid="image-extend-plus-mobile"
+                    />
+                  </div>
                 </CarouselItem>
               </CarouselContent>
               <CarouselPrevious className="left-2" />
@@ -252,34 +250,32 @@ export default function Home() {
           {/* Desktop View: Grid */}
           <div className="hidden md:grid grid-cols-2 gap-6">
             {/* BuyBack Guarantee Image */}
-            <Link href="/register">
-              <div
-                className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
-                data-testid="button-featured-bbg"
-              >
-                <img
-                  src={buybackGuaranteeImg}
-                  alt="BuyBack Guarantee"
-                  className="w-full h-auto object-cover"
-                  data-testid="image-buyback-guarantee"
-                />
-              </div>
-            </Link>
+            <div
+              onClick={scrollToForm}
+              className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
+              data-testid="button-featured-bbg"
+            >
+              <img
+                src={buybackGuaranteeImg}
+                alt="BuyBack Guarantee"
+                className="w-full h-auto object-cover"
+                data-testid="image-buyback-guarantee"
+              />
+            </div>
 
             {/* Extend+ Protection Image */}
-            <Link href="/register">
-              <div
-                className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
-                data-testid="button-featured-extend"
-              >
-                <img
-                  src={extendPlusImg}
-                  alt="Extend+ Protection"
-                  className="w-full h-auto object-cover"
-                  data-testid="image-extend-plus"
-                />
-              </div>
-            </Link>
+            <div
+              onClick={scrollToForm}
+              className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
+              data-testid="button-featured-extend"
+            >
+              <img
+                src={extendPlusImg}
+                alt="Extend+ Protection"
+                className="w-full h-auto object-cover"
+                data-testid="image-extend-plus"
+              />
+            </div>
           </div>
         </div>
       </section>

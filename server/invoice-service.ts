@@ -13,11 +13,13 @@ interface InvoiceData {
   planType: string;
   deviceType: string;
   brand?: string;
+  deviceModel?: string; // Added deviceModel
   amount: number;
   validity?: string;
   coverage?: string;
   paymentDate: Date;
   referralCode?: string;
+  voucherCode?: string; // Added voucherCode
   hsnCode?: string;
   gstRate?: number;
 }
@@ -182,20 +184,25 @@ class InvoiceService {
         doc
           .fontSize(9)
           .fillColor("#333")
-          .text("Xtracover Technologies Pvt Ltd (Delhi)", 40, y)
+          .text("XTRACOVER TECHNOLOGIES PRIVATE LIMITED", 40, y)
           .fontSize(8)
           .fillColor("#666")
-          .text("Near C-Lal Chowk, 3rd Floor, A1, FIEE Complex,", 40, y + 12)
-          .text("Okhla Estate Phase-2, New Delhi - 110020", 40, y + 22)
+          .text("A-1, 3rd Floor, FIEE Complex Okhla Industrial Area Phase-2", 40, y + 12)
+          .text("New Delhi South Delhi DL 110020 IN", 40, y + 22)
           .text(
-            "GSTIN: 07A8BCD2012D1ZM | CIN: U74999DL2016PTC302763",
+            "CIN : U74999DL2017PTC313555",
             40,
             y + 32,
           )
           .text(
-            "Email: compliance@xtracover.com | Phone: +91-8882136586",
+            "For any query call on 886 039 6039 between 09:30 to 18:30 IST",
             40,
             y + 42,
+          )
+          .text(
+            "or by email at contactus@xtracover.com",
+            40,
+            y + 52,
           );
 
         /* Invoice box (right) */
@@ -210,7 +217,7 @@ class InvoiceService {
         doc.text(this.formatDate(data.paymentDate), 450, y + 32);
 
         doc.text("Ref No:", 370, y + 46);
-        doc.text(data.transactionId.slice(0, 20), 450, y + 46);
+        doc.text(data.voucherCode || data.transactionId.slice(0, 20), 450, y + 46);
 
         doc.rect(370, y + 62, 170, 16).fill("#1f3c88");
         doc
@@ -261,22 +268,30 @@ class InvoiceService {
 
         y += 22;
 
-        doc.rect(40, y, 510, 28).stroke("#ddd");
+        /* Adjusted row height to 38 into accommodation two lines of text */
+        doc.rect(40, y, 510, 38).stroke("#ddd");
         doc.fillColor("#333").fontSize(8);
-        doc.text("1", 45, y + 6);
-        doc.text(data.planName, 70, y + 6);
+        doc.text("1", 45, y + 12);
+
+        // Line 1: Plan Name
+        doc.text(data.planName, 70, y + 8, { width: 220, ellipsis: true });
+
+        // Line 2: Device Details
+        const deviceDetails = [data.deviceType, data.brand, data.deviceModel].filter(Boolean).join(" ");
         doc
           .fontSize(7)
           .fillColor("#666")
-          .text(data.planType, 70, y + 16);
+          .text(deviceDetails, 70, y + 20, { width: 220, ellipsis: true });
 
+        // Reset for other columns
         doc.fontSize(8).fillColor("#333");
-        doc.text(hsn, 300, y + 6);
-        doc.text("1 pcs", 365, y + 6);
-        doc.text(taxableValue.toFixed(2), 410, y + 6);
-        doc.text(taxableValue.toFixed(2), 520, y + 6, { align: "right" });
 
-        y += 30;
+        doc.text(hsn, 300, y + 12);
+        doc.text("1 pcs", 365, y + 12);
+        doc.text(taxableValue.toFixed(2), 410, y + 12);
+        doc.text(taxableValue.toFixed(2), 520, y + 12, { align: "right" });
+
+        y += 40; // Adjusted Y increment
 
         /* IGST */
         doc.rect(40, y, 510, 18).stroke("#eee");

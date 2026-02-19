@@ -46,18 +46,18 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { HomepageCarousel } from "@/components/homepage-carousel";
-import deviceRegistrationImg from "@assets/whathappendbbg.png";
-import resaleValueImg from "@assets/whathappenextendplus.png";
-import doorstepPickupImg from "@assets/whathappenbbgm.png";
-import instantPaymentImg from "@assets/whathappenextendplusm.png";
+import deviceRegistrationImg from "@assets/BBG process - website.jpg";
+import resaleValueImg from "@assets/Extend+ process - webiste.jpg";
+import doorstepPickupImg from "@assets/BBG_Process_mob.jpg";
+import instantPaymentImg from "@assets/Extend+_process_mob.jpg";
 import bbgVideoFile from "@assets/A_cinematic_hightech_202509271550_97ecx_1758972698482.mp4";
 import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.webp";
 import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.webp";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.webp";
 import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_1764254452404.webp";
 import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.webp";
-import bannerImg from "@assets/joinpweb.png";
-import buybackGuaranteeImgBelow from "@assets/joinpm.png";
+import bannerImg from "@assets/Referral_website.png";
+import buybackGuaranteeImgBelow from "@assets/Referal_mobile.png";
 import buybackGuaranteeImg from "@assets/wmremove-transformed_1767022747924.webp";
 import extendPlusImg from "@assets/Extend+cropped_(1)_1767021849857.webp";
 
@@ -457,11 +457,10 @@ export default function Home() {
             <div className="inline-flex bg-gray-100 rounded-full p-1 border border-gray-200">
               <button
                 onClick={() => setPricingView("laptop")}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                  pricingView === "laptop"
-                    ? "bg-[#254696] text-white shadow-md"
-                    : "text-gray-600 hover:text-gray-800"
-                }`}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${pricingView === "laptop"
+                  ? "bg-[#254696] text-white shadow-md"
+                  : "text-gray-600 hover:text-gray-800"
+                  }`}
                 data-testid="toggle-pricing-laptop"
               >
                 <Laptop className="w-4 h-4" />
@@ -469,11 +468,10 @@ export default function Home() {
               </button>
               <button
                 onClick={() => setPricingView("mobile")}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                  pricingView === "mobile"
-                    ? "bg-[#254696] text-white shadow-md"
-                    : "text-gray-600 hover:text-gray-800"
-                }`}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${pricingView === "mobile"
+                  ? "bg-[#254696] text-white shadow-md"
+                  : "text-gray-600 hover:text-gray-800"
+                  }`}
                 data-testid="toggle-pricing-mobile"
               >
                 <Smartphone className="w-4 h-4" />
@@ -1675,18 +1673,30 @@ export default function Home() {
               >
                 <CarouselContent className="-ml-0">
                   <CarouselItem className="pl-0">
-                    <img
-                      src={deviceRegistrationImg}
-                      alt="Process Step 1"
-                      className="w-full h-auto block"
-                    />
+                    <picture>
+                      <source
+                        media="(max-width: 639px)"
+                        srcSet={doorstepPickupImg}
+                      />
+                      <img
+                        src={deviceRegistrationImg}
+                        alt="Process Step 1"
+                        className="w-full h-auto block"
+                      />
+                    </picture>
                   </CarouselItem>
                   <CarouselItem className="pl-0">
-                    <img
-                      src={resaleValueImg}
-                      alt="Process Step 2"
-                      className="w-full h-auto block"
-                    />
+                    <picture>
+                      <source
+                        media="(max-width: 639px)"
+                        srcSet={instantPaymentImg}
+                      />
+                      <img
+                        src={resaleValueImg}
+                        alt="Process Step 2"
+                        className="w-full h-auto block"
+                      />
+                    </picture>
                   </CarouselItem>
                 </CarouselContent>
                 <CarouselPrevious className="left-4 md:left-8 bg-white/50 hover:bg-white" />

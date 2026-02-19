@@ -339,21 +339,43 @@ class InvoiceService {
         doc.fontSize(9).fillColor("#333").text("Declaration", 40, y);
         y += 12;
 
-        doc
-          .fontSize(7)
-          .fillColor("#666")
-          .text(
-            "BBG applicable only on original device registered with valid BBG voucher and tax invoice. Xtracover is not liable for data recovery. Customer must reset and remove all data before handover.",
-            40,
-            y,
-            { width: 510 },
-          );
+        doc.fontSize(7).fillColor("#666");
+
+        // 1. BuyBack Guarantee (BBG)
+        doc.text("1. BuyBack Guarantee (BBG)", 40, y);
+        y += 10;
+        doc.text("The following terms are only for BuyBack Guarantee unless mentioned otherwise.", 40, y);
+        y += 10;
+        doc.text("• Device Age Limit: BuyBack Guarantee and Bundle Plan is Applicable only for devices up to 6 months old at the time of plan purchase.", 40, y, { width: 510 });
+        doc.text("• Registration: Must be registered at bbg.xtracover.com within 6 months of the original device purchase date.", 40, doc.y, { width: 510 });
+        doc.text("• Condition: Device must be in full working condition (no cracks, screen spots, or liquid damage). All screen locks must be deactivated.", 40, doc.y, { width: 510 });
+        doc.text("• Mandatory Returns: Original box, charger, and accessories must be returned in working condition, or the BBG value becomes void.", 40, doc.y, { width: 510 });
+        doc.text("• Waiting Period: Claims can only be initiated 3 months after the plan purchase date.", 40, doc.y, { width: 510 });
+
+        y = doc.y + 8;
+
+        // 2. Extend+ Plan
+        doc.text("2. Extend+ Plan", 40, y);
+        y += 10;
+        doc.font("Helvetica").text("The following terms are only for Extend+ unless mentioned otherwise.", 40, y);
+        y += 10;
+        doc.text("• Device Age Limit: Applicable only for devices up to 3 years old at the time of plan purchase.", 40, y, { width: 510 });
+        doc.text("• Free Repair: Entitles you to one (1) Free Service (Service Charges only). The cost of replacement parts if applicable must be paid by the customer upfront.", 40, doc.y, { width: 510 });
+        doc.text("• Auction Service: Provides access to sell your device to the highest bidder via the XtraCover platform.", 40, doc.y, { width: 510 });
+        doc.text("• Exclusions: Does not cover liquid damage beyond repair, cosmetic wear, or devices tampered with by unauthorized technicians.", 40, doc.y, { width: 510 });
+        doc.text("• Waiting Period: Claims can only be initiated 3 months after the plan purchase date.", 40, doc.y, { width: 510 });
+
+        y = doc.y + 8;
+
+        // 3. General Requirements
+        doc.text("3. General Requirements (Mandatory for both)", 40, y);
+        y += 10;
+        doc.text("• Verification: IMEI/Serial number must match this invoice. A valid Govt. Photo ID and this original Tax Invoice are required for all claims.", 40, y, { width: 510 });
+        doc.text("• Data Security: Devices must be factory reset before handover; XtraCover is not responsible for data loss.", 40, doc.y, { width: 510 });
+        doc.text("• Non-Transferable: Plans are valid only for the original purchaser and the registered device.", 40, doc.y, { width: 510 });
 
         /* ================= FOOTER ================= */
         doc.fontSize(7.5).fillColor("#333");
-        doc.text("Xtracover Technologies Pvt Ltd", 40, 760);
-        doc.text("New Delhi - 110020 | complaints@xtracover.com", 40, 772);
-
         doc.fontSize(7).fillColor("#999");
         doc.text("This is a Computer Generated Invoice", 40, 790, {
           width: 510,

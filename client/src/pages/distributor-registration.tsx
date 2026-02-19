@@ -182,7 +182,7 @@ export default function DistributorRegistration() {
   return (
     <div className="min-h-screen bg-white">
       {/* ── HERO SECTION ─────────────────────────────────────────────────── */}
-      <section className="relative py-20 px-4 text-center overflow-hidden" 
+      <section className="relative py-20 px-4 text-center overflow-hidden"
         style={{ background: "linear-gradient(135deg, #f0f6fb 0%, #f5f9ff 50%, #faf8ff 100%)" }}>
         {/* subtle background circles */}
         <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full opacity-40 blur-3xl pointer-events-none" style={{ background: "rgba(37, 70, 150, 0.1)" }} />
@@ -191,8 +191,8 @@ export default function DistributorRegistration() {
         <div className="relative max-w-3xl mx-auto">
           {/* badge */}
           <div className="inline-flex items-center gap-1.5 border text-xs font-semibold px-3 py-1 rounded-full mb-6"
-            style={{ 
-              background: "rgba(37, 70, 150, 0.1)", 
+            style={{
+              background: "rgba(37, 70, 150, 0.1)",
               borderColor: "rgba(37, 70, 150, 0.2)",
               color: "#254696"
             }}>
@@ -202,7 +202,7 @@ export default function DistributorRegistration() {
 
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
             Empower Your Business with{" "}
-            <span style={{ color: "#254696" }}>India's Best BBG Referral Program</span>
+            <span style={{ color: "#254696" }}>India's Best Referral Partner Program</span>
           </h1>
 
           <p className="text-gray-500 text-base md:text-lg mb-2">
@@ -217,7 +217,7 @@ export default function DistributorRegistration() {
             protection plan sold.
           </p>
           <p className="text-gray-400 text-sm mb-10">
-            No limits. No hidden fees. Instant payouts.
+            No limits. No hidden fees. Monthly payouts.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -250,7 +250,7 @@ export default function DistributorRegistration() {
             <div>
               <h3 className="font-semibold text-gray-900 mb-1">High Commissions</h3>
               <p className="text-sm text-gray-500">
-                Earn ₹100 per mobile and ₹175 per laptop registration. Direct bank transfers.
+                Earn ₹100 per mobile and ₹175 per laptop registration.
               </p>
             </div>
           </CardContent>
@@ -278,7 +278,7 @@ export default function DistributorRegistration() {
             <div>
               <h3 className="font-semibold text-gray-900 mb-1">Real-time Tracking</h3>
               <p className="text-sm text-gray-500">
-                Monitor every sale, commission and payout instantly on your dashboard.
+                Monitor every sale, commission and payout.
               </p>
             </div>
           </CardContent>
@@ -296,7 +296,7 @@ export default function DistributorRegistration() {
           {/* Dashboard Card */}
           <Card className="border border-gray-200 shadow-lg overflow-hidden">
             {/* Dashboard Header */}
-            <div className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+            <div className="bg-white border-b border-gray-100 px-4 py-4 sm:px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
               <div>
                 <h3 className="font-bold text-gray-900 text-base">Referral Dashboard</h3>
                 <div className="flex items-center gap-2 mt-0.5">
@@ -304,14 +304,15 @@ export default function DistributorRegistration() {
                   <span className="text-xs text-green-600 font-medium">Real-time Active</span>
                 </div>
               </div>
-              <Button variant="outline" size="sm" className="gap-1.5 text-gray-500 text-xs">
+              <Button variant="outline" size="sm" className="gap-1.5 text-gray-500 text-xs w-full sm:w-auto">
                 <LogOut className="h-3.5 w-3.5" /> Logout
               </Button>
             </div>
 
             <CardContent className="p-6 space-y-6">
               {/* Partner Info */}
-              <div className="bg-gray-50 rounded-xl p-4 grid grid-cols-3 gap-4">
+              {/* Partner Info */}
+              <div className="bg-gray-50 rounded-xl p-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Name</p>
                   <p className="text-sm font-semibold text-gray-800">John Doe</p>
@@ -330,7 +331,7 @@ export default function DistributorRegistration() {
               </div>
 
               {/* Stats Row */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(37, 70, 150, 0.1)" }}>
                     <UserCheck className="h-4 w-4" style={{ color: "#254696" }} />
@@ -370,22 +371,21 @@ export default function DistributorRegistration() {
               </div>
 
               {/* Tabs */}
-              <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
+              <div className="flex flex-wrap sm:flex-nowrap gap-2 bg-gray-100 rounded-lg p-1 w-full sm:w-fit overflow-x-auto">
                 {(["registrations", "payouts", "account"] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                      activeTab === tab
-                        ? "bg-white text-gray-900 shadow-sm"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
+                    className={`flex-1 sm:flex-none px-3 sm:px-4 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${activeTab === tab
+                      ? "bg-white text-gray-900 shadow-sm"
+                      : "text-gray-500 hover:text-gray-700"
+                      }`}
                   >
                     {tab === "registrations"
                       ? "Customer Registrations"
                       : tab === "payouts"
-                      ? "Commission Payouts"
-                      : "Account Details"}
+                        ? "Commission Payouts"
+                        : "Account Details"}
                   </button>
                 ))}
               </div>
@@ -401,7 +401,7 @@ export default function DistributorRegistration() {
                     {MOCK_REGISTRATIONS.map((reg) => (
                       <div
                         key={reg.id}
-                        className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3"
+                        className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-gray-50 rounded-lg px-4 py-3 gap-3 sm:gap-0"
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-md bg-white border border-gray-100 flex items-center justify-center">
@@ -413,12 +413,10 @@ export default function DistributorRegistration() {
                           </div>
                           <div>
                             <p className="text-sm font-medium text-gray-800">{reg.device}</p>
-                            <p className="text-xs text-gray-400">
-                              Device {reg.type} • Value {reg.value} • Date {reg.date}
-                            </p>
+
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-between w-full sm:w-auto gap-3">
                           <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${reg.statusColor}`}>
                             {reg.status}
                           </span>

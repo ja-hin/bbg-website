@@ -401,7 +401,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Return customer information - get the most recent registration
       const customer = customers[0]; // storage.getCustomersByContact sorts by id desc usually, or we should ensure it
-      
+
       res.json({
         message: "Login successful",
         customer: {
@@ -432,7 +432,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Find customer by phone number
       const customers = await storage.getCustomersByContact(phone);
-      
+
       if (!customers || customers.length === 0) {
         console.log(`❌ No customer found for phone: ${phone}`);
         return res.status(404).json({ message: "Customer not found" });
@@ -440,7 +440,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get the most recent registration details
       const customer = customers[0];
-      
+
       const responseData = {
         phone: customer.contact_number || customer.contact || phone,
         name: customer.customer_name || customer.name,
@@ -552,94 +552,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update distributor profile (with file upload support)
-  app.put("/api/distributor/profile", 
-  upload.fields([
-    { name: 'panCopyFile', maxCount: 1 },
-    { name: 'gstCertificateFile', maxCount: 1 },
-    { name: 'msmeCertificateFile', maxCount: 1 },
-    { name: 'cancelledChequeFile', maxCount: 1 },
-  ]),
-  async (req, res) => {
-    try {
-      const sessionToken = req.headers.authorization?.replace("Bearer ", "");
+  app.put("/api/distributor/profile",
+    upload.fields([
+      { name: 'panCopyFile', maxCount: 1 },
+      { name: 'gstCertificateFile', maxCount: 1 },
+      { name: 'msmeCertificateFile', maxCount: 1 },
+      { name: 'cancelledChequeFile', maxCount: 1 },
+    ]),
+    async (req, res) => {
+      try {
+        const sessionToken = req.headers.authorization?.replace("Bearer ", "");
 
-      if (!sessionToken) {
-        return res.status(401).json({ message: "No session token provided" });
+        if (!sessionToken) {
+          return res.status(401).json({ message: "No session token provided" });
+        }
+
+        const distributor = await storage.verifyDistributorSession(sessionToken);
+        if (!distributor) {
+          return res.status(401).json({ message: "Invalid or expired session" });
+        }
+
+        console.log("📝 Updating distributor profile for ID:", distributor.id);
+        console.log("📝 Profile update data:", req.body);
+        console.log("📝 Uploaded files:", req.files ? Object.keys(req.files) : "No files");
+
+        // Process form data
+        const updateData = { ...req.body };
+
+        // Convert boolean strings to actual booleans
+        if (updateData.isGstRegistered) updateData.isGstRegistered = updateData.isGstRegistered === "true";
+        if (updateData.isMsmeRegistered) updateData.isMsmeRegistered = updateData.isMsmeRegistered === "true";
+        if (updateData.infoDeclaration) updateData.infoDeclaration = updateData.infoDeclaration === "true";
+        if (updateData.tdsUnderstanding) updateData.tdsUnderstanding = updateData.tdsUnderstanding === "true";
+        if (updateData.gstInvoiceAgreement) updateData.gstInvoiceAgreement = updateData.gstInvoiceAgreement === "true";
+        if (updateData.termsAgreement) updateData.termsAgreement = updateData.termsAgreement === "true";
+
+        // Process uploaded files
+        if (req.files && typeof req.files === "object") {
+          const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+          if (files.panCopyFile && files.panCopyFile[0]) {
+            updateData.panCopyFile = files.panCopyFile[0].location;
+            console.log("📄 PAN copy uploaded to S3:", updateData.panCopyFile);
+          }
+          if (files.gstCertificateFile && files.gstCertificateFile[0]) {
+            updateData.gstCertificateFile = files.gstCertificateFile[0].location;
+            console.log("📄 GST certificate uploaded to S3:", updateData.gstCertificateFile);
+          }
+          if (files.msmeCertificateFile && files.msmeCertificateFile[0]) {
+            updateData.msmeCertificateFile = files.msmeCertificateFile[0].location;
+            console.log("📄 MSME certificate uploaded to S3:", updateData.msmeCertificateFile);
+          }
+          if (files.cancelledChequeFile && files.cancelledChequeFile[0]) {
+            updateData.cancelledChequeFile = files.cancelledChequeFile[0].location;
+            console.log("📄 Cancelled cheque uploaded to S3:", updateData.cancelledChequeFile);
+          }
+        }
+
+        await storage.updateDistributor(distributor.id, updateData);
+
+        // Force fresh data by getting distributor again
+        const updatedDistributor = await storage.getDistributorById(distributor.id);
+        console.log("🔄 Returning updated distributor data:", {
+          accountHolderName: updatedDistributor?.accountHolderName,
+          bankAccount: updatedDistributor?.bankAccount,
+          ifscCode: updatedDistributor?.ifscCode
+        });
+
+        // Set no-cache headers to force fresh data
+        res.set({
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+          'Surrogate-Control': 'no-store'
+        });
+
+        res.json({
+          message: "Profile updated successfully",
+          distributor: updatedDistributor,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error: any) {
+        console.error("❌ Profile update failed:", error);
+        res.status(500).json({
+          message: "Profile update failed",
+          error: error.message
+        });
       }
-
-      const distributor = await storage.verifyDistributorSession(sessionToken);
-      if (!distributor) {
-        return res.status(401).json({ message: "Invalid or expired session" });
-      }
-
-      console.log("📝 Updating distributor profile for ID:", distributor.id);
-      console.log("📝 Profile update data:", req.body);
-      console.log("📝 Uploaded files:", req.files ? Object.keys(req.files) : "No files");
-
-      // Process form data
-      const updateData = { ...req.body };
-
-      // Convert boolean strings to actual booleans
-      if (updateData.isGstRegistered) updateData.isGstRegistered = updateData.isGstRegistered === "true";
-      if (updateData.isMsmeRegistered) updateData.isMsmeRegistered = updateData.isMsmeRegistered === "true";
-      if (updateData.infoDeclaration) updateData.infoDeclaration = updateData.infoDeclaration === "true";
-      if (updateData.tdsUnderstanding) updateData.tdsUnderstanding = updateData.tdsUnderstanding === "true";
-      if (updateData.gstInvoiceAgreement) updateData.gstInvoiceAgreement = updateData.gstInvoiceAgreement === "true";
-      if (updateData.termsAgreement) updateData.termsAgreement = updateData.termsAgreement === "true";
-
-      // Process uploaded files
-      if (req.files && typeof req.files === "object") {
-        const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-        
-        if (files.panCopyFile && files.panCopyFile[0]) {
-          updateData.panCopyFile = files.panCopyFile[0].location;
-          console.log("📄 PAN copy uploaded to S3:", updateData.panCopyFile);
-        }
-        if (files.gstCertificateFile && files.gstCertificateFile[0]) {
-          updateData.gstCertificateFile = files.gstCertificateFile[0].location;
-          console.log("📄 GST certificate uploaded to S3:", updateData.gstCertificateFile);
-        }
-        if (files.msmeCertificateFile && files.msmeCertificateFile[0]) {
-          updateData.msmeCertificateFile = files.msmeCertificateFile[0].location;
-          console.log("📄 MSME certificate uploaded to S3:", updateData.msmeCertificateFile);
-        }
-        if (files.cancelledChequeFile && files.cancelledChequeFile[0]) {
-          updateData.cancelledChequeFile = files.cancelledChequeFile[0].location;
-          console.log("📄 Cancelled cheque uploaded to S3:", updateData.cancelledChequeFile);
-        }
-      }
-
-      await storage.updateDistributor(distributor.id, updateData);
-      
-      // Force fresh data by getting distributor again
-      const updatedDistributor = await storage.getDistributorById(distributor.id);
-      console.log("🔄 Returning updated distributor data:", {
-        accountHolderName: updatedDistributor?.accountHolderName,
-        bankAccount: updatedDistributor?.bankAccount,
-        ifscCode: updatedDistributor?.ifscCode
-      });
-      
-      // Set no-cache headers to force fresh data
-      res.set({
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0',
-        'Surrogate-Control': 'no-store'
-      });
-      
-      res.json({
-        message: "Profile updated successfully",
-        distributor: updatedDistributor,
-        timestamp: new Date().toISOString()
-      });
-    } catch (error: any) {
-      console.error("❌ Profile update failed:", error);
-      res.status(500).json({ 
-        message: "Profile update failed", 
-        error: error.message 
-      });
-    }
-  });
+    });
 
   // Get distributor dashboard stats
   app.get("/api/distributor/stats", async (req, res) => {
@@ -747,7 +747,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { customerData, referralCode } = req.body;
       const deviceType = customerData.deviceType;
       const deviceAgeSelection = customerData.deviceAgeSelection;
-      
+
       // Calculate dateOfPurchase from deviceAgeSelection
       // 1 = within 6 months (use 3 months ago as middle of range)
       // 2 = more than 6 months (use 9 months ago as safe value for extend_plus)
@@ -794,7 +794,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const referralPartner = await storage.getDistributorBySellerCode(referralCode);
             if (referralPartner) {
               const discountSettings = await storage.getReferralDiscountSettings();
-              
+
               if (discountSettings && discountSettings.isActive && discountSettings.discountValue > 0) {
                 let laptopDiscount = 0;
                 let mobileDiscount = 0;
@@ -810,7 +810,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 // Apply discounts (ensure prices don't go below 0)
                 laptopPrice = Math.max(0, laptopPrice - laptopDiscount);
                 mobilePrice = Math.max(0, mobilePrice - mobileDiscount);
-                
+
                 console.log('🎯 PayU Referral discount applied:', {
                   discountType: discountSettings.discountType,
                   discountValue: discountSettings.discountValue,
@@ -869,7 +869,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Persist plan context to pending_payments for reliability
       try {
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
-        
+
         const pendingPaymentData = {
           name: customerData.name,
           contact: customerData.contact,
@@ -1050,7 +1050,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Handle claim value slabs only for customers with claim_slabs benefit type
         let activeClaimValueSlab = null;
         let completeSlabData = null;
-        
+
         if (planDetails && planDetails.benefitType === 'claim_slabs') {
           try {
             const purchaseDate = new Date(
@@ -1200,43 +1200,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
 
           communicationService.sendRegistrationConfirmation({
-              name: customer.name,
-              email: customer.email,
-              contact: customer.contact,
-              voucherCode: customer.voucherCode,
-              deviceType: customer.deviceType,
-              brand: customer.brand,
-              modelName: customer.modelName,
-              registrationSource: "regular",
-              serialNumber: customer.serialNumber,
-              devicePurchaseDate: customer.dateOfPurchase,
-              bbgPurchaseDate: customer.createdAt?.toLocaleDateString('en-IN', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              }) || new Date().toLocaleDateString('en-IN', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              }),
-              termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
-              planType: customer.benefitType || 'bbg',
-              planId: customer.planId || null,
-            }).then(notificationResults => {
-              console.log("🔔 PayU customer registration notifications complete:", {
-                email: notificationResults.email?.success
-                  ? "✅ Sent"
-                  : `❌ Failed: ${notificationResults.email?.error}`,
-                sms: notificationResults.sms?.success
-                  ? "✅ Sent"
-                  : `❌ Failed: ${notificationResults.sms?.error}`,
-                whatsapp: notificationResults.whatsapp?.success
-                  ? "✅ Sent"
-                  : `❌ Failed: ${notificationResults.whatsapp?.error}`,
-              });
-            }).catch(err => {
-              console.error("❌ Failed to send PayU notifications:", err);
+            name: customer.name,
+            email: customer.email,
+            contact: customer.contact,
+            voucherCode: customer.voucherCode,
+            deviceType: customer.deviceType,
+            brand: customer.brand,
+            modelName: customer.modelName,
+            registrationSource: "regular",
+            serialNumber: customer.serialNumber,
+            devicePurchaseDate: customer.dateOfPurchase,
+            bbgPurchaseDate: customer.createdAt?.toLocaleDateString('en-IN', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }) || new Date().toLocaleDateString('en-IN', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }),
+            termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
+            planType: customer.benefitType || 'bbg',
+            planId: customer.planId || null,
+          }).then(notificationResults => {
+            console.log("🔔 PayU customer registration notifications complete:", {
+              email: notificationResults.email?.success
+                ? "✅ Sent"
+                : `❌ Failed: ${notificationResults.email?.error}`,
+              sms: notificationResults.sms?.success
+                ? "✅ Sent"
+                : `❌ Failed: ${notificationResults.sms?.error}`,
+              whatsapp: notificationResults.whatsapp?.success
+                ? "✅ Sent"
+                : `❌ Failed: ${notificationResults.whatsapp?.error}`,
             });
+          }).catch(err => {
+            console.error("❌ Failed to send PayU notifications:", err);
+          });
 
           // Send notification to distributor if registration was through referral code
           if (customer.sellerCode) {
@@ -1254,15 +1254,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 const currentDate = new Date();
                 const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
                 const monthlyCommissionTotal = await storage.getDistributorMonthlyCommission(distributor.id, startOfMonth);
-                
+
                 // Calculate next payout date (last day of current month)
                 const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-                const nextPayoutDate = nextMonth.toLocaleDateString('en-IN', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
+                const nextPayoutDate = nextMonth.toLocaleDateString('en-IN', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
                 });
-                
+
                 // Set referral partner login URL
                 const referralPartnerLoginUrl = `${req.protocol}://${req.get('host')}/referral-partner-login`;
 
@@ -1325,15 +1325,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         try {
           console.log("📄 Generating invoice for transaction:", txnid);
           const invoice = await invoiceService.generateInvoice({
-            invoiceNumber: "",
+            invoiceNumber: customer.voucherCode ? `XTPL/BBG/${customer.voucherCode}` : "",
             transactionId: txnid,
+            voucherCode: customer.voucherCode, // Added voucherCode for ref no.
             customerName: customer.name,
             customerEmail: customer.email,
             customerContact: customer.contact,
-            planName: customer.modelName || `${customer.benefitType?.toUpperCase()} Plan`,
+            customerPincode: customer.pincode,
+            customerState: customer.state,
+            planName: planDetails?.planName || customer.modelName || `${customer.benefitType?.toUpperCase()} Plan`,
             planType: customer.benefitType || "bbg",
             deviceType: customer.deviceType,
             brand: customer.brand,
+            deviceModel: customer.modelName, // Added deviceModel
             amount: parseFloat(amount),
             validity: customer.benefitsJson ? JSON.parse(customer.benefitsJson)?.validity : undefined,
             coverage: customer.benefitsJson ? JSON.parse(customer.benefitsJson)?.coverage : undefined,
@@ -1511,7 +1515,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const referralPartner = await storage.getDistributorBySellerCode(referralCode);
           if (referralPartner) {
             const discountSettings = await storage.getReferralDiscountSettings();
-            
+
             if (discountSettings && discountSettings.isActive && discountSettings.discountValue > 0) {
               if (discountSettings.discountType === 'percentage') {
                 discountAmount = (amount * discountSettings.discountValue) / 100;
@@ -1522,7 +1526,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               // Apply discount (ensure price doesn't go below 1)
               finalAmount = Math.max(1, Math.round(amount - discountAmount));
               discountApplied = true;
-              
+
               console.log('🎯 Payment Initiate - Referral discount applied:', {
                 referralCode,
                 partnerName: referralPartner.name,
@@ -1803,8 +1807,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Filter to brand-specific slabs if applicable
           const brandSpecificSlabs = activeClaimValueSlab.brand
             ? regularSlabsForDevice.filter(
-                (slab) => slab.brand === activeClaimValueSlab.brand,
-              )
+              (slab) => slab.brand === activeClaimValueSlab.brand,
+            )
             : regularSlabsForDevice.filter((slab) => !slab.brand);
 
           completeSlabData = JSON.stringify({
@@ -1859,43 +1863,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
 
         communicationService.sendRegistrationConfirmation({
-            name: customer.name,
-            email: customer.email,
-            contact: customer.contact,
-            voucherCode: customer.voucherCode,
-            deviceType: customer.deviceType,
-            brand: customer.brand,
-            modelName: customer.modelName,
-            registrationSource: "regular",
-            serialNumber: customer.serialNumber,
-            devicePurchaseDate: customer.dateOfPurchase,
-            bbgPurchaseDate: customer.createdAt?.toLocaleDateString('en-IN', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            }) || new Date().toLocaleDateString('en-IN', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            }),
-            termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
-            planType: customer.benefitType || 'bbg',
-            planId: customer.planId || null,
-          }).then(notificationResults => {
-            console.log("🔔 Customer registration notifications complete:", {
-              email: notificationResults.email?.success
-                ? "✅ Sent"
-                : `❌ Failed: ${notificationResults.email?.error}`,
-              sms: notificationResults.sms?.success
-                ? "✅ Sent"
-                : `❌ Failed: ${notificationResults.sms?.error}`,
-              whatsapp: notificationResults.whatsapp?.success
-                ? "✅ Sent"
-                : `❌ Failed: ${notificationResults.whatsapp?.error}`,
-            });
-          }).catch(err => {
-            console.error("❌ Failed to send customer notifications:", err);
+          name: customer.name,
+          email: customer.email,
+          contact: customer.contact,
+          voucherCode: customer.voucherCode,
+          deviceType: customer.deviceType,
+          brand: customer.brand,
+          modelName: customer.modelName,
+          registrationSource: "regular",
+          serialNumber: customer.serialNumber,
+          devicePurchaseDate: customer.dateOfPurchase,
+          bbgPurchaseDate: customer.createdAt?.toLocaleDateString('en-IN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }) || new Date().toLocaleDateString('en-IN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }),
+          termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
+          planType: customer.benefitType || 'bbg',
+          planId: customer.planId || null,
+        }).then(notificationResults => {
+          console.log("🔔 Customer registration notifications complete:", {
+            email: notificationResults.email?.success
+              ? "✅ Sent"
+              : `❌ Failed: ${notificationResults.email?.error}`,
+            sms: notificationResults.sms?.success
+              ? "✅ Sent"
+              : `❌ Failed: ${notificationResults.sms?.error}`,
+            whatsapp: notificationResults.whatsapp?.success
+              ? "✅ Sent"
+              : `❌ Failed: ${notificationResults.whatsapp?.error}`,
           });
+        }).catch(err => {
+          console.error("❌ Failed to send customer notifications:", err);
+        });
 
         // Send notification to distributor if registration was through referral code
         if (customer.sellerCode) {
@@ -1913,15 +1917,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
               const currentDate = new Date();
               const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
               const monthlyCommissionTotal = await storage.getDistributorMonthlyCommission(distributor.id, startOfMonth);
-              
+
               // Calculate next payout date (last day of current month)
               const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-              const nextPayoutDate = nextMonth.toLocaleDateString('en-IN', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+              const nextPayoutDate = nextMonth.toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
               });
-              
+
               // Set referral partner login URL
               const referralPartnerLoginUrl = `${req.protocol}://${req.get('host')}/referral-partner-login`;
 
@@ -2015,7 +2019,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             referralDiscountApplied: discount > 0
           })
         };
-        
+
         console.log('📝 Creating transaction history for direct registration:', transactionHistoryData);
         await storage.createTransactionHistory(transactionHistoryData);
         console.log('✅ Transaction history recorded successfully');
@@ -2047,17 +2051,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/validate-voucher", async (req, res) => {
     try {
       console.log("BBG voucher validation request received");
-      
+
       const { voucherCode } = req.body;
-      
+
       if (!voucherCode) {
-        return res.status(400).json({ 
-          message: "BBG voucher code is required" 
+        return res.status(400).json({
+          message: "BBG voucher code is required"
         });
       }
 
       await db.connectDB();
-      
+
       // Check if voucher code exists in customers table (valid BBG purchase)
       const validVoucher = await db.pool.request()
         .input('voucherCode', voucherCode)
@@ -2068,7 +2072,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `);
 
       if (validVoucher.recordset.length === 0) {
-        return res.status(404).json({ 
+        return res.status(404).json({
           message: "Invalid BBG voucher code. Please check your voucher code and try again.",
           valid: false
         });
@@ -2083,7 +2087,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `);
 
       if (existingRegistration.recordset.length > 0) {
-        return res.status(400).json({ 
+        return res.status(400).json({
           message: `This BBG voucher code has already been used for device registration.`,
           valid: false,
           alreadyRegistered: true
@@ -2105,7 +2109,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     } catch (error: any) {
       console.error("Voucher validation error:", error);
-      res.status(500).json({ 
+      res.status(500).json({
         message: "Failed to validate voucher code. Please try again.",
         valid: false
       });
@@ -2123,17 +2127,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Validate required fields for simplified registration
       const requiredFields = ['voucherCode', 'imeiSerial'];
-      
+
       for (const field of requiredFields) {
         if (!formData[field]) {
-          return res.status(400).json({ 
-            message: `Missing required field: ${field}` 
+          return res.status(400).json({
+            message: `Missing required field: ${field}`
           });
         }
       }
 
       await db.connectDB();
-      
+
       // First, validate that the voucher code exists (valid BBG purchase) and get customer details
       const validVoucher = await db.pool.request()
         .input('voucherCode', formData.voucherCode)
@@ -2144,8 +2148,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `);
 
       if (validVoucher.recordset.length === 0) {
-        return res.status(404).json({ 
-          message: "Invalid BBG voucher code. Please check your voucher code and try again." 
+        return res.status(404).json({
+          message: "Invalid BBG voucher code. Please check your voucher code and try again."
         });
       }
 
@@ -2158,8 +2162,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `);
 
       if (existingRegistration.recordset.length > 0) {
-        return res.status(400).json({ 
-          message: `This BBG voucher code (${formData.voucherCode}) has already been used for device registration.` 
+        return res.status(400).json({
+          message: `This BBG voucher code (${formData.voucherCode}) has already been used for device registration.`
         });
       }
 
@@ -2178,7 +2182,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Save to device registrations table (new table for post-purchase registrations)
       try {
         // Database connection already established above
-        
+
         const result = await db.pool.request()
           .input('imeiSerial', formData.imeiSerial)
           .input('registrationId', registrationId)
@@ -2234,14 +2238,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       } catch (dbError) {
         console.error("❌ Database error saving device registration:", dbError);
-        return res.status(500).json({ 
-          message: "Failed to save device registration" 
+        return res.status(500).json({
+          message: "Failed to save device registration"
         });
       }
 
       // Send device registration confirmation email using customer details from voucher
       const customerInfo = validVoucher.recordset[0];
-      
+
       try {
         console.log("🔔 Starting website device registration notifications...");
         console.log("📧 Customer contact details:", {
@@ -2256,7 +2260,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const timeDifference = currentDate.getTime() - purchaseDate.getTime();
         const monthsDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24 * 30.44));
         const isWithin6Months = monthsDifference <= 6;
-        
+
         console.log("📅 Purchase timing analysis:", {
           purchaseDate: purchaseDate.toISOString(),
           monthsOld: monthsDifference,
@@ -2313,8 +2317,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     } catch (error: any) {
       console.error("Device registration error:", error);
-      res.status(400).json({ 
-        message: error.message || "Device registration failed" 
+      res.status(400).json({
+        message: error.message || "Device registration failed"
       });
     }
   });
@@ -2323,14 +2327,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/customer-details/:voucherCode", async (req, res) => {
     try {
       const { voucherCode } = req.params;
-      
+
       if (!voucherCode) {
         return res.status(400).json({ message: "Voucher code is required" });
       }
 
       // Connect to database and lookup customer details
       await db.connectDB();
-      
+
       // First, let's check what columns actually exist
       const schemaResult = await db.pool.request()
         .query(`
@@ -2338,7 +2342,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           FROM INFORMATION_SCHEMA.COLUMNS 
           WHERE TABLE_NAME = 'customers'
         `);
-      
+
       console.log("Available columns in customers table:", schemaResult.recordset.map(row => row.COLUMN_NAME));
 
       const result = await db.pool.request()
@@ -2355,7 +2359,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const customer = result.recordset[0];
-      
+
       res.json({
         name: customer.name,
         email: customer.email,
@@ -2418,7 +2422,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Validation 1: Device should be registered after BBG purchase
       const bbgPurchaseDate = new Date(customer.createdAt);
       const deviceRegistrationDate = new Date(deviceRegInfo.created_at);
-      
+
       if (deviceRegistrationDate < bbgPurchaseDate) {
         console.log('❌ Device registered before BBG purchase');
         return res.status(400).json({
@@ -2427,7 +2431,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           code: "INVALID_REGISTRATION_ORDER"
         });
       }
-      
+
       console.log('✅ Validation 1 passed: Device registered after BBG purchase');
 
       // Check if customer has auction/repair benefits instead of claim coverage
@@ -2551,7 +2555,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Validation 2: Calculate time since BBG PURCHASE (not device registration)
       console.log('🔍 DEBUG: Raw BBG purchase created_at value:', customer.createdAt);
       console.log('🔍 DEBUG: Type of BBG purchase created_at:', typeof customer.createdAt);
-      
+
       // Safe date parsing: use BBG purchase date for waiting period calculation
       let registrationDate: Date;
       if (customer.createdAt instanceof Date) {
@@ -2563,15 +2567,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Convert other types to Date
         registrationDate = new Date(customer.createdAt!);
       }
-      
+
       // Validate parsed date
       if (isNaN(registrationDate.getTime())) {
         console.error('❌ Invalid BBG purchase date parsed:', customer.createdAt);
         return res.status(400).json({ message: 'Invalid BBG purchase date found' });
       }
-      
+
       const currentDate = new Date();
-      
+
       console.log('🔍 DEBUG: Parsed registrationDate:', registrationDate);
       console.log('🔍 DEBUG: Parsed registrationDate ISO:', registrationDate.toISOString());
       console.log('🔍 DEBUG: Parsed registrationDate local string:', registrationDate.toString());
@@ -2633,25 +2637,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         monthsSinceRegistration < waitingPeriodMonths
       ) {
         const remainingMonths = waitingPeriodMonths - monthsSinceRegistration;
-        
+
         // Proper date calculation: Safe construction to avoid month rollover issues
         console.log('🔍 DEBUG: Calculating eligible date...');
         console.log('🔍 DEBUG: Registration date year:', registrationDate.getFullYear());
         console.log('🔍 DEBUG: Registration date month:', registrationDate.getMonth());
         console.log('🔍 DEBUG: Waiting period months:', waitingPeriodMonths);
-        
+
         const targetMonthTotal = registrationDate.getMonth() + waitingPeriodMonths;
         const targetYear = registrationDate.getFullYear() + Math.floor(targetMonthTotal / 12);
         const targetMonth = targetMonthTotal % 12;
         const targetDay = registrationDate.getDate();
         const lastDay = new Date(targetYear, targetMonth + 1, 0).getDate();
         const eligibleDate = new Date(targetYear, targetMonth, Math.min(targetDay, lastDay));
-        
+
         console.log('🔍 DEBUG: Calculated targetYear:', targetYear);
         console.log('🔍 DEBUG: Calculated targetMonth:', targetMonth);
         console.log('🔍 DEBUG: Calculated eligibleDate:', eligibleDate);
         console.log('🔍 DEBUG: Eligible date ISO:', eligibleDate.toISOString());
-        
+
         // Validation: ensure eligible date is reasonable (within next 5 years)
         const currentYear = new Date().getFullYear();
         if (eligibleDate.getFullYear() > currentYear + 5 || eligibleDate.getFullYear() < currentYear - 1) {
@@ -2681,7 +2685,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const purchaseDateForAge = new Date(customer.dateOfPurchase || customer.createdAt!);
       let deviceAgeInMonths = (currentDate.getFullYear() - purchaseDateForAge.getFullYear()) * 12;
       deviceAgeInMonths += currentDate.getMonth() - purchaseDateForAge.getMonth();
-      
+
       if (currentDate.getDate() < purchaseDateForAge.getDate()) {
         deviceAgeInMonths--;
       }
@@ -3178,7 +3182,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Get discount settings to return to frontend
         let discountType: string | null = null;
         let discountValue: number | null = null;
-        
+
         try {
           const discountSettings = await storage.getReferralDiscountSettings();
           if (discountSettings && discountSettings.isActive && discountSettings.discountValue > 0) {
@@ -3188,7 +3192,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         } catch (discountError) {
           console.error("Error fetching discount settings:", discountError);
         }
-        
+
         res.json({
           valid: true,
           message: `Valid referral code for ${distributor.name}`,
@@ -3823,13 +3827,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         exists: !!admin,
         admin: admin
           ? {
-              id: admin.id,
-              username: admin.username,
-              email: admin.email,
-              role: admin.role,
-              hasPassword: !!admin.passwordHash,
-              passwordLength: admin.passwordHash?.length || 0,
-            }
+            id: admin.id,
+            username: admin.username,
+            email: admin.email,
+            role: admin.role,
+            hasPassword: !!admin.passwordHash,
+            passwordLength: admin.passwordHash?.length || 0,
+          }
           : null,
       });
     } catch (error: any) {
@@ -5351,7 +5355,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update the admin user's password
       await storage.updateAdminUser(admin.id, { passwordHash: hashedPassword });
 
-      res.json({ 
+      res.json({
         message: "Admin password reset successfully to strong password",
         username: admin.username
       });
@@ -5475,7 +5479,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     async (req, res) => {
       try {
         const XLSX = require('xlsx');
-        
+
         // Create sample data with exact column names expected by the upload processor
         const sampleData = [
           { "Device Type": "mobile", "Brand": "Apple", "Model": "iPhone 15" },
@@ -5486,10 +5490,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         // Create workbook
         const workbook = XLSX.utils.book_new();
-        
+
         // Create worksheet from JSON data
         const worksheet = XLSX.utils.json_to_sheet(sampleData);
-        
+
         // Set column widths for better visibility
         const columnWidths = [
           { wch: 15 }, // Device Type
@@ -5502,8 +5506,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         XLSX.utils.book_append_sheet(workbook, worksheet, "Brands & Models");
 
         // Write workbook to buffer with proper options
-        const buffer = XLSX.write(workbook, { 
-          bookType: 'xlsx', 
+        const buffer = XLSX.write(workbook, {
+          bookType: 'xlsx',
           type: 'buffer',
           compression: true
         });
@@ -5512,7 +5516,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename="brands-models-sample.xlsx"');
         res.setHeader('Cache-Control', 'no-cache');
-        
+
         // Send the buffer directly
         res.end(buffer);
 
@@ -6691,11 +6695,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         configured,
         config: configured
           ? {
-              host: process.env.SMTP_HOST,
-              port: process.env.SMTP_PORT || "587",
-              user: process.env.SMTP_USER?.replace(/(.{3}).*(@.*)/, "$1***$2"),
-              hasPassword: !!process.env.SMTP_PASSWORD,
-            }
+            host: process.env.SMTP_HOST,
+            port: process.env.SMTP_PORT || "587",
+            user: process.env.SMTP_USER?.replace(/(.{3}).*(@.*)/, "$1***$2"),
+            hasPassword: !!process.env.SMTP_PASSWORD,
+          }
           : null,
         instructions: !configured
           ? `
@@ -6780,7 +6784,7 @@ Required: GUPSHUP_API_KEY environment variable
   // Admin endpoint to upload Acer IMEI data for validation
   // Create S3 upload config that allows CSV files for IMEI data
   const acerImeiUpload = createS3Upload('bulk-uploads', false, true);
-  
+
   app.post(
     "/api/admin/acer-imei/upload",
     isAdminAuthenticated,
@@ -7252,7 +7256,7 @@ Required: GUPSHUP_API_KEY environment variable
           const purchaseDateObj = new Date(purchaseDate);
           const monthsDiff = Math.floor(
             (Date.now() - purchaseDateObj.getTime()) /
-              (1000 * 60 * 60 * 24 * 30),
+            (1000 * 60 * 60 * 24 * 30),
           );
 
           console.log("Finding claim value slab for Acer BBG registration:", {
@@ -7330,16 +7334,16 @@ Required: GUPSHUP_API_KEY environment variable
           // Store complete slab structure from registration time (preserves entire rate structure)
           registrationSlabData: activeClaimValueSlab
             ? JSON.stringify({
-                deviceType: activeClaimValueSlab.deviceType,
-                brand: activeClaimValueSlab.brand,
-                registrationSource: "acer_bbg",
-                // 🎯 CRITICAL: Store complete Acer BBG slab structure (higher rates than regular)
-                slabs:
-                  await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(
-                    activeClaimValueSlab.deviceType,
-                    "acer_bbg",
-                  ),
-              })
+              deviceType: activeClaimValueSlab.deviceType,
+              brand: activeClaimValueSlab.brand,
+              registrationSource: "acer_bbg",
+              // 🎯 CRITICAL: Store complete Acer BBG slab structure (higher rates than regular)
+              slabs:
+                await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(
+                  activeClaimValueSlab.deviceType,
+                  "acer_bbg",
+                ),
+            })
             : null,
         };
 
@@ -7381,41 +7385,41 @@ Required: GUPSHUP_API_KEY environment variable
           });
 
           communicationService.sendRegistrationConfirmation({
-              name: customer.name,
-              email: customer.email,
-              contact: customer.contact,
-              voucherCode: customer.voucherCode,
-              deviceType: customer.deviceType,
-              brand: customer.brand,
-              modelName: customer.modelName,
-              registrationSource: "acer_bbg",
-              serialNumber: customer.serialNumber,
-              devicePurchaseDate: customer.dateOfPurchase,
-              bbgPurchaseDate: customer.createdAt?.toLocaleDateString('en-IN', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              }) || new Date().toLocaleDateString('en-IN', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              }),
-              termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
-            }).then(notificationResults => {
-              console.log("🔔 Acer BBG registration notifications complete:", {
-                email: notificationResults.email?.success
-                  ? "✅ Sent"
-                  : `❌ Failed: ${notificationResults.email?.error}`,
-                sms: notificationResults.sms?.success
-                  ? "✅ Sent"
-                  : `❌ Failed: ${notificationResults.sms?.error}`,
-                whatsapp: notificationResults.whatsapp?.success
-                  ? "✅ Sent"
-                  : `❌ Failed: ${notificationResults.whatsapp?.error}`,
-              });
-            }).catch(err => {
-              console.error("❌ Failed to send Acer BBG notifications:", err);
+            name: customer.name,
+            email: customer.email,
+            contact: customer.contact,
+            voucherCode: customer.voucherCode,
+            deviceType: customer.deviceType,
+            brand: customer.brand,
+            modelName: customer.modelName,
+            registrationSource: "acer_bbg",
+            serialNumber: customer.serialNumber,
+            devicePurchaseDate: customer.dateOfPurchase,
+            bbgPurchaseDate: customer.createdAt?.toLocaleDateString('en-IN', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }) || new Date().toLocaleDateString('en-IN', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }),
+            termsAndConditionsUrl: `${req.protocol}://${req.get('host')}/terms-and-conditions`,
+          }).then(notificationResults => {
+            console.log("🔔 Acer BBG registration notifications complete:", {
+              email: notificationResults.email?.success
+                ? "✅ Sent"
+                : `❌ Failed: ${notificationResults.email?.error}`,
+              sms: notificationResults.sms?.success
+                ? "✅ Sent"
+                : `❌ Failed: ${notificationResults.sms?.error}`,
+              whatsapp: notificationResults.whatsapp?.success
+                ? "✅ Sent"
+                : `❌ Failed: ${notificationResults.whatsapp?.error}`,
             });
+          }).catch(err => {
+            console.error("❌ Failed to send Acer BBG notifications:", err);
+          });
         } catch (notificationError) {
           console.error(
             "❌ Failed to send Acer BBG notifications:",
@@ -7477,7 +7481,7 @@ Required: GUPSHUP_API_KEY environment variable
       }
 
       const licenseData = result.recordset[0];
-      
+
       if (licenseData.is_used) {
         return res.status(400).json({
           valid: false,
@@ -7676,15 +7680,15 @@ Required: GUPSHUP_API_KEY environment variable
           claimValueSlabId: activeClaimValueSlab?.id || null,
           registrationSlabData: activeClaimValueSlab
             ? JSON.stringify({
-                deviceType: activeClaimValueSlab.deviceType,
-                brand: activeClaimValueSlab.brand,
-                registrationSource: "amazon_bbg",
-                slabs:
-                  await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(
-                    activeClaimValueSlab.deviceType,
-                    "amazon_bbg",
-                  ),
-              })
+              deviceType: activeClaimValueSlab.deviceType,
+              brand: activeClaimValueSlab.brand,
+              registrationSource: "amazon_bbg",
+              slabs:
+                await storage.getActiveClaimValueSlabsByDeviceTypeAndSource(
+                  activeClaimValueSlab.deviceType,
+                  "amazon_bbg",
+                ),
+            })
             : null,
         };
 
@@ -7718,43 +7722,43 @@ Required: GUPSHUP_API_KEY environment variable
         // Send welcome notification using unified voucher code
         try {
           console.log("🔔 Starting Amazon BBG registration notifications...");
-          
+
           communicationService.sendRegistrationConfirmation({
-              name: customer.name,
-              email: customer.email,
-              contact: customer.contact,
-              voucherCode: customer.voucherCode,
-              deviceType: customer.deviceType,
-              brand: customer.brand,
-              modelName: customer.modelName,
-              registrationSource: "amazon_bbg",
-              serialNumber: customer.serialNumber,
-              devicePurchaseDate: customer.dateOfPurchase,
-              bbgPurchaseDate: customer.createdAt?.toLocaleDateString('en-IN', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              }) || new Date().toLocaleDateString('en-IN', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              }),
-              termsAndConditionsUrl: `https://www.xtracover.com/files/xtracover-tnc-bbg-amazon.pdf`,
-            }).then(notificationResults => {
-              console.log("🔔 Amazon BBG registration notifications complete:", {
-                email: notificationResults.email?.success
-                  ? "✅ Sent"
-                  : `❌ Failed: ${notificationResults.email?.error}`,
-                sms: notificationResults.sms?.success
-                  ? "✅ Sent"
-                  : `❌ Failed: ${notificationResults.sms?.error}`,
-                whatsapp: notificationResults.whatsapp?.success
-                  ? "✅ Sent"
-                  : `❌ Failed: ${notificationResults.whatsapp?.error}`,
-              });
-            }).catch(err => {
-              console.error("❌ Failed to send Amazon BBG notifications:", err);
+            name: customer.name,
+            email: customer.email,
+            contact: customer.contact,
+            voucherCode: customer.voucherCode,
+            deviceType: customer.deviceType,
+            brand: customer.brand,
+            modelName: customer.modelName,
+            registrationSource: "amazon_bbg",
+            serialNumber: customer.serialNumber,
+            devicePurchaseDate: customer.dateOfPurchase,
+            bbgPurchaseDate: customer.createdAt?.toLocaleDateString('en-IN', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }) || new Date().toLocaleDateString('en-IN', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }),
+            termsAndConditionsUrl: `https://www.xtracover.com/files/xtracover-tnc-bbg-amazon.pdf`,
+          }).then(notificationResults => {
+            console.log("🔔 Amazon BBG registration notifications complete:", {
+              email: notificationResults.email?.success
+                ? "✅ Sent"
+                : `❌ Failed: ${notificationResults.email?.error}`,
+              sms: notificationResults.sms?.success
+                ? "✅ Sent"
+                : `❌ Failed: ${notificationResults.sms?.error}`,
+              whatsapp: notificationResults.whatsapp?.success
+                ? "✅ Sent"
+                : `❌ Failed: ${notificationResults.whatsapp?.error}`,
             });
+          }).catch(err => {
+            console.error("❌ Failed to send Amazon BBG notifications:", err);
+          });
         } catch (notificationError) {
           console.error(
             "❌ Failed to send Amazon BBG notifications:",
@@ -7787,7 +7791,7 @@ Required: GUPSHUP_API_KEY environment variable
 
   // Admin endpoint to bulk upload Amazon license codes via Excel
   const amazonLicenseUpload = createS3Upload('bulk-uploads', false, true);
-  
+
   app.post(
     "/api/admin/amazon-license/upload",
     isAdminAuthenticated,
@@ -8276,18 +8280,18 @@ Required: GUPSHUP_API_KEY environment variable
   app.post("/api/customer/bank-details", async (req, res) => {
     try {
       const { phone, accountHolderName, accountNumber, ifscCode, upiId } = req.body;
-      
+
       if (!phone || !accountHolderName || !accountNumber || !ifscCode) {
         return res.status(400).json({ message: "Required fields missing" });
       }
 
       await db.connectDB();
-      
+
       // Check if bank details exist
       const checkRequest = db.pool.request();
       checkRequest.input("phone", sql.VarChar, phone);
       const existing = await checkRequest.query(`SELECT id FROM customer_bank_details WHERE contact = @phone`);
-      
+
       const request = db.pool.request();
       request.input("phone", sql.VarChar, phone);
       request.input("accountHolderName", sql.NVarChar, accountHolderName);
@@ -8357,13 +8361,13 @@ Required: GUPSHUP_API_KEY environment variable
   app.post("/api/customer/addresses", async (req, res) => {
     try {
       const { phone, label, addressLine1, addressLine2, city, state, pincode, isDefault } = req.body;
-      
+
       if (!phone || !label || !addressLine1 || !city || !state || !pincode) {
         return res.status(400).json({ message: "Required fields missing" });
       }
 
       await db.connectDB();
-      
+
       // If setting as default, clear existing defaults
       if (isDefault) {
         const clearRequest = db.pool.request();
@@ -8397,7 +8401,7 @@ Required: GUPSHUP_API_KEY environment variable
   app.post("/api/customer/upload-invoice", upload.single('invoice'), async (req, res) => {
     try {
       const { orderId, phone } = req.body;
-      
+
       if (!orderId || !phone) {
         return res.status(400).json({ message: "Order ID and phone number required" });
       }
@@ -9620,7 +9624,7 @@ Required: GUPSHUP_API_KEY environment variable
             const purchaseDate = new Date(customer.date_of_purchase);
             const monthsDiff = Math.floor(
               (Date.now() - purchaseDate.getTime()) /
-                (1000 * 60 * 60 * 24 * 30),
+              (1000 * 60 * 60 * 24 * 30),
             );
 
             // Find brand-specific slab first
@@ -9802,7 +9806,7 @@ Required: GUPSHUP_API_KEY environment variable
         const currentDate = new Date();
         deviceAgeMonths = Math.floor(
           (currentDate.getTime() - purchaseDate.getTime()) /
-            (1000 * 60 * 60 * 24 * 30.44),
+          (1000 * 60 * 60 * 24 * 30.44),
         );
       }
 
@@ -9965,7 +9969,7 @@ Required: GUPSHUP_API_KEY environment variable
                   registrationAge: Math.floor(
                     (Date.now() -
                       new Date(customer.date_of_purchase).getTime()) /
-                      (1000 * 60 * 60 * 24 * 30),
+                    (1000 * 60 * 60 * 24 * 30),
                   ), // Age at time of registration
                   applicableSlabId: correctSlab.id, // Which slab applied at registration
                 };
@@ -10436,7 +10440,7 @@ Required: GUPSHUP_API_KEY environment variable
           if (referralPartner) {
             // Get discount settings
             const discountSettings = await storage.getReferralDiscountSettings();
-            
+
             if (discountSettings && discountSettings.isActive && discountSettings.discountValue > 0) {
               let laptopDiscount = 0;
               let mobileDiscount = 0;
@@ -10452,7 +10456,7 @@ Required: GUPSHUP_API_KEY environment variable
               // Apply discounts (ensure prices don't go below 0)
               laptopPrice = Math.max(0, laptopPrice - laptopDiscount);
               mobilePrice = Math.max(0, mobilePrice - mobileDiscount);
-              
+
               discountApplied = true;
               discountDetails = {
                 type: discountSettings.discountType,
@@ -10616,7 +10620,7 @@ Required: GUPSHUP_API_KEY environment variable
             const purchaseDate = new Date(customer.date_of_purchase);
             const deviceAgeMonths = Math.floor(
               (referenceDate.getTime() - purchaseDate.getTime()) /
-                (1000 * 60 * 60 * 24 * 30.44),
+              (1000 * 60 * 60 * 24 * 30.44),
             );
 
             console.log(
@@ -10818,11 +10822,11 @@ Required: GUPSHUP_API_KEY environment variable
       const { title } = req.params;
       const banners = await storage.getActiveHomepageBanners();
       const banner = banners.find(b => b.title === decodeURIComponent(title));
-      
+
       if (!banner) {
         return res.status(404).json({ message: "Banner not found" });
       }
-      
+
       res.json(banner);
     } catch (error: any) {
       console.error("Error fetching banner by title:", error);
@@ -11024,7 +11028,7 @@ Required: GUPSHUP_API_KEY environment variable
   app.get('/api/admin/transaction-history', isAdminAuthenticated, async (req, res) => {
     try {
       console.log('🔍 Fetching transaction history with filters:', req.query);
-      
+
       const filters = {
         status: req.query.status as string,
         paymentMethod: req.query.paymentMethod as string,
@@ -11045,7 +11049,7 @@ Required: GUPSHUP_API_KEY environment variable
   app.post('/api/admin/transaction-history', isAdminAuthenticated, async (req, res) => {
     try {
       console.log('📝 Creating new transaction history entry:', req.body);
-      
+
       const transaction = await storage.createTransactionHistory(req.body);
       console.log('✅ Transaction history created successfully:', transaction.id);
       res.json(transaction);
@@ -11059,7 +11063,7 @@ Required: GUPSHUP_API_KEY environment variable
     try {
       const transactionId = req.params.transactionId;
       console.log(`📝 Updating transaction history ${transactionId}:`, req.body);
-      
+
       await storage.updateTransactionHistory(transactionId, req.body);
       console.log(`✅ Transaction history ${transactionId} updated successfully`);
       res.json({ message: 'Transaction updated successfully' });
@@ -11073,7 +11077,7 @@ Required: GUPSHUP_API_KEY environment variable
   app.get('/api/admin/export/transaction-history', isAdminAuthenticated, async (req, res) => {
     try {
       console.log('📋 Exporting transaction history to CSV...');
-      
+
       const filters = {
         status: req.query.status as string,
         paymentMethod: req.query.paymentMethod as string,
@@ -11083,12 +11087,12 @@ Required: GUPSHUP_API_KEY environment variable
       };
 
       const transactions = await storage.getAllTransactionHistory(filters);
-      
+
       // Create CSV content
       const csvHeader = [
         'Transaction ID',
         'Customer Name',
-        'Customer Email', 
+        'Customer Email',
         'Customer Contact',
         'Payment Method',
         'Amount (₹)',
@@ -11103,7 +11107,7 @@ Required: GUPSHUP_API_KEY environment variable
         'Created At',
         'Updated At'
       ].join(',');
-      
+
       const csvRows = transactions.map(transaction => [
         `"${transaction.transactionId}"`,
         `"${transaction.customerName}"`,
@@ -11122,16 +11126,16 @@ Required: GUPSHUP_API_KEY environment variable
         `"${new Date(transaction.createdAt).toLocaleString()}"`,
         `"${new Date(transaction.updatedAt).toLocaleString()}"`
       ].join(','));
-      
+
       const csvContent = [csvHeader, ...csvRows].join('\n');
-      
+
       const currentDate = new Date().toISOString().split('T')[0];
       const filename = `transaction_history_${currentDate}.csv`;
-      
+
       res.setHeader('Content-Type', 'text/csv');
       res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
       res.send(csvContent);
-      
+
       console.log(`✅ Transaction history CSV exported successfully: ${filename}`);
     } catch (error) {
       console.error('❌ Error exporting transaction history:', error);
@@ -11140,7 +11144,7 @@ Required: GUPSHUP_API_KEY environment variable
   });
 
   // ============= ADMIN PLANS MANAGEMENT =============
-  
+
   // Get all plans
   app.get('/api/admin/plans', isAdminAuthenticated, async (req, res) => {
     try {
@@ -11171,19 +11175,19 @@ Required: GUPSHUP_API_KEY environment variable
   app.post('/api/admin/plans', isAdminAuthenticated, async (req, res) => {
     try {
       const { planName, planPrice, deviceType, planType, coverage } = req.body;
-      
+
       if (!planName || !planPrice || !deviceType || !planType) {
         return res.status(400).json({ message: 'Missing required fields: planName, planPrice, deviceType, planType' });
       }
-      
+
       if (!['mobile', 'laptop'].includes(deviceType)) {
         return res.status(400).json({ message: "Invalid device type. Must be 'mobile' or 'laptop'" });
       }
-      
+
       if (!['bbg', 'extend_plus'].includes(planType)) {
         return res.status(400).json({ message: "Invalid plan type. Must be 'bbg' or 'extend_plus'" });
       }
-      
+
       const plan = await storage.createPlan({ planName, planPrice, deviceType, planType, coverage: coverage || null });
       res.status(201).json(plan);
     } catch (error: any) {
@@ -11197,9 +11201,9 @@ Required: GUPSHUP_API_KEY environment variable
     try {
       const id = parseInt(req.params.id);
       const { planName, planPrice, deviceType, planType, coverage } = req.body;
-      
+
       const updates: any = {};
-      
+
       if (planName !== undefined) updates.planName = planName;
       if (planPrice !== undefined) updates.planPrice = planPrice;
       if (deviceType !== undefined) {
@@ -11215,7 +11219,7 @@ Required: GUPSHUP_API_KEY environment variable
         updates.planType = planType;
       }
       if (coverage !== undefined) updates.coverage = coverage;
-      
+
       await storage.updatePlan(id, updates);
       res.json({ message: 'Plan updated successfully' });
     } catch (error: any) {
@@ -11240,11 +11244,11 @@ Required: GUPSHUP_API_KEY environment variable
   app.get('/api/plans', async (req, res) => {
     try {
       const plans = await storage.getAllPlans();
-      
+
       // Fetch claim value slabs for each plan and attach them
       const plansWithSlabs = await Promise.all(plans.map(async (plan) => {
         const allSlabs = await storage.getActiveClaimValueSlabsByDeviceType(plan.deviceType);
-        
+
         // Extract coverage period in months (handle formats like "36", "36_months", "36 months")
         let coverageMonths = 36; // default
         if (plan.coverage) {
@@ -11254,13 +11258,13 @@ Required: GUPSHUP_API_KEY environment variable
             coverageMonths = parsed;
           }
         }
-        
+
         // Filter slabs to only include those within the plan's coverage period
         const filteredSlabs = allSlabs.filter(slab => {
           const maxMonths = slab.maxMonths || slab.max_months || 0;
           return maxMonths <= coverageMonths;
         });
-        
+
         // Deduplicate slabs by device_type + min_months + max_months (keeps only the first occurrence)
         let uniqueSlabs = Array.from(
           new Map(filteredSlabs.map(slab => [
@@ -11268,7 +11272,7 @@ Required: GUPSHUP_API_KEY environment variable
             slab
           ])).values()
         );
-        
+
         // For laptop slabs, filter out overlapping ranges to keep only the correct ones
         if (plan.deviceType === 'laptop') {
           uniqueSlabs = uniqueSlabs.filter(slab => {
@@ -11281,13 +11285,13 @@ Required: GUPSHUP_API_KEY environment variable
             return true;
           });
         }
-        
+
         return {
           ...plan,
           claimValueSlabs: uniqueSlabs
         };
       }));
-      
+
       res.json(plansWithSlabs);
     } catch (error: any) {
       console.error('Error fetching all plans:', error);

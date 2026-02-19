@@ -64,22 +64,20 @@ export function DevicePlanSelectorForm({
   });
 
   // Fetch models based on selected brand
-  const { data: models = [], isLoading: modelsLoading } = useQuery({
-    queryKey: ["/api/models", selectedDeviceBrand, selectedDeviceType],
-    queryFn: async () => {
-      // We can use the brands-with-models endpoint and filter, or a specific models endpoint if available.
-      // Based on previous analysis, we saw brands-with-models used in checkout.tsx.
-      // Let's use that one for consistency.
-      const response = await fetch("/api/brands-with-models");
-      if (!response.ok) throw new Error("Failed to fetch models");
-      const allBrandsWithModels = await response.json();
+  // Find selected brand ID
+  const selectedBrandId = Array.isArray(brands)
+    ? brands.find((b: any) => b.name === selectedDeviceBrand)?.id
+    : null;
 
-      const selectedBrandData = allBrandsWithModels.find(
-        (b: any) => b.name === selectedDeviceBrand && b.device_type === selectedDeviceType,
-      );
-      return selectedBrandData?.models || [];
+  // Fetch models based on selected brand
+  const { data: models = [], isLoading: modelsLoading } = useQuery({
+    queryKey: ["/api/models", selectedBrandId],
+    queryFn: async () => {
+      const response = await fetch(`/api/models?brandId=${selectedBrandId}`);
+      if (!response.ok) throw new Error("Failed to fetch models");
+      return response.json();
     },
-    enabled: !!selectedDeviceBrand,
+    enabled: !!selectedBrandId,
     staleTime: 300000,
   });
 
@@ -272,8 +270,8 @@ export function DevicePlanSelectorForm({
               >
                 {selectedDeviceModel
                   ? models.find(
-                      (model: any) => model.name === selectedDeviceModel,
-                    )?.name || selectedDeviceModel
+                    (model: any) => model.name === selectedDeviceModel,
+                  )?.name || selectedDeviceModel
                   : modelsLoading
                     ? "Loading models..."
                     : "Select device model"}

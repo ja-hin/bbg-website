@@ -43,7 +43,7 @@ export default function CustomerLogin() {
           return prev - 1;
         });
       }, 1000);
-      
+
       toast({
         title: "OTP Sent",
         description: "Please check your mobile phone for the verification code.",
@@ -73,7 +73,7 @@ export default function CustomerLogin() {
       if (data.customer) {
         sessionStorage.setItem('customerDetails', JSON.stringify(data.customer));
       }
-      
+
       toast({
         title: "Login Successful",
         description: "Welcome to your customer dashboard!",
@@ -113,7 +113,7 @@ export default function CustomerLogin() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!otp || otp.length !== 6) {
       toast({
         title: "Invalid OTP",
@@ -133,15 +133,15 @@ export default function CustomerLogin() {
         <div className="hidden md:flex md:w-1/2 bg-[#254696] p-12 flex-col justify-between relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-600/20 rounded-full -ml-32 -mb-32 blur-3xl"></div>
-          
+
           <div className="relative z-10">
             <img src={bbgLogo} alt="BBG Logo" className="h-14 w-auto brightness-0 invert mb-8" />
             <h2 className="text-3xl font-bold text-white mb-4">Welcome Back!</h2>
             <p className="text-blue-100 text-lg">
-              Securely access your BuyBack Guarantee dashboard to manage your protected devices, view claims, and update your profile.
+              Manage your protected devices, view claims, and update your profile.
             </p>
           </div>
-          
+
           <div className="relative z-10 space-y-4">
           </div>
         </div>
@@ -149,8 +149,7 @@ export default function CustomerLogin() {
         {/* Right Side - Login Form */}
         <div className="w-full md:w-1/2 p-8 md:p-12">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Customer Login</h1>
-            <p className="text-gray-500">Enter your registered mobile number to continue</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Login</h1>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
@@ -183,8 +182,8 @@ export default function CustomerLogin() {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <Label htmlFor="otp" className="text-sm font-semibold text-gray-700">One Time Password</Label>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       onClick={() => setIsOtpSent(false)}
                       className="text-xs text-[#254696] hover:underline"
                     >
@@ -259,9 +258,9 @@ export default function CustomerLogin() {
           <div className="mt-8 pt-8 border-t border-gray-100 text-center">
             <p className="text-sm text-gray-500">
               New to BuyBack Guarantee?{" "}
-              <Link href="/" className="text-[#254696] font-bold hover:underline">
-                Get Protected Now
-              </Link>
+              <a href="https://www.xtracover.com/contact-us" target="blank" className="text-[#254696] font-bold hover:underline">
+                Contact Us
+              </a>
             </p>
           </div>
         </div>

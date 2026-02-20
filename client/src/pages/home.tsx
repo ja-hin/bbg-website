@@ -783,7 +783,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Laptop Bundle Card */}
+                {/* Laptop Bundle Card
                 <div
                   className="w-full flex flex-col flip-card min-h-96"
                   data-testid="card-laptop-bundle"
@@ -791,7 +791,6 @@ export default function Home() {
                   <div
                     className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopBundleFlipped ? "flipped" : ""}`}
                   >
-                    {/* Front Face */}
                     <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                       <div
                         className="p-6 sm:p-7 text-white text-center"
@@ -928,7 +927,6 @@ export default function Home() {
                         </button>
                       </div>
                     </div>
-                    {/* Back Face */}
                     <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                       <div
                         className="p-6 sm:p-7 text-white text-center"
@@ -986,6 +984,8 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+
+                 */}
               </>
             )}
 
@@ -1284,7 +1284,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Mobile Bundle Card */}
+                {/* Mobile Bundle Card
                 <div
                   className="w-full flex flex-col flip-card min-h-96"
                   data-testid="card-mobile-bundle"
@@ -1292,7 +1292,6 @@ export default function Home() {
                   <div
                     className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileBundleFlipped ? "flipped" : ""}`}
                   >
-                    {/* Front Face */}
                     <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                       <div
                         className="p-6 sm:p-7 text-white text-center"
@@ -1429,7 +1428,6 @@ export default function Home() {
                         </button>
                       </div>
                     </div>
-                    {/* Back Face */}
                     <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                       <div
                         className="p-6 sm:p-7 text-white text-center"
@@ -1487,6 +1485,8 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+
+                 */}
               </>
             )}
           </div>

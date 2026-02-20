@@ -152,10 +152,10 @@ export default function Plans() {
 
   const showLaptopBBG = showingLaptop && isWithinSixMonths;
   const showMobileBBG = showingMobile && isWithinSixMonths;
-  const showLaptopExtend = showingLaptop;
-  const showMobileExtend = showingMobile;
-  const showLaptopBundle = showingLaptop && isWithinSixMonths;
-  const showMobileBundle = showingMobile && isWithinSixMonths;
+  const showLaptopExtend = showingLaptop && !isWithinSixMonths;
+  const showMobileExtend = showingMobile && !isWithinSixMonths;
+  const showLaptopBundle = false;
+  const showMobileBundle = false;
 
   const visibleCards = [
     showLaptopBBG,

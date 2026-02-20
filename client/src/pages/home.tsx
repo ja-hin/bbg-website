@@ -198,7 +198,7 @@ export default function Home() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCarouselIndex((prev) => (prev + 1) % 2);
-    }, 10000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 

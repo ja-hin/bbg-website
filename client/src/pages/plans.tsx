@@ -263,7 +263,7 @@ export default function Plans() {
                 {deviceAgeSelection === "1" ? "Within 6 months" : "More than 6 months"}
               </span>
             </div>
-            {!isWithinSixMonths && (
+            {/* {!isWithinSixMonths && (
               <p
                 className="mt-3 text-sm text-amber-600"
                 data-testid="text-older-device-note"
@@ -271,7 +271,7 @@ export default function Plans() {
                 Your device is more than 6 months old. Only Extend+ plans are
                 available.
               </p>
-            )}
+            )} */}
           </div>
 
           

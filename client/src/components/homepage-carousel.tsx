@@ -95,14 +95,14 @@ export function HomepageCarousel({ autoPlay = true, autoPlayInterval = 10000, on
   }, [banners]);
 
   useEffect(() => {
-    if (!autoPlay || banners.length <= 1 || !firstImageLoaded) return;
+    if (!autoPlay || banners.length <= 1) return;
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % banners.length);
     }, autoPlayInterval);
 
     return () => clearInterval(interval);
-  }, [autoPlay, autoPlayInterval, banners.length, firstImageLoaded]);
+  }, [autoPlay, autoPlayInterval, banners.length]);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);

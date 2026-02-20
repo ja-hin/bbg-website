@@ -823,15 +823,17 @@ export default function Plans() {
               </div>
             )}
 
+            {/*
+
             {showLaptopBundle && (
               <div
                 className="w-full flex flex-col flip-card min-h-96"
                 data-testid="card-laptop-bundle"
               >
                 <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopBundleFlipped ? 'flipped' : ''}`}>
-                  {/* Front Face */}
+                  
                   <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                    {/* Blue Header */}
+                    
                     <div
                       className="p-6 sm:p-7 text-white text-center"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
@@ -851,9 +853,9 @@ export default function Plans() {
                       </div>
                     </div>
 
-                    {/* White Content Area */}
+                    
                     <div className="p-6 sm:p-8 space-y-3">
-                      {/* Benefits with Icons */}
+                      
                       <div className="space-y-3">
                         <div className="flex gap-4">
                           <Shield
@@ -899,13 +901,11 @@ export default function Plans() {
                         </div>
                       </div>
 
-                      {/* Validity */}
                       <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
                         Validity: {(laptopBundlePlan?.coverage || '36').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
 
-                    {/* Know More Button and Buy Now Button */}
                     <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
                       <button
                         onClick={() => setLaptopBundleFlipped(!laptopBundleFlipped)}
@@ -933,9 +933,7 @@ export default function Plans() {
                     </div>
                   </div>
 
-                  {/* Back Face */}
                   <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                    {/* Blue Header */}
                     <div
                       className="p-6 sm:p-7 text-white text-center"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
@@ -948,7 +946,6 @@ export default function Plans() {
                       </p>
                     </div>
 
-                    {/* Device Age Slabs */}
                     <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
                       <ClaimValueSlabs slabs={laptopBundlePlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
@@ -956,7 +953,6 @@ export default function Plans() {
                       </p>
                     </div>
 
-                    {/* Back and Buy Now Buttons */}
                     <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
                       <button
                         onClick={() => setLaptopBundleFlipped(false)}
@@ -987,15 +983,18 @@ export default function Plans() {
               </div>
             )}
 
+            */}
+
+            {/* 
             {showMobileBundle && (
               <div
                 className="w-full flex flex-col flip-card min-h-96"
                 data-testid="card-mobile-bundle"
               >
                 <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileBundleFlipped ? 'flipped' : ''}`}>
-                  {/* Front Face */}
+                  
                   <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                    {/* Blue Header */}
+                    
                     <div
                       className="p-6 sm:p-7 text-white text-center"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
@@ -1015,9 +1014,9 @@ export default function Plans() {
                       </div>
                     </div>
 
-                    {/* White Content Area */}
+                    
                     <div className="p-6 sm:p-8 space-y-3">
-                      {/* Benefits with Icons */}
+                      
                       <div className="space-y-3">
                         <div className="flex gap-4">
                           <Shield
@@ -1063,13 +1062,11 @@ export default function Plans() {
                         </div>
                       </div>
 
-                      {/* Validity */}
                       <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
                         Validity: {(mobileBundlePlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                       </div>
                     </div>
 
-                    {/* Know More Button and Buy Now Button */}
                     <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
                       <button
                         onClick={() => setMobileBundleFlipped(!mobileBundleFlipped)}
@@ -1097,9 +1094,7 @@ export default function Plans() {
                     </div>
                   </div>
 
-                  {/* Back Face */}
                   <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                    {/* Blue Header */}
                     <div
                       className="p-6 sm:p-7 text-white text-center"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
@@ -1112,7 +1107,6 @@ export default function Plans() {
                       </p>
                     </div>
 
-                    {/* Device Age Slabs */}
                     <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
                       <ClaimValueSlabs slabs={mobileBundlePlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
@@ -1120,7 +1114,6 @@ export default function Plans() {
                       </p>
                     </div>
 
-                    {/* Back and Buy Now Buttons */}
                     <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
                       <button
                         onClick={() => setMobileBundleFlipped(false)}
@@ -1150,6 +1143,8 @@ export default function Plans() {
                 </div>
               </div>
             )}
+
+            */}
             </div>
           </div>
         </div>

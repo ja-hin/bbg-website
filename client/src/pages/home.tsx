@@ -1284,7 +1284,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Mobile Bundle Card */}
+                {/* Mobile Bundle Card 
                 <div
                   className="w-full flex flex-col flip-card min-h-96"
                   data-testid="card-mobile-bundle"
@@ -1485,6 +1485,8 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+
+                */}
               </>
             )}
           </div>

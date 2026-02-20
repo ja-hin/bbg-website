@@ -5589,7 +5589,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const buffer = await response.arrayBuffer();
 
         // Read the Excel file from buffer
-        const workbook = XLSX.read(buffer, { type: "array" });
+        const bufferUint8 = new Uint8Array(buffer);
+        const workbook = XLSX.read(bufferUint8, { type: "array" });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         const data = XLSX.utils.sheet_to_json(worksheet);
@@ -6804,7 +6805,8 @@ Required: GUPSHUP_API_KEY environment variable
         const buffer = await response.arrayBuffer();
 
         // Read the Excel file from buffer
-        const workbook = XLSX.read(buffer, { type: "array" });
+        const bufferUint8 = new Uint8Array(buffer);
+        const workbook = XLSX.read(bufferUint8, { type: "array" });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         const data = XLSX.utils.sheet_to_json(worksheet);
@@ -7811,7 +7813,8 @@ Required: GUPSHUP_API_KEY environment variable
         const buffer = await response.arrayBuffer();
 
         // Read the Excel file from buffer
-        const workbook = XLSX.read(buffer, { type: "array" });
+        const bufferUint8 = new Uint8Array(buffer);
+        const workbook = XLSX.read(bufferUint8, { type: "array" });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         const data = XLSX.utils.sheet_to_json(worksheet);

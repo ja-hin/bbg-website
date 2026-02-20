@@ -193,6 +193,15 @@ export default function Home() {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  const [carouselIndex, setCarouselIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCarouselIndex((prev) => (prev + 1) % 2);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Featured Plans Section */}
@@ -209,6 +218,10 @@ export default function Home() {
               opts={{
                 align: "start",
                 loop: true,
+              }}
+              setApi={(api) => {
+                if (!api) return;
+                api.scrollTo(carouselIndex);
               }}
               className="w-full"
             >

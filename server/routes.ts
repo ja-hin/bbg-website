@@ -417,10 +417,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Return customer information - get the most recent registration
-      const customer = customers[0]; // storage.getCustomersByContact sorts by id desc usually, or we should ensure it
+      const customer = customers[0]; 
+
+      // Check if profile is complete (has name and email)
+      const isProfileIncomplete = !customer.customer_name || 
+                                 customer.customer_name === "Customer" || 
+                                 !customer.customer_email;
 
       res.json({
         message: "Login successful",
+        isProfileIncomplete,
         customer: {
           phone: phone,
           name: customer.customer_name,
@@ -471,6 +477,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Get customer profile error:", error);
       res.status(500).json({ message: "Failed to fetch customer profile" });
+    }
+  });
+
+  // Update customer profile (name and email) for new users
+  app.post("/api/customer/update-profile", async (req, res) => {
+    try {
+      const { phone, name, email } = req.body;
+
+      if (!phone || !name || !email) {
+        return res
+          .status(400)
+          .json({ message: "Phone, name, and email are required" });
+      }
+
+      console.log(`Updating profile for ${phone}: Name=${name}, Email=${email}`);
+
+      // Find customer by phone
+      const customers = await storage.getCustomersByContact(phone);
+      if (!customers || customers.length === 0) {
+        return res.status(404).json({ message: "Customer not found" });
+      }
+
+      // Update the record
+      // In SqlServerStorage, we'll need a method for this, or use raw SQL if it's missing
+      await storage.updateCustomerProfileByPhone(phone, name, email);
+
+      res.json({ message: "Profile updated successfully" });
+    } catch (error: any) {
+      console.error("Update profile error:", error);
+      res.status(500).json({ message: "Failed to update profile" });
     }
   });
 

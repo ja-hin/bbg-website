@@ -74,6 +74,7 @@ export interface IStorage {
   getCustomersByRegistrationSource(registrationSource: string): Promise<Customer[]>;
   updateCustomerVerification(id: number, isVerified: boolean): Promise<void>;
   updateCustomer(id: number, updates: Partial<InsertCustomer>): Promise<void>;
+  updateCustomerProfileByPhone(phone: string, name: string, email: string): Promise<void>;
   deleteCustomer(id: number): Promise<void>;
   
   // Claim operations
@@ -2842,6 +2843,20 @@ export class SqlServerStorage implements IStorage {
       const query = `UPDATE customers SET ${setParts.join(', ')} WHERE id = @id`;
       await request.query(query);
     }
+  }
+
+  async updateCustomerProfileByPhone(phone: string, name: string, email: string): Promise<void> {
+    await db.connectDB();
+    const request = db.pool.request();
+    const query = `
+      UPDATE customers 
+      SET name = @name, email = @email 
+      WHERE contact = @phone
+    `;
+    request.input('name', sql.NVarChar, name);
+    request.input('email', sql.NVarChar, email);
+    request.input('phone', sql.NVarChar, phone);
+    await request.query(query);
   }
 
   async deleteCustomer(id: number): Promise<void> {

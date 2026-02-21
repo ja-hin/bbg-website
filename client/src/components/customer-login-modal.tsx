@@ -21,7 +21,10 @@ export function CustomerLoginModal({ isOpen, onClose, onSuccess, redirectPath }:
   const { login } = useCustomerAuth();
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
   const sendOtpMutation = useMutation({
@@ -58,18 +61,18 @@ export function CustomerLoginModal({ isOpen, onClose, onSuccess, redirectPath }:
     },
   });
 
-  const loginMutation = useMutation({
-    mutationFn: async ({ phone, otp }: { phone: string; otp: string }) => {
-      return apiRequest("/api/customer/login", {
+  const updateProfileMutation = useMutation({
+    mutationFn: async ({ phone, name, email }: { phone: string; name: string; email: string }) => {
+      return apiRequest("/api/customer/update-profile", {
         method: "POST",
-        body: { phone, otp }
+        body: { phone, name, email }
       });
     },
     onSuccess: () => {
       login(phone);
       toast({
-        title: "Login Successful",
-        description: "Welcome back!",
+        title: "Registration Complete",
+        description: "Your profile has been created successfully.",
       });
       handleClose();
       if (onSuccess) {
@@ -81,8 +84,46 @@ export function CustomerLoginModal({ isOpen, onClose, onSuccess, redirectPath }:
     },
     onError: (error: any) => {
       toast({
+        title: "Error",
+        description: error.message || "Failed to update profile",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const loginMutation = useMutation({
+    mutationFn: async ({ phone, otp }: { phone: string; otp: string }) => {
+      return apiRequest("/api/customer/login", {
+        method: "POST",
+        body: { phone, otp }
+      });
+    },
+    onSuccess: (data: any) => {
+      if (data.isProfileIncomplete) {
+        setIsNewUser(true);
+        toast({
+          title: "Verify Successful",
+          description: "Please provide your name and email to continue.",
+        });
+      } else {
+        login(phone);
+        toast({
+          title: "Login Successful",
+          description: "Welcome back!",
+        });
+        handleClose();
+        if (onSuccess) {
+          onSuccess();
+        }
+        if (redirectPath) {
+          window.location.href = redirectPath;
+        }
+      }
+    },
+    onError: (error: any) => {
+      toast({
         title: "Login Failed",
-        description: error.message || "Invalid OTP or customer not found",
+        description: error.message || "Invalid OTP or login error",
         variant: "destructive",
       });
     },
@@ -91,7 +132,10 @@ export function CustomerLoginModal({ isOpen, onClose, onSuccess, redirectPath }:
   const handleClose = () => {
     setPhone("");
     setOtp("");
+    setName("");
+    setEmail("");
     setIsOtpSent(false);
+    setIsNewUser(false);
     setCountdown(0);
     onClose();
   };
@@ -121,16 +165,35 @@ export function CustomerLoginModal({ isOpen, onClose, onSuccess, redirectPath }:
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!otp || otp.length < 4) {
-      toast({
-        title: "Invalid OTP",
-        description: "Please enter a valid OTP",
-        variant: "destructive",
-      });
-      return;
+    if (isNewUser) {
+      if (!name || name.trim().length < 2) {
+        toast({
+          title: "Invalid Name",
+          description: "Please enter your full name",
+          variant: "destructive",
+        });
+        return;
+      }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        toast({
+          title: "Invalid Email",
+          description: "Please enter a valid email address",
+          variant: "destructive",
+        });
+        return;
+      }
+      await updateProfileMutation.mutateAsync({ phone, name, email });
+    } else {
+      if (!otp || otp.length < 4) {
+        toast({
+          title: "Invalid OTP",
+          description: "Please enter a valid OTP",
+          variant: "destructive",
+        });
+        return;
+      }
+      await loginMutation.mutateAsync({ phone, otp });
     }
-
-    await loginMutation.mutateAsync({ phone, otp });
   };
 
   return (
@@ -177,6 +240,49 @@ export function CustomerLoginModal({ isOpen, onClose, onSuccess, redirectPath }:
                 "Send OTP"
               )}
             </Button>
+          ) : isNewUser ? (
+            <>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-sm font-medium text-gray-700">
+                    Full Name
+                  </Label>
+                  <Input
+                    id="name"
+                    placeholder="Enter your full name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                    Email Address
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={updateProfileMutation.isPending}
+                className="w-full bg-[#254696] hover:bg-[#1a3470] mt-4"
+              >
+                {updateProfileMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Complete Registration"
+                )}
+              </Button>
+            </>
           ) : (
             <>
               <div className="space-y-2">

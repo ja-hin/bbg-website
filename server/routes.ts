@@ -404,6 +404,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: "pending@xtracover.com",
           pincode: "000000",
           deviceType: "mobile",
+          serialNumber: "PENDING",
           brand: "Generic",
           modelName: "Generic",
           invoiceValue: 0,

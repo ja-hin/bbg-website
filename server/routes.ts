@@ -399,9 +399,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!customers || customers.length === 0) {
         console.log(`Creating initial customer record for ${phone} during login`);
         const newCustomer = {
-          customer_name: "Customer",
-          contact_number: phone,
-          registration_date: new Date(),
+          name: "Customer",
+          contact: phone,
+          email: "pending@xtracover.com",
+          pincode: "000000",
+          deviceType: "mobile",
+          brand: "Generic",
+          modelName: "Generic",
+          invoiceValue: 0,
+          dateOfPurchase: new Date().toISOString().split('T')[0],
           is_verified: 1,
           registration_source: 'website_login'
         };

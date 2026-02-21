@@ -392,11 +392,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Find customer by phone number
-      const customers = await storage.getCustomersByContact(phone);
+      let customers = await storage.getCustomersByContact(phone);
+      
+      // If customer doesn't exist, create a lead/basic record to allow login
+      // This handles the "Customer not found" error during the buy flow
+      if (!customers || customers.length === 0) {
+        console.log(`Creating initial customer record for ${phone} during login`);
+        const newCustomer = {
+          customer_name: "Customer",
+          contact_number: phone,
+          registration_date: new Date(),
+          is_verified: 1,
+          registration_source: 'website_login'
+        };
+        
+        await storage.createCustomer(newCustomer as any);
+        customers = await storage.getCustomersByContact(phone);
+      }
+
       if (!customers || customers.length === 0) {
         return res
           .status(404)
-          .json({ message: "Customer not found. Please register first." });
+          .json({ message: "Failed to create customer record. Please try again." });
       }
 
       // Return customer information - get the most recent registration

@@ -208,9 +208,14 @@ export default function Checkout() {
                const pincode = data.pincode || data.customer_pincode;
                const state = data.state || data.customer_state;
 
-               if (name) form.setValue("name", name, { shouldValidate: true });
-               if (email) form.setValue("email", email, { shouldValidate: true });
-               if (pincode) form.setValue("pincode", pincode, { shouldValidate: true });
+               // Filter out placeholder values from system auto-registration
+               const finalName = name === "Customer" ? "" : (name || "");
+               const finalEmail = email === "pending@xtracover.com" ? "" : (email || "");
+               const finalPincode = pincode === "000000" ? "" : (pincode || "");
+
+               if (finalName) form.setValue("name", finalName, { shouldValidate: true });
+               if (finalEmail) form.setValue("email", finalEmail, { shouldValidate: true });
+               if (finalPincode) form.setValue("pincode", finalPincode, { shouldValidate: true });
                if (state) form.setValue("state", state, { shouldValidate: true });
                form.setValue("contact", savedPhone, { shouldValidate: true });
                
@@ -238,9 +243,13 @@ export default function Checkout() {
           .then(res => res.ok ? res.json() : null)
           .then(data => {
             if (data) {
-              if (data.name) form.setValue("name", data.name, { shouldValidate: true });
-              if (data.email) form.setValue("email", data.email, { shouldValidate: true });
-              if (data.pincode) form.setValue("pincode", data.pincode, { shouldValidate: true });
+              const name = data.name === "Customer" ? "" : data.name;
+              const email = data.email === "pending@xtracover.com" ? "" : data.email;
+              const pincode = data.pincode === "000000" ? "" : data.pincode;
+
+              if (name) form.setValue("name", name, { shouldValidate: true });
+              if (email) form.setValue("email", email, { shouldValidate: true });
+              if (pincode) form.setValue("pincode", pincode, { shouldValidate: true });
               if (data.state) form.setValue("state", data.state, { shouldValidate: true });
               if (data.phone) form.setValue("contact", data.phone, { shouldValidate: true });
             }

@@ -429,6 +429,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check if profile is complete (has name and email)
       const isProfileIncomplete = !customer.customer_name || 
                                  customer.customer_name === "Customer" || 
+                                 customer.customer_email === "pending@xtracover.com" ||
                                  !customer.customer_email;
 
       res.json({
@@ -436,10 +437,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isProfileIncomplete,
         customer: {
           phone: phone,
-          name: customer.customer_name,
-          email: customer.customer_email,
+          name: customer.customer_name === "Customer" ? "" : customer.customer_name,
+          email: customer.customer_email === "pending@xtracover.com" ? "" : customer.customer_email,
           state: customer.customer_state,
-          pincode: customer.customer_pincode,
+          pincode: customer.customer_pincode === "000000" ? "" : customer.customer_pincode,
           registrations: customers.length,
         },
       });
@@ -473,10 +474,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const responseData = {
         phone: customer.contact_number || customer.contact || phone,
-        name: customer.customer_name || customer.name,
-        email: customer.customer_email || customer.email,
+        name: customer.customer_name === "Customer" ? "" : (customer.customer_name || customer.name),
+        email: customer.customer_email === "pending@xtracover.com" ? "" : (customer.customer_email || customer.email),
         state: customer.customer_state || customer.state,
-        pincode: customer.customer_pincode || customer.pincode,
+        pincode: customer.customer_pincode === "000000" ? "" : (customer.customer_pincode || customer.pincode),
       };
 
       console.log(`✅ Profile found:`, responseData);

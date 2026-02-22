@@ -359,10 +359,10 @@ export default function Plans() {
                           />
                           <div>
                             <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                              Sell your device at doorstep
+                              1-Year Extended Repair Service Warranty*
                             </p>
                             <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                              Free pickup from your location
+                              Protection for your existing device that begins after your brand warranty ends.
                             </p>
                           </div>
                         </div>
@@ -538,10 +538,10 @@ export default function Plans() {
                           />
                           <div>
                             <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                              Sell your device at doorstep
+                              1-Year Extended Repair Service Warranty*
                             </p>
                             <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                              Free pickup from your location
+                              Protection for your existing device that begins after your brand warranty ends.
                             </p>
                           </div>
                         </div>

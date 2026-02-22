@@ -13,6 +13,7 @@ import {
   Car,
   IndianRupee,
   Wrench,
+  Percent,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.webp";
@@ -336,7 +337,6 @@ export default function Plans() {
 
                     {/* White Content Area */}
                     <div className="p-6 sm:p-8 space-y-3">
-                      {/* Benefits with Icons */}
                       <div className="space-y-3">
                         <div className="flex gap-4">
                           <Shield
@@ -353,7 +353,7 @@ export default function Plans() {
                           </div>
                         </div>
                         <div className="flex gap-4">
-                          <Car
+                          <Wrench
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                             style={{ color: "#254696" }}
                           />
@@ -361,13 +361,14 @@ export default function Plans() {
                             <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
                               1-Year Extended Repair Service Warranty*
                             </p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                              Protection for your existing device that begins after your brand warranty ends.
-                            </p>
+                            <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
+                              <p>• Protection for your existing device that begins after your brand warranty ends.</p>
+                              <p>• Zero service costs on repairs.</p>
+                            </div>
                           </div>
                         </div>
                         <div className="flex gap-4">
-                          <IndianRupee
+                          <Wallet
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                             style={{ color: "#254696" }}
                           />
@@ -377,6 +378,20 @@ export default function Plans() {
                             </p>
                             <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
                               Exclusive deals for your next device purchase.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <Percent
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                              20% Off on 1-Year Extended Warranty
+                            </p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                              Save 20% on protection of your next device purchase.
                             </p>
                           </div>
                         </div>
@@ -515,7 +530,6 @@ export default function Plans() {
 
                     {/* White Content Area */}
                     <div className="p-6 sm:p-8 space-y-3">
-                      {/* Benefits with Icons */}
                       <div className="space-y-3">
                         <div className="flex gap-4">
                           <Shield
@@ -532,7 +546,7 @@ export default function Plans() {
                           </div>
                         </div>
                         <div className="flex gap-4">
-                          <Car
+                          <Wrench
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                             style={{ color: "#254696" }}
                           />
@@ -540,13 +554,14 @@ export default function Plans() {
                             <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
                               1-Year Extended Repair Service Warranty*
                             </p>
-                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                              Protection for your existing device that begins after your brand warranty ends.
-                            </p>
+                            <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
+                              <p>• Protection for your existing device that begins after your brand warranty ends.</p>
+                              <p>• Zero service costs on repairs.</p>
+                            </div>
                           </div>
                         </div>
                         <div className="flex gap-4">
-                          <IndianRupee
+                          <Wallet
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                             style={{ color: "#254696" }}
                           />
@@ -556,6 +571,20 @@ export default function Plans() {
                             </p>
                             <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
                               Exclusive deals for your next device purchase.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <Percent
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
+                              20% Off on 1-Year Extended Warranty
+                            </p>
+                            <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
+                              Save 20% on protection of your next device purchase.
                             </p>
                           </div>
                         </div>

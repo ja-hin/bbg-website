@@ -360,7 +360,7 @@ export default function Home() {
                     className="text-base sm:text-lg leading-relaxed"
                     style={{ color: "#4b5563" }}
                   >
-                    Free repair service
+                    1-Year Extended Repair Service Warranty
                   </p>
                 </div>
 
@@ -378,7 +378,25 @@ export default function Home() {
                     className="text-base sm:text-lg leading-relaxed"
                     style={{ color: "#4b5563" }}
                   >
-                    Free Doorstep Pickup
+                    Best Product Upgrade Offers
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div
+                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1"
+                    style={{ background: "rgba(37, 70, 150, 0.15)" }}
+                  >
+                    <BsCheckLg
+                      className="text-lg font-bold"
+                      style={{ color: "#254696" }}
+                    />
+                  </div>
+                  <p
+                    className="text-base sm:text-lg leading-relaxed"
+                    style={{ color: "#4b5563" }}
+                  >
+                    20% Off on 1-Year Extended Warranty
                   </p>
                 </div>
 
@@ -568,13 +586,12 @@ export default function Home() {
                                 className="text-xs sm:text-sm"
                                 style={{ color: "#6B7280" }}
                               >
-                                Get back up to 70% of your device's purchase
-                                price*
+                                Get back up to 70% of your device's purchase price*
                               </p>
                             </div>
                           </div>
                           <div className="flex gap-4">
-                            <Car
+                            <Wrench
                               className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                               style={{ color: "#254696" }}
                             />
@@ -585,16 +602,14 @@ export default function Home() {
                               >
                                 1-Year Extended Repair Service Warranty*
                               </p>
-                              <p
-                                className="text-xs sm:text-sm"
-                                style={{ color: "#6B7280" }}
-                              >
-                                Protection for your existing device that begins after your brand warranty ends.
-                              </p>
+                              <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
+                                <p>• Protection for your existing device that begins after your brand warranty ends.</p>
+                                <p>• Zero service costs on repairs.</p>
+                              </div>
                             </div>
                           </div>
                           <div className="flex gap-4">
-                            <IndianRupee
+                            <TrendingUp
                               className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                               style={{ color: "#254696" }}
                             />
@@ -610,6 +625,26 @@ export default function Home() {
                                 style={{ color: "#6B7280" }}
                               >
                                 Exclusive deals for your next device purchase.
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex gap-4">
+                            <Percent
+                              className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                              style={{ color: "#254696" }}
+                            />
+                            <div>
+                              <p
+                                className="font-semibold text-sm sm:text-base"
+                                style={{ color: "#1F2937" }}
+                              >
+                                20% Off on 1-Year Extended Warranty
+                              </p>
+                              <p
+                                className="text-xs sm:text-sm"
+                                style={{ color: "#6B7280" }}
+                              >
+                                Save 20% on protection of your next device purchase.
                               </p>
                             </div>
                           </div>
@@ -895,13 +930,12 @@ export default function Home() {
                                 className="text-xs sm:text-sm"
                                 style={{ color: "#6B7280" }}
                               >
-                                Get back up to 70% of your device's purchase
-                                price*
+                                Get back up to 70% of your device's purchase price*
                               </p>
                             </div>
                           </div>
                           <div className="flex gap-4">
-                            <Car
+                            <Wrench
                               className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                               style={{ color: "#254696" }}
                             />
@@ -912,16 +946,14 @@ export default function Home() {
                               >
                                 1-Year Extended Repair Service Warranty*
                               </p>
-                              <p
-                                className="text-xs sm:text-sm"
-                                style={{ color: "#6B7280" }}
-                              >
-                                Protection for your existing device that begins after your brand warranty ends.
-                              </p>
+                              <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
+                                <p>• Protection for your existing device that begins after your brand warranty ends.</p>
+                                <p>• Zero service costs on repairs.</p>
+                              </div>
                             </div>
                           </div>
                           <div className="flex gap-4">
-                            <IndianRupee
+                            <TrendingUp
                               className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                               style={{ color: "#254696" }}
                             />
@@ -937,6 +969,26 @@ export default function Home() {
                                 style={{ color: "#6B7280" }}
                               >
                                 Exclusive deals for your next device purchase.
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex gap-4">
+                            <Percent
+                              className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                              style={{ color: "#254696" }}
+                            />
+                            <div>
+                              <p
+                                className="font-semibold text-sm sm:text-base"
+                                style={{ color: "#1F2937" }}
+                              >
+                                20% Off on 1-Year Extended Warranty
+                              </p>
+                              <p
+                                className="text-xs sm:text-sm"
+                                style={{ color: "#6B7280" }}
+                              >
+                                Save 20% on protection of your next device purchase.
                               </p>
                             </div>
                           </div>

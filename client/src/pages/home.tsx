@@ -37,6 +37,7 @@ import {
   Hand,
   ShieldCheck,
   Percent,
+  Gavel,
 } from "lucide-react";
 import {
   Carousel,
@@ -58,8 +59,8 @@ import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_17642544524
 import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.webp";
 import bannerImg from "@assets/Referral_website.webp";
 import buybackGuaranteeImgBelow from "@assets/Referral_mobile.webp";
-import buybackGuaranteeImg from "@assets/wmremove-transformed_1767022747924.webp";
-import extendPlusImg from "@assets/wmremove-transformed_1767022747924.webp";
+import buybackGuaranteeImg from "@assets/herobbg.webp";
+import extendPlusImg from "@assets/heroextendplus.webp";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {
@@ -776,6 +777,24 @@ export default function Home() {
                     <div className="flex-grow p-6 sm:p-8 space-y-6">
                       <div className="space-y-4">
                         <div className="flex items-start gap-4">
+                          <Gavel
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p
+                              className="font-semibold text-sm sm:text-base"
+                              style={{ color: "#1F2937" }}
+                            >
+                              Doorstep Device Auction
+                            </p>
+                            <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
+                              <p>• Auction your device at the best market value.</p>
+                              <p>• 100+ buyers compete to give you the best possible price in India.</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-4">
                           <Wrench
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                             style={{ color: "#254696" }}
@@ -785,18 +804,16 @@ export default function Home() {
                               className="font-semibold text-sm sm:text-base"
                               style={{ color: "#1F2937" }}
                             >
-                              1 Free Repair Service
+                              1-Year Extended Repair Service Warranty*
                             </p>
-                            <p
-                              className="text-xs sm:text-sm"
-                              style={{ color: "#6B7280" }}
-                            >
-                              We pick up, fix, and return
-                            </p>
+                            <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
+                              <p>• Protection for your existing device that begins after your brand warranty ends.</p>
+                              <p>• Zero service costs on repairs.</p>
+                            </div>
                           </div>
                         </div>
                         <div className="flex items-start gap-4">
-                          <Car
+                          <TrendingUp
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                             style={{ color: "#254696" }}
                           />
@@ -805,18 +822,18 @@ export default function Home() {
                               className="font-semibold text-sm sm:text-base"
                               style={{ color: "#1F2937" }}
                             >
-                              Better Resale Value
+                              Best Product Upgrade Offers
                             </p>
                             <p
                               className="text-xs sm:text-sm"
                               style={{ color: "#6B7280" }}
                             >
-                              10-20% higher value
+                              Exclusive deals for your next device purchase.
                             </p>
                           </div>
                         </div>
                         <div className="flex items-start gap-4">
-                          <Shield
+                          <Percent
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                             style={{ color: "#254696" }}
                           />
@@ -825,13 +842,13 @@ export default function Home() {
                               className="font-semibold text-sm sm:text-base"
                               style={{ color: "#1F2937" }}
                             >
-                              30% OFF Warranty
+                              20% Off on 1-Year Extended Warranty
                             </p>
                             <p
                               className="text-xs sm:text-sm"
                               style={{ color: "#6B7280" }}
                             >
-                              One-time use
+                              Save 20% on protection of your next device purchase.
                             </p>
                           </div>
                         </div>
@@ -1120,6 +1137,24 @@ export default function Home() {
                     <div className="flex-grow p-6 sm:p-8 space-y-6">
                       <div className="space-y-4">
                         <div className="flex items-start gap-4">
+                          <Gavel
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            style={{ color: "#254696" }}
+                          />
+                          <div>
+                            <p
+                              className="font-semibold text-sm sm:text-base"
+                              style={{ color: "#1F2937" }}
+                            >
+                              Doorstep Device Auction
+                            </p>
+                            <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
+                              <p>• Auction your device at the best market value.</p>
+                              <p>• 100+ buyers compete to give you the best possible price in India.</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-4">
                           <Wrench
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                             style={{ color: "#254696" }}
@@ -1129,18 +1164,16 @@ export default function Home() {
                               className="font-semibold text-sm sm:text-base"
                               style={{ color: "#1F2937" }}
                             >
-                              1 Free Repair Service
+                              1-Year Extended Repair Service Warranty*
                             </p>
-                            <p
-                              className="text-xs sm:text-sm"
-                              style={{ color: "#6B7280" }}
-                            >
-                              We pick up, fix, and return
-                            </p>
+                            <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
+                              <p>• Protection for your existing device that begins after your brand warranty ends.</p>
+                              <p>• Zero service costs on repairs.</p>
+                            </div>
                           </div>
                         </div>
                         <div className="flex items-start gap-4">
-                          <Car
+                          <TrendingUp
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                             style={{ color: "#254696" }}
                           />
@@ -1149,18 +1182,18 @@ export default function Home() {
                               className="font-semibold text-sm sm:text-base"
                               style={{ color: "#1F2937" }}
                             >
-                              Better Resale Value
+                              Best Product Upgrade Offers
                             </p>
                             <p
                               className="text-xs sm:text-sm"
                               style={{ color: "#6B7280" }}
                             >
-                              10-20% higher value
+                              Exclusive deals for your next device purchase.
                             </p>
                           </div>
                         </div>
                         <div className="flex items-start gap-4">
-                          <Shield
+                          <Percent
                             className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
                             style={{ color: "#254696" }}
                           />
@@ -1169,13 +1202,13 @@ export default function Home() {
                               className="font-semibold text-sm sm:text-base"
                               style={{ color: "#1F2937" }}
                             >
-                              30% OFF Warranty
+                              20% Off on 1-Year Extended Warranty
                             </p>
                             <p
                               className="text-xs sm:text-sm"
                               style={{ color: "#6B7280" }}
                             >
-                              One-time use
+                              Save 20% on protection of your next device purchase.
                             </p>
                           </div>
                         </div>
@@ -1327,7 +1360,7 @@ export default function Home() {
                   },
                   {
                     step: "4. Use auction support",
-                    text: "Request doorstep auction help and secure a 10-20% better resale price.",
+                    text: "Request doorstep auction help and secures the best possible resale price in India.",
                   },
                 ].map((item, index) => (
                   <div

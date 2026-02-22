@@ -156,7 +156,7 @@ export function DevicePlanSelectorForm({
       </h3>
 
       <p className="text-sm sm:text-base mb-6" style={{ color: "#6b7280" }}>
-        Get started in 3 simple steps
+        Get started in simple steps
       </p>
 
       <div className="space-y-6">

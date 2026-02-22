@@ -46,18 +46,18 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { HomepageCarousel } from "@/components/homepage-carousel";
-import deviceRegistrationImg from "@assets/BBG process - website.jpg";
-import resaleValueImg from "@assets/Extend+ process - webiste.jpg";
-import doorstepPickupImg from "@assets/BBG_Process_mob.jpg";
-import instantPaymentImg from "@assets/Extend+_process_mob.jpg";
+import deviceRegistrationImg from "@assets/BBG process - website.webp";
+import resaleValueImg from "@assets/Extend+ process - webiste.webp";
+import doorstepPickupImg from "@assets/BBG_Process_mob.webp";
+import instantPaymentImg from "@assets/Extend+_process_mob.webp";
 import bbgVideoFile from "@assets/Video final BBG ky hota_1758894912803.mp4";
 import specialOfferRibbon from "@assets/(inclusive of GST) (1)_1759126276325.webp";
 import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.webp";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.webp";
 import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_1764254452404.webp";
 import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.webp";
-import bannerImg from "@assets/Referral_website.png";
-import buybackGuaranteeImgBelow from "@assets/Referral_mobile.png";
+import bannerImg from "@assets/Referral_website.webp";
+import buybackGuaranteeImgBelow from "@assets/Referral_mobile.webp";
 import buybackGuaranteeImg from "@assets/wmremove-transformed_1767022747924.webp";
 import extendPlusImg from "@assets/Extend+cropped_(1)_1767021849857.webp";
 

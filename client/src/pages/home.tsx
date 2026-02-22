@@ -621,7 +621,7 @@ export default function Home() {
                           Validity 36 months
                         </div>
                       </div>
-                      <div className="px-6 sm:px-8 pb-4 sm:pb-5 space-y-2">
+                      <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
                         <button
                           onClick={() => setLaptopBBGFlipped(!laptopBBGFlipped)}
                           className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -677,7 +677,7 @@ export default function Home() {
                           original device purchase price
                         </p>
                       </div>
-                      <div className="px-6 sm:px-8 pb-4 sm:pb-5 space-y-2">
+                      <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
                         <button
                           onClick={() => setLaptopBBGFlipped(false)}
                           className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -808,7 +808,7 @@ export default function Home() {
                         Validity 24 months
                       </div>
                     </div>
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 pb-4 sm:pb-5">
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 pb-2 sm:pb-3">
                       <button
                         onClick={scrollToForm}
                         className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
@@ -948,7 +948,7 @@ export default function Home() {
                           Validity 18 months
                         </div>
                       </div>
-                      <div className="px-6 sm:px-8 pb-4 sm:pb-5 space-y-2">
+                      <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
                         <button
                           onClick={() => setMobileBBGFlipped(!mobileBBGFlipped)}
                           className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -1004,7 +1004,7 @@ export default function Home() {
                           original device purchase price
                         </p>
                       </div>
-                      <div className="px-6 sm:px-8 pb-4 sm:pb-5 space-y-2">
+                      <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
                         <button
                           onClick={() => setMobileBBGFlipped(false)}
                           className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -1135,7 +1135,7 @@ export default function Home() {
                         Validity 24 months
                       </div>
                     </div>
-                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 pb-4 sm:pb-5">
+                    <div className="p-6 sm:p-8 pt-4 sm:pt-6 pb-2 sm:pb-3">
                       <button
                         onClick={scrollToForm}
                         className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"

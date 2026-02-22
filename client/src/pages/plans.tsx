@@ -474,13 +474,18 @@ export default function Plans() {
                       <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
                         Lock your mobile's resale value
                       </p>
-                      <div className="text-5xl sm:text-6xl font-bold">
-                        {pricesLoading ? (
-                          <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
-                        ) : (
-                          `₹${mobileBBGPlan?.planPrice || "--"}`
-                        )}
-                      </div>
+                        <div className="flex flex-col items-center">
+                          <span className="text-xl sm:text-2xl text-white/70 line-through decoration-white/50 mb-[-8px]">
+                            ₹999
+                          </span>
+                          <div className="text-5xl sm:text-6xl font-bold">
+                            {pricesLoading ? (
+                              <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
+                            ) : (
+                              `₹${mobileBBGPlan?.planPrice || "--"}`
+                            )}
+                          </div>
+                        </div>
                     </div>
 
                     {/* White Content Area */}
@@ -738,13 +743,18 @@ export default function Plans() {
                     <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
                       Repairs, better resale & extra savings
                     </p>
-                    <div className="text-5xl sm:text-6xl font-bold">
-                      {pricesLoading ? (
-                        <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
-                      ) : (
-                        `₹${mobileExtendPlan?.planPrice || "--"}`
-                      )}
-                    </div>
+                        <div className="flex flex-col items-center">
+                          <span className="text-xl sm:text-2xl text-white/70 line-through decoration-white/50 mb-[-8px]">
+                            ₹999
+                          </span>
+                          <div className="text-5xl sm:text-6xl font-bold">
+                            {pricesLoading ? (
+                              <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
+                            ) : (
+                              `₹${mobileExtendPlan?.planPrice || "--"}`
+                            )}
+                          </div>
+                        </div>
                   </div>
 
                   {/* White Content Area */}

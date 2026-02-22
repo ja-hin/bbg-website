@@ -172,7 +172,7 @@ export default function Home() {
     const plan = allPlans.find(
       (p: any) => p.deviceType === "mobile" && p.planType === "extend_plus",
     );
-    return plan?.planPrice || 199;
+    return plan?.planPrice || 299;
   };
 
   const getLaptopBundlePrice = () => {
@@ -826,12 +826,17 @@ export default function Home() {
                         <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
                           Lock your mobile's resale value
                         </p>
-                        <div className="text-5xl sm:text-6xl font-bold">
-                          {pricesLoading ? (
-                            <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
-                          ) : (
-                            `₹${getMobileBBGPrice()}`
-                          )}
+                        <div className="flex flex-col items-center">
+                          <span className="text-xl sm:text-2xl text-white/70 line-through decoration-white/50 mb-[-8px]">
+                            ₹999
+                          </span>
+                          <div className="text-5xl sm:text-6xl font-bold">
+                            {pricesLoading ? (
+                              <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
+                            ) : (
+                              `₹${getMobileBBGPrice()}`
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className="flex-grow p-6 sm:p-8 space-y-3 flex flex-col">
@@ -1001,13 +1006,18 @@ export default function Home() {
                       <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
                         Repairs, better resale & extra savings
                       </p>
-                      <div className="text-5xl sm:text-6xl font-bold">
-                        {pricesLoading ? (
-                          <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
-                        ) : (
-                          `₹${getMobileExtendPrice()}`
-                        )}
-                      </div>
+                        <div className="flex flex-col items-center">
+                          <span className="text-xl sm:text-2xl text-white/70 line-through decoration-white/50 mb-[-8px]">
+                            ₹999
+                          </span>
+                          <div className="text-5xl sm:text-6xl font-bold">
+                            {pricesLoading ? (
+                              <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
+                            ) : (
+                              `₹${getMobileExtendPrice()}`
+                            )}
+                          </div>
+                        </div>
                     </div>
                     <div className="flex-grow p-6 sm:p-8 space-y-6">
                       <div className="space-y-4">

@@ -290,7 +290,7 @@ export default function Plans() {
           
 
           <div className="flex justify-center">
-            <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch max-w-full [grid-template-columns:repeat(auto-fit,minmax(300px,360px))]">
+            <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch max-w-full [grid-template-columns:repeat(auto-fit,minmax(320px,450px))]">
             {showLaptopBBG && (
               <div
                 className="w-full flex flex-col flip-card min-h-96"
@@ -389,7 +389,7 @@ export default function Plans() {
                     </div>
 
                     {/* Know More Button and Buy Now Button */}
-                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                    <div className="px-6 sm:px-8 pb-4 sm:pb-5 space-y-2">
                       <button
                         onClick={() => setLaptopBBGFlipped(!laptopBBGFlipped)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -440,7 +440,7 @@ export default function Plans() {
                     </div>
 
                     {/* Back and Buy Now Buttons */}
-                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                    <div className="px-6 sm:px-8 pb-4 sm:pb-5 space-y-2">
                       <button
                         onClick={() => setLaptopBBGFlipped(false)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -568,7 +568,7 @@ export default function Plans() {
                     </div>
 
                     {/* Know More Button and Buy Now Button */}
-                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                    <div className="px-6 sm:px-8 pb-4 sm:pb-5 space-y-2">
                       <button
                         onClick={() => setMobileBBGFlipped(!mobileBBGFlipped)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -619,7 +619,7 @@ export default function Plans() {
                     </div>
 
                     {/* Back and Buy Now Buttons */}
-                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                    <div className="px-6 sm:px-8 pb-4 sm:pb-5 space-y-2">
                       <button
                         onClick={() => setMobileBBGFlipped(false)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -743,7 +743,7 @@ export default function Plans() {
                   </div>
 
                   {/* Buy Now Button */}
-                  <div className="px-6 sm:px-8 pb-6 sm:pb-8">
+                  <div className="px-6 sm:px-8 pb-4 sm:pb-5">
                     <Button
                       className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{
@@ -858,7 +858,7 @@ export default function Plans() {
                   </div>
 
                   {/* Buy Now Button */}
-                  <div className="px-6 sm:px-8 pb-6 sm:pb-8">
+                  <div className="px-6 sm:px-8 pb-4 sm:pb-5">
                     <Button
                       className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{
@@ -962,7 +962,7 @@ export default function Plans() {
                       </div>
                     </div>
 
-                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                    <div className="px-6 sm:px-8 pb-4 sm:pb-5 space-y-2">
                       <button
                         onClick={() => setLaptopBundleFlipped(!laptopBundleFlipped)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -1009,7 +1009,7 @@ export default function Plans() {
                       </p>
                     </div>
 
-                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                    <div className="px-6 sm:px-8 pb-4 sm:pb-5 space-y-2">
                       <button
                         onClick={() => setLaptopBundleFlipped(false)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -1123,7 +1123,7 @@ export default function Plans() {
                       </div>
                     </div>
 
-                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                    <div className="px-6 sm:px-8 pb-4 sm:pb-5 space-y-2">
                       <button
                         onClick={() => setMobileBundleFlipped(!mobileBundleFlipped)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -1170,7 +1170,7 @@ export default function Plans() {
                       </p>
                     </div>
 
-                    <div className="px-6 sm:px-8 pb-6 sm:pb-8 space-y-2">
+                    <div className="px-6 sm:px-8 pb-4 sm:pb-5 space-y-2">
                       <button
                         onClick={() => setMobileBundleFlipped(false)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"

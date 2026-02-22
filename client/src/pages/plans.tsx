@@ -296,7 +296,7 @@ export default function Plans() {
             <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch max-w-full [grid-template-columns:repeat(auto-fit,minmax(340px,550px))]">
             {showLaptopBBG && (
               <div
-                className="w-full flex flex-col flip-card min-h-96"
+                className="w-full flex flex-col flip-card min-h-[350px]"
                 data-testid="card-laptop-bbg"
               >
                 <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopBBGFlipped ? 'flipped' : ''}`}>
@@ -304,18 +304,18 @@ export default function Plans() {
                   <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
-                      className="p-6 sm:p-7 text-white text-left relative"
+                      className="p-4 sm:p-5 text-white text-left relative"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                     >
                       <div className="flex justify-between items-start">
-                        <div className="flex-1 min-h-[120px] sm:min-h-[150px]">
+                        <div className="flex-1 min-h-[90px] sm:min-h-[120px]">
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-3xl sm:text-4xl font-bold whitespace-nowrap">
+                            <h3 className="text-2xl sm:text-3xl font-bold whitespace-nowrap">
                               BuyBack
                             </h3>
-                            <Shield className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
+                            <Shield className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" />
                           </div>
-                          <h3 className="text-3xl sm:text-4xl font-bold mb-2">
+                          <h3 className="text-2xl sm:text-3xl font-bold mb-1">
                             Guarantee
                           </h3>
                           <p className="text-xs sm:text-sm opacity-90">
@@ -326,9 +326,9 @@ export default function Plans() {
                           <span className="text-lg sm:text-xl text-white/60 line-through decoration-white/40 mb-[-4px]">
                             ₹1299
                           </span>
-                          <div className="text-5xl sm:text-6xl font-bold text-[#D4AF37]">
+                          <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
                             {pricesLoading ? (
-                              <Loader2 className="h-8 w-8 animate-spin" />
+                              <Loader2 className="h-6 w-6 animate-spin" />
                             ) : (
                               `₹${laptopBBGPlan?.planPrice || "--"}`
                             )}
@@ -338,11 +338,11 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="p-6 sm:p-8 space-y-3">
-                      <div className="space-y-3">
-                        <div className="flex gap-4">
+                    <div className="p-4 sm:p-5 space-y-2">
+                      <div className="space-y-2">
+                        <div className="flex gap-3">
                           <Shield
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -354,9 +354,9 @@ export default function Plans() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           <Gavel
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -369,9 +369,9 @@ export default function Plans() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           <Wallet
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -383,9 +383,9 @@ export default function Plans() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           <Percent
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -406,7 +406,7 @@ export default function Plans() {
                     </div>
 
                     {/* Know More Button and Buy Now Button */}
-                    <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
+                    <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
                       <button
                         onClick={() => setLaptopBBGFlipped(!laptopBBGFlipped)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -437,7 +437,7 @@ export default function Plans() {
                   <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
-                      className="p-6 sm:p-7 text-white text-center"
+                      className="p-4 sm:p-5 text-white text-center"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                     >
                       <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
@@ -448,16 +448,15 @@ export default function Plans() {
                       </p>
                     </div>
 
-                    {/* Device Age Slabs */}
-                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
-                      <ClaimValueSlabs slabs={laptopBBGPlan?.claimValueSlabs || []} />
+                      <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-2">
+                        <ClaimValueSlabs slabs={laptopBBGPlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
                         Resale value is calculated as a percentage of your original device purchase price
                       </p>
                     </div>
 
                     {/* Back and Buy Now Buttons */}
-                    <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
+                    <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
                       <button
                         onClick={() => setLaptopBBGFlipped(false)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -489,7 +488,7 @@ export default function Plans() {
 
             {showMobileBBG && (
               <div
-                className="w-full flex flex-col flip-card min-h-96"
+                className="w-full flex flex-col flip-card min-h-[350px]"
                 data-testid="card-mobile-bbg"
               >
                 <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileBBGFlipped ? 'flipped' : ''}`}>
@@ -497,18 +496,18 @@ export default function Plans() {
                   <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
-                      className="p-6 sm:p-7 text-white text-left relative"
+                      className="p-4 sm:p-5 text-white text-left relative"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                     >
                       <div className="flex justify-between items-start">
-                        <div className="flex-1 min-h-[120px] sm:min-h-[150px]">
+                        <div className="flex-1 min-h-[90px] sm:min-h-[120px]">
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-3xl sm:text-4xl font-bold whitespace-nowrap">
+                            <h3 className="text-2xl sm:text-3xl font-bold whitespace-nowrap">
                               BuyBack
                             </h3>
-                            <Shield className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
+                            <Shield className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" />
                           </div>
-                          <h3 className="text-3xl sm:text-4xl font-bold mb-2">
+                          <h3 className="text-2xl sm:text-3xl font-bold mb-1">
                             Guarantee
                           </h3>
                           <p className="text-xs sm:text-sm opacity-90">
@@ -519,9 +518,9 @@ export default function Plans() {
                           <span className="text-lg sm:text-xl text-white/60 line-through decoration-white/40 mb-[-4px]">
                             ₹999
                           </span>
-                          <div className="text-5xl sm:text-6xl font-bold text-[#D4AF37]">
+                          <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
                             {pricesLoading ? (
-                              <Loader2 className="h-8 w-8 animate-spin" />
+                              <Loader2 className="h-6 w-6 animate-spin" />
                             ) : (
                               `₹${mobileBBGPlan?.planPrice || "--"}`
                             )}
@@ -531,11 +530,11 @@ export default function Plans() {
                     </div>
 
                     {/* White Content Area */}
-                    <div className="p-6 sm:p-8 space-y-3">
-                      <div className="space-y-3">
-                        <div className="flex gap-4">
+                    <div className="p-4 sm:p-5 space-y-2">
+                      <div className="space-y-2">
+                        <div className="flex gap-3">
                           <Shield
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -547,9 +546,9 @@ export default function Plans() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           <Gavel
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -562,9 +561,9 @@ export default function Plans() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           <Wallet
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -576,9 +575,9 @@ export default function Plans() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           <Percent
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -599,7 +598,7 @@ export default function Plans() {
                     </div>
 
                     {/* Know More Button and Buy Now Button */}
-                    <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
+                    <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
                       <button
                         onClick={() => setMobileBBGFlipped(!mobileBBGFlipped)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -630,7 +629,7 @@ export default function Plans() {
                   <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
-                      className="p-6 sm:p-7 text-white text-center"
+                      className="p-4 sm:p-5 text-white text-center"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                     >
                       <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
@@ -641,16 +640,15 @@ export default function Plans() {
                       </p>
                     </div>
 
-                    {/* Device Age Slabs */}
-                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
-                      <ClaimValueSlabs slabs={mobileBBGPlan?.claimValueSlabs || []} />
+                      <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-2">
+                        <ClaimValueSlabs slabs={mobileBBGPlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
                         Resale value is calculated as a percentage of your original device purchase price
                       </p>
                     </div>
 
                     {/* Back and Buy Now Buttons */}
-                    <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
+                    <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
                       <button
                         onClick={() => setMobileBBGFlipped(false)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -688,19 +686,19 @@ export default function Plans() {
                 <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
                   {/* Blue Header */}
                   <div
-                    className="p-6 sm:p-7 text-white text-left relative"
+                    className="p-4 sm:p-5 text-white text-left relative"
                     style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                   >
                     <div className="flex justify-between items-start">
-                      <div className="flex-1 min-h-[120px] sm:min-h-[150px]">
+                      <div className="flex-1 min-h-[90px] sm:min-h-[120px]">
 
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-3xl sm:text-4xl font-bold whitespace-nowrap">
+                          <h3 className="text-2xl sm:text-3xl font-bold whitespace-nowrap">
                             Extend+
                           </h3>
-                          <ShieldCheck className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
+                          <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" />
                         </div>
-                        <p className="text-xs sm:text-sm opacity-90 mt-4">
+                        <p className="text-xs sm:text-sm opacity-90 mt-2">
                           Repairs, better resale & extra savings.
                         </p>
                       </div>
@@ -708,9 +706,9 @@ export default function Plans() {
                         <span className="text-lg sm:text-xl text-white/60 line-through decoration-white/40 mb-[-4px]">
                           ₹1299
                         </span>
-                        <div className="text-5xl sm:text-6xl font-bold text-[#D4AF37]">
+                        <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
                           {pricesLoading ? (
-                            <Loader2 className="h-8 w-8 animate-spin" />
+                            <Loader2 className="h-6 w-6 animate-spin" />
                           ) : (
                             `₹${laptopExtendPlan?.planPrice || "--"}`
                           )}
@@ -720,12 +718,12 @@ export default function Plans() {
                   </div>
 
                   {/* White Content Area */}
-                  <div className="flex-grow p-6 sm:p-8 flex flex-col space-y-3">
+                  <div className="flex-grow p-4 sm:p-5 flex flex-col space-y-2">
                     {/* Benefits with Icons */}
-                    <div className="space-y-3">
-                      <div className="flex gap-4">
+                    <div className="space-y-2">
+                      <div className="flex gap-3">
                         <Gavel
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                           style={{ color: "#254696" }}
                         />
                         <div>
@@ -738,9 +736,9 @@ export default function Plans() {
                           </div>
                         </div>
                       </div>
-                      <div className="flex gap-4">
+                      <div className="flex gap-3">
                         <Wrench
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                           style={{ color: "#254696" }}
                         />
                         <div>
@@ -753,9 +751,9 @@ export default function Plans() {
                           </div>
                         </div>
                       </div>
-                      <div className="flex gap-4">
+                      <div className="flex gap-3">
                         <TrendingUp
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                           style={{ color: "#254696" }}
                         />
                         <div>
@@ -767,9 +765,9 @@ export default function Plans() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex gap-4">
+                      <div className="flex gap-3">
                         <Percent
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                           style={{ color: "#254696" }}
                         />
                         <div>
@@ -784,13 +782,13 @@ export default function Plans() {
                     </div>
 
                     {/* Validity */}
-                    <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
+                    <div className="mt-auto text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
                       Validity: {(laptopExtendPlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                     </div>
                   </div>
 
                   {/* Buy Now Button */}
-                  <div className="px-6 sm:px-8 pb-2 sm:pb-3">
+                  <div className="px-4 sm:px-5 pb-1 sm:pb-2">
                     <Button
                       className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{
@@ -813,25 +811,25 @@ export default function Plans() {
 
             {showMobileExtend && (
               <div
-                className="w-full flex flex-col min-h-96"
+                className="w-full flex flex-col min-h-[350px]"
                 data-testid="card-mobile-extend"
               >
                 <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
                   {/* Blue Header */}
                   <div
-                    className="p-6 sm:p-7 text-white text-left relative"
+                    className="p-4 sm:p-5 text-white text-left relative"
                     style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                   >
                     <div className="flex justify-between items-start">
-                      <div className="flex-1 min-h-[120px] sm:min-h-[150px]">
+                      <div className="flex-1 min-h-[90px] sm:min-h-[120px]">
 
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-3xl sm:text-4xl font-bold whitespace-nowrap">
+                          <h3 className="text-2xl sm:text-3xl font-bold whitespace-nowrap">
                             Extend+
                           </h3>
-                          <ShieldCheck className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
+                          <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" />
                         </div>
-                        <p className="text-xs sm:text-sm opacity-90 mt-4">
+                        <p className="text-xs sm:text-sm opacity-90 mt-2">
                           Repairs, better resale & extra savings.
                         </p>
                       </div>
@@ -839,9 +837,9 @@ export default function Plans() {
                         <span className="text-lg sm:text-xl text-white/60 line-through decoration-white/40 mb-[-4px]">
                           ₹999
                         </span>
-                        <div className="text-5xl sm:text-6xl font-bold text-[#D4AF37]">
+                        <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
                           {pricesLoading ? (
-                            <Loader2 className="h-8 w-8 animate-spin" />
+                            <Loader2 className="h-6 w-6 animate-spin" />
                           ) : (
                             `₹${mobileExtendPlan?.planPrice || "--"}`
                           )}
@@ -851,12 +849,12 @@ export default function Plans() {
                   </div>
 
                   {/* White Content Area */}
-                  <div className="flex-grow p-6 sm:p-8 flex flex-col space-y-3">
+                  <div className="flex-grow p-4 sm:p-5 flex flex-col space-y-2">
                     {/* Benefits with Icons */}
-                    <div className="space-y-3">
-                      <div className="flex gap-4">
+                    <div className="space-y-2">
+                      <div className="flex gap-3">
                         <Gavel
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                           style={{ color: "#254696" }}
                         />
                         <div>
@@ -869,9 +867,9 @@ export default function Plans() {
                           </div>
                         </div>
                       </div>
-                      <div className="flex gap-4">
+                      <div className="flex gap-3">
                         <Wrench
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                           style={{ color: "#254696" }}
                         />
                         <div>
@@ -884,9 +882,9 @@ export default function Plans() {
                           </div>
                         </div>
                       </div>
-                      <div className="flex gap-4">
+                      <div className="flex gap-3">
                         <TrendingUp
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                           style={{ color: "#254696" }}
                         />
                         <div>
@@ -898,9 +896,9 @@ export default function Plans() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex gap-4">
+                      <div className="flex gap-3">
                         <Percent
-                          className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                          className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                           style={{ color: "#254696" }}
                         />
                         <div>
@@ -915,13 +913,13 @@ export default function Plans() {
                     </div>
 
                     {/* Validity */}
-                    <div className="mt-auto text-center text-xs sm:text-sm pt-4" style={{ color: "#666666" }}>
+                    <div className="mt-auto text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
                       Validity: {(mobileExtendPlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
                     </div>
                   </div>
 
                   {/* Buy Now Button */}
-                  <div className="px-6 sm:px-8 pb-2 sm:pb-3">
+                  <div className="px-4 sm:px-5 pb-1 sm:pb-2">
                     <Button
                       className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{
@@ -946,7 +944,7 @@ export default function Plans() {
 
             {showLaptopBundle && (
               <div
-                className="w-full flex flex-col flip-card min-h-96"
+                className="w-full flex flex-col flip-card min-h-[350px]"
                 data-testid="card-laptop-bundle"
               >
                 <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopBundleFlipped ? 'flipped' : ''}`}>
@@ -954,7 +952,7 @@ export default function Plans() {
                   <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     
                     <div
-                      className="p-6 sm:p-7 text-white text-center"
+                      className="p-4 sm:p-5 text-white text-center"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                     >
                       <h3 className="text-lg sm:text-xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
@@ -963,9 +961,9 @@ export default function Plans() {
                       <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
                         Repairs, better resale & savings
                       </p>
-                      <div className="text-5xl sm:text-6xl font-bold">
+                      <div className="text-3xl sm:text-4xl font-bold">
                         {pricesLoading ? (
-                          <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
+                          <Loader2 className="h-6 w-6 animate-spin inline" />
                         ) : (
                           `₹${laptopBundlePlan?.planPrice || "--"}`
                         )}
@@ -973,12 +971,12 @@ export default function Plans() {
                     </div>
 
                     
-                    <div className="p-6 sm:p-8 space-y-3">
+                    <div className="p-4 sm:p-5 space-y-2">
                       
                       <div className="space-y-3">
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           <Shield
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -990,9 +988,9 @@ export default function Plans() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           <Gavel
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -1004,9 +1002,9 @@ export default function Plans() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           <TrendingUp
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -1025,7 +1023,7 @@ export default function Plans() {
                       </div>
                     </div>
 
-                    <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
+                    <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
                       <button
                         onClick={() => setLaptopBundleFlipped(!laptopBundleFlipped)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -1054,7 +1052,7 @@ export default function Plans() {
 
                   <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     <div
-                      className="p-6 sm:p-7 text-white text-center"
+                      className="p-4 sm:p-5 text-white text-center"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                     >
                       <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
@@ -1065,14 +1063,14 @@ export default function Plans() {
                       </p>
                     </div>
 
-                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
+                    <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-4">
                       <ClaimValueSlabs slabs={laptopBundlePlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
                         Resale value is calculated as a percentage of your original device purchase price
                       </p>
                     </div>
 
-                    <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
+                    <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
                       <button
                         onClick={() => setLaptopBundleFlipped(false)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -1107,7 +1105,7 @@ export default function Plans() {
             {/* 
             {showMobileBundle && (
               <div
-                className="w-full flex flex-col flip-card min-h-96"
+                className="w-full flex flex-col flip-card min-h-[350px]"
                 data-testid="card-mobile-bundle"
               >
                 <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileBundleFlipped ? 'flipped' : ''}`}>
@@ -1115,7 +1113,7 @@ export default function Plans() {
                   <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     
                     <div
-                      className="p-6 sm:p-7 text-white text-center"
+                      className="p-4 sm:p-5 text-white text-center"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                     >
                       <h3 className="text-lg sm:text-xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
@@ -1124,9 +1122,9 @@ export default function Plans() {
                       <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
                         Repairs, better resale & savings
                       </p>
-                      <div className="text-5xl sm:text-6xl font-bold">
+                      <div className="text-3xl sm:text-4xl font-bold">
                         {pricesLoading ? (
-                          <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
+                          <Loader2 className="h-6 w-6 animate-spin inline" />
                         ) : (
                           `₹${mobileBundlePlan?.planPrice || "--"}`
                         )}
@@ -1134,12 +1132,12 @@ export default function Plans() {
                     </div>
 
                     
-                    <div className="p-6 sm:p-8 space-y-3">
+                    <div className="p-4 sm:p-5 space-y-2">
                       
                       <div className="space-y-3">
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           <Shield
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -1151,9 +1149,9 @@ export default function Plans() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           <Gavel
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -1165,9 +1163,9 @@ export default function Plans() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           <TrendingUp
-                            className="w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 mt-1"
+                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
                             style={{ color: "#254696" }}
                           />
                           <div>
@@ -1186,7 +1184,7 @@ export default function Plans() {
                       </div>
                     </div>
 
-                    <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
+                    <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
                       <button
                         onClick={() => setMobileBundleFlipped(!mobileBundleFlipped)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
@@ -1215,7 +1213,7 @@ export default function Plans() {
 
                   <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     <div
-                      className="p-6 sm:p-7 text-white text-center"
+                      className="p-4 sm:p-5 text-white text-center"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                     >
                       <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
@@ -1226,14 +1224,14 @@ export default function Plans() {
                       </p>
                     </div>
 
-                    <div className="flex-grow p-6 sm:p-8 flex flex-col justify-center space-y-4">
+                    <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-4">
                       <ClaimValueSlabs slabs={mobileBundlePlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
                         Resale value is calculated as a percentage of your original device purchase price
                       </p>
                     </div>
 
-                    <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
+                    <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
                       <button
                         onClick={() => setMobileBundleFlipped(false)}
                         className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"

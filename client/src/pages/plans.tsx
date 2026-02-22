@@ -345,7 +345,7 @@ export default function Plans() {
                           />
                           <div>
                             <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                              Assured resale value
+                              Guaranteed resale value
                             </p>
                             <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
                               Get back up to 70% of your device's purchase price*
@@ -524,7 +524,7 @@ export default function Plans() {
                           />
                           <div>
                             <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                              Assured resale value
+                              Guaranteed resale value
                             </p>
                             <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
                               Get back up to 70% of your device's purchase price*
@@ -920,7 +920,7 @@ export default function Plans() {
                           />
                           <div>
                             <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                              Assured resale value
+                              Guaranteed resale value
                             </p>
                             <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
                               Get back up to 70% of your device's purchase price*
@@ -1081,7 +1081,7 @@ export default function Plans() {
                           />
                           <div>
                             <p className="font-semibold text-sm sm:text-base" style={{ color: "#1F2937" }}>
-                              Assured resale value
+                              Guaranteed resale value
                             </p>
                             <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
                               Get back up to 70% of your device's purchase price*

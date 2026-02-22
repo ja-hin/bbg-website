@@ -342,7 +342,7 @@ export default function Home() {
                     className="text-base sm:text-lg leading-relaxed"
                     style={{ color: "#4b5563" }}
                   >
-                    Assured resale value
+                    Guaranteed resale value
                   </p>
                 </div>
 
@@ -562,7 +562,7 @@ export default function Home() {
                                 className="font-semibold text-sm sm:text-base"
                                 style={{ color: "#1F2937" }}
                               >
-                                Assured resale value
+                                Guaranteed resale value
                               </p>
                               <p
                                 className="text-xs sm:text-sm"
@@ -889,7 +889,7 @@ export default function Home() {
                                 className="font-semibold text-sm sm:text-base"
                                 style={{ color: "#1F2937" }}
                               >
-                                Assured resale value
+                                Guaranteed resale value
                               </p>
                               <p
                                 className="text-xs sm:text-sm"

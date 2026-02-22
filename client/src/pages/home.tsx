@@ -603,13 +603,13 @@ export default function Home() {
                                 className="font-semibold text-sm sm:text-base"
                                 style={{ color: "#1F2937" }}
                               >
-                                Fast & secure payment
+                                Best Product Upgrade Offers
                               </p>
                               <p
                                 className="text-xs sm:text-sm"
                                 style={{ color: "#6B7280" }}
                               >
-                                Instant payout to your bank
+                                Exclusive deals for your next device purchase.
                               </p>
                             </div>
                           </div>
@@ -930,13 +930,13 @@ export default function Home() {
                                 className="font-semibold text-sm sm:text-base"
                                 style={{ color: "#1F2937" }}
                               >
-                                Fast & secure payment
+                                Best Product Upgrade Offers
                               </p>
                               <p
                                 className="text-xs sm:text-sm"
                                 style={{ color: "#6B7280" }}
                               >
-                                Instant payout to your bank
+                                Exclusive deals for your next device purchase.
                               </p>
                             </div>
                           </div>

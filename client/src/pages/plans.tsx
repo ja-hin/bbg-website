@@ -301,27 +301,37 @@ export default function Plans() {
                   <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
-                      className="p-6 sm:p-7 text-white text-center"
+                      className="p-6 sm:p-7 text-white text-left relative"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                     >
-                      <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                        BuyBack Guarantee
-                      </h3>
-                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
-                        Lock your laptop's resale value
-                      </p>
-                        <div className="flex flex-col items-center">
-                          <span className="text-xl sm:text-2xl text-white/70 line-through decoration-white/50 mb-[-8px]">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="text-3xl sm:text-4xl font-bold whitespace-nowrap">
+                              BuyBack
+                            </h3>
+                            <Shield className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
+                          </div>
+                          <h3 className="text-3xl sm:text-4xl font-bold mb-2">
+                            Guarantee
+                          </h3>
+                          <p className="text-xs sm:text-sm opacity-90">
+                            Lock your laptop's resale value.
+                          </p>
+                        </div>
+                        <div className="text-right flex flex-col items-end pt-2">
+                          <span className="text-lg sm:text-xl text-white/60 line-through decoration-white/40 mb-[-4px]">
                             ₹1299
                           </span>
-                          <div className="text-5xl sm:text-6xl font-bold">
+                          <div className="text-5xl sm:text-6xl font-bold text-[#D4AF37]">
                             {pricesLoading ? (
-                              <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
+                              <Loader2 className="h-8 w-8 animate-spin" />
                             ) : (
                               `₹${laptopBBGPlan?.planPrice || "--"}`
                             )}
                           </div>
                         </div>
+                      </div>
                     </div>
 
                     {/* White Content Area */}
@@ -470,27 +480,37 @@ export default function Plans() {
                   <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                     {/* Blue Header */}
                     <div
-                      className="p-6 sm:p-7 text-white text-center"
+                      className="p-6 sm:p-7 text-white text-left relative"
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                     >
-                      <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                        BuyBack Guarantee
-                      </h3>
-                      <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
-                        Lock your mobile's resale value
-                      </p>
-                        <div className="flex flex-col items-center">
-                          <span className="text-xl sm:text-2xl text-white/70 line-through decoration-white/50 mb-[-8px]">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="text-3xl sm:text-4xl font-bold whitespace-nowrap">
+                              BuyBack
+                            </h3>
+                            <Shield className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
+                          </div>
+                          <h3 className="text-3xl sm:text-4xl font-bold mb-2">
+                            Guarantee
+                          </h3>
+                          <p className="text-xs sm:text-sm opacity-90">
+                            Lock your mobile's resale value.
+                          </p>
+                        </div>
+                        <div className="text-right flex flex-col items-end pt-2">
+                          <span className="text-lg sm:text-xl text-white/60 line-through decoration-white/40 mb-[-4px]">
                             ₹999
                           </span>
-                          <div className="text-5xl sm:text-6xl font-bold">
+                          <div className="text-5xl sm:text-6xl font-bold text-[#D4AF37]">
                             {pricesLoading ? (
-                              <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
+                              <Loader2 className="h-8 w-8 animate-spin" />
                             ) : (
                               `₹${mobileBBGPlan?.planPrice || "--"}`
                             )}
                           </div>
                         </div>
+                      </div>
                     </div>
 
                     {/* White Content Area */}
@@ -637,27 +657,34 @@ export default function Plans() {
                 <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
                   {/* Blue Header */}
                   <div
-                    className="p-6 sm:p-7 text-white text-center"
+                    className="p-6 sm:p-7 text-white text-left relative"
                     style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                   >
-                    <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap">
-                      Extend+
-                    </h3>
-                    <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
-                      Repairs, better resale & extra savings
-                    </p>
-                        <div className="flex flex-col items-center">
-                          <span className="text-xl sm:text-2xl text-white/70 line-through decoration-white/50 mb-[-8px]">
-                            ₹1299
-                          </span>
-                          <div className="text-5xl sm:text-6xl font-bold">
-                            {pricesLoading ? (
-                              <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
-                            ) : (
-                              `₹${laptopExtendPlan?.planPrice || "--"}`
-                            )}
-                          </div>
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-3xl sm:text-4xl font-bold whitespace-nowrap">
+                            Extend+
+                          </h3>
+                          <ShieldCheck className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
                         </div>
+                        <p className="text-xs sm:text-sm opacity-90 mt-4">
+                          Repairs, better resale & extra savings.
+                        </p>
+                      </div>
+                      <div className="text-right flex flex-col items-end pt-2">
+                        <span className="text-lg sm:text-xl text-white/60 line-through decoration-white/40 mb-[-4px]">
+                          ₹1299
+                        </span>
+                        <div className="text-5xl sm:text-6xl font-bold text-[#D4AF37]">
+                          {pricesLoading ? (
+                            <Loader2 className="h-8 w-8 animate-spin" />
+                          ) : (
+                            `₹${laptopExtendPlan?.planPrice || "--"}`
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   {/* White Content Area */}
@@ -744,27 +771,34 @@ export default function Plans() {
                 <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
                   {/* Blue Header */}
                   <div
-                    className="p-6 sm:p-7 text-white text-center"
+                    className="p-6 sm:p-7 text-white text-left relative"
                     style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                   >
-                    <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap">
-                      Extend+
-                    </h3>
-                    <p className="text-xs sm:text-sm mb-3 opacity-95 line-clamp-2">
-                      Repairs, better resale & extra savings
-                    </p>
-                        <div className="flex flex-col items-center">
-                          <span className="text-xl sm:text-2xl text-white/70 line-through decoration-white/50 mb-[-8px]">
-                            ₹999
-                          </span>
-                          <div className="text-5xl sm:text-6xl font-bold">
-                            {pricesLoading ? (
-                              <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin inline" />
-                            ) : (
-                              `₹${mobileExtendPlan?.planPrice || "--"}`
-                            )}
-                          </div>
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-3xl sm:text-4xl font-bold whitespace-nowrap">
+                            Extend+
+                          </h3>
+                          <ShieldCheck className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
                         </div>
+                        <p className="text-xs sm:text-sm opacity-90 mt-4">
+                          Repairs, better resale & extra savings.
+                        </p>
+                      </div>
+                      <div className="text-right flex flex-col items-end pt-2">
+                        <span className="text-lg sm:text-xl text-white/60 line-through decoration-white/40 mb-[-4px]">
+                          ₹999
+                        </span>
+                        <div className="text-5xl sm:text-6xl font-bold text-[#D4AF37]">
+                          {pricesLoading ? (
+                            <Loader2 className="h-8 w-8 animate-spin" />
+                          ) : (
+                            `₹${mobileExtendPlan?.planPrice || "--"}`
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   {/* White Content Area */}

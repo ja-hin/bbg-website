@@ -522,7 +522,7 @@ export default function Home() {
                         }}
                       >
                         <div className="flex justify-between items-start">
-                          <div className="flex-1">
+                          <div className="flex-1 min-h-[120px] sm:min-h-[150px]">
                             <div className="flex items-center gap-2 mb-1">
                               <h3 className="text-3xl sm:text-4xl font-bold whitespace-nowrap">
                                 BuyBack
@@ -712,7 +712,8 @@ export default function Home() {
                       }}
                     >
                       <div className="flex justify-between items-start">
-                        <div className="flex-1">
+                        <div className="flex-1 min-h-[120px] sm:min-h-[150px]">
+
                           <div className="flex items-center gap-2 mb-1">
                             <h3 className="text-3xl sm:text-4xl font-bold whitespace-nowrap">
                               Extend+
@@ -848,7 +849,7 @@ export default function Home() {
                         }}
                       >
                         <div className="flex justify-between items-start">
-                          <div className="flex-1">
+                          <div className="flex-1 min-h-[120px] sm:min-h-[150px]">
                             <div className="flex items-center gap-2 mb-1">
                               <h3 className="text-3xl sm:text-4xl font-bold whitespace-nowrap">
                                 BuyBack
@@ -1038,7 +1039,8 @@ export default function Home() {
                       }}
                     >
                       <div className="flex justify-between items-start">
-                        <div className="flex-1">
+                        <div className="flex-1 min-h-[120px] sm:min-h-[150px]">
+
                           <div className="flex items-center gap-2 mb-1">
                             <h3 className="text-3xl sm:text-4xl font-bold whitespace-nowrap">
                               Extend+

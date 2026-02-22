@@ -59,7 +59,7 @@ import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.webp";
 import bannerImg from "@assets/Referral_website.webp";
 import buybackGuaranteeImgBelow from "@assets/Referral_mobile.webp";
 import buybackGuaranteeImg from "@assets/wmremove-transformed_1767022747924.webp";
-import extendPlusImg from "@assets/Extend+cropped_(1)_1767021849857.webp";
+import extendPlusImg from "@assets/wmremove-transformed_1767022747924.webp";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {

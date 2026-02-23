@@ -6,7 +6,7 @@ import jsPDF from 'jspdf';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award, Gavel, Wrench, Star, ArrowRight, Copy } from "lucide-react";
-import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.webp";
+import refPartnerLogo from "@assets/refpartnerlogo.png";
 
 // Device Type Claim Values Component
 function BrandClaimValues({ sessionData }: { sessionData: any }) {
@@ -794,11 +794,11 @@ export default function ThankYou() {
 
       ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
       ctx.font = '500 28px sans-serif';
-      ctx.fillText('Name', 600, 250);
+      ctx.fillText('Name', 600, 260);
 
       ctx.fillStyle = '#ffffff';
-      ctx.font = '900 72px sans-serif';
-      ctx.fillText(partnerName, 600, 340);
+      ctx.font = '900 84px sans-serif';
+      ctx.fillText(partnerName, 600, 360);
 
       ctx.fillStyle = '#ffffff';
       ctx.font = '500 32px sans-serif';
@@ -811,14 +811,14 @@ export default function ThankYou() {
       const startX = (1200 - totalW) / 2;
       ctx.textAlign = 'left';
       ctx.font = '500 32px sans-serif';
-      ctx.fillText(codeLabel, startX, 430);
+      ctx.fillText(codeLabel, startX, 450);
       ctx.font = '900 32px sans-serif';
-      ctx.fillText(codeVal, startX + labelW, 430);
+      ctx.fillText(codeVal, startX + labelW, 450);
       ctx.textAlign = 'center';
 
       ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-      ctx.font = '600 26px sans-serif';
-      ctx.fillText('Referral Partner', 600, 475);
+      ctx.font = '600 28px sans-serif';
+      ctx.fillText('Referral Partner', 600, 500);
 
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
       ctx.lineWidth = 1;
@@ -828,9 +828,9 @@ export default function ThankYou() {
       ctx.stroke();
 
       ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-      ctx.font = '500 22px sans-serif';
+      ctx.font = '500 24px sans-serif';
       const footerText = 'Use the referral code at bbg.xtracover.com to claim your discount';
-      ctx.fillText(footerText, 600, 640);
+      ctx.fillText(footerText, 600, 645);
 
       const link = document.createElement('a');
       link.download = `XtraCover_Partner_Card_${content.code}.png`;
@@ -842,13 +842,13 @@ export default function ThankYou() {
     img.crossOrigin = 'anonymous';
     img.onload = () => drawCard(img);
     img.onerror = () => drawCard();
-    img.src = bbgLogo;
+    img.src = refPartnerLogo;
   };
 
   return (
     <div className="min-h-screen bg-white flex flex-col md:flex-row overflow-hidden font-sans">
       {/* Left Pane - Branding & ID Card */}
-      <div className="md:w-5/12 bg-gray-50/50 flex flex-col p-5 sm:p-8 lg:p-12 relative border-r border-gray-100 justify-center">
+      <div className="md:w-5/12 bg-gray-50/50 flex flex-col p-5 sm:p-8 lg:p-12 relative border-r border-gray-100">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-100/40 rounded-full blur-[120px] pointer-events-none translate-y-1/2 -translate-x-1/4"></div>
 
@@ -856,28 +856,28 @@ export default function ThankYou() {
           {content.code && (
             <div className="group space-y-6">
               {/* Partner ID Card */}
-              <div id="partner-card" className="relative rounded-2xl shadow-2xl overflow-hidden flex flex-col items-center text-center group-hover:scale-[1.02] transition-transform duration-500" style={{ background: 'linear-gradient(160deg, #1e3a7a 0%, #15285c 40%, #0f1d45 100%)' }}>
+              <div id="partner-card" className="relative rounded-2xl shadow-2xl overflow-hidden flex flex-col items-center text-center aspect-[1.6/1] group-hover:scale-[1.02] transition-transform duration-500" style={{ background: 'linear-gradient(160deg, #1e3a7a 0%, #15285c 40%, #0f1d45 100%)' }}>
                 <div className="absolute top-0 right-0 w-48 h-48 bg-white/[0.03] rounded-full blur-[60px] pointer-events-none -translate-y-1/4 translate-x-1/4"></div>
                 <div className="absolute bottom-0 left-0 w-36 h-36 bg-white/[0.02] rounded-full blur-[50px] pointer-events-none translate-y-1/4 -translate-x-1/4"></div>
 
-                <div className="relative z-10 w-full px-6 pt-7 pb-5 flex flex-col items-center gap-5">
-                  <img src={bbgLogo} alt="XtraCover Buy Back Guarantee" className="h-14 sm:h-16 w-auto object-contain drop-shadow-lg" />
+                <div className="relative z-10 w-full px-6 pt-6 sm:pt-8 pb-4 flex-1 flex flex-col items-center justify-between">
+                  <img src={refPartnerLogo} alt="XtraCover Partnership" className="h-10 sm:h-12 w-auto object-contain drop-shadow-lg" />
 
-                  <div className="w-full space-y-1">
-                    <p className="text-white/50 text-sm font-medium tracking-wide">Name</p>
-                    <h2 className="text-white text-3xl sm:text-4xl font-black tracking-tight leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>{partnerName}</h2>
+                  <div className="w-full space-y-0.5">
+                    <p className="text-white/50 text-[10px] sm:text-xs font-medium tracking-wide uppercase">Name</p>
+                    <h2 className="text-white text-2xl sm:text-3xl font-black tracking-tight leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>{partnerName}</h2>
                   </div>
 
-                  <div className="w-full space-y-1.5 pt-1">
-                    <p className="text-white text-base font-medium">
+                  <div className="w-full space-y-1">
+                    <p className="text-white text-sm sm:text-base font-medium">
                       Referral Code <span className="font-black tracking-wide">{content.code}</span>
                     </p>
-                    <p className="text-white/50 text-sm font-semibold tracking-wide">Referral Partner</p>
+                    <p className="text-white/50 text-[10px] sm:text-xs font-semibold tracking-widest uppercase">Referral Partner</p>
                   </div>
                 </div>
 
-                <div className="relative z-10 w-full px-6 py-4 border-t border-white/10 bg-white/[0.03]">
-                  <p className="text-white/70 text-xs sm:text-sm font-medium">
+                <div className="relative z-10 w-full px-4 sm:px-6 py-3 border-t border-white/10 bg-white/[0.03]">
+                  <p className="text-white/70 text-[9px] sm:text-[11px] font-medium leading-relaxed">
                     Use the referral code at <span className="font-bold text-white/90">bbg.xtracover.com</span> to claim your discount
                   </p>
                 </div>

@@ -797,7 +797,7 @@ export default function ThankYou() {
       ctx.fillText('Name', 600, 260);
 
       ctx.fillStyle = '#ffffff';
-      ctx.font = '900 84px sans-serif';
+      ctx.font = '900 60px sans-serif';
       ctx.fillText(partnerName, 600, 360);
 
       ctx.fillStyle = '#ffffff';
@@ -865,7 +865,7 @@ export default function ThankYou() {
 
                   <div className="w-full space-y-0.5">
                     <p className="text-white/50 text-[10px] sm:text-xs font-medium tracking-wide uppercase">Name</p>
-                    <h2 className="text-white text-2xl sm:text-3xl font-black tracking-tight leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>{partnerName}</h2>
+                    <h2 className="text-white text-xl sm:text-2xl font-black tracking-tight leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>{partnerName}</h2>
                   </div>
 
                   <div className="w-full space-y-1">

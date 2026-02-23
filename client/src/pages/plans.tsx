@@ -324,7 +324,7 @@ export default function Plans() {
                         </div>
                         <div className="text-right flex flex-col items-end pt-2">
                           <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
-                            SPECIAL OFFER
+                            HOLI OFFER
                           </div>
                           <span className="text-lg sm:text-xl text-white/60 line-through decoration-white/40 mb-[-4px]">
                             ₹1299
@@ -519,7 +519,7 @@ export default function Plans() {
                         </div>
                         <div className="text-right flex flex-col items-end pt-2">
                           <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
-                            SPECIAL OFFER
+                            HOLI OFFER
                           </div>
                           <span className="text-lg sm:text-xl text-white/60 line-through decoration-white/40 mb-[-4px]">
                             ₹999
@@ -710,7 +710,7 @@ export default function Plans() {
                       </div>
                       <div className="text-right flex flex-col items-end pt-2">
                         <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
-                          SPECIAL OFFER
+                          HOLI OFFER
                         </div>
                         <span className="text-lg sm:text-xl text-white/60 line-through decoration-white/40 mb-[-4px]">
                           ₹1299
@@ -844,7 +844,7 @@ export default function Plans() {
                       </div>
                       <div className="text-right flex flex-col items-end pt-2">
                         <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
-                          SPECIAL OFFER
+                          HOLI OFFER
                         </div>
                         <span className="text-lg sm:text-xl text-white/60 line-through decoration-white/40 mb-[-4px]">
                           ₹999

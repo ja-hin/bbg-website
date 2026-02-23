@@ -715,7 +715,7 @@ export default function ThankYou() {
           icon: <Users className="h-16 w-16 text-blue-600" />,
           title: "Welcome to Xtracover Network!",
           subtitle: "Referral Partner Registreation Successful",
-          message: "You are now part of our trusted distributor network. Earn ₹100 on every Mobile and ₹175 on every Laptop protection plan sold.",
+          message: "Earn ₹100 on every Mobile and ₹175 on every Laptop protection plan sold.",
           code: sellerCode,
           codeLabel: "Your Seller Code:",
           isFailure: false,
@@ -860,7 +860,7 @@ export default function ThankYou() {
                 <>
                   <Button 
                     onClick={() => window.location.reload()} 
-                    className="bg-xtra-primary hover:bg-blue-700 text-white px-6 py-3"
+                    className="bg-xtra-primary bg-blue-700 text-white px-6 py-3"
                   >
                     <RefreshCw className="h-4 w-4 mr-2" />
                     Try Again
@@ -875,7 +875,7 @@ export default function ThankYou() {
               ) : (
                 <>
                   <Link href="/">
-                    <Button className="bg-xtra-primary hover:bg-blue-700 text-white px-6 py-3">
+                    <Button className="bg-xtra-primary bg-blue-700 text-white px-6 py-3">
                       <Home className="h-4 w-4 mr-2" />
                       Back to Home
                     </Button>

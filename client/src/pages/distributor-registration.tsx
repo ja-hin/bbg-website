@@ -142,7 +142,7 @@ export default function DistributorRegistration() {
       return response;
     },
     onSuccess: (data) => {
-      setLocation(`/thank-you?type=distributor&status=success&sellerCode=${data.sellerCode}`);
+      setLocation(`/thank-you?type=distributor&status=success&sellerCode=${data.sellerCode}&distributorName=${encodeURIComponent(data.distributor?.name || form.getValues('name'))}`);
     },
     onError: (error: any) => {
       toast({ title: "Registration Failed", description: error.message, variant: "destructive" });

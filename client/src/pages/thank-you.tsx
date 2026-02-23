@@ -757,7 +757,7 @@ export default function ThankYou() {
   };
 
   const content = getContent();
-  const partnerName = sessionData?.customerName || params?.get('customerName') || 'Official Partner';
+  const partnerName = sessionData?.distributorName || sessionData?.customerName || params?.get('customerName') || params?.get('distributorName') || 'Official Partner';
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);

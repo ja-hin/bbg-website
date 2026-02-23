@@ -834,7 +834,7 @@ export default function ThankYou() {
   return (
     <div className="min-h-screen bg-white flex flex-col md:flex-row overflow-hidden font-sans">
       {/* Left Pane - Branding & ID Card */}
-      <div className="md:w-5/12 bg-xtra-primary text-white flex flex-col justify-center p-8 lg:p-12 relative overflow-hidden">
+      <div className="md:w-5/12 bg-primary text-white flex flex-col justify-center p-8 lg:p-12 relative overflow-hidden">
         {/* Subtle Decorative Background */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-900/40 rounded-full blur-[120px] pointer-events-none translate-y-1/2 -translate-x-1/4"></div>
@@ -883,7 +883,7 @@ export default function ThankYou() {
               <div className="flex flex-col gap-3">
                 <Button 
                   onClick={handleSaveCard}
-                  className="w-full bg-white text-xtra-primary hover:bg-white/90 rounded-2xl h-12 font-bold shadow-xl transition-all active:scale-95"
+                  className="w-full bg-white text-primary hover:bg-white/90 rounded-2xl h-12 font-bold shadow-xl transition-all active:scale-95"
                 >
                   <Download className="h-4 w-4 mr-2" />
                   Save ID Card as Image
@@ -921,7 +921,7 @@ export default function ThankYou() {
               <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
                 {content.details.map((detail, index) => (
                   <div key={index} className="flex gap-4">
-                    <div className="flex-shrink-0 w-6 h-6 rounded-lg bg-xtra-primary/10 text-xtra-primary flex items-center justify-center text-xs font-bold">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
                       {index + 1}
                     </div>
                     <p className="text-sm font-semibold text-gray-600 leading-snug">
@@ -940,7 +940,7 @@ export default function ThankYou() {
                 <>
                   <Button 
                     onClick={() => window.location.reload()} 
-                    className="flex-1 bg-xtra-primary hover:opacity-90 h-14 rounded-2xl font-bold shadow-lg shadow-blue-900/20"
+                    className="flex-1 bg-primary hover:opacity-90 h-14 rounded-2xl font-bold shadow-lg shadow-blue-900/20"
                   >
                     <RefreshCw className="h-5 w-5 mr-2" />
                     Try Again
@@ -956,7 +956,7 @@ export default function ThankYou() {
                 <div className="w-full space-y-4">
                   {type === 'customer' && status === 'success' && content.code && (
                     <Button 
-                      className="w-full bg-xtra-primary hover:opacity-90 h-16 rounded-2xl font-black text-lg shadow-xl shadow-blue-900/20 group"
+                      className="w-full bg-primary hover:opacity-90 h-16 rounded-2xl font-black text-lg shadow-xl shadow-blue-900/20 group"
                       onClick={() => window.location.href = `/register?voucher=${content.code}`}
                     >
                       Complete My Registration
@@ -993,13 +993,13 @@ export default function ThankYou() {
             <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
               <div className="space-y-1">
                 <span className="block text-[10px] font-black text-gray-400 uppercase tracking-tighter">Support Email</span>
-                <a href="mailto:contactus@xtracover.com" className="text-xs font-bold text-gray-900 underline decoration-xtra-primary/30 underline-offset-4 decoration-2">
+                <a href="mailto:contactus@xtracover.com" className="text-xs font-bold text-gray-900 underline decoration-primary/30 underline-offset-4 decoration-2">
                   contactus@xtracover.com
                 </a>
               </div>
               <div className="space-y-1">
                 <span className="block text-[10px] font-black text-gray-400 uppercase tracking-tighter">Helpline</span>
-                <a href="tel:+918860396039" className="text-xs font-bold text-gray-900 underline decoration-xtra-primary/30 underline-offset-4 decoration-2">
+                <a href="tel:+918860396039" className="text-xs font-bold text-gray-900 underline decoration-primary/30 underline-offset-4 decoration-2">
                   +91-8860396039
                 </a>
               </div>

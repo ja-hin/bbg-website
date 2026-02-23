@@ -715,7 +715,7 @@ export default function ThankYou() {
         return {
           icon: <Users className="h-16 w-16 text-blue-600" />,
           title: "Welcome to Xtracover Network!",
-          subtitle: "Referral Partner Registreation Successful",
+          subtitle: "Referral Partner Registration Successful",
           message: "Earn ₹100 on every Mobile and ₹175 on every Laptop protection plan sold.",
           code: sellerCode,
           codeLabel: "Your Referral Code:",

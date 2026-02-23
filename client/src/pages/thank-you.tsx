@@ -721,9 +721,9 @@ export default function ThankYou() {
           codeLabel: "Your Referral Code:",
           isFailure: false,
           details: [
-            "Share your Referral Code with customers during registration",
-            "Track your commission earnings through our portal",
-            "Get dedicated support for all distributor queries",
+            "Share your Referral Code with customers during purchase",
+            "Track your commission earnings through your portal",
+            "Get dedicated support for all queries",
             "Monthly commission payments to your registered account"
           ]
         };

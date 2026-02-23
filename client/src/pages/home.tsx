@@ -208,21 +208,19 @@ export default function Home() {
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Top Banner Section */}
-      <section className="w-full">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-          <div 
-            onClick={scrollToForm}
-            className="w-full cursor-pointer overflow-hidden rounded-xl shadow-sm transition-opacity hover:opacity-95"
-          >
-            <picture>
-              <source media="(max-width: 639px)" srcSet={topBannerMobile} />
-              <img
-                src={topBannerDesktop}
-                alt="Special Offer Banner"
-                className="w-full h-auto object-cover"
-              />
-            </picture>
-          </div>
+      <section className="w-full mb-[20px]">
+        <div 
+          onClick={scrollToForm}
+          className="w-full cursor-pointer overflow-hidden transition-opacity hover:opacity-95"
+        >
+          <picture>
+            <source media="(max-width: 639px)" srcSet={topBannerMobile} />
+            <img
+              src={topBannerDesktop}
+              alt="Special Offer Banner"
+              className="w-full h-auto object-cover"
+            />
+          </picture>
         </div>
       </section>
 

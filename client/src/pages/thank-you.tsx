@@ -714,8 +714,8 @@ export default function ThankYou() {
         return {
           icon: <Users className="h-16 w-16 text-blue-600" />,
           title: "Welcome to Xtracover Network!",
-          subtitle: "Distributor Registration Successful",
-          message: "You are now part of our trusted distributor network. Start promoting BBG and earn ₹25 commission on every successful registration.",
+          subtitle: "Referral Partner Registreation Successful",
+          message: "You are now part of our trusted distributor network. Earn ₹100 on every Mobile and ₹175 on every Laptop protection plan sold.",
           code: sellerCode,
           codeLabel: "Your Seller Code:",
           isFailure: false,
@@ -880,13 +880,6 @@ export default function ThankYou() {
                       Back to Home
                     </Button>
                   </Link>
-                  {type === 'distributor' && (
-                    <Link href="/buy-bbg">
-                      <Button variant="outline" className="px-6 py-3">
-                        Help Customers Register
-                      </Button>
-                    </Link>
-                  )}
                 </>
               )}
             </div>

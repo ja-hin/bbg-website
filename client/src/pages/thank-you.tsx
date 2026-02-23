@@ -845,178 +845,264 @@ export default function ThankYou() {
     img.src = refPartnerLogo;
   };
 
-  return (
-    <div className="min-h-screen bg-white flex flex-col md:flex-row overflow-hidden font-sans">
-      {/* Left Pane - Branding & ID Card */}
-      <div className="md:w-5/12 bg-gray-50/50 flex flex-col p-5 sm:p-8 lg:p-12 relative border-r border-gray-100">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-100/40 rounded-full blur-[120px] pointer-events-none translate-y-1/2 -translate-x-1/4"></div>
+  const isDistributor = type === 'distributor';
 
-        <div className="relative z-10 max-w-sm mx-auto w-full space-y-6">
-          {content.code && (
-            <div className="group space-y-6">
-              {/* Partner ID Card */}
-              <div id="partner-card" className="relative rounded-2xl shadow-2xl overflow-hidden flex flex-col items-center text-center aspect-[1.6/1] group-hover:scale-[1.02] transition-transform duration-500" style={{ background: 'linear-gradient(160deg, #1e3a7a 0%, #15285c 40%, #0f1d45 100%)' }}>
-                <div className="absolute top-0 right-0 w-48 h-48 bg-white/[0.03] rounded-full blur-[60px] pointer-events-none -translate-y-1/4 translate-x-1/4"></div>
-                <div className="absolute bottom-0 left-0 w-36 h-36 bg-white/[0.02] rounded-full blur-[50px] pointer-events-none translate-y-1/4 -translate-x-1/4"></div>
+  if (isDistributor) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col md:flex-row overflow-hidden font-sans">
+        <div className="md:w-5/12 bg-gray-50/50 flex flex-col p-5 sm:p-8 lg:p-12 relative border-r border-gray-100 justify-center">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-100/40 rounded-full blur-[120px] pointer-events-none translate-y-1/2 -translate-x-1/4"></div>
 
-                <div className="relative z-10 w-full px-6 pt-6 sm:pt-8 pb-4 flex-1 flex flex-col items-center justify-between">
-                  <img src={refPartnerLogo} alt="XtraCover Partnership" className="h-10 sm:h-12 w-auto object-contain drop-shadow-lg" />
+          <div className="relative z-10 max-w-sm mx-auto w-full space-y-6">
+            {content.code && (
+              <div className="group space-y-6">
+                <div id="partner-card" className="relative rounded-2xl shadow-2xl overflow-hidden flex flex-col items-center text-center group-hover:scale-[1.02] transition-transform duration-500" style={{ background: 'linear-gradient(160deg, #1e3a7a 0%, #15285c 40%, #0f1d45 100%)' }}>
+                  <div className="absolute top-0 right-0 w-48 h-48 bg-white/[0.03] rounded-full blur-[60px] pointer-events-none -translate-y-1/4 translate-x-1/4"></div>
+                  <div className="absolute bottom-0 left-0 w-36 h-36 bg-white/[0.02] rounded-full blur-[50px] pointer-events-none translate-y-1/4 -translate-x-1/4"></div>
 
-                  <div className="w-full space-y-0.5">
-                    <p className="text-white/50 text-[10px] sm:text-xs font-medium tracking-wide uppercase">Name</p>
-                    <h2 className="text-white text-xl sm:text-2xl font-black tracking-tight leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>{partnerName}</h2>
+                  <div className="relative z-10 w-full px-6 pt-7 pb-5 flex flex-col items-center gap-5">
+                    <img src={refPartnerLogo} alt="XtraCover Buy Back Guarantee" className="h-14 sm:h-16 w-auto object-contain drop-shadow-lg" />
+
+                    <div className="w-full space-y-1">
+                      <p className="text-white/50 text-sm font-medium tracking-wide">Name</p>
+                      <h2 className="text-white text-3xl sm:text-4xl font-black tracking-tight leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>{partnerName}</h2>
+                    </div>
+
+                    <div className="w-full space-y-1.5 pt-1">
+                      <p className="text-white text-base font-medium">
+                        Referral Code <span className="font-black tracking-wide">{content.code}</span>
+                      </p>
+                      <p className="text-white/50 text-sm font-semibold tracking-wide">Referral Partner</p>
+                    </div>
                   </div>
 
-                  <div className="w-full space-y-1">
-                    <p className="text-white text-sm sm:text-base font-medium">
-                      Referral Code <span className="font-black tracking-wide">{content.code}</span>
+                  <div className="relative z-10 w-full px-6 py-4 border-t border-white/10 bg-white/[0.03]">
+                    <p className="text-white/70 text-xs sm:text-sm font-medium">
+                      Use the referral code at <span className="font-bold text-white/90">bbg.xtracover.com</span> to claim your discount
                     </p>
-                    <p className="text-white/50 text-[10px] sm:text-xs font-semibold tracking-widest uppercase">Referral Partner</p>
                   </div>
                 </div>
 
-                <div className="relative z-10 w-full px-4 sm:px-6 py-3 border-t border-white/10 bg-white/[0.03]">
-                  <p className="text-white/70 text-[9px] sm:text-[11px] font-medium leading-relaxed">
-                    Use the referral code at <span className="font-bold text-white/90">bbg.xtracover.com</span> to claim your discount
-                  </p>
+                <div className="flex flex-col gap-3">
+                  <Button 
+                    onClick={handleSaveCard}
+                    className="w-full bg-primary text-white hover:bg-primary/90 rounded-2xl h-12 font-bold shadow-xl transition-all active:scale-95 border-none"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Save ID Card as Image
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => copyToClipboard(content.code || '')}
+                    className="w-full text-gray-500 hover:text-primary hover:bg-primary/5 rounded-xl h-10 text-xs font-bold transition-all"
+                  >
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copy My Code
+                  </Button>
                 </div>
               </div>
+            )}
+          </div>
+        </div>
 
-              <div className="flex flex-col gap-3">
-                <Button 
-                  onClick={handleSaveCard}
-                  className="w-full bg-primary text-white hover:bg-primary/90 rounded-2xl h-12 font-bold shadow-xl transition-all active:scale-95 border-none"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Save ID Card as Image
+        <div className="flex-1 flex flex-col justify-center p-8 lg:p-20 bg-[#fcfdfe]">
+          <div className="max-w-xl mx-auto w-full space-y-10">
+            <div className="space-y-2 text-center md:text-left">
+              <h1 className="text-2xl lg:text-3xl font-black text-gray-900 tracking-tight leading-tight">
+                {content.title}
+              </h1>
+              <p className="text-primary text-sm font-bold uppercase tracking-wider">
+                {content.subtitle}
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <p className="text-gray-700 text-xl font-medium leading-relaxed">
+                {content.message}
+              </p>
+            </div>
+
+            {content.details.length > 0 && (
+              <div className="grid gap-6">
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                  HOW TO GET STARTED
+                </h3>
+                <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
+                  {content.details.map((detail, index) => (
+                    <div key={index} className="flex gap-4">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+                        {index + 1}
+                      </div>
+                      <p className="text-sm font-semibold text-gray-600 leading-snug">
+                        {detail}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="pt-10 border-t border-gray-100 space-y-8">
+              <Link href="/" className="block">
+                <Button variant="ghost" className="w-full h-14 rounded-2xl font-bold text-gray-400 hover:text-gray-900">
+                  <Home className="h-5 w-5 mr-2" />
+                  Go to Home
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => copyToClipboard(content.code || '')}
-                  className="w-full text-gray-500 hover:text-primary hover:bg-primary/5 rounded-xl h-10 text-xs font-bold transition-all"
-                >
-                  <Copy className="h-4 w-4 mr-2" />
-                  Copy My Code
-                </Button>
+              </Link>
+              <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+                <div className="space-y-1">
+                  <span className="block text-[10px] font-black text-gray-400 uppercase tracking-tighter">Support Email</span>
+                  <a href="mailto:contactus@xtracover.com" className="text-xs font-bold text-gray-900 underline decoration-primary/30 underline-offset-4 decoration-2">
+                    contactus@xtracover.com
+                  </a>
+                </div>
+                <div className="space-y-1">
+                  <span className="block text-[10px] font-black text-gray-400 uppercase tracking-tighter">Helpline</span>
+                  <a href="tel:+918860396039" className="text-xs font-bold text-gray-900 underline decoration-primary/30 underline-offset-4 decoration-2">
+                    +91-8860396039
+                  </a>
+                </div>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
+    );
+  }
 
-      {/* Right Pane - Motivational Message, Next Steps & Actions */}
-      <div className="flex-1 flex flex-col justify-center p-8 lg:p-20 bg-[#fcfdfe]">
-        <div className="max-w-xl mx-auto w-full space-y-10">
-          {/* Success Header */}
-          <div className="space-y-2 text-center md:text-left">
-            <h1 className="text-2xl lg:text-3xl font-black text-gray-900 tracking-tight leading-tight">
-              {content.title}
-            </h1>
-            <p className="text-primary text-sm font-bold uppercase tracking-wider">
-              {content.subtitle}
-            </p>
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center px-4 py-12 font-sans">
+      <div className="max-w-2xl w-full space-y-8">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6" style={{ background: content.isFailure ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)' }}>
+            {content.isFailure ? (
+              <AlertCircle className="h-10 w-10 text-red-500" />
+            ) : (
+              <CheckCircle className="h-10 w-10 text-green-500" />
+            )}
           </div>
+          <h1 className="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight leading-tight mb-2">
+            {content.title}
+          </h1>
+          <p className="text-primary text-sm font-bold uppercase tracking-wider mb-4">
+            {content.subtitle}
+          </p>
+          <p className="text-gray-600 text-base leading-relaxed max-w-lg mx-auto whitespace-pre-line">
+            {content.message}
+          </p>
+        </div>
 
-          {/* Motivational Content */}
-          <div className="space-y-4">
-            <p className="text-gray-700 text-xl font-medium leading-relaxed">
-              {content.message}
-            </p>
-          </div>
-
-          {/* Steps Grid - More Concise */}
-          {content.details.length > 0 && (
-            <div className="grid gap-6">
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                HOW TO GET STARTED
-              </h3>
-              <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
-                {content.details.map((detail, index) => (
-                  <div key={index} className="flex gap-4">
-                    <div className="flex-shrink-0 w-6 h-6 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
-                      {index + 1}
-                    </div>
-                    <p className="text-sm font-semibold text-gray-600 leading-snug">
-                      {detail}
-                    </p>
-                  </div>
-                ))}
-              </div>
+        {content.code && !content.isFailure && (
+          <div className="bg-white border-2 border-primary/20 rounded-2xl p-6 text-center shadow-sm">
+            <p className="text-sm text-gray-500 font-medium mb-2">{content.codeLabel}</p>
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-3xl font-black tracking-wider" style={{ color: '#254696' }}>{content.code}</span>
+              <button 
+                onClick={() => copyToClipboard(content.code || '')}
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                title="Copy code"
+              >
+                <Copy className="h-5 w-5 text-gray-400 hover:text-primary" />
+              </button>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Consolidated Actions & Help */}
-          <div className="pt-10 border-t border-gray-100 space-y-8">
-            <div className="flex flex-col sm:flex-row gap-4">
-              {content.isFailure ? (
-                <>
-                  <Button 
-                    onClick={() => window.location.reload()} 
-                    className="flex-1 bg-primary hover:opacity-90 h-14 rounded-2xl font-bold shadow-lg shadow-blue-900/20"
-                  >
-                    <RefreshCw className="h-5 w-5 mr-2" />
-                    Try Again
-                  </Button>
-                  <Link href="/" className="flex-1">
-                    <Button variant="outline" className="w-full h-14 rounded-2xl font-bold border-gray-200">
-                      <Home className="h-5 w-5 mr-2" />
-                      Exit
-                    </Button>
-                  </Link>
-                </>
-              ) : (
-                <div className="w-full space-y-4">
-                  {type === 'customer' && status === 'success' && content.code && (
-                    <Button 
-                      className="w-full bg-primary hover:opacity-90 h-16 rounded-2xl font-black text-lg shadow-xl shadow-blue-900/20 group"
-                      onClick={() => window.location.href = `/register?voucher=${content.code}`}
-                    >
-                      Complete My Registration
-                      <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  )}
-                  
-                  <div className="flex gap-3">
-                    {type === 'customer' && status === 'success' && (
-                      <Button 
-                        onClick={handleDownloadInvoice} 
-                        variant="outline"
-                        className="flex-1 h-14 rounded-2xl font-bold border-emerald-200 text-emerald-700 bg-emerald-50/30 hover:bg-emerald-50"
-                      >
-                        <Download className="h-5 w-5 mr-2" />
-                        Download Receipt
-                      </Button>
-                    )}
-                    <Link href="/" className="flex-1">
-                      <Button 
-                        variant="ghost" 
-                        className="w-full h-14 rounded-2xl font-bold text-gray-400 hover:text-gray-900"
-                      >
-                        <Home className="h-5 w-5 mr-2" />
-                        Go to Dashboard
-                      </Button>
-                    </Link>
+        {!content.isFailure && sessionData?.registrationSlabData && (
+          <BrandClaimValues sessionData={sessionData} />
+        )}
+
+        {!content.isFailure && sessionData?.planType === 'auction_repair' && (
+          <AuctionRepairBenefits sessionData={sessionData} />
+        )}
+
+        {content.details.length > 0 && !content.isFailure && (
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-5">
+              NEXT STEPS
+            </h3>
+            <div className="space-y-4">
+              {content.details.map((detail, index) => (
+                <div key={index} className="flex gap-4 items-start">
+                  <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold mt-0.5">
+                    {index + 1}
                   </div>
+                  <p className="text-sm font-medium text-gray-600 leading-relaxed pt-1">
+                    {detail}
+                  </p>
                 </div>
-              )}
+              ))}
             </div>
+          </div>
+        )}
 
-            {/* Compact Support bar */}
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
-              <div className="space-y-1">
-                <span className="block text-[10px] font-black text-gray-400 uppercase tracking-tighter">Support Email</span>
-                <a href="mailto:contactus@xtracover.com" className="text-xs font-bold text-gray-900 underline decoration-primary/30 underline-offset-4 decoration-2">
-                  contactus@xtracover.com
-                </a>
-              </div>
-              <div className="space-y-1">
-                <span className="block text-[10px] font-black text-gray-400 uppercase tracking-tighter">Helpline</span>
-                <a href="tel:+918860396039" className="text-xs font-bold text-gray-900 underline decoration-primary/30 underline-offset-4 decoration-2">
-                  +91-8860396039
-                </a>
-              </div>
+        <div className="space-y-4">
+          {content.isFailure ? (
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button 
+                onClick={() => window.location.reload()} 
+                className="flex-1 bg-primary hover:opacity-90 h-14 rounded-2xl font-bold shadow-lg shadow-blue-900/20"
+              >
+                <RefreshCw className="h-5 w-5 mr-2" />
+                Try Again
+              </Button>
+              <Link href="/" className="flex-1">
+                <Button variant="outline" className="w-full h-14 rounded-2xl font-bold border-gray-200">
+                  <Home className="h-5 w-5 mr-2" />
+                  Go to Home
+                </Button>
+              </Link>
             </div>
+          ) : (
+            <>
+              {status === 'success' && content.code && (
+                <Button 
+                  className="w-full bg-primary hover:opacity-90 h-16 rounded-2xl font-black text-lg shadow-xl shadow-blue-900/20 group"
+                  onClick={() => window.location.href = `/register?voucher=${content.code}`}
+                >
+                  Complete My Registration
+                  <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              )}
+              
+              <div className="flex gap-3">
+                {status === 'success' && (
+                  <Button 
+                    onClick={handleDownloadInvoice} 
+                    variant="outline"
+                    className="flex-1 h-14 rounded-2xl font-bold border-emerald-200 text-emerald-700 bg-emerald-50/30 hover:bg-emerald-50"
+                  >
+                    <Download className="h-5 w-5 mr-2" />
+                    Download Receipt
+                  </Button>
+                )}
+                <Link href="/" className="flex-1">
+                  <Button 
+                    variant="ghost" 
+                    className="w-full h-14 rounded-2xl font-bold text-gray-400 hover:text-gray-900"
+                  >
+                    <Home className="h-5 w-5 mr-2" />
+                    Go to Home
+                  </Button>
+                </Link>
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 pt-6 border-t border-gray-100">
+          <div className="space-y-1 text-center">
+            <span className="block text-[10px] font-black text-gray-400 uppercase tracking-tighter">Support Email</span>
+            <a href="mailto:contactus@xtracover.com" className="text-xs font-bold text-gray-900 underline decoration-primary/30 underline-offset-4 decoration-2">
+              contactus@xtracover.com
+            </a>
+          </div>
+          <div className="space-y-1 text-center">
+            <span className="block text-[10px] font-black text-gray-400 uppercase tracking-tighter">Helpline</span>
+            <a href="tel:+918860396039" className="text-xs font-bold text-gray-900 underline decoration-primary/30 underline-offset-4 decoration-2">
+              +91-8860396039
+            </a>
           </div>
         </div>
       </div>

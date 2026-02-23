@@ -840,15 +840,6 @@ export default function ThankYou() {
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-900/40 rounded-full blur-[120px] pointer-events-none translate-y-1/2 -translate-x-1/4"></div>
 
         <div className="relative z-10 max-w-sm mx-auto w-full space-y-10">
-          <div className="space-y-3">
-            <h1 className="text-2xl lg:text-3xl font-bold tracking-tight leading-tight">
-              {content.title}
-            </h1>
-            <p className="text-blue-100 text-sm font-medium opacity-80 uppercase tracking-wider">
-              {content.subtitle}
-            </p>
-          </div>
-
           {content.code && (
             <div className="group space-y-6">
               {/* Partner ID Card */}
@@ -905,6 +896,16 @@ export default function ThankYou() {
       {/* Right Pane - Motivational Message, Next Steps & Actions */}
       <div className="flex-1 flex flex-col justify-center p-8 lg:p-20 bg-[#fcfdfe]">
         <div className="max-w-xl mx-auto w-full space-y-10">
+          {/* Success Header */}
+          <div className="space-y-2 text-center md:text-left">
+            <h1 className="text-2xl lg:text-3xl font-black text-gray-900 tracking-tight leading-tight">
+              {content.title}
+            </h1>
+            <p className="text-primary text-sm font-bold uppercase tracking-wider">
+              {content.subtitle}
+            </p>
+          </div>
+
           {/* Motivational Content */}
           <div className="space-y-4">
             <p className="text-gray-700 text-xl font-medium leading-relaxed">

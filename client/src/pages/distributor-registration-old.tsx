@@ -143,7 +143,7 @@ export default function DistributorRegistration() {
       setShowConfetti(true);
       toast({
         title: "Registration Successful!",
-        description: `Your seller code is: ${data.sellerCode}`,
+        description: `Your Referral Code is: ${data.sellerCode}`,
       });
       // Store success data in session storage for thank you page
       sessionStorage.setItem('thankYouData', JSON.stringify({

@@ -717,10 +717,10 @@ export default function ThankYou() {
           subtitle: "Referral Partner Registreation Successful",
           message: "Earn ₹100 on every Mobile and ₹175 on every Laptop protection plan sold.",
           code: sellerCode,
-          codeLabel: "Your Seller Code:",
+          codeLabel: "Your Referral Code:",
           isFailure: false,
           details: [
-            "Share your seller code with customers during registration",
+            "Share your Referral Code with customers during registration",
             "Track your commission earnings through our portal",
             "Get dedicated support for all distributor queries",
             "Monthly commission payments to your registered account"

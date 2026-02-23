@@ -88,7 +88,7 @@ export default function CustomerRegistrations() {
     const headers = [
       'ID', 'Name', 'Contact', 'Email', 'Device Type', 'Brand', 'Model', 
       'Serial Number', 'Invoice Value', 'Purchase Date', 'Registration Date',
-      'Voucher Code', 'Seller Code', 'Transaction ID', 'Registration Source', 'Device Age (Months)',
+      'Voucher Code', 'Referral Code', 'Transaction ID', 'Registration Source', 'Device Age (Months)',
       'Claim Percentage', 'Estimated Payout', 'Claim Status', 'Verified'
     ];
     

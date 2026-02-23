@@ -511,7 +511,7 @@ export default function AdminDistributors() {
                                 <span className="text-gray-500">Contact:</span> {payout.distributor.contact}
                               </p>
                               <p className="text-sm">
-                                <span className="text-gray-500">Seller Code:</span> {payout.distributor.sellerCode}
+                                <span className="text-gray-500">Referral Code:</span> {payout.distributor.sellerCode}
                               </p>
                             </div>
                           </div>

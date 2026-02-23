@@ -88,7 +88,7 @@ export default function AdminAcerRegistrations() {
     const headers = [
       'Customer ID', 'Name', 'Contact', 'Email', 'Pincode', 'Device Type', 'Serial Number',
       'Brand', 'Model', 'Invoice Value (Individual)', 'Total Invoice Value', 'Purchase Date', 
-      'Seller Code', 'Voucher Code', 'Payment Status', 'Verified', 'Registration Date', 'Registration Source'
+      'Referral Code', 'Voucher Code', 'Payment Status', 'Verified', 'Registration Date', 'Registration Source'
     ];
 
     const csvData: string[][] = [];
@@ -496,7 +496,7 @@ export default function AdminAcerRegistrations() {
                   <div className="mb-4">
                     <h3 className="text-lg font-semibold mb-2">Additional Information</h3>
                     <div className="p-3 bg-gray-50 rounded">
-                      <label className="text-sm font-medium text-gray-500">Seller Code</label>
+                      <label className="text-sm font-medium text-gray-500">Referral Code</label>
                       <p className="font-medium">{detailViewRegistration.sellerCode}</p>
                     </div>
                   </div>

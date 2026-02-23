@@ -270,7 +270,7 @@ export class DatabaseStorage implements IStorage {
 
     const sellerCode = distributor[0].sellerCode;
     
-    // Get customers registered with this seller code
+    // Get customers registered with this Referral Code
     const distributorCustomers = await db.select().from(customers).where(eq(customers.sellerCode, sellerCode));
     
     // Get payouts for this distributor

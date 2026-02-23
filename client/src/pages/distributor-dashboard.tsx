@@ -368,7 +368,7 @@ export default function DistributorDashboard() {
                   <div className="text-center py-8">
                     <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600">No customers found</p>
-                    <p className="text-sm text-gray-500">Share your seller code to get started!</p>
+                    <p className="text-sm text-gray-500">Share your Referral Code to get started!</p>
                   </div>
                 ) : (
                   <div className="space-y-4">

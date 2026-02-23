@@ -1303,7 +1303,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (customer.sellerCode) {
             try {
               console.log(
-                "🔔 Sending BBG purchase notification to distributor with seller code:",
+                "🔔 Sending BBG purchase notification to distributor with Referral Code:",
                 customer.sellerCode,
               );
               const distributor = await storage.getDistributorBySellerCode(
@@ -1357,7 +1357,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 });
               } else {
                 console.log(
-                  "❌ Distributor not found for seller code:",
+                  "❌ Distributor not found for Referral Code:",
                   customer.sellerCode,
                 );
               }
@@ -1794,13 +1794,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isVerified: true, // Auto-verify since OTP was completed during registration
       };
 
-      // Validate seller code if provided
+      // Validate Referral Code if provided
       if (customerData.sellerCode) {
         const distributor = await storage.getDistributorBySellerCode(
           customerData.sellerCode,
         );
         if (!distributor) {
-          return res.status(400).json({ message: "Invalid seller code" });
+          return res.status(400).json({ message: "Invalid Referral Code" });
         }
       }
 
@@ -1966,7 +1966,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (customer.sellerCode) {
           try {
             console.log(
-              "🔔 Sending BBG purchase notification to distributor with seller code:",
+              "🔔 Sending BBG purchase notification to distributor with Referral Code:",
               customer.sellerCode,
             );
             const distributor = await storage.getDistributorBySellerCode(
@@ -2020,7 +2020,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               });
             } else {
               console.log(
-                "❌ Distributor not found for seller code:",
+                "❌ Distributor not found for Referral Code:",
                 customer.sellerCode,
               );
             }
@@ -7389,7 +7389,7 @@ Required: GUPSHUP_API_KEY environment variable
           modelName: finalModelName,
           invoiceValue: purchasePrice.toString(), // Convert to string as expected by storage
           dateOfPurchase: purchaseDate,
-          sellerCode: null, // No seller code for direct Acer registrations
+          sellerCode: null, // No Referral Code for direct Acer registrations
           isVerified: true, // Auto-verify Acer registrations
           invoiceFile: invoiceFilePath,
           registrationSource: "acer_bbg", // 🎯 CRITICAL: Mark as Acer BBG registration
@@ -7736,7 +7736,7 @@ Required: GUPSHUP_API_KEY environment variable
           modelName: model,
           invoiceValue: purchasePrice.toString(),
           dateOfPurchase: purchaseDate,
-          sellerCode: null, // No seller code for Amazon registrations
+          sellerCode: null, // No Referral Code for Amazon registrations
           isVerified: true, // Auto-verify Amazon registrations
           invoiceFile: invoiceFilePath,
           registrationSource: "amazon_bbg", // Mark as Amazon BBG registration
@@ -8706,7 +8706,7 @@ Required: GUPSHUP_API_KEY environment variable
           d.name as 'Partner Name',
           d.contact as 'Partner Contact',
           d.email as 'Partner Email',
-          d.seller_code as 'Seller Code',
+          d.seller_code as 'Referral Code',
           d.bank_account as 'Bank Account',
           d.ifsc_code as 'IFSC Code',
           d.account_holder_name as 'Account Holder',

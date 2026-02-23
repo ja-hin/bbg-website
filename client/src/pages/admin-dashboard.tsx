@@ -764,7 +764,7 @@ export default function AdminDashboard() {
                         <TableHead>Distributor</TableHead>
                         <TableHead>Business</TableHead>
                         <TableHead>Contact</TableHead>
-                        <TableHead>Seller Code</TableHead>
+                        <TableHead>Referral Code</TableHead>
 
                         <TableHead>Mode</TableHead>
                         <TableHead>Total Commission</TableHead>

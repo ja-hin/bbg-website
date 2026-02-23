@@ -2018,7 +2018,7 @@ export class SqlServerStorage implements IStorage {
 
     const result = await request.query(query);
 
-    // Update distributor commission and create payout if seller code provided
+    // Update distributor commission and create payout if Referral Code provided
     if (insertCustomer.sellerCode) {
       try {
         // Get partner commission settings

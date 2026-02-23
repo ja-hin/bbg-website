@@ -5,7 +5,7 @@ import jsPDF from 'jspdf';
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award, Gavel, Wrench, Star, ArrowRight } from "lucide-react";
+import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award, Gavel, Wrench, Star, ArrowRight, Copy } from "lucide-react";
 
 // Device Type Claim Values Component
 function BrandClaimValues({ sessionData }: { sessionData: any }) {
@@ -798,7 +798,7 @@ export default function ThankYou() {
     
     ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
     ctx.font = '30px sans-serif';
-    ctx.fillText('AUTHORIZED PARTNER', 100, 175);
+    ctx.fillText(partnerName.toUpperCase(), 100, 175);
 
     // Partner Details
     ctx.fillStyle = '#ffffff';
@@ -821,7 +821,7 @@ export default function ThankYou() {
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 24px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('OFFICIAL', 1000, 495);
+    ctx.fillText(partnerName.toUpperCase().split(' ')[0], 1000, 495);
     ctx.fillText('PARTNER', 1000, 525);
 
     // Download
@@ -834,35 +834,35 @@ export default function ThankYou() {
   return (
     <div className="min-h-screen bg-white flex flex-col md:flex-row overflow-hidden font-sans">
       {/* Left Pane - Branding & ID Card */}
-      <div className="md:w-5/12 bg-primary text-white flex flex-col justify-center p-8 lg:p-12 relative overflow-hidden">
+      <div className="md:w-5/12 bg-gray-50/50 flex flex-col p-8 lg:p-12 relative overflow-hidden border-r border-gray-100">
         {/* Subtle Decorative Background */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-900/40 rounded-full blur-[120px] pointer-events-none translate-y-1/2 -translate-x-1/4"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-100/40 rounded-full blur-[120px] pointer-events-none translate-y-1/2 -translate-x-1/4"></div>
 
         <div className="relative z-10 max-w-sm mx-auto w-full space-y-10">
           {content.code && (
             <div className="group space-y-6">
               {/* Partner ID Card */}
-              <div id="partner-card" className="relative p-8 rounded-[2rem] bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-2xl border border-white/20 shadow-2xl overflow-hidden aspect-[1.6/1] flex flex-col justify-between group-hover:scale-[1.02] transition-transform duration-500">
+              <div id="partner-card" className="relative p-8 rounded-[2rem] bg-primary shadow-2xl overflow-hidden aspect-[1.6/1] flex flex-col justify-between group-hover:scale-[1.02] transition-transform duration-500">
                 {/* Card Background Pattern */}
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
                 
-                <div className="relative z-10 flex justify-between items-start">
+                <div className="relative z-10 flex justify-between items-start text-white">
                   <div>
-                    <p className="text-[10px] font-black tracking-[0.2em] text-white/60 mb-1 uppercase">Official</p>
+                    <p className="text-[10px] font-black tracking-[0.2em] text-white/60 mb-1 uppercase">{partnerName}</p>
                     <p className="text-xl font-black tracking-tighter">XTRACOVER</p>
                   </div>
-                  <div className="px-2 py-1 bg-white/10 rounded-lg border border-white/10 text-[8px] font-bold uppercase tracking-widest">
-                    Authorized Partner
+                  <div className="px-2 py-1 bg-white/10 rounded-lg border border-white/10 text-[8px] font-bold uppercase tracking-widest whitespace-nowrap overflow-hidden max-w-[120px] text-ellipsis">
+                    {partnerName}
                   </div>
                 </div>
 
-                <div className="relative z-10">
+                <div className="relative z-10 text-white">
                   <p className="text-[9px] font-bold text-white/50 uppercase tracking-widest mb-1">Partner Name</p>
                   <p className="text-2xl font-black truncate max-w-full tracking-tight">{partnerName}</p>
                 </div>
 
-                <div className="relative z-10">
+                <div className="relative z-10 text-white">
                   <p className="text-[9px] font-bold text-white/50 uppercase tracking-widest mb-1">Referral Code</p>
                   <p className="text-3xl font-mono font-black tracking-tighter text-blue-100">{content.code}</p>
                 </div>
@@ -874,7 +874,7 @@ export default function ThankYou() {
               <div className="flex flex-col gap-3">
                 <Button 
                   onClick={handleSaveCard}
-                  className="w-full bg-white text-primary hover:bg-white/90 rounded-2xl h-12 font-bold shadow-xl transition-all active:scale-95"
+                  className="w-full bg-primary text-white hover:bg-primary/90 rounded-2xl h-12 font-bold shadow-xl transition-all active:scale-95 border-none"
                 >
                   <Download className="h-4 w-4 mr-2" />
                   Save ID Card as Image
@@ -882,10 +882,10 @@ export default function ThankYou() {
                 <Button 
                   variant="ghost" 
                   onClick={() => copyToClipboard(content.code || '')}
-                  className="w-full text-white/70 hover:text-white hover:bg-white/10 rounded-xl h-10 text-xs font-semibold transition-all"
+                  className="w-full text-gray-500 hover:text-primary hover:bg-primary/5 rounded-xl h-10 text-xs font-bold transition-all"
                 >
-                  <Download className="h-3.5 w-3.5 mr-2 rotate-90" />
-                  Copy Referral Code
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy My Code
                 </Button>
               </div>
             </div>

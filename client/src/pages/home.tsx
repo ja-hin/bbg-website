@@ -61,8 +61,8 @@ import bannerImg from "@assets/Referral_website.webp";
 import buybackGuaranteeImgBelow from "@assets/Referral_mobile.webp";
 import buybackGuaranteeImg from "@assets/herobbg.webp";
 import extendPlusImg from "@assets/heroextendplus.webp";
-import topBannerDesktop from "@assets/image_1771765108223.png";
-import topBannerMobile from "@assets/image_1771764649596.webp";
+import topBannerDesktop from "@assets/holiwebsite.webp";
+import topBannerMobile from "@assets/holimobile.webp";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {

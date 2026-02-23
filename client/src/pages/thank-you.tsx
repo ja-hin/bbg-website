@@ -6,6 +6,7 @@ import jsPDF from 'jspdf';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award, Gavel, Wrench, Star, ArrowRight, Copy } from "lucide-react";
+import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.webp";
 
 // Device Type Claim Values Component
 function BrandClaimValues({ sessionData }: { sessionData: any }) {
@@ -770,155 +771,114 @@ export default function ThankYou() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Background Radial Gradient
-    const gradient = ctx.createRadialGradient(600, 350, 0, 600, 350, 800);
-    gradient.addColorStop(0, '#254696');
-    gradient.addColorStop(1, '#172554');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 1200, 700);
+    const drawCard = (logoImg?: HTMLImageElement) => {
+      const gradient = ctx.createLinearGradient(0, 0, 1200, 700);
+      gradient.addColorStop(0, '#1e3a7a');
+      gradient.addColorStop(0.4, '#15285c');
+      gradient.addColorStop(1, '#0f1d45');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 1200, 700);
 
-    // Subtle Glow
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
-    ctx.beginPath();
-    ctx.arc(1000, 0, 400, 0, Math.PI * 2);
-    ctx.fill();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.beginPath();
+      ctx.arc(1000, 50, 350, 0, Math.PI * 2);
+      ctx.fill();
 
-    // -- LOGO SECTION (Top Center) --
-    const logoX = 400; // Center offset implementation
-    const logoY = 80;
-    const logoW = 400;
-    const logoH = 120;
+      if (logoImg) {
+        const logoH = 100;
+        const logoW = (logoImg.naturalWidth / logoImg.naturalHeight) * logoH;
+        ctx.drawImage(logoImg, (1200 - logoW) / 2, 60, logoW, logoH);
+      }
 
-    // Logo Background White Box
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.roundRect(logoX, logoY, logoW, logoH, 8);
-    ctx.fill();
+      ctx.textAlign = 'center';
 
-    // Red Power Icon Circle
-    ctx.fillStyle = '#dc2626'; // red-600
-    ctx.beginPath();
-    ctx.arc(logoX + 50, logoY + 60, 35, 0, Math.PI * 2);
-    ctx.fill();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.font = '500 28px sans-serif';
+      ctx.fillText('Name', 600, 250);
 
-    // Power Icon symbol (White)
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 6;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.arc(logoX + 50, logoY + 60, 18, -Math.PI * 0.35, Math.PI * 1.35);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(logoX + 50, logoY + 45);
-    ctx.lineTo(logoX + 50, logoY + 58);
-    ctx.stroke();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 72px sans-serif';
+      ctx.fillText(partnerName, 600, 340);
 
-    // XTRACOVER Text
-    ctx.fillStyle = '#254696';
-    ctx.font = 'black 50px sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText('XTRACOVER', logoX + 110, logoY + 55);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '500 32px sans-serif';
+      const codeLabel = 'Referral Code ';
+      const codeVal = content.code || '';
+      const labelW = ctx.measureText(codeLabel).width;
+      ctx.font = '900 32px sans-serif';
+      const valW = ctx.measureText(codeVal).width;
+      const totalW = labelW + valW;
+      const startX = (1200 - totalW) / 2;
+      ctx.textAlign = 'left';
+      ctx.font = '500 32px sans-serif';
+      ctx.fillText(codeLabel, startX, 430);
+      ctx.font = '900 32px sans-serif';
+      ctx.fillText(codeVal, startX + labelW, 430);
+      ctx.textAlign = 'center';
 
-    // Buy Back Guarantee Rect
-    ctx.fillStyle = '#254696';
-    ctx.fillRect(logoX + 110, logoY + 65, 260, 35);
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 20px sans-serif';
-    ctx.fillText('BUY BACK GUARANTEE', logoX + 120, logoY + 90);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.font = '600 26px sans-serif';
+      ctx.fillText('Referral Partner', 600, 475);
 
-    // -- MAIN CONTENT (Centered) --
-    ctx.textAlign = 'center';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(80, 580);
+      ctx.lineTo(1120, 580);
+      ctx.stroke();
 
-    // "Name" Label
-    ctx.fillStyle = 'rgba(219, 234, 254, 0.6)'; // blue-100/60
-    ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('NAME', 600, 320);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.font = '500 22px sans-serif';
+      const footerText = 'Use the referral code at bbg.xtracover.com to claim your discount';
+      ctx.fillText(footerText, 600, 640);
 
-    // Partner Name
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'black 80px sans-serif';
-    ctx.fillText(partnerName, 600, 410);
+      const link = document.createElement('a');
+      link.download = `XtraCover_Partner_Card_${content.code}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    };
 
-    // Referral Code Info
-    ctx.font = 'medium 32px sans-serif';
-    ctx.fillText(`Referral Code ${content.code}`, 600, 500);
-
-    // "Referral Partner" subscript
-    ctx.fillStyle = 'rgba(219, 234, 254, 0.6)';
-    ctx.font = 'semibold 28px sans-serif';
-    ctx.fillText('Refferal Partner', 600, 550);
-
-    // -- FOOTER SECTION --
-    // Divider
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(100, 600);
-    ctx.lineTo(1100, 600);
-    ctx.stroke();
-
-    // Footer Text
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.font = 'medium 20px sans-serif';
-    ctx.fillText('Use the referral code at bbg.xtracover.com to claim discount', 600, 650);
-
-    // Download
-    const link = document.createElement('a');
-    link.download = `XtraCover_Partner_Card_${content.code}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => drawCard(img);
+    img.onerror = () => drawCard();
+    img.src = bbgLogo;
   };
 
   return (
     <div className="min-h-screen bg-white flex flex-col md:flex-row overflow-hidden font-sans">
       {/* Left Pane - Branding & ID Card */}
-      <div className="md:w-5/12 bg-gray-50/50 flex flex-col p-8 lg:p-12 relative overflow-hidden border-r border-gray-100">
-        {/* Subtle Decorative Background */}
+      <div className="md:w-5/12 bg-gray-50/50 flex flex-col p-5 sm:p-8 lg:p-12 relative border-r border-gray-100 justify-center">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-100/40 rounded-full blur-[120px] pointer-events-none translate-y-1/2 -translate-x-1/4"></div>
 
-        <div className="relative z-10 max-w-sm mx-auto w-full space-y-10">
+        <div className="relative z-10 max-w-sm mx-auto w-full space-y-6">
           {content.code && (
             <div className="group space-y-6">
               {/* Partner ID Card */}
-              <div id="partner-card" className="relative p-10 rounded-[2rem] bg-[radial-gradient(circle_at_center,_#254696_0%,_#172554_100%)] shadow-2xl overflow-hidden aspect-[1.58/1] flex flex-col items-center justify-between text-center group-hover:scale-[1.02] transition-transform duration-500 border border-white/10">
-                {/* Background Glow */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
-                
-                {/* Logo Section */}
-                <div className="relative z-10 flex flex-col items-center">
-                  <div className="flex items-center gap-3 bg-white px-5 py-2 rounded-sm shadow-lg">
-                    <div className="bg-red-600 rounded-full p-2 flex items-center justify-center">
-                      <div className="w-6 h-6 border-2 border-white rounded-full flex items-center justify-center relative">
-                        <div className="w-1 h-3 bg-white absolute -top-1"></div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-start leading-tight">
-                      <span className="text-[#254696] font-black text-xl tracking-tighter">XTRACOVER</span>
-                      <div className="bg-[#254696] px-2 py-0.5 rounded-sm">
-                        <span className="text-white text-[10px] font-bold tracking-widest uppercase">Buy Back Guarantee</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div id="partner-card" className="relative rounded-2xl shadow-2xl overflow-hidden flex flex-col items-center text-center group-hover:scale-[1.02] transition-transform duration-500" style={{ background: 'linear-gradient(160deg, #1e3a7a 0%, #15285c 40%, #0f1d45 100%)' }}>
+                <div className="absolute top-0 right-0 w-48 h-48 bg-white/[0.03] rounded-full blur-[60px] pointer-events-none -translate-y-1/4 translate-x-1/4"></div>
+                <div className="absolute bottom-0 left-0 w-36 h-36 bg-white/[0.02] rounded-full blur-[50px] pointer-events-none translate-y-1/4 -translate-x-1/4"></div>
 
-                {/* Main Content */}
-                <div className="relative z-10 space-y-1">
-                  <p className="text-blue-100/60 text-xs font-medium uppercase tracking-[0.2em]">Name</p>
-                  <h2 className="text-white text-4xl font-black tracking-tight mb-2">{partnerName}</h2>
-                  
-                  <div className="space-y-0.5 mt-4">
+                <div className="relative z-10 w-full px-6 pt-7 pb-5 flex flex-col items-center gap-5">
+                  <img src={bbgLogo} alt="XtraCover Buy Back Guarantee" className="h-14 sm:h-16 w-auto object-contain drop-shadow-lg" />
+
+                  <div className="w-full space-y-1">
+                    <p className="text-white/50 text-sm font-medium tracking-wide">Name</p>
+                    <h2 className="text-white text-3xl sm:text-4xl font-black tracking-tight leading-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>{partnerName}</h2>
+                  </div>
+
+                  <div className="w-full space-y-1.5 pt-1">
                     <p className="text-white text-base font-medium">
-                      Referral Code <span className="font-black text-white">{content.code}</span>
+                      Referral Code <span className="font-black tracking-wide">{content.code}</span>
                     </p>
-                    <p className="text-blue-100/60 text-sm font-semibold tracking-wide">Refferal Partner</p>
+                    <p className="text-white/50 text-sm font-semibold tracking-wide">Referral Partner</p>
                   </div>
                 </div>
 
-                {/* Footer Message */}
-                <div className="relative z-10 w-full pt-4 border-t border-white/10">
-                  <p className="text-white/80 text-[10px] font-medium tracking-wide">
-                    Use the referral code at <span className="font-bold">bbg.xtracover.com</span> to claim discount
+                <div className="relative z-10 w-full px-6 py-4 border-t border-white/10 bg-white/[0.03]">
+                  <p className="text-white/70 text-xs sm:text-sm font-medium">
+                    Use the referral code at <span className="font-bold text-white/90">bbg.xtracover.com</span> to claim your discount
                   </p>
                 </div>
               </div>

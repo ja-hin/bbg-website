@@ -61,6 +61,8 @@ import bannerImg from "@assets/Referral_website.webp";
 import buybackGuaranteeImgBelow from "@assets/Referral_mobile.webp";
 import buybackGuaranteeImg from "@assets/herobbg.webp";
 import extendPlusImg from "@assets/heroextendplus.webp";
+import topBannerDesktop from "@assets/image_1771765108223.png";
+import topBannerMobile from "@assets/image_1771764649596.webp";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {
@@ -205,6 +207,25 @@ export default function Home() {
 
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
+      {/* Top Banner Section */}
+      <section className="w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+          <div 
+            onClick={scrollToForm}
+            className="w-full cursor-pointer overflow-hidden rounded-xl shadow-sm transition-opacity hover:opacity-95"
+          >
+            <picture>
+              <source media="(max-width: 639px)" srcSet={topBannerMobile} />
+              <img
+                src={topBannerDesktop}
+                alt="Special Offer Banner"
+                className="w-full h-auto object-cover"
+              />
+            </picture>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Plans Section */}
       <section
         className="px-3 sm:px-6 lg:px-8 py-4 sm:py-6"

@@ -758,96 +758,106 @@ export default function ThankYou() {
 
   const content = getContent();
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    // Optional: show a toast or temporary "Copied!" state
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <Card className="text-center">
-          <CardContent className="pt-12 pb-8">
-            {/* Icon */}
-            <div className="flex justify-center mb-6">
-              {content.icon}
+    <div className="min-h-screen bg-[#f8fafc] relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100/50 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-100/50 rounded-full blur-[120px] pointer-events-none"></div>
+      
+      <div className="max-w-2xl w-full relative z-10">
+        <Card className="border-none shadow-[0_20px_50px_rgba(37,70,150,0.1)] bg-white/80 backdrop-blur-xl rounded-[2.5rem] overflow-hidden">
+          <CardContent className="p-8 sm:p-12">
+            {/* Header Section */}
+            <div className="flex flex-col items-center mb-10 text-center">
+              <div className="mb-6 relative">
+                <div className="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-20"></div>
+                <div className="relative bg-gradient-to-br from-[#1e3a8a] to-[#2563eb] p-5 rounded-3xl shadow-lg ring-8 ring-blue-50">
+                  {content.icon && (
+                    <div className="text-white h-10 w-10">
+                      {content.icon}
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">
+                {content.title}
+              </h1>
+              <p className="text-lg font-medium text-blue-600/80 mb-6">
+                {content.subtitle}
+              </p>
+              
+              <div className="max-w-md mx-auto">
+                {type === 'distributor' ? (
+                  <div className="bg-blue-50/80 border border-blue-100 rounded-2xl p-4 mb-2">
+                    <p className="text-blue-900 font-bold leading-relaxed">
+                      {content.message}
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-gray-600 leading-relaxed">
+                    {content.message}
+                  </p>
+                )}
+              </div>
             </div>
 
-            {/* Title and Subtitle */}
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">{content.title}</h1>
-            <h2 className="text-xl text-gray-600 mb-6">{content.subtitle}</h2>
-
-            {/* Message */}
-            <p className="text-gray-700 mb-8 max-w-2xl mx-auto leading-relaxed">
-              {content.message}
-            </p>
-
-            {/* Code Display */}
+            {/* Main Content Area */}
             {content.code && (
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-6 mb-8">
-                <p className="text-sm text-gray-600 mb-2">{content.codeLabel}</p>
-                <p className="text-3xl font-bold text-xtra-primary font-mono tracking-wider">
-                  {content.code}
-                </p>
-                <p className="text-xs text-gray-500 mt-2">
-                  Please save this code for future reference
-                </p>
+              <div className="mb-10 group">
+                <div className="relative p-[2px] rounded-3xl bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 shadow-xl transition-all duration-300 group-hover:shadow-[0_10px_30px_rgba(37,70,150,0.25)]">
+                  <div className="bg-white rounded-[1.4rem] p-8 text-center relative overflow-hidden">
+                    {/* Subtle inner background pattern */}
+                    <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#254696_1.5px,transparent_1.5px)] [background-size:24px_24px]"></div>
+                    
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 relative z-10">
+                      {content.codeLabel}
+                    </p>
+                    <div className="flex items-center justify-center gap-3 relative z-10">
+                      <span className="text-4xl sm:text-5xl font-black text-[#1e40af] font-mono tracking-tighter">
+                        {content.code}
+                      </span>
+                      <button 
+                        onClick={() => copyToClipboard(content.code || '')}
+                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors"
+                        title="Copy to clipboard"
+                      >
+                        <Download className="h-5 w-5" />
+                      </button>
+                    </div>
+                    <p className="text-[10px] text-gray-400 mt-4 relative z-10 font-medium">
+                      THIS CODE IS YOUR UNIQUE PARTNER IDENTITY
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
 
-            {/* Action Buttons Group for Customers */}
-            {type === 'customer' && status === 'success' && content.code && (
-              <div className="mb-10 flex flex-col sm:flex-row gap-4 justify-center items-center animate-in fade-in slide-in-from-bottom-4 delay-200 duration-700 fill-mode-forwards">
-                {/* Complete Registration Button */}
-                <Button 
-                  className="w-full sm:w-auto px-8 py-6 text-lg font-bold bg-[#1e3a8a] text-white hover:bg-[#152861] shadow-xl hover:shadow-2xl rounded-xl transition-all active:scale-[0.98] group"
-                  onClick={() => window.location.href = `/register?voucher=${content.code}`}
-                >
-                  Complete Registration 
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-
-                {/* Download Invoice Button */}
-                <Button 
-                  onClick={handleDownloadInvoice} 
-                  className="w-full sm:w-auto px-8 py-6 text-lg font-bold bg-green-600 hover:bg-green-700 text-white shadow-xl hover:shadow-2xl rounded-xl transition-all active:scale-[0.98]"
-                >
-                  <Download className="h-5 w-5 mr-2" />
-                  Download Invoice
-                </Button>
-              </div>
-            )}
-            
-            {/* Helper text for registration */}
-            {type === 'customer' && status === 'success' && (
-               <p className="text-sm text-gray-500 -mt-6 mb-8 max-w-sm mx-auto">
-                  Activate your plan now by registering your device details.
-               </p>
-            )}
-
-            {/* Show Benefits based on benefit type for Successful Customer Registrations */}
-            {type === 'customer' && status === 'success' && (
-              sessionData?.benefitType === 'auction_repair' ? (
-                <AuctionRepairBenefits sessionData={sessionData} />
-              ) : (
-                <BrandClaimValues sessionData={sessionData} />
-              )
-            )}
-
-            {/* Transaction ID for failed payments */}
-            {content.isFailure && txnid && (
-              <div className="bg-gray-50 p-4 rounded-lg mb-8">
-                <p className="text-sm text-gray-600 mb-1">Transaction Reference:</p>
-                <p className="font-mono text-sm text-gray-800">{txnid}</p>
-              </div>
-            )}
-
-            {/* Action Details */}
+            {/* Success Steps */}
             {content.details.length > 0 && (
-              <div className="bg-blue-50 rounded-lg p-6 mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">What's Next?</h3>
-                <div className="space-y-3">
+              <div className="mb-10">
+                <h3 className="text-sm font-bold text-gray-900 mb-6 uppercase tracking-widest text-center flex items-center justify-center gap-2">
+                  <span className="h-[1px] w-8 bg-gray-200"></span>
+                  Next Steps for Success
+                  <span className="h-[1px] w-8 bg-gray-200"></span>
+                </h3>
+                <div className="grid gap-3">
                   {content.details.map((detail, index) => (
-                    <div key={index} className="flex items-start text-left">
-                      <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-0.5">
-                        {index + 1}
+                    <div 
+                      key={index} 
+                      className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50/50 border border-transparent hover:border-blue-100 hover:bg-white hover:shadow-sm transition-all duration-200"
+                    >
+                      <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-xl bg-white shadow-sm text-blue-600 font-bold border border-blue-50 italic">
+                        0{index + 1}
                       </div>
-                      <p className="text-gray-700">{detail}</p>
+                      <p className="text-sm font-medium text-gray-700 leading-tight">
+                        {detail}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -855,81 +865,81 @@ export default function ThankYou() {
             )}
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col gap-3">
               {content.isFailure ? (
-                <>
+                <div className="flex flex-col sm:flex-row gap-3">
                   <Button 
                     onClick={() => window.location.reload()} 
-                    className="bg-xtra-primary bg-blue-700 text-white px-6 py-3"
+                    className="flex-1 bg-[#1e40af] hover:bg-blue-800 text-white rounded-2xl h-14 font-bold shadow-lg shadow-blue-900/10 transition-all active:scale-[0.98]"
                   >
-                    <RefreshCw className="h-4 w-4 mr-2" />
+                    <RefreshCw className="h-5 w-5 mr-2" />
                     Try Again
                   </Button>
-                  <Link href="/">
-                    <Button variant="outline" className="px-6 py-3">
-                      <Home className="h-4 w-4 mr-2" />
-                      Go to Homepage
+                  <Link href="/" className="flex-1">
+                    <Button variant="outline" className="w-full border-gray-200 hover:bg-gray-50 text-gray-700 rounded-2xl h-14 font-bold transition-all">
+                      <Home className="h-5 w-5 mr-2" />
+                      Home
                     </Button>
                   </Link>
-                </>
+                </div>
               ) : (
-                <>
+                <div className="flex flex-col gap-3">
+                  {type === 'customer' && status === 'success' && content.code && (
+                    <Button 
+                      className="w-full bg-[#1e40af] hover:bg-blue-800 text-white rounded-2xl h-16 font-extrabold text-lg shadow-xl shadow-blue-900/10 transition-all active:scale-[0.98] group"
+                      onClick={() => window.location.href = `/register?voucher=${content.code}`}
+                    >
+                      Complete Registration
+                      <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  )}
+                  
+                  {type === 'customer' && status === 'success' && (
+                    <Button 
+                      onClick={handleDownloadInvoice} 
+                      variant="outline"
+                      className="w-full border-emerald-200 hover:bg-emerald-50 text-emerald-700 rounded-2xl h-14 font-bold transition-all"
+                    >
+                      <Download className="h-5 w-5 mr-2" />
+                      Download Receipt
+                    </Button>
+                  )}
+
                   <Link href="/">
-                    <Button className="bg-xtra-primary bg-blue-700 text-white px-6 py-3">
+                    <Button variant="ghost" className="w-full text-gray-500 hover:text-gray-900 mt-2 font-semibold">
                       <Home className="h-4 w-4 mr-2" />
-                      Back to Home
+                      Return to Dashboard
                     </Button>
                   </Link>
-                </>
+                </div>
               )}
             </div>
 
-            {/* Contact Information */}
-            <div className="mt-12 pt-8 border-t border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6 text-center">
-                Need Help?
-              </h3>
-
-              {/* Constrain width so left/right don't fly to the edges */}
-              <div className="mx-auto max-w-3xl">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 text-sm sm:items-start">
-
-                  {/* Email */}
-                  <div className="text-center sm:text-left">
-                    <div className="text-xtra-primary font-semibold text-base">
-                      Email Support
-                    </div>
-                    <a
-                      href="mailto:contactus@xtracover.com"
-                      className="text-gray-700 hover:text-gray-900"
-                    >
-                      contactus@xtracover.com
-                    </a>
-                  </div>
-
-                  {/* Phone */}
-                  <div className="text-center sm:text-right">
-                    <div className="text-xtra-primary font-semibold text-base">
-                      Phone Support
-                    </div>
-                    <a
-                      href="tel:+918860396039"
-                      className="text-gray-700 hover:text-gray-900"
-                    >
-                      +91-8860396039
-                    </a>
-                    <p className="text-xs text-gray-500 mt-1 leading-tight">
-                      between 09:30 to 18:30 IST
-                    </p>
-                  </div>
-
+            {/* Support Footer */}
+            <div className="mt-12 pt-8 border-t border-gray-100">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div className="text-center sm:text-left">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Support Email</p>
+                  <a href="mailto:contactus@xtracover.com" className="text-sm font-bold text-gray-900 hover:text-blue-600 transition-colors">
+                    contactus@xtracover.com
+                  </a>
+                </div>
+                <div className="h-10 w-[1px] bg-gray-100 hidden sm:block"></div>
+                <div className="text-center sm:text-right">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Helpline</p>
+                  <a href="tel:+918860396039" className="text-sm font-bold text-gray-900 hover:text-blue-600 transition-colors">
+                    +91-8860396039
+                  </a>
                 </div>
               </div>
             </div>
-
-
           </CardContent>
         </Card>
+        
+        {/* Subtle Footer Text */}
+        <p className="text-center text-gray-400 text-xs mt-8 font-medium">
+          &copy; {new Date().getFullYear()} XtraCover. Secure Warranty & Resale Guaranteed.
+        </p>
       </div>
     </div>
   );

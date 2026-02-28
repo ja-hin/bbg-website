@@ -338,7 +338,6 @@ export default function Register() {
                     <input
                       type="file"
                       accept="image/*,application/pdf"
-                      capture="environment" // Enables camera on mobile
                       id="invoice-upload"
                       className="hidden"
                       onChange={(e) => {

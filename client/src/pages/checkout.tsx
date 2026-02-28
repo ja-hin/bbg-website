@@ -27,12 +27,14 @@ import {
 } from "@/components/ui/form";
 import {
   ArrowLeft,
+  ArrowRight,
   Shield,
   Loader2,
   Lock,
   CheckCircle,
   Tag,
   XCircle,
+  Info,
 } from "lucide-react";
 
 const INDIAN_STATES = [
@@ -519,435 +521,345 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto px-4 py-6">
+    <div className="min-h-screen bg-[#f8f9fa] py-8 md:py-12 flex flex-col justify-center items-center">
+      <div className="max-w-[600px] w-full mx-auto px-4 sm:px-0">
         <div className="mb-4">
           <Button
             variant="ghost"
-            className="text-gray-600 hover:text-gray-800 p-0"
+            className="text-gray-500 hover:text-gray-800 p-0 -ml-2"
             data-testid="button-back"
             onClick={() => setLocation(getPlansUrl())}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Plans
+            Back
           </Button>
         </div>
 
-        {selectedPlan && (
-          <div className="bg-gradient-to-r from-[#254696] to-[#4A90E2] rounded-xl p-4 mb-6 text-white shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Shield className="w-5 h-5" />
-                  <span className="font-semibold text-lg">
-                    {selectedPlan.planName}
-                  </span>
+        <div className="bg-white rounded-[24px] shadow-2xl overflow-hidden border border-gray-100 flex flex-col">
+          {/* Header Section */}
+          <div className="bg-gradient-to-br from-[#1b3476] to-[#254696] px-6 sm:px-8 pt-10 pb-8 text-white relative">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+            
+            <div className="flex items-start justify-between relative z-10 w-full">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center bg-white/10 shrink-0">
+                  <Shield className="w-5 h-5 text-white" />
                 </div>
-                <p className="text-white/70 text-xs mt-1">
-                  Validity: {selectedPlan.validity}
-                </p>
-                <p className="text-white/80 text-sm">{formatCoverage(selectedPlan.coverage)}</p>
-                
+                <div className="font-semibold text-lg md:text-xl leading-tight pr-2">
+                  {selectedPlan?.planName}
+                </div>
               </div>
-              <div className="text-right">
+              <div className="text-right shrink-0">
                 {referralValidation?.valid && referralValidation.discountedPrice ? (
                   <>
-                    <div className="text-lg line-through text-white/60">₹{selectedPlan.price}</div>
-                    <div className="text-3xl font-bold text-green-300">₹{referralValidation.discountedPrice}</div>
-                    <div className="flex items-center gap-1 justify-end text-green-300 text-xs">
-                      <Tag className="w-3 h-3" />
-                      <span>Referral discount applied</span>
-                    </div>
+                    <div className="text-sm line-through text-white/60 mb-1">₹{selectedPlan?.price}</div>
+                    <div className="text-4xl font-bold tracking-tight text-white mb-1">₹{referralValidation.discountedPrice}</div>
+                    <div className="text-[11px] uppercase tracking-widest font-semibold text-white/80">INCL. GST</div>
                   </>
                 ) : (
                   <>
-                    <div className="text-3xl font-bold">₹{selectedPlan.price}</div>
-                    <p className="text-white/70 text-xs">(incl. GST)</p>
+                    <div className="text-4xl font-bold tracking-tight mb-1">₹{selectedPlan?.price}</div>
+                    <div className="text-[11px] uppercase tracking-widest font-semibold text-white/80">INCL. GST</div>
                   </>
                 )}
               </div>
             </div>
           </div>
-        )}
 
-        <div className="bg-white rounded-xl shadow-sm border p-6">
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem className="sm:col-span-2">
-                    <FormLabel className="text-gray-700">
-                      Enter name (As per any Govt. ID){" "}
-                      <span className="text-red-500">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter your name"
-                        {...field}
-                        className="border-blue-200 focus:border-blue-500"
-                        data-testid="input-name"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="hidden">
+          {/* Form Section */}
+          <div className="p-6 sm:p-8 bg-white">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                {/* Full Name */}
                 <FormField
                   control={form.control}
-                  name="contact"
+                  name="name"
                   render={({ field }) => (
-                    <FormItem className="sm:col-span-2">
-                      <FormLabel className="text-gray-700">
-                        Mobile Number <span className="text-red-500">*</span>
+                    <FormItem>
+                      <FormLabel className="text-[11px] font-bold text-gray-400 uppercase tracking-widest flex gap-1">
+                        Full Name <span className="text-red-500">*</span>
                       </FormLabel>
-                      <div className="flex gap-2">
+                      <FormControl>
+                        <Input
+                          placeholder="As per any Govt. ID"
+                          {...field}
+                          className="bg-[#f8f9fa] border-0 h-[52px] rounded-xl px-4 text-sm font-medium focus-visible:ring-1 focus-visible:ring-[#254696] focus-visible:bg-white transition-all shadow-none"
+                          data-testid="input-name"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="hidden">
+                  <FormField
+                    control={form.control}
+                    name="contact"
+                    render={({ field }) => (
+                      <FormItem>
                         <FormControl>
                           <Input
-                            placeholder="Enter your 10 digit mobile number"
                             {...field}
-                            className="border-blue-200 focus:border-blue-500 flex-1"
                             disabled={otpVerified}
                             data-testid="input-contact"
                           />
                         </FormControl>
-                        {!otpVerified && (
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {/* Keep OTP fields in DOM for hook form if ever needed */}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {/* Email */}
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[11px] font-bold text-gray-400 uppercase tracking-widest flex gap-1">
+                          Email Address <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder="Enter your email address"
+                            {...field}
+                            className="bg-[#f8f9fa] border-0 h-[52px] rounded-xl px-4 text-sm font-medium focus-visible:ring-1 focus-visible:ring-[#254696] focus-visible:bg-white transition-all shadow-none"
+                            data-testid="input-email"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Pincode */}
+                  <FormField
+                    control={form.control}
+                    name="pincode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[11px] font-bold text-gray-400 uppercase tracking-widest flex gap-1">
+                          Pincode <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="6-digit pincode"
+                            maxLength={6}
+                            {...field}
+                            className="bg-[#f8f9fa] border-0 h-[52px] rounded-xl px-4 text-sm font-medium focus-visible:ring-1 focus-visible:ring-[#254696] focus-visible:bg-white transition-all shadow-none"
+                            data-testid="input-pincode"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="hidden">
+                  <FormField
+                    control={form.control}
+                    name="state"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger data-testid="select-state">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {INDIAN_STATES.map((stateName) => (
+                              <SelectItem key={stateName} value={stateName}>
+                                {stateName}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="devicePurchaseDate"
+                    render={({ field }) => {
+                      const today = new Date();
+                      const maxDate = today.toISOString().split('T')[0];
+                      const isBbgOrBundle = selectedPlan?.planType === 'bbg' || selectedPlan?.planType === 'bundle';
+                      let minDate: string;
+                      
+                      if (isBbgOrBundle) {
+                        const sixMonthsAgo = new Date();
+                        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                        minDate = sixMonthsAgo.toISOString().split('T')[0];
+                      } else {
+                        const threeYearsAgo = new Date();
+                        threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+                        minDate = threeYearsAgo.toISOString().split('T')[0];
+                      }
+                      
+                      return (
+                        <FormItem>
+                          <FormLabel className="text-[11px] font-bold text-gray-400 uppercase tracking-widest flex gap-1">
+                            Device Purchase Date <span className="text-red-500">*</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="date"
+                              {...field}
+                              min={minDate}
+                              max={maxDate}
+                              className="bg-[#f8f9fa] border-0 h-[52px] rounded-xl px-4 text-sm font-medium focus-visible:ring-1 focus-visible:ring-[#254696] focus-visible:bg-white transition-all shadow-none"
+                              data-testid="input-device-purchase-date"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="referralCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[11px] font-bold text-gray-400 uppercase tracking-widest flex justify-between">
+                          <span>Referral Code (Optional)</span>
+                        </FormLabel>
+                        <div className="relative">
+                          <FormControl>
+                            <Input
+                              placeholder="Enter code"
+                              {...field}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                if (referralValidation) {
+                                  setReferralValidation(null);
+                                }
+                              }}
+                              className={`bg-[#f8f9fa] border-0 h-[52px] rounded-xl pl-4 pr-20 text-sm font-medium focus-visible:ring-1 focus-visible:ring-[#254696] focus-visible:bg-white transition-all shadow-none ${
+                                referralValidation?.valid === true ? 'ring-1 ring-green-500 bg-green-50' : 
+                                referralValidation?.valid === false ? 'ring-1 ring-red-500 bg-red-50' : ''
+                              }`}
+                              data-testid="input-referral-code"
+                            />
+                          </FormControl>
                           <Button
                             type="button"
-                            onClick={handleSendOtp}
-                            disabled={
-                              otpLoading ||
-                              countdown > 0 ||
-                              !/^[6-9]\d{9}$/.test(watchContact)
-                            }
-                            className="bg-blue-600 hover:bg-blue-700 whitespace-nowrap"
-                            data-testid="button-send-otp"
+                            variant="ghost"
+                            onClick={() => validateReferralCode(field.value || '')}
+                            disabled={referralValidating || !field.value || field.value.length < 3}
+                            className="absolute right-1 top-1 bottom-1 h-auto px-4 text-xs font-bold text-[#1b3476] hover:bg-transparent hover:text-blue-800 disabled:opacity-50"
+                            data-testid="button-apply-referral"
                           >
-                            {otpLoading ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : countdown > 0 ? (
-                              `Resend (${countdown}s)`
-                            ) : otpSent ? (
-                              "Resend OTP"
-                            ) : (
-                              "Send OTP"
-                            )}
+                            {referralValidating ? <Loader2 className="w-4 h-4 animate-spin" /> : "APPLY"}
                           </Button>
-                        )}
-                        {otpVerified && (
-                          <div className="flex items-center text-green-600 px-3">
-                            <CheckCircle className="w-5 h-5 mr-1" />
-                            <span className="text-sm font-medium">Verified</span>
+                        </div>
+                        {referralValidation?.valid === true && (
+                          <div className="flex items-center gap-2 text-green-600 text-xs font-medium mt-1">
+                            <CheckCircle className="w-3.5 h-3.5" />
+                            <span>
+                              Code applied! 
+                              {referralValidation.discountValue && (
+                                <span>
+                                  {' '}({referralValidation.discountType === 'percentage' 
+                                    ? `${referralValidation.discountValue}% off` 
+                                    : `₹${referralValidation.discountValue} off`})
+                                </span>
+                              )}
+                            </span>
                           </div>
                         )}
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              {otpSent && !otpVerified && (
-                <div className="space-y-2 sm:col-span-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Enter OTP <span className="text-red-500">*</span>
-                  </label>
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Enter 6-digit OTP"
-                      value={otpCode}
-                      onChange={(e) =>
-                        setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))
-                      }
-                      className="border-blue-200 focus:border-blue-500 flex-1"
-                      data-testid="input-otp"
-                    />
-                    <Button
-                      type="button"
-                      onClick={handleVerifyOtp}
-                      disabled={verifyLoading || otpCode.length < 4}
-                      className="bg-green-600 hover:bg-green-700"
-                      data-testid="button-verify-otp"
-                    >
-                      {verifyLoading ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        "Verify OTP"
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-700">
-                      Email <span className="text-red-500">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Enter your email address"
-                        {...field}
-                        className="border-blue-200 focus:border-blue-500"
-                        data-testid="input-email"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="pincode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-700">
-                      Pincode <span className="text-red-500">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Enter your 6-digit pincode"
-                        maxLength={6}
-                        {...field}
-                        className="border-blue-200 focus:border-blue-500"
-                        data-testid="input-pincode"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="hidden">
-                <FormField
-                  control={form.control}
-                  name="state"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-gray-700">
-                        State <span className="text-red-500">*</span>
-                      </FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger 
-                            className="border-blue-200 focus:border-blue-500"
-                            data-testid="select-state"
-                          >
-                            <SelectValue placeholder="Select your state" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {INDIAN_STATES.map((stateName) => (
-                            <SelectItem key={stateName} value={stateName}>
-                              {stateName}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <FormField
-                control={form.control}
-                name="devicePurchaseDate"
-                render={({ field }) => {
-                  const today = new Date();
-                  const maxDate = today.toISOString().split('T')[0];
-                  
-                  // For BBG and Bundle plans, limit to within 6 months
-                  // For Extend Plus plans, limit to within 3 years
-                  const isBbgOrBundle = selectedPlan?.planType === 'bbg' || selectedPlan?.planType === 'bundle';
-                  let minDate: string;
-                  
-                  if (isBbgOrBundle) {
-                    const sixMonthsAgo = new Date();
-                    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-                    minDate = sixMonthsAgo.toISOString().split('T')[0];
-                  } else {
-                    const threeYearsAgo = new Date();
-                    threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
-                    minDate = threeYearsAgo.toISOString().split('T')[0];
-                  }
-                  
-                  return (
-                    <FormItem>
-                      <FormLabel className="text-gray-700">
-                        Device Purchase Date <span className="text-red-500">*</span>
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="date"
-                          {...field}
-                          min={minDate}
-                          max={maxDate}
-                          className="border-blue-200 focus:border-blue-500"
-                          data-testid="input-device-purchase-date"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-
-
-
-              <FormField
-                control={form.control}
-                name="referralCode"
-                render={({ field }) => (
-                  <FormItem className="sm:col-span-2">
-                    <FormLabel className="text-gray-700">
-                      Referral Code (Optional)
-                    </FormLabel>
-                    <div className="flex gap-2">
-                      <FormControl>
-                        <Input
-                          placeholder="Enter referral code if you have one"
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e);
-                            if (referralValidation) {
-                              setReferralValidation(null);
-                            }
-                          }}
-                          className={`border-blue-200 focus:border-blue-500 ${
-                            referralValidation?.valid === true ? 'border-green-500 bg-green-50' : 
-                            referralValidation?.valid === false ? 'border-red-500 bg-red-50' : ''
-                          }`}
-                          data-testid="input-referral-code"
-                        />
-                      </FormControl>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => validateReferralCode(field.value || '')}
-                        disabled={referralValidating || !field.value || field.value.length < 3}
-                        className="shrink-0"
-                        data-testid="button-apply-referral"
-                      >
-                        {referralValidating ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          "Apply"
+                        {referralValidation?.valid === false && (
+                          <div className="flex items-center gap-2 text-red-600 text-xs font-medium mt-1">
+                            <XCircle className="w-3.5 h-3.5" />
+                            <span>Invalid referral code</span>
+                          </div>
                         )}
-                      </Button>
-                    </div>
-                    {referralValidation?.valid === true && (
-                      <div className="flex items-center gap-2 text-green-600 text-sm mt-1">
-                        <CheckCircle className="w-4 h-4" />
-                        <span>
-                          Code applied! 
-                          {referralValidation.discountValue && (
-                            <span className="font-medium">
-                              {' '}({referralValidation.discountType === 'percentage' 
-                                ? `${referralValidation.discountValue}% off` 
-                                : `₹${referralValidation.discountValue} off`})
-                            </span>
-                          )}
-                        </span>
-                      </div>
+                        <FormMessage />
+                      </FormItem>
                     )}
-                    {referralValidation?.valid === false && (
-                      <div className="flex items-center gap-2 text-red-600 text-sm mt-1">
-                        <XCircle className="w-4 h-4" />
-                        <span>Invalid referral code</span>
-                      </div>
+                  />
+                </div>
+
+                <div className="pt-2">
+                  <FormField
+                    control={form.control}
+                    name="agreeToTerms"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            className="w-5 h-5 rounded-full border-gray-300 data-[state=checked]:bg-[#254696] data-[state=checked]:border-[#254696] data-[state=checked]:text-white"
+                            data-testid="checkbox-terms"
+                          />
+                        </FormControl>
+                        <div className="leading-none text-[13px] text-gray-500 font-medium">
+                          By continuing, you agree to these{" "}
+                          <a href="/terms-and-conditions" target="_blank" className="font-bold text-[#1b3476] hover:underline">Terms & Conditions</a>
+                          {" "}and{" "}
+                          <a href="https://www.xtracover.com/privacy-policy" target="_blank" className="font-bold text-[#1b3476] hover:underline">Privacy Policy</a>
+                        </div>
+                      </FormItem>
                     )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  />
+                </div>
 
-              <FormField
-                control={form.control}
-                name="agreeToTerms"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 pt-2 sm:col-span-2">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        data-testid="checkbox-terms"
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel className="text-sm text-gray-600 font-normal">
-                        By continuing, you verify that you are at least 18 years
-                        old and agree to these{" "}
-                        <Link
-                          to="/terms-and-conditions"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            window.open("/terms-and-conditions", "_blank", "noopener,noreferrer")
-                          }}
-                          className="text-blue-600 hover:underline"
-                        >
-                          Terms & Conditions
-                        </Link>
-{" "}
-                        and{" "}
-                        <a
-                          href="https://www.xtracover.com/privacy-policy"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
-                        >
-                          Privacy Policy
-                        </a>
-                      </FormLabel>
-                      <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
-              />
+                <div className="bg-[#f8f9fa] rounded-xl p-4 flex gap-3 mt-6 items-start border border-gray-50">
+                  <Info className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
+                  <p className="text-[13px] text-gray-500 leading-relaxed font-medium">
+                    <span className="font-bold text-gray-800">Note:</span> Only devices purchased within India are eligible for XtraCover plans.
+                  </p>
+                </div>
 
-              <p className="text-xs text-gray-500 mt-2 sm:col-span-2">
-                Note: Only devices purchased within India are eligible for
-                XtraCover plans.
-              </p>
-            </form>
-          </Form>
-        </div>
+                <div className="pt-4 pb-2">
+                  <Button
+                    type="submit"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      form.handleSubmit(onSubmit)(e);
+                    }}
+                    disabled={paymentMutation.isPending}
+                    className="w-full h-14 bg-[#1b3476] hover:bg-[#132554] text-white text-[15px] font-semibold rounded-[16px] shadow-lg shadow-blue-900/10 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    data-testid="button-continue-payment"
+                  >
+                    {paymentMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        Continue to Secure Payment
+                        <ArrowRight className="w-5 h-5 ml-1" />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
 
-        <div className="mt-6 space-y-3">
-          <Button
-            type="submit"
-            onClick={(e) => {
-              e.preventDefault();
-              console.log("Continue to Payment clicked. Validating...");
-              form.handleSubmit(onSubmit)(e);
-            }}
-            disabled={paymentMutation.isPending}
-            className="w-full bg-[#E72829] hover:bg-red-700 text-white py-6 text-lg font-semibold rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-            data-testid="button-continue-payment"
-          >
-            {paymentMutation.isPending ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                Processing...
-              </>
-            ) : (
-              "Continue To Payment"
-            )}
-          </Button>
-
-          <div className="flex items-center justify-center text-gray-600 text-sm">
-            <Lock className="w-4 h-4 mr-2 text-green-600" />
-            Your data is encrypted. 100% safe and secure.
+          <div className="bg-[#fcfdff] border-t border-gray-100 py-5 flex items-center justify-center gap-3 text-[11px] font-bold text-emerald-600 uppercase tracking-widest px-6 w-full relative z-10">
+            <div className="flex items-center gap-1.5 shrink-0">
+              <Lock className="w-3.5 h-3.5" />
+              256-Bit AES Encryption
+            </div>
+            <div className="w-1 h-1 rounded-full bg-gray-300 shrink-0 mx-1"></div>
+            <div className="shrink-0 text-gray-400">
+              100% Secure Transaction
+            </div>
           </div>
         </div>
       </div>

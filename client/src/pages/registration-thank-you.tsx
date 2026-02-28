@@ -239,12 +239,12 @@ export default function RegistrationThankYou() {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/claim-bbg">
+          {/* <Link href="/claim-bbg">
             <Button size="lg" className="w-full sm:w-auto" data-testid="button-claim-bbg">
               <ArrowRight className="h-5 w-5 mr-2" />
               File a BBG Claim
             </Button>
-          </Link>
+          </Link> */}
           <Link href="/">
             <Button variant="outline" size="lg" className="w-full sm:w-auto" data-testid="button-home">
               <Home className="h-5 w-5 mr-2" />

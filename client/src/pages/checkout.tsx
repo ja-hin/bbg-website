@@ -546,7 +546,7 @@ export default function Checkout() {
                   <Shield className="w-5 h-5 text-white" />
                 </div>
                 <div className="font-semibold text-lg md:text-xl leading-tight pr-2">
-                  {selectedPlan?.planName}
+                  {selectedPlan?.planName?.replace('BBG', 'Buy Back Guarantee')}
                 </div>
               </div>
               <div className="text-right shrink-0">

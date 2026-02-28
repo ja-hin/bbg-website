@@ -35,6 +35,7 @@ import {
   Tag,
   XCircle,
   Info,
+  Calendar,
 } from "lucide-react";
 
 const INDIAN_STATES = [
@@ -521,56 +522,56 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] py-4 md:py-12 flex flex-col justify-start md:justify-center items-center h-full">
-      <div className="max-w-[600px] w-full mx-auto px-0 md:px-4 h-full md:h-auto flex flex-col">
-        <div className="mb-2 md:mb-4 px-4 md:px-0">
-          <Button
-            variant="ghost"
-            className="text-gray-500 hover:text-gray-800 p-0 -ml-2"
-            data-testid="button-back"
-            onClick={() => setLocation(getPlansUrl())}
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-        </div>
-
-        <div className="bg-white md:rounded-[24px] shadow-2xl overflow-hidden md:border border-gray-100 flex flex-col flex-1">
-          {/* Header Section */}
-          <div className="bg-gradient-to-br from-[#1b3476] to-[#254696] px-6 sm:px-8 pt-10 pb-8 text-white relative">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
-            
-            <div className="flex items-start justify-between relative z-10 w-full">
-              <div className="flex items-center gap-2 md:gap-3">
-                <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center bg-white/10 shrink-0">
-                  <Shield className="w-5 h-5 text-white" />
-                </div>
-                <div className="font-semibold text-base md:text-xl leading-tight pr-2">
-                  {selectedPlan?.planName?.replace('BBG', 'Buy Back Guarantee')}
-                </div>
+    <div className="min-h-screen bg-white flex flex-col w-full">
+      {/* Header Section */}
+      <div className="w-full bg-gradient-to-br from-[#1b3476] to-[#254696] pt-6 pb-8 md:pt-10 md:pb-12 px-4 md:px-8 text-white relative flex-shrink-0">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+        <div className="max-w-4xl mx-auto w-full relative z-10 flex flex-col">
+          <div className="mb-6 md:mb-8 -ml-2">
+            <Button
+              variant="ghost"
+              className="text-white/80 hover:text-white hover:bg-white/10 p-2 h-auto"
+              data-testid="button-back"
+              onClick={() => setLocation(getPlansUrl())}
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+          </div>
+          
+          <div className="flex items-start justify-between w-full gap-4">
+            <div className="flex items-center gap-3 md:gap-4">
+              <div className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-white/20 flex items-center justify-center bg-white/10 shrink-0">
+                <Shield className="w-5 h-5 md:w-7 md:h-7 text-white" />
               </div>
-              <div className="text-right shrink-0">
-                {referralValidation?.valid && referralValidation.discountedPrice ? (
-                  <>
-                    <div className="text-sm line-through text-white/60 mb-1">₹{selectedPlan?.price}</div>
-                    <div className="text-4xl font-bold tracking-tight text-white mb-1">₹{referralValidation.discountedPrice}</div>
-                    <div className="text-[11px] uppercase tracking-widest font-semibold text-white/80">INCL. GST</div>
-                  </>
-                ) : (
-                  <>
-                    <div className="text-2xl md:text-4xl font-bold tracking-tight mb-0.5 md:mb-1">₹{selectedPlan?.price}</div>
-                    <div className="text-[9px] md:text-[11px] uppercase tracking-widest font-semibold text-white/80">INCL. GST</div>
-                  </>
-                )}
+              <div className="font-semibold text-xl md:text-3xl leading-tight">
+                {selectedPlan?.planName?.replace('BBG', 'Buy Back Guarantee')}
               </div>
             </div>
+            <div className="text-right shrink-0">
+              {referralValidation?.valid && referralValidation.discountedPrice ? (
+                <>
+                  <div className="text-sm md:text-lg line-through text-white/60 mb-0.5 md:mb-1">₹{selectedPlan?.price}</div>
+                  <div className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-0.5 md:mb-1">₹{referralValidation.discountedPrice}</div>
+                  <div className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/80">INCL. GST</div>
+                </>
+              ) : (
+                <>
+                  <div className="text-3xl md:text-5xl font-bold tracking-tight mb-0.5 md:mb-1">₹{selectedPlan?.price}</div>
+                  <div className="text-[10px] md:text-xs uppercase tracking-widest font-semibold text-white/80">INCL. GST</div>
+                </>
+              )}
+            </div>
           </div>
+        </div>
+      </div>
 
-          {/* Form Section */}
-          <div className="p-5 md:p-8 bg-white flex-1 flex flex-col">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 md:space-y-6 flex-1 flex flex-col">
-                {/* Full Name */}
+      {/* Form Section */}
+      <div className="flex-1 w-full flex flex-col">
+        <div className="max-w-4xl mx-auto w-full px-4 md:px-8 py-6 md:py-10 flex flex-col flex-1">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 md:space-y-8 flex flex-col flex-1 pb-6">
+              {/* Full Name */}
                 <FormField
                   control={form.control}
                   name="name"
@@ -711,16 +712,25 @@ export default function Checkout() {
                           <FormLabel className="text-[11px] font-bold text-gray-400 uppercase tracking-widest flex gap-1">
                             Device Purchase Date <span className="text-red-500">*</span>
                           </FormLabel>
-                          <FormControl>
-                            <Input
-                              type="date"
-                              {...field}
-                              min={minDate}
-                              max={maxDate}
-                              className="bg-[#f8f9fa] border-0 h-[52px] rounded-xl px-4 text-sm font-medium focus-visible:ring-1 focus-visible:ring-[#254696] focus-visible:bg-white transition-all shadow-none"
-                              data-testid="input-device-purchase-date"
-                            />
-                          </FormControl>
+                          <div className="relative">
+                            <FormControl>
+                              <Input
+                                type={field.value ? "date" : "text"}
+                                onFocus={(e) => (e.target.type = "date")}
+                                placeholder="dd/mm/yyyy"
+                                {...field}
+                                onBlur={(e) => {
+                                  field.onBlur();
+                                  if (!e.target.value) e.target.type = "text";
+                                }}
+                                min={minDate}
+                                max={maxDate}
+                                className="bg-[#f8f9fa] border-0 h-[52px] rounded-xl pl-12 pr-4 text-sm font-medium focus-visible:ring-1 focus-visible:ring-[#254696] focus-visible:bg-white transition-all shadow-none w-full xl:[&::-webkit-calendar-picker-indicator]:opacity-0 xl:[&::-webkit-calendar-picker-indicator]:absolute xl:[&::-webkit-calendar-picker-indicator]:w-full xl:[&::-webkit-calendar-picker-indicator]:h-full xl:[&::-webkit-calendar-picker-indicator]:cursor-pointer"
+                                data-testid="input-device-purchase-date"
+                              />
+                            </FormControl>
+                            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                          </div>
                           <FormMessage />
                         </FormItem>
                       );
@@ -852,16 +862,16 @@ export default function Checkout() {
               </form>
             </Form>
           </div>
-
-          <div className="bg-[#fcfdff] border-t border-gray-100 py-4 flex items-center justify-center gap-2 md:gap-3 text-[9px] md:text-[11px] font-bold text-emerald-600 uppercase tracking-widest px-4 md:px-6 w-full relative z-10">
-            <div className="flex items-center gap-1.5 shrink-0">
-              <Lock className="w-3.5 h-3.5" />
-              256-Bit AES Encryption
-            </div>
-            <div className="w-1 h-1 rounded-full bg-gray-300 shrink-0 mx-1"></div>
-            <div className="shrink-0 text-gray-400">
-              100% Secure Transaction
-            </div>
+        
+        {/* Footer */}
+        <div className="bg-[#fcfdff] border-t border-gray-100 py-4 flex items-center justify-center gap-2 md:gap-3 text-[9px] md:text-[11px] font-bold text-emerald-600 uppercase tracking-widest px-4 md:px-6 w-full mt-auto relative z-10">
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Lock className="w-3.5 h-3.5" />
+            256-Bit AES Encryption
+          </div>
+          <div className="w-1 h-1 rounded-full bg-gray-300 shrink-0 mx-1"></div>
+          <div className="shrink-0 text-gray-400">
+            100% Secure Transaction
           </div>
         </div>
       </div>

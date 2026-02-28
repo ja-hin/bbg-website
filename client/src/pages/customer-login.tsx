@@ -136,9 +136,13 @@ export default function CustomerLogin() {
 
           <div className="relative z-10">
             <img src={bbgLogo} alt="BBG Logo" className="h-14 w-auto brightness-0 invert mb-8" />
-            <h2 className="text-3xl font-bold text-white mb-4">Welcome Back!</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">
+              {redirectPath.includes('/checkout') ? 'Secure Your Device' : 'Welcome back!'}
+            </h2>
             <p className="text-blue-100 text-lg">
-              Manage your protected devices, view claims, and update your profile.
+              {redirectPath.includes('/checkout') 
+                ? 'Enter your mobile number to create your account and complete your purchase.'
+                : 'Manage your protected devices.'}
             </p>
           </div>
 
@@ -149,7 +153,9 @@ export default function CustomerLogin() {
         {/* Right Side - Login Form */}
         <div className="w-full md:w-1/2 p-8 md:p-12">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Login</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              {redirectPath.includes('/checkout') ? 'Get Started' : 'Login'}
+            </h1>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
@@ -228,7 +234,7 @@ export default function CustomerLogin() {
                     <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
-                      Login to Dashboard
+                      Continue
                       <ArrowRight className="h-5 w-5" />
                     </>
                   )}

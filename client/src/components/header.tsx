@@ -22,7 +22,10 @@ export default function Header() {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target as Node)) {
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target as Node)
+      ) {
         setIsProfileDropdownOpen(false);
       }
     }
@@ -34,14 +37,26 @@ export default function Header() {
     { href: "/", label: "Home" },
     { href: "#", label: "Buy", onClick: () => setIsBuyModalOpen(true) },
     { href: "/register", label: "Register" },
-    { href: "https://www.xtracover.com/about-us", label: "About Us", external: true },
-    { href: "https://www.xtracover.com/contact-us", label: "Contact Us", external: true },
+    {
+      href: "https://www.xtracover.com/about-us",
+      label: "About Us",
+      external: true,
+    },
+    {
+      href: "https://www.xtracover.com/contact-us",
+      label: "Contact Us",
+      external: true,
+    },
   ];
 
   const profileMenuItems = [
     { href: "/customer/orders", label: "My Orders", requiresAuth: true },
     { href: "/customer/claims", label: "My Claims", requiresAuth: true },
-    { href: "/customer/address", label: "Manage Addresses", requiresAuth: true },
+    {
+      href: "/customer/address",
+      label: "Manage Addresses",
+      requiresAuth: true,
+    },
   ];
 
   const isActiveLink = (href: string) => {
@@ -164,19 +179,15 @@ export default function Header() {
             {/* Logo */}
             <div className="flex items-center space-x-3">
               <Link href="/" className="hover:opacity-80 transition-opacity">
-                <img
-                  src={bbgLogo}
-                  alt="BBG Logo"
-                  className="h-32 w-auto"
-                />
+                <img src={bbgLogo} alt="BBG Logo" className="h-32 w-auto" />
               </Link>
             </div>
 
             {/* Partner Links - Right Aligned in White Section */}
             <div className="hidden lg:flex items-center gap-4 ml-auto mr-8">
-              <Link 
+              <Link
                 href="/referral-partner-registration"
-                className="text-sm text-gray-600 hover:text-[#254696] font-medium transition-colors"
+                className="text-sm text-gray-600 hover:text-primary font-medium transition-colors"
               >
                 Become a Partner
               </Link>
@@ -184,7 +195,7 @@ export default function Header() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-8 px-4 text-sm border-[#254696] text-[#254696] hover:bg-[#254696] hover:text-white"
+                  className="h-8 px-4 text-sm border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                 >
                   Partner Login
                 </Button>
@@ -229,20 +240,20 @@ export default function Header() {
                         onItemClick={() => setIsOpen(false)}
                       />
                       <hr className="my-2 border-gray-100" />
-                      <Link 
+                      <Link
                         href="/referral-partner-registration"
                         className="block px-4 py-2 text-base text-gray-800 hover:bg-gray-100 font-normal rounded-lg"
                         onClick={() => setIsOpen(false)}
                       >
                         Become a Partner
                       </Link>
-                      <Link 
+                      <Link
                         href="/distributor/login"
                         onClick={() => setIsOpen(false)}
                       >
                         <Button
                           variant="outline"
-                          className="w-full justify-start h-10 px-4 text-base border-[#254696] text-[#254696]"
+                          className="w-full justify-start h-10 px-4 text-base border-primary text-primary"
                         >
                           Partner Login
                         </Button>
@@ -251,7 +262,9 @@ export default function Header() {
 
                     {/* Mobile Profile Section */}
                     <div className="border-t border-gray-200 pt-4">
-                      <p className="text-sm font-medium text-gray-500 mb-2">Account</p>
+                      <p className="text-sm font-medium text-gray-500 mb-2">
+                        Account
+                      </p>
                       {isAuthenticated ? (
                         <>
                           {profileMenuItems.map((item) => (
@@ -282,7 +295,7 @@ export default function Header() {
                             setIsOpen(false);
                             navigate("/customer/login");
                           }}
-                          className="block w-full text-left text-base text-[#254696] hover:bg-gray-100 font-medium rounded-lg px-4 py-2"
+                          className="block w-full text-left text-base text-primary hover:bg-gray-100 font-medium rounded-lg px-4 py-2"
                         >
                           Sign In
                         </button>
@@ -328,7 +341,9 @@ export default function Header() {
               {/* Profile Dropdown */}
               <div className="relative" ref={profileDropdownRef}>
                 <button
-                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                  onClick={() =>
+                    setIsProfileDropdownOpen(!isProfileDropdownOpen)
+                  }
                   className="flex items-center gap-1 text-white hover:opacity-80 transition-opacity"
                 >
                   <User className="h-5 w-5" />
@@ -396,7 +411,10 @@ export default function Header() {
         </div>
       </div>
 
-      <BuyModal isOpen={isBuyModalOpen} onClose={() => setIsBuyModalOpen(false)} />
+      <BuyModal
+        isOpen={isBuyModalOpen}
+        onClose={() => setIsBuyModalOpen(false)}
+      />
     </header>
   );
 }

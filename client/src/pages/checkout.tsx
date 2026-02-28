@@ -521,9 +521,9 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] py-8 md:py-12 flex flex-col justify-center items-center">
-      <div className="max-w-[600px] w-full mx-auto px-4 sm:px-0">
-        <div className="mb-4">
+    <div className="min-h-screen bg-[#f8f9fa] py-4 md:py-12 flex flex-col justify-start md:justify-center items-center h-full">
+      <div className="max-w-[600px] w-full mx-auto px-0 md:px-4 h-full md:h-auto flex flex-col">
+        <div className="mb-2 md:mb-4 px-4 md:px-0">
           <Button
             variant="ghost"
             className="text-gray-500 hover:text-gray-800 p-0 -ml-2"
@@ -535,17 +535,17 @@ export default function Checkout() {
           </Button>
         </div>
 
-        <div className="bg-white rounded-[24px] shadow-2xl overflow-hidden border border-gray-100 flex flex-col">
+        <div className="bg-white md:rounded-[24px] shadow-2xl overflow-hidden md:border border-gray-100 flex flex-col flex-1">
           {/* Header Section */}
           <div className="bg-gradient-to-br from-[#1b3476] to-[#254696] px-6 sm:px-8 pt-10 pb-8 text-white relative">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
             
             <div className="flex items-start justify-between relative z-10 w-full">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 md:gap-3">
                 <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center bg-white/10 shrink-0">
                   <Shield className="w-5 h-5 text-white" />
                 </div>
-                <div className="font-semibold text-lg md:text-xl leading-tight pr-2">
+                <div className="font-semibold text-base md:text-xl leading-tight pr-2">
                   {selectedPlan?.planName?.replace('BBG', 'Buy Back Guarantee')}
                 </div>
               </div>
@@ -558,8 +558,8 @@ export default function Checkout() {
                   </>
                 ) : (
                   <>
-                    <div className="text-4xl font-bold tracking-tight mb-1">₹{selectedPlan?.price}</div>
-                    <div className="text-[11px] uppercase tracking-widest font-semibold text-white/80">INCL. GST</div>
+                    <div className="text-2xl md:text-4xl font-bold tracking-tight mb-0.5 md:mb-1">₹{selectedPlan?.price}</div>
+                    <div className="text-[9px] md:text-[11px] uppercase tracking-widest font-semibold text-white/80">INCL. GST</div>
                   </>
                 )}
               </div>
@@ -567,9 +567,9 @@ export default function Checkout() {
           </div>
 
           {/* Form Section */}
-          <div className="p-6 sm:p-8 bg-white">
+          <div className="p-5 md:p-8 bg-white flex-1 flex flex-col">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 md:space-y-6 flex-1 flex flex-col">
                 {/* Full Name */}
                 <FormField
                   control={form.control}
@@ -612,7 +612,7 @@ export default function Checkout() {
                   {/* Keep OTP fields in DOM for hook form if ever needed */}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
                   {/* Email */}
                   <FormField
                     control={form.control}
@@ -686,7 +686,7 @@ export default function Checkout() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
                   <FormField
                     control={form.control}
                     name="devicePurchaseDate"
@@ -816,12 +816,13 @@ export default function Checkout() {
                   />
                 </div>
 
-                <div className="bg-[#f8f9fa] rounded-xl p-4 flex gap-3 mt-6 items-start border border-gray-50">
-                  <Info className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
-                  <p className="text-[13px] text-gray-500 leading-relaxed font-medium">
-                    <span className="font-bold text-gray-800">Note:</span> Only devices purchased within India are eligible for XtraCover plans.
-                  </p>
-                </div>
+                <div className="mt-auto pt-6">
+                  <div className="bg-[#f8f9fa] rounded-xl p-3 md:p-4 flex gap-3 mb-5 items-start border border-gray-50">
+                    <Info className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
+                    <p className="text-[13px] text-gray-500 leading-relaxed font-medium">
+                      <span className="font-bold text-gray-800">Note:</span> Only devices purchased within India are eligible for XtraCover plans.
+                    </p>
+                  </div>
 
                 <div className="pt-4 pb-2">
                   <Button
@@ -847,11 +848,12 @@ export default function Checkout() {
                     )}
                   </Button>
                 </div>
+                </div>
               </form>
             </Form>
           </div>
 
-          <div className="bg-[#fcfdff] border-t border-gray-100 py-5 flex items-center justify-center gap-3 text-[11px] font-bold text-emerald-600 uppercase tracking-widest px-6 w-full relative z-10">
+          <div className="bg-[#fcfdff] border-t border-gray-100 py-4 flex items-center justify-center gap-2 md:gap-3 text-[9px] md:text-[11px] font-bold text-emerald-600 uppercase tracking-widest px-4 md:px-6 w-full relative z-10">
             <div className="flex items-center gap-1.5 shrink-0">
               <Lock className="w-3.5 h-3.5" />
               256-Bit AES Encryption

@@ -750,7 +750,7 @@ export default function Plans() {
                           <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" />
                         </div>
                         <p className="text-xs sm:text-sm opacity-90 mt-2">
-                          Repairs, better resale & extra savings
+                          Auction your device at the best market value
                         </p>
                       </div>
                       <div className="text-right flex flex-col items-end pt-2">
@@ -886,7 +886,7 @@ export default function Plans() {
                           <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" />
                         </div>
                         <p className="text-xs sm:text-sm opacity-90 mt-2">
-                          Repairs, better resale & extra savings
+                          Auction your device at the best market value
                         </p>
                       </div>
                       <div className="text-right flex flex-col items-end pt-2">

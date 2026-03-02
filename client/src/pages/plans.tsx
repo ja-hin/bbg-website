@@ -23,32 +23,73 @@ import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {
     return (
-      <div className="bg-gray-50 rounded-lg p-4">
-        <p style={{ color: "#666666" }} className="text-sm text-center">No claim value slabs available</p>
+      <div className="bg-white rounded-lg p-4">
+        <p style={{ color: "#666666" }} className="text-sm text-center">
+          No claim value slabs available
+        </p>
       </div>
     );
   }
 
-  // Format age range from min_months and max_months
-  const formatAgeRange = (slab: any) => {
+  const formatAgeRange = (slab: any, isFirst: boolean) => {
     const min = slab.minMonths || slab.min_months;
     const max = slab.maxMonths || slab.max_months;
-    
+
     if (!min || !max) {
-      return slab.deviceAge || slab.ageRange || slab.range || 'Unknown';
+      return slab.deviceAge || slab.ageRange || slab.range || "Unknown";
     }
-    
-    return `${min}–${max} months`;
+
+    const ordinalSuffix = (n: number) => {
+      const s = ["th", "st", "nd", "rd"];
+      const v = n % 100;
+      return s[(v - 20) % 10] || s[v] || s[0];
+    };
+
+    const minNum = parseInt(min);
+    const maxNum = parseInt(max);
+
+    if (isNaN(minNum) || isNaN(maxNum)) {
+      return `${min} to ${max} Month`;
+    }
+
+    const minSuffix = ordinalSuffix(minNum);
+    const maxSuffix = ordinalSuffix(maxNum);
+
+    return (
+      <span className={`text-[15px] sm:text-base ${isFirst ? 'font-bold text-[#254696]' : 'text-[#1F2937]'}`}>
+        {minNum}<sup>{minSuffix}</sup> <span className={`font-normal ${isFirst ? 'text-[#254696]' : 'text-gray-600'}`}>to</span> {maxNum}<sup>{maxSuffix}</sup> Month
+      </span>
+    );
   };
 
   return (
-    <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-      {slabs.map((slab, idx) => (
-        <div key={idx} className="flex justify-between items-center text-sm">
-          <span style={{ color: "#666666" }}>{formatAgeRange(slab)}</span>
-          <span style={{ color: "#254696", fontWeight: "600" }}>Get back {slab.resalePercentage || slab.percentage}%</span>
-        </div>
-      ))}
+    <div className="w-full flex flex-col pt-2">
+      <div className="flex justify-between items-center px-4 mb-2">
+        <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wide">DEVICE AGE</span>
+        <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wide">YOU GET BACK</span>
+      </div>
+      <div className="flex flex-col relative w-full">
+        {slabs.map((slab, idx) => (
+          <div key={idx} className="relative w-full">
+            {idx > 0 && <div className="absolute top-0 left-4 right-4 h-[1px] bg-gray-200" />}
+            
+            <div
+              className={`flex justify-between items-center px-4 py-3.5 ${
+                idx === 0 ? "bg-[#f0f6fb] rounded-xl shadow-sm" : ""
+              }`}
+            >
+              <div>{formatAgeRange(slab, idx === 0)}</div>
+              <div
+                className={`text-[15px] sm:text-base ${
+                  idx === 0 ? "font-bold text-[#254696]" : "font-medium text-[#1a1a1a]"
+                }`}
+              >
+                Get back {slab.resalePercentage || slab.percentage}%
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -296,7 +337,7 @@ export default function Plans() {
             <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch max-w-full [grid-template-columns:repeat(auto-fit,minmax(340px,550px))]">
             {showLaptopBBG && (
               <div
-                className="w-full flex flex-col flip-card min-h-[350px]"
+                className="w-full flex flex-col flip-card min-h-[400px]"
                 data-testid="card-laptop-bbg"
               >
                 <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopBBGFlipped ? 'flipped' : ''}`}>
@@ -444,17 +485,17 @@ export default function Plans() {
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                     >
                       <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                        Claim Value Slabs
+                        Guaranteed Resale Value
                       </h3>
                       <p className="text-xs sm:text-sm mb-3 opacity-95">
-                        Device age based claims
+                        Lock resale value of your device
                       </p>
                     </div>
 
                       <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-2">
                         <ClaimValueSlabs slabs={laptopBBGPlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
-                        Resale value is calculated as a percentage of your original device purchase price
+                        Resale value is calculated as a percentage of your original device purchase price.
                       </p>
                     </div>
 
@@ -491,7 +532,7 @@ export default function Plans() {
 
             {showMobileBBG && (
               <div
-                className="w-full flex flex-col flip-card min-h-[350px]"
+                className="w-full flex flex-col flip-card min-h-[400px]"
                 data-testid="card-mobile-bbg"
               >
                 <div className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileBBGFlipped ? 'flipped' : ''}`}>
@@ -639,17 +680,17 @@ export default function Plans() {
                       style={{ background: "linear-gradient(135deg, #254696, #1F4B88)" }}
                     >
                       <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                        Claim Value Slabs
+                        Guaranteed Resale Value
                       </h3>
                       <p className="text-xs sm:text-sm mb-3 opacity-95">
-                        Device age based claims
+                        Lock resale value of your device
                       </p>
                     </div>
 
                       <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-2">
                         <ClaimValueSlabs slabs={mobileBBGPlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
-                        Resale value is calculated as a percentage of your original device purchase price
+                        Resale value is calculated as a percentage of your original device purchase price.
                       </p>
                     </div>
 
@@ -686,7 +727,7 @@ export default function Plans() {
 
             {showLaptopExtend && (
               <div
-                className="w-full flex flex-col min-h-96"
+                className="w-full flex flex-col min-h-[400px]"
                 data-testid="card-laptop-extend"
               >
                 <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
@@ -820,7 +861,7 @@ export default function Plans() {
 
             {showMobileExtend && (
               <div
-                className="w-full flex flex-col min-h-[350px]"
+                className="w-full flex flex-col min-h-[400px]"
                 data-testid="card-mobile-extend"
               >
                 <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">

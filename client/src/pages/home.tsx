@@ -690,7 +690,7 @@ export default function Home() {
                         </button>
                         <button
                           onClick={scrollToForm}
-                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
+                          className="w-full text-white font-semibold py-3 sm:py-10 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
                           style={{
                             background:
                               "linear-gradient(90deg, #254696, #1F4B88)",
@@ -746,7 +746,7 @@ export default function Home() {
                         </button>
                         <button
                           onClick={scrollToForm}
-                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
+                          className="w-full text-white font-semibold py-3 sm:py-10 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
                           style={{
                             background:
                               "linear-gradient(90deg, #254696, #1F4B88)",
@@ -888,7 +888,7 @@ export default function Home() {
                     <div className="p-4 sm:p-5 pt-2 sm:pt-3 pb-1 sm:pb-2">
                       <button
                         onClick={scrollToForm}
-                        className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
+                        className="w-full text-white font-semibold py-3 sm:py-10 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
                         style={{
                           background:
                             "linear-gradient(90deg, #254696, #1F4B88)",
@@ -1056,7 +1056,7 @@ export default function Home() {
                         </button>
                         <button
                           onClick={scrollToForm}
-                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
+                          className="w-full text-white font-semibold py-3 sm:py-10 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
                           style={{
                             background:
                               "linear-gradient(90deg, #254696, #1F4B88)",
@@ -1112,7 +1112,7 @@ export default function Home() {
                         </button>
                         <button
                           onClick={scrollToForm}
-                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
+                          className="w-full text-white font-semibold py-3 sm:py-10 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
                           style={{
                             background:
                               "linear-gradient(90deg, #254696, #1F4B88)",
@@ -1254,7 +1254,7 @@ export default function Home() {
                     <div className="p-4 sm:p-5 pt-3 sm:pt-4 pb-1 sm:pb-2">
                       <button
                         onClick={scrollToForm}
-                        className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
+                        className="w-full text-white font-semibold py-3 sm:py-10 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
                         style={{
                           background:
                             "linear-gradient(90deg, #254696, #1F4B88)",

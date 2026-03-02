@@ -408,8 +408,8 @@ export default function Plans() {
                               1-Year Extended Repair Service Warranty*
                             </p>
                             <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
-                              <p>• Protection for your existing device that begins after your brand warranty ends.</p>
-                              <p>• Zero service costs on repairs.</p>
+                              <p>• Protection for your existing device that begins after your brand warranty ends</p>
+                              <p>• Zero service costs on repairs</p>
                             </div>
                           </div>
                         </div>
@@ -423,7 +423,7 @@ export default function Plans() {
                               Best Product Upgrade Offers
                             </p>
                             <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                              Exclusive deals for your next device purchase.
+                              Exclusive deals for your next device purchase
                             </p>
                           </div>
                         </div>
@@ -437,7 +437,7 @@ export default function Plans() {
                               20% Off on 1-Year Extended Warranty
                             </p>
                             <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                              Save 20% on protection of your next device purchase.
+                              Save 20% on protection of your next device purchase
                             </p>
                           </div>
                         </div>
@@ -495,7 +495,7 @@ export default function Plans() {
                       <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-2">
                         <ClaimValueSlabs slabs={laptopBBGPlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
-                        Resale value is calculated as a percentage of your original device purchase price.
+                        Resale value is calculated as a percentage of your original device purchase price
                       </p>
                     </div>
 
@@ -603,8 +603,8 @@ export default function Plans() {
                               1-Year Extended Repair Service Warranty*
                             </p>
                             <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
-                              <p>• Protection for your existing device that begins after your brand warranty ends.</p>
-                              <p>• Zero service costs on repairs.</p>
+                              <p>• Protection for your existing device that begins after your brand warranty ends</p>
+                              <p>• Zero service costs on repairs</p>
                             </div>
                           </div>
                         </div>
@@ -618,7 +618,7 @@ export default function Plans() {
                               Best Product Upgrade Offers
                             </p>
                             <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                              Exclusive deals for your next device purchase.
+                              Exclusive deals for your next device purchase
                             </p>
                           </div>
                         </div>
@@ -632,7 +632,7 @@ export default function Plans() {
                               20% Off on 1-Year Extended Warranty
                             </p>
                             <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                              Save 20% on protection of your next device purchase.
+                              Save 20% on protection of your next device purchase
                             </p>
                           </div>
                         </div>
@@ -690,7 +690,7 @@ export default function Plans() {
                       <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-2">
                         <ClaimValueSlabs slabs={mobileBBGPlan?.claimValueSlabs || []} />
                       <p className="text-xs sm:text-sm text-center" style={{ color: "#666666" }}>
-                        Resale value is calculated as a percentage of your original device purchase price.
+                        Resale value is calculated as a percentage of your original device purchase price
                       </p>
                     </div>
 
@@ -746,7 +746,7 @@ export default function Plans() {
                           <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" />
                         </div>
                         <p className="text-xs sm:text-sm opacity-90 mt-2">
-                          Repairs, better resale & extra savings.
+                          Repairs, better resale & extra savings
                         </p>
                       </div>
                       <div className="text-right flex flex-col items-end pt-2">
@@ -781,8 +781,8 @@ export default function Plans() {
                             Doorstep Device Auction
                           </p>
                           <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
-                            <p>• Auction your device at the best market value.</p>
-                            <p>• 100+ buyers compete to give you the best possible price in India.</p>
+                            <p>• Auction your device at the best market value</p>
+                            <p>• 100+ buyers compete to give you the best possible price in India</p>
                           </div>
                         </div>
                       </div>
@@ -796,8 +796,8 @@ export default function Plans() {
                             1-Year Extended Repair Service Warranty*
                           </p>
                           <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
-                            <p>• Protection for your existing device that begins after your brand warranty ends.</p>
-                            <p>• Zero service costs on repairs.</p>
+                            <p>• Protection for your existing device that begins after your brand warranty ends</p>
+                            <p>• Zero service costs on repairs</p>
                           </div>
                         </div>
                       </div>
@@ -811,7 +811,7 @@ export default function Plans() {
                             Best Product Upgrade Offers
                           </p>
                           <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Exclusive deals for your next device purchase.
+                            Exclusive deals for your next device purchase
                           </p>
                         </div>
                       </div>
@@ -825,7 +825,7 @@ export default function Plans() {
                             20% Off on 1-Year Extended Warranty
                           </p>
                           <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Save 20% on protection of your next device purchase.
+                            Save 20% on protection of your next device purchase
                           </p>
                         </div>
                       </div>
@@ -880,7 +880,7 @@ export default function Plans() {
                           <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" />
                         </div>
                         <p className="text-xs sm:text-sm opacity-90 mt-2">
-                          Repairs, better resale & extra savings.
+                          Repairs, better resale & extra savings
                         </p>
                       </div>
                       <div className="text-right flex flex-col items-end pt-2">
@@ -915,8 +915,8 @@ export default function Plans() {
                             Doorstep Device Auction
                           </p>
                           <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
-                            <p>• Auction your device at the best market value.</p>
-                            <p>• 100+ buyers compete to give you the best possible price in India.</p>
+                            <p>• Auction your device at the best market value</p>
+                            <p>• 100+ buyers compete to give you the best possible price in India</p>
                           </div>
                         </div>
                       </div>
@@ -930,8 +930,8 @@ export default function Plans() {
                             1-Year Extended Repair Service Warranty*
                           </p>
                           <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
-                            <p>• Protection for your existing device that begins after your brand warranty ends.</p>
-                            <p>• Zero service costs on repairs.</p>
+                            <p>• Protection for your existing device that begins after your brand warranty ends</p>
+                            <p>• Zero service costs on repairs</p>
                           </div>
                         </div>
                       </div>
@@ -945,7 +945,7 @@ export default function Plans() {
                             Best Product Upgrade Offers
                           </p>
                           <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Exclusive deals for your next device purchase.
+                            Exclusive deals for your next device purchase
                           </p>
                         </div>
                       </div>
@@ -959,7 +959,7 @@ export default function Plans() {
                             20% Off on 1-Year Extended Warranty
                           </p>
                           <p className="text-xs sm:text-sm" style={{ color: "#6B7280" }}>
-                            Save 20% on protection of your next device purchase.
+                            Save 20% on protection of your next device purchase
                           </p>
                         </div>
                       </div>

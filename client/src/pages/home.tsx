@@ -67,7 +67,7 @@ import topBannerMobile from "@assets/holimobile.webp";
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {
     return (
-      <div className="bg-gray-50 rounded-lg p-4">
+      <div className="bg-white rounded-lg p-4">
         <p style={{ color: "#666666" }} className="text-sm text-center">
           No claim value slabs available
         </p>
@@ -75,7 +75,7 @@ const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
     );
   }
 
-  const formatAgeRange = (slab: any) => {
+  const formatAgeRange = (slab: any, isFirst: boolean) => {
     const min = slab.minMonths || slab.min_months;
     const max = slab.maxMonths || slab.max_months;
 
@@ -83,19 +83,57 @@ const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
       return slab.deviceAge || slab.ageRange || slab.range || "Unknown";
     }
 
-    return `${min}–${max} months`;
+    const ordinalSuffix = (n: number) => {
+      const s = ["th", "st", "nd", "rd"];
+      const v = n % 100;
+      return s[(v - 20) % 10] || s[v] || s[0];
+    };
+
+    const minNum = parseInt(min);
+    const maxNum = parseInt(max);
+
+    if (isNaN(minNum) || isNaN(maxNum)) {
+      return `${min} to ${max} Month`;
+    }
+
+    const minSuffix = ordinalSuffix(minNum);
+    const maxSuffix = ordinalSuffix(maxNum);
+
+    return (
+      <span className={`text-[15px] sm:text-base ${isFirst ? 'font-bold text-[#254696]' : 'text-[#1F2937]'}`}>
+        {minNum}<sup>{minSuffix}</sup> <span className={`font-normal ${isFirst ? 'text-[#254696]' : 'text-gray-600'}`}>to</span> {maxNum}<sup>{maxSuffix}</sup> Month
+      </span>
+    );
   };
 
   return (
-    <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-      {slabs.map((slab, idx) => (
-        <div key={idx} className="flex justify-between items-center text-sm">
-          <span style={{ color: "#666666" }}>{formatAgeRange(slab)}</span>
-          <span style={{ color: "#254696", fontWeight: "600" }}>
-            Get back {slab.resalePercentage || slab.percentage}%
-          </span>
-        </div>
-      ))}
+    <div className="w-full flex flex-col pt-2">
+      <div className="flex justify-between items-center px-4 mb-2">
+        <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wide">DEVICE AGE</span>
+        <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wide">YOU GET BACK</span>
+      </div>
+      <div className="flex flex-col relative w-full">
+        {slabs.map((slab, idx) => (
+          <div key={idx} className="relative w-full">
+            {idx > 0 && <div className="absolute top-0 left-4 right-4 h-[1px] bg-gray-200" />}
+            
+            <div
+              className={`flex justify-between items-center px-4 py-3.5 ${
+                idx === 0 ? "bg-[#f0f6fb] rounded-xl shadow-sm" : ""
+              }`}
+            >
+              <div>{formatAgeRange(slab, idx === 0)}</div>
+              <div
+                className={`text-[15px] sm:text-base ${
+                  idx === 0 ? "font-bold text-[#254696]" : "font-medium text-[#1a1a1a]"
+                }`}
+              >
+                Get back {slab.resalePercentage || slab.percentage}%
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -711,10 +749,10 @@ export default function Home() {
                         }}
                       >
                         <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                          Claim Value Slabs
+                          Guaranteed Resale Value
                         </h3>
                         <p className="text-xs sm:text-sm mb-3 opacity-95">
-                          Device age based claims
+                          Lock resale value of your device
                         </p>
                       </div>
                       <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-4">
@@ -732,7 +770,7 @@ export default function Home() {
                           style={{ color: "#666666" }}
                         >
                           Resale value is calculated as a percentage of your
-                          original device purchase price
+                          original device purchase price.
                         </p>
                       </div>
                       <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
@@ -1077,10 +1115,10 @@ export default function Home() {
                         }}
                       >
                         <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                          Claim Value Slabs
+                          Guaranteed Resale Value
                         </h3>
                         <p className="text-xs sm:text-sm mb-3 opacity-95">
-                          Device age based claims
+                          Lock resale value of your device
                         </p>
                       </div>
                       <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-2">
@@ -1098,7 +1136,7 @@ export default function Home() {
                           style={{ color: "#666666" }}
                         >
                           Resale value is calculated as a percentage of your
-                          original device purchase price
+                          original device purchase price.
                         </p>
                       </div>
                       <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">

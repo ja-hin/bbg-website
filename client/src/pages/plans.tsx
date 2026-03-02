@@ -445,10 +445,6 @@ export default function Plans() {
                         </div>
                       </div>
 
-                      {/* Validity */}
-                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
-                        Validity {(laptopBBGPlan?.coverage || '36').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
-                      </div>
                     </div>
 
                     {/* Know More Button and Buy Now Button */}
@@ -641,11 +637,6 @@ export default function Plans() {
                           </div>
                         </div>
                       </div>
-
-                      {/* Validity */}
-                      <div className="text-center text-xs sm:text-sm" style={{ color: "#666666" }}>
-                        Validity {(mobileBBGPlan?.coverage || '36').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
-                      </div>
                     </div>
 
                     {/* Know More Button and Buy Now Button */}
@@ -837,10 +828,6 @@ export default function Plans() {
                       </div>
                     </div>
 
-                    {/* Validity */}
-                    <div className="mt-auto text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
-                      Validity: {(laptopExtendPlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
-                    </div>
                   </div>
 
                   {/* Buy Now Button */}
@@ -973,10 +960,6 @@ export default function Plans() {
                       </div>
                     </div>
 
-                    {/* Validity */}
-                    <div className="mt-auto text-center text-xs sm:text-sm pt-2" style={{ color: "#666666" }}>
-                      Validity: {(mobileExtendPlan?.coverage || '24').toString().replace(/_months/g, '').replace(/months/g, '').trim()} months
-                    </div>
                   </div>
 
                   {/* Buy Now Button */}

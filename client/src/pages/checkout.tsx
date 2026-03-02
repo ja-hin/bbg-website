@@ -830,7 +830,7 @@ export default function Checkout() {
                   <div className="bg-[#f8f9fa] rounded-xl p-3 md:p-4 flex gap-3 mb-5 items-start border border-gray-50">
                     <Info className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
                     <p className="text-[13px] text-gray-500 leading-relaxed font-medium">
-                      <span className="font-bold text-gray-800">Note:</span> Only devices purchased within India are eligible for XtraCover plans. The plan shall be subject to a cooling off period of 3 months from the date of plan activation.
+                      <span className="font-bold text-gray-800">Note:</span> Only devices purchased within India are eligible for XtraCover plans. The plan shall be subject to a cooling off period of 3 months from the date of plan purchase.
                     </p>
                   </div>
 

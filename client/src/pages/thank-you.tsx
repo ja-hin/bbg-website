@@ -6,7 +6,7 @@ import jsPDF from 'jspdf';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award, Gavel, Wrench, Star, ArrowRight, Copy } from "lucide-react";
-import refPartnerLogo from "@assets/refpartnerlogo.png";
+import refPartnerLogo from "@assets/refpartnerlogo.webp";
 
 // Device Type Claim Values Component
 function BrandClaimValues({ sessionData }: { sessionData: any }) {

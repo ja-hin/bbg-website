@@ -712,12 +712,6 @@ export default function Home() {
                             </div>
                           </div>
                         </div>
-                        <div
-                          className="text-center text-xs sm:text-sm"
-                          style={{ color: "#666666" }}
-                        >
-                          Validity 36 months
-                        </div>
                       </div>
                       <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
                         <button
@@ -920,12 +914,6 @@ export default function Home() {
                           </div>
                         </div>
                       </div>
-                      <div
-                        className="border-t pt-2 text-xs sm:text-sm text-center"
-                        style={{ color: "#666666" }}
-                      >
-                        Validity 24 months
-                      </div>
                     </div>
                     <div className="p-4 sm:p-5 pt-2 sm:pt-3 pb-1 sm:pb-2">
                       <button
@@ -1081,12 +1069,6 @@ export default function Home() {
                               </p>
                             </div>
                           </div>
-                        </div>
-                        <div
-                          className="text-center text-xs sm:text-sm"
-                          style={{ color: "#666666" }}
-                        >
-                          Validity 18 months
                         </div>
                       </div>
                       <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
@@ -1289,12 +1271,6 @@ export default function Home() {
                             </p>
                           </div>
                         </div>
-                      </div>
-                      <div
-                        className="border-t pt-2 text-xs sm:text-sm text-center"
-                        style={{ color: "#666666" }}
-                      >
-                        Validity 24 months
                       </div>
                     </div>
                     <div className="p-4 sm:p-5 pt-3 sm:pt-4 pb-1 sm:pb-2">

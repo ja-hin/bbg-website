@@ -367,15 +367,17 @@ export default function Plans() {
                           <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
                             HOLI OFFER
                           </div>
-                          <span className="text-xl sm:text-2xl text-white/60 line-through decoration-white/40 mb-[-4px]">
-                            ₹1299
-                          </span>
-                          <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
-                            {pricesLoading ? (
-                              <Loader2 className="h-6 w-6 animate-spin" />
-                            ) : (
-                              `₹${laptopBBGPlan?.planPrice || "--"}`
-                            )}
+                          <div className="flex items-center gap-2">
+                            <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
+                              ₹1299
+                            </span>
+                            <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
+                              {pricesLoading ? (
+                                <Loader2 className="h-6 w-6 animate-spin" />
+                              ) : (
+                                `₹${laptopBBGPlan?.planPrice || "--"}`
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -562,15 +564,17 @@ export default function Plans() {
                           <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
                             HOLI OFFER
                           </div>
-                          <span className="text-xl sm:text-2xl text-white/60 line-through decoration-white/40 mb-[-4px]">
-                            ₹999
-                          </span>
-                          <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
-                            {pricesLoading ? (
-                              <Loader2 className="h-6 w-6 animate-spin" />
-                            ) : (
-                              `₹${mobileBBGPlan?.planPrice || "--"}`
-                            )}
+                          <div className="flex items-center gap-2">
+                            <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
+                              ₹999
+                            </span>
+                            <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
+                              {pricesLoading ? (
+                                <Loader2 className="h-6 w-6 animate-spin" />
+                              ) : (
+                                `₹${mobileBBGPlan?.planPrice || "--"}`
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -753,15 +757,17 @@ export default function Plans() {
                         <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
                           HOLI OFFER
                         </div>
-                        <span className="text-xl sm:text-2xl text-white/60 line-through decoration-white/40 mb-[-4px]">
-                          ₹1299
-                        </span>
-                        <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
-                          {pricesLoading ? (
-                            <Loader2 className="h-6 w-6 animate-spin" />
-                          ) : (
-                            `₹${laptopExtendPlan?.planPrice || "--"}`
-                          )}
+                        <div className="flex items-center gap-2">
+                          <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
+                            ₹1299
+                          </span>
+                          <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
+                            {pricesLoading ? (
+                              <Loader2 className="h-6 w-6 animate-spin" />
+                            ) : (
+                              `₹${laptopExtendPlan?.planPrice || "--"}`
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -887,15 +893,17 @@ export default function Plans() {
                         <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
                           HOLI OFFER
                         </div>
-                        <span className="text-xl sm:text-2xl text-white/60 line-through decoration-white/40 mb-[-4px]">
-                          ₹999
-                        </span>
-                        <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
-                          {pricesLoading ? (
-                            <Loader2 className="h-6 w-6 animate-spin" />
-                          ) : (
-                            `₹${mobileExtendPlan?.planPrice || "--"}`
-                          )}
+                        <div className="flex items-center gap-2">
+                          <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
+                            ₹999
+                          </span>
+                          <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
+                            {pricesLoading ? (
+                              <Loader2 className="h-6 w-6 animate-spin" />
+                            ) : (
+                              `₹${mobileExtendPlan?.planPrice || "--"}`
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>

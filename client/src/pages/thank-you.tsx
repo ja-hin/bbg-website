@@ -9,6 +9,136 @@ import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, Refr
 import refPartnerLogo from "@assets/refpartnerlogo.webp";
 import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.webp";
 
+// Customer Card Preview Component
+function CustomerCardPreview({ sessionData, params, isBbg, voucherCode }: { sessionData: any, params: any, isBbg: boolean, voucherCode: string }) {
+  const brand = sessionData?.brand || params?.get('brand') || 'Brand';
+  const model = sessionData?.deviceModel || sessionData?.modelName || params?.get('model') || params?.get('modelName') || 'Model';
+  const customerName = sessionData?.customerName || params?.get('customerName') || 'Customer';
+  const devicePurchaseDate = sessionData?.devicePurchaseDate || params?.get('devicePurchaseDate') || 'DD/MM/YYYY';
+  const planPurchaseDate = new Date().toLocaleDateString('en-IN');
+
+  return (
+    <div className="w-full max-w-sm mx-auto bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-2xl font-sans text-black my-8 relative">
+      {/* Blue Header */}
+      <div className="bg-[#1b3476] p-6 flex justify-center items-center">
+        <img src={bbgLogo} alt="XtraCover BBG" className="h-10 object-contain" />
+      </div>
+
+      {/* Name Section */}
+      <div className="p-4 text-center">
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900">{customerName}</h2>
+      </div>
+
+      <div className="px-5 pb-6">
+        {/* Divider */}
+        <div className="h-px bg-gray-100 w-full mb-4"></div>
+
+        {/* Info Grid */}
+        <div className="grid grid-cols-2 gap-y-4 text-[11px] sm:text-xs text-gray-400 mb-6">
+          <div className="space-y-0.5">
+            <p className="font-bold uppercase tracking-wider text-[10px]">Device</p>
+            <p className="text-gray-900 font-bold text-[13px] leading-tight">{brand} {model}</p>
+          </div>
+          <div className="space-y-0.5">
+            <p className="font-bold uppercase tracking-wider text-[10px]">Voucher Code</p>
+            <p className="text-gray-900 font-bold text-[13px]">{voucherCode || 'XYZ'}</p>
+          </div>
+          <div className="space-y-0.5">
+            <p className="font-bold uppercase tracking-wider text-[10px]">Plan</p>
+            <p className="text-gray-900 font-bold text-[13px]">{isBbg ? 'BuyBack Guarantee' : 'Extend+'}</p>
+          </div>
+          <div className="space-y-0.5">
+            <p className="font-bold uppercase tracking-wider text-[10px]">Plan Purchase Date</p>
+            <p className="text-gray-900 font-bold text-[13px]">{planPurchaseDate}</p>
+          </div>
+          <div className="col-span-2 space-y-0.5">
+            <p className="font-bold uppercase tracking-wider text-[10px]">Device Purchase Date</p>
+            <p className="text-gray-900 font-bold text-[13px]">{devicePurchaseDate}</p>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="h-px bg-gray-100 w-full mb-6"></div>
+
+        {isBbg ? (
+          <>
+            <h3 className="text-sm font-black text-gray-900 mb-4 uppercase tracking-wide">Resale Value Chart</h3>
+            <div className="bg-gray-50 rounded-2xl overflow-hidden mb-6 border border-gray-100">
+              <div className="flex justify-between bg-gray-100 px-4 py-2 text-[10px] font-black text-gray-500 uppercase tracking-widest">
+                <span>Device Age</span>
+                <span>Resale Value</span>
+              </div>
+              <div className="divide-y divide-gray-100">
+                {(sessionData?.registrationSlabData?.slabs || [
+                  { minMonths: 4, maxMonths: 6, percentage: 70 },
+                  { minMonths: 7, maxMonths: 12, percentage: 50 },
+                  { minMonths: 13, maxMonths: 18, percentage: 45 },
+                  { minMonths: 19, maxMonths: 24, percentage: 40 },
+                  { minMonths: 25, maxMonths: 30, percentage: 30 },
+                  { minMonths: 31, maxMonths: 36, percentage: 25 }
+                ]).slice(0, 6).map((slab: any, i: number) => (
+                  <div key={i} className={`flex justify-between px-4 py-2.5 text-[13px] ${i % 2 === 0 ? '' : 'bg-white/50'}`}>
+                    <span className="text-gray-600 font-medium">{slab.minMonths}th-{slab.maxMonths}th month</span>
+                    <span className={`font-black ${slab.percentage >= 70 ? 'text-[#1b3476]' : 'text-gray-900'}`}>{slab.percentage}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3 text-center">
+               <div className="flex flex-col items-center space-y-2">
+                 <div className="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-200">
+                   <Award className="w-5 h-5" />
+                 </div>
+                 <p className="text-[10px] font-bold text-gray-800 leading-tight">1-Year Repair Service Warranty*</p>
+               </div>
+               <div className="flex flex-col items-center space-y-2">
+                 <div className="bg-emerald-500 p-2 rounded-xl text-white shadow-lg shadow-emerald-200">
+                   <RefreshCw className="w-5 h-5" />
+                 </div>
+                 <p className="text-[10px] font-bold text-gray-800 leading-tight">Best Product Upgrade Offers</p>
+               </div>
+               <div className="flex flex-col items-center space-y-2">
+                 <div className="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-200">
+                   <Star className="w-5 h-5" />
+                 </div>
+                 <p className="text-[10px] font-bold text-gray-800 leading-tight">20% Off Extra Warranty</p>
+               </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <h3 className="text-sm font-black text-gray-900 mb-4 text-center uppercase tracking-widest">Premium Benefits</h3>
+            <div className="space-y-4 mb-4 px-2">
+              {[
+                { title: 'Doorstep Device Auction', desc: 'Auction your device at best market value.', icon: <Gavel className="w-4 h-4" />, color: 'text-blue-600', bg: 'bg-blue-50' },
+                { title: '1-Year Repair Service Warranty*', desc: 'Zero service costs on repairs.', icon: <Wrench className="w-4 h-4" />, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                { title: 'Best Product Upgrade Offers', desc: 'Exclusive deals for your next device.', icon: <Award className="w-4 h-4" />, color: 'text-orange-500', bg: 'bg-orange-50' },
+                { title: '20% Off Extra Warranty', desc: 'Save on your next device protection.', icon: <Star className="w-4 h-4" />, color: 'text-indigo-600', bg: 'bg-indigo-50' }
+              ].map((b, i) => (
+                <div key={i} className="flex items-start gap-3 p-2 rounded-xl border border-transparent hover:border-gray-100 transition-all">
+                  <div className={`${b.bg} ${b.color} p-2 rounded-lg`}>
+                    {b.icon}
+                  </div>
+                  <div className="space-y-0.5">
+                    <p className="text-[12px] font-black text-gray-900 leading-none">{b.title}</p>
+                    <p className="text-[10px] text-gray-400 font-medium">{b.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        <div className="mt-8 flex justify-between items-center opacity-40">
+           <img src={bbgLogo} alt="XtraCover" className="h-4 grayscale" />
+           <p className="text-[9px] font-bold italic tracking-tight">*Terms and Conditions apply</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Device Type Claim Values Component
 function BrandClaimValues({ sessionData }: { sessionData: any }) {
   if (!sessionData?.registrationSlabData?.slabs || sessionData.registrationSlabData.slabs.length === 0) {
@@ -314,6 +444,15 @@ export default function ThankYou() {
   const txnid = sessionData?.txnid || params?.get('txnid');
   const error = sessionData?.error || params?.get('error');
   const errorMessage = sessionData?.errorMessage || params?.get('errorMessage');
+  
+  const planType = sessionData?.planType || params?.get('planType');
+  const planName = sessionData?.planName || params?.get('planName') || '';
+  
+  const isBbg = planType === 'bbg' || 
+                planType === 'bundle' || 
+                planName.toLowerCase().includes('bbg') || 
+                planName.toLowerCase().includes('buy back') ||
+                !!sessionData?.registrationSlabData;
 
   const handleDownloadInvoice = () => {
     // Check if server-generated invoice is available
@@ -853,15 +992,6 @@ export default function ThankYou() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const planType = sessionData?.planType || params?.get('planType');
-    const planName = sessionData?.planName || params?.get('planName') || '';
-    
-    const isBbg = planType === 'bbg' || 
-                  planType === 'bundle' || 
-                  planName.toLowerCase().includes('bbg') || 
-                  planName.toLowerCase().includes('buy back') ||
-                  !!sessionData?.registrationSlabData;
-
     const drawCustomerCard = (logoImg?: HTMLImageElement) => {
       // Background
       ctx.fillStyle = '#ffffff';
@@ -920,7 +1050,7 @@ export default function ThankYou() {
       ctx.fillText(isBbg ? 'BuyBack Guarantee' : 'Extend+', leftCol + 80, row2);
       ctx.fillText(devicePurchaseDate, leftCol + 320, row3);
 
-      ctx.fillText(content.code || 'XYZ', rightCol + 210, row1);
+      ctx.fillText(voucherCode || 'XYZ', rightCol + 210, row1);
       ctx.fillText(new Date().toLocaleDateString('en-IN'), rightCol + 270, row2);
 
       // Bottom border for details
@@ -932,7 +1062,7 @@ export default function ThankYou() {
 
       if (isBbg) {
         // Resale Value Chart
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = '#1b3476';
         ctx.font = 'bold 35px sans-serif';
         ctx.fillText('Resale Value Chart', 70, 590);
 
@@ -940,10 +1070,10 @@ export default function ThankYou() {
         ctx.fillStyle = '#f3f4f6';
         ctx.fillRect(70, tableTop, 860, 50); // Header bg
 
-        ctx.font = 'bold 28px sans-serif';
-        ctx.fillStyle = '#374151';
-        ctx.fillText('Device Age', 250, tableTop + 35);
-        ctx.fillText('Resale Value', 650, tableTop + 35);
+        ctx.font = 'bold 24px sans-serif';
+        ctx.fillStyle = '#6b7280';
+        ctx.fillText('DEVICE AGE', 250, tableTop + 35);
+        ctx.fillText('RESALE VALUE', 650, tableTop + 35);
 
         const slabs = sessionData?.registrationSlabData?.slabs || [
           { minMonths: 4, maxMonths: 6, percentage: 70 },
@@ -965,82 +1095,72 @@ export default function ThankYou() {
           ctx.textAlign = 'center';
           ctx.fillText(`${slab.minMonths}th-${slab.maxMonths}th month`, 330, y);
           ctx.font = 'bold 28px sans-serif';
-          ctx.fillStyle = slab.percentage >= 70 ? '#1e40af' : '#374151';
+          ctx.fillStyle = slab.percentage >= 70 ? '#1b3476' : '#374151';
           ctx.fillText(`${slab.percentage}%`, 730, y);
         });
 
         // Benefits Icons
         const benefitsY = 980;
         
-        // Icon 1: Shield (Blue)
-        ctx.fillStyle = '#3b82f6';
-        ctx.beginPath();
-        ctx.arc(250, benefitsY - 50, 40, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 40px sans-serif';
-        ctx.fillText('✓', 235, benefitsY - 35);
+        const drawIcon = (x: number, y: number, char: string, color: string) => {
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.roundRect(x - 40, y - 90, 80, 80, 15);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 45px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(char, x, y - 35);
+        };
 
-        // Icon 2: Upgrade (Green)
-        ctx.fillStyle = '#22c55e';
-        ctx.beginPath();
-        ctx.arc(500, benefitsY - 50, 40, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.fillText('↑', 485, benefitsY - 35);
-
-        // Icon 3: Tag (Purple)
-        ctx.fillStyle = '#a855f7';
-        ctx.beginPath();
-        ctx.arc(750, benefitsY - 50, 40, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.fillText('%', 733, benefitsY - 35);
+        drawIcon(250, benefitsY, '★', '#3b82f6');
+        drawIcon(500, benefitsY, '↻', '#10b981');
+        drawIcon(750, benefitsY, '✓', '#6366f1');
 
         ctx.textAlign = 'center';
         ctx.font = 'bold 22px sans-serif';
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = '#111827';
         ctx.fillText('1-Year Extended Repair', 250, benefitsY + 20);
         ctx.fillText('Best Product', 500, benefitsY + 20);
         ctx.fillText('20% Off on 1-Year', 750, benefitsY + 20);
-        ctx.font = '20px sans-serif';
-        ctx.fillStyle = '#4b5563';
+        ctx.font = '18px sans-serif';
+        ctx.fillStyle = '#6b7280';
         ctx.fillText('Service Warranty*', 250, benefitsY + 50);
         ctx.fillText('Upgrade Offers', 500, benefitsY + 50);
         ctx.fillText('Extended Warranty', 750, benefitsY + 50);
       } else {
         // Extend+ Benefits
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = '#111827';
         ctx.textAlign = 'center';
-        ctx.font = 'bold 35px sans-serif';
-        ctx.fillText('Benefits:', 500, 590);
+        ctx.font = 'bold 40px sans-serif';
+        ctx.fillText('PREMIUM BENEFITS', 500, 590);
 
         const benefits = [
           { title: 'Doorstep Device Auction', desc: 'Auction your device at the best market value.' },
-          { title: '1-Year Extended Repair Service Warranty*', desc: 'Protection for your existing device that begins after your brand warranty ends.' },
+          { title: '1-Year Extended Repair Service Warranty*', desc: 'Zero service costs on repairs.' },
           { title: 'Best Product Upgrade Offers', desc: 'Exclusive deals for your next device purchase.' },
-          { title: '20% Off on 1-Year Extended Warranty', desc: 'Save 20% on protection of your next device purchase.' }
+          { title: '20% Off on 1-Year Extended Warranty', desc: 'Save on protection of your next device purchase.' }
         ];
 
         benefits.forEach((b, idx) => {
-          const y = 660 + (idx * 100);
+          const y = 670 + (idx * 100);
           ctx.textAlign = 'left';
-          ctx.font = 'bold 28px sans-serif';
-          ctx.fillStyle = '#000000';
-          ctx.fillText(b.title, 150, y);
+          ctx.font = 'bold 30px sans-serif';
+          ctx.fillStyle = '#111827';
+          ctx.fillText('✓ ' + b.title, 150, y);
           ctx.font = '22px sans-serif';
-          ctx.fillStyle = '#4b5563';
-          ctx.fillText(b.desc, 150, y + 35);
+          ctx.fillStyle = '#6b7280';
+          ctx.fillText(b.desc, 190, y + 35);
         });
       }
 
       ctx.textAlign = 'right';
-      ctx.font = '18px sans-serif';
-      ctx.fillStyle = '#6b7280';
+      ctx.font = 'italic 18px sans-serif';
+      ctx.fillStyle = '#9ca3af';
       ctx.fillText('*Terms and Conditions apply', 950, 1080);
 
       const link = document.createElement('a');
-      link.download = `XtraCover_Protection_Card_${content.code}.png`;
+      link.download = `XtraCover_Card_${voucherCode}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
     };
@@ -1216,11 +1336,20 @@ export default function ThankYou() {
           </div>
         )}
 
-        {!content.isFailure && sessionData?.registrationSlabData && (
+        {!content.isFailure && type === 'customer' && (
+          <CustomerCardPreview 
+            sessionData={sessionData} 
+            params={params} 
+            isBbg={isBbg} 
+            voucherCode={voucherCode || ''} 
+          />
+        )}
+
+        {!content.isFailure && isBbg && sessionData?.registrationSlabData && (
           <BrandClaimValues sessionData={sessionData} />
         )}
 
-        {!content.isFailure && sessionData?.planType === 'auction_repair' && (
+        {!content.isFailure && !isBbg && sessionData?.planType === 'auction_repair' && (
           <AuctionRepairBenefits sessionData={sessionData} />
         )}
 

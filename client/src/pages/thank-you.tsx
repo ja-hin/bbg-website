@@ -9,12 +9,28 @@ import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, Refr
 import refPartnerLogo from "@assets/refpartnerlogo.webp";
 import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.webp";
 
+// Helper to format a date string (ISO or YYYY-MM-DD) to DD/MM/YYYY
+function formatDateDDMMYYYY(dateStr: string | null | undefined): string {
+  if (!dateStr) return 'DD/MM/YYYY';
+  try {
+    // Handle ISO strings and YYYY-MM-DD
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr; // return as-is if unparseable
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const year = d.getUTCFullYear();
+    return `${day}/${month}/${year}`;
+  } catch {
+    return dateStr;
+  }
+}
+
 // Customer Card Preview Component
 function CustomerCardPreview({ sessionData, params, isBbg, voucherCode }: { sessionData: any, params: any, isBbg: boolean, voucherCode: string }) {
   const brand = sessionData?.brand || params?.get('brand') || 'Brand';
   const model = sessionData?.deviceModel || sessionData?.modelName || params?.get('model') || params?.get('modelName') || 'Model';
   const customerName = sessionData?.customerName || params?.get('customerName') || 'Customer';
-  const devicePurchaseDate = sessionData?.devicePurchaseDate || params?.get('devicePurchaseDate') || 'DD/MM/YYYY';
+  const devicePurchaseDate = formatDateDDMMYYYY(sessionData?.devicePurchaseDate || params?.get('devicePurchaseDate'));
   const planPurchaseDate = new Date().toLocaleDateString('en-IN');
 
   return (
@@ -1046,7 +1062,7 @@ export default function ThankYou() {
 
       const brand = sessionData?.brand || params?.get('brand') || '';
       const model = sessionData?.deviceModel || sessionData?.modelName || params?.get('model') || params?.get('modelName') || '';
-      const devicePurchaseDate = sessionData?.devicePurchaseDate || params?.get('devicePurchaseDate') || 'DD/MM/YYYY';
+      const devicePurchaseDate = formatDateDDMMYYYY(sessionData?.devicePurchaseDate || params?.get('devicePurchaseDate'));
 
       // Values
       ctx.fillStyle = '#000000';

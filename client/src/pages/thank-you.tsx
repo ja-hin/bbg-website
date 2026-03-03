@@ -393,6 +393,48 @@ export default function ThankYou() {
     retry: false
   });
 
+  // When sessionData has a voucherCode but is missing devicePurchaseDate, fetch fresh from DB
+  // This is the fallback for when the PayU session is set on a different server context
+  const voucherCodeForLookup = sessionData?.voucherCode;
+  const needsFreshLookup = !!voucherCodeForLookup && !sessionData?.devicePurchaseDate;
+
+  const { data: freshCustomerData } = useQuery({
+    queryKey: ['/api/customer/by-voucher', voucherCodeForLookup],
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/customer/by-voucher/${encodeURIComponent(voucherCodeForLookup)}`);
+        if (response.ok) {
+          return response.json();
+        }
+        return null;
+      } catch {
+        return null;
+      }
+    },
+    enabled: needsFreshLookup,
+    retry: false
+  });
+
+  // Merge fresh customer data into sessionData when it arrives
+  useEffect(() => {
+    if (freshCustomerData && needsFreshLookup) {
+      setSessionData((prev: any) => ({
+        ...prev,
+        ...freshCustomerData,
+        // keep the original session status/type/txnid
+        type: prev?.type || freshCustomerData.type,
+        status: prev?.status || freshCustomerData.status,
+        txnid: prev?.txnid,
+        paymentMethod: prev?.paymentMethod,
+        invoiceNumber: prev?.invoiceNumber,
+        invoiceUrl: prev?.invoiceUrl,
+        amount: prev?.amount,
+      }));
+    }
+  }, [freshCustomerData]);
+
+
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.split('?')[1] || '');
     setParams(searchParams);

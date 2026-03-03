@@ -3232,6 +3232,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get customer data by voucher code (for thank-you page fallback - bypasses session)
+  app.get("/api/customer/by-voucher/:code", async (req, res) => {
+    try {
+      const { code } = req.params;
+      if (!code) {
+        return res.status(400).json({ message: "Voucher code required" });
+      }
+
+      const customer = await storage.getCustomerByVoucherCode(code);
+      if (!customer) {
+        return res.status(404).json({ message: "Customer not found" });
+      }
+
+      // Return all fields needed by the thank-you page
+      res.json({
+        type: "customer",
+        status: "success",
+        voucherCode: customer.voucherCode,
+        customerName: customer.name,
+        email: customer.email,
+        contact: customer.contact,
+        pincode: customer.pincode,
+        deviceType: customer.deviceType,
+        brand: customer.brand,
+        modelName: customer.modelName,
+        devicePurchaseDate: customer.dateOfPurchase,
+        benefitType: customer.benefitType,
+        planType: customer.benefitType,
+        registrationSlabData: customer.registrationSlabData,
+        benefitsJson: (customer as any).benefitsJson || null,
+        planPrice: (customer as any).planPrice || null,
+      });
+    } catch (error: any) {
+      console.error("Customer by-voucher lookup error:", error);
+      res.status(500).json({ message: "Error retrieving customer data" });
+    }
+  });
+
+
+
   // Validate referral code endpoint
   app.get("/api/validate-referral-code/:code", async (req, res) => {
     try {

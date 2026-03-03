@@ -1306,7 +1306,7 @@ export default function ThankYou() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center px-4 py-12 font-sans">
-      <div className="max-w-6xl w-full flex flex-col lg:flex-row items-start gap-12">
+      <div className="max-w-6xl w-full flex flex-col-reverse lg:flex-row items-start gap-12">
         {/* Left Column: Customer Card & Main Action */}
         <div className="lg:w-1/2 w-full space-y-8 lg:sticky lg:top-12">
           {!content.isFailure && type === 'customer' && (

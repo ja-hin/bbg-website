@@ -376,11 +376,9 @@ export default function ThankYou() {
     queryFn: async () => {
       try {
         const response = await fetch('/api/thank-you-data');
-        if (response.ok) {
-          return response.json();
-        }
+        if (response.ok) return response.json();
         return null;
-      } catch (error) {
+      } catch {
         return null;
       }
     },
@@ -393,115 +391,117 @@ export default function ThankYou() {
     retry: false
   });
 
-  // When sessionData has a voucherCode but is missing devicePurchaseDate, fetch fresh from DB
-  // This is the fallback for when the PayU session is set on a different server context
-  const voucherCodeForLookup = sessionData?.voucherCode;
-  const needsFreshLookup = !!voucherCodeForLookup && !sessionData?.devicePurchaseDate;
-
-  const { data: freshCustomerData } = useQuery({
-    queryKey: ['/api/customer/by-voucher', voucherCodeForLookup],
-    queryFn: async () => {
-      try {
-        const response = await fetch(`/api/customer/by-voucher/${encodeURIComponent(voucherCodeForLookup)}`);
-        if (response.ok) {
-          return response.json();
-        }
-        return null;
-      } catch {
-        return null;
-      }
-    },
-    enabled: needsFreshLookup,
-    retry: false
-  });
-
-  // Merge fresh customer data into sessionData when it arrives
+  // Fix: wouter's useLocation only returns pathname, not search. Use window.location.search.
   useEffect(() => {
-    if (freshCustomerData && needsFreshLookup) {
-      setSessionData((prev: any) => ({
-        ...prev,
-        ...freshCustomerData,
-        // keep the original session status/type/txnid
-        type: prev?.type || freshCustomerData.type,
-        status: prev?.status || freshCustomerData.status,
-        txnid: prev?.txnid,
-        paymentMethod: prev?.paymentMethod,
-        invoiceNumber: prev?.invoiceNumber,
-        invoiceUrl: prev?.invoiceUrl,
-        amount: prev?.amount,
-      }));
-    }
-  }, [freshCustomerData]);
-
-
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.split('?')[1] || '');
-    setParams(searchParams);
+    setParams(new URLSearchParams(window.location.search));
   }, [location]);
 
-
   // Version bump forces all stale localStorage data to be discarded
-  const CACHE_VERSION = 'v2'; // bump whenever thankYouData shape changes
+  const CACHE_VERSION = 'v3'; // bumped - URL-params approach
 
   useEffect(() => {
     if (thankYouData) {
       setSessionData(thankYouData);
-      // Persist with a version tag so stale old caches are auto-discarded
       localStorage.setItem('thankYouData', JSON.stringify({ ...thankYouData, _v: CACHE_VERSION }));
       localStorage.setItem('thankYouDataTimestamp', Date.now().toString());
     } else {
-      // Check localStorage first (persists across refreshes)
+      // Check localStorage
       const storedData = localStorage.getItem('thankYouData');
       const storedTimestamp = localStorage.getItem('thankYouDataTimestamp');
-
       if (storedData && storedTimestamp) {
         const timestamp = parseInt(storedTimestamp);
         const now = Date.now();
-        const twentyFourHours = 24 * 60 * 60 * 1000;
-
-        if (now - timestamp < twentyFourHours) {
+        if (now - timestamp < 24 * 60 * 60 * 1000) {
           try {
             const parsedData = JSON.parse(storedData);
-            // Discard stale data from before the version tag was added
             if (parsedData._v !== CACHE_VERSION) {
-              console.log('Discarding stale thankYouData cache (version mismatch)');
               localStorage.removeItem('thankYouData');
               localStorage.removeItem('thankYouDataTimestamp');
             } else {
-              // Drop internal version field before using
               const { _v, ...cleanData } = parsedData;
               setSessionData(cleanData);
             }
-          } catch (error) {
-            console.error('Error parsing localStorage data:', error);
+          } catch {
             localStorage.removeItem('thankYouData');
             localStorage.removeItem('thankYouDataTimestamp');
           }
         } else {
-          // Data is expired, clear it
           localStorage.removeItem('thankYouData');
           localStorage.removeItem('thankYouDataTimestamp');
-        }
-      } else {
-        // Fallback to sessionStorage (for backward compatibility)
-        const sessionStoredData = sessionStorage.getItem('thankYouData');
-        if (sessionStoredData) {
-          try {
-            const parsedData = JSON.parse(sessionStoredData);
-            setSessionData(parsedData);
-            // Move to localStorage for persistence with version tag
-            localStorage.setItem('thankYouData', JSON.stringify({ ...parsedData, _v: CACHE_VERSION }));
-            localStorage.setItem('thankYouDataTimestamp', Date.now().toString());
-            sessionStorage.removeItem('thankYouData');
-          } catch (error) {
-            console.error('Error parsing session storage data:', error);
-          }
         }
       }
     }
   }, [thankYouData]);
 
+  // When URL has a voucherCode (fresh PayU redirect), seed sessionData from URL params first
+  // then fetch fresh customer data from DB (gives us devicePurchaseDate + slabs)
+  useEffect(() => {
+    const urlVoucher = new URLSearchParams(window.location.search).get('voucherCode');
+    if (urlVoucher) {
+      // Seed from URL params immediately so the page isn't blank
+      const urlParams = new URLSearchParams(window.location.search);
+      setSessionData((prev: any) => ({
+        type: urlParams.get('type') || prev?.type || 'customer',
+        status: urlParams.get('status') || prev?.status || 'success',
+        voucherCode: urlParams.get('voucherCode') || prev?.voucherCode,
+        customerName: urlParams.get('customerName') || prev?.customerName,
+        deviceType: urlParams.get('deviceType') || prev?.deviceType,
+        brand: urlParams.get('brand') || prev?.brand,
+        modelName: urlParams.get('modelName') || prev?.modelName,
+        planType: urlParams.get('planType') || urlParams.get('benefitType') || prev?.planType,
+        benefitType: urlParams.get('benefitType') || urlParams.get('planType') || prev?.benefitType,
+        devicePurchaseDate: urlParams.get('devicePurchaseDate') || prev?.devicePurchaseDate,
+        txnid: urlParams.get('txnid') || prev?.txnid,
+        amount: urlParams.get('amount') || prev?.amount,
+        paymentMethod: urlParams.get('paymentMethod') || prev?.paymentMethod,
+        // keep invoice / slabs from previous state if already loaded
+        invoiceNumber: prev?.invoiceNumber,
+        invoiceUrl: prev?.invoiceUrl,
+        registrationSlabData: prev?.registrationSlabData,
+      }));
+    }
+  }, []); // run once on mount
+
+
+
+
+  // Always fetch fresh customer data from DB when we have a voucherCode
+  // This gives us registrationSlabData (slabs) and devicePurchaseDate from the actual DB
+  const urlVoucherCode = typeof window !== 'undefined'
+    ? new URLSearchParams(window.location.search).get('voucherCode')
+    : null;
+  const knownVoucherCode = sessionData?.voucherCode || urlVoucherCode;
+
+  const { data: freshCustomerData } = useQuery({
+    queryKey: ['/api/customer/by-voucher', knownVoucherCode],
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/customer/by-voucher/${encodeURIComponent(knownVoucherCode!)}`);
+        if (response.ok) return response.json();
+        return null;
+      } catch {
+        return null;
+      }
+    },
+    enabled: !!knownVoucherCode,
+    retry: false
+  });
+
+  // Merge fresh DB data into sessionData (fills in slabs + devicePurchaseDate)
+  useEffect(() => {
+    if (freshCustomerData) {
+      setSessionData((prev: any) => ({
+        ...prev,
+        // Only fill in missing fields from fresh data
+        devicePurchaseDate: prev?.devicePurchaseDate || freshCustomerData.devicePurchaseDate,
+        registrationSlabData: prev?.registrationSlabData || freshCustomerData.registrationSlabData,
+        planType: prev?.planType || freshCustomerData.planType,
+        benefitType: prev?.benefitType || freshCustomerData.benefitType,
+        benefitsJson: prev?.benefitsJson || freshCustomerData.benefitsJson,
+        planPrice: prev?.planPrice || freshCustomerData.planPrice,
+      }));
+    }
+  }, [freshCustomerData]);
 
   // Use session data if available, otherwise fall back to URL parameters
   const type = sessionData?.type || params?.get('type');
@@ -513,6 +513,7 @@ export default function ThankYou() {
   const error = sessionData?.error || params?.get('error');
   const errorMessage = sessionData?.errorMessage || params?.get('errorMessage');
   
+
   const planType = sessionData?.planType || sessionData?.benefitType || params?.get('planType');
   const planName = sessionData?.planName || JSON.parse(sessionData?.benefitsJson || '{}')?.planName || params?.get('planName') || '';
   

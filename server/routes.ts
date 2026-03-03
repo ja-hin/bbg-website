@@ -1436,7 +1436,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error("❌ Invoice generation error:", invoiceError);
         }
 
-        // Store success data in session for thank you page
+        // Store success data in session for thank you page (best-effort - may not work due to cross-origin PayU POST)
         req.session.thankYouData = {
           type: "customer",
           status: "success",
@@ -1451,21 +1451,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
           modelName: customer.modelName,
           devicePurchaseDate: customer.dateOfPurchase,
           registrationSlabData: customer.registrationSlabData,
-          // New dual-flow BBG fields
           benefitType: customer.benefitType,
-          planType: customer.benefitType, // Added for frontend compatibility
+          planType: customer.benefitType,
           planName: planDetails?.planName || customer.modelName || "BBG Plan",
           benefitsJson: customer.benefitsJson,
           planPrice: customer.planPrice,
           txnid: txnid,
-          amount: amount, // Store actual charged amount (includes any referral discounts)
-          // Invoice data
+          amount: amount,
           invoiceNumber: invoiceData?.invoiceNumber,
           invoiceUrl: invoiceData?.invoiceUrl,
         };
 
-        // Redirect to success page without query parameters
-        res.redirect("/thank-you");
+        // Build query params with key data for reliable delivery to the thank-you page
+        // (session may not work since PayU POSTs from their servers)
+        const thankYouParams = new URLSearchParams({
+          type: "customer",
+          status: "success",
+          voucherCode: customer.voucherCode || "",
+          customerName: customer.name || "",
+          deviceType: customer.deviceType || "",
+          brand: customer.brand || "",
+          modelName: customer.modelName || "",
+          planType: customer.benefitType || "",
+          benefitType: customer.benefitType || "",
+          devicePurchaseDate: customer.dateOfPurchase || "",
+          txnid: txnid || "",
+          amount: amount || "",
+          paymentMethod: "payu",
+        });
+
+        // Redirect to thank-you page with data in URL
+        res.redirect(`/thank-you?${thankYouParams.toString()}`);
+
       } else {
         req.session.thankYouData = {
           type: "customer",

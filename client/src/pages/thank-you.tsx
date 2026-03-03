@@ -5,8 +5,9 @@ import jsPDF from 'jspdf';
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award, Gavel, Wrench, Star, ArrowRight, Copy } from "lucide-react";
+import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award, Gavel, Wrench, Star, ArrowRight, Copy, Calendar } from "lucide-react";
 import refPartnerLogo from "@assets/refpartnerlogo.webp";
+import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.webp";
 
 // Device Type Claim Values Component
 function BrandClaimValues({ sessionData }: { sessionData: any }) {
@@ -845,6 +846,174 @@ export default function ThankYou() {
     img.src = refPartnerLogo;
   };
 
+  const handleSaveCustomerCard = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1000;
+    canvas.height = 1100; // Increased height for benefits/chart
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const isBbg = sessionData?.planType === 'bbg' || (sessionData?.planName && sessionData.planName.toLowerCase().includes('bbg')) || (sessionData?.planName && sessionData.planName.toLowerCase().includes('buy back'));
+
+    const drawCustomerCard = (logoImg?: HTMLImageElement) => {
+      // Background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 1000, 1100);
+
+      // Header blue bar
+      ctx.fillStyle = '#1b3476';
+      ctx.fillRect(0, 0, 1000, 200);
+
+      if (logoImg) {
+        const logoH = 80;
+        const logoW = (logoImg.naturalWidth / logoImg.naturalHeight) * logoH;
+        ctx.drawImage(logoImg, (1000 - logoW) / 2, 60, logoW, logoH);
+      }
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#000000';
+      ctx.font = 'bold 60px sans-serif';
+      ctx.fillText(sessionData?.customerName || 'Customer', 500, 300);
+
+      // Divider line
+      ctx.strokeStyle = '#e5e7eb';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(50, 330);
+      ctx.lineTo(950, 330);
+      ctx.stroke();
+
+      // Details Grid
+      ctx.textAlign = 'left';
+      ctx.font = '30px sans-serif';
+      ctx.fillStyle = '#6b7280'; // gray-500
+
+      const leftCol = 70;
+      const rightCol = 520;
+      const row1 = 380;
+      const row2 = 440;
+      const row3 = 500;
+
+      // Labels
+      ctx.fillText('Device:', leftCol, row1);
+      ctx.fillText('Plan:', leftCol, row2);
+      ctx.fillText('Device Purchase Date:', leftCol, row3);
+
+      ctx.fillText('Voucher Code:', rightCol, row1);
+      ctx.fillText('Plan Purchase Date:', rightCol, row2);
+
+      // Values
+      ctx.fillStyle = '#000000';
+      ctx.font = 'bold 30px sans-serif';
+      ctx.fillText(sessionData?.brand + ' ' + sessionData?.modelName, leftCol + 110, row1);
+      ctx.fillText(isBbg ? 'BuyBack Guarantee' : 'Extend+', leftCol + 80, row2);
+      ctx.fillText(sessionData?.devicePurchaseDate || 'DD/MM/YYYY', leftCol + 320, row3);
+
+      ctx.fillText(content.code || 'XYZ', rightCol + 210, row1);
+      ctx.fillText(new Date().toLocaleDateString('en-IN'), rightCol + 270, row2);
+
+      // Bottom border for details
+      ctx.strokeStyle = '#e5e7eb';
+      ctx.beginPath();
+      ctx.moveTo(50, 530);
+      ctx.lineTo(950, 530);
+      ctx.stroke();
+
+      if (isBbg) {
+        // Resale Value Chart
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 35px sans-serif';
+        ctx.fillText('Resale Value Chart', 70, 590);
+
+        const tableTop = 620;
+        ctx.fillStyle = '#f3f4f6';
+        ctx.fillRect(70, tableTop, 860, 50); // Header bg
+
+        ctx.font = 'bold 28px sans-serif';
+        ctx.fillStyle = '#374151';
+        ctx.fillText('Device Age', 250, tableTop + 35);
+        ctx.fillText('Resale Value', 650, tableTop + 35);
+
+        const slabs = sessionData?.registrationSlabData?.slabs || [
+          { minMonths: 4, maxMonths: 6, percentage: 70 },
+          { minMonths: 7, maxMonths: 12, percentage: 50 },
+          { minMonths: 13, maxMonths: 18, percentage: 45 },
+          { minMonths: 19, maxMonths: 24, percentage: 40 },
+          { minMonths: 25, maxMonths: 30, percentage: 30 },
+          { minMonths: 31, maxMonths: 36, percentage: 25 },
+        ];
+
+        slabs.slice(0, 6).forEach((slab: any, idx: number) => {
+          const y = tableTop + 100 + (idx * 60);
+          if (idx % 2 !== 0) {
+            ctx.fillStyle = '#f9fafb';
+            ctx.fillRect(70, y - 40, 860, 60);
+          }
+          ctx.font = '28px sans-serif';
+          ctx.fillStyle = '#374151';
+          ctx.textAlign = 'center';
+          ctx.fillText(`${slab.minMonths}th-${slab.maxMonths}th month`, 330, y);
+          ctx.font = 'bold 28px sans-serif';
+          ctx.fillStyle = slab.percentage >= 70 ? '#1e40af' : '#374151';
+          ctx.fillText(`${slab.percentage}%`, 730, y);
+        });
+
+        // Benefits Icons (Placeholder for now, simplified)
+        const benefitsY = 1000;
+        ctx.textAlign = 'center';
+        ctx.font = 'bold 24px sans-serif';
+        ctx.fillStyle = '#374151';
+        ctx.fillText('1-Year Extended Repair', 250, benefitsY);
+        ctx.fillText('Best Product', 500, benefitsY);
+        ctx.fillText('20% Off on 1-Year', 750, benefitsY);
+        ctx.font = '20px sans-serif';
+        ctx.fillText('Service Warranty*', 250, benefitsY + 30);
+        ctx.fillText('Upgrade Offers', 500, benefitsY + 30);
+        ctx.fillText('Extended Warranty', 750, benefitsY + 30);
+      } else {
+        // Extend+ Benefits
+        ctx.fillStyle = '#000000';
+        ctx.textAlign = 'center';
+        ctx.font = 'bold 35px sans-serif';
+        ctx.fillText('Benefits:', 500, 590);
+
+        const benefits = [
+          { title: 'Doorstep Device Auction', desc: 'Auction your device at the best market value.' },
+          { title: '1-Year Extended Repair Service Warranty*', desc: 'Protection for your existing device that begins after your brand warranty ends.' },
+          { title: 'Best Product Upgrade Offers', desc: 'Exclusive deals for your next device purchase.' },
+          { title: '20% Off on 1-Year Extended Warranty', desc: 'Save 20% on protection of your next device purchase.' }
+        ];
+
+        benefits.forEach((b, idx) => {
+          const y = 660 + (idx * 100);
+          ctx.textAlign = 'left';
+          ctx.font = 'bold 28px sans-serif';
+          ctx.fillStyle = '#000000';
+          ctx.fillText(b.title, 150, y);
+          ctx.font = '22px sans-serif';
+          ctx.fillStyle = '#4b5563';
+          ctx.fillText(b.desc, 150, y + 35);
+        });
+      }
+
+      ctx.textAlign = 'right';
+      ctx.font = '18px sans-serif';
+      ctx.fillStyle = '#6b7280';
+      ctx.fillText('*Terms and Conditions apply', 950, 1080);
+
+      const link = document.createElement('a');
+      link.download = `XtraCover_Protection_Card_${content.code}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    };
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => drawCustomerCard(img);
+    img.onerror = () => drawCustomerCard();
+    img.src = bbgLogo;
+  };
+
   const isDistributor = type === 'distributor';
 
   if (isDistributor) {
@@ -1056,15 +1225,27 @@ export default function ThankYou() {
             </div>
           ) : (
             <>
-              {status === 'success' && content.code && (
-                <Button 
-                  className="w-full bg-primary hover:opacity-90 h-16 rounded-2xl font-black text-lg shadow-xl shadow-blue-900/20 group"
-                  onClick={() => window.location.href = `/register?voucher=${content.code}`}
-                >
-                  Complete My Registration
-                  <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              )}
+              <div className="flex flex-col gap-3">
+                {status === 'success' && content.code && (
+                  <Button 
+                    className="w-full bg-primary hover:opacity-90 h-16 rounded-2xl font-black text-lg shadow-xl shadow-blue-900/20 group"
+                    onClick={() => window.location.href = `/register?voucher=${content.code}`}
+                  >
+                    Complete My Registration
+                    <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                )}
+                
+                {status === 'success' && (
+                  <Button 
+                    onClick={handleSaveCustomerCard}
+                    className="w-full bg-primary text-white hover:bg-primary/90 rounded-2xl h-14 font-bold shadow-xl transition-all active:scale-95 border-none"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Save ID Card as Image
+                  </Button>
+                )}
+              </div>
               
               <div className="flex gap-3">
                 {status === 'success' && (

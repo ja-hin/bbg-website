@@ -734,7 +734,7 @@ export default function ThankYou() {
           subtitle: "Thank you for choosing XtraCover",
           message: `You’ve taken a smart step to safeguard your device and its future value.\nMore value for you. Less waste for the planet.`,
           code: voucherCode,
-          codeLabel: "Your BBG Voucher Code:",
+          codeLabel: "Your Voucher Code:",
           isFailure: false,
           details: [
             "Confirmation email sent to your registered email address",

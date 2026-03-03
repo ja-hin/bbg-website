@@ -448,11 +448,15 @@ export default function ThankYou() {
   const planType = sessionData?.planType || sessionData?.benefitType || params?.get('planType');
   const planName = sessionData?.planName || JSON.parse(sessionData?.benefitsJson || '{}')?.planName || params?.get('planName') || '';
   
+  const registrationSlabData = typeof sessionData?.registrationSlabData === 'string' 
+    ? JSON.parse(sessionData.registrationSlabData) 
+    : sessionData?.registrationSlabData;
+
   const isBbg = planType === 'bbg' || 
                 planType === 'bundle' || 
                 planName.toLowerCase().includes('bbg') || 
                 planName.toLowerCase().includes('buy back') ||
-                !!sessionData?.registrationSlabData;
+                !!registrationSlabData;
 
   const handleDownloadInvoice = () => {
     // Check if server-generated invoice is available
@@ -985,17 +989,17 @@ export default function ThankYou() {
     img.src = refPartnerLogo;
   };
 
-  const handleSaveCustomerCard = () => {
+    const handleSaveCustomerCard = () => {
     const canvas = document.createElement('canvas');
     canvas.width = 1000;
-    canvas.height = 1100; // Increased height for benefits/chart
+    canvas.height = 1250; // Increased height for rectangular look and more space
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     const drawCustomerCard = (logoImg?: HTMLImageElement) => {
       // Background
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, 1000, 1100);
+      ctx.fillRect(0, 0, 1000, 1250);
 
       // Header blue bar
       ctx.fillStyle = '#1b3476';
@@ -1038,6 +1042,7 @@ export default function ThankYou() {
 
       ctx.fillText('Voucher Code:', rightCol, row1);
       ctx.fillText('Plan Purchase Date:', rightCol, row2);
+      ctx.fillText('Registration Source:', rightCol, row3);
 
       const brand = sessionData?.brand || params?.get('brand') || '';
       const model = sessionData?.deviceModel || sessionData?.modelName || params?.get('model') || params?.get('modelName') || '';
@@ -1052,6 +1057,7 @@ export default function ThankYou() {
 
       ctx.fillText(voucherCode || 'XYZ', rightCol + 210, row1);
       ctx.fillText(new Date().toLocaleDateString('en-IN'), rightCol + 270, row2);
+      ctx.fillText(sessionData?.registrationSource || 'Direct', rightCol + 270, row3);
 
       // Bottom border for details
       ctx.strokeStyle = '#e5e7eb';
@@ -1075,7 +1081,7 @@ export default function ThankYou() {
         ctx.fillText('DEVICE AGE', 250, tableTop + 35);
         ctx.fillText('RESALE VALUE', 650, tableTop + 35);
 
-        const slabs = sessionData?.registrationSlabData?.slabs || [
+        const slabs = registrationSlabData?.slabs || [
           { minMonths: 4, maxMonths: 6, percentage: 70 },
           { minMonths: 7, maxMonths: 12, percentage: 50 },
           { minMonths: 13, maxMonths: 18, percentage: 45 },
@@ -1157,7 +1163,7 @@ export default function ThankYou() {
       ctx.textAlign = 'right';
       ctx.font = 'italic 18px sans-serif';
       ctx.fillStyle = '#9ca3af';
-      ctx.fillText('*Terms and Conditions apply', 950, 1080);
+      ctx.fillText('*Terms and Conditions apply', 950, 1220);
 
       const link = document.createElement('a');
       link.download = `XtraCover_Card_${voucherCode}.png`;

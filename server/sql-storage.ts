@@ -937,6 +937,7 @@ export class SqlServerStorage implements IStorage {
           seller_code NVARCHAR(10),
           status NVARCHAR(50) DEFAULT 'pending',
           expires_at DATETIME2 NOT NULL,
+          date_of_purchase NVARCHAR(20),
           created_at DATETIME2 DEFAULT GETDATE()
         );
       END
@@ -957,6 +958,12 @@ export class SqlServerStorage implements IStorage {
         IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('pending_payments') AND name = 'purchase_timing_category')
         BEGIN
           ALTER TABLE pending_payments ADD purchase_timing_category NVARCHAR(50);
+        END
+
+        -- Add date_of_purchase column to pending_payments if it doesn't exist
+        IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('pending_payments') AND name = 'date_of_purchase')
+        BEGIN
+          ALTER TABLE pending_payments ADD date_of_purchase NVARCHAR(20);
         END
         
         IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('pending_payments') AND name = 'benefit_type')
@@ -2929,14 +2936,14 @@ export class SqlServerStorage implements IStorage {
         name, contact, email, pincode, state, device_type, serial_number, 
         brand, model_name, invoice_value, payment_amount, transaction_id, 
         seller_code, status, expires_at, purchase_timing_category, 
-        benefit_type, plan_price, benefits_json, email_template_key
+        benefit_type, plan_price, benefits_json, email_template_key, date_of_purchase
       ) 
       OUTPUT INSERTED.*
       VALUES (
         @name, @contact, @email, @pincode, @state, @deviceType, @serialNumber, 
         @brand, @modelName, @invoiceValue, @paymentAmount, @transactionId, 
-        @sellerCode, @status, @expiresAt, @purchaseTimingCategory,
-        @benefitType, @planPrice, @benefitsJson, @emailTemplateKey
+        @sellerCode, @status, @expiresAt, @purchase_timing_category,
+        @benefitType, @planPrice, @benefitsJson, @emailTemplateKey, @dateOfPurchase
       )
     `;
 
@@ -2962,6 +2969,7 @@ export class SqlServerStorage implements IStorage {
     request.input('planPrice', sql.Decimal(10,2), insertPayment.planPrice || null);
     request.input('benefitsJson', sql.NVarChar, insertPayment.benefitsJson || null);
     request.input('emailTemplateKey', sql.NVarChar, insertPayment.emailTemplateKey || null);
+    request.input('dateOfPurchase', sql.NVarChar, (insertPayment as any).dateOfPurchase || null);
 
     const result = await request.query(query);
     return this.mapPendingPaymentFromDb(result.recordset[0]);
@@ -3038,7 +3046,8 @@ export class SqlServerStorage implements IStorage {
       benefitType: row.benefit_type,
       planPrice: row.plan_price,
       benefitsJson: row.benefits_json,
-      emailTemplateKey: row.email_template_key
+      emailTemplateKey: row.email_template_key,
+      dateOfPurchase: row.date_of_purchase
     };
   }
 

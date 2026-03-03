@@ -1071,7 +1071,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 modelName: pendingPayment.modelName,
                 invoiceValue: pendingPayment.invoiceValue.toString(),
                 sellerCode: pendingPayment.sellerCode,
-                dateOfPurchase: null // Will be recovered from original data if needed
+                dateOfPurchase: pendingPayment.dateOfPurchase
               };
 
               // Reconstruct plan details from pending_payment

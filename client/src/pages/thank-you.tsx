@@ -445,8 +445,8 @@ export default function ThankYou() {
   const error = sessionData?.error || params?.get('error');
   const errorMessage = sessionData?.errorMessage || params?.get('errorMessage');
   
-  const planType = sessionData?.planType || params?.get('planType');
-  const planName = sessionData?.planName || params?.get('planName') || '';
+  const planType = sessionData?.planType || sessionData?.benefitType || params?.get('planType');
+  const planName = sessionData?.planName || JSON.parse(sessionData?.benefitsJson || '{}')?.planName || params?.get('planName') || '';
   
   const isBbg = planType === 'bbg' || 
                 planType === 'bundle' || 

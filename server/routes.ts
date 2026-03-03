@@ -1449,9 +1449,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           deviceType: customer.deviceType,
           brand: customer.brand,
           modelName: customer.modelName,
+          devicePurchaseDate: customer.dateOfPurchase,
           registrationSlabData: customer.registrationSlabData,
           // New dual-flow BBG fields
           benefitType: customer.benefitType,
+          planType: customer.benefitType, // Added for frontend compatibility
+          planName: planDetails?.planName || customer.modelName || "BBG Plan",
           benefitsJson: customer.benefitsJson,
           planPrice: customer.planPrice,
           txnid: txnid,
@@ -2050,6 +2053,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         deviceType: customer.deviceType,
         brand: customer.brand,
         modelName: customer.modelName,
+        devicePurchaseDate: customer.dateOfPurchase,
+        planType: customer.benefitType || 'bbg',
+        planName: customer.modelName || 'BBG Plan',
         registrationSlabData: customer.registrationSlabData,
       };
 

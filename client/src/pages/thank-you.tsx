@@ -398,31 +398,41 @@ export default function ThankYou() {
     setParams(searchParams);
   }, [location]);
 
+
+  // Version bump forces all stale localStorage data to be discarded
+  const CACHE_VERSION = 'v2'; // bump whenever thankYouData shape changes
+
   useEffect(() => {
     if (thankYouData) {
       setSessionData(thankYouData);
-      // Store in localStorage for persistence across page refreshes
-      localStorage.setItem('thankYouData', JSON.stringify(thankYouData));
-      // Also store timestamp to handle expiry (24 hours)
+      // Persist with a version tag so stale old caches are auto-discarded
+      localStorage.setItem('thankYouData', JSON.stringify({ ...thankYouData, _v: CACHE_VERSION }));
       localStorage.setItem('thankYouDataTimestamp', Date.now().toString());
     } else {
       // Check localStorage first (persists across refreshes)
       const storedData = localStorage.getItem('thankYouData');
       const storedTimestamp = localStorage.getItem('thankYouDataTimestamp');
-      
+
       if (storedData && storedTimestamp) {
         const timestamp = parseInt(storedTimestamp);
         const now = Date.now();
-        const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-        
-        // Check if data is still valid (less than 24 hours old)
+        const twentyFourHours = 24 * 60 * 60 * 1000;
+
         if (now - timestamp < twentyFourHours) {
           try {
             const parsedData = JSON.parse(storedData);
-            setSessionData(parsedData);
+            // Discard stale data from before the version tag was added
+            if (parsedData._v !== CACHE_VERSION) {
+              console.log('Discarding stale thankYouData cache (version mismatch)');
+              localStorage.removeItem('thankYouData');
+              localStorage.removeItem('thankYouDataTimestamp');
+            } else {
+              // Drop internal version field before using
+              const { _v, ...cleanData } = parsedData;
+              setSessionData(cleanData);
+            }
           } catch (error) {
             console.error('Error parsing localStorage data:', error);
-            // Clear invalid data
             localStorage.removeItem('thankYouData');
             localStorage.removeItem('thankYouDataTimestamp');
           }
@@ -438,10 +448,9 @@ export default function ThankYou() {
           try {
             const parsedData = JSON.parse(sessionStoredData);
             setSessionData(parsedData);
-            // Move to localStorage for persistence
-            localStorage.setItem('thankYouData', sessionStoredData);
+            // Move to localStorage for persistence with version tag
+            localStorage.setItem('thankYouData', JSON.stringify({ ...parsedData, _v: CACHE_VERSION }));
             localStorage.setItem('thankYouDataTimestamp', Date.now().toString());
-            // Clear session storage after moving to localStorage
             sessionStorage.removeItem('thankYouData');
           } catch (error) {
             console.error('Error parsing session storage data:', error);
@@ -450,6 +459,7 @@ export default function ThankYou() {
       }
     }
   }, [thankYouData]);
+
 
   // Use session data if available, otherwise fall back to URL parameters
   const type = sessionData?.type || params?.get('type');

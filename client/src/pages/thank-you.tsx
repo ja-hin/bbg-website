@@ -5,155 +5,8 @@ import jsPDF from 'jspdf';
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award, Gavel, Wrench, Star, ArrowRight, Copy, Calendar } from "lucide-react";
+import { CheckCircle, Users, Smartphone, Home, Download, Info, AlertCircle, RefreshCw, Award, Gavel, Wrench, Star, ArrowRight, Copy } from "lucide-react";
 import refPartnerLogo from "@assets/refpartnerlogo.webp";
-import bbgLogo from "@assets/BUY_BACK_GURANTEE_LOGO_1766210821932.webp";
-
-// Helper to format a date string (ISO or YYYY-MM-DD) to DD/MM/YYYY
-function formatDateDDMMYYYY(dateStr: string | null | undefined): string {
-  if (!dateStr) return 'DD/MM/YYYY';
-  try {
-    // Handle ISO strings and YYYY-MM-DD
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return dateStr; // return as-is if unparseable
-    const day = String(d.getUTCDate()).padStart(2, '0');
-    const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-    const year = d.getUTCFullYear();
-    return `${day}/${month}/${year}`;
-  } catch {
-    return dateStr;
-  }
-}
-
-// Customer Card Preview Component
-function CustomerCardPreview({ sessionData, params, isBbg, voucherCode }: { sessionData: any, params: any, isBbg: boolean, voucherCode: string }) {
-  const brand = sessionData?.brand || params?.get('brand') || 'Brand';
-  const model = sessionData?.deviceModel || sessionData?.modelName || params?.get('model') || params?.get('modelName') || 'Model';
-  const customerName = sessionData?.customerName || params?.get('customerName') || 'Customer';
-  const devicePurchaseDate = formatDateDDMMYYYY(sessionData?.devicePurchaseDate || params?.get('devicePurchaseDate'));
-  const planPurchaseDate = new Date().toLocaleDateString('en-IN');
-
-  return (
-    <div className="w-full max-w-sm mx-auto bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-2xl font-sans text-black my-8 relative">
-      {/* Blue Header */}
-      <div className="bg-[#1b3476] p-6 flex justify-center items-center">
-        <img src={bbgLogo} alt="XtraCover BBG" className="h-10 object-contain" />
-      </div>
-
-      {/* Name Section */}
-      <div className="p-4 text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900">{customerName}</h2>
-      </div>
-
-      <div className="px-5 pb-6">
-        {/* Divider */}
-        <div className="h-px bg-gray-100 w-full mb-4"></div>
-
-        {/* Info Grid */}
-        <div className="grid grid-cols-2 gap-y-4 text-[11px] sm:text-xs text-gray-400 mb-6">
-          <div className="space-y-0.5">
-            <p className="font-bold uppercase tracking-wider text-[10px]">Device</p>
-            <p className="text-gray-900 font-bold text-[13px] leading-tight">{brand} {model}</p>
-          </div>
-          <div className="space-y-0.5">
-            <p className="font-bold uppercase tracking-wider text-[10px]">Voucher Code</p>
-            <p className="text-gray-900 font-bold text-[13px]">{voucherCode || 'XYZ'}</p>
-          </div>
-          <div className="space-y-0.5">
-            <p className="font-bold uppercase tracking-wider text-[10px]">Plan</p>
-            <p className="text-gray-900 font-bold text-[13px]">{isBbg ? 'BuyBack Guarantee' : 'Extend+'}</p>
-          </div>
-          <div className="space-y-0.5">
-            <p className="font-bold uppercase tracking-wider text-[10px]">Plan Purchase Date</p>
-            <p className="text-gray-900 font-bold text-[13px]">{planPurchaseDate}</p>
-          </div>
-          <div className="col-span-2 space-y-0.5">
-            <p className="font-bold uppercase tracking-wider text-[10px]">Device Purchase Date</p>
-            <p className="text-gray-900 font-bold text-[13px]">{devicePurchaseDate}</p>
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div className="h-px bg-gray-100 w-full mb-6"></div>
-
-        {isBbg ? (
-          <>
-            <h3 className="text-sm font-black text-gray-900 mb-4 uppercase tracking-wide">Resale Value Chart</h3>
-            <div className="bg-gray-50 rounded-2xl overflow-hidden mb-6 border border-gray-100">
-              <div className="flex justify-between bg-gray-100 px-4 py-2 text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                <span>Device Age</span>
-                <span>Resale Value</span>
-              </div>
-              <div className="divide-y divide-gray-100">
-                {(sessionData?.registrationSlabData?.slabs || [
-                  { minMonths: 4, maxMonths: 6, percentage: 70 },
-                  { minMonths: 7, maxMonths: 12, percentage: 50 },
-                  { minMonths: 13, maxMonths: 18, percentage: 45 },
-                  { minMonths: 19, maxMonths: 24, percentage: 40 },
-                  { minMonths: 25, maxMonths: 30, percentage: 30 },
-                  { minMonths: 31, maxMonths: 36, percentage: 25 }
-                ]).slice(0, 6).map((slab: any, i: number) => (
-                  <div key={i} className={`flex justify-between px-4 py-2.5 text-[13px] ${i % 2 === 0 ? '' : 'bg-white/50'}`}>
-                    <span className="text-gray-600 font-medium">{slab.minMonths}th-{slab.maxMonths}th month</span>
-                    <span className={`font-black ${slab.percentage >= 70 ? 'text-[#1b3476]' : 'text-gray-900'}`}>{slab.percentage}%</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3 text-center">
-               <div className="flex flex-col items-center space-y-2">
-                 <div className="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-200">
-                   <Award className="w-5 h-5" />
-                 </div>
-                 <p className="text-[10px] font-bold text-gray-800 leading-tight">1-Year Repair Service Warranty*</p>
-               </div>
-               <div className="flex flex-col items-center space-y-2">
-                 <div className="bg-emerald-500 p-2 rounded-xl text-white shadow-lg shadow-emerald-200">
-                   <RefreshCw className="w-5 h-5" />
-                 </div>
-                 <p className="text-[10px] font-bold text-gray-800 leading-tight">Best Product Upgrade Offers</p>
-               </div>
-               <div className="flex flex-col items-center space-y-2">
-                 <div className="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-200">
-                   <Star className="w-5 h-5" />
-                 </div>
-                 <p className="text-[10px] font-bold text-gray-800 leading-tight">20% Off Extra Warranty</p>
-               </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <h3 className="text-sm font-black text-gray-900 mb-4 text-center uppercase tracking-widest">Premium Benefits</h3>
-            <div className="space-y-4 mb-4 px-2">
-              {[
-                { title: 'Doorstep Device Auction', desc: 'Auction your device at best market value.', icon: <Gavel className="w-4 h-4" />, color: 'text-blue-600', bg: 'bg-blue-50' },
-                { title: '1-Year Repair Service Warranty*', desc: 'Zero service costs on repairs.', icon: <Wrench className="w-4 h-4" />, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                { title: 'Best Product Upgrade Offers', desc: 'Exclusive deals for your next device.', icon: <Award className="w-4 h-4" />, color: 'text-orange-500', bg: 'bg-orange-50' },
-                { title: '20% Off Extra Warranty', desc: 'Save on your next device protection.', icon: <Star className="w-4 h-4" />, color: 'text-indigo-600', bg: 'bg-indigo-50' }
-              ].map((b, i) => (
-                <div key={i} className="flex items-start gap-3 p-2 rounded-xl border border-transparent hover:border-gray-100 transition-all">
-                  <div className={`${b.bg} ${b.color} p-2 rounded-lg`}>
-                    {b.icon}
-                  </div>
-                  <div className="space-y-0.5">
-                    <p className="text-[12px] font-black text-gray-900 leading-none">{b.title}</p>
-                    <p className="text-[10px] text-gray-400 font-medium">{b.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        <div className="mt-8 flex justify-between items-center opacity-40">
-           <img src={bbgLogo} alt="XtraCover" className="h-4 grayscale" />
-           <p className="text-[9px] font-bold italic tracking-tight">*Terms and Conditions apply</p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // Device Type Claim Values Component
 function BrandClaimValues({ sessionData }: { sessionData: any }) {
@@ -376,9 +229,11 @@ export default function ThankYou() {
     queryFn: async () => {
       try {
         const response = await fetch('/api/thank-you-data');
-        if (response.ok) return response.json();
+        if (response.ok) {
+          return response.json();
+        }
         return null;
-      } catch {
+      } catch (error) {
         return null;
       }
     },
@@ -391,117 +246,63 @@ export default function ThankYou() {
     retry: false
   });
 
-  // Fix: wouter's useLocation only returns pathname, not search. Use window.location.search.
   useEffect(() => {
-    setParams(new URLSearchParams(window.location.search));
+    const searchParams = new URLSearchParams(location.split('?')[1] || '');
+    setParams(searchParams);
   }, [location]);
-
-  // Version bump forces all stale localStorage data to be discarded
-  const CACHE_VERSION = 'v3'; // bumped - URL-params approach
 
   useEffect(() => {
     if (thankYouData) {
       setSessionData(thankYouData);
-      localStorage.setItem('thankYouData', JSON.stringify({ ...thankYouData, _v: CACHE_VERSION }));
+      // Store in localStorage for persistence across page refreshes
+      localStorage.setItem('thankYouData', JSON.stringify(thankYouData));
+      // Also store timestamp to handle expiry (24 hours)
       localStorage.setItem('thankYouDataTimestamp', Date.now().toString());
     } else {
-      // Check localStorage
+      // Check localStorage first (persists across refreshes)
       const storedData = localStorage.getItem('thankYouData');
       const storedTimestamp = localStorage.getItem('thankYouDataTimestamp');
+      
       if (storedData && storedTimestamp) {
         const timestamp = parseInt(storedTimestamp);
         const now = Date.now();
-        if (now - timestamp < 24 * 60 * 60 * 1000) {
+        const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        
+        // Check if data is still valid (less than 24 hours old)
+        if (now - timestamp < twentyFourHours) {
           try {
             const parsedData = JSON.parse(storedData);
-            if (parsedData._v !== CACHE_VERSION) {
-              localStorage.removeItem('thankYouData');
-              localStorage.removeItem('thankYouDataTimestamp');
-            } else {
-              const { _v, ...cleanData } = parsedData;
-              setSessionData(cleanData);
-            }
-          } catch {
+            setSessionData(parsedData);
+          } catch (error) {
+            console.error('Error parsing localStorage data:', error);
+            // Clear invalid data
             localStorage.removeItem('thankYouData');
             localStorage.removeItem('thankYouDataTimestamp');
           }
         } else {
+          // Data is expired, clear it
           localStorage.removeItem('thankYouData');
           localStorage.removeItem('thankYouDataTimestamp');
+        }
+      } else {
+        // Fallback to sessionStorage (for backward compatibility)
+        const sessionStoredData = sessionStorage.getItem('thankYouData');
+        if (sessionStoredData) {
+          try {
+            const parsedData = JSON.parse(sessionStoredData);
+            setSessionData(parsedData);
+            // Move to localStorage for persistence
+            localStorage.setItem('thankYouData', sessionStoredData);
+            localStorage.setItem('thankYouDataTimestamp', Date.now().toString());
+            // Clear session storage after moving to localStorage
+            sessionStorage.removeItem('thankYouData');
+          } catch (error) {
+            console.error('Error parsing session storage data:', error);
+          }
         }
       }
     }
   }, [thankYouData]);
-
-  // When URL has a voucherCode (fresh PayU redirect), seed sessionData from URL params first
-  // then fetch fresh customer data from DB (gives us devicePurchaseDate + slabs)
-  useEffect(() => {
-    const urlVoucher = new URLSearchParams(window.location.search).get('voucherCode');
-    if (urlVoucher) {
-      // Seed from URL params immediately so the page isn't blank
-      const urlParams = new URLSearchParams(window.location.search);
-      setSessionData((prev: any) => ({
-        type: urlParams.get('type') || prev?.type || 'customer',
-        status: urlParams.get('status') || prev?.status || 'success',
-        voucherCode: urlParams.get('voucherCode') || prev?.voucherCode,
-        customerName: urlParams.get('customerName') || prev?.customerName,
-        deviceType: urlParams.get('deviceType') || prev?.deviceType,
-        brand: urlParams.get('brand') || prev?.brand,
-        modelName: urlParams.get('modelName') || prev?.modelName,
-        planType: urlParams.get('planType') || urlParams.get('benefitType') || prev?.planType,
-        benefitType: urlParams.get('benefitType') || urlParams.get('planType') || prev?.benefitType,
-        devicePurchaseDate: urlParams.get('devicePurchaseDate') || prev?.devicePurchaseDate,
-        txnid: urlParams.get('txnid') || prev?.txnid,
-        amount: urlParams.get('amount') || prev?.amount,
-        paymentMethod: urlParams.get('paymentMethod') || prev?.paymentMethod,
-        // keep invoice / slabs from previous state if already loaded
-        invoiceNumber: prev?.invoiceNumber,
-        invoiceUrl: prev?.invoiceUrl,
-        registrationSlabData: prev?.registrationSlabData,
-      }));
-    }
-  }, []); // run once on mount
-
-
-
-
-  // Always fetch fresh customer data from DB when we have a voucherCode
-  // This gives us registrationSlabData (slabs) and devicePurchaseDate from the actual DB
-  const urlVoucherCode = typeof window !== 'undefined'
-    ? new URLSearchParams(window.location.search).get('voucherCode')
-    : null;
-  const knownVoucherCode = sessionData?.voucherCode || urlVoucherCode;
-
-  const { data: freshCustomerData } = useQuery({
-    queryKey: ['/api/customer/by-voucher', knownVoucherCode],
-    queryFn: async () => {
-      try {
-        const response = await fetch(`/api/customer/by-voucher/${encodeURIComponent(knownVoucherCode!)}`);
-        if (response.ok) return response.json();
-        return null;
-      } catch {
-        return null;
-      }
-    },
-    enabled: !!knownVoucherCode,
-    retry: false
-  });
-
-  // Merge fresh DB data into sessionData (fills in slabs + devicePurchaseDate)
-  useEffect(() => {
-    if (freshCustomerData) {
-      setSessionData((prev: any) => ({
-        ...prev,
-        // Only fill in missing fields from fresh data
-        devicePurchaseDate: prev?.devicePurchaseDate || freshCustomerData.devicePurchaseDate,
-        registrationSlabData: prev?.registrationSlabData || freshCustomerData.registrationSlabData,
-        planType: prev?.planType || freshCustomerData.planType,
-        benefitType: prev?.benefitType || freshCustomerData.benefitType,
-        benefitsJson: prev?.benefitsJson || freshCustomerData.benefitsJson,
-        planPrice: prev?.planPrice || freshCustomerData.planPrice,
-      }));
-    }
-  }, [freshCustomerData]);
 
   // Use session data if available, otherwise fall back to URL parameters
   const type = sessionData?.type || params?.get('type');
@@ -512,20 +313,6 @@ export default function ThankYou() {
   const txnid = sessionData?.txnid || params?.get('txnid');
   const error = sessionData?.error || params?.get('error');
   const errorMessage = sessionData?.errorMessage || params?.get('errorMessage');
-  
-
-  const planType = sessionData?.planType || sessionData?.benefitType || params?.get('planType');
-  const planName = sessionData?.planName || JSON.parse(sessionData?.benefitsJson || '{}')?.planName || params?.get('planName') || '';
-  
-  const registrationSlabData = typeof sessionData?.registrationSlabData === 'string' 
-    ? JSON.parse(sessionData.registrationSlabData) 
-    : sessionData?.registrationSlabData;
-
-  const isBbg = planType === 'bbg' || 
-                planType === 'bundle' || 
-                planName.toLowerCase().includes('bbg') || 
-                planName.toLowerCase().includes('buy back') ||
-                !!registrationSlabData;
 
   const handleDownloadInvoice = () => {
     // Check if server-generated invoice is available
@@ -1058,195 +845,6 @@ export default function ThankYou() {
     img.src = refPartnerLogo;
   };
 
-    const handleSaveCustomerCard = () => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1000;
-    canvas.height = 1250; // Increased height for rectangular look and more space
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const drawCustomerCard = (logoImg?: HTMLImageElement) => {
-      // Background
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, 1000, 1250);
-
-      // Header blue bar
-      ctx.fillStyle = '#1b3476';
-      ctx.fillRect(0, 0, 1000, 200);
-
-      if (logoImg) {
-        const logoH = 80;
-        const logoW = (logoImg.naturalWidth / logoImg.naturalHeight) * logoH;
-        ctx.drawImage(logoImg, (1000 - logoW) / 2, 60, logoW, logoH);
-      }
-
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#000000';
-      ctx.font = 'bold 60px sans-serif';
-      ctx.fillText(sessionData?.customerName || 'Customer', 500, 300);
-
-      // Divider line
-      ctx.strokeStyle = '#e5e7eb';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(50, 330);
-      ctx.lineTo(950, 330);
-      ctx.stroke();
-
-      // Details Grid
-      ctx.textAlign = 'left';
-      ctx.font = '30px sans-serif';
-      ctx.fillStyle = '#6b7280'; // gray-500
-
-      const leftCol = 70;
-      const rightCol = 520;
-      const row1 = 380;
-      const row2 = 440;
-      const row3 = 500;
-
-      // Labels
-      ctx.fillText('Device:', leftCol, row1);
-      ctx.fillText('Plan:', leftCol, row2);
-      ctx.fillText('Device Purchase Date:', leftCol, row3);
-
-      ctx.fillText('Voucher Code:', rightCol, row1);
-      ctx.fillText('Plan Purchase Date:', rightCol, row2);
-      ctx.fillText('Registration Source:', rightCol, row3);
-
-      const brand = sessionData?.brand || params?.get('brand') || '';
-      const model = sessionData?.deviceModel || sessionData?.modelName || params?.get('model') || params?.get('modelName') || '';
-      const devicePurchaseDate = formatDateDDMMYYYY(sessionData?.devicePurchaseDate || params?.get('devicePurchaseDate'));
-
-      // Values
-      ctx.fillStyle = '#000000';
-      ctx.font = 'bold 30px sans-serif';
-      ctx.fillText(brand + ' ' + model, leftCol + 110, row1);
-      ctx.fillText(isBbg ? 'BuyBack Guarantee' : 'Extend+', leftCol + 80, row2);
-      ctx.fillText(devicePurchaseDate, leftCol + 320, row3);
-
-      ctx.fillText(voucherCode || 'XYZ', rightCol + 210, row1);
-      ctx.fillText(new Date().toLocaleDateString('en-IN'), rightCol + 270, row2);
-      ctx.fillText(sessionData?.registrationSource || 'Direct', rightCol + 270, row3);
-
-      // Bottom border for details
-      ctx.strokeStyle = '#e5e7eb';
-      ctx.beginPath();
-      ctx.moveTo(50, 530);
-      ctx.lineTo(950, 530);
-      ctx.stroke();
-
-      if (isBbg) {
-        // Resale Value Chart
-        ctx.fillStyle = '#1b3476';
-        ctx.font = 'bold 35px sans-serif';
-        ctx.fillText('Resale Value Chart', 70, 590);
-
-        const tableTop = 620;
-        ctx.fillStyle = '#f3f4f6';
-        ctx.fillRect(70, tableTop, 860, 50); // Header bg
-
-        ctx.font = 'bold 24px sans-serif';
-        ctx.fillStyle = '#6b7280';
-        ctx.fillText('DEVICE AGE', 250, tableTop + 35);
-        ctx.fillText('RESALE VALUE', 650, tableTop + 35);
-
-        const slabs = registrationSlabData?.slabs || [
-          { minMonths: 4, maxMonths: 6, percentage: 70 },
-          { minMonths: 7, maxMonths: 12, percentage: 50 },
-          { minMonths: 13, maxMonths: 18, percentage: 45 },
-          { minMonths: 19, maxMonths: 24, percentage: 40 },
-          { minMonths: 25, maxMonths: 30, percentage: 30 },
-          { minMonths: 31, maxMonths: 36, percentage: 25 },
-        ];
-
-        slabs.slice(0, 6).forEach((slab: any, idx: number) => {
-          const y = tableTop + 100 + (idx * 60);
-          if (idx % 2 !== 0) {
-            ctx.fillStyle = '#f9fafb';
-            ctx.fillRect(70, y - 40, 860, 60);
-          }
-          ctx.font = '28px sans-serif';
-          ctx.fillStyle = '#374151';
-          ctx.textAlign = 'center';
-          ctx.fillText(`${slab.minMonths}th-${slab.maxMonths}th month`, 330, y);
-          ctx.font = 'bold 28px sans-serif';
-          ctx.fillStyle = slab.percentage >= 70 ? '#1b3476' : '#374151';
-          ctx.fillText(`${slab.percentage}%`, 730, y);
-        });
-
-        // Benefits Icons
-        const benefitsY = 980;
-        
-        const drawIcon = (x: number, y: number, char: string, color: string) => {
-          ctx.fillStyle = color;
-          ctx.beginPath();
-          ctx.roundRect(x - 40, y - 90, 80, 80, 15);
-          ctx.fill();
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 45px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText(char, x, y - 35);
-        };
-
-        drawIcon(250, benefitsY, '★', '#3b82f6');
-        drawIcon(500, benefitsY, '↻', '#10b981');
-        drawIcon(750, benefitsY, '✓', '#6366f1');
-
-        ctx.textAlign = 'center';
-        ctx.font = 'bold 22px sans-serif';
-        ctx.fillStyle = '#111827';
-        ctx.fillText('1-Year Extended Repair', 250, benefitsY + 20);
-        ctx.fillText('Best Product', 500, benefitsY + 20);
-        ctx.fillText('20% Off on 1-Year', 750, benefitsY + 20);
-        ctx.font = '18px sans-serif';
-        ctx.fillStyle = '#6b7280';
-        ctx.fillText('Service Warranty*', 250, benefitsY + 50);
-        ctx.fillText('Upgrade Offers', 500, benefitsY + 50);
-        ctx.fillText('Extended Warranty', 750, benefitsY + 50);
-      } else {
-        // Extend+ Benefits
-        ctx.fillStyle = '#111827';
-        ctx.textAlign = 'center';
-        ctx.font = 'bold 40px sans-serif';
-        ctx.fillText('PREMIUM BENEFITS', 500, 590);
-
-        const benefits = [
-          { title: 'Doorstep Device Auction', desc: 'Auction your device at the best market value.' },
-          { title: '1-Year Extended Repair Service Warranty*', desc: 'Zero service costs on repairs.' },
-          { title: 'Best Product Upgrade Offers', desc: 'Exclusive deals for your next device purchase.' },
-          { title: '20% Off on 1-Year Extended Warranty', desc: 'Save on protection of your next device purchase.' }
-        ];
-
-        benefits.forEach((b, idx) => {
-          const y = 670 + (idx * 100);
-          ctx.textAlign = 'left';
-          ctx.font = 'bold 30px sans-serif';
-          ctx.fillStyle = '#111827';
-          ctx.fillText('✓ ' + b.title, 150, y);
-          ctx.font = '22px sans-serif';
-          ctx.fillStyle = '#6b7280';
-          ctx.fillText(b.desc, 190, y + 35);
-        });
-      }
-
-      ctx.textAlign = 'right';
-      ctx.font = 'italic 18px sans-serif';
-      ctx.fillStyle = '#9ca3af';
-      ctx.fillText('*Terms and Conditions apply', 950, 1220);
-
-      const link = document.createElement('a');
-      link.download = `XtraCover_Card_${voucherCode}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    };
-
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => drawCustomerCard(img);
-    img.onerror = () => drawCustomerCard();
-    img.src = bbgLogo;
-  };
-
   const isDistributor = type === 'distributor';
 
   if (isDistributor) {
@@ -1375,180 +973,136 @@ export default function ThankYou() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center px-4 py-12 font-sans">
-      <div className="max-w-6xl w-full flex flex-col-reverse lg:flex-row items-start gap-12">
-        {/* Left Column: Customer Card & Main Action */}
-        <div className="lg:w-1/2 w-full space-y-8 lg:sticky lg:top-12">
-          {!content.isFailure && type === 'customer' && (
-            <div className="space-y-6">
-              <CustomerCardPreview 
-                sessionData={sessionData} 
-                params={params} 
-                isBbg={isBbg} 
-                voucherCode={voucherCode || ''} 
-              />
-              
-              {status === 'success' && (
-                <Button 
-                  onClick={handleSaveCustomerCard}
-                  className="w-full bg-primary text-white hover:bg-primary/90 rounded-2xl h-14 font-bold shadow-xl transition-all active:scale-95 border-none"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Download
-                </Button>
-              )}
+      <div className="max-w-2xl w-full space-y-8">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6" style={{ background: content.isFailure ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)' }}>
+            {content.isFailure ? (
+              <AlertCircle className="h-10 w-10 text-red-500" />
+            ) : (
+              <CheckCircle className="h-10 w-10 text-green-500" />
+            )}
+          </div>
+          <h1 className="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight leading-tight mb-2">
+            {content.title}
+          </h1>
+          <p className="text-primary text-sm font-bold uppercase tracking-wider mb-4">
+            {content.subtitle}
+          </p>
+          <p className="text-gray-600 text-base leading-relaxed max-w-lg mx-auto whitespace-pre-line">
+            {content.message}
+          </p>
+        </div>
 
-              {/* DEBUG INFO - remove after fixing */}
-              <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4 text-xs font-mono text-gray-700 space-y-1">
-                <p className="font-bold text-yellow-700 mb-2">🐛 Debug Info (raw session data)</p>
-                <p><b>devicePurchaseDate:</b> {String(sessionData?.devicePurchaseDate ?? 'undefined')}</p>
-                <p><b>planType:</b> {String(sessionData?.planType ?? 'undefined')}</p>
-                <p><b>benefitType:</b> {String(sessionData?.benefitType ?? 'undefined')}</p>
-                <p><b>deviceType:</b> {String(sessionData?.deviceType ?? 'undefined')}</p>
-                <p><b>brand:</b> {String(sessionData?.brand ?? 'undefined')}</p>
-                <p><b>modelName:</b> {String(sessionData?.modelName ?? 'undefined')}</p>
-                <p><b>deviceModel:</b> {String(sessionData?.deviceModel ?? 'undefined')}</p>
-                <p><b>voucherCode:</b> {String(sessionData?.voucherCode ?? 'undefined')}</p>
-                <p><b>customerName:</b> {String(sessionData?.customerName ?? 'undefined')}</p>
-              </div>
+        {content.code && !content.isFailure && (
+          <div className="bg-white border-2 border-primary/20 rounded-2xl p-6 text-center shadow-sm">
+            <p className="text-sm text-gray-500 font-medium mb-2">{content.codeLabel}</p>
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-3xl font-black tracking-wider" style={{ color: '#254696' }}>{content.code}</span>
+              <button 
+                onClick={() => copyToClipboard(content.code || '')}
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                title="Copy code"
+              >
+                <Copy className="h-5 w-5 text-gray-400 hover:text-primary" />
+              </button>
             </div>
-          )}
-          
-          {content.isFailure && (
-            <div className="text-center p-12 bg-white rounded-3xl shadow-sm border border-gray-100">
-               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 bg-red-50">
-                <AlertCircle className="h-10 w-10 text-red-500" />
-              </div>
-              <h2 className="text-2xl font-black text-gray-900 mb-2">Something went wrong</h2>
-              <p className="text-gray-600 mb-8">{content.message}</p>
+          </div>
+        )}
+
+        {!content.isFailure && sessionData?.registrationSlabData && (
+          <BrandClaimValues sessionData={sessionData} />
+        )}
+
+        {!content.isFailure && sessionData?.planType === 'auction_repair' && (
+          <AuctionRepairBenefits sessionData={sessionData} />
+        )}
+
+        {content.details.length > 0 && !content.isFailure && (
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-5">
+              NEXT STEPS
+            </h3>
+            <div className="space-y-4">
+              {content.details.map((detail, index) => (
+                <div key={index} className="flex gap-4 items-start">
+                  <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold mt-0.5">
+                    {index + 1}
+                  </div>
+                  <p className="text-sm font-medium text-gray-600 leading-relaxed pt-1">
+                    {detail}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="space-y-4">
+          {content.isFailure ? (
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button 
                 onClick={() => window.location.reload()} 
-                className="w-full bg-primary hover:opacity-90 h-14 rounded-2xl font-bold"
+                className="flex-1 bg-primary hover:opacity-90 h-14 rounded-2xl font-bold shadow-lg shadow-blue-900/20"
               >
                 <RefreshCw className="h-5 w-5 mr-2" />
                 Try Again
               </Button>
+              <Link href="/" className="flex-1">
+                <Button variant="outline" className="w-full h-14 rounded-2xl font-bold border-gray-200">
+                  <Home className="h-5 w-5 mr-2" />
+                  Go to Home
+                </Button>
+              </Link>
             </div>
+          ) : (
+            <>
+              {status === 'success' && content.code && (
+                <Button 
+                  className="w-full bg-primary hover:opacity-90 h-16 rounded-2xl font-black text-lg shadow-xl shadow-blue-900/20 group"
+                  onClick={() => window.location.href = `/register?voucher=${content.code}`}
+                >
+                  Complete My Registration
+                  <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              )}
+              
+              <div className="flex gap-3">
+                {status === 'success' && (
+                  <Button 
+                    onClick={handleDownloadInvoice} 
+                    variant="outline"
+                    className="flex-1 h-14 rounded-2xl font-bold border-emerald-200 text-emerald-700 bg-emerald-50/30 hover:bg-emerald-50"
+                  >
+                    <Download className="h-5 w-5 mr-2" />
+                    Download Receipt
+                  </Button>
+                )}
+                <Link href="/" className="flex-1">
+                  <Button 
+                    variant="ghost" 
+                    className="w-full h-14 rounded-2xl font-bold text-gray-400 hover:text-gray-900"
+                  >
+                    <Home className="h-5 w-5 mr-2" />
+                    Go to Home
+                  </Button>
+                </Link>
+              </div>
+            </>
           )}
         </div>
 
-        {/* Right Column: Details & Next Steps */}
-        <div className="lg:w-1/2 w-full space-y-8">
-          <div className="text-center lg:text-left">
-            {!content.isFailure && (
-              <div className="flex items-center justify-center lg:justify-start">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6 bg-green-50">
-                  <CheckCircle className="h-8 w-8 text-green-500" />
-                </div>
-              </div>
-            )}
-            <h1 className="text-3xl lg:text-4xl font-black text-gray-900 tracking-tight leading-tight mb-2">
-              {content.title}
-            </h1>
-            <p className="text-primary text-sm font-bold uppercase tracking-wider mb-4">
-              {content.subtitle}
-            </p>
-            <p className="text-gray-600 text-base leading-relaxed whitespace-pre-line">
-              {content.message}
-            </p>
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 pt-6 border-t border-gray-100">
+          <div className="space-y-1 text-center">
+            <span className="block text-[10px] font-black text-gray-400 uppercase tracking-tighter">Support Email</span>
+            <a href="mailto:contactus@xtracover.com" className="text-xs font-bold text-gray-900 underline decoration-primary/30 underline-offset-4 decoration-2">
+              contactus@xtracover.com
+            </a>
           </div>
-
-          {content.code && !content.isFailure && (
-            <div className="bg-white border-2 border-primary/20 rounded-2xl p-6 text-center lg:text-left shadow-sm">
-              <p className="text-sm text-gray-500 font-medium mb-2">{content.codeLabel}</p>
-              <div className="flex items-center justify-center lg:justify-start gap-3">
-                <span className="text-3xl font-black tracking-wider" style={{ color: '#254696' }}>{content.code}</span>
-                <button 
-                  onClick={() => copyToClipboard(content.code || '')}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                  title="Copy code"
-                >
-                  <Copy className="h-5 w-5 text-gray-400 hover:text-primary" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {!content.isFailure && isBbg && registrationSlabData && (
-            <BrandClaimValues sessionData={sessionData} />
-          )}
-
-          {!content.isFailure && !isBbg && sessionData?.planType === 'auction_repair' && (
-            <AuctionRepairBenefits sessionData={sessionData} />
-          )}
-
-          {content.details.length > 0 && !content.isFailure && (
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-5">
-                NEXT STEPS
-              </h3>
-              <div className="space-y-4">
-                {content.details.map((detail, index) => (
-                  <div key={index} className="flex gap-4 items-start">
-                    <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold mt-0.5">
-                      {index + 1}
-                    </div>
-                    <p className="text-sm font-medium text-gray-600 leading-relaxed pt-1">
-                      {detail}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="space-y-4 pt-4">
-            {!content.isFailure && (
-              <>
-                <div className="flex flex-col gap-3">
-                  {status === 'success' && content.code && (
-                    <Button 
-                      className="w-full bg-primary hover:opacity-90 h-16 rounded-2xl font-black text-lg shadow-xl shadow-blue-900/20 group"
-                      onClick={() => window.location.href = `/register?voucher=${content.code}`}
-                    >
-                      Complete My Registration
-                      <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  )}
-                </div>
-                
-                <div className="flex gap-3">
-                  {status === 'success' && (
-                    <Button 
-                      onClick={handleDownloadInvoice} 
-                      variant="outline"
-                      className="flex-1 h-14 rounded-2xl font-bold border-emerald-200 text-emerald-700 bg-emerald-50/30 hover:bg-emerald-50"
-                    >
-                      <Download className="h-5 w-5 mr-2" />
-                      Download Receipt
-                    </Button>
-                  )}
-                  <Link href="/" className="flex-1">
-                    <Button 
-                      variant="ghost" 
-                      className="w-full h-14 rounded-2xl font-bold text-gray-400 hover:text-gray-900"
-                    >
-                      <Home className="h-5 w-5 mr-2" />
-                      Go to Home
-                    </Button>
-                  </Link>
-                </div>
-              </>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-8 gap-y-3 pt-6 border-t border-gray-100">
-            <div className="space-y-1 text-center lg:text-left">
-              <span className="block text-[10px] font-black text-gray-400 uppercase tracking-tighter">Support Email</span>
-              <a href="mailto:contactus@xtracover.com" className="text-xs font-bold text-gray-900 underline decoration-primary/30 underline-offset-4 decoration-2">
-                contactus@xtracover.com
-              </a>
-            </div>
-            <div className="space-y-1 text-center lg:text-left">
-              <span className="block text-[10px] font-black text-gray-400 uppercase tracking-tighter">Helpline</span>
-              <a href="tel:+918860396039" className="text-xs font-bold text-gray-900 underline decoration-primary/30 underline-offset-4 decoration-2">
-                +91-8860396039
-              </a>
-            </div>
+          <div className="space-y-1 text-center">
+            <span className="block text-[10px] font-black text-gray-400 uppercase tracking-tighter">Helpline</span>
+            <a href="tel:+918860396039" className="text-xs font-bold text-gray-900 underline decoration-primary/30 underline-offset-4 decoration-2">
+              +91-8860396039
+            </a>
           </div>
         </div>
       </div>

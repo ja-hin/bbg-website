@@ -715,17 +715,19 @@ export default function Checkout() {
                           <div className="relative">
                             <FormControl>
                               <Input
-                                type={field.value ? "date" : "text"}
-                                onFocus={(e) => (e.target.type = "date")}
+                                type="date"
                                 placeholder="dd/mm/yyyy"
                                 {...field}
-                                onBlur={(e) => {
-                                  field.onBlur();
-                                  if (!e.target.value) e.target.type = "text";
-                                }}
                                 min={minDate}
                                 max={maxDate}
-                                className="bg-[#f8f9fa] border-0 h-[52px] rounded-xl pl-12 pr-4 text-sm font-medium focus-visible:ring-1 focus-visible:ring-[#254696] focus-visible:bg-white transition-all shadow-none w-full xl:[&::-webkit-calendar-picker-indicator]:opacity-0 xl:[&::-webkit-calendar-picker-indicator]:absolute xl:[&::-webkit-calendar-picker-indicator]:w-full xl:[&::-webkit-calendar-picker-indicator]:h-full xl:[&::-webkit-calendar-picker-indicator]:cursor-pointer"
+                                onClick={(e) => {
+                                  try {
+                                    (e.target as any).showPicker();
+                                  } catch (err) {
+                                    console.warn("showPicker not supported", err);
+                                  }
+                                }}
+                                className="bg-[#f8f9fa] border-0 h-[52px] rounded-xl pl-12 pr-4 text-sm font-medium focus-visible:ring-1 focus-visible:ring-[#254696] focus-visible:bg-white transition-all shadow-none w-full xl:[&::-webkit-calendar-picker-indicator]:opacity-0 xl:[&::-webkit-calendar-picker-indicator]:absolute xl:[&::-webkit-calendar-picker-indicator]:w-full xl:[&::-webkit-calendar-picker-indicator]:h-full xl:[&::-webkit-calendar-picker-indicator]:cursor-pointer cursor-pointer"
                                 data-testid="input-device-purchase-date"
                               />
                             </FormControl>

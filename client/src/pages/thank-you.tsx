@@ -1324,7 +1324,7 @@ export default function ThankYou() {
                   className="w-full bg-primary text-white hover:bg-primary/90 rounded-2xl h-14 font-bold shadow-xl transition-all active:scale-95 border-none"
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  Save ID Card as Image
+                  Download
                 </Button>
               )}
             </div>

@@ -1343,6 +1343,20 @@ export default function ThankYou() {
                   Download
                 </Button>
               )}
+
+              {/* DEBUG INFO - remove after fixing */}
+              <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4 text-xs font-mono text-gray-700 space-y-1">
+                <p className="font-bold text-yellow-700 mb-2">🐛 Debug Info (raw session data)</p>
+                <p><b>devicePurchaseDate:</b> {String(sessionData?.devicePurchaseDate ?? 'undefined')}</p>
+                <p><b>planType:</b> {String(sessionData?.planType ?? 'undefined')}</p>
+                <p><b>benefitType:</b> {String(sessionData?.benefitType ?? 'undefined')}</p>
+                <p><b>deviceType:</b> {String(sessionData?.deviceType ?? 'undefined')}</p>
+                <p><b>brand:</b> {String(sessionData?.brand ?? 'undefined')}</p>
+                <p><b>modelName:</b> {String(sessionData?.modelName ?? 'undefined')}</p>
+                <p><b>deviceModel:</b> {String(sessionData?.deviceModel ?? 'undefined')}</p>
+                <p><b>voucherCode:</b> {String(sessionData?.voucherCode ?? 'undefined')}</p>
+                <p><b>customerName:</b> {String(sessionData?.customerName ?? 'undefined')}</p>
+              </div>
             </div>
           )}
           

@@ -853,7 +853,14 @@ export default function ThankYou() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const isBbg = sessionData?.planType === 'bbg' || (sessionData?.planName && sessionData.planName.toLowerCase().includes('bbg')) || (sessionData?.planName && sessionData.planName.toLowerCase().includes('buy back'));
+    const planType = sessionData?.planType || params?.get('planType');
+    const planName = sessionData?.planName || params?.get('planName') || '';
+    
+    const isBbg = planType === 'bbg' || 
+                  planType === 'bundle' || 
+                  planName.toLowerCase().includes('bbg') || 
+                  planName.toLowerCase().includes('buy back') ||
+                  !!sessionData?.registrationSlabData;
 
     const drawCustomerCard = (logoImg?: HTMLImageElement) => {
       // Background
@@ -902,12 +909,16 @@ export default function ThankYou() {
       ctx.fillText('Voucher Code:', rightCol, row1);
       ctx.fillText('Plan Purchase Date:', rightCol, row2);
 
+      const brand = sessionData?.brand || params?.get('brand') || '';
+      const model = sessionData?.deviceModel || sessionData?.modelName || params?.get('model') || params?.get('modelName') || '';
+      const devicePurchaseDate = sessionData?.devicePurchaseDate || params?.get('devicePurchaseDate') || 'DD/MM/YYYY';
+
       // Values
       ctx.fillStyle = '#000000';
       ctx.font = 'bold 30px sans-serif';
-      ctx.fillText(sessionData?.brand + ' ' + sessionData?.modelName, leftCol + 110, row1);
+      ctx.fillText(brand + ' ' + model, leftCol + 110, row1);
       ctx.fillText(isBbg ? 'BuyBack Guarantee' : 'Extend+', leftCol + 80, row2);
-      ctx.fillText(sessionData?.devicePurchaseDate || 'DD/MM/YYYY', leftCol + 320, row3);
+      ctx.fillText(devicePurchaseDate, leftCol + 320, row3);
 
       ctx.fillText(content.code || 'XYZ', rightCol + 210, row1);
       ctx.fillText(new Date().toLocaleDateString('en-IN'), rightCol + 270, row2);
@@ -958,18 +969,45 @@ export default function ThankYou() {
           ctx.fillText(`${slab.percentage}%`, 730, y);
         });
 
-        // Benefits Icons (Placeholder for now, simplified)
-        const benefitsY = 1000;
+        // Benefits Icons
+        const benefitsY = 980;
+        
+        // Icon 1: Shield (Blue)
+        ctx.fillStyle = '#3b82f6';
+        ctx.beginPath();
+        ctx.arc(250, benefitsY - 50, 40, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 40px sans-serif';
+        ctx.fillText('✓', 235, benefitsY - 35);
+
+        // Icon 2: Upgrade (Green)
+        ctx.fillStyle = '#22c55e';
+        ctx.beginPath();
+        ctx.arc(500, benefitsY - 50, 40, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('↑', 485, benefitsY - 35);
+
+        // Icon 3: Tag (Purple)
+        ctx.fillStyle = '#a855f7';
+        ctx.beginPath();
+        ctx.arc(750, benefitsY - 50, 40, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('%', 733, benefitsY - 35);
+
         ctx.textAlign = 'center';
-        ctx.font = 'bold 24px sans-serif';
-        ctx.fillStyle = '#374151';
-        ctx.fillText('1-Year Extended Repair', 250, benefitsY);
-        ctx.fillText('Best Product', 500, benefitsY);
-        ctx.fillText('20% Off on 1-Year', 750, benefitsY);
+        ctx.font = 'bold 22px sans-serif';
+        ctx.fillStyle = '#000000';
+        ctx.fillText('1-Year Extended Repair', 250, benefitsY + 20);
+        ctx.fillText('Best Product', 500, benefitsY + 20);
+        ctx.fillText('20% Off on 1-Year', 750, benefitsY + 20);
         ctx.font = '20px sans-serif';
-        ctx.fillText('Service Warranty*', 250, benefitsY + 30);
-        ctx.fillText('Upgrade Offers', 500, benefitsY + 30);
-        ctx.fillText('Extended Warranty', 750, benefitsY + 30);
+        ctx.fillStyle = '#4b5563';
+        ctx.fillText('Service Warranty*', 250, benefitsY + 50);
+        ctx.fillText('Upgrade Offers', 500, benefitsY + 50);
+        ctx.fillText('Extended Warranty', 750, benefitsY + 50);
       } else {
         // Extend+ Benefits
         ctx.fillStyle = '#000000';

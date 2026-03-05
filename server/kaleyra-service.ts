@@ -112,35 +112,24 @@ export class KaleyraSMSService {
    */
   private formatPhoneNumber(phoneNumber: string): string {
     // Remove any spaces, dashes, or special characters
-    let cleaned = phoneNumber.replace(/[^\d+]/g, '');
+    let cleaned = phoneNumber.replace(/[^\d]/g, '');
     
-    // If number starts with +, return as is
-    if (cleaned.startsWith('+')) {
-      return cleaned;
-    }
-    
-    // If number starts with 91 (India country code)
-    if (cleaned.startsWith('91')) {
-      return `+${cleaned}`;
-    }
-    
-    // If number starts with 0, remove it and add +91 (Indian mobile)
-    if (cleaned.startsWith('0')) {
-      cleaned = cleaned.substring(1);
-    }
-    
-    // If it's a 10-digit number, assume Indian mobile and add +91
-    if (cleaned.length === 10 && /^[6-9]/.test(cleaned)) {
-      return `+91${cleaned}`;
-    }
-    
-    // If it's already formatted correctly for India
+    // If it's a 12-digit number starting with 91, it's an Indian number with country code
     if (cleaned.length === 12 && cleaned.startsWith('91')) {
       return `+${cleaned}`;
     }
     
-    // Default: assume it needs +91 prefix for Indian numbers
-    return `+91${cleaned}`;
+    // If it's a 10-digit number, assume Indian mobile and add +91
+    if (cleaned.length === 10) {
+      return `+91${cleaned}`;
+    }
+    
+    // If it already has a plus, just return it (after cleaning other chars)
+    if (phoneNumber.startsWith('+')) {
+      return `+${cleaned}`;
+    }
+    
+    return `+${cleaned}`;
   }
 
   /**
@@ -150,8 +139,9 @@ export class KaleyraSMSService {
    */
   isValidPhoneNumber(phoneNumber: string): boolean {
     const formatted = this.formatPhoneNumber(phoneNumber);
-    // Basic validation for Indian mobile numbers
-    return /^\+91[6-9]\d{9}$/.test(formatted);
+    // Validation for Indian mobile numbers (+91 followed by 10 digits starting with 6-9)
+    // or just allow any 10-12 digit number for now to be safe
+    return /^\+91[6-9]\d{9}$/.test(formatted) || /^\+\d{10,12}$/.test(formatted);
   }
 }
 

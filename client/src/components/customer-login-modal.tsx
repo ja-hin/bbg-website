@@ -141,19 +141,19 @@ export function CustomerLoginModal({ isOpen, onClose, onSuccess, redirectPath }:
   };
 
   const handleSendOtp = async () => {
-    if (!phone || phone.length !== 10) {
+    if (!phone || phone.length < 10) {
       toast({
         title: "Invalid Contact",
-        description: "Please enter a valid 10-digit mobile number",
+        description: "Please enter a valid mobile number",
         variant: "destructive",
       });
       return;
     }
 
-    if (!/^[6-9]\d{9}$/.test(phone)) {
+    if (!/^\d{10,12}$/.test(phone)) {
       toast({
         title: "Invalid Contact",
-        description: "Please enter a valid Indian mobile number starting with 6-9",
+        description: "Please enter a valid mobile number",
         variant: "destructive",
       });
       return;

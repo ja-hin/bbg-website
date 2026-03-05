@@ -229,10 +229,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { contact, phone } = req.body;
       const phoneNumber = contact || phone; // Support both field names
 
-      if (!phoneNumber || phoneNumber.length !== 10) {
+      if (!phoneNumber || phoneNumber.length < 10) {
         return res
           .status(400)
-          .json({ message: "Valid 10-digit contact number required" });
+          .json({ message: "Valid contact number required" });
       }
 
       const otp = Math.floor(100000 + Math.random() * 900000).toString();

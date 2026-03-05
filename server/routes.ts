@@ -1479,7 +1479,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: payuError,
         error_Message: errorMessage,
       } = req.body;
-      console.log(`PayU payment failed for transaction ${txnid}: ${payuError}`);
+      console.log(`Payment failed for transaction ${txnid}: ${payuError}`);
 
       // Clean up temporary customer data
       const tempStorage = app.locals.tempCustomerData || new Map();

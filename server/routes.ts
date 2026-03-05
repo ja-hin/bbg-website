@@ -789,8 +789,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Stripe payment intent removed - using PayU only
 
-  // Rate limiting for PayU payments (simple in-memory tracker)
-  const payuRateLimit = new Map();
+  // No rate limiting needed as each purchase generates a unique transaction ID.
+
 
   // Create PayU payment
   app.post("/api/create-payu-payment", async (req, res) => {
@@ -906,28 +906,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
 
-      // Rate limiting check
-      // Use contact+deviceType as the unique key to prevent duplicate clicks by same user, 
-      // but allow concurrent purchases across the network
-      const transactionKey = `${req.body?.customerData?.contact || 'unknown'}_${req.body?.customerData?.deviceType || 'unknown'}`;
-      
-      const now = Date.now();
-      const lastRequest = payuRateLimit.get(transactionKey) || 0;
-
-      // Enforce 60-second delay between duplicate requests for the same user+device
-      if (now - lastRequest < 60000) {
-        const waitTime = Math.ceil((60000 - (now - lastRequest)) / 1000);
-        return res.status(429).json({
-          message: `Too many payment requests. Please wait ${waitTime} seconds before trying again.`,
-          waitTime,
-          retryAfter: waitTime,
-        });
-      }
-
-      // Update last request time
-      payuRateLimit.set(transactionKey, now);
-
       // Generate unique transaction ID
+
       const txnid = `BBG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
       // Persist plan context to pending_payments for reliability
@@ -1609,22 +1589,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Rate limiting check
-      // Use contact+deviceType as the unique key to prevent duplicate clicks by same user
-      const transactionKey = `${customerContact || 'unknown'}_${deviceType || 'unknown'}`;
-
-      const now = Date.now();
-      const lastRequest = payuRateLimit.get(transactionKey) || 0;
-      if (now - lastRequest < 30000) {
-        const waitTime = Math.ceil((30000 - (now - lastRequest)) / 1000);
-        return res.status(429).json({
-          message: `Please wait ${waitTime} seconds before trying again.`,
-          waitTime,
-        });
-      }
-      payuRateLimit.set(transactionKey, now);
-
       // Generate unique transaction ID
+
       const txnid = `PLAN_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
       // Persist payment data for post-payment processing

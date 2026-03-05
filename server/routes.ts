@@ -906,12 +906,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
 
-      // Check rate limiting for this IP
-      const clientIP = req.ip || req.connection.remoteAddress || "unknown";
+      // Check rate limiting to prevent multiple clicks
+      // Use contact number as primary identifier to support multiple users on same network/proxy
+      const clientIdentifierRaw = req.body?.customerData?.contact || req.headers['x-forwarded-for'] || req.ip || req.connection?.remoteAddress || "unknown";
+      const clientIdentifier = Array.isArray(clientIdentifierRaw) ? clientIdentifierRaw[0] : (typeof clientIdentifierRaw === 'string' ? clientIdentifierRaw.split(',')[0].trim() : "unknown");
+      
       const now = Date.now();
-      const lastRequest = payuRateLimit.get(clientIP) || 0;
+      const lastRequest = payuRateLimit.get(clientIdentifier) || 0;
 
-      // Enforce 60-second delay between requests per IP
+      // Enforce 60-second delay between requests per user/identifier
       if (now - lastRequest < 60000) {
         const waitTime = Math.ceil((60000 - (now - lastRequest)) / 1000);
         return res.status(429).json({
@@ -922,7 +925,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Update last request time
-      payuRateLimit.set(clientIP, now);
+      payuRateLimit.set(clientIdentifier, now);
 
       // Generate unique transaction ID
       const txnid = `BBG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -1607,9 +1610,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Rate limiting check
-      const clientIP = req.ip || req.connection.remoteAddress || "unknown";
+      // Use contact number as primary identifier to support multiple users on same network/proxy
+      const clientIdentifierRaw = customerContact || req.headers['x-forwarded-for'] || req.ip || req.connection?.remoteAddress || "unknown";
+      const clientIdentifier = Array.isArray(clientIdentifierRaw) ? clientIdentifierRaw[0] : (typeof clientIdentifierRaw === 'string' ? clientIdentifierRaw.split(',')[0].trim() : "unknown");
+
       const now = Date.now();
-      const lastRequest = payuRateLimit.get(clientIP) || 0;
+      const lastRequest = payuRateLimit.get(clientIdentifier) || 0;
       if (now - lastRequest < 30000) {
         const waitTime = Math.ceil((30000 - (now - lastRequest)) / 1000);
         return res.status(429).json({
@@ -1617,7 +1623,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           waitTime,
         });
       }
-      payuRateLimit.set(clientIP, now);
+      payuRateLimit.set(clientIdentifier, now);
 
       // Generate unique transaction ID
       const txnid = `PLAN_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;

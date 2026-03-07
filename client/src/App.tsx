@@ -53,6 +53,7 @@ const DistributorDashboard = lazy(() => import("@/pages/distributor/dashboard"))
 const DistributorRegistrations = lazy(() => import("@/pages/distributor/registrations"));
 const DistributorPayouts = lazy(() => import("@/pages/distributor/payouts"));
 const DistributorProfile = lazy(() => import("@/pages/distributor/profile"));
+const DistributorPromote = lazy(() => import("@/pages/distributor/promote.tsx"));
 const TermsAndConditions = lazy(() => import("@/pages/terms-and-conditions"));
 const Plans = lazy(() => import("@/pages/plans"));
 const Checkout = lazy(() => import("@/pages/checkout"));
@@ -130,6 +131,7 @@ function Router() {
         <Route path="/distributor/dashboard" component={DistributorDashboard} />
         <Route path="/distributor/registrations" component={DistributorRegistrations} />
         <Route path="/distributor/payouts" component={DistributorPayouts} />
+        <Route path="/distributor/promote" component={DistributorPromote} />
         <Route path="/distributor/profile" component={DistributorProfile} />
         
         {/* Customer portal routes (protected, no header/footer) */}

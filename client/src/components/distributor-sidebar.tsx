@@ -7,7 +7,8 @@ import {
   UserCircle, 
   LogOut, 
   Menu,
-  X
+  X,
+  Megaphone
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -49,6 +50,13 @@ export function DistributorSidebar({ className }: DistributorSidebarProps) {
       href: "/distributor/payouts", 
       icon: Wallet,
       active: location === "/distributor/payouts" 
+    },
+    { 
+      id: "promote", 
+      label: "Promote BBG", 
+      href: "/distributor/promote", 
+      icon: Megaphone,
+      active: location === "/distributor/promote" 
     },
     { 
       id: "profile", 

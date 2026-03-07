@@ -189,13 +189,6 @@ export default function DistributorPromote() {
                 size: '12.5 MB',
                 icon: <LucideImage className="w-5 h-5" />
               },
-              { 
-                type: 'Brand Guide', 
-                description: 'Logo variants and official brand colors', 
-                format: 'ZIP', 
-                size: '1.2 MB',
-                icon: <ShieldCheck className="w-5 h-5" />
-              },
             ].map((asset, i) => (
               <div key={i} className="group p-6 bg-white border border-gray-100 rounded-2xl hover:border-blue-200 hover:shadow-lg transition-all duration-300 flex flex-col justify-between shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">

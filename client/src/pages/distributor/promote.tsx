@@ -45,6 +45,20 @@ export default function DistributorPromote() {
     }
   };
 
+  const handleDownload = (url: string, filename: string) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast({
+      title: "Download Started",
+      description: `Downloading ${filename}...`,
+    });
+  };
+
   return (
     <DistributorLayout>
       <div className="space-y-8 max-w-5xl">
@@ -166,28 +180,34 @@ export default function DistributorPromote() {
             </div>
           </div>
           
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[
               { 
                 type: 'Store Stickers', 
                 description: 'QR-enabled stickers for your checkout counter', 
-                format: 'PNG/PDF', 
+                format: 'PNG', 
                 size: '2.4 MB',
-                icon: <Smartphone className="w-5 h-5" />
+                icon: <Smartphone className="w-5 h-5" />,
+                url: '/assets/store-sticker.png',
+                filename: 'BBG_Store_Sticker.png'
               },
               { 
                 type: 'Product Brochure', 
                 description: 'Detailed benefits guide for customers', 
-                format: 'PDF', 
+                format: 'PNG', 
                 size: '4.8 MB',
-                icon: <FileText className="w-5 h-5" />
+                icon: <FileText className="w-5 h-5" />,
+                url: '/assets/product-brochure.png',
+                filename: 'BBG_Product_Brochure.png'
               },
               { 
                 type: 'Digital Banners', 
                 description: 'Dimensions optimized for WhatsApp & Social Media', 
-                format: 'JPG Bundle', 
+                format: 'PNG', 
                 size: '12.5 MB',
-                icon: <LucideImage className="w-5 h-5" />
+                icon: <LucideImage className="w-5 h-5" />,
+                url: '/assets/digital-banner.png',
+                filename: 'BBG_Digital_Banner.png'
               },
             ].map((asset, i) => (
               <div key={i} className="group p-6 bg-white border border-gray-100 rounded-2xl hover:border-blue-200 hover:shadow-lg transition-all duration-300 flex flex-col justify-between shadow-sm relative overflow-hidden">
@@ -205,7 +225,11 @@ export default function DistributorPromote() {
                     <span>{asset.size}</span>
                   </div>
                 </div>
-                <Button variant="ghost" className="mt-6 w-full h-10 bg-gray-50 hover:bg-[#254696] hover:text-white transition-all rounded-xl font-bold border border-transparent hover:border-blue-700">
+                <Button 
+                  onClick={() => handleDownload(asset.url, asset.filename)}
+                  variant="ghost" 
+                  className="mt-6 w-full h-10 bg-gray-50 hover:bg-[#254696] hover:text-white transition-all rounded-xl font-bold border border-transparent hover:border-blue-700"
+                >
                   <Download className="w-4 h-4 mr-2" />
                   Download
                 </Button>

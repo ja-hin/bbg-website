@@ -65,8 +65,8 @@ export default function DistributorPromote() {
         {/* Share Link Card - Refined & Concise */}
         <Card className="border-none shadow-sm ring-1 ring-gray-100 bg-white overflow-hidden rounded-2xl">
           <CardContent className="p-6 md:p-8">
-            <div className="flex flex-col lg:flex-row gap-8 items-center">
-              <div className="flex-1 space-y-4 text-center lg:text-left">
+            <div className="flex flex-col md:flex-row gap-8 items-center">
+              <div className="flex-1 min-w-0 space-y-4 text-center md:text-left">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-[#254696] rounded-full text-xs font-bold uppercase tracking-wider border border-blue-100">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   Direct Purchase Link
@@ -85,7 +85,7 @@ export default function DistributorPromote() {
                   </div>
                   <Button 
                     onClick={() => copyToClipboard(referralLink, "Purchase link")}
-                    className="h-12 bg-[#254696] hover:bg-[#1a326b] text-white transition-all rounded-xl font-bold px-6 shadow-sm"
+                    className="h-12 bg-[#254696] hover:bg-[#1a326b] text-white transition-all rounded-xl font-bold px-6 shadow-sm shrink-0"
                   >
                     <Copy className="w-4 h-4 mr-2" />
                     Copy Link
@@ -94,7 +94,7 @@ export default function DistributorPromote() {
               </div>
               
               {/* Seller Code Section - Concise & Integrated */}
-              <div className="flex flex-col items-center gap-3 bg-gray-50/50 p-6 rounded-2xl border border-gray-100 min-w-[220px] sm:min-w-[240px]">
+              <div className="flex flex-col items-center gap-3 bg-gray-50/50 p-6 rounded-2xl border border-gray-100 min-w-[220px] sm:min-w-[240px] shrink-0">
                 <div className="text-center">
                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Your Seller Code</p>
                   <p className="text-3xl font-black text-[#254696] tracking-tighter">

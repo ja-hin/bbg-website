@@ -62,50 +62,67 @@ export default function DistributorPromote() {
           </div>
         </div>
 
-        {/* Share Link Card */}
-        <Card className="border-2 border-blue-50/50 bg-blue-50/20 shadow-sm overflow-hidden">
-          <div className="bg-[#254696] h-1.5 w-full"></div>
-          <CardContent className="p-8">
-            <div className="flex flex-col md:flex-row gap-8 items-center">
-              <div className="flex-1 space-y-4 text-center md:text-left">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wider">
-                  <ShieldCheck className="w-3.5 h-3.5" />
+        {/* Share Link Card - Redesigned for Premium Look */}
+        <Card className="relative overflow-hidden border-none shadow-2xl bg-[#254696] text-white rounded-3xl group">
+          {/* Abstract Background Ornaments */}
+          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-blue-400/10 rounded-full blur-3xl transition-all duration-700 group-hover:scale-110"></div>
+          <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl transition-all duration-700 group-hover:scale-110"></div>
+          
+          <CardContent className="p-8 md:p-12 relative z-10">
+            <div className="flex flex-col lg:flex-row gap-10 items-center">
+              <div className="flex-1 space-y-6 text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-md text-blue-100 rounded-full text-xs font-bold uppercase tracking-wider border border-white/20">
+                  <ShieldCheck className="w-4 h-4 text-blue-300" />
                   Direct Purchase Link
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">Customer Purchase Link</h2>
-                <p className="text-gray-600 max-w-md text-lg">
-                   Share this link with your customers to help them purchase a protection plan directly using your referral code.
-                </p>
                 
-                <div className="flex flex-col sm:flex-row items-stretch gap-2 mt-6">
-                  <div className="flex-1 bg-white border-2 border-gray-100 rounded-xl px-4 py-3 font-mono text-sm text-gray-600 truncate flex items-center shadow-inner group relative">
-                    {referralLink}
+                <div className="space-y-2">
+                  <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">Customer Purchase Link</h2>
+                  <p className="text-blue-100/80 max-w-md text-lg leading-relaxed">
+                    Instantly share your personalized link and earn commissions on every protection plan your customers purchase.
+                  </p>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row items-stretch gap-3 mt-8">
+                  <div className="flex-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-5 py-4 font-mono text-sm text-blue-50 truncate flex items-center shadow-inner group/link relative">
+                    <span className="opacity-90">{referralLink}</span>
                   </div>
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     onClick={() => copyToClipboard(referralLink, "Purchase link")}
-                    className="h-12 border-2 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-all rounded-xl font-bold"
+                    className="h-14 bg-white hover:bg-blue-50 text-[#254696] border-none transition-all rounded-2xl font-bold px-8 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
                   >
-                    <Copy className="w-4 h-4 mr-2" />
+                    <Copy className="w-5 h-5 mr-2" />
                     Copy Link
                   </Button>
                 </div>
               </div>
               
-              <div className="w-full md:w-auto flex flex-col items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 min-w-[200px]">
-                <div className="text-center">
-                  <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Your Seller Code</p>
-                  <p className="text-4xl font-black text-[#254696] tracking-tighter">{distributor?.sellerCode}</p>
+              {/* Seller Code Card - Fixed Cropping & Glassmorphism */}
+              <div className="relative group/code sm:min-w-[280px]">
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-400/50 to-indigo-400/50 rounded-[2.5rem] blur-xl opacity-20 group-hover/code:opacity-40 transition duration-700"></div>
+                <div className="relative flex flex-col items-center gap-6 bg-white p-8 rounded-[2rem] shadow-2xl border border-white/20 text-gray-900 transition-transform duration-500 group-hover/code:scale-[1.02]">
+                  <div className="text-center">
+                    <p className="text-[10px] text-gray-400 font-extrabold uppercase tracking-[0.2em] mb-2">Exclusive Partner Code</p>
+                    <div className="relative">
+                      <p className="text-5xl font-black text-[#254696] tracking-tighter drop-shadow-sm">
+                        {distributor?.sellerCode}
+                      </p>
+                      <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-[#254696]/0 via-[#254696]/20 to-[#254696]/0 rounded-full"></div>
+                    </div>
+                  </div>
+                  
+                  <div className="w-full space-y-3">
+                    <Button 
+                      onClick={() => copyToClipboard(distributor?.sellerCode || "", "Seller code")}
+                      className="w-full h-12 font-bold bg-[#254696] hover:bg-[#1a326b] text-white rounded-xl shadow-md transition-all"
+                    >
+                      <Copy className="w-4 h-4 mr-2" />
+                      Copy Code
+                    </Button>
+                    <p className="text-[10px] text-center text-gray-400 font-medium">Use this code for offline tracking</p>
+                  </div>
                 </div>
-                <Button 
-                  onClick={() => copyToClipboard(distributor?.sellerCode || "", "Seller code")}
-                  variant="secondary"
-                  size="sm"
-                  className="w-full font-bold bg-gray-50 hover:bg-gray-100 border border-gray-200"
-                >
-                  <Copy className="w-3.5 h-3.5 mr-2" />
-                  Copy Code
-                </Button>
               </div>
             </div>
           </CardContent>

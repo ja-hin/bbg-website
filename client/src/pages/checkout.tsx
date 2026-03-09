@@ -397,13 +397,6 @@ export default function Checkout() {
             discountedPrice: overridePrice,
           });
 
-          // Store identified special code flag in form context if needed, 
-          // but we can just use the referralCode field
-          
-          toast({
-            title: "Special Pricing Applied!",
-            description: `Plan price updated to ₹${overridePrice}`,
-          });
           setReferralValidating(false);
           return;
         }

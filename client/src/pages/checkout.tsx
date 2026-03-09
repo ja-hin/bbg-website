@@ -718,7 +718,6 @@ export default function Checkout() {
                                 type="date"
                                 placeholder="dd/mm/yyyy"
                                 {...field}
-                                min={minDate}
                                 max={maxDate}
                                 onClick={(e) => {
                                   try {

@@ -33,7 +33,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2, Tag } from "lucide-react";
 import { useState } from "react";
-import AdminLayout from "@/components/admin-layout";
+import { AdminLayout } from "@/components/admin-layout";
 
 export default function ManageSpecialCodes() {
   const { toast } = useToast();

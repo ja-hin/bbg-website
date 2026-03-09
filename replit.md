@@ -52,6 +52,7 @@ Preferred communication style: Simple, everyday language.
 - **Claim Value Slabs**: Percentage-based claim values determined by device brand, type, and age in months
 - **Multi-channel Registration**: Standard BBG, Acer BBG (with IMEI validation), Amazon BBG (with license key validation)
 - **Commission System**: Distributor/referral partner commission tracking and payout management
+- **Special Codes System**: Admin-managed flat pricing codes that override plan prices based on device category (mobile vs laptop)
 
 ### Communication Services
 - **Email**: Nodemailer with configurable SMTP settings (`server/communication-service.ts`)

@@ -511,7 +511,9 @@ export default function Checkout() {
       planType: selectedPlan.planType,
       deviceType: selectedPlan.deviceType,
       planName: selectedPlan.planName,
-      amount: selectedPlan.price,
+      amount: referralValidation?.valid && referralValidation.discountedPrice 
+        ? referralValidation.discountedPrice 
+        : selectedPlan.price,
       validity: selectedPlan.validity,
       coverage: selectedPlan.coverage,
       brand: selectedPlan.brand,

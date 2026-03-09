@@ -26,7 +26,13 @@ import {
   type HomepageBanner,
   type InsertHomepageBanner,
   type Plan,
-  type InsertPlan
+  type InsertPlan,
+  type SpecialCode,
+  type InsertSpecialCode,
+  type ReferralDiscountSettings,
+  type InsertReferralDiscountSettings,
+  type BbgPriceSettings,
+  type InsertBbgPriceSettings
 } from "@shared/schema";
 import { db } from "./db";
 import sql from 'mssql';
@@ -176,6 +182,13 @@ export interface IStorage {
   deletePlan(id: number): Promise<void>;
   getPlansByDeviceType(deviceType: string): Promise<Plan[]>;
   getPlansByType(planType: string): Promise<Plan[]>;
+  
+  // Special Code operations
+  createSpecialCode(code: InsertSpecialCode): Promise<SpecialCode>;
+  getSpecialCodeByCode(code: string): Promise<SpecialCode | undefined>;
+  getAllSpecialCodes(): Promise<SpecialCode[]>;
+  updateSpecialCode(id: number, updates: Partial<InsertSpecialCode>): Promise<void>;
+  deleteSpecialCode(id: number): Promise<void>;
 }
 
 export class SqlServerStorage implements IStorage {
@@ -210,6 +223,9 @@ export class SqlServerStorage implements IStorage {
       
       // Create customer bank details and addresses tables
       await this.createCustomerDetailsTables();
+      
+      // Create special_codes table
+      await this.createSpecialCodesTableAtAnyCost();
       
       await this.createTablesIfNotExist();
       await this.ensureDefaultBrandsExist();
@@ -580,6 +596,38 @@ export class SqlServerStorage implements IStorage {
     } catch (themeError) {
       console.error('❌ TABLE CREATION FAILED:', themeError);
       throw themeError;
+    }
+  }
+
+  private async createSpecialCodesTableAtAnyCost() {
+    try {
+      console.log('🔥 ENSURING SPECIAL_CODES TABLE EXISTS IN DATABASE...');
+      const specialCodesTableQuery = `
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'special_codes')
+        BEGIN
+          CREATE TABLE special_codes (
+            id INT IDENTITY(1,1) PRIMARY KEY,
+            code NVARCHAR(100) NOT NULL UNIQUE,
+            mobile_plan_price DECIMAL(10,2) NOT NULL,
+            laptop_plan_price DECIMAL(10,2) NOT NULL,
+            is_active BIT DEFAULT 1,
+            created_at DATETIME2 DEFAULT GETDATE(),
+            updated_at DATETIME2 DEFAULT GETDATE()
+          );
+          PRINT 'Special codes table created';
+        END
+        ELSE
+        BEGIN
+          PRINT 'Special codes table already exists, preserving current data';
+        END
+      `;
+      
+      const request = db.pool.request();
+      await request.query(specialCodesTableQuery);
+      console.log('✅ SPECIAL_CODES TABLE CONFIRMED IN SQL SERVER DATABASE!!!');
+    } catch (error) {
+      console.error('❌ SPECIAL_CODES TABLE CREATION FAILED:', error);
+      throw error;
     }
   }
 
@@ -5141,6 +5189,108 @@ export class SqlServerStorage implements IStorage {
       createdAt: row.created_at,
       updatedAt: row.updated_at
     }));
+  }
+
+  // Special Code operations
+  async createSpecialCode(code: InsertSpecialCode): Promise<SpecialCode> {
+    await db.connectDB();
+    const request = db.pool.request();
+    request.input('code', sql.NVarChar, code.code);
+    request.input('mobilePlanPrice', sql.Decimal(10, 2), code.mobilePlanPrice);
+    request.input('laptopPlanPrice', sql.Decimal(10, 2), code.laptopPlanPrice);
+    request.input('isActive', sql.Bit, code.isActive !== undefined ? code.isActive : true);
+
+    const result = await request.query(`
+      INSERT INTO special_codes (code, mobile_plan_price, laptop_plan_price, is_active)
+      OUTPUT INSERTED.*
+      VALUES (@code, @mobilePlanPrice, @laptopPlanPrice, @isActive)
+    `);
+
+    const row = result.recordset[0];
+    return {
+      id: row.id,
+      code: row.code,
+      mobilePlanPrice: row.mobile_plan_price.toString(),
+      laptopPlanPrice: row.laptop_plan_price.toString(),
+      isActive: row.is_active,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  async getSpecialCodeByCode(code: string): Promise<SpecialCode | undefined> {
+    await db.connectDB();
+    const request = db.pool.request();
+    request.input('code', sql.NVarChar, code);
+    const result = await request.query(`
+      SELECT * FROM special_codes WHERE code = @code AND is_active = 1
+    `);
+
+    if (result.recordset.length === 0) return undefined;
+
+    const row = result.recordset[0];
+    return {
+      id: row.id,
+      code: row.code,
+      mobilePlanPrice: row.mobile_plan_price.toString(),
+      laptopPlanPrice: row.laptop_plan_price.toString(),
+      isActive: row.is_active,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  }
+
+  async getAllSpecialCodes(): Promise<SpecialCode[]> {
+    await db.connectDB();
+    const result = await db.pool.request().query('SELECT * FROM special_codes ORDER BY created_at DESC');
+    return result.recordset.map((row: any) => ({
+      id: row.id,
+      code: row.code,
+      mobilePlanPrice: row.mobile_plan_price.toString(),
+      laptopPlanPrice: row.laptop_plan_price.toString(),
+      isActive: row.is_active,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    }));
+  }
+
+  async updateSpecialCode(id: number, updates: Partial<InsertSpecialCode>): Promise<void> {
+    await db.connectDB();
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    
+    const setClauses = [];
+    if (updates.code !== undefined) {
+      request.input('code', sql.NVarChar, updates.code);
+      setClauses.push('code = @code');
+    }
+    if (updates.mobilePlanPrice !== undefined) {
+      request.input('mobilePlanPrice', sql.Decimal(10, 2), updates.mobilePlanPrice);
+      setClauses.push('mobile_plan_price = @mobilePlanPrice');
+    }
+    if (updates.laptopPlanPrice !== undefined) {
+      request.input('laptopPlanPrice', sql.Decimal(10, 2), updates.laptopPlanPrice);
+      setClauses.push('laptop_plan_price = @laptopPlanPrice');
+    }
+    if (updates.isActive !== undefined) {
+      request.input('isActive', sql.Bit, updates.isActive);
+      setClauses.push('is_active = @isActive');
+    }
+    
+    setClauses.push('updated_at = GETDATE()');
+    
+    if (setClauses.length > 1) {
+      await request.query(`
+        UPDATE special_codes SET ${setClauses.join(', ')} WHERE id = @id
+      `);
+    }
+  }
+
+  async deleteSpecialCode(id: number): Promise<void> {
+    await db.connectDB();
+    const request = db.pool.request();
+    request.input('id', sql.Int, id);
+    await request.query('DELETE FROM special_codes WHERE id = @id');
   }
 }
 

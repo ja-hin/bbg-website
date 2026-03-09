@@ -281,6 +281,16 @@ export const homepageBanners = pgTable("homepage_banners", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const specialCodes = pgTable("special_codes", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull().unique(),
+  mobilePlanPrice: decimal("mobile_plan_price", { precision: 10, scale: 2 }).notNull(),
+  laptopPlanPrice: decimal("laptop_plan_price", { precision: 10, scale: 2 }).notNull(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertDistributorSchema = createInsertSchema(distributors).omit({
   id: true,
   sellerCode: true,
@@ -388,6 +398,15 @@ export const insertHomepageBannerSchema = createInsertSchema(homepageBanners).om
   updatedAt: true,
 });
 
+export const insertSpecialCodeSchema = createInsertSchema(specialCodes).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  mobilePlanPrice: z.string().or(z.number()).transform(val => String(val)),
+  laptopPlanPrice: z.string().or(z.number()).transform(val => String(val)),
+});
+
 export type UserRole = typeof userRoles.$inferSelect;
 export type Distributor = typeof distributors.$inferSelect;
 export type Customer = typeof customers.$inferSelect;
@@ -401,6 +420,7 @@ export type CartAbandonment = typeof cartAbandonments.$inferSelect;
 export type DistributorSession = typeof distributorSessions.$inferSelect;
 export type CommissionPayout = typeof commissionPayouts.$inferSelect;
 export type HomepageBanner = typeof homepageBanners.$inferSelect;
+export type SpecialCode = typeof specialCodes.$inferSelect;
 
 export type InsertUserRole = z.infer<typeof insertUserRoleSchema>;
 export type InsertDistributor = z.infer<typeof insertDistributorSchema>;
@@ -413,6 +433,7 @@ export type InsertBrand = z.infer<typeof insertBrandSchema>;
 export type InsertDeviceModel = z.infer<typeof insertDeviceModelSchema>;
 export type InsertCartAbandonment = typeof cartAbandonments.$inferInsert;
 export type InsertHomepageBanner = z.infer<typeof insertHomepageBannerSchema>;
+export type InsertSpecialCode = z.infer<typeof insertSpecialCodeSchema>;
 
 // Theme settings table for admin theme management
 export const themeSettings = pgTable("theme_settings", {

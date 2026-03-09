@@ -374,6 +374,42 @@ export default function Checkout() {
     
     setReferralValidating(true);
     try {
+      // First try to validate as a Special Code (price override)
+      const specialResponse = await fetch('/api/special-codes/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: code.trim() })
+      });
+      
+      if (specialResponse.ok) {
+        const specialData = await specialResponse.json();
+        if (specialData.success && specialData.specialCode && selectedPlan) {
+          const specialCode = specialData.specialCode;
+          const overridePrice = selectedPlan.deviceType === 'mobile' 
+            ? parseFloat(specialCode.mobilePlanPrice) 
+            : parseFloat(specialCode.laptopPlanPrice);
+
+          setReferralValidation({
+            valid: true,
+            partnerName: "Special Pricing",
+            discountType: 'flat',
+            discountValue: selectedPlan.price - overridePrice,
+            discountedPrice: overridePrice,
+          });
+
+          // Store identified special code flag in form context if needed, 
+          // but we can just use the referralCode field
+          
+          toast({
+            title: "Special Pricing Applied!",
+            description: `Plan price updated to ₹${overridePrice}`,
+          });
+          setReferralValidating(false);
+          return;
+        }
+      }
+
+      // Fallback to Referral Code (percentage/flat discount)
       const response = await fetch(`/api/validate-referral-code/${encodeURIComponent(code.trim())}`);
       const data = await response.json();
       
@@ -480,6 +516,7 @@ export default function Checkout() {
       coverage: selectedPlan.coverage,
       brand: selectedPlan.brand,
       deviceAgeSelection: selectedPlan.deviceAgeSelection,
+      isSpecialCode: referralValidation?.partnerName === "Special Pricing",
     };
 
     sessionStorage.setItem("checkoutData", JSON.stringify(checkoutData));

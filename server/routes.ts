@@ -31,6 +31,7 @@ import {
   insertClaimSchema,
   insertOtpSchema,
   insertDeviceRegistrationSchema,
+  insertSpecialCodeSchema,
 } from "@shared/schema";
 import { z } from "zod";
 // Using SQL Server for all database operations
@@ -1539,6 +1540,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         coverage,
         brand,
         deviceAgeSelection,
+        isSpecialCode,
       } = req.body;
 
       // Validate required fields
@@ -1553,8 +1555,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let finalAmount = amount;
       let discountApplied = false;
       let discountAmount = 0;
+      let appliedSpecialCode = null;
 
-      if (referralCode) {
+      // Priority 1: Special Code (Overrides base price entirely)
+      if (isSpecialCode && referralCode) {
+        try {
+          const specialCode = await storage.getSpecialCodeByCode(referralCode.toUpperCase());
+          if (specialCode && specialCode.isActive) {
+            const overridePrice = deviceType === 'mobile' ? specialCode.mobilePlanPrice : specialCode.laptopPlanPrice;
+            if (overridePrice) {
+              finalAmount = parseFloat(overridePrice);
+              appliedSpecialCode = specialCode.code;
+              console.log('🎯 Payment Initiate - Special code price override applied:', {
+                code: appliedSpecialCode,
+                originalAmount: amount,
+                finalAmount
+              });
+            }
+          }
+        } catch (specialError) {
+          console.error("Error applying special code:", specialError);
+        }
+      }
+
+      // Priority 2: Referral Discount (Only if no special code override)
+      if (!appliedSpecialCode && referralCode) {
         try {
           const referralPartner = await storage.getDistributorBySellerCode(referralCode);
           if (referralPartner) {
@@ -5164,6 +5189,102 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     },
   );
+
+  // Special Codes Management Routes (admin only)
+  app.get(
+    "/api/admin/special-codes",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        const codes = await storage.getAllSpecialCodes();
+        res.json(codes);
+      } catch (error: any) {
+        console.error("Failed to get special codes:", error);
+        res.status(500).json({ message: "Failed to get special codes" });
+      }
+    },
+  );
+
+  app.post(
+    "/api/admin/special-codes",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        const validatedData = insertSpecialCodeSchema.parse(req.body);
+        const code = await storage.createSpecialCode(validatedData);
+        res.status(201).json({
+          message: "Special code created successfully",
+          code,
+        });
+      } catch (error: any) {
+        console.error("Failed to create special code:", error);
+        res.status(400).json({
+          message: "Failed to create special code",
+          error: error.errors || error.message,
+        });
+      }
+    },
+  );
+
+  app.put(
+    "/api/admin/special-codes/:id",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        const id = parseInt(req.params.id);
+        const validatedData = insertSpecialCodeSchema.partial().parse(req.body);
+        await storage.updateSpecialCode(id, validatedData);
+        res.json({ message: "Special code updated successfully" });
+      } catch (error: any) {
+        console.error("Failed to update special code:", error);
+        res.status(400).json({
+          message: "Failed to update special code",
+          error: error.errors || error.message,
+        });
+      }
+    },
+  );
+
+  app.delete(
+    "/api/admin/special-codes/:id",
+    isAdminAuthenticated,
+    async (req, res) => {
+      try {
+        const id = parseInt(req.params.id);
+        await storage.deleteSpecialCode(id);
+        res.json({ message: "Special code deleted successfully" });
+      } catch (error: any) {
+        console.error("Failed to delete special code:", error);
+        res.status(400).json({
+          message: "Failed to delete special code",
+          error: error.message,
+        });
+      }
+    },
+  );
+
+  // Public Special Code Validation
+  app.post("/api/special-codes/validate", async (req, res) => {
+    try {
+      const { code } = req.body;
+      if (!code) {
+        return res.status(400).json({ message: "Code is required" });
+      }
+
+      const specialCode = await storage.getSpecialCodeByCode(code.toUpperCase());
+      if (!specialCode) {
+        return res.status(404).json({ message: "Invalid or inactive special code" });
+      }
+
+      res.json({
+        success: true,
+        specialCode,
+      });
+    } catch (error: any) {
+      console.error("Special code validation error:", error);
+      res.status(500).json({ message: "Failed to validate special code" });
+    }
+  });
 
   // Waiting Period Settings Routes (admin only)
   app.get(

@@ -45,6 +45,7 @@ const AdminReferralDiscountSettings = lazy(() => import("@/pages/admin-referral-
 const AdminPartnerCommissionSettings = lazy(() => import("@/pages/admin-partner-commission-settings"));
 const AdminPlanConfigurations = lazy(() => import("@/pages/admin-plan-configurations"));
 const AdminWaitingPeriodSettings = lazy(() => import("@/pages/admin-waiting-period-settings"));
+const AdminSpecialCodes = lazy(() => import("@/pages/admin/special-codes"));
 const AdminHomepageBanners = lazy(() => import("@/pages/admin/homepage-banners"));
 const AdminCustomerRegistrations = lazy(() => import("@/pages/admin/customer-registrations"));
 const AdminTransactionHistory = lazy(() => import("@/pages/admin/admin-transaction-history"));
@@ -122,6 +123,7 @@ function Router() {
         <Route path="/admin/partner-commission-settings" component={AdminPartnerCommissionSettings} />
         <Route path="/admin/plan-configurations" component={AdminPlanConfigurations} />
         <Route path="/admin/waiting-period-settings" component={AdminWaitingPeriodSettings} />
+        <Route path="/admin/special-codes" component={AdminSpecialCodes} />
         <Route path="/admin/homepage-banners" component={AdminHomepageBanners} />
         <Route path="/admin/customer-registrations" component={AdminCustomerRegistrations} />
         <Route path="/admin/transaction-history" component={AdminTransactionHistory} />

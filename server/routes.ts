@@ -10459,6 +10459,15 @@ Required: GUPSHUP_API_KEY environment variable
           parentId: null,
         },
         {
+          id: "special-codes",
+          label: "Special Codes Management",
+          href: "/admin/special-codes",
+          icon: "Tags",
+          order: 9.75,
+          type: "item",
+          parentId: null,
+        },
+        {
           id: "transaction-history",
           label: "Transaction History",
           href: "/admin/transaction-history",

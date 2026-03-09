@@ -146,7 +146,7 @@ export function AdminSidebar({ className }: AdminSidebarProps) {
   let allMenuItems = (menuOrderData as any)?.menuItems || defaultMenuItems;
 
   // Ensure new menu items are present even if custom menu exists
-  const ensureItems = ["partner-commission-settings", "referral-discount-settings"];
+  const ensureItems = ["partner-commission-settings", "referral-discount-settings", "special-codes"];
   const existingIds = new Set(allMenuItems.map((i: any) => i.id));
   
   ensureItems.forEach(id => {

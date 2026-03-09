@@ -735,7 +735,7 @@ export default function Checkout() {
                         minDate = sixMonthsAgo.toISOString().split('T')[0];
                       } else {
                         const threeYearsAgo = new Date();
-                        threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+                        threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 100);
                         minDate = threeYearsAgo.toISOString().split('T')[0];
                       }
                       
@@ -750,6 +750,7 @@ export default function Checkout() {
                                 type="date"
                                 placeholder="dd/mm/yyyy"
                                 {...field}
+                                min={minDate}
                                 max={maxDate}
                                 onClick={(e) => {
                                   try {

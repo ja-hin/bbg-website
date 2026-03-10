@@ -100,8 +100,18 @@ const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
     const maxSuffix = ordinalSuffix(maxNum);
 
     return (
-      <span className={`text-[15px] sm:text-base ${isFirst ? 'font-bold text-[#254696]' : 'text-[#1F2937]'}`}>
-        {minNum}<sup>{minSuffix}</sup> <span className={`font-normal ${isFirst ? 'text-[#254696]' : 'text-gray-600'}`}>to</span> {maxNum}<sup>{maxSuffix}</sup> Month
+      <span
+        className={`text-[15px] sm:text-base ${isFirst ? "font-bold text-[#254696]" : "text-[#1F2937]"}`}
+      >
+        {minNum}
+        <sup>{minSuffix}</sup>{" "}
+        <span
+          className={`font-normal ${isFirst ? "text-[#254696]" : "text-gray-600"}`}
+        >
+          to
+        </span>{" "}
+        {maxNum}
+        <sup>{maxSuffix}</sup> Month
       </span>
     );
   };
@@ -109,14 +119,20 @@ const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   return (
     <div className="w-full flex flex-col pt-2">
       <div className="flex justify-between items-center px-4 mb-2">
-        <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wide">DEVICE AGE</span>
-        <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wide">YOU GET BACK</span>
+        <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wide">
+          DEVICE AGE
+        </span>
+        <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wide">
+          YOU GET BACK
+        </span>
       </div>
       <div className="flex flex-col relative w-full">
         {slabs.map((slab, idx) => (
           <div key={idx} className="relative w-full">
-            {idx > 0 && <div className="absolute top-0 left-4 right-4 h-[1px] bg-gray-200" />}
-            
+            {idx > 0 && (
+              <div className="absolute top-0 left-4 right-4 h-[1px] bg-gray-200" />
+            )}
+
             <div
               className={`flex justify-between items-center px-4 py-3.5 ${
                 idx === 0 ? "bg-[#f0f6fb] rounded-xl shadow-sm" : ""
@@ -125,7 +141,9 @@ const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
               <div>{formatAgeRange(slab, idx === 0)}</div>
               <div
                 className={`text-[15px] sm:text-base ${
-                  idx === 0 ? "font-bold text-[#254696]" : "font-medium text-[#1a1a1a]"
+                  idx === 0
+                    ? "font-bold text-[#254696]"
+                    : "font-medium text-[#1a1a1a]"
                 }`}
               >
                 Get back {slab.resalePercentage || slab.percentage}%
@@ -247,7 +265,7 @@ export default function Home() {
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Top Banner Section */}
       <section className="w-full mb-[20px]">
-        <div 
+        <div
           onClick={scrollToForm}
           className="w-full cursor-pointer overflow-hidden transition-opacity hover:opacity-95"
         >
@@ -542,10 +560,11 @@ export default function Home() {
             <div className="inline-flex bg-gray-100 rounded-full p-1 border border-gray-200">
               <button
                 onClick={() => setPricingView("laptop")}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${pricingView === "laptop"
-                  ? "bg-[#254696] text-white shadow-md"
-                  : "text-gray-600 hover:text-gray-800"
-                  }`}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  pricingView === "laptop"
+                    ? "bg-[#254696] text-white shadow-md"
+                    : "text-gray-600 hover:text-gray-800"
+                }`}
                 data-testid="toggle-pricing-laptop"
               >
                 <Laptop className="w-4 h-4" />
@@ -553,10 +572,11 @@ export default function Home() {
               </button>
               <button
                 onClick={() => setPricingView("mobile")}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${pricingView === "mobile"
-                  ? "bg-[#254696] text-white shadow-md"
-                  : "text-gray-600 hover:text-gray-800"
-                  }`}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  pricingView === "mobile"
+                    ? "bg-[#254696] text-white shadow-md"
+                    : "text-gray-600 hover:text-gray-800"
+                }`}
                 data-testid="toggle-pricing-mobile"
               >
                 <Smartphone className="w-4 h-4" />
@@ -614,7 +634,7 @@ export default function Home() {
                           </div>
                           <div className="text-right flex flex-col items-end pt-2">
                             <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
-                              HOLI OFFER
+                              OFFER
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
@@ -649,7 +669,8 @@ export default function Home() {
                                 className="text-xs sm:text-sm"
                                 style={{ color: "#6B7280" }}
                               >
-                                Get back up to 70% of your device's purchase price*
+                                Get back up to 70% of your device's purchase
+                                price*
                               </p>
                             </div>
                           </div>
@@ -665,8 +686,14 @@ export default function Home() {
                               >
                                 1-Year Extended Repair Service Warranty*
                               </p>
-                              <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
-                                <p>• Protection for your existing device that begins after your brand warranty ends</p>
+                              <div
+                                className="text-xs sm:text-sm space-y-1"
+                                style={{ color: "#6B7280" }}
+                              >
+                                <p>
+                                  • Protection for your existing device that
+                                  begins after your brand warranty ends
+                                </p>
                                 <p>• Zero service costs on repairs</p>
                               </div>
                             </div>
@@ -707,7 +734,8 @@ export default function Home() {
                                 className="text-xs sm:text-sm"
                                 style={{ color: "#6B7280" }}
                               >
-                                Save 20% on protection of your next device purchase
+                                Save 20% on protection of your next device
+                                purchase
                               </p>
                             </div>
                           </div>
@@ -805,7 +833,6 @@ export default function Home() {
                     >
                       <div className="flex justify-between items-start">
                         <div className="flex-1 min-h-[90px] sm:min-h-[120px]">
-
                           <div className="flex items-center gap-2 mb-1">
                             <h3 className="text-2xl sm:text-3xl font-bold whitespace-nowrap">
                               Extend+
@@ -818,7 +845,7 @@ export default function Home() {
                         </div>
                         <div className="text-right flex flex-col items-end pt-2">
                           <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
-                            HOLI OFFER
+                            OFFER
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
@@ -849,9 +876,17 @@ export default function Home() {
                             >
                               Doorstep Device Auction
                             </p>
-                            <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
-                              <p>• Auction your device at the best market value</p>
-                              <p>• 100+ buyers compete to give you the best possible price in India</p>
+                            <div
+                              className="text-xs sm:text-sm space-y-1"
+                              style={{ color: "#6B7280" }}
+                            >
+                              <p>
+                                • Auction your device at the best market value
+                              </p>
+                              <p>
+                                • 100+ buyers compete to give you the best
+                                possible price in India
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -867,8 +902,14 @@ export default function Home() {
                             >
                               1-Year Extended Repair Service Warranty*
                             </p>
-                            <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
-                              <p>• Protection for your existing device that begins after your brand warranty ends</p>
+                            <div
+                              className="text-xs sm:text-sm space-y-1"
+                              style={{ color: "#6B7280" }}
+                            >
+                              <p>
+                                • Protection for your existing device that
+                                begins after your brand warranty ends
+                              </p>
                               <p>• Zero service costs on repairs</p>
                             </div>
                           </div>
@@ -909,7 +950,8 @@ export default function Home() {
                               className="text-xs sm:text-sm"
                               style={{ color: "#6B7280" }}
                             >
-                              Save 20% on protection of your next device purchase
+                              Save 20% on protection of your next device
+                              purchase
                             </p>
                           </div>
                         </div>
@@ -972,7 +1014,7 @@ export default function Home() {
                           </div>
                           <div className="text-right flex flex-col items-end pt-2">
                             <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
-                              HOLI OFFER
+                              OFFER
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
@@ -1007,7 +1049,8 @@ export default function Home() {
                                 className="text-xs sm:text-sm"
                                 style={{ color: "#6B7280" }}
                               >
-                                Get back up to 70% of your device's purchase price*
+                                Get back up to 70% of your device's purchase
+                                price*
                               </p>
                             </div>
                           </div>
@@ -1023,8 +1066,14 @@ export default function Home() {
                               >
                                 1-Year Extended Repair Service Warranty*
                               </p>
-                              <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
-                                <p>• Protection for your existing device that begins after your brand warranty ends</p>
+                              <div
+                                className="text-xs sm:text-sm space-y-1"
+                                style={{ color: "#6B7280" }}
+                              >
+                                <p>
+                                  • Protection for your existing device that
+                                  begins after your brand warranty ends
+                                </p>
                                 <p>• Zero service costs on repairs</p>
                               </div>
                             </div>
@@ -1065,7 +1114,8 @@ export default function Home() {
                                 className="text-xs sm:text-sm"
                                 style={{ color: "#6B7280" }}
                               >
-                                Save 20% on protection of your next device purchase
+                                Save 20% on protection of your next device
+                                purchase
                               </p>
                             </div>
                           </div>
@@ -1163,7 +1213,6 @@ export default function Home() {
                     >
                       <div className="flex justify-between items-start">
                         <div className="flex-1 min-h-[90px] sm:min-h-[120px]">
-
                           <div className="flex items-center gap-2 mb-1">
                             <h3 className="text-2xl sm:text-3xl font-bold whitespace-nowrap">
                               Extend+
@@ -1176,20 +1225,20 @@ export default function Home() {
                         </div>
                         <div className="text-right flex flex-col items-end pt-2">
                           <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
-                            HOLI OFFER
+                            OFFER
                           </div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
-                                ₹999
-                              </span>
-                              <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
-                                {pricesLoading ? (
-                                  <Loader2 className="h-6 w-6 animate-spin" />
-                                ) : (
-                                  `₹${getMobileExtendPrice()}`
-                                )}
-                              </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
+                              ₹999
+                            </span>
+                            <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
+                              {pricesLoading ? (
+                                <Loader2 className="h-6 w-6 animate-spin" />
+                              ) : (
+                                `₹${getMobileExtendPrice()}`
+                              )}
                             </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1207,9 +1256,17 @@ export default function Home() {
                             >
                               Doorstep Device Auction
                             </p>
-                            <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
-                              <p>• Auction your device at the best market value</p>
-                              <p>• 100+ buyers compete to give you the best possible price in India</p>
+                            <div
+                              className="text-xs sm:text-sm space-y-1"
+                              style={{ color: "#6B7280" }}
+                            >
+                              <p>
+                                • Auction your device at the best market value
+                              </p>
+                              <p>
+                                • 100+ buyers compete to give you the best
+                                possible price in India
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -1225,8 +1282,14 @@ export default function Home() {
                             >
                               1-Year Extended Repair Service Warranty*
                             </p>
-                            <div className="text-xs sm:text-sm space-y-1" style={{ color: "#6B7280" }}>
-                              <p>• Protection for your existing device that begins after your brand warranty ends</p>
+                            <div
+                              className="text-xs sm:text-sm space-y-1"
+                              style={{ color: "#6B7280" }}
+                            >
+                              <p>
+                                • Protection for your existing device that
+                                begins after your brand warranty ends
+                              </p>
                               <p>• Zero service costs on repairs</p>
                             </div>
                           </div>
@@ -1267,7 +1330,8 @@ export default function Home() {
                               className="text-xs sm:text-sm"
                               style={{ color: "#6B7280" }}
                             >
-                              Save 20% on protection of your next device purchase
+                              Save 20% on protection of your next device
+                              purchase
                             </p>
                           </div>
                         </div>

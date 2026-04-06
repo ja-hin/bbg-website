@@ -63,6 +63,7 @@ import buybackGuaranteeImg from "@assets/herobbg.webp";
 import extendPlusImg from "@assets/heroextendplus.webp";
 import topBannerDesktop from "@assets/holiwebsite.webp";
 import topBannerMobile from "@assets/holimobile.webp";
+import heroBelowSectionImg from "@assets/hero-below-section.svg";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {
@@ -264,7 +265,7 @@ export default function Home() {
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Top Banner Section */}
-      <section className="w-full mb-[20px]">
+      <section className="w-full">
         <div
           onClick={scrollToForm}
           className="w-full cursor-pointer overflow-hidden transition-opacity hover:opacity-95"
@@ -278,6 +279,15 @@ export default function Home() {
             />
           </picture>
         </div>
+      </section>
+      
+      {/* Hero Below Section */}
+      <section className="w-full">
+        <img
+          src={heroBelowSectionImg}
+          alt="Value Proposition"
+          className="w-full h-auto block"
+        />
       </section>
 
       {/* Smart Plans Section */}

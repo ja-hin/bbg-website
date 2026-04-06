@@ -63,7 +63,7 @@ import topBannerDesktop from "@assets/holiwebsite.webp";
 import topBannerMobile from "@assets/holimobile.webp";
 import heroBelowSectionImg from "@assets/hero-below-section.svg";
 import howPlanWorksImg from "@assets/how-plan-works.webp";
-import howPlanWorksMsiteImg from "@assets/how-plan-works-msite.png";
+import howPlanWorksMsiteImg from "@assets/how-plan-works-msite.webp";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {

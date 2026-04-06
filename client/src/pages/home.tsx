@@ -62,6 +62,7 @@ import buybackGuaranteeImgBelow from "@assets/Referral_mobile.webp";
 import topBannerDesktop from "@assets/holiwebsite.webp";
 import topBannerMobile from "@assets/holimobile.webp";
 import heroBelowSectionImg from "@assets/hero-below-section.svg";
+import howPlanWorksImg from "@assets/how-plan-works.webp";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {
@@ -1281,143 +1282,13 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* How the plan works? Section */}
-      <section
-        className="bg-white"
-        style={{ paddingTop: "0.5rem", paddingBottom: "0.5rem" }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center gap-2 sm:gap-4 lg:gap-8">
-            <div
-              className="hidden sm:block w-16 lg:w-48"
-              style={{ height: "0.125rem", backgroundColor: "#303e58" }}
-            ></div>
-            <h2
-              className="text-center"
-              style={{
-                fontSize: "clamp(28px, 6vw, 50px)",
-                color: "#303e58",
-                fontFamily: "Poppins, sans-serif",
-                fontWeight: "900",
-                letterSpacing: "-0.42px",
-                lineHeight: "1.22",
-              }}
-            >
-              How the plan
-              <br />
-              works?
-            </h2>
-            <div
-              className="hidden sm:block w-16 lg:w-48"
-              style={{ height: "0.125rem", backgroundColor: "#303e58" }}
-            ></div>
-          </div>
-        </div>
-      </section>
-      {/* How the plan works - Steps Section */}
-      <section className="bg-white py-8 sm:py-12 lg:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Step rows - restructured for mobile layout with headings */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            {/* BBG Column */}
-            <div className="flex flex-col h-full">
-              <h3
-                className="text-center font-black mb-4 sm:mb-6"
-                style={{
-                  color: "#274797",
-                  fontSize: "clamp(20px, 5vw, 1.8rem)",
-                  lineHeight: "1.4",
-                }}
-              >
-                BUY BACK GUARANTEE
-              </h3>
-              <div className="grid gap-3 sm:gap-4 items-stretch flex-1">
-                {[
-                  {
-                    step: "1. Buy BBG",
-                    text: "Activate BBG within 6 months of purchasing your mobile or laptop.",
-                  },
-                  {
-                    step: "2. Register device",
-                    text: "Enter voucher code, IMEI or serial number, and upload your invoice on the BBG portal.",
-                  },
-                  {
-                    step: "3. Usage",
-                    text: "Keep the device functional and retain the box and basic accessories.",
-                  },
-                  {
-                    step: "4. Raise claim",
-                    text: "When upgrading, log in, request a claim, complete doorstep QC, and receive your assured value.",
-                  },
-                ].map((item, index) => (
-                  <div
-                    key={`bbg-${index}`}
-                    className="p-4 sm:p-5 rounded-xl flex flex-col justify-center"
-                    style={{
-                      backgroundColor: "#fff",
-                      border: "2px solid #254696",
-                      borderLeft: "4px solid #254696",
-                    }}
-                  >
-                    <p className="text-sm sm:text-base text-gray-800">
-                      <span className="font-bold text-gray-900">
-                        {item.step}
-                      </span>
-                      <br />
-                      <span className="text-gray-600">{item.text}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Extend+ Column */}
-            <div className="flex flex-col h-full">
-              <h3
-                className="text-center font-black mb-4 sm:mb-6"
-                style={{
-                  color: "#274797",
-                  fontSize: "clamp(20px, 5vw, 1.8rem)",
-                  lineHeight: "1.4",
-                }}
-              >
-                EXTEND+
-              </h3>
-              <div className="grid gap-3 sm:gap-4 items-stretch flex-1">
-                {[
-                  {
-                    step: "1. Buy Extend+",
-                    text: "Choose Extend+ for your mobile or laptop up to 3 years old.",
-                  },
-                  {
-                    step: "2. Register device",
-                    text: "Upload device details, invoice, and ID proof on the portal to activate coverage.",
-                  },
-                  {
-                    step: "3. Use free repair",
-                    text: "Book a visit when needed and get service charges waived as per the plan.",
-                  },
-                  {
-                    step: "4. Use auction support",
-                    text: "Request doorstep auction help and secures the best possible resale price in India.",
-                  },
-                ].map((item, index) => (
-                  <div
-                    key={`extend-${index}`}
-                    className="p-4 sm:p-5 rounded-xl flex flex-col justify-center"
-                    style={{ backgroundColor: "#254696" }}
-                  >
-                    <p className="text-sm sm:text-base text-white">
-                      <span className="font-bold">{item.step}</span>
-                      <br />
-                      <span className="text-white/90">{item.text}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* How the plan works Section */}
+      <section className="w-full">
+        <img
+          src={howPlanWorksImg}
+          alt="How the plan works"
+          className="w-full h-auto block"
+        />
       </section>
       {/* What happens when you raise a request Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-20">

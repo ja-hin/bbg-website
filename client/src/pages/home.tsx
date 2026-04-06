@@ -61,7 +61,8 @@ import bannerImg from "@assets/Referral_website.webp";
 import buybackGuaranteeImgBelow from "@assets/Referral_mobile.webp";
 import topBannerDesktop from "@assets/holiwebsite.webp";
 import topBannerMobile from "@assets/holimobile.webp";
-import heroBelowSectionImg from "@assets/hero-below-section.svg";
+import heroBelowSectionImg from "@assets/hero-below-section.webp";
+import heroBelowSectionMsiteImg from "@assets/hero-below-section-msite.webp";
 import howPlanWorksImg from "@assets/how-plan-works.webp";
 import howPlanWorksMsiteImg from "@assets/how-plan-works-msite.webp";
 
@@ -283,11 +284,14 @@ export default function Home() {
       
       {/* Hero Below Section */}
       <section className="w-full">
-        <img
-          src={heroBelowSectionImg}
-          alt="Value Proposition"
-          className="w-full h-auto block"
-        />
+        <picture>
+          <source media="(max-width: 639px)" srcSet={heroBelowSectionMsiteImg} />
+          <img
+            src={heroBelowSectionImg}
+            alt="Value Proposition"
+            className="w-full h-auto block"
+          />
+        </picture>
       </section>
 
       {/* Smart Plans Section */}

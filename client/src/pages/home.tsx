@@ -63,6 +63,7 @@ import topBannerDesktop from "@assets/holiwebsite.webp";
 import topBannerMobile from "@assets/holimobile.webp";
 import heroBelowSectionImg from "@assets/hero-below-section.svg";
 import howPlanWorksImg from "@assets/how-plan-works.webp";
+import howPlanWorksMsiteImg from "@assets/how-plan-works-msite.png";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {
@@ -1284,11 +1285,14 @@ export default function Home() {
       </section>
       {/* How the plan works Section */}
       <section className="w-full">
-        <img
-          src={howPlanWorksImg}
-          alt="How the plan works"
-          className="w-full h-auto block"
-        />
+        <picture>
+          <source media="(max-width: 639px)" srcSet={howPlanWorksMsiteImg} />
+          <img
+            src={howPlanWorksImg}
+            alt="How the plan works"
+            className="w-full h-auto block"
+          />
+        </picture>
       </section>
       {/* What happens when you raise a request Section */}
       <section className="bg-white py-8 sm:py-12 lg:py-20">

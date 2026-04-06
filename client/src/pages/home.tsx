@@ -59,8 +59,7 @@ import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_17642544524
 import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.webp";
 import bannerImg from "@assets/Referral_website.webp";
 import buybackGuaranteeImgBelow from "@assets/Referral_mobile.webp";
-import buybackGuaranteeImg from "@assets/herobbg.webp";
-import extendPlusImg from "@assets/heroextendplus.webp";
+import buybackGuaranteeImgBelow from "@assets/Referral_mobile.webp";
 import topBannerDesktop from "@assets/holiwebsite.webp";
 import topBannerMobile from "@assets/holimobile.webp";
 import heroBelowSectionImg from "@assets/hero-below-section.svg";
@@ -292,94 +291,6 @@ export default function Home() {
 
       {/* Smart Plans Section */}
 
-      {/* Featured Plans Section */}
-      <section
-        className="px-3 sm:px-6 lg:px-8 py-4 sm:py-6"
-        style={{
-          background: "#FFFFFF",
-        }}
-      >
-        <div className="max-w-7xl mx-auto">
-          {/* Mobile View: Carousel */}
-          <div className="block md:hidden">
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              setApi={(api) => {
-                if (!api) return;
-                api.scrollTo(carouselIndex);
-              }}
-              className="w-full"
-            >
-              <CarouselContent>
-                <CarouselItem>
-                  <div
-                    onClick={scrollToForm}
-                    className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
-                    data-testid="button-featured-bbg-mobile"
-                  >
-                    <img
-                      src={buybackGuaranteeImg}
-                      alt="BuyBack Guarantee"
-                      className="w-full h-auto object-cover"
-                      data-testid="image-buyback-guarantee-mobile"
-                    />
-                  </div>
-                </CarouselItem>
-                <CarouselItem>
-                  <div
-                    onClick={scrollToForm}
-                    className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
-                    data-testid="button-featured-extend-mobile"
-                  >
-                    <img
-                      src={extendPlusImg}
-                      alt="Extend+ Protection"
-                      className="w-full h-auto object-cover"
-                      data-testid="image-extend-plus-mobile"
-                    />
-                  </div>
-                </CarouselItem>
-              </CarouselContent>
-              <CarouselPrevious className="left-2 bg-transparent hover:bg-transparent border-transparent text-white" />
-              <CarouselNext className="right-2 bg-transparent hover:bg-transparent border-transparent text-white" />
-            </Carousel>
-          </div>
-
-          {/* Desktop View: Grid */}
-          <div className="hidden md:grid grid-cols-2 gap-6">
-            {/* BuyBack Guarantee Image */}
-            <div
-              onClick={scrollToForm}
-              className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
-              data-testid="button-featured-bbg"
-            >
-              <img
-                src={buybackGuaranteeImg}
-                alt="BuyBack Guarantee"
-                className="w-full h-auto object-cover"
-                data-testid="image-buyback-guarantee"
-              />
-            </div>
-
-            {/* Extend+ Protection Image */}
-            <div
-              onClick={scrollToForm}
-              className="overflow-hidden cursor-pointer transition-opacity duration-300 hover:opacity-90 rounded-xl"
-              data-testid="button-featured-extend"
-            >
-              <img
-                src={extendPlusImg}
-                alt="Extend+ Protection"
-                className="w-full h-auto object-cover"
-                data-testid="image-extend-plus"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
       {/* Homepage Carousel - Critical path, loads first */}
       <div className="hidden">
         <HomepageCarousel onFirstImageLoaded={handleCarouselFirstImageLoaded} />

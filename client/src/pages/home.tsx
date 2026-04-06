@@ -63,6 +63,7 @@ import buybackGuaranteeImg from "@assets/herobbg.webp";
 import extendPlusImg from "@assets/heroextendplus.webp";
 import topBannerDesktop from "@assets/holiwebsite.webp";
 import topBannerMobile from "@assets/holimobile.webp";
+import youLoseImg from "@assets/you-lose.svg";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {
@@ -277,6 +278,19 @@ export default function Home() {
               className="w-full h-auto object-cover"
             />
           </picture>
+        </div>
+      </section>
+
+      {/* Why Risk It? Section */}
+      <section className="w-full py-12 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto flex flex-col items-center">
+          <div className="max-w-[1000px] w-full overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 hover:scale-[1.01]">
+            <img
+              src={youLoseImg}
+              alt="Don't Lose Out - Get BuyBack Guarantee"
+              className="w-full h-auto object-cover"
+            />
+          </div>
         </div>
       </section>
 

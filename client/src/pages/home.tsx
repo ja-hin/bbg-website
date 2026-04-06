@@ -67,6 +67,13 @@ import youLoseImg from "@assets/you-lose.svg";
 import shinyIphoneImg from "@assets/shiny-iphone.png";
 import crackedIphoneImg from "@assets/cracked-iphone.png";
 import cashStackImg from "@assets/rupee-cash.png";
+import crackedIphoneOriginal from "@assets/banner/cracked-iphone-original.svg";
+import shinyIphoneCash from "@assets/banner/shiny-iphone-cash.svg";
+import cashStandalone from "@assets/banner/cash-standalone.svg";
+import shieldIcon from "@assets/banner/shield-icon.svg";
+import verifiedBadge from "@assets/banner/verified-badge.svg";
+import arrowBlack from "@assets/banner/arrow-black.svg";
+import arrowBlue from "@assets/banner/arrow-blue.svg";
 import { motion } from "framer-motion";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
@@ -286,107 +293,124 @@ export default function Home() {
       </section>
 
       {/* Resale Value Comparison Section */}
-      <section className="w-full py-16 sm:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden" style={{ background: "linear-gradient(180deg, #0F172A 0%, #020617 100%)" }}>
-        {/* Background Decorative Element */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <section className="w-full py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative overflow-hidden" style={{ background: "linear-gradient(180deg, #0F172A 0%, #020617 100%)" }}>
+        {/* Decorative Background Elements */}
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,_rgba(37,99,235,0.1)_0%,_transparent_50%)] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[140px] pointer-events-none" />
 
         <div className="max-w-6xl mx-auto relative z-10">
           {/* Header */}
-          <div className="text-center mb-16 sm:mb-20">
+          <div className="text-center mb-20 sm:mb-24">
             <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-4xl sm:text-5xl lg:text-5xl font-bold text-white mb-4 tracking-tight"
+              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight leading-tight"
               style={{ fontFamily: "Poppins, sans-serif" }}
             >
-              Lock in Up To 70% of Your Device's Resale Value
+              Lock in Up To 70% of Your <br className="hidden sm:block" /> Device's Resale Value
             </motion.h2>
             <motion.p 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-lg sm:text-xl text-gray-300 mb-6"
+              className="text-xl sm:text-2xl text-gray-400 mb-10 max-w-3xl mx-auto"
             >
-              Upgrade anytime without worrying about market price drops.
+              Upgrade anytime without worrying about market price fluctuations.
             </motion.p>
             <motion.div 
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="inline-block px-4 py-2 rounded-lg bg-gray-700/50 text-gray-200 text-sm font-medium"
+              className="inline-flex items-center gap-3 px-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 text-base font-medium backdrop-blur-sm"
             >
+              <Smartphone className="w-5 h-5 text-blue-400" />
               Example: iPhone 17 (Bought at ₹82,900)
             </motion.div>
           </div>
 
           {/* Comparison Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 mb-16">
             {/* Without BBG Card */}
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="rounded-3xl overflow-hidden bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600 p-8 sm:p-10"
+              whileHover={{ scale: 1.01 }}
+              className="relative rounded-[40px] overflow-hidden border border-white/10 bg-white/5 p-10 sm:p-14 flex flex-col group backdrop-blur-3xl shadow-2xl"
             >
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-8 text-center">Without BuyBack Guarantee</h3>
+              <div className="flex flex-col items-center mb-12">
+                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">Without BuyBack Guarantee</h3>
+                <div className="h-1 w-20 bg-red-500/30 rounded-full mt-2" />
+              </div>
               
-              <div className="flex items-center justify-center gap-6 mb-10 min-h-[280px]">
+              <div className="flex items-center justify-center gap-8 mb-16 min-h-[180px]">
                 <div className="flex-1 flex justify-center">
-                  <img src={crackedIphoneImg} alt="Cracked Phone" className="w-32 h-auto object-contain" />
+                  <img src={crackedIphoneOriginal} alt="Cracked Phone" className="w-40 sm:w-56 h-auto object-contain filter grayscale-[0.2] brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700" />
                 </div>
-                <div className="text-3xl text-gray-400">→</div>
+                <div className="flex-shrink-0">
+                  <img src={arrowBlack} alt="Arrow" className="w-10 sm:w-16 h-auto opacity-30 invert" />
+                </div>
                 <div className="flex-1 flex justify-center">
-                  <img src={cashStackImg} alt="Small Cash" className="w-20 h-auto object-contain opacity-70" />
+                  <img src={cashStandalone} alt="Low Resale Value" className="w-24 sm:w-32 h-auto object-contain opacity-50 brightness-75 group-hover:opacity-70 group-hover:brightness-90 transition-all duration-700" />
                 </div>
               </div>
 
-              <div className="text-center">
-                <div className="text-red-400 text-3xl sm:text-4xl font-bold mb-2">
-                  ↓ You lose: ₹37,900
+              <div className="mt-auto text-center">
+                <div className="flex items-center justify-center gap-3 text-red-500 font-bold text-3xl sm:text-4xl mb-3">
+                  <span className="text-4xl">↓</span> You lose: ₹37,900
                 </div>
-                <p className="text-gray-400 text-sm">Normal Resale Value: ₹45,000</p>
+                <p className="text-gray-500 text-lg sm:text-xl font-medium">Normal Resale Value: ₹45,000</p>
               </div>
             </motion.div>
 
             {/* With BBG Card */}
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="rounded-3xl overflow-hidden bg-gradient-to-br from-blue-600/30 to-blue-700/30 border border-blue-500/50 p-8 sm:p-10 relative shadow-xl shadow-blue-500/20"
+              whileHover={{ scale: 1.01 }}
+              className="relative rounded-[40px] overflow-hidden border border-blue-500/20 bg-blue-500/5 p-10 sm:p-14 flex flex-col group backdrop-blur-3xl shadow-[0_0_50px_rgba(37,99,235,0.05)]"
             >
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-8 text-center">With BuyBack Guarantee</h3>
-              
-              <div className="flex items-center justify-center gap-6 mb-10 min-h-[280px]">
-                <div className="flex-1 flex justify-center">
-                  <img src={shinyIphoneImg} alt="Shiny Phone" className="w-32 h-auto object-contain drop-shadow-lg" />
+              {/* Subtle inner glow */}
+              <div className="absolute inset-0 bg-blue-600/[0.03] pointer-events-none" />
+
+              <div className="flex flex-col items-center mb-12">
+                <div className="flex items-center gap-3 mb-2">
+                  <h3 className="text-2xl sm:text-3xl font-bold text-white">With BuyBack Guarantee</h3>
+                  <img src={verifiedBadge} alt="Verified" className="w-6 h-6" />
                 </div>
-                <div className="text-3xl text-blue-400">→</div>
-                <div className="flex-1 flex justify-center">
-                  <img src={cashStackImg} alt="Big Cash" className="w-32 h-auto object-contain" />
+                <div className="h-1 w-20 bg-blue-500/40 rounded-full mt-2" />
+              </div>
+              
+              <div className="flex items-center justify-center gap-8 mb-16 min-h-[180px] relative">
+                {/* Shield background element */}
+                <img src={shieldIcon} alt="Protection" className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-64 h-auto opacity-10 pointer-events-none" />
+                
+                <div className="flex-1 flex justify-center z-10">
+                  {/* Using the combined asset as it matches the original design layout */}
+                  <img src={shinyIphoneCash} alt="Pristine Phone with High Value" className="w-full h-auto max-h-[220px] object-contain drop-shadow-[0_0_30px_rgba(59,130,246,0.3)] group-hover:scale-105 transition-transform duration-700" />
                 </div>
               </div>
 
-              <div className="text-center">
-                <div className="text-green-400 text-3xl sm:text-4xl font-bold mb-2">
-                  ↑ Net Benefit: ₹13,000
+              <div className="mt-auto text-center z-10">
+                <div className="flex items-center justify-center gap-3 text-blue-400 font-bold text-3xl sm:text-4xl mb-3">
+                  <span className="text-4xl">↑</span> Net Benefit: ₹13,000
                 </div>
-                <p className="text-gray-300 text-sm">Best Resale Value: ₹58,000</p>
+                <p className="text-gray-400 text-lg sm:text-xl font-medium">Best Resale Value: ₹58,000</p>
               </div>
             </motion.div>
           </div>
 
           {/* CTA Section */}
-          <div className="text-center">
+          <div className="text-center pt-8">
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               onClick={scrollToForm}
-              className="px-12 py-4 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold text-lg shadow-xl shadow-blue-600/40 hover:shadow-blue-600/60 transition-all mb-4"
+              className="px-14 py-5 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold text-xl shadow-[0_0_40px_rgba(37,99,235,0.4)] hover:shadow-[0_0_60px_rgba(37,99,235,0.6)] transition-all mb-8"
             >
               Start Saving Now
             </motion.button>
@@ -394,10 +418,14 @@ export default function Home() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="inline-block px-6 py-3 rounded-full bg-white/95 text-gray-800 text-sm font-medium shadow-lg"
+              transition={{ delay: 0.3 }}
+              className="flex justify-center"
             >
-              Enjoy additional benefits worth ₹2000
+              <div className="inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-white/5 border border-white/10 text-gray-300 text-sm font-semibold backdrop-blur-md shadow-xl"
+                   style={{ borderTop: "1px solid rgba(255,255,255,0.2)" }}>
+                <Award className="w-5 h-5 text-yellow-500" />
+                Enjoy additional benefits worth ₹2000
+              </div>
             </motion.div>
           </div>
         </div>

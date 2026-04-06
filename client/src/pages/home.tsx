@@ -59,7 +59,6 @@ import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_17642544524
 import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.webp";
 import bannerImg from "@assets/Referral_website.webp";
 import buybackGuaranteeImgBelow from "@assets/Referral_mobile.webp";
-import buybackGuaranteeImgBelow from "@assets/Referral_mobile.webp";
 import topBannerDesktop from "@assets/holiwebsite.webp";
 import topBannerMobile from "@assets/holimobile.webp";
 import heroBelowSectionImg from "@assets/hero-below-section.svg";

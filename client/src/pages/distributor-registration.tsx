@@ -505,14 +505,14 @@ export default function DistributorRegistration() {
         <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Column: Text & Benefits */}
           <div>
-            <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
+            <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-8 leading-tight">
               Start Earning in Minutes
             </h2>
-            <p className="text-lg text-gray-500 mb-10">
+            <p className="text-lg text-gray-500 mb-14">
               Earn ₹100–₹175 for every successful referral sale.
             </p>
 
-            <div className="space-y-5">
+            <div className="space-y-8">
               {[
                 "No upfront costs or joining fees",
                 "24/7 dedicated partner support",
@@ -532,29 +532,29 @@ export default function DistributorRegistration() {
 
           {/* Right Column: Registration Card */}
           <Card className="border border-gray-100 shadow-xl rounded-[2rem] bg-white overflow-hidden p-1">
-            <CardContent className="p-8 md:p-10">
-              <h3 className="text-xl font-bold text-gray-900 mb-6 uppercase tracking-wider">
+            <CardContent className="p-6 md:p-8">
+              <h3 className="text-xl font-bold text-gray-900 mb-5 uppercase tracking-wider">
                 Basic Details
               </h3>
 
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-5"
+                  className="space-y-4"
                 >
-                  <div className="space-y-5">
+                  <div className="space-y-3.5">
                     <FormField
                       control={form.control}
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-600 font-bold text-xs uppercase tracking-wide">
+                          <FormLabel className="text-gray-600 font-bold text-[10px] uppercase tracking-wide">
                             Full Name *
                           </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Enter your full name"
-                              className="bg-gray-50/50 border-gray-100 h-11 text-sm focus:bg-white transition-colors"
+                              className="bg-gray-50/50 border-gray-100 h-10 text-sm focus:bg-white transition-colors"
                               {...field}
                             />
                           </FormControl>
@@ -568,14 +568,14 @@ export default function DistributorRegistration() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-600 font-bold text-xs uppercase tracking-wide">
+                          <FormLabel className="text-gray-600 font-bold text-[10px] uppercase tracking-wide">
                             Email Address *
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="email"
                               placeholder="Enter your email address"
-                              className="bg-gray-50/50 border-gray-100 h-11 text-sm focus:bg-white transition-colors"
+                              className="bg-gray-50/50 border-gray-100 h-10 text-sm focus:bg-white transition-colors"
                               {...field}
                             />
                           </FormControl>
@@ -589,7 +589,7 @@ export default function DistributorRegistration() {
                       name="contact"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-600 font-bold text-xs uppercase tracking-wide">
+                          <FormLabel className="text-gray-600 font-bold text-[10px] uppercase tracking-wide">
                             Phone Number *
                           </FormLabel>
                           <div className="flex gap-2">
@@ -598,7 +598,7 @@ export default function DistributorRegistration() {
                                 placeholder="10-digit mobile"
                                 maxLength={10}
                                 disabled={otpVerified}
-                                className="bg-gray-50/50 border-gray-100 h-11 text-sm focus:bg-white transition-colors"
+                                className="bg-gray-50/50 border-gray-100 h-10 text-sm focus:bg-white transition-colors"
                                 {...field}
                               />
                             </FormControl>
@@ -608,7 +608,7 @@ export default function DistributorRegistration() {
                                 variant="outline"
                                 onClick={handleSendOtp}
                                 disabled={sendOtpMutation.isPending || otpSent}
-                                className="h-11 bg-white border-[#254696] text-[#254696] hover:bg-blue-50 font-bold px-5 text-xs uppercase tracking-wider"
+                                className="h-10 bg-white border-[#254696] text-[#254696] hover:bg-blue-50 font-bold px-4 text-[10px] uppercase tracking-wider"
                               >
                                 {sendOtpMutation.isPending ? (
                                   <Loader2 className="w-3 h-3 animate-spin" />
@@ -630,13 +630,13 @@ export default function DistributorRegistration() {
                           value={otp}
                           onChange={(e) => setOtp(e.target.value)}
                           maxLength={6}
-                          className="bg-gray-50/50 border-gray-100 h-11 text-sm"
+                          className="bg-gray-50/50 border-gray-100 h-10 text-sm"
                         />
                         <Button
                           type="button"
                           onClick={handleVerifyOtp}
                           disabled={verifyOtpMutation.isPending}
-                          className="h-11 bg-[#254696] text-white font-bold px-4 text-xs uppercase tracking-wider"
+                          className="h-10 bg-[#254696] text-white font-bold px-4 text-[10px] uppercase tracking-wider"
                         >
                           {verifyOtpMutation.isPending ? (
                             <Loader2 className="w-3 h-3 animate-spin" />
@@ -648,8 +648,8 @@ export default function DistributorRegistration() {
                     )}
                   </div>
 
-                  <div className="pt-2 space-y-4">
-                    <h3 className="text-sm font-bold text-gray-800 uppercase tracking-widest border-l-4 border-[#254696] pl-3">
+                  <div className="pt-1 space-y-3">
+                    <h3 className="text-[11px] font-bold text-gray-800 uppercase tracking-widest border-l-4 border-[#254696] pl-3">
                       Terms
                     </h3>
 
@@ -662,14 +662,14 @@ export default function DistributorRegistration() {
                             <Checkbox
                               checked={field.value}
                               onCheckedChange={field.onChange}
-                              className="mt-1 border-gray-300"
+                              className="mt-1 border-gray-300 w-4 h-4"
                             />
                           </FormControl>
                           <div className="grid gap-1 leading-none">
-                            <FormLabel className="text-[11px] font-medium text-gray-500 leading-normal cursor-pointer">
+                            <FormLabel className="text-[10px] font-medium text-gray-500 leading-normal cursor-pointer">
                               I confirm the information is accurate and agree
                               to:
-                              <ul className="list-disc ml-4 mt-1.5 space-y-0.5 text-[10px] text-gray-400 font-normal">
+                              <ul className="list-disc ml-4 mt-1 space-y-0.5 text-[9px] text-gray-400 font-normal">
                                 <li>
                                   Payouts subject to TDS as per regulations
                                 </li>
@@ -718,7 +718,7 @@ export default function DistributorRegistration() {
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full h-12 text-sm font-bold bg-[#254696] hover:bg-[#1e3a8a] shadow-lg rounded-xl transition-all"
+                    className="w-full h-11 text-xs font-bold bg-[#254696] hover:bg-[#1e3a8a] shadow-lg rounded-xl transition-all"
                     disabled={
                       !otpVerified ||
                       registerMutation.isPending ||

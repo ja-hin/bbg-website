@@ -649,7 +649,7 @@ export default function DistributorRegistration() {
                   </div>
 
                   <div className="pt-1 space-y-3">
-                    <h3 className="text-[11px] font-bold text-gray-800 uppercase tracking-widest border-l-4 border-[#254696] pl-3">
+                    <h3 className="text-xs font-bold text-gray-800 uppercase tracking-widest border-l-4 border-[#254696] pl-3">
                       Terms
                     </h3>
 
@@ -662,14 +662,14 @@ export default function DistributorRegistration() {
                             <Checkbox
                               checked={field.value}
                               onCheckedChange={field.onChange}
-                              className="mt-1 border-gray-300 w-4 h-4"
+                              className="mt-1 border-gray-300 w-[18px] h-[18px]"
                             />
                           </FormControl>
                           <div className="grid gap-1 leading-none">
-                            <FormLabel className="text-[10px] font-medium text-gray-500 leading-normal cursor-pointer">
+                            <FormLabel className="text-[13px] font-medium text-gray-600 leading-normal cursor-pointer">
                               I confirm the information is accurate and agree
                               to:
-                              <ul className="list-disc ml-4 mt-1 space-y-0.5 text-[9px] text-gray-400 font-normal">
+                              <ul className="list-disc ml-4 mt-1.5 space-y-1 text-[11px] text-gray-400 font-normal">
                                 <li>
                                   Payouts subject to TDS as per regulations
                                 </li>

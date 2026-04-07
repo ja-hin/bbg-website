@@ -32,6 +32,9 @@ import {
   CheckCircle2,
   Smartphone,
   Laptop,
+  Infinity,
+  Zap,
+  Target,
 } from "lucide-react";
 import reffPartnerHero from "@assets/reffpartner-hero.jpeg";
 
@@ -189,6 +192,55 @@ export default function DistributorRegistration() {
           alt="Referral Partner Banner" 
           className="w-full h-auto object-cover"
         />
+      </section>
+
+      {/* ── NET WORTH SECTION ────────────────────────────────────────────────── */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+            Turn Your Network Into Net Worth.
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Zero Earning Caps */}
+            <Card className="border-gray-100 shadow-sm text-center p-8 rounded-2xl">
+              <div className="flex justify-center mb-6">
+                <div className="w-16 h-16 rounded-full bg-[#1e293b] flex items-center justify-center">
+                  <Infinity className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold mb-3">Zero Earning Caps</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                Get paid for 1 referral or 1,000. Flat ₹175 for laptops, ₹100 for mobiles. Your income scales automatically.
+              </p>
+            </Card>
+            
+            {/* 100% Passive Income */}
+            <Card className="border-gray-100 shadow-sm text-center p-8 rounded-2xl">
+              <div className="flex justify-center mb-6">
+                <div className="w-16 h-16 rounded-full bg-[#1e293b] flex items-center justify-center">
+                  <Zap className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold mb-3">100% Passive Income</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                No inventory. No selling. No support tickets. Just share your link once and let our system do the rest.
+              </p>
+            </Card>
+            
+            {/* Live Tracking */}
+            <Card className="border-gray-100 shadow-sm text-center p-8 rounded-2xl">
+              <div className="flex justify-center mb-6">
+                <div className="w-16 h-16 rounded-full bg-[#1e293b] flex items-center justify-center">
+                  <Target className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold mb-3">Live Tracking</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                Stop guessing. Watch your commissions clear in real-time on your dashboard and withdraw straight to your bank.
+              </p>
+            </Card>
+          </div>
+        </div>
       </section>
 
       {/* ── HERO SECTION ─────────────────────────────────────────────────── */}

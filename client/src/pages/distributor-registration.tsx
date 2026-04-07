@@ -43,7 +43,7 @@ import {
   Zap,
   Target,
 } from "lucide-react";
-import reffPartnerHero from "@assets/reffpartner-hero.jpeg";
+import reffPartnerHero from "@assets/reffpartner-hero.webp";
 
 const distributorSchema = z.object({
   name: z.string().min(2, "Full name is required"),

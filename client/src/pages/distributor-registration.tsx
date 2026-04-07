@@ -33,6 +33,7 @@ import {
   Smartphone,
   Laptop,
 } from "lucide-react";
+import reffPartnerHero from "@assets/reffpartner-hero.jpeg";
 
 const distributorSchema = z.object({
   name: z.string().min(2, "Full name is required"),
@@ -181,6 +182,15 @@ export default function DistributorRegistration() {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* ── TOP BANNER ─────────────────────────────────────────────────── */}
+      <section className="w-full overflow-hidden">
+        <img 
+          src={reffPartnerHero} 
+          alt="Referral Partner Banner" 
+          className="w-full h-auto object-cover"
+        />
+      </section>
+
       {/* ── HERO SECTION ─────────────────────────────────────────────────── */}
       <section className="relative py-20 px-4 text-center overflow-hidden"
         style={{ background: "linear-gradient(135deg, #f0f6fb 0%, #f5f9ff 50%, #faf8ff 100%)" }}>

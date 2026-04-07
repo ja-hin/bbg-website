@@ -290,76 +290,76 @@ export default function DistributorRegistration() {
       </section>
 
       {/* ── DASHBOARD PREVIEW SECTION ────────────────────────────────────────────── */}
-      <section className="py-24 px-4 bg-white relative">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">Your Earnings Dashboard</h2>
-            <p className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
+      <section className="py-16 px-4 bg-white relative">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Your Earnings Dashboard</h2>
+            <p className="text-gray-500 text-sm max-w-xl mx-auto leading-relaxed">
               Track referrals, monitor payouts, and grow your income, all in one place.
             </p>
           </div>
 
-          <Card className="border-none shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[2.5rem] overflow-hidden">
+          <Card className="border border-gray-100 shadow-lg rounded-2xl overflow-hidden">
             {/* Dashboard Header */}
-            <div className="bg-[#eef2ff] px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[#254696] rounded-xl flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-white" />
+            <div className="bg-[#eef2ff] px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-[#254696] rounded flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-bold text-xl text-[#1e293b]">Partner Dashboard</span>
+                <span className="font-bold text-base text-[#1e293b]">Partner Dashboard</span>
               </div>
-              <div className="flex gap-3">
-                <Badge variant="secondary" className="bg-[#ecfdf5] text-[#059669] border-none px-4 py-1.5 text-xs font-bold tracking-wider">PAYOUT READY</Badge>
-                <Badge variant="secondary" className="bg-[#ecfdf5] text-[#059669] border-none px-4 py-1.5 text-xs font-bold tracking-wider">UNLIMITED EARNINGS</Badge>
+              <div className="flex gap-2">
+                <Badge variant="secondary" className="bg-[#ecfdf5] text-[#059669] border-none px-2.5 py-1 text-[10px] font-bold tracking-wider">PAYOUT READY</Badge>
+                <Badge variant="secondary" className="bg-[#ecfdf5] text-[#059669] border-none px-2.5 py-1 text-[10px] font-bold tracking-wider">UNLIMITED EARNINGS</Badge>
               </div>
             </div>
 
-            <CardContent className="p-10 md:p-12">
+            <CardContent className="p-6 md:p-8">
               {/* Stats Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-x-12 gap-y-10 mb-16 border-b border-gray-100 pb-16">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8 border-b border-gray-100 pb-8">
                 <div>
-                  <p className="text-gray-400 text-sm mb-3 font-semibold uppercase tracking-wide">Total Referrals Generated</p>
-                  <p className="text-5xl font-extrabold text-gray-900">502</p>
+                  <p className="text-gray-400 text-[11px] mb-1 font-semibold uppercase tracking-wider">Total Referrals Generated</p>
+                  <p className="text-2xl font-bold text-gray-900">502</p>
                 </div>
                 <div>
-                  <p className="text-gray-400 text-sm mb-3 font-semibold uppercase tracking-wide">Total Earnings Earned</p>
-                  <p className="text-5xl font-extrabold text-[#065f46]">₹87,850</p>
+                  <p className="text-gray-400 text-[11px] mb-1 font-semibold uppercase tracking-wider">Total Earnings Earned</p>
+                  <p className="text-2xl font-bold text-[#065f46]">₹87,850</p>
                 </div>
                 <div>
-                  <p className="text-gray-400 text-sm mb-3 font-semibold uppercase tracking-wide">Pending Payouts</p>
-                  <p className="text-5xl font-extrabold text-[#991b1b]">₹3,200</p>
+                  <p className="text-gray-400 text-[11px] mb-1 font-semibold uppercase tracking-wider">Pending Payouts</p>
+                  <p className="text-2xl font-bold text-[#991b1b]">₹3,200</p>
                 </div>
                 <div>
-                  <p className="text-gray-400 text-sm mb-3 font-semibold uppercase tracking-wide">Payouts Completed</p>
-                  <p className="text-5xl font-extrabold text-[#111827]">₹84,650</p>
+                  <p className="text-gray-400 text-[11px] mb-1 font-semibold uppercase tracking-wider">Payouts Completed</p>
+                  <p className="text-2xl font-bold text-[#1e293b]">₹84,650</p>
                 </div>
               </div>
 
               {/* Recent Registrations List */}
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Recent Registrations</h3>
-                <p className="text-gray-500 mb-8">
-                  Customers who registered using your referral code: <span className="font-bold text-[#254696] underline underline-offset-4 decoration-2">JD123</span>
+                <h3 className="text-lg font-bold text-gray-900 mb-1">Recent Registrations</h3>
+                <p className="text-xs text-gray-400 mb-5">
+                  Customers who registered using your referral code: <span className="font-bold text-gray-600">JD123</span>
                 </p>
                 
-                <div className="space-y-5">
+                <div className="space-y-3">
                   {[
                     { device: "Apple iPhone 15", status: "APPROVED", commission: "₹100", type: "mobile" },
                     { device: "Dell XPS 15 Plus", status: "APPROVED", commission: "₹175", type: "laptop" },
                     { device: "Samsung Galaxy S23", status: "PROCESSING", commission: "₹100", type: "mobile" },
                   ].map((reg, idx) => (
-                    <div key={idx} className="flex flex-col md:flex-row items-center justify-between p-5 bg-white border border-gray-100 rounded-[1.5rem] shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-shadow gap-6 group">
-                      <div className="flex items-center gap-5 w-full md:w-auto">
-                        <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100 group-hover:scale-105 transition-transform">
-                          {reg.type === 'mobile' ? <Smartphone className="w-7 h-7 text-gray-500" /> : <Laptop className="w-7 h-7 text-gray-500" />}
+                    <div key={idx} className="flex flex-col sm:flex-row items-center justify-between p-3.5 bg-white border border-gray-100 rounded-xl shadow-sm gap-4 transition-all">
+                      <div className="flex items-center gap-3.5 w-full sm:w-auto">
+                        <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100">
+                          {reg.type === 'mobile' ? <Smartphone className="w-5 h-5 text-gray-400" /> : <Laptop className="w-5 h-5 text-gray-400" />}
                         </div>
-                        <span className="font-bold text-xl text-gray-800">{reg.device}</span>
+                        <span className="font-bold text-base text-gray-800">{reg.device}</span>
                       </div>
-                      <div className="flex flex-col sm:flex-row items-center justify-between md:justify-end gap-x-12 gap-y-4 w-full md:w-auto">
-                        <Badge variant="secondary" className={`${reg.status === 'APPROVED' ? 'bg-[#ecfdf5] text-[#059669]' : 'bg-[#fff7ed] text-[#9a3412]'} border-none px-6 py-2 font-bold text-xs tracking-wide rounded-full`}>
+                      <div className="flex flex-row items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
+                        <Badge variant="secondary" className={`${reg.status === 'APPROVED' ? 'bg-[#ecfdf5] text-[#059669]' : 'bg-[#fff7ed] text-[#9a3412]'} border-none px-3 py-0.5 font-bold text-[10px] rounded-full`}>
                           {reg.status}
                         </Badge>
-                        <span className="text-gray-500 font-medium text-lg whitespace-nowrap">Commission: <span className="text-gray-900 font-extrabold ml-2 text-xl">{reg.commission}</span></span>
+                        <span className="text-xs font-semibold text-gray-400 whitespace-nowrap">Commission: <span className="text-gray-900 font-bold ml-1">{reg.commission}</span></span>
                       </div>
                     </div>
                   ))}

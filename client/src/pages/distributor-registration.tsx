@@ -255,9 +255,9 @@ export default function DistributorRegistration() {
       </section>
 
       {/* ── NET WORTH SECTION ────────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-20 px-4 bg-[#f3f7ff]">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-center text-gray-900 mb-16">
             Turn Your Network Into Net Worth.
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -307,46 +307,50 @@ export default function DistributorRegistration() {
       </section>
 
       {/* ── STEPS SECTION ────────────────────────────────────────────────── */}
-      <section className="py-20 px-4 bg-gray-50/50 relative overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">
+      <section className="py-24 px-4 bg-[#254696] relative overflow-hidden">
+        {/* Decorative elements for the dark section */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48 -mt-48" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48 -mb-48" />
+
+        <div className="max-w-6xl mx-auto relative z-10">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-center text-white mb-20 leading-tight">
             3 Steps to Your First Payout.
           </h2>
           <div className="relative grid md:grid-cols-3 gap-12">
             {/* Dashed Lines (Desktop only) */}
-            <div className="hidden md:block absolute top-[28%] left-[20%] right-[20%] border-t-2 border-dashed border-gray-200 -z-0" />
+            <div className="hidden md:block absolute top-[28%] left-[20%] right-[20%] border-t-2 border-dashed border-white/20 -z-0" />
 
             {/* Step 1 */}
-            <Card className="relative z-10 border-none shadow-sm p-8 rounded-2xl text-center bg-white flex flex-col items-center">
-              <div className="w-16 h-16 bg-[#1e293b] text-white rounded-xl flex items-center justify-center text-3xl font-bold mb-6">
+            <Card className="relative z-10 border-none shadow-2xl p-8 rounded-[2.5rem] text-center bg-[#1e293b]/50 backdrop-blur-sm border border-white/10 flex flex-col items-center">
+              <div className="w-16 h-16 bg-white text-[#254696] rounded-2xl flex items-center justify-center text-3xl font-black mb-8 shadow-xl">
                 1
               </div>
-              <h3 className="text-xl font-bold mb-3">Register in 60 Seconds</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
+              <h3 className="text-xl font-bold mb-4 text-white">Register in 60s</h3>
+              <p className="text-blue-100/70 text-sm leading-relaxed">
                 Quick onboarding with basic details. No complex documentation
                 needed to start.
               </p>
             </Card>
 
             {/* Step 2 */}
-            <Card className="relative z-10 border-none shadow-sm p-8 rounded-2xl text-center bg-white flex flex-col items-center">
-              <div className="w-16 h-16 bg-[#1e293b] text-white rounded-xl flex items-center justify-center text-3xl font-bold mb-6">
+            <Card className="relative z-10 border-none shadow-2xl p-8 rounded-[2.5rem] text-center bg-[#1e293b]/50 backdrop-blur-sm border border-white/10 flex flex-col items-center">
+              <div className="w-16 h-16 bg-white text-[#254696] rounded-2xl flex items-center justify-center text-3xl font-black mb-8 shadow-xl">
                 2
               </div>
-              <h3 className="text-xl font-bold mb-3">Attach & Earn</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
+              <h3 className="text-xl font-bold mb-4 text-white">Attach & Earn</h3>
+              <p className="text-blue-100/70 text-sm leading-relaxed">
                 Link protection plans to every device purchase within your
                 customer network.
               </p>
             </Card>
 
             {/* Step 3 */}
-            <Card className="relative z-10 border-none shadow-sm p-8 rounded-2xl text-center bg-white flex flex-col items-center">
-              <div className="w-16 h-16 bg-[#1e293b] text-white rounded-xl flex items-center justify-center text-3xl font-bold mb-6">
+            <Card className="relative z-10 border-none shadow-2xl p-8 rounded-[2.5rem] text-center bg-[#1e293b]/50 backdrop-blur-sm border border-white/10 flex flex-col items-center">
+              <div className="w-16 h-16 bg-white text-[#254696] rounded-2xl flex items-center justify-center text-3xl font-black mb-8 shadow-xl">
                 3
               </div>
-              <h3 className="text-xl font-bold mb-3">Cash Out</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
+              <h3 className="text-xl font-bold mb-4 text-white">Cash Out</h3>
+              <p className="text-blue-100/70 text-sm leading-relaxed">
                 Receive direct payouts to your bank account with real-time
                 settlement tracking.
               </p>
@@ -497,18 +501,19 @@ export default function DistributorRegistration() {
       {/* ── FINAL CTAs & REGISTRATION ────────────────────────────────────────────── */}
       <section
         id="registration-form"
-        className="py-20 px-4 bg-slate-50 relative overflow-hidden"
+        className="py-24 px-4 bg-gradient-to-br from-[#1e293b] via-[#254696] to-[#4338ca] relative overflow-hidden"
       >
-        {/* Subtle top edge for distinction */}
-        <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-white to-transparent" />
+        {/* Decorative background elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48 -mt-48" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48 -mb-48" />
 
-        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Column: Text & Benefits */}
-          <div>
-            <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-8 leading-tight">
+          <div className="text-white">
+            <h2 className="text-3xl md:text-6xl font-extrabold mb-8 leading-tight">
               Start Earning in Minutes
             </h2>
-            <p className="text-lg text-gray-500 mb-14">
+            <p className="text-xl text-blue-100 mb-14">
               Earn ₹100–₹175 for every successful referral sale.
             </p>
 
@@ -518,11 +523,11 @@ export default function DistributorRegistration() {
                 "24/7 dedicated partner support",
                 "Common marketing assets library included",
               ].map((benefit, idx) => (
-                <div key={idx} className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#254696] flex items-center justify-center">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                <div key={idx} className="flex items-center gap-4">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-white flex items-center justify-center">
+                    <CheckCircle2 className="w-4 h-4 text-[#254696]" />
                   </div>
-                  <span className="text-base font-semibold text-gray-700">
+                  <span className="text-lg font-bold text-white/90">
                     {benefit}
                   </span>
                 </div>

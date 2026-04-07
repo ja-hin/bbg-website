@@ -371,53 +371,52 @@ export default function DistributorRegistration() {
       </section>
 
       {/* ── FINAL CTAs & REGISTRATION ────────────────────────────────────────────── */}
-      <section id="registration-form" className="py-24 px-4 bg-gradient-to-br from-[#1e293b] via-[#254696] to-[#4338ca] relative overflow-hidden">
-        {/* Decorative background elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48 -mt-48" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48 -mb-48" />
+      <section id="registration-form" className="py-20 px-4 bg-slate-50 relative overflow-hidden">
+        {/* Subtle top edge for distinction */}
+        <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-white to-transparent" />
 
-        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Column: Text & Benefits */}
-          <div className="text-white">
-            <h2 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+          <div>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
               Start Earning in Minutes
             </h2>
-            <p className="text-xl text-blue-100 mb-12">
+            <p className="text-lg text-gray-500 mb-10">
               Earn ₹100–₹175 for every successful referral sale.
             </p>
             
-            <div className="space-y-6">
+            <div className="space-y-5">
               {[
                 "No upfront costs or joining fees",
                 "24/7 dedicated partner support",
                 "Common marketing assets library included"
               ].map((benefit, idx) => (
-                <div key={idx} className="flex items-center gap-4">
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-white flex items-center justify-center">
-                    <CheckCircle2 className="w-5 h-5 text-[#254696]" />
+                <div key={idx} className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#254696] flex items-center justify-center">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-white" />
                   </div>
-                  <span className="text-lg font-medium text-white/90">{benefit}</span>
+                  <span className="text-base font-semibold text-gray-700">{benefit}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Right Column: Registration Card */}
-          <Card className="border-none shadow-2xl rounded-[2.5rem] bg-white overflow-hidden p-1">
+          <Card className="border border-gray-100 shadow-xl rounded-[2rem] bg-white overflow-hidden p-1">
             <CardContent className="p-8 md:p-10">
-              <h3 className="text-2xl font-bold text-gray-900 mb-8">Basic Details</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-6 uppercase tracking-wider">Basic Details</h3>
               
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="grid md:grid-cols-1 gap-6">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                  <div className="space-y-5">
                     <FormField
                       control={form.control}
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-bold">Full Name *</FormLabel>
+                          <FormLabel className="text-gray-600 font-bold text-xs uppercase tracking-wide">Full Name *</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter your full name" className="bg-gray-50 border-gray-100 h-12" {...field} />
+                            <Input placeholder="Enter your full name" className="bg-gray-50/50 border-gray-100 h-11 text-sm focus:bg-white transition-colors" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -429,9 +428,9 @@ export default function DistributorRegistration() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-bold">Email Address *</FormLabel>
+                          <FormLabel className="text-gray-600 font-bold text-xs uppercase tracking-wide">Email Address *</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="Enter your email address" className="bg-gray-50 border-gray-100 h-12" {...field} />
+                            <Input type="email" placeholder="Enter your email address" className="bg-gray-50/50 border-gray-100 h-11 text-sm focus:bg-white transition-colors" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -443,14 +442,14 @@ export default function DistributorRegistration() {
                       name="contact"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-bold">Phone Number *</FormLabel>
+                          <FormLabel className="text-gray-600 font-bold text-xs uppercase tracking-wide">Phone Number *</FormLabel>
                           <div className="flex gap-2">
                             <FormControl>
                               <Input
-                                placeholder="Enter 10-digit mobile number"
+                                placeholder="10-digit mobile"
                                 maxLength={10}
                                 disabled={otpVerified}
-                                className="bg-gray-50 border-gray-100 h-12"
+                                className="bg-gray-50/50 border-gray-100 h-11 text-sm focus:bg-white transition-colors"
                                 {...field}
                               />
                             </FormControl>
@@ -460,9 +459,9 @@ export default function DistributorRegistration() {
                                 variant="outline"
                                 onClick={handleSendOtp}
                                 disabled={sendOtpMutation.isPending || otpSent}
-                                className="h-12 bg-white border-[#254696] text-[#254696] hover:bg-blue-50 font-bold px-6"
+                                className="h-11 bg-white border-[#254696] text-[#254696] hover:bg-blue-50 font-bold px-5 text-xs uppercase tracking-wider"
                               >
-                                {sendOtpMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send OTP"}
+                                {sendOtpMutation.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : "Send OTP"}
                               </Button>
                             )}
                           </div>
@@ -474,26 +473,26 @@ export default function DistributorRegistration() {
                     {otpSent && !otpVerified && (
                       <div className="flex gap-2">
                         <Input
-                          placeholder="Enter 6-digit OTP"
+                          placeholder="6-digit OTP"
                           value={otp}
                           onChange={(e) => setOtp(e.target.value)}
                           maxLength={6}
-                          className="bg-gray-50 border-gray-100 h-12"
+                          className="bg-gray-50/50 border-gray-100 h-11 text-sm"
                         />
                         <Button
                           type="button"
                           onClick={handleVerifyOtp}
                           disabled={verifyOtpMutation.isPending}
-                          className="h-12 bg-[#254696] text-white font-bold"
+                          className="h-11 bg-[#254696] text-white font-bold px-4 text-xs uppercase tracking-wider"
                         >
-                          {verifyOtpMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Verify OTP"}
+                          {verifyOtpMutation.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : "Verify"}
                         </Button>
                       </div>
                     )}
                   </div>
 
-                  <div className="pt-4 space-y-4">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4 font-bold">Terms & Declarations</h3>
+                  <div className="pt-2 space-y-4">
+                    <h3 className="text-sm font-bold text-gray-800 uppercase tracking-widest border-l-4 border-[#254696] pl-3">Terms</h3>
                     
                     <FormField
                       control={form.control}
@@ -501,14 +500,14 @@ export default function DistributorRegistration() {
                       render={({ field }) => (
                         <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                           <FormControl>
-                            <Checkbox checked={field.value} onCheckedChange={field.onChange} className="mt-1" />
+                            <Checkbox checked={field.value} onCheckedChange={field.onChange} className="mt-1 border-gray-300" />
                           </FormControl>
-                          <div className="grid gap-1.5 leading-none">
-                            <FormLabel className="text-sm font-medium text-gray-600 leading-normal cursor-pointer">
-                              I confirm that the information provided is accurate and I agree to the following:
-                              <ul className="list-disc ml-5 mt-2 space-y-1 text-xs text-gray-500 font-normal">
-                                <li>Payouts are subject to applicable TDS as per government regulations</li>
-                                <li>If GST registered, I will raise invoices for referral commissions as required</li>
+                          <div className="grid gap-1 leading-none">
+                            <FormLabel className="text-[11px] font-medium text-gray-500 leading-normal cursor-pointer">
+                              I confirm the information is accurate and agree to:
+                              <ul className="list-disc ml-4 mt-1.5 space-y-0.5 text-[10px] text-gray-400 font-normal">
+                                <li>Payouts subject to TDS as per regulations</li>
+                                <li>GST registered partners will raise invoices</li>
                               </ul>
                             </FormLabel>
                           </div>
@@ -516,7 +515,6 @@ export default function DistributorRegistration() {
                       )}
                     />
                     
-                    {/* Hidden fields for other agreements mandated by schema but simplified in UI */}
                     <div className="hidden">
                       <FormField control={form.control} name="tdsUnderstanding" render={({ field }) => (
                         <FormItem><FormControl><Checkbox checked={form.watch('declarationAccuracy')} onCheckedChange={field.onChange} /></FormControl></FormItem>
@@ -530,23 +528,26 @@ export default function DistributorRegistration() {
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full h-14 text-lg font-bold bg-[#254696] hover:bg-[#1e3a8a] shadow-xl rounded-xl transition-all hover:scale-[1.02] active:scale-100"
+                    className="w-full h-12 text-sm font-bold bg-[#254696] hover:bg-[#1e3a8a] shadow-lg rounded-xl transition-all"
                     disabled={!otpVerified || registerMutation.isPending || !form.watch("declarationAccuracy")}
                   >
                     {registerMutation.isPending ? (
-                      <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     ) : (
                       "Start Earning Today"
                     )}
                   </Button>
-                  <p className="text-center text-gray-400 text-sm">
-                    No joining fees. Instant activation.
+                  <p className="text-center text-gray-400 text-[10px] uppercase font-bold tracking-widest">
+                    Free Join • Instant Activation
                   </p>
                 </form>
               </Form>
             </CardContent>
           </Card>
         </div>
+
+        {/* Transition gradient image effect at bottom to blend with blue footer */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-blue-600/5 to-transparent pointer-events-none" />
       </section>
     </div>
   );

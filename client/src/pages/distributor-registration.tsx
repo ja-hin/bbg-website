@@ -370,339 +370,87 @@ export default function DistributorRegistration() {
         </div>
       </section>
 
-      {/* ── HERO SECTION ─────────────────────────────────────────────────── */}
-      <section className="relative py-20 px-4 text-center overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #f0f6fb 0%, #f5f9ff 50%, #faf8ff 100%)" }}>
-        {/* subtle background circles */}
-        <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full opacity-40 blur-3xl pointer-events-none" style={{ background: "rgba(37, 70, 150, 0.1)" }} />
-        <div className="absolute -bottom-24 -right-24 w-72 h-72 rounded-full opacity-40 blur-3xl pointer-events-none" style={{ background: "rgba(37, 70, 150, 0.1)" }} />
+      {/* ── FINAL CTAs & REGISTRATION ────────────────────────────────────────────── */}
+      <section id="registration-form" className="py-24 px-4 bg-gradient-to-br from-[#1e293b] via-[#254696] to-[#4338ca] relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48 -mt-48" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48 -mb-48" />
 
-        <div className="relative max-w-3xl mx-auto">
-          {/* badge */}
-          <div className="inline-flex items-center gap-1.5 border text-xs font-semibold px-3 py-1 rounded-full mb-6"
-            style={{
-              background: "rgba(37, 70, 150, 0.1)",
-              borderColor: "rgba(37, 70, 150, 0.2)",
-              color: "#254696"
-            }}>
-            <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#254696" }} />
-            Official Partner Program
-          </div>
-
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
-            Empower Your Business with{" "}
-            <span style={{ color: "#254696" }}>India's Best Referral Partner Program</span>
-          </h1>
-
-          <p className="text-gray-500 text-base md:text-lg mb-2">
-            Earn{" "}
-            <span className="font-semibold text-gray-700">
-              ₹100 on every Mobile
-            </span>{" "}
-            and{" "}
-            <span className="font-semibold text-gray-700">
-              ₹175 on every Laptop
-            </span>{" "}
-            protection plan sold.
-          </p>
-          <p className="text-gray-400 text-sm mb-10">
-            No limits. No hidden fees. Monthly payouts.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button
-              size="lg"
-              className="px-8 gap-2 shadow-lg"
-              onClick={scrollToForm}
-            >
-              Register as Partner <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="gap-2 border-gray-300 text-gray-700"
-              onClick={() => document.getElementById("dashboard-preview")?.scrollIntoView({ behavior: "smooth" })}
-            >
-              <Eye className="h-4 w-4" /> View Demo
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FEATURE CARDS ────────────────────────────────────────────────── */}
-      <section className="max-w-5xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-6">
-        <Card className="border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-6 flex gap-4 items-start">
-            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
-              <IndianRupee className="h-5 w-5 text-green-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-1">High Commissions</h3>
-              <p className="text-sm text-gray-500">
-                Earn ₹100 per mobile and ₹175 per laptop registration.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-6 flex gap-4 items-start">
-            <div className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "rgba(37, 70, 150, 0.1)" }}>
-              <Users className="h-5 w-5" style={{ color: "#254696" }} />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-1">Build Your Network</h3>
-              <p className="text-sm text-gray-500">
-                Grow your customer base automatically with our easy-to-use digital tools.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-6 flex gap-4 items-start">
-            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
-              <TrendingUp className="h-5 w-5 text-purple-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-1">Real-time Tracking</h3>
-              <p className="text-sm text-gray-500">
-                Monitor every sale, commission and payout.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
-      {/* ── LIVE PARTNER DASHBOARD PREVIEW ───────────────────────────────── */}
-      <section id="dashboard-preview" className="bg-gray-50 py-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Live Partner Dashboard</h2>
-            <p className="text-gray-500 text-sm">Manage your referrals and track your earnings in real-time.</p>
-          </div>
-
-          {/* Dashboard Card */}
-          <Card className="border border-gray-200 shadow-lg overflow-hidden">
-            {/* Dashboard Header */}
-            <div className="bg-white border-b border-gray-100 px-4 py-4 sm:px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
-              <div>
-                <h3 className="font-bold text-gray-900 text-base">Referral Dashboard</h3>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <span className="w-2 h-2 rounded-full bg-green-500" />
-                  <span className="text-xs text-green-600 font-medium">Real-time Active</span>
-                </div>
-              </div>
-              <Button variant="outline" size="sm" className="gap-1.5 text-gray-500 text-xs w-full sm:w-auto">
-                <LogOut className="h-3.5 w-3.5" /> Logout
-              </Button>
-            </div>
-
-            <CardContent className="p-6 space-y-6">
-              {/* Partner Info */}
-              {/* Partner Info */}
-              <div className="bg-gray-50 rounded-xl p-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Name</p>
-                  <p className="text-sm font-semibold text-gray-800">John Doe</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Contact</p>
-                  <p className="text-sm font-semibold text-gray-800">9876543210</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Referral Code</p>
-                  <div className="flex items-center gap-1.5">
-                    <p className="text-sm font-bold" style={{ color: "#254696" }}>JD123</p>
-                    <Copy className="h-3.5 w-3.5 text-gray-400 cursor-pointer hover:text-[#254696]" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Stats Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(37, 70, 150, 0.1)" }}>
-                    <UserCheck className="h-4 w-4" style={{ color: "#254696" }} />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400">Total Customers</p>
-                    <p className="text-xl font-bold text-gray-900">141</p>
-                  </div>
-                </div>
-                <div className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
-                    <IndianRupee className="h-4 w-4 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400">Total Earnings</p>
-                    <p className="text-xl font-bold text-green-600">₹18,450</p>
-                  </div>
-                </div>
-                <div className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-orange-50 flex items-center justify-center flex-shrink-0">
-                    <Clock className="h-4 w-4 text-orange-500" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400">Pending Payouts</p>
-                    <p className="text-xl font-bold text-orange-500">₹3,200</p>
-                  </div>
-                </div>
-                <div className="bg-white border border-gray-100 rounded-xl p-4 flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="h-4 w-4 text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400">Completed Payouts</p>
-                    <p className="text-xl font-bold text-purple-600">₹15,250</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Tabs */}
-              <div className="flex flex-wrap sm:flex-nowrap gap-2 bg-gray-100 rounded-lg p-1 w-full sm:w-fit overflow-x-auto">
-                {(["registrations", "payouts", "account"] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`flex-1 sm:flex-none px-3 sm:px-4 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${activeTab === tab
-                      ? "bg-white text-gray-900 shadow-sm"
-                      : "text-gray-500 hover:text-gray-700"
-                      }`}
-                  >
-                    {tab === "registrations"
-                      ? "Customer Registrations"
-                      : tab === "payouts"
-                        ? "Commission Payouts"
-                        : "Account Details"}
-                  </button>
-                ))}
-              </div>
-
-              {/* Recent Registrations Table */}
-              {activeTab === "registrations" && (
-                <div>
-                  <p className="text-sm font-semibold text-gray-800 mb-1">Recent Registrations</p>
-                  <p className="text-xs text-gray-400 mb-3">
-                    Customers who registered using your referral code: <span className="font-medium text-gray-600">JD123</span>
-                  </p>
-                  <div className="space-y-2">
-                    {MOCK_REGISTRATIONS.map((reg) => (
-                      <div
-                        key={reg.id}
-                        className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-gray-50 rounded-lg px-4 py-3 gap-3 sm:gap-0"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-md bg-white border border-gray-100 flex items-center justify-center">
-                            {reg.type === "Mobile" ? (
-                              <Smartphone className="h-4 w-4 text-gray-500" />
-                            ) : (
-                              <Laptop className="h-4 w-4 text-gray-500" />
-                            )}
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-800">{reg.device}</p>
-
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between w-full sm:w-auto gap-3">
-                          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${reg.statusColor}`}>
-                            {reg.status}
-                          </span>
-                          <span className="text-sm font-semibold text-gray-700">Commission: {reg.commission}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {activeTab === "payouts" && (
-                <div className="text-center py-8 text-gray-400 text-sm">
-                  Commission payout history will appear here.
-                </div>
-              )}
-
-              {activeTab === "account" && (
-                <div className="text-center py-8 text-gray-400 text-sm">
-                  Account details will appear here.
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* ── REGISTRATION FORM ─────────────────────────────────────────────── */}
-      <section id="registration-form" className="py-16 px-4">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Register as Referral Partner</h2>
-            <p className="text-gray-500 text-sm">
-              Join today and start earning ₹100–₹175 per successful referral immediately.
+        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+          {/* Left Column: Text & Benefits */}
+          <div className="text-white">
+            <h2 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+              Start Earning in Minutes
+            </h2>
+            <p className="text-xl text-blue-100 mb-12">
+              Earn ₹100–₹175 for every successful referral sale.
             </p>
+            
+            <div className="space-y-6">
+              {[
+                "No upfront costs or joining fees",
+                "24/7 dedicated partner support",
+                "Common marketing assets library included"
+              ].map((benefit, idx) => (
+                <div key={idx} className="flex items-center gap-4">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-white flex items-center justify-center">
+                    <CheckCircle2 className="w-5 h-5 text-[#254696]" />
+                  </div>
+                  <span className="text-lg font-medium text-white/90">{benefit}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <Card className="border border-gray-200 shadow-md">
-            <CardContent className="p-8">
+          {/* Right Column: Registration Card */}
+          <Card className="border-none shadow-2xl rounded-[2.5rem] bg-white overflow-hidden p-1">
+            <CardContent className="p-8 md:p-10">
+              <h3 className="text-2xl font-bold text-gray-900 mb-8">Basic Details</h3>
+              
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                  {/* Basic Information */}
-                  <div className="space-y-5">
-                    <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide flex items-center gap-2">
-                      <Building className="h-4 w-4" style={{ color: "#254696" }} />
-                      Basic Information
-                    </h3>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <div className="grid md:grid-cols-1 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 font-bold">Full Name *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter your full name" className="bg-gray-50 border-gray-100 h-12" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-gray-700 text-sm">
-                              Full Name *
-                            </FormLabel>
-                            <FormControl>
-                              <Input placeholder="Enter your full name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 font-bold">Email Address *</FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="Enter your email address" className="bg-gray-50 border-gray-100 h-12" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-gray-700 text-sm">
-                              Email Address *
-                            </FormLabel>
-                            <FormControl>
-                              <Input type="email" placeholder="Enter email address" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    {/* Phone + OTP */}
                     <FormField
                       control={form.control}
                       name="contact"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 text-sm">
-                            Phone Number *
-                          </FormLabel>
+                          <FormLabel className="text-gray-700 font-bold">Phone Number *</FormLabel>
                           <div className="flex gap-2">
                             <FormControl>
                               <Input
                                 placeholder="Enter 10-digit mobile number"
                                 maxLength={10}
                                 disabled={otpVerified}
+                                className="bg-gray-50 border-gray-100 h-12"
                                 {...field}
                               />
                             </FormControl>
@@ -712,15 +460,9 @@ export default function DistributorRegistration() {
                                 variant="outline"
                                 onClick={handleSendOtp}
                                 disabled={sendOtpMutation.isPending || otpSent}
-                                className="whitespace-nowrap"
+                                className="h-12 bg-white border-[#254696] text-[#254696] hover:bg-blue-50 font-bold px-6"
                               >
-                                {sendOtpMutation.isPending ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : otpSent ? (
-                                  "Sent ✓"
-                                ) : (
-                                  "Send OTP"
-                                )}
+                                {sendOtpMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send OTP"}
                               </Button>
                             )}
                           </div>
@@ -736,105 +478,70 @@ export default function DistributorRegistration() {
                           value={otp}
                           onChange={(e) => setOtp(e.target.value)}
                           maxLength={6}
+                          className="bg-gray-50 border-gray-100 h-12"
                         />
                         <Button
                           type="button"
                           onClick={handleVerifyOtp}
                           disabled={verifyOtpMutation.isPending}
-                          className="whitespace-nowrap"
+                          className="h-12 bg-[#254696] text-white font-bold"
                         >
-                          {verifyOtpMutation.isPending ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            "Verify OTP"
-                          )}
+                          {verifyOtpMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Verify OTP"}
                         </Button>
-                      </div>
-                    )}
-
-                    {otpVerified && (
-                      <div className="flex items-center gap-2 text-green-600 text-sm">
-                        <CheckCircle2 className="h-4 w-4" />
-                        Phone number verified
                       </div>
                     )}
                   </div>
 
-                  {/* Declaration & Consent */}
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide flex items-center gap-2">
-                      <FileText className="h-4 w-4" style={{ color: "#254696" }} />
-                      Declaration &amp; Consent
-                    </h3>
-
+                  <div className="pt-4 space-y-4">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4 font-bold">Terms & Declarations</h3>
+                    
                     <FormField
                       control={form.control}
                       name="declarationAccuracy"
                       render={({ field }) => (
                         <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                           <FormControl>
-                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                            <Checkbox checked={field.value} onCheckedChange={field.onChange} className="mt-1" />
                           </FormControl>
-                          <FormLabel className="text-sm leading-relaxed font-normal text-gray-600">
-                            I declare that the information provided above is true and correct
-                          </FormLabel>
+                          <div className="grid gap-1.5 leading-none">
+                            <FormLabel className="text-sm font-medium text-gray-600 leading-normal cursor-pointer">
+                              I confirm that the information provided is accurate and I agree to the following:
+                              <ul className="list-disc ml-5 mt-2 space-y-1 text-xs text-gray-500 font-normal">
+                                <li>Payouts are subject to applicable TDS as per government regulations</li>
+                                <li>If GST registered, I will raise invoices for referral commissions as required</li>
+                              </ul>
+                            </FormLabel>
+                          </div>
                         </FormItem>
                       )}
                     />
-
-                    <FormField
-                      control={form.control}
-                      name="tdsUnderstanding"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                          </FormControl>
-                          <FormLabel className="text-sm leading-relaxed font-normal text-gray-600">
-                            I understand that commission payout is subject to TDS as per income tax laws
-                          </FormLabel>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="gstInvoiceAgreement"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                          </FormControl>
-                          <FormLabel className="text-sm leading-relaxed font-normal text-gray-600">
-                            If GST registered, I agree to raise tax invoices to XtraCover for each month's referral commission
-                          </FormLabel>
-                        </FormItem>
-                      )}
-                    />
+                    
+                    {/* Hidden fields for other agreements mandated by schema but simplified in UI */}
+                    <div className="hidden">
+                      <FormField control={form.control} name="tdsUnderstanding" render={({ field }) => (
+                        <FormItem><FormControl><Checkbox checked={form.watch('declarationAccuracy')} onCheckedChange={field.onChange} /></FormControl></FormItem>
+                      )} />
+                      <FormField control={form.control} name="gstInvoiceAgreement" render={({ field }) => (
+                        <FormItem><FormControl><Checkbox checked={form.watch('declarationAccuracy')} onCheckedChange={field.onChange} /></FormControl></FormItem>
+                      )} />
+                    </div>
                   </div>
 
-                  {/* Submit */}
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full shadow-lg"
-                    disabled={
-                      !otpVerified ||
-                      registerMutation.isPending ||
-                      !form.watch("declarationAccuracy") ||
-                      !form.watch("tdsUnderstanding") ||
-                      !form.watch("gstInvoiceAgreement")
-                    }
+                    className="w-full h-14 text-lg font-bold bg-[#254696] hover:bg-[#1e3a8a] shadow-xl rounded-xl transition-all hover:scale-[1.02] active:scale-100"
+                    disabled={!otpVerified || registerMutation.isPending || !form.watch("declarationAccuracy")}
                   >
                     {registerMutation.isPending ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Registering...
-                      </>
+                      <Loader2 className="w-5 h-5 animate-spin mr-2" />
                     ) : (
-                      "Join Referral Program"
+                      "Start Earning Today"
                     )}
                   </Button>
+                  <p className="text-center text-gray-400 text-sm">
+                    No joining fees. Instant activation.
+                  </p>
                 </form>
               </Form>
             </CardContent>

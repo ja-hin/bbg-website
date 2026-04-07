@@ -243,6 +243,52 @@ export default function DistributorRegistration() {
         </div>
       </section>
 
+      {/* ── STEPS SECTION ────────────────────────────────────────────────── */}
+      <section className="py-20 px-4 bg-gray-50/50 relative overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">
+            3 Steps to Your First Payout.
+          </h2>
+          <div className="relative grid md:grid-cols-3 gap-12">
+            {/* Dashed Lines (Desktop only) */}
+            <div className="hidden md:block absolute top-[28%] left-[20%] right-[20%] border-t-2 border-dashed border-gray-200 -z-0" />
+            
+            {/* Step 1 */}
+            <Card className="relative z-10 border-none shadow-sm p-8 rounded-2xl text-center bg-white flex flex-col items-center">
+              <div className="w-16 h-16 bg-[#1e293b] text-white rounded-xl flex items-center justify-center text-3xl font-bold mb-6">
+                1
+              </div>
+              <h3 className="text-xl font-bold mb-3">Register in 60 Seconds</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                Quick onboarding with basic details. No complex documentation needed to start.
+              </p>
+            </Card>
+            
+            {/* Step 2 */}
+            <Card className="relative z-10 border-none shadow-sm p-8 rounded-2xl text-center bg-white flex flex-col items-center">
+              <div className="w-16 h-16 bg-[#1e293b] text-white rounded-xl flex items-center justify-center text-3xl font-bold mb-6">
+                2
+              </div>
+              <h3 className="text-xl font-bold mb-3">Attach & Earn</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                Link protection plans to every device purchase within your customer network.
+              </p>
+            </Card>
+            
+            {/* Step 3 */}
+            <Card className="relative z-10 border-none shadow-sm p-8 rounded-2xl text-center bg-white flex flex-col items-center">
+              <div className="w-16 h-16 bg-[#1e293b] text-white rounded-xl flex items-center justify-center text-3xl font-bold mb-6">
+                3
+              </div>
+              <h3 className="text-xl font-bold mb-3">Cash Out</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                Receive direct payouts to your bank account with real-time settlement tracking.
+              </p>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* ── HERO SECTION ─────────────────────────────────────────────────── */}
       <section className="relative py-20 px-4 text-center overflow-hidden"
         style={{ background: "linear-gradient(135deg, #f0f6fb 0%, #f5f9ff 50%, #faf8ff 100%)" }}>

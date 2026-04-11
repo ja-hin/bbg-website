@@ -65,8 +65,10 @@ import heroBelowSectionImg from "@assets/hero-below-section.webp";
 import heroBelowSectionMsiteImg from "@assets/hero-below-section-msite.webp";
 import howPlanWorksImg from "@assets/how-plan-works.webp";
 import howPlanWorksMsiteImg from "@assets/how-plan-works-msite.webp";
-import pricingLaptopHeader from "@assets/pricing_laptop_header.png";
-import pricingMobileHeader from "@assets/pricing_mobile_header.png";
+import pricingLaptopHeaderBBG from "@assets/pricing_laptop_header_bbg.png";
+import pricingLaptopHeaderExtend from "@assets/pricing_laptop_header_extend.png";
+import pricingMobileHeaderBBG from "@assets/pricing_mobile_header_bbg.png";
+import pricingMobileHeaderExtend from "@assets/pricing_mobile_header_extend.png";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {
@@ -580,20 +582,21 @@ export default function Home() {
                           backgroundColor: "#0F172A",
                         }}
                       >
-                        <div className="flex justify-between items-center w-full z-10">
+                        <div className="absolute inset-0 z-0">
+                          <img 
+                            src={pricingLaptopHeaderBBG} 
+                            alt="Laptop BBG Header" 
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/20" />
+                        </div>
+                        <div className="flex justify-between items-center w-full z-10 relative">
                           <div className="flex-1">
                             <h3 className="text-2xl sm:text-3xl font-black leading-tight">
                               BuyBack
                               <br />
                               Guarantee
                             </h3>
-                          </div>
-                          <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-32 sm:w-44 opacity-90 pointer-events-none z-0">
-                            <img 
-                              src={pricingLaptopHeader} 
-                              alt="Laptop Protection" 
-                              className="w-full h-auto object-contain"
-                            />
                           </div>
                           <div className="text-right flex flex-col items-end">
                             <div className="bg-[#FF6B6B] text-white text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-md mb-2 shadow-sm inline-block">
@@ -760,20 +763,21 @@ export default function Home() {
                           backgroundColor: "#0F172A",
                         }}
                       >
-                        <div className="flex justify-between items-center w-full z-10">
+                        <div className="absolute inset-0 z-0">
+                          <img 
+                            src={pricingLaptopHeaderExtend} 
+                            alt="Laptop Extend Header" 
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/20" />
+                        </div>
+                        <div className="flex justify-between items-center w-full z-10 relative">
                           <div className="flex-1">
                             <h3 className="text-2xl sm:text-3xl font-black leading-tight">
                               Extend+
                               <br />
                               Protection
                             </h3>
-                          </div>
-                          <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-32 sm:w-44 opacity-90 pointer-events-none z-0">
-                            <img 
-                              src={pricingLaptopHeader} 
-                              alt="Laptop Protection" 
-                              className="w-full h-auto object-contain"
-                            />
                           </div>
                           <div className="text-right flex flex-col items-end">
                             <div className="bg-[#FF6B6B] text-white text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-md mb-2 shadow-sm inline-block">
@@ -952,20 +956,21 @@ export default function Home() {
                           backgroundColor: "#0F172A",
                         }}
                       >
-                        <div className="flex justify-between items-center w-full z-10">
+                        <div className="absolute inset-0 z-0">
+                          <img 
+                            src={pricingMobileHeaderBBG} 
+                            alt="Mobile BBG Header" 
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/20" />
+                        </div>
+                        <div className="flex justify-between items-center w-full z-10 relative">
                           <div className="flex-1">
                             <h3 className="text-2xl sm:text-3xl font-black leading-tight">
                               BuyBack
                               <br />
                               Guarantee
                             </h3>
-                          </div>
-                          <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-32 sm:w-44 opacity-90 pointer-events-none z-0">
-                            <img 
-                              src={pricingMobileHeader} 
-                              alt="Mobile Protection" 
-                              className="w-full h-auto object-contain"
-                            />
                           </div>
                           <div className="text-right flex flex-col items-end">
                             <div className="bg-[#FF6B6B] text-white text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-md mb-2 shadow-sm inline-block">
@@ -1132,20 +1137,21 @@ export default function Home() {
                           backgroundColor: "#0F172A",
                         }}
                       >
-                        <div className="flex justify-between items-center w-full z-10">
+                        <div className="absolute inset-0 z-0">
+                          <img 
+                            src={pricingMobileHeaderExtend} 
+                            alt="Mobile Extend+ Header" 
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/20" />
+                        </div>
+                        <div className="flex justify-between items-center w-full z-10 relative">
                           <div className="flex-1">
                             <h3 className="text-2xl sm:text-3xl font-black leading-tight">
                               Extend+
                               <br />
                               Protection
                             </h3>
-                          </div>
-                          <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-32 sm:w-44 opacity-90 pointer-events-none z-0">
-                            <img 
-                              src={pricingMobileHeader} 
-                              alt="Mobile Protection" 
-                              className="w-full h-auto object-contain"
-                            />
                           </div>
                           <div className="text-right flex flex-col items-end">
                             <div className="bg-[#FF6B6B] text-white text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-md mb-2 shadow-sm inline-block">

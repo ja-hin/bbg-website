@@ -124,7 +124,7 @@ const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
 
   return (
     <div className="w-full flex flex-col pt-2">
-      <div className="flex justify-between items-center px-4 mb-2">
+      <div className="flex items-center justify-between gap-3 sm:gap-4 px-4 mb-2 min-w-0">
         <span className="text-[12px] font-bold text-gray-500 uppercase tracking-wide">
           DEVICE AGE
         </span>
@@ -585,7 +585,7 @@ export default function Home() {
                             backgroundColor: "var(--xtra-primary)",
                           }}
                         >
-                          <div className="flex justify-between items-center w-full relative z-10">
+                          <div className="flex items-center justify-between gap-3 sm:gap-4 w-full min-w-0 relative z-10">
                             <div className="flex-1">
                               <h3 className="text-xl sm:text-3xl font-black leading-tight">
                                 BuyBack
@@ -622,7 +622,7 @@ export default function Home() {
 
                       {/* 2x2 Benefits Grid */}
                       <div className="flex-grow p-4 sm:p-6">
-                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
                           {/* Resale Value */}
                           <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                             <ProgressCircle percentage={70} />
@@ -757,7 +757,7 @@ export default function Home() {
                             backgroundColor: "var(--xtra-primary)",
                           }}
                         >
-                          <div className="flex justify-between items-center w-full relative z-10">
+                          <div className="flex items-center justify-between gap-3 sm:gap-4 w-full min-w-0 relative z-10">
                             <div className="flex-1">
                               <h3 className="text-xl sm:text-3xl font-black leading-tight">
                                 Extend+
@@ -794,7 +794,7 @@ export default function Home() {
 
                       {/* 2x2 Benefits Grid */}
                       <div className="flex-grow p-4 sm:p-6">
-                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
                           {/* Doorstep Auction */}
                           <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                             <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
@@ -880,7 +880,7 @@ export default function Home() {
                             backgroundColor: "var(--xtra-primary)",
                           }}
                         >
-                          <div className="flex justify-between items-center w-full relative z-10">
+                          <div className="flex items-center justify-between gap-3 sm:gap-4 w-full min-w-0 relative z-10">
                             <div className="flex-1">
                               <h3 className="text-xl sm:text-3xl font-black leading-tight">
                                 BuyBack
@@ -917,7 +917,7 @@ export default function Home() {
 
                       {/* 2x2 Benefits Grid */}
                       <div className="flex-grow p-4 sm:p-6">
-                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
                           {/* Resale Value */}
                           <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                             <ProgressCircle percentage={70} />
@@ -1052,7 +1052,7 @@ export default function Home() {
                             backgroundColor: "var(--xtra-primary)",
                           }}
                         >
-                          <div className="flex justify-between items-center w-full relative z-10">
+                          <div className="flex items-center justify-between gap-3 sm:gap-4 w-full min-w-0 relative z-10">
                             <div className="flex-1">
                               <h3 className="text-xl sm:text-3xl font-black leading-tight">
                                 Extend+
@@ -1089,7 +1089,7 @@ export default function Home() {
 
                       {/* 2x2 Benefits Grid */}
                       <div className="flex-grow p-4 sm:p-6">
-                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
                           {/* Doorstep Auction */}
                           <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                             <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">

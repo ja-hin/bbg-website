@@ -81,7 +81,7 @@ const PlanProductCard = ({
         className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
         style={{ background: accent }}
       >
-        <div className="flex justify-between items-center w-full relative z-10">
+        <div className="flex items-center justify-between gap-3 sm:gap-4 w-full min-w-0 relative z-10">
           <div className="flex-1">
             <h3 className="text-2xl sm:text-3xl font-bold leading-tight">
               {title}
@@ -113,7 +113,7 @@ const PlanProductCard = ({
       </div>
 
       <div className="flex-grow p-4 sm:p-5">
-        <div className="grid grid-cols-2 gap-4 h-full">
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4 h-full">
           <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
             <div className="w-10 h-10 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative shadow-sm">
               <div className="w-10 h-10 rounded-full border-4 border-[#254696] border-t-transparent animate-spin" />

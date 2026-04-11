@@ -764,9 +764,10 @@ export default function DistributorRegistration() {
                     className="w-full h-11 text-xs font-bold bg-[#254696] hover:bg-[#1e3a8a] shadow-lg rounded-xl transition-all"
                     disabled={
                       registerMutation.isPending ||
-                      !form.watch("declarationAccuracy") ||
-                      !form.watch("tdsUnderstanding") ||
-                      !form.watch("gstInvoiceAgreement")
+                      !form.watch("name") ||
+                      !form.watch("email") ||
+                      !form.watch("contact") ||
+                      !otpVerified
                     }
                   >
                     {registerMutation.isPending ? (

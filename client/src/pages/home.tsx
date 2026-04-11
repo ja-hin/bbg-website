@@ -747,19 +747,15 @@ export default function Home() {
 
                 {/* Laptop Extend+ Card */}
                 <div
-                  className="w-full flex flex-col flip-card min-h-[400px]"
+                  className="w-full flex flex-col min-h-[400px]"
                   data-testid="card-laptop-extend"
                 >
-                  <div
-                    className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopExtendFlipped ? "flipped" : ""}`}
-                  >
-                    {/* Front Face */}
-                    <div className="flip-card-front rounded-[2rem] overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl">
+                  <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl h-full">
                       {/* Header with Background and Asset */}
                         <div
                           className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
                           style={{
-                            backgroundColor: "#0F172A",
+                            backgroundColor: "var(--xtra-primary)",
                           }}
                         >
                           <div className="flex justify-between items-center w-full relative z-10">
@@ -852,82 +848,16 @@ export default function Home() {
 
                         <div className="mt-4 flex flex-col items-center gap-3">
                           <button
-                            onClick={() => setLaptopExtendFlipped(!laptopExtendFlipped)}
-                            className="text-gray-400 hover:text-gray-600 text-xs font-medium underline transition-colors"
-                            data-testid="button-know-more-laptop-extend"
-                          >
-                            Know More
-                          </button>
-                          <button
                             onClick={scrollToForm}
-                            className="w-full bg-[#0F172A] text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                            className="w-full bg-xtra-primary text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                            style={{ backgroundColor: "var(--xtra-primary)" }}
                             data-testid="button-explore-laptop-extend"
                           >
                             Explore Plans
                           </button>
                         </div>
                       </div>
-                    </div>
-                    {/* Back Face */}
-                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                      <div
-                        className="p-4 sm:p-5 text-white text-center"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #254696, #1F4B88)",
-                        }}
-                      >
-                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                          Extend+ Program Benefits
-                        </h3>
-                        <p className="text-xs sm:text-sm mb-3 opacity-95">
-                          Professional care for your pre-owned device
-                        </p>
-                      </div>
-                      <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-6">
-                        <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 space-y-3">
-                          <div className="flex items-start gap-3">
-                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-gray-700 font-medium">Auction your device at the best market value through 100+ verified buyers.</p>
-                          </div>
-                          <div className="flex items-start gap-3">
-                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-gray-700 font-medium">Service charge waiver on one major repair during the plan validity.</p>
-                          </div>
-                          <div className="flex items-start gap-3">
-                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-gray-700 font-medium">Valid for 24 months from the date of plan registration.</p>
-                          </div>
-                        </div>
-                        <p
-                          className="text-xs sm:text-sm text-center italic"
-                          style={{ color: "#666666" }}
-                        >
-                          *Spare parts and logistics costs for repairs are not covered under the service charge waiver.
-                        </p>
-                      </div>
-                      <div className="px-6 sm:px-8 pb-3 sm:pb-4 space-y-2">
-                        <button
-                          onClick={() => setLaptopExtendFlipped(false)}
-                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
-                          style={{ color: "#254696" }}
-                          data-testid="button-back-laptop-extend"
-                        >
-                          Back
-                        </button>
-                        <button
-                          onClick={scrollToForm}
-                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
-                          style={{
-                            background:
-                              "linear-gradient(90deg, #254696, #1F4B88)",
-                          }}
-                        >
-                          Explore Plans
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                </div>
                 </div>
 
                 {/* Laptop Bundle Card removed */}
@@ -1119,19 +1049,15 @@ export default function Home() {
 
                 {/* Mobile Extend+ Card */}
                 <div
-                  className="w-full flex flex-col flip-card min-h-[400px]"
+                  className="w-full flex flex-col min-h-[400px]"
                   data-testid="card-mobile-extend"
                 >
-                  <div
-                    className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileExtendFlipped ? "flipped" : ""}`}
-                  >
-                    {/* Front Face */}
-                    <div className="flip-card-front rounded-[2rem] overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl">
+                  <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl h-full">
                       {/* Header with Background and Asset */}
                         <div
                           className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
                           style={{
-                            backgroundColor: "#0F172A",
+                            backgroundColor: "var(--xtra-primary)",
                           }}
                         >
                           <div className="flex justify-between items-center w-full relative z-10">
@@ -1224,15 +1150,9 @@ export default function Home() {
 
                         <div className="mt-4 flex flex-col items-center gap-3">
                           <button
-                            onClick={() => setMobileExtendFlipped(!mobileExtendFlipped)}
-                            className="text-gray-400 hover:text-gray-600 text-xs font-medium underline transition-colors"
-                            data-testid="button-know-more-mobile-extend"
-                          >
-                            Know More
-                          </button>
-                          <button
                             onClick={scrollToForm}
-                            className="w-full bg-[#0F172A] text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                            className="w-full bg-xtra-primary text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                            style={{ backgroundColor: "var(--xtra-primary)" }}
                             data-testid="button-explore-mobile-extend"
                           >
                             Explore Plans
@@ -1240,66 +1160,7 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                    {/* Back Face */}
-                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                      <div
-                        className="p-4 sm:p-5 text-white text-center"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #254696, #1F4B88)",
-                        }}
-                      >
-                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                          Extend+ Program Benefits
-                        </h3>
-                        <p className="text-xs sm:text-sm mb-3 opacity-95">
-                          Professional care for your pre-owned device
-                        </p>
-                      </div>
-                      <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-4">
-                        <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 space-y-3">
-                          <div className="flex items-start gap-3">
-                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-gray-700 font-medium">Auction your device at the best market value through 100+ verified buyers.</p>
-                          </div>
-                          <div className="flex items-start gap-3">
-                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-gray-700 font-medium">Service charge waiver on one major repair during the plan validity.</p>
-                          </div>
-                          <div className="flex items-start gap-3">
-                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-gray-700 font-medium">Valid for 24 months from the date of plan registration.</p>
-                          </div>
-                        </div>
-                        <p
-                          className="text-xs sm:text-sm text-center italic"
-                          style={{ color: "#666666" }}
-                        >
-                          *Spare parts and logistics costs for repairs are not covered under the service charge waiver.
-                        </p>
-                      </div>
-                      <div className="px-4 sm:px-5 pb-2 sm:pb-3 space-y-2">
-                        <button
-                          onClick={() => setMobileExtendFlipped(false)}
-                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
-                          style={{ color: "#254696" }}
-                          data-testid="button-back-mobile-extend"
-                        >
-                          Back
-                        </button>
-                        <button
-                          onClick={scrollToForm}
-                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
-                          style={{
-                            background:
-                              "linear-gradient(90deg, #254696, #1F4B88)",
-                          }}
-                        >
-                          Explore Plans
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                </div>
                 </div>
 
                 {/* Mobile Bundle Card removed */}

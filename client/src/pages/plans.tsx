@@ -847,7 +847,7 @@ export default function Plans() {
                         <div
                           className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
                           style={{
-                            background: "linear-gradient(135deg, #254696, #1F4B88)",
+                            background: "var(--xtra-primary)",
                           }}
                         >
                           <div className="flex justify-between items-center w-full relative z-10">
@@ -991,8 +991,7 @@ export default function Plans() {
                       <Button
                         className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{
-                          background:
-                            "linear-gradient(90deg, #254696, #1F4B88)",
+                          background: "var(--xtra-primary)",
                         }}
                         onClick={() => handleBuyNow(laptopExtendPlan)}
                         disabled={pricesLoading || !laptopExtendPlan}
@@ -1018,7 +1017,7 @@ export default function Plans() {
                         <div
                           className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
                           style={{
-                            background: "linear-gradient(135deg, #254696, #1F4B88)",
+                            background: "var(--xtra-primary)",
                           }}
                         >
                           <div className="flex justify-between items-center w-full relative z-10">
@@ -1162,8 +1161,7 @@ export default function Plans() {
                       <Button
                         className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{
-                          background:
-                            "linear-gradient(90deg, #254696, #1F4B88)",
+                          background: "var(--xtra-primary)",
                         }}
                         onClick={() => handleBuyNow(mobileExtendPlan)}
                         disabled={pricesLoading || !mobileExtendPlan}

@@ -249,7 +249,10 @@ export default function DistributorRegistration() {
   return (
     <div className="min-h-screen bg-white">
       {/* ── TOP BANNER ─────────────────────────────────────────────────── */}
-      <section className="w-full overflow-hidden">
+      <section 
+        className="w-full overflow-hidden cursor-pointer transition-opacity hover:opacity-95"
+        onClick={scrollToForm}
+      >
         {/* Desktop Banner */}
         <img
           src={reffPartnerHero}

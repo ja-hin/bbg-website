@@ -594,7 +594,7 @@ export default function Plans() {
                           {/* Upgrade Offers */}
                           <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
                             <div className="w-10 h-10 flex-shrink-0 bg-[#EFF6FF] rounded-xl flex items-center justify-center shadow-sm">
-                               <Gift className="w-6 h-6 text-[#3B82F6]" />
+                              <TrendingUp className="w-6 h-6 text-[#3B82F6]" />
                             </div>
                             <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Product Upgrade Offers</h4>
                             <p className="text-[10px] text-gray-500 mt-1 leading-tight">Exclusive deals for your next device</p>

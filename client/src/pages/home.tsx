@@ -587,30 +587,30 @@ export default function Home() {
                         >
                           <div className="flex justify-between items-center w-full relative z-10">
                             <div className="flex-1">
-                              <h3 className="text-2xl sm:text-3xl font-black leading-tight">
+                              <h3 className="text-xl sm:text-3xl font-black leading-tight">
                                 BuyBack
                                 <br />
                                 Guarantee
                               </h3>
                             </div>
-                            <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-[-10px] sm:right-[25%] top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
                               <img 
                                 src={pricingLaptopHeaderBBG} 
                                 alt="Laptop Guarantee" 
                                 className="w-full h-auto object-contain"
                               />
                             </div>
-                            <div className="text-right flex flex-col items-end">
-                              <div className="bg-[#FF6B6B] text-white text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-md mb-2 shadow-sm inline-block">
+                            <div className="text-right flex flex-col items-end z-10">
+                              <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
                                 OFFER
                               </div>
                               <div className="flex flex-col items-end">
-                                <span className="text-xl sm:text-2xl text-white/50 line-through font-medium">
+                                <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
                                   ₹1299
                                 </span>
-                                <div className="text-3xl sm:text-4xl font-black text-[#FFD700]">
+                                <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
                                   {pricesLoading ? (
-                                    <Loader2 className="h-8 w-8 animate-spin" />
+                                    <Loader2 className="h-6 w-6 animate-spin" />
                                   ) : (
                                     `₹${getLaptopBBGPrice()}`
                                   )}
@@ -622,51 +622,48 @@ export default function Home() {
 
                       {/* 2x2 Benefits Grid */}
                       <div className="flex-grow p-4 sm:p-6">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
                           {/* Resale Value */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                             <ProgressCircle percentage={70} />
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">Guaranteed resale value</h4>
-                              <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mt-1">Get back up to 70% of your device's purchase price when you sell it back</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Guaranteed resale value</h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Get up to 70% of device price back</p>
                             </div>
                           </div>
 
                           {/* Repair Service */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
-                              <Wrench className="w-7 h-7 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
+                              <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">Accidental Damage Repair Service</h4>
-                              <ul className="text-[10px] sm:text-[11px] text-gray-500 mt-1 space-y-0.5">
-                                <li>• Protection for your existing device</li>
-                                <li>• Begins after brand warranty ends</li>
-                                <li>• ₹0 service cost on repair</li>
-                              </ul>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">Repair Service Warranty</h4>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">• Protection for your device</p>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">₹0 service cost on repair</p>
                             </div>
                           </div>
 
                           {/* Upgrade Offers */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                               <Gift className="w-8 h-8 sm:w-10 sm:h-10 text-[#3B82F6]" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
+                               <Gift className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">Best Product Upgrade Offers</h4>
-                              <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mt-1">Exclusive deals for your next device purchase</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Best Upgrade Offers</h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Exclusive deals for next purchase</p>
                             </div>
                           </div>
 
                           {/* Extended Warranty */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
-                               <Percent className="w-7 h-7 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
+                               <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
                                <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">20% Off on 1-Year Extended Warranty</h4>
-                              <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mt-1">Save 20% on protection of your next device purchase</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">20% Off Warranty</h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Save 20% on next protection</p>
                             </div>
                           </div>
                         </div>
@@ -762,30 +759,30 @@ export default function Home() {
                         >
                           <div className="flex justify-between items-center w-full relative z-10">
                             <div className="flex-1">
-                              <h3 className="text-2xl sm:text-3xl font-black leading-tight">
+                              <h3 className="text-xl sm:text-3xl font-black leading-tight">
                                 Extend+
                                 <br />
                                 Protection
                               </h3>
                             </div>
-                            <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-[-10px] sm:right-[25%] top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
                               <img 
                                 src={pricingLaptopHeaderExtend} 
                                 alt="Laptop Protection" 
                                 className="w-full h-auto object-contain"
                               />
                             </div>
-                            <div className="text-right flex flex-col items-end">
-                              <div className="bg-[#FF6B6B] text-white text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-md mb-2 shadow-sm inline-block">
+                            <div className="text-right flex flex-col items-end z-10">
+                              <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
                                 OFFER
                               </div>
                               <div className="flex flex-col items-end">
-                                <span className="text-xl sm:text-2xl text-white/50 line-through font-medium">
+                                <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
                                   ₹1299
                                 </span>
-                                <div className="text-3xl sm:text-4xl font-black text-[#FFD700]">
+                                <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
                                   {pricesLoading ? (
-                                    <Loader2 className="h-8 w-8 animate-spin" />
+                                    <Loader2 className="h-6 w-6 animate-spin" />
                                   ) : (
                                     `₹${getLaptopExtendPrice()}`
                                   )}
@@ -797,53 +794,50 @@ export default function Home() {
 
                       {/* 2x2 Benefits Grid */}
                       <div className="flex-grow p-4 sm:p-6">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
                           {/* Doorstep Auction */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                              <Gavel className="w-8 h-8 sm:w-10 sm:h-10 text-[#254696]" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
+                              <Gavel className="w-7 h-7 sm:w-10 sm:h-10 text-[#254696]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">Doorstep Device Auction</h4>
-                              <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mt-1">Get 10-20% higher market value through our exclusive buyer network</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Doorstep Auction</h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Get 10-20% higher market value</p>
                             </div>
                           </div>
 
                           {/* Repair Service */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
-                              <Wrench className="w-7 h-7 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
+                              <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">Accidental Damage Repair Service</h4>
-                              <ul className="text-[10px] sm:text-[11px] text-gray-500 mt-1 space-y-0.5">
-                                <li>• Protection for your existing device</li>
-                                <li>• Begins after brand warranty ends</li>
-                                <li>• ₹0 service cost on repair</li>
-                              </ul>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">Repair Service Warranty</h4>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">• Protection for your device</p>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">₹0 service cost on repair</p>
                             </div>
                           </div>
 
                           {/* Upgrade Offers */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                               <Gift className="w-8 h-8 sm:w-10 sm:h-10 text-[#3B82F6]" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
+                               <Gift className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">Best Product Upgrade Offers</h4>
-                              <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mt-1">Exclusive deals for your next device purchase</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Best Upgrade Offers</h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Exclusive deals for next purchase</p>
                             </div>
                           </div>
 
                           {/* Extended Warranty */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
-                               <Percent className="w-7 h-7 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
+                               <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
                                <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">20% Off on 1-Year Extended Warranty</h4>
-                              <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mt-1">Save 20% on protection of your next device purchase</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">20% Off Warranty</h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Save 20% on next protection</p>
                             </div>
                           </div>
                         </div>
@@ -888,30 +882,30 @@ export default function Home() {
                         >
                           <div className="flex justify-between items-center w-full relative z-10">
                             <div className="flex-1">
-                              <h3 className="text-2xl sm:text-3xl font-black leading-tight">
+                              <h3 className="text-xl sm:text-3xl font-black leading-tight">
                                 BuyBack
                                 <br />
                                 Guarantee
                               </h3>
                             </div>
-                            <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-[-10px] sm:right-[25%] top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
                               <img 
                                 src={pricingMobileHeaderBBG} 
                                 alt="Mobile Guarantee" 
                                 className="w-full h-auto object-contain"
                               />
                             </div>
-                            <div className="text-right flex flex-col items-end">
-                              <div className="bg-[#FF6B6B] text-white text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-md mb-2 shadow-sm inline-block">
+                            <div className="text-right flex flex-col items-end z-10">
+                              <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
                                 OFFER
                               </div>
                               <div className="flex flex-col items-end">
-                                <span className="text-xl sm:text-2xl text-white/50 line-through font-medium">
+                                <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
                                   ₹999
                                 </span>
-                                <div className="text-3xl sm:text-4xl font-black text-[#FFD700]">
+                                <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
                                   {pricesLoading ? (
-                                    <Loader2 className="h-8 w-8 animate-spin" />
+                                    <Loader2 className="h-6 w-6 animate-spin" />
                                   ) : (
                                     `₹${getMobileBBGPrice()}`
                                   )}
@@ -923,51 +917,48 @@ export default function Home() {
 
                       {/* 2x2 Benefits Grid */}
                       <div className="flex-grow p-4 sm:p-6">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
                           {/* Resale Value */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                             <ProgressCircle percentage={70} />
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">Guaranteed resale value</h4>
-                              <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mt-1">Get back up to 70% of your device's purchase price when you sell it back</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Guaranteed resale value</h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Get up to 70% of device price back</p>
                             </div>
                           </div>
 
                           {/* Repair Service */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
-                              <Wrench className="w-7 h-7 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
+                              <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">Accidental Damage Repair Service</h4>
-                              <ul className="text-[10px] sm:text-[11px] text-gray-500 mt-1 space-y-0.5">
-                                <li>• Protection for your existing device</li>
-                                <li>• Begins after brand warranty ends</li>
-                                <li>• ₹0 service cost on repair</li>
-                              </ul>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">Repair Service Warranty</h4>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">• Protection for your device</p>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">₹0 service cost on repair</p>
                             </div>
                           </div>
 
                           {/* Upgrade Offers */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                               <Gift className="w-8 h-8 sm:w-10 sm:h-10 text-[#3B82F6]" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
+                               <Gift className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">Best Product Upgrade Offers</h4>
-                              <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mt-1">Exclusive deals for your next device purchase</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Best Upgrade Offers</h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Exclusive deals for next purchase</p>
                             </div>
                           </div>
 
                           {/* Extended Warranty */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
-                               <Percent className="w-7 h-7 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
+                               <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
                                <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">20% Off on 1-Year Extended Warranty</h4>
-                              <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mt-1">Save 20% on protection of your next device purchase</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">20% Off Warranty</h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Save 20% on next protection</p>
                             </div>
                           </div>
                         </div>
@@ -1063,30 +1054,30 @@ export default function Home() {
                         >
                           <div className="flex justify-between items-center w-full relative z-10">
                             <div className="flex-1">
-                              <h3 className="text-2xl sm:text-3xl font-black leading-tight">
+                              <h3 className="text-xl sm:text-3xl font-black leading-tight">
                                 Extend+
                                 <br />
                                 Protection
                               </h3>
                             </div>
-                            <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-[-10px] sm:right-[25%] top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
                               <img 
                                 src={pricingMobileHeaderExtend} 
                                 alt="Mobile Protection" 
                                 className="w-full h-auto object-contain"
                               />
                             </div>
-                            <div className="text-right flex flex-col items-end">
-                              <div className="bg-[#FF6B6B] text-white text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-md mb-2 shadow-sm inline-block">
+                            <div className="text-right flex flex-col items-end z-10">
+                              <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
                                 OFFER
                               </div>
                               <div className="flex flex-col items-end">
-                                <span className="text-xl sm:text-2xl text-white/50 line-through font-medium">
+                                <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
                                   ₹999
                                 </span>
-                                <div className="text-3xl sm:text-4xl font-black text-[#FFD700]">
+                                <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
                                   {pricesLoading ? (
-                                    <Loader2 className="h-8 w-8 animate-spin" />
+                                    <Loader2 className="h-6 w-6 animate-spin" />
                                   ) : (
                                     `₹${getMobileExtendPrice()}`
                                   )}
@@ -1098,53 +1089,50 @@ export default function Home() {
 
                       {/* 2x2 Benefits Grid */}
                       <div className="flex-grow p-4 sm:p-6">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
                           {/* Doorstep Auction */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                              <Gavel className="w-8 h-8 sm:w-10 sm:h-10 text-[#254696]" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
+                              <Gavel className="w-7 h-7 sm:w-10 sm:h-10 text-[#254696]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">Doorstep Device Auction</h4>
-                              <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mt-1">Get 10-20% higher market value through our buyer network</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Doorstep Auction</h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Get 10-20% higher market value</p>
                             </div>
                           </div>
 
                           {/* Repair Service */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
-                              <Wrench className="w-7 h-7 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
+                              <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">Accidental Damage Repair Service</h4>
-                              <ul className="text-[10px] sm:text-[11px] text-gray-500 mt-1 space-y-0.5">
-                                <li>• Protection for your existing device</li>
-                                <li>• Begins after brand warranty ends</li>
-                                <li>• ₹0 service cost on repair</li>
-                              </ul>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">Repair Service Warranty</h4>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">• Protection for your device</p>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">₹0 service cost on repair</p>
                             </div>
                           </div>
 
                           {/* Upgrade Offers */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                               <Gift className="w-8 h-8 sm:w-10 sm:h-10 text-[#3B82F6]" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
+                               <Gift className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">Best Product Upgrade Offers</h4>
-                              <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mt-1">Exclusive deals for your next device purchase</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Best Upgrade Offers</h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Exclusive deals for next purchase</p>
                             </div>
                           </div>
 
                           {/* Extended Warranty */}
-                          <div className="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-50">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
-                               <Percent className="w-7 h-7 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
+                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
+                               <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
                                <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-[#1F2937]">20% Off on 1-Year Extended Warranty</h4>
-                              <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed mt-1">Save 20% on protection of your next device purchase</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">20% Off Warranty</h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Save 20% on next protection</p>
                             </div>
                           </div>
                         </div>

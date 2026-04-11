@@ -386,7 +386,7 @@ export default function Plans() {
                               Guarantee your resale value
                             </p>
                           </div>
-                          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                          <div className="absolute left-[30%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
                              <img 
                                src={pricingLaptopHeaderBBG} 
                                alt="Laptop BBG" 
@@ -627,7 +627,7 @@ export default function Plans() {
                                 Guarantee your resale value
                               </p>
                             </div>
-                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute left-[30%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
                                <img 
                                  src={pricingMobileHeaderBBG} 
                                  alt="Mobile BBG" 
@@ -862,7 +862,7 @@ export default function Plans() {
                                 Auction your device at the best market value
                               </p>
                             </div>
-                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute left-[30%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
                                <img 
                                  src={pricingLaptopHeaderExtend} 
                                  alt="Laptop Extend" 
@@ -1033,7 +1033,7 @@ export default function Plans() {
                                 Auction your device at the best market value
                               </p>
                             </div>
-                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute left-[30%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
                                <img 
                                  src={pricingMobileHeaderExtend} 
                                  alt="Mobile Extend" 

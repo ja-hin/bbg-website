@@ -1161,7 +1161,6 @@ export default function Home() {
                       </div>
                     </div>
                 </div>
-                </div>
 
                 {/* Mobile Bundle Card removed */}
               </>

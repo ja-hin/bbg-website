@@ -49,7 +49,10 @@ const ProgressCircle = ({ percentage }: { percentage: number }) => (
         className="origin-center transition-all duration-1000 ease-out"
       />
     </svg>
-    <span className="absolute text-[10px] sm:text-xs font-bold" style={{ color: "#1F2937" }}>
+    <span
+      className="absolute text-[10px] sm:text-xs font-bold"
+      style={{ color: "#1F2937" }}
+    >
       {percentage}%
     </span>
   </div>
@@ -87,7 +90,11 @@ const PlanProductCard = ({
             </h3>
           </div>
           <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
-            <img src={headerImage} alt={title} className="w-full h-auto object-contain" />
+            <img
+              src={headerImage}
+              alt={title}
+              className="w-full h-auto object-contain"
+            />
           </div>
           <div className="text-right flex flex-col items-end pt-2">
             <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
@@ -527,46 +534,46 @@ export default function Plans() {
                     {/* Front Face */}
                     <div className="flip-card-front rounded-[2rem] overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl">
                       {/* Header */}
-                        <div
-                          className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
-                          style={{
-                            backgroundColor: "var(--xtra-primary)",
-                          }}
-                        >
-                          <div className="flex justify-between items-center w-full relative z-10">
-                            <div className="flex-1">
-                              <h3 className="text-xl sm:text-3xl font-black leading-tight">
-                                BuyBack
-                                <br />
-                                Guarantee
-                              </h3>
+                      <div
+                        className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
+                        style={{
+                          backgroundColor: "var(--xtra-primary)",
+                        }}
+                      >
+                        <div className="flex justify-between items-center w-full relative z-10">
+                          <div className="flex-1">
+                            <h3 className="text-xl sm:text-3xl font-black leading-tight">
+                              BuyBack
+                              <br />
+                              Guarantee
+                            </h3>
+                          </div>
+                          <div className="absolute left-[20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <img
+                              src={pricingLaptopHeaderBBG}
+                              alt="Laptop BBG"
+                              className="w-full h-auto object-contain"
+                            />
+                          </div>
+                          <div className="text-right flex flex-col items-end z-10">
+                            <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
+                              OFFER
                             </div>
-                            <div className="absolute left-[-5px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
-                               <img 
-                                 src={pricingLaptopHeaderBBG} 
-                                 alt="Laptop BBG" 
-                                 className="w-full h-auto object-contain"
-                               />
-                            </div>
-                            <div className="text-right flex flex-col items-end z-10">
-                              <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
-                                OFFER
-                              </div>
-                              <div className="flex flex-col items-end">
-                                <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
-                                  ₹1299
-                                </span>
-                                <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
-                                  {pricesLoading ? (
-                                    <Loader2 className="h-6 w-6 animate-spin" />
-                                  ) : (
-                                    `₹${laptopBBGPlan?.planPrice || "--"}`
-                                  )}
-                                </div>
+                            <div className="flex flex-col items-end">
+                              <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
+                                ₹1299
+                              </span>
+                              <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
+                                {pricesLoading ? (
+                                  <Loader2 className="h-6 w-6 animate-spin" />
+                                ) : (
+                                  `₹${laptopBBGPlan?.planPrice || "--"}`
+                                )}
                               </div>
                             </div>
                           </div>
                         </div>
+                      </div>
 
                       {/* 2x2 Benefits Grid */}
                       <div className="flex-grow p-4 sm:p-6">
@@ -575,8 +582,12 @@ export default function Plans() {
                           <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                             <ProgressCircle percentage={70} />
                             <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Guaranteed resale value</h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Get up to 70% of device price back</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
+                                Guaranteed resale value
+                              </h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
+                                Get up to 70% of device price back
+                              </p>
                             </div>
                           </div>
 
@@ -586,39 +597,55 @@ export default function Plans() {
                               <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">Repair Service Warranty</h4>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">• Protection for your device</p>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">₹0 service cost on repair</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">
+                                Repair Service Warranty
+                              </h4>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
+                                • Protection for your device
+                              </p>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
+                                ₹0 service cost on repair
+                              </p>
                             </div>
                           </div>
 
                           {/* Upgrade Offers */}
                           <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                             <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                               <TrendingUp className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
+                              <TrendingUp className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Best Upgrade Offers</h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Exclusive deals for next purchase</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
+                                Best Upgrade Offers
+                              </h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
+                                Exclusive deals for next purchase
+                              </p>
                             </div>
                           </div>
 
                           {/* Extended Warranty */}
                           <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                             <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
-                               <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
-                               <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
+                              <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
+                              <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">20% Off Warranty</h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Save 20% on next protection</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
+                                20% Off Warranty
+                              </h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
+                                Save 20% on next protection
+                              </p>
                             </div>
                           </div>
                         </div>
 
                         <div className="mt-4 flex flex-col items-center gap-3">
                           <button
-                            onClick={() => setLaptopBBGFlipped(!laptopBBGFlipped)}
+                            onClick={() =>
+                              setLaptopBBGFlipped(!laptopBBGFlipped)
+                            }
                             className="text-gray-400 hover:text-gray-600 text-xs font-medium underline transition-colors"
                             data-testid="button-know-more-laptop-bbg"
                           >
@@ -708,46 +735,46 @@ export default function Plans() {
                     {/* Front Face */}
                     <div className="flip-card-front rounded-[2rem] overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl">
                       {/* Header */}
-                        <div
-                          className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
-                          style={{
-                            backgroundColor: "var(--xtra-primary)",
-                          }}
-                        >
-                          <div className="flex justify-between items-center w-full relative z-10">
-                            <div className="flex-1">
-                              <h3 className="text-xl sm:text-3xl font-black leading-tight">
-                                BuyBack
-                                <br />
-                                Guarantee
-                              </h3>
+                      <div
+                        className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
+                        style={{
+                          backgroundColor: "var(--xtra-primary)",
+                        }}
+                      >
+                        <div className="flex justify-between items-center w-full relative z-10">
+                          <div className="flex-1">
+                            <h3 className="text-xl sm:text-3xl font-black leading-tight">
+                              BuyBack
+                              <br />
+                              Guarantee
+                            </h3>
+                          </div>
+                          <div className="absolute left-[20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <img
+                              src={pricingMobileHeaderBBG}
+                              alt="Mobile BBG"
+                              className="w-full h-auto object-contain"
+                            />
+                          </div>
+                          <div className="text-right flex flex-col items-end z-10">
+                            <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
+                              OFFER
                             </div>
-                            <div className="absolute left-[-5px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
-                               <img 
-                                 src={pricingMobileHeaderBBG} 
-                                 alt="Mobile BBG" 
-                                 className="w-full h-auto object-contain"
-                               />
-                            </div>
-                            <div className="text-right flex flex-col items-end z-10">
-                              <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
-                                OFFER
-                              </div>
-                              <div className="flex flex-col items-end">
-                                <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
-                                  ₹999
-                                </span>
-                                <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
-                                  {pricesLoading ? (
-                                    <Loader2 className="h-6 w-6 animate-spin" />
-                                  ) : (
-                                    `₹${mobileBBGPlan?.planPrice || "--"}`
-                                  )}
-                                </div>
+                            <div className="flex flex-col items-end">
+                              <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
+                                ₹999
+                              </span>
+                              <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
+                                {pricesLoading ? (
+                                  <Loader2 className="h-6 w-6 animate-spin" />
+                                ) : (
+                                  `₹${mobileBBGPlan?.planPrice || "--"}`
+                                )}
                               </div>
                             </div>
                           </div>
                         </div>
+                      </div>
 
                       {/* 2x2 Benefits Grid */}
                       <div className="flex-grow p-4 sm:p-6">
@@ -756,8 +783,12 @@ export default function Plans() {
                           <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                             <ProgressCircle percentage={70} />
                             <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Guaranteed resale value</h4>
-                              <p className="text-[10px] text-gray-500 mt-1 leading-tight">Get up to 70% of device price back</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
+                                Guaranteed resale value
+                              </h4>
+                              <p className="text-[10px] text-gray-500 mt-1 leading-tight">
+                                Get up to 70% of device price back
+                              </p>
                             </div>
                           </div>
 
@@ -767,39 +798,55 @@ export default function Plans() {
                               <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">Repair Service Warranty</h4>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">• Protection for your device</p>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">₹0 service cost on repair</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">
+                                Repair Service Warranty
+                              </h4>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
+                                • Protection for your device
+                              </p>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
+                                ₹0 service cost on repair
+                              </p>
                             </div>
                           </div>
 
                           {/* Upgrade Offers */}
                           <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                             <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                               <TrendingUp className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
+                              <TrendingUp className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Best Upgrade Offers</h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Exclusive deals for your next purchase</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
+                                Best Upgrade Offers
+                              </h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
+                                Exclusive deals for your next purchase
+                              </p>
                             </div>
                           </div>
 
                           {/* Extended Warranty */}
                           <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                             <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
-                               <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
-                               <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
+                              <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
+                              <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
                             </div>
                             <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">20% Off Warranty</h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Save 20% on next protection</p>
+                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
+                                20% Off Warranty
+                              </h4>
+                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
+                                Save 20% on next protection
+                              </p>
                             </div>
                           </div>
                         </div>
 
                         <div className="mt-4 flex flex-col items-center gap-3">
                           <button
-                            onClick={() => setMobileBBGFlipped(!mobileBBGFlipped)}
+                            onClick={() =>
+                              setMobileBBGFlipped(!mobileBBGFlipped)
+                            }
                             className="text-gray-400 hover:text-gray-600 text-xs font-medium underline transition-colors"
                             data-testid="button-know-more-mobile-bbg"
                           >
@@ -885,114 +932,132 @@ export default function Plans() {
                 >
                   <div className="rounded-[2rem] overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl h-full">
                     {/* Header */}
-                        <div
-                          className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
-                          style={{
-                            backgroundColor: "var(--xtra-primary)",
-                          }}
-                        >
-                          <div className="flex justify-between items-center w-full relative z-10">
-                            <div className="flex-1">
-                              <h3 className="text-xl sm:text-3xl font-black leading-tight">
-                                Extend+
-                                <br />
-                                Protection
-                              </h3>
-                            </div>
-                            <div className="absolute left-[-5px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
-                               <img 
-                                 src={pricingLaptopHeaderExtend} 
-                                 alt="Laptop Extend" 
-                                 className="w-full h-auto object-contain"
-                               />
-                            </div>
-                            <div className="text-right flex flex-col items-end z-10">
-                              <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
-                                OFFER
-                              </div>
-                              <div className="flex flex-col items-end">
-                                <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
-                                  ₹1299
-                                </span>
-                                <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
-                                  {pricesLoading ? (
-                                    <Loader2 className="h-6 w-6 animate-spin" />
-                                  ) : (
-                                    `₹${laptopExtendPlan?.planPrice || "--"}`
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                    <div
+                      className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
+                      style={{
+                        backgroundColor: "var(--xtra-primary)",
+                      }}
+                    >
+                      <div className="flex justify-between items-center w-full relative z-10">
+                        <div className="flex-1">
+                          <h3 className="text-xl sm:text-3xl font-black leading-tight">
+                            Extend+
+                            <br />
+                            Protection
+                          </h3>
                         </div>
-
-                      {/* 2x2 Benefits Grid */}
-                      <div className="flex-grow p-4 sm:p-6">
-                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
-                          {/* Doorstep Auction */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                              <Gavel className="w-7 h-7 sm:w-10 sm:h-10 text-[#254696]" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Doorstep Auction</h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Get 10-20% higher market value</p>
-                            </div>
-                          </div>
-
-                          {/* Repair Service */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
-                              <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">Repair Service Warranty</h4>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">• Protection for your device</p>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">₹0 service cost on repair</p>
-                            </div>
-                          </div>
-
-                          {/* Upgrade Offers */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                               <TrendingUp className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Best Upgrade Offers</h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Exclusive deals for next purchase</p>
-                            </div>
-                          </div>
-
-                          {/* Extended Warranty */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
-                               <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
-                               <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">20% Off Warranty</h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Save 20% on next protection</p>
-                            </div>
-                          </div>
+                        <div className="absolute left-[20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
+                          <img
+                            src={pricingLaptopHeaderExtend}
+                            alt="Laptop Extend"
+                            className="w-full h-auto object-contain"
+                          />
                         </div>
-
-                        <div className="mt-4 flex flex-col items-center gap-3">
-                          <Button
-                            className="w-full text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
-                            style={{ backgroundColor: "var(--xtra-primary)" }}
-                            onClick={() => handleBuyNow(laptopExtendPlan)}
-                            disabled={pricesLoading || !laptopExtendPlan}
-                            data-testid="button-buy-laptop-extend"
-                          >
-                            {pricesLoading ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              "Buy Now"
-                            )}
-                          </Button>
+                        <div className="text-right flex flex-col items-end z-10">
+                          <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
+                            OFFER
+                          </div>
+                          <div className="flex flex-col items-end">
+                            <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
+                              ₹1299
+                            </span>
+                            <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
+                              {pricesLoading ? (
+                                <Loader2 className="h-6 w-6 animate-spin" />
+                              ) : (
+                                `₹${laptopExtendPlan?.planPrice || "--"}`
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+
+                    {/* 2x2 Benefits Grid */}
+                    <div className="flex-grow p-4 sm:p-6">
+                      <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
+                        {/* Doorstep Auction */}
+                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
+                            <Gavel className="w-7 h-7 sm:w-10 sm:h-10 text-[#254696]" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
+                              Doorstep Auction
+                            </h4>
+                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
+                              Get 10-20% higher market value
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Repair Service */}
+                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
+                            <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">
+                              Repair Service Warranty
+                            </h4>
+                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
+                              • Protection for your device
+                            </p>
+                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
+                              ₹0 service cost on repair
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Upgrade Offers */}
+                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
+                            <TrendingUp className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
+                              Best Upgrade Offers
+                            </h4>
+                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
+                              Exclusive deals for next purchase
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Extended Warranty */}
+                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
+                            <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
+                            <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
+                              20% Off Warranty
+                            </h4>
+                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
+                              Save 20% on next protection
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 flex flex-col items-center gap-3">
+                        <Button
+                          className="w-full text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ backgroundColor: "var(--xtra-primary)" }}
+                          onClick={() => handleBuyNow(laptopExtendPlan)}
+                          disabled={pricesLoading || !laptopExtendPlan}
+                          data-testid="button-buy-laptop-extend"
+                        >
+                          {pricesLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            "Buy Now"
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -1003,113 +1068,131 @@ export default function Plans() {
                 >
                   <div className="rounded-[2rem] overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl h-full">
                     {/* Header */}
-                        <div
-                          className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
-                          style={{
-                            backgroundColor: "var(--xtra-primary)",
-                          }}
-                        >
-                          <div className="flex justify-between items-center w-full relative z-10">
-                            <div className="flex-1">
-                              <h3 className="text-xl sm:text-3xl font-black leading-tight">
-                                Extend+
-                                <br />
-                                Protection
-                              </h3>
-                            </div>
-                            <div className="absolute left-[-20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
-                               <img 
-                                 src={pricingMobileHeaderExtend} 
-                                 alt="Mobile Extend" 
-                                 className="w-full h-auto object-contain"
-                               />
-                            </div>
-                            <div className="text-right flex flex-col items-end z-10">
-                              <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
-                                OFFER
-                              </div>
-                              <div className="flex flex-col items-end">
-                                <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
-                                  ₹999
-                                </span>
-                                <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
-                                  {pricesLoading ? (
-                                    <Loader2 className="h-6 w-6 animate-spin" />
-                                  ) : (
-                                    `₹${mobileExtendPlan?.planPrice || "--"}`
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                    <div
+                      className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
+                      style={{
+                        backgroundColor: "var(--xtra-primary)",
+                      }}
+                    >
+                      <div className="flex justify-between items-center w-full relative z-10">
+                        <div className="flex-1">
+                          <h3 className="text-xl sm:text-3xl font-black leading-tight">
+                            Extend+
+                            <br />
+                            Protection
+                          </h3>
                         </div>
-
-                      {/* 2x2 Benefits Grid */}
-                      <div className="flex-grow p-4 sm:p-6">
-                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
-                          {/* Doorstep Auction */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                              <Gavel className="w-7 h-7 sm:w-10 sm:h-10 text-[#254696]" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Doorstep Auction</h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Get 10-20% higher market value</p>
-                            </div>
-                          </div>
-
-                          {/* Repair Service */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
-                              <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">Repair Service Warranty</h4>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">• Protection for your device</p>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">₹0 service cost on repair</p>
-                            </div>
-                          </div>
-
-                          {/* Upgrade Offers */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                               <TrendingUp className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">Best Upgrade Offers</h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Exclusive deals for your next purchase</p>
-                            </div>
-                          </div>
-
-                          {/* Extended Warranty */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
-                               <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
-                               <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">20% Off Warranty</h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">Save 20% on next protection</p>
-                            </div>
-                          </div>
+                        <div className="absolute left-[20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
+                          <img
+                            src={pricingMobileHeaderExtend}
+                            alt="Mobile Extend"
+                            className="w-full h-auto object-contain"
+                          />
                         </div>
-
-                        <div className="mt-4 flex flex-col items-center gap-3">
-                          <Button
-                            className="w-full text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
-                            style={{ backgroundColor: "var(--xtra-primary)" }}
-                            onClick={() => handleBuyNow(mobileExtendPlan)}
-                            disabled={pricesLoading || !mobileExtendPlan}
-                            data-testid="button-buy-mobile-extend"
-                          >
-                            {pricesLoading ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              "Buy Now"
-                            )}
-                          </Button>
+                        <div className="text-right flex flex-col items-end z-10">
+                          <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
+                            OFFER
+                          </div>
+                          <div className="flex flex-col items-end">
+                            <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
+                              ₹999
+                            </span>
+                            <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
+                              {pricesLoading ? (
+                                <Loader2 className="h-6 w-6 animate-spin" />
+                              ) : (
+                                `₹${mobileExtendPlan?.planPrice || "--"}`
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
+                    </div>
+
+                    {/* 2x2 Benefits Grid */}
+                    <div className="flex-grow p-4 sm:p-6">
+                      <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
+                        {/* Doorstep Auction */}
+                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
+                            <Gavel className="w-7 h-7 sm:w-10 sm:h-10 text-[#254696]" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
+                              Doorstep Auction
+                            </h4>
+                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
+                              Get 10-20% higher market value
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Repair Service */}
+                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
+                            <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">
+                              Repair Service Warranty
+                            </h4>
+                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
+                              • Protection for your device
+                            </p>
+                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
+                              ₹0 service cost on repair
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Upgrade Offers */}
+                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
+                            <TrendingUp className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
+                              Best Upgrade Offers
+                            </h4>
+                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
+                              Exclusive deals for your next purchase
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Extended Warranty */}
+                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
+                            <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
+                            <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
+                              20% Off Warranty
+                            </h4>
+                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
+                              Save 20% on next protection
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 flex flex-col items-center gap-3">
+                        <Button
+                          className="w-full text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ backgroundColor: "var(--xtra-primary)" }}
+                          onClick={() => handleBuyNow(mobileExtendPlan)}
+                          disabled={pricesLoading || !mobileExtendPlan}
+                          data-testid="button-buy-mobile-extend"
+                        >
+                          {pricesLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            "Buy Now"
+                          )}
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

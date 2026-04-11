@@ -44,6 +44,7 @@ import {
   Target,
 } from "lucide-react";
 import reffPartnerHero from "@assets/reffpartner-hero.webp";
+import reffPartnerHeroMsite from "@assets/reffpartner-hero-msite.png";
 
 const distributorSchema = z.object({
   name: z.string().min(2, "Full name is required"),
@@ -247,10 +248,17 @@ export default function DistributorRegistration() {
     <div className="min-h-screen bg-white">
       {/* ── TOP BANNER ─────────────────────────────────────────────────── */}
       <section className="w-full overflow-hidden">
+        {/* Desktop Banner */}
         <img
           src={reffPartnerHero}
-          alt="Referral Partner Banner"
-          className="w-full h-auto object-cover"
+          alt="Referral Partner Banner Desktop"
+          className="hidden md:block w-full h-auto object-cover"
+        />
+        {/* Mobile Banner */}
+        <img
+          src={reffPartnerHeroMsite}
+          alt="Referral Partner Banner Mobile"
+          className="block md:hidden w-full h-auto object-cover"
         />
       </section>
 

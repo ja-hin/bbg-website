@@ -268,7 +268,10 @@ export default function DistributorRegistration() {
       <section className="py-16 px-4 bg-[#f8faff]">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-5xl font-black text-center text-gray-900 mb-12 tracking-tight">
-            Turn Your Network Into <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#254696] to-[#4338ca]">Net Worth.</span>
+            Turn Your Network Into{" "}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#254696] to-[#4338ca]">
+              Net Worth.
+            </span>
           </h2>
           <div className="grid md:grid-cols-3 gap-6 md:gap-8">
             {/* Unlimited Earnings */}
@@ -278,9 +281,12 @@ export default function DistributorRegistration() {
                   <Infinity className="w-7 h-7 text-[#254696]" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-[#1e293b]">Unlimited Earnings</h3>
+              <h3 className="text-xl font-bold mb-2 text-[#1e293b]">
+                Unlimited Earnings
+              </h3>
               <p className="text-gray-500 text-sm leading-relaxed max-w-[240px] mx-auto">
-                Flat ₹175 per laptop and ₹100 per mobile. No caps, no limits—just higher payouts.
+                Flat ₹175 per laptop and ₹100 per mobile. No caps, no
+                limits—just higher payouts.
               </p>
             </Card>
 
@@ -291,9 +297,12 @@ export default function DistributorRegistration() {
                   <Zap className="w-7 h-7 text-[#254696]" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-[#1e293b]">Truly Passive</h3>
+              <h3 className="text-xl font-bold mb-2 text-[#1e293b]">
+                Truly Passive
+              </h3>
               <p className="text-gray-500 text-sm leading-relaxed max-w-[240px] mx-auto">
-                Shift from selling to sharing. We handle inventory and support while you earn.
+                Shift from selling to sharing. We handle inventory and support
+                while you earn.
               </p>
             </Card>
 
@@ -304,9 +313,12 @@ export default function DistributorRegistration() {
                   <Target className="w-7 h-7 text-[#254696]" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-[#1e293b]">Instant Clarity</h3>
+              <h3 className="text-xl font-bold mb-2 text-[#1e293b]">
+                Instant Clarity
+              </h3>
               <p className="text-gray-500 text-sm leading-relaxed max-w-[240px] mx-auto">
-                Track every referral live. Watch your commissions clear and withdraw to your bank.
+                Track every referral live. Watch your commissions clear and
+                withdraw to your bank.
               </p>
             </Card>
           </div>
@@ -318,16 +330,22 @@ export default function DistributorRegistration() {
         {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-[100px] -mr-64 -mt-64" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px] -ml-64 -mb-64" />
-        
+
         {/* Subtle Grid Pattern */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-             style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+        <div
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, white 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+          }}
+        />
 
         <div className="max-w-6xl mx-auto relative z-10">
           <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-center text-white mb-12 md:mb-24 leading-tight tracking-tight">
             3 Steps to Your <span className="text-blue-200">First Payout.</span>
           </h2>
-          
+
           <div className="relative grid md:grid-cols-3 gap-8 md:gap-12">
             {/* Desktop Connecting Line */}
             <div className="hidden md:block absolute top-1/2 left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-y-12" />
@@ -339,7 +357,9 @@ export default function DistributorRegistration() {
                   1
                 </div>
                 <div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-4 text-white tracking-tight">Register in 60s</h3>
+                  <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-4 text-white tracking-tight">
+                    Register in 60s
+                  </h3>
                   <div className="flex md:hidden items-center gap-2 text-blue-200/80 text-xs font-semibold uppercase tracking-widest">
                     <UserCheck className="w-3 h-3" /> Step One
                   </div>
@@ -361,7 +381,9 @@ export default function DistributorRegistration() {
                   2
                 </div>
                 <div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-4 text-white tracking-tight">Attach & Earn</h3>
+                  <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-4 text-white tracking-tight">
+                    Attach & Earn
+                  </h3>
                   <div className="flex md:hidden items-center gap-2 text-blue-200/80 text-xs font-semibold uppercase tracking-widest">
                     <Link className="w-3 h-3" /> Step Two
                   </div>
@@ -383,7 +405,9 @@ export default function DistributorRegistration() {
                   3
                 </div>
                 <div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-4 text-white tracking-tight">Cash Out</h3>
+                  <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-4 text-white tracking-tight">
+                    Cash Out
+                  </h3>
                   <div className="flex md:hidden items-center gap-2 text-blue-200/80 text-xs font-semibold uppercase tracking-widest">
                     <Wallet className="w-3 h-3" /> Step Three
                   </div>
@@ -448,25 +472,33 @@ export default function DistributorRegistration() {
                   <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
                     Total Referrals
                   </p>
-                  <p className="text-xl md:text-2xl font-bold text-gray-900">502</p>
+                  <p className="text-xl md:text-2xl font-bold text-gray-900">
+                    502
+                  </p>
                 </div>
                 <div>
                   <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
                     Total Earnings
                   </p>
-                  <p className="text-xl md:text-2xl font-bold text-[#065f46]">₹87,850</p>
+                  <p className="text-xl md:text-2xl font-bold text-[#065f46]">
+                    ₹87,850
+                  </p>
                 </div>
                 <div>
                   <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
                     Pending Payouts
                   </p>
-                  <p className="text-xl md:text-2xl font-bold text-[#991b1b]">₹3,200</p>
+                  <p className="text-xl md:text-2xl font-bold text-[#991b1b]">
+                    ₹3,200
+                  </p>
                 </div>
                 <div>
                   <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
                     Payouts Done
                   </p>
-                  <p className="text-xl md:text-2xl font-bold text-[#1e293b]">₹84,650</p>
+                  <p className="text-xl md:text-2xl font-bold text-[#1e293b]">
+                    ₹84,650
+                  </p>
                 </div>
               </div>
 
@@ -525,7 +557,10 @@ export default function DistributorRegistration() {
                           {reg.status}
                         </Badge>
                         <span className="text-[10px] font-semibold text-gray-400">
-                          Earn: <span className="text-gray-900 font-bold">{reg.commission}</span>
+                          Earn:{" "}
+                          <span className="text-gray-900 font-bold">
+                            {reg.commission}
+                          </span>
                         </span>
                       </div>
                     </div>
@@ -562,7 +597,10 @@ export default function DistributorRegistration() {
                 "24/7 dedicated partner support",
                 "Marketing assets library included",
               ].map((benefit, idx) => (
-                <div key={idx} className="flex items-center justify-start gap-2.5 md:gap-4">
+                <div
+                  key={idx}
+                  className="flex items-center justify-start gap-2.5 md:gap-4"
+                >
                   <div className="flex-shrink-0 w-4 h-4 md:w-6 md:h-6 rounded-full bg-white flex items-center justify-center">
                     <CheckCircle2 className="w-2.5 md:w-4 h-2.5 md:h-4 text-[#254696]" />
                   </div>
@@ -694,7 +732,7 @@ export default function DistributorRegistration() {
 
                   <div className="pt-0 md:pt-1 space-y-1.5 md:space-y-3">
                     <h3 className="hidden md:block text-xs font-bold text-gray-800 uppercase tracking-widest border-l-4 border-[#254696] pl-3">
-                      Terms
+                      Declaration
                     </h3>
 
                     <FormField
@@ -716,19 +754,14 @@ export default function DistributorRegistration() {
                             />
                           </FormControl>
                           <div className="grid gap-0.5 md:gap-1 leading-none">
-                            <FormLabel 
+                            <FormLabel
                               htmlFor="terms-checkbox"
                               className="text-[11px] md:text-[13px] font-medium text-gray-600 leading-normal cursor-pointer"
                             >
-                              Accept information accuracy & terms:
-                              <ul className="list-disc ml-4 mt-0.5 space-y-0 md:space-y-1 text-[10px] md:text-[11px] text-gray-400 font-normal">
-                                <li>
-                                  TDS deductions as per rules
-                                </li>
-                                <li>
-                                  GST partner invoice requirement
-                                </li>
-                              </ul>
+                              I confirm the details above are accurate,
+                              understand that payouts are subject to TDS, and
+                              agree to provide monthly tax invoices to XtraCover
+                              if GST-registered.
                             </FormLabel>
                           </div>
                         </FormItem>

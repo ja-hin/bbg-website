@@ -704,13 +704,22 @@ export default function DistributorRegistration() {
                         <FormItem className="flex flex-row items-start space-x-2 md:space-x-3 space-y-0">
                           <FormControl>
                             <Checkbox
+                              id="terms-checkbox"
                               checked={field.value}
-                              onCheckedChange={field.onChange}
+                              onCheckedChange={(val) => {
+                                field.onChange(val);
+                                // Synchronize other required flags
+                                form.setValue("tdsUnderstanding", !!val);
+                                form.setValue("gstInvoiceAgreement", !!val);
+                              }}
                               className="mt-0.5 md:mt-1 border-gray-300 w-4 h-4 md:w-[18px] md:h-[18px]"
                             />
                           </FormControl>
                           <div className="grid gap-0.5 md:gap-1 leading-none">
-                            <FormLabel className="text-[11px] md:text-[13px] font-medium text-gray-600 leading-normal cursor-pointer">
+                            <FormLabel 
+                              htmlFor="terms-checkbox"
+                              className="text-[11px] md:text-[13px] font-medium text-gray-600 leading-normal cursor-pointer"
+                            >
                               Accept information accuracy & terms:
                               <ul className="list-disc ml-4 mt-0.5 space-y-0 md:space-y-1 text-[10px] md:text-[11px] text-gray-400 font-normal">
                                 <li>
@@ -764,9 +773,11 @@ export default function DistributorRegistration() {
                     className="w-full h-11 text-xs font-bold bg-[#254696] hover:bg-[#1e3a8a] shadow-lg rounded-xl transition-all"
                     disabled={
                       registerMutation.isPending ||
+                      !otpVerified ||
                       !form.watch("name") ||
                       !form.watch("email") ||
-                      !form.watch("contact")
+                      !form.watch("contact") ||
+                      !form.watch("declarationAccuracy")
                     }
                   >
                     {registerMutation.isPending ? (

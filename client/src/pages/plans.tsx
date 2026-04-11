@@ -81,22 +81,22 @@ const PlanProductCard = ({
         className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
         style={{ background: accent }}
       >
-        <div className="flex items-center justify-between gap-3 sm:gap-4 w-full min-w-0 relative z-10">
-          <div className="flex-1">
+        <div className="flex items-start justify-between gap-3 sm:gap-4 w-full min-w-0 relative z-10">
+          <div className="flex-1 min-w-0 pr-16 sm:pr-24">
             <h3 className="text-2xl sm:text-3xl font-bold leading-tight">
               {title}
               <br />
               {subtitle}
             </h3>
           </div>
-          <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 w-16 sm:w-24 md:w-32 opacity-90 pointer-events-none z-0">
             <img
               src={headerImage}
               alt={title}
               className="w-full h-auto object-contain"
             />
           </div>
-          <div className="text-right flex flex-col items-end pt-2">
+          <div className="text-right flex flex-col items-end pt-2 flex-shrink-0">
             <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
               OFFER
             </div>

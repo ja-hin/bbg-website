@@ -609,7 +609,7 @@ export default function Plans() {
                     {/* Front Face */}
                     <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                       {/* Blue Header */}
-                        <div
+                      <div
                           className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
                           style={{
                             background: "linear-gradient(135deg, #254696, #1F4B88)",
@@ -889,8 +889,8 @@ export default function Plans() {
                           </div>
                         </div>
 
-                    {/* White Content Area */}
-                    <div className="flex-grow p-4 sm:p-5 flex flex-col space-y-2">
+                      {/* White Content Area */}
+                      <div className="flex-grow p-4 sm:p-5 flex flex-col space-y-2">
                       {/* Benefits with Icons */}
                       <div className="space-y-2">
                         <div className="flex gap-3">
@@ -985,7 +985,7 @@ export default function Plans() {
                           </div>
                         </div>
                       </div>
-                    </div>
+                      </div>
 
                     {/* Buy Now Button */}
                     <div className="px-4 sm:px-5 pb-1 sm:pb-2">

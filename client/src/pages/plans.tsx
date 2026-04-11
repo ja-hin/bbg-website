@@ -359,33 +359,28 @@ export default function Plans() {
             <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch max-w-full [grid-template-columns:repeat(auto-fit,minmax(340px,550px))]">
               {showLaptopBBG && (
                 <div
-                  className="w-full flex flex-col flip-card min-h-[400px]"
+                  className="w-full flex flex-col min-h-[400px]"
                   data-testid="card-laptop-bbg"
                 >
-                  <div
-                    className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopBBGFlipped ? "flipped" : ""}`}
-                  >
-                    {/* Front Face */}
-                    <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                      {/* Blue Header */}
-                      <div
-                        className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
-                        style={{
-                          background: "linear-gradient(135deg, #254696, #1F4B88)",
-                        }}
-                      >
-                        <div className="flex justify-between items-center w-full relative z-10">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h3 className="text-2xl sm:text-3xl font-bold whitespace-nowrap">
-                                BuyBack
-                              </h3>
-                              <Shield className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" />
+                  <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
+                        <div
+                          className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
+                          style={{
+                            background: "var(--xtra-primary)",
+                          }}
+                        >
+                          <div className="flex justify-between items-center w-full relative z-10">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h3 className="text-2xl sm:text-3xl font-bold whitespace-nowrap">
+                                  BuyBack
+                                </h3>
+                                <Shield className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" />
+                              </div>
+                              <p className="text-xs sm:text-sm opacity-90">
+                                Guarantee your resale value
+                              </p>
                             </div>
-                            <p className="text-xs sm:text-sm opacity-90">
-                              Guarantee your resale value
-                            </p>
-                          </div>
                             <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
                                <img 
                                  src={pricingLaptopHeaderBBG} 
@@ -393,28 +388,28 @@ export default function Plans() {
                                  className="w-full h-auto object-contain"
                                />
                             </div>
-                          <div className="text-right flex flex-col items-end pt-2">
-                            <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
-                              OFFER
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
-                                ₹1299
-                              </span>
-                              <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
-                                {pricesLoading ? (
-                                  <Loader2 className="h-6 w-6 animate-spin" />
-                                ) : (
-                                  `₹${laptopBBGPlan?.planPrice || "--"}`
-                                )}
+                            <div className="text-right flex flex-col items-end pt-2">
+                              <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
+                                OFFER
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
+                                  ₹1299
+                                </span>
+                                <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
+                                  {pricesLoading ? (
+                                    <Loader2 className="h-6 w-6 animate-spin" />
+                                  ) : (
+                                    `₹${laptopBBGPlan?.planPrice || "--"}`
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      {/* White Content Area */}
-                      <div className="p-4 sm:p-5 space-y-2">
+                    {/* White Content Area */}
+                    <div className="flex-grow p-4 sm:p-5 space-y-2">
                         <div className="space-y-2">
                           <div className="flex gap-3">
                             <Shield
@@ -503,23 +498,14 @@ export default function Plans() {
                             </div>
                           </div>
                         </div>
-                      </div>
+                    </div>
 
-                      {/* Know More Button and Buy Now Button */}
-                      <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
-                        <button
-                          onClick={() => setLaptopBBGFlipped(!laptopBBGFlipped)}
-                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
-                          style={{ color: "#254696" }}
-                          data-testid="button-know-more-laptop-bbg"
-                        >
-                          Know More
-                        </button>
+                    {/* Buy Now Button */}
+                    <div className="px-4 sm:px-5 pb-1 sm:pb-2">
                         <Button
                           className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                           style={{
-                            background:
-                              "linear-gradient(90deg, #254696, #1F4B88)",
+                            background: "var(--xtra-primary)",
                           }}
                           onClick={() => handleBuyNow(laptopBBGPlan)}
                           disabled={pricesLoading || !laptopBBGPlan}
@@ -531,67 +517,6 @@ export default function Plans() {
                             "Buy Now"
                           )}
                         </Button>
-                      </div>
-                    </div>
-
-                    {/* Back Face */}
-                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                      {/* Blue Header */}
-                      <div
-                        className="p-4 sm:p-5 text-white text-center"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #254696, #1F4B88)",
-                        }}
-                      >
-                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                          Guaranteed Resale Value
-                        </h3>
-                        <p className="text-xs sm:text-sm mb-3 opacity-95">
-                          Lock resale value of your device
-                        </p>
-                      </div>
-
-                      <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-2">
-                        <ClaimValueSlabs
-                          slabs={laptopBBGPlan?.claimValueSlabs || []}
-                        />
-                        <p
-                          className="text-xs sm:text-sm text-center"
-                          style={{ color: "#666666" }}
-                        >
-                          Resale value is calculated as a percentage of your
-                          original device purchase price
-                        </p>
-                      </div>
-
-                      {/* Back and Buy Now Buttons */}
-                      <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
-                        <button
-                          onClick={() => setLaptopBBGFlipped(false)}
-                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
-                          style={{ color: "#254696" }}
-                          data-testid="button-back-laptop-bbg"
-                        >
-                          Back
-                        </button>
-                        <Button
-                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                          style={{
-                            background:
-                              "linear-gradient(90deg, #254696, #1F4B88)",
-                          }}
-                          onClick={() => handleBuyNow(laptopBBGPlan)}
-                          disabled={pricesLoading || !laptopBBGPlan}
-                          data-testid="button-buy-flipped-laptop-bbg"
-                        >
-                          {pricesLoading ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            "Buy Now"
-                          )}
-                        </Button>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -599,21 +524,16 @@ export default function Plans() {
 
               {showMobileBBG && (
                 <div
-                  className="w-full flex flex-col flip-card min-h-[400px]"
+                  className="w-full flex flex-col min-h-[400px]"
                   data-testid="card-mobile-bbg"
                 >
-                  <div
-                    className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileBBGFlipped ? "flipped" : ""}`}
-                  >
-                    {/* Front Face */}
-                    <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                      {/* Blue Header */}
-                      <div
+                  <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
+                        <div
                           className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
                           style={{
-                            background: "linear-gradient(135deg, #254696, #1F4B88)",
+                            background: "var(--xtra-primary)",
                           }}
-                        >
+                         >
                           <div className="flex justify-between items-center w-full relative z-10">
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-1">
@@ -653,8 +573,8 @@ export default function Plans() {
                           </div>
                         </div>
 
-                      {/* White Content Area */}
-                      <div className="p-4 sm:p-5 space-y-2">
+                    {/* White Content Area */}
+                    <div className="flex-grow p-4 sm:p-5 space-y-2">
                         <div className="space-y-2">
                           <div className="flex gap-3">
                             <Shield
@@ -743,23 +663,14 @@ export default function Plans() {
                             </div>
                           </div>
                         </div>
-                      </div>
+                    </div>
 
-                      {/* Know More Button and Buy Now Button */}
-                      <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
-                        <button
-                          onClick={() => setMobileBBGFlipped(!mobileBBGFlipped)}
-                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
-                          style={{ color: "#254696" }}
-                          data-testid="button-know-more-mobile-bbg"
-                        >
-                          Know More
-                        </button>
+                    {/* Buy Now Button */}
+                    <div className="px-4 sm:px-5 pb-1 sm:pb-2">
                         <Button
                           className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                           style={{
-                            background:
-                              "linear-gradient(90deg, #254696, #1F4B88)",
+                                background: "var(--xtra-primary)",
                           }}
                           onClick={() => handleBuyNow(mobileBBGPlan)}
                           disabled={pricesLoading || !mobileBBGPlan}
@@ -771,67 +682,6 @@ export default function Plans() {
                             "Buy Now"
                           )}
                         </Button>
-                      </div>
-                    </div>
-
-                    {/* Back Face */}
-                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                      {/* Blue Header */}
-                      <div
-                        className="p-4 sm:p-5 text-white text-center"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #254696, #1F4B88)",
-                        }}
-                      >
-                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                          Guaranteed Resale Value
-                        </h3>
-                        <p className="text-xs sm:text-sm mb-3 opacity-95">
-                          Lock resale value of your device
-                        </p>
-                      </div>
-
-                      <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-2">
-                        <ClaimValueSlabs
-                          slabs={mobileBBGPlan?.claimValueSlabs || []}
-                        />
-                        <p
-                          className="text-xs sm:text-sm text-center"
-                          style={{ color: "#666666" }}
-                        >
-                          Resale value is calculated as a percentage of your
-                          original device purchase price
-                        </p>
-                      </div>
-
-                      {/* Back and Buy Now Buttons */}
-                      <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
-                        <button
-                          onClick={() => setMobileBBGFlipped(false)}
-                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
-                          style={{ color: "#254696" }}
-                          data-testid="button-back-mobile-bbg"
-                        >
-                          Back
-                        </button>
-                        <Button
-                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                          style={{
-                            background:
-                              "linear-gradient(90deg, #254696, #1F4B88)",
-                          }}
-                          onClick={() => handleBuyNow(mobileBBGPlan)}
-                          disabled={pricesLoading || !mobileBBGPlan}
-                          data-testid="button-buy-flipped-mobile-bbg"
-                        >
-                          {pricesLoading ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            "Buy Now"
-                          )}
-                        </Button>
-                      </div>
                     </div>
                   </div>
                 </div>

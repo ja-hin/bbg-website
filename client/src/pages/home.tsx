@@ -567,19 +567,15 @@ export default function Home() {
               <>
                 {/* Laptop BBG Card */}
                 <div
-                  className="w-full flex flex-col flip-card min-h-[400px]"
+                  className="w-full flex flex-col min-h-[400px]"
                   data-testid="card-laptop-bbg"
                 >
-                  <div
-                    className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopBBGFlipped ? "flipped" : ""}`}
-                  >
-                    {/* Front Face */}
-                    <div className="flip-card-front rounded-[2rem] overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl">
+                  <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl h-full">
                       {/* Header with Background and Asset */}
                         <div
                           className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
                           style={{
-                            backgroundColor: "#0F172A",
+                            backgroundColor: "var(--xtra-primary)",
                           }}
                         >
                           <div className="flex justify-between items-center w-full relative z-10">
@@ -670,79 +666,16 @@ export default function Home() {
 
                         <div className="mt-4 flex flex-col items-center gap-3">
                           <button
-                            onClick={() => setLaptopBBGFlipped(!laptopBBGFlipped)}
-                            className="text-gray-400 hover:text-gray-600 text-xs font-medium underline transition-colors"
-                            data-testid="button-know-more-laptop-bbg"
-                          >
-                            Know More
-                          </button>
-                          <button
                             onClick={scrollToForm}
-                            className="w-full bg-[#0F172A] text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                            className="w-full bg-xtra-primary text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                            style={{ backgroundColor: "var(--xtra-primary)" }}
                             data-testid="button-explore-laptop-bbg"
                           >
-                            Save Now
+                            Explore Plans
                           </button>
                         </div>
                       </div>
                     </div>
-                    {/* Back Face */}
-                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                      <div
-                        className="p-4 sm:p-5 text-white text-center"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #254696, #1F4B88)",
-                        }}
-                      >
-                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                          Guaranteed Resale Value
-                        </h3>
-                        <p className="text-xs sm:text-sm mb-3 opacity-95">
-                          Lock resale value of your device
-                        </p>
-                      </div>
-                      <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-4">
-                        <ClaimValueSlabs
-                          slabs={
-                            allPlans.find(
-                              (p: any) =>
-                                p.deviceType === "laptop" &&
-                                p.planType === "bbg",
-                            )?.claimValueSlabs || []
-                          }
-                        />
-                        <p
-                          className="text-xs sm:text-sm text-center"
-                          style={{ color: "#666666" }}
-                        >
-                          Resale value is calculated as a percentage of your
-                          original device purchase price
-                        </p>
-                      </div>
-                      <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
-                        <button
-                          onClick={() => setLaptopBBGFlipped(false)}
-                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
-                          style={{ color: "#254696" }}
-                          data-testid="button-back-laptop-bbg"
-                        >
-                          Back
-                        </button>
-                        <button
-                          onClick={scrollToForm}
-                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
-                          style={{
-                            background:
-                              "linear-gradient(90deg, #254696, #1F4B88)",
-                          }}
-                          data-testid="button-explore-flipped-laptop-bbg"
-                        >
-                          Explore Plans
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
                 {/* Laptop Extend+ Card */}
@@ -869,19 +802,15 @@ export default function Home() {
               <>
                 {/* Mobile BBG Card */}
                 <div
-                  className="w-full flex flex-col flip-card min-h-[400px]"
+                  className="w-full flex flex-col min-h-[400px]"
                   data-testid="card-mobile-bbg"
                 >
-                  <div
-                    className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileBBGFlipped ? "flipped" : ""}`}
-                  >
-                    {/* Front Face */}
-                    <div className="flip-card-front rounded-[2rem] overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl">
+                  <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl h-full">
                       {/* Header with Background and Asset */}
                         <div
                           className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
                           style={{
-                            backgroundColor: "#0F172A",
+                            backgroundColor: "var(--xtra-primary)",
                           }}
                         >
                           <div className="flex justify-between items-center w-full relative z-10">
@@ -972,79 +901,16 @@ export default function Home() {
 
                         <div className="mt-4 flex flex-col items-center gap-3">
                           <button
-                            onClick={() => setMobileBBGFlipped(!mobileBBGFlipped)}
-                            className="text-gray-400 hover:text-gray-600 text-xs font-medium underline transition-colors"
-                            data-testid="button-know-more-mobile-bbg"
-                          >
-                            Know More
-                          </button>
-                          <button
                             onClick={scrollToForm}
-                            className="w-full bg-[#0F172A] text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                            className="w-full bg-xtra-primary text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                            style={{ backgroundColor: "var(--xtra-primary)" }}
                             data-testid="button-explore-mobile-bbg"
                           >
-                            Save Now
+                            Explore Plans
                           </button>
                         </div>
                       </div>
-                    </div>
-                    {/* Back Face */}
-                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                      <div
-                        className="p-4 sm:p-5 text-white text-center"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, #254696, #1F4B88)",
-                        }}
-                      >
-                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                          Guaranteed Resale Value
-                        </h3>
-                        <p className="text-xs sm:text-sm mb-3 opacity-95">
-                          Lock resale value of your device
-                        </p>
-                      </div>
-                      <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-2">
-                        <ClaimValueSlabs
-                          slabs={
-                            allPlans.find(
-                              (p: any) =>
-                                p.deviceType === "mobile" &&
-                                p.planType === "bbg",
-                            )?.claimValueSlabs || []
-                          }
-                        />
-                        <p
-                          className="text-xs sm:text-sm text-center"
-                          style={{ color: "#666666" }}
-                        >
-                          Resale value is calculated as a percentage of your
-                          original device purchase price
-                        </p>
-                      </div>
-                      <div className="px-4 sm:px-5 pb-1 sm:pb-2 space-y-2">
-                        <button
-                          onClick={() => setMobileBBGFlipped(false)}
-                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
-                          style={{ color: "#254696" }}
-                          data-testid="button-back-mobile-bbg"
-                        >
-                          Back
-                        </button>
-                        <button
-                          onClick={scrollToForm}
-                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
-                          style={{
-                            background:
-                              "linear-gradient(90deg, #254696, #1F4B88)",
-                          }}
-                          data-testid="button-explore-flipped-mobile-bbg"
-                        >
-                          Explore Plans
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                </div>
                 </div>
 
                 {/* Mobile Extend+ Card */}

@@ -514,11 +514,11 @@ export default function DistributorRegistration() {
 
         <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-6 md:gap-16 items-center">
           {/* Left Column: Text & Benefits */}
-          <div className="text-white text-center lg:text-left">
-            <h2 className="text-[24px] md:text-5xl lg:text-6xl font-extrabold mb-2 md:mb-8 leading-tight">
+          <div className="text-white text-left">
+            <h2 className="text-[24px] md:text-5xl lg:text-6xl font-extrabold mb-2 md:mb-8 leading-tight text-left">
               Start Earning in Minutes
             </h2>
-            <p className="text-sm md:text-xl text-blue-100 mb-4 md:mb-14 max-w-lg mx-auto lg:mx-0">
+            <p className="text-sm md:text-xl text-blue-100 mb-4 md:mb-14 max-w-lg">
               Earn ₹100–₹175 for every successful referral sale.
             </p>
 
@@ -528,7 +528,7 @@ export default function DistributorRegistration() {
                 "24/7 dedicated partner support",
                 "Marketing assets library included",
               ].map((benefit, idx) => (
-                <div key={idx} className="flex items-center justify-center lg:justify-start gap-2.5 md:gap-4">
+                <div key={idx} className="flex items-center justify-start gap-2.5 md:gap-4">
                   <div className="flex-shrink-0 w-4 h-4 md:w-6 md:h-6 rounded-full bg-white flex items-center justify-center">
                     <CheckCircle2 className="w-2.5 md:w-4 h-2.5 md:h-4 text-[#254696]" />
                   </div>

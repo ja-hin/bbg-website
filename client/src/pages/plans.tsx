@@ -19,10 +19,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.webp";
-import pricingLaptopHeaderBBG from "@assets/pricing_laptop_header_bbg.webp";
-import pricingLaptopHeaderExtend from "@assets/pricing_laptop_header_extend.webp";
-import pricingMobileHeaderBBG from "@assets/pricing_mobile_header_bbg.webp";
-import pricingMobileHeaderExtend from "@assets/pricing_mobile_header_extend.webp";
+// import pricingLaptopHeaderBBG from "@assets/pricing_laptop_header_bbg.webp";
+// import pricingLaptopHeaderExtend from "@assets/pricing_laptop_header_extend.webp";
+// import pricingMobileHeaderBBG from "@assets/pricing_mobile_header_bbg.webp";
+// import pricingMobileHeaderExtend from "@assets/pricing_mobile_header_extend.webp";
 
 const ProgressCircle = ({ percentage }: { percentage: number }) => (
   <div className="relative w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center flex-shrink-0">
@@ -89,11 +89,6 @@ const PlanProductCard = ({
               {subtitle}
             </h3>
           </div>
-          <img
-            src={headerImage}
-            alt={title}
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-12 sm:w-16 md:w-20 h-auto object-contain opacity-90 pointer-events-none z-0"
-          />
           <div className="text-right flex flex-col items-end pt-2 flex-shrink-0">
             <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
               OFFER
@@ -546,13 +541,6 @@ export default function Plans() {
                               Guarantee
                             </h3>
                           </div>
-                          <div className="absolute left-[20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
-                            <img
-                              src={pricingLaptopHeaderBBG}
-                              alt="Laptop BBG"
-                              className="w-full h-auto object-contain"
-                            />
-                          </div>
                           <div className="text-right flex flex-col items-end z-10">
                             <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
                               OFFER
@@ -747,13 +735,6 @@ export default function Plans() {
                               Guarantee
                             </h3>
                           </div>
-                          <div className="absolute left-[20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
-                            <img
-                              src={pricingMobileHeaderBBG}
-                              alt="Mobile BBG"
-                              className="w-full h-auto object-contain"
-                            />
-                          </div>
                           <div className="text-right flex flex-col items-end z-10">
                             <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
                               OFFER
@@ -944,13 +925,6 @@ export default function Plans() {
                             Protection
                           </h3>
                         </div>
-                        <div className="absolute left-[20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
-                          <img
-                            src={pricingLaptopHeaderExtend}
-                            alt="Laptop Extend"
-                            className="w-full h-auto object-contain"
-                          />
-                        </div>
                         <div className="text-right flex flex-col items-end z-10">
                           <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
                             OFFER
@@ -1079,13 +1053,6 @@ export default function Plans() {
                             <br />
                             Protection
                           </h3>
-                        </div>
-                        <div className="absolute left-[20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
-                          <img
-                            src={pricingMobileHeaderExtend}
-                            alt="Mobile Extend"
-                            className="w-full h-auto object-contain"
-                          />
                         </div>
                         <div className="text-right flex flex-col items-end z-10">
                           <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">

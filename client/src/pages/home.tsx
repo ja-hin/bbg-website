@@ -65,10 +65,10 @@ import heroBelowSectionImg from "@assets/hero-below-section.webp";
 import heroBelowSectionMsiteImg from "@assets/hero-below-section-msite.webp";
 import howPlanWorksImg from "@assets/how-plan-works.webp";
 import howPlanWorksMsiteImg from "@assets/how-plan-works-msite.webp";
-import pricingLaptopHeaderBBG from "@assets/pricing_laptop_header_bbg.webp";
-import pricingLaptopHeaderExtend from "@assets/pricing_laptop_header_extend.webp";
-import pricingMobileHeaderBBG from "@assets/pricing_mobile_header_bbg.webp";
-import pricingMobileHeaderExtend from "@assets/pricing_mobile_header_extend.webp";
+// import pricingLaptopHeaderBBG from "@assets/pricing_laptop_header_bbg.webp";
+// import pricingLaptopHeaderExtend from "@assets/pricing_laptop_header_extend.webp";
+// import pricingMobileHeaderBBG from "@assets/pricing_mobile_header_bbg.webp";
+// import pricingMobileHeaderExtend from "@assets/pricing_mobile_header_extend.webp";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {
@@ -593,13 +593,6 @@ export default function Home() {
                                 Guarantee
                               </h3>
                             </div>
-                            <div className="absolute left-[20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
-                              <img 
-                                src={pricingLaptopHeaderBBG} 
-                                alt="Laptop BBG" 
-                                className="w-full h-auto object-contain"
-                              />
-                            </div>
                             <div className="text-right flex flex-col items-end z-10">
                               <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
                                 OFFER
@@ -765,13 +758,6 @@ export default function Home() {
                                 Protection
                               </h3>
                             </div>
-                            <div className="absolute left-[20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
-                              <img 
-                                src={pricingLaptopHeaderExtend} 
-                                alt="Laptop Protection" 
-                                className="w-full h-auto object-contain"
-                              />
-                            </div>
                             <div className="text-right flex flex-col items-end z-10">
                               <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
                                 OFFER
@@ -887,13 +873,6 @@ export default function Home() {
                                 <br />
                                 Guarantee
                               </h3>
-                            </div>
-                            <div className="absolute left-[20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
-                              <img 
-                                src={pricingMobileHeaderBBG} 
-                                alt="Mobile Guarantee" 
-                                className="w-full h-auto object-contain"
-                              />
                             </div>
                             <div className="text-right flex flex-col items-end z-10">
                               <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
@@ -1059,13 +1038,6 @@ export default function Home() {
                                 <br />
                                 Protection
                               </h3>
-                            </div>
-                            <div className="absolute left-[20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
-                              <img 
-                                src={pricingMobileHeaderExtend} 
-                                alt="Mobile Protection" 
-                                className="w-full h-auto object-contain"
-                              />
                             </div>
                             <div className="text-right flex flex-col items-end z-10">
                               <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">

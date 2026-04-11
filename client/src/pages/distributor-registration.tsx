@@ -141,6 +141,7 @@ export default function DistributorRegistration() {
     },
     onSuccess: () => {
       setOtpSent(true);
+      setOtpVerified(false);
       toast({
         title: "OTP Sent",
         description: "Please check your phone for the verification code",
@@ -203,7 +204,7 @@ export default function DistributorRegistration() {
 
   const handleSendOtp = () => {
     const contact = form.getValues("contact");
-    if (!contact || contact.length !== 10) {
+    if (!/^[6-9]\d{9}$/.test(contact)) {
       toast({
         title: "Invalid Contact",
         description: "Please enter a valid 10-digit phone number",
@@ -733,7 +734,7 @@ export default function DistributorRegistration() {
                           <FormItem>
                             <FormControl>
                               <Checkbox
-                                checked={form.watch("declarationAccuracy")}
+                                checked={field.value}
                                 onCheckedChange={field.onChange}
                               />
                             </FormControl>
@@ -747,7 +748,7 @@ export default function DistributorRegistration() {
                           <FormItem>
                             <FormControl>
                               <Checkbox
-                                checked={form.watch("declarationAccuracy")}
+                                checked={field.value}
                                 onCheckedChange={field.onChange}
                               />
                             </FormControl>
@@ -762,9 +763,10 @@ export default function DistributorRegistration() {
                     size="lg"
                     className="w-full h-11 text-xs font-bold bg-[#254696] hover:bg-[#1e3a8a] shadow-lg rounded-xl transition-all"
                     disabled={
-                      !otpVerified ||
                       registerMutation.isPending ||
-                      !form.watch("declarationAccuracy")
+                      !form.watch("declarationAccuracy") ||
+                      !form.watch("tdsUnderstanding") ||
+                      !form.watch("gstInvoiceAgreement")
                     }
                   >
                     {registerMutation.isPending ? (

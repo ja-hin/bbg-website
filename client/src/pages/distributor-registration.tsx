@@ -389,7 +389,7 @@ export default function DistributorRegistration() {
                 </div>
               </div>
               <p className="mt-4 md:mt-0 text-blue-100/70 text-sm md:text-base leading-relaxed">
-                Receive direct payouts to your bank account with real-time
+                Receive monthly payouts to your bank account with real-time
                 settlement tracking.
               </p>
               <div className="hidden md:flex mt-8 items-center gap-2 text-blue-200/40 group-hover:text-blue-200/80 transition-colors">

@@ -161,7 +161,7 @@ export function useRealtimeValidation(
 
 // Pre-built validation schemas for common fields
 export const validationSchemas = {
-  phone: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits starting with 6-9"),
+  phone: z.string().regex(/^[6-9]\d{9}$/, "Contact must be 10 digits"),
   email: z.string().email("Invalid email address"),
   name: z.string().min(2, "Name must be at least 2 characters"),
   price: z.string().min(1, "Price is required").regex(/^\d+$/, "Price must be a number"),

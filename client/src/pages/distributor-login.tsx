@@ -117,7 +117,7 @@ export default function ReferralPartnerLogin() {
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-600/20 rounded-full -ml-32 -mb-32 blur-3xl"></div>
 
           <div className="relative z-10">
-            <img src={bbgLogo} alt="BBG Logo" className="h-14 w-auto brightness-0 invert mb-8" />
+            <img src={bbgLogo} alt="BBG Logo" className="h-28 w-auto brightness-0 invert mb-8" />
             <h2 className="text-3xl font-bold text-white mb-4">Partner with Us</h2>
             <p className="text-blue-100 text-lg">
               Access your referral dashboard to track referrals and earnings.

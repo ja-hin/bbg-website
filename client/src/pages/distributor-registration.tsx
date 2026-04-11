@@ -45,7 +45,7 @@ import {
   Link,
 } from "lucide-react";
 import reffPartnerHero from "@assets/reffpartner-hero.webp";
-import reffPartnerHeroMsite from "@assets/reffpartner-hero-msite.png";
+import reffPartnerHeroMsite from "@assets/reffpartner-hero-msite.webp";
 
 const distributorSchema = z.object({
   name: z.string().min(2, "Full name is required"),

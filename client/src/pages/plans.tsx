@@ -19,10 +19,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.webp";
-import pricingLaptopHeaderBBG from "@assets/pricing_laptop_header_bbg.png";
-import pricingLaptopHeaderExtend from "@assets/pricing_laptop_header_extend.png";
-import pricingMobileHeaderBBG from "@assets/pricing_mobile_header_bbg.png";
-import pricingMobileHeaderExtend from "@assets/pricing_mobile_header_extend.png";
+import pricingLaptopHeaderBBG from "@assets/pricing_laptop_header_bbg.webp";
+import pricingLaptopHeaderExtend from "@assets/pricing_laptop_header_extend.webp";
+import pricingMobileHeaderBBG from "@assets/pricing_mobile_header_bbg.webp";
+import pricingMobileHeaderExtend from "@assets/pricing_mobile_header_extend.webp";
 
 const PlanProductCard = ({
   title,

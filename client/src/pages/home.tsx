@@ -65,10 +65,10 @@ import heroBelowSectionImg from "@assets/hero-below-section.webp";
 import heroBelowSectionMsiteImg from "@assets/hero-below-section-msite.webp";
 import howPlanWorksImg from "@assets/how-plan-works.webp";
 import howPlanWorksMsiteImg from "@assets/how-plan-works-msite.webp";
-import pricingLaptopHeaderBBG from "@assets/pricing_laptop_header_bbg.png";
-import pricingLaptopHeaderExtend from "@assets/pricing_laptop_header_extend.png";
-import pricingMobileHeaderBBG from "@assets/pricing_mobile_header_bbg.png";
-import pricingMobileHeaderExtend from "@assets/pricing_mobile_header_extend.png";
+import pricingLaptopHeaderBBG from "@assets/pricing_laptop_header_bbg.webp";
+import pricingLaptopHeaderExtend from "@assets/pricing_laptop_header_extend.webp";
+import pricingMobileHeaderBBG from "@assets/pricing_mobile_header_bbg.webp";
+import pricingMobileHeaderExtend from "@assets/pricing_mobile_header_extend.webp";
 
 const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   if (!slabs || slabs.length === 0) {

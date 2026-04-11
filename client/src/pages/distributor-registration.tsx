@@ -506,33 +506,33 @@ export default function DistributorRegistration() {
       {/* ── FINAL CTAs & REGISTRATION ────────────────────────────────────────────── */}
       <section
         id="registration-form"
-        className="py-12 md:py-24 px-4 bg-gradient-to-br from-[#1e293b] via-[#254696] to-[#4338ca] relative overflow-hidden"
+        className="py-6 md:py-24 px-4 bg-gradient-to-br from-[#1e293b] via-[#254696] to-[#4338ca] relative overflow-hidden"
       >
         {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48 -mt-48" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48 -mb-48" />
 
-        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
+        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-6 md:gap-16 items-center">
           {/* Left Column: Text & Benefits */}
           <div className="text-white text-center lg:text-left">
-            <h2 className="text-[28px] md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-8 leading-tight">
+            <h2 className="text-[24px] md:text-5xl lg:text-6xl font-extrabold mb-2 md:mb-8 leading-tight">
               Start Earning in Minutes
             </h2>
-            <p className="text-base md:text-xl text-blue-100 mb-8 md:mb-14 max-w-lg mx-auto lg:mx-0">
+            <p className="text-sm md:text-xl text-blue-100 mb-4 md:mb-14 max-w-lg mx-auto lg:mx-0">
               Earn ₹100–₹175 for every successful referral sale.
             </p>
 
-            <div className="space-y-4 md:space-y-6 mb-10 lg:mb-0">
+            <div className="space-y-2 md:space-y-6 mb-6 md:mb-10 lg:mb-0">
               {[
                 "No upfront costs or joining fees",
                 "24/7 dedicated partner support",
                 "Marketing assets library included",
               ].map((benefit, idx) => (
-                <div key={idx} className="flex items-center justify-center lg:justify-start gap-3 md:gap-4">
-                  <div className="flex-shrink-0 w-5 h-5 md:w-6 md:h-6 rounded-full bg-white flex items-center justify-center">
-                    <CheckCircle2 className="w-3 md:w-4 h-3 md:h-4 text-[#254696]" />
+                <div key={idx} className="flex items-center justify-center lg:justify-start gap-2.5 md:gap-4">
+                  <div className="flex-shrink-0 w-4 h-4 md:w-6 md:h-6 rounded-full bg-white flex items-center justify-center">
+                    <CheckCircle2 className="w-2.5 md:w-4 h-2.5 md:h-4 text-[#254696]" />
                   </div>
-                  <span className="text-sm md:text-lg font-bold text-white/90">
+                  <span className="text-xs md:text-lg font-bold text-white/90">
                     {benefit}
                   </span>
                 </div>
@@ -541,18 +541,18 @@ export default function DistributorRegistration() {
           </div>
 
           {/* Right Column: Registration Card */}
-          <Card className="border border-gray-100 shadow-xl rounded-[2rem] bg-white overflow-hidden p-1">
-            <CardContent className="p-6 md:p-8">
-              <h3 className="text-xl font-bold text-gray-900 mb-5 uppercase tracking-wider">
+          <Card className="border border-gray-100 shadow-xl rounded-[1.5rem] md:rounded-[2rem] bg-white overflow-hidden p-0 md:p-1">
+            <CardContent className="p-4 md:p-8">
+              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-5 uppercase tracking-wider">
                 Basic Details
               </h3>
 
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
+                  className="space-y-2 md:space-y-4"
                 >
-                  <div className="space-y-3.5">
+                  <div className="space-y-2 md:space-y-3.5">
                     <FormField
                       control={form.control}
                       name="name"
@@ -599,7 +599,7 @@ export default function DistributorRegistration() {
                       name="contact"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-600 font-bold text-[10px] uppercase tracking-wide">
+                          <FormLabel className="text-gray-600 font-bold text-[9px] md:text-[10px] uppercase tracking-wide">
                             Phone Number *
                           </FormLabel>
                           <div className="flex gap-2">
@@ -608,7 +608,7 @@ export default function DistributorRegistration() {
                                 placeholder="10-digit mobile"
                                 maxLength={10}
                                 disabled={otpVerified}
-                                className="bg-gray-50/50 border-gray-100 h-10 text-sm focus:bg-white transition-colors"
+                                className="bg-gray-50/50 border-gray-100 h-9 md:h-10 text-xs md:text-sm focus:bg-white transition-colors"
                                 {...field}
                               />
                             </FormControl>
@@ -618,7 +618,7 @@ export default function DistributorRegistration() {
                                 variant="outline"
                                 onClick={handleSendOtp}
                                 disabled={sendOtpMutation.isPending || otpSent}
-                                className="h-10 bg-white border-[#254696] text-[#254696] hover:bg-blue-50 font-bold px-4 text-[10px] uppercase tracking-wider"
+                                className="h-9 md:h-10 bg-white border-[#254696] text-[#254696] hover:bg-blue-50 font-bold px-3 md:px-4 text-[9px] md:text-[10px] uppercase tracking-wider whitespace-nowrap"
                               >
                                 {sendOtpMutation.isPending ? (
                                   <Loader2 className="w-3 h-3 animate-spin" />
@@ -658,8 +658,8 @@ export default function DistributorRegistration() {
                     )}
                   </div>
 
-                  <div className="pt-1 space-y-3">
-                    <h3 className="text-xs font-bold text-gray-800 uppercase tracking-widest border-l-4 border-[#254696] pl-3">
+                  <div className="pt-0 md:pt-1 space-y-1.5 md:space-y-3">
+                    <h3 className="hidden md:block text-xs font-bold text-gray-800 uppercase tracking-widest border-l-4 border-[#254696] pl-3">
                       Terms
                     </h3>
 
@@ -667,24 +667,23 @@ export default function DistributorRegistration() {
                       control={form.control}
                       name="declarationAccuracy"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormItem className="flex flex-row items-start space-x-2 md:space-x-3 space-y-0">
                           <FormControl>
                             <Checkbox
                               checked={field.value}
                               onCheckedChange={field.onChange}
-                              className="mt-1 border-gray-300 w-[18px] h-[18px]"
+                              className="mt-0.5 md:mt-1 border-gray-300 w-4 h-4 md:w-[18px] md:h-[18px]"
                             />
                           </FormControl>
-                          <div className="grid gap-1 leading-none">
-                            <FormLabel className="text-[13px] font-medium text-gray-600 leading-normal cursor-pointer">
-                              I confirm the information is accurate and agree
-                              to:
-                              <ul className="list-disc ml-4 mt-1.5 space-y-1 text-[11px] text-gray-400 font-normal">
+                          <div className="grid gap-0.5 md:gap-1 leading-none">
+                            <FormLabel className="text-[11px] md:text-[13px] font-medium text-gray-600 leading-normal cursor-pointer">
+                              Accept information accuracy & terms:
+                              <ul className="list-disc ml-4 mt-0.5 space-y-0 md:space-y-1 text-[10px] md:text-[11px] text-gray-400 font-normal">
                                 <li>
-                                  Payouts subject to TDS as per regulations
+                                  TDS deductions as per rules
                                 </li>
                                 <li>
-                                  GST registered partners will raise invoices
+                                  GST partner invoice requirement
                                 </li>
                               </ul>
                             </FormLabel>

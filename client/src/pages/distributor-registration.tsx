@@ -314,10 +314,10 @@ export default function DistributorRegistration() {
                 </div>
               </div>
               <h3 className="text-xl font-bold mb-2 text-[#1e293b]">
-                Instant Clarity
+                Real Time
               </h3>
               <p className="text-gray-500 text-sm leading-relaxed max-w-[240px] mx-auto">
-                Track every referral live. Watch your commissions clear and
+                Track every referral live. Watch your commissions grow and
                 withdraw to your bank.
               </p>
             </Card>

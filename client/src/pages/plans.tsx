@@ -81,21 +81,19 @@ const PlanProductCard = ({
         className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
         style={{ background: accent }}
       >
-        <div className="flex items-start justify-between gap-3 sm:gap-4 w-full min-w-0 relative z-10">
-          <div className="flex-1 min-w-0 pr-24 sm:pr-32 md:pr-40">
-            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight break-words">
+        <div className="relative z-10 flex items-start justify-between gap-3 sm:gap-4 w-full min-w-0">
+          <div className="flex-1 min-w-0 pr-28 sm:pr-36 md:pr-44">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight break-words max-w-[70%] sm:max-w-[75%] md:max-w-[80%]">
               {title}
               <br />
               {subtitle}
             </h3>
           </div>
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 w-14 sm:w-20 md:w-28 opacity-90 pointer-events-none z-0">
-            <img
-              src={headerImage}
-              alt={title}
-              className="w-full h-auto object-contain"
-            />
-          </div>
+          <img
+            src={headerImage}
+            alt={title}
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-12 sm:w-16 md:w-20 h-auto object-contain opacity-90 pointer-events-none z-0"
+          />
           <div className="text-right flex flex-col items-end pt-2 flex-shrink-0">
             <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
               OFFER

@@ -16,6 +16,7 @@ import {
   Percent,
   Gavel,
   TrendingUp,
+  CirclePercent,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.webp";
@@ -418,7 +419,7 @@ export default function Plans() {
                         <div className="grid grid-cols-2 gap-4 h-full">
                           {/* Resale Value */}
                           <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
-                            <ProgressCircle percentage={70} />
+                              <CirclePercent className="w-10 h-10 text-[#254696]" />
                             <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Guaranteed resale value</h4>
                             <p className="text-[10px] text-gray-500 mt-1 leading-tight">Get back up to 70% of device price</p>
                           </div>

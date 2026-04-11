@@ -17,6 +17,7 @@ import {
   Gavel,
   TrendingUp,
   CirclePercent,
+  Gift,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.webp";

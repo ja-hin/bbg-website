@@ -82,14 +82,14 @@ const PlanProductCard = ({
         style={{ background: accent }}
       >
         <div className="flex items-start justify-between gap-3 sm:gap-4 w-full min-w-0 relative z-10">
-          <div className="flex-1 min-w-0 pr-16 sm:pr-24">
-            <h3 className="text-2xl sm:text-3xl font-bold leading-tight">
+          <div className="flex-1 min-w-0 pr-24 sm:pr-32 md:pr-40">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight break-words">
               {title}
               <br />
               {subtitle}
             </h3>
           </div>
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 w-16 sm:w-24 md:w-32 opacity-90 pointer-events-none z-0">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 w-14 sm:w-20 md:w-28 opacity-90 pointer-events-none z-0">
             <img
               src={headerImage}
               alt={title}

@@ -599,7 +599,7 @@ export default function Plans() {
                         <div className="grid grid-cols-2 gap-4 h-full">
                           {/* Resale Value */}
                           <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
-                            <ProgressCircle percentage={70} />
+                              <div className="w-10 h-10 rounded-full border-4 border-[#254696] border-t-transparent animate-spin" />
                             <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Guaranteed resale value</h4>
                             <p className="text-[10px] text-gray-500 mt-1 leading-tight">Get back up to 70% of device price</p>
                           </div>

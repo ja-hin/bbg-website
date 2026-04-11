@@ -1017,7 +1017,7 @@ export default function Plans() {
                                 Protection
                               </h3>
                             </div>
-                            <div className="absolute left-[-5px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute left-[-20px] sm:right-[30%] top-1/2 -translate-y-1/2 w-14 sm:w-32 opacity-90 pointer-events-none z-0">
                                <img 
                                  src={pricingMobileHeaderExtend} 
                                  alt="Mobile Extend" 

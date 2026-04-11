@@ -769,7 +769,7 @@ export default function Home() {
                                 Protection
                               </h3>
                             </div>
-                            <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-32 sm:w-44 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 w-32 sm:w-44 opacity-90 pointer-events-none z-0">
                               <img 
                                 src={pricingLaptopHeaderExtend} 
                                 alt="Laptop Protection" 

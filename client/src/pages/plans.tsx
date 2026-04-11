@@ -609,42 +609,50 @@ export default function Plans() {
                     {/* Front Face */}
                     <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
                       {/* Blue Header */}
-                      <div className="text-white relative min-h-[140px] sm:min-h-[160px] flex items-center overflow-hidden">
-                        <div className="absolute inset-0 z-0">
-                          <img 
-                            src={pricingMobileHeaderBBG} 
-                            alt="Mobile BBG Header" 
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute inset-0 bg-black/20" />
-                        </div>
-                        <div className="flex justify-between items-center w-full z-10 relative px-4 sm:px-5">
-                          <div className="flex-1">
-                            <h3 className="text-2xl sm:text-3xl font-black leading-tight">
-                              BuyBack
-                              <br />
-                              Guarantee
-                            </h3>
-                          </div>
-                          <div className="text-right flex flex-col items-end pt-2">
-                            <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
-                              OFFER
+                        <div
+                          className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
+                          style={{
+                            background: "linear-gradient(135deg, #254696, #1F4B88)",
+                          }}
+                        >
+                          <div className="flex justify-between items-center w-full relative z-10">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h3 className="text-2xl sm:text-3xl font-bold whitespace-nowrap">
+                                  BuyBack
+                                </h3>
+                                <Shield className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" />
+                              </div>
+                              <p className="text-xs sm:text-sm opacity-90">
+                                Guarantee your resale value
+                              </p>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
-                                ₹999
-                              </span>
-                              <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
-                                {pricesLoading ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                  `₹${mobileBBGPlan?.planPrice || "--"}`
-                                )}
+                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                               <img 
+                                 src={pricingMobileHeaderBBG} 
+                                 alt="Mobile BBG" 
+                                 className="w-full h-auto object-contain"
+                               />
+                            </div>
+                            <div className="text-right flex flex-col items-end pt-2">
+                              <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
+                                OFFER
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
+                                  ₹999
+                                </span>
+                                <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
+                                  {pricesLoading ? (
+                                    <Loader2 className="h-6 w-6 animate-spin" />
+                                  ) : (
+                                    `₹${mobileBBGPlan?.planPrice || "--"}`
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
                       {/* White Content Area */}
                       <div className="p-4 sm:p-5 space-y-2">
@@ -837,42 +845,49 @@ export default function Plans() {
                 >
                   <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
                     {/* Blue Header */}
-                    <div className="text-white relative min-h-[140px] sm:min-h-[160px] flex items-center overflow-hidden">
-                      <div className="absolute inset-0 z-0">
-                        <img 
-                          src={pricingLaptopHeaderExtend} 
-                          alt="Laptop Extend Header" 
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/20" />
-                      </div>
-                      <div className="flex justify-between items-center w-full z-10 relative px-4 sm:px-5">
-                        <div className="flex-1">
-                          <h3 className="text-2xl sm:text-3xl font-black leading-tight">
-                            Extend+
-                            <br />
-                            Protection
-                          </h3>
-                        </div>
-                        <div className="text-right flex flex-col items-end pt-2">
-                          <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
-                            OFFER
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
-                              ₹1299
-                            </span>
-                            <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
-                              {pricesLoading ? (
-                                <Loader2 className="h-6 w-6 animate-spin" />
-                              ) : (
-                                `₹${laptopExtendPlan?.planPrice || "--"}`
-                              )}
+                        <div
+                          className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
+                          style={{
+                            background: "linear-gradient(135deg, #254696, #1F4B88)",
+                          }}
+                        >
+                          <div className="flex justify-between items-center w-full relative z-10">
+                            <div className="flex-1">
+                              <h3 className="text-2xl sm:text-3xl font-bold leading-tight">
+                                Extend+
+                                <br />
+                                Protection
+                              </h3>
+                              <p className="text-xs sm:text-sm opacity-90 mt-2">
+                                Auction your device at the best market value
+                              </p>
+                            </div>
+                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                               <img 
+                                 src={pricingLaptopHeaderExtend} 
+                                 alt="Laptop Extend" 
+                                 className="w-full h-auto object-contain"
+                               />
+                            </div>
+                            <div className="text-right flex flex-col items-end pt-2">
+                              <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
+                                OFFER
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
+                                  ₹1299
+                                </span>
+                                <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
+                                  {pricesLoading ? (
+                                    <Loader2 className="h-6 w-6 animate-spin" />
+                                  ) : (
+                                    `₹${laptopExtendPlan?.planPrice || "--"}`
+                                  )}
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
 
                     {/* White Content Area */}
                     <div className="flex-grow p-4 sm:p-5 flex flex-col space-y-2">
@@ -1001,42 +1016,49 @@ export default function Plans() {
                   data-testid="card-mobile-extend"
                 >
                   <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
-                             <div className="text-white relative min-h-[140px] sm:min-h-[160px] flex items-center overflow-hidden">
-                      <div className="absolute inset-0 z-0">
-                        <img 
-                          src={pricingMobileHeaderExtend} 
-                          alt="Mobile Extend+ Header" 
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/20" />
-                      </div>
-                      <div className="flex justify-between items-center w-full z-10 relative px-4 sm:px-5">
-                        <div className="flex-1">
-                          <h3 className="text-2xl sm:text-3xl font-black leading-tight">
-                            Extend+
-                            <br />
-                            Protection
-                          </h3>
-                        </div>
-                        <div className="text-right flex flex-col items-end pt-2">
-                          <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
-                            OFFER
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
-                              ₹999
-                            </span>
-                            <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
-                              {pricesLoading ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                `₹${mobileExtendPlan?.planPrice || "--"}`
-                              )}
+                        <div
+                          className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
+                          style={{
+                            background: "linear-gradient(135deg, #254696, #1F4B88)",
+                          }}
+                        >
+                          <div className="flex justify-between items-center w-full relative z-10">
+                            <div className="flex-1">
+                              <h3 className="text-2xl sm:text-3xl font-bold leading-tight">
+                                Extend+
+                                <br />
+                                Protection
+                              </h3>
+                              <p className="text-xs sm:text-sm opacity-90 mt-2">
+                                Auction your device at the best market value
+                              </p>
+                            </div>
+                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                               <img 
+                                 src={pricingMobileHeaderExtend} 
+                                 alt="Mobile Extend" 
+                                 className="w-full h-auto object-contain"
+                               />
+                            </div>
+                            <div className="text-right flex flex-col items-end pt-2">
+                              <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
+                                OFFER
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
+                                  ₹999
+                                </span>
+                                <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
+                                  {pricesLoading ? (
+                                    <Loader2 className="h-6 w-6 animate-spin" />
+                                  ) : (
+                                    `₹${mobileExtendPlan?.planPrice || "--"}`
+                                  )}
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
 
                     {/* White Content Area */}
                     <div className="flex-grow p-4 sm:p-5 flex flex-col space-y-2">

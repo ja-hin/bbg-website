@@ -506,33 +506,33 @@ export default function DistributorRegistration() {
       {/* ── FINAL CTAs & REGISTRATION ────────────────────────────────────────────── */}
       <section
         id="registration-form"
-        className="py-24 px-4 bg-gradient-to-br from-[#1e293b] via-[#254696] to-[#4338ca] relative overflow-hidden"
+        className="py-12 md:py-24 px-4 bg-gradient-to-br from-[#1e293b] via-[#254696] to-[#4338ca] relative overflow-hidden"
       >
         {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48 -mt-48" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48 -mb-48" />
 
-        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
           {/* Left Column: Text & Benefits */}
-          <div className="text-white">
-            <h2 className="text-3xl md:text-6xl font-extrabold mb-8 leading-tight">
+          <div className="text-white text-center lg:text-left">
+            <h2 className="text-[28px] md:text-5xl lg:text-6xl font-extrabold mb-4 md:mb-8 leading-tight">
               Start Earning in Minutes
             </h2>
-            <p className="text-xl text-blue-100 mb-14">
+            <p className="text-base md:text-xl text-blue-100 mb-8 md:mb-14 max-w-lg mx-auto lg:mx-0">
               Earn ₹100–₹175 for every successful referral sale.
             </p>
 
-            <div className="space-y-8">
+            <div className="space-y-4 md:space-y-6 mb-10 lg:mb-0">
               {[
                 "No upfront costs or joining fees",
                 "24/7 dedicated partner support",
-                "Common marketing assets library included",
+                "Marketing assets library included",
               ].map((benefit, idx) => (
-                <div key={idx} className="flex items-center gap-4">
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-white flex items-center justify-center">
-                    <CheckCircle2 className="w-4 h-4 text-[#254696]" />
+                <div key={idx} className="flex items-center justify-center lg:justify-start gap-3 md:gap-4">
+                  <div className="flex-shrink-0 w-5 h-5 md:w-6 md:h-6 rounded-full bg-white flex items-center justify-center">
+                    <CheckCircle2 className="w-3 md:w-4 h-3 md:h-4 text-[#254696]" />
                   </div>
-                  <span className="text-lg font-bold text-white/90">
+                  <span className="text-sm md:text-lg font-bold text-white/90">
                     {benefit}
                   </span>
                 </div>

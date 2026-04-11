@@ -368,9 +368,9 @@ export default function DistributorRegistration() {
       </section>
 
       {/* ── DASHBOARD PREVIEW SECTION ────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-white relative">
+      <section className="py-10 md:py-16 px-4 bg-white relative">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
+          <div className="text-center mb-6 md:mb-10">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
               Your Earnings Dashboard
             </h2>
@@ -407,32 +407,32 @@ export default function DistributorRegistration() {
               </div>
             </div>
 
-            <CardContent className="p-6 md:p-8">
+            <CardContent className="p-4 md:p-8">
               {/* Stats Grid */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8 border-b border-gray-100 pb-8">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8 border-b border-gray-100 pb-6 md:pb-8">
                 <div>
-                  <p className="text-gray-400 text-[11px] mb-1 font-semibold uppercase tracking-wider">
-                    Total Referrals Generated
+                  <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
+                    Total Referrals
                   </p>
-                  <p className="text-2xl font-bold text-gray-900">502</p>
+                  <p className="text-xl md:text-2xl font-bold text-gray-900">502</p>
                 </div>
                 <div>
-                  <p className="text-gray-400 text-[11px] mb-1 font-semibold uppercase tracking-wider">
-                    Total Earnings Earned
+                  <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
+                    Total Earnings
                   </p>
-                  <p className="text-2xl font-bold text-[#065f46]">₹87,850</p>
+                  <p className="text-xl md:text-2xl font-bold text-[#065f46]">₹87,850</p>
                 </div>
                 <div>
-                  <p className="text-gray-400 text-[11px] mb-1 font-semibold uppercase tracking-wider">
+                  <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
                     Pending Payouts
                   </p>
-                  <p className="text-2xl font-bold text-[#991b1b]">₹3,200</p>
+                  <p className="text-xl md:text-2xl font-bold text-[#991b1b]">₹3,200</p>
                 </div>
                 <div>
-                  <p className="text-gray-400 text-[11px] mb-1 font-semibold uppercase tracking-wider">
-                    Payouts Completed
+                  <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
+                    Payouts Done
                   </p>
-                  <p className="text-2xl font-bold text-[#1e293b]">₹84,650</p>
+                  <p className="text-xl md:text-2xl font-bold text-[#1e293b]">₹84,650</p>
                 </div>
               </div>
 
@@ -446,7 +446,7 @@ export default function DistributorRegistration() {
                   <span className="font-bold text-gray-600">JD123</span>
                 </p>
 
-                <div className="space-y-3">
+                <div className="space-y-2.5 md:space-y-3">
                   {[
                     {
                       device: "Apple iPhone 15",
@@ -461,7 +461,7 @@ export default function DistributorRegistration() {
                       type: "laptop",
                     },
                     {
-                      device: "Samsung Galaxy S23",
+                      device: "Samsung S23",
                       status: "PROCESSING",
                       commission: "₹100",
                       type: "mobile",
@@ -469,32 +469,29 @@ export default function DistributorRegistration() {
                   ].map((reg, idx) => (
                     <div
                       key={idx}
-                      className="flex flex-col sm:flex-row items-center justify-between p-3.5 bg-white border border-gray-100 rounded-xl shadow-sm gap-4 transition-all"
+                      className="flex flex-row items-center justify-between p-2.5 md:p-3.5 bg-white border border-gray-100 rounded-xl shadow-sm gap-2 transition-all"
                     >
-                      <div className="flex items-center gap-3.5 w-full sm:w-auto">
-                        <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100">
+                      <div className="flex items-center gap-2.5 overflow-hidden">
+                        <div className="flex-shrink-0 w-8 h-8 md:w-10 md:h-10 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100">
                           {reg.type === "mobile" ? (
-                            <Smartphone className="w-5 h-5 text-gray-400" />
+                            <Smartphone className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
                           ) : (
-                            <Laptop className="w-5 h-5 text-gray-400" />
+                            <Laptop className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
                           )}
                         </div>
-                        <span className="font-bold text-base text-gray-800">
+                        <span className="font-bold text-sm md:text-base text-gray-800 truncate">
                           {reg.device}
                         </span>
                       </div>
-                      <div className="flex flex-row items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
+                      <div className="flex flex-col items-end gap-1 flex-shrink-0">
                         <Badge
                           variant="secondary"
-                          className={`${reg.status === "APPROVED" ? "bg-[#ecfdf5] text-[#059669]" : "bg-[#fff7ed] text-[#9a3412]"} border-none px-3 py-0.5 font-bold text-[10px] rounded-full`}
+                          className={`${reg.status === "APPROVED" ? "bg-[#ecfdf5] text-[#059669]" : "bg-[#fff7ed] text-[#9a3412]"} border-none px-2 py-0.5 font-bold text-[9px] md:text-[10px] rounded-full`}
                         >
                           {reg.status}
                         </Badge>
-                        <span className="text-xs font-semibold text-gray-400 whitespace-nowrap">
-                          Commission:{" "}
-                          <span className="text-gray-900 font-bold ml-1">
-                            {reg.commission}
-                          </span>
+                        <span className="text-[10px] font-semibold text-gray-400">
+                          Earn: <span className="text-gray-900 font-bold">{reg.commission}</span>
                         </span>
                       </div>
                     </div>

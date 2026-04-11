@@ -359,10 +359,15 @@ export default function Plans() {
             <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch max-w-full [grid-template-columns:repeat(auto-fit,minmax(340px,550px))]">
               {showLaptopBBG && (
                 <div
-                  className="w-full flex flex-col min-h-[400px]"
+                  className="w-full flex flex-col flip-card min-h-[400px]"
                   data-testid="card-laptop-bbg"
                 >
-                  <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
+                  <div
+                    className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopBBGFlipped ? "flipped" : ""}`}
+                  >
+                    {/* Front Face */}
+                    <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
+                        {/* Header */}
                         <div
                           className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
                           style={{
@@ -408,100 +413,56 @@ export default function Plans() {
                           </div>
                         </div>
 
-                    {/* White Content Area */}
-                    <div className="flex-grow p-4 sm:p-5 space-y-2">
-                        <div className="space-y-2">
-                          <div className="flex gap-3">
-                            <Shield
-                              className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                              style={{ color: "#254696" }}
-                            />
-                            <div>
-                              <p
-                                className="font-semibold text-sm sm:text-base"
-                                style={{ color: "#1F2937" }}
-                              >
-                                Guaranteed resale value
-                              </p>
-                              <p
-                                className="text-xs sm:text-sm"
-                                style={{ color: "#6B7280" }}
-                              >
-                                Get back up to 70% of your device's purchase
-                                price*
-                              </p>
-                            </div>
+                      {/* 2x2 Benefits Grid from Homepage */}
+                      <div className="flex-grow p-4 sm:p-5">
+                        <div className="grid grid-cols-2 gap-4 h-full">
+                          {/* Resale Value */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <ProgressCircle percentage={70} />
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Guaranteed resale value</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Get back up to 70% of device price</p>
                           </div>
-                          <div className="flex gap-3">
-                            <Gavel
-                              className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                              style={{ color: "#254696" }}
-                            />
-                            <div>
-                              <p
-                                className="font-semibold text-sm sm:text-base"
-                                style={{ color: "#1F2937" }}
-                              >
-                                1-Year Extended Repair Service Warranty*
-                              </p>
-                              <div
-                                className="text-xs sm:text-sm space-y-1"
-                                style={{ color: "#6B7280" }}
-                              >
-                                <p>
-                                  • Protection for your existing device that
-                                  begins after your brand warranty ends
-                                </p>
-                                <p>• Zero service costs on repairs</p>
-                              </div>
+
+                          {/* Repair Service */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <div className="w-10 h-10 flex-shrink-0 bg-white rounded-full flex items-center justify-center shadow-sm">
+                              <Wrench className="w-5 h-5 text-gray-400 transform -rotate-45" />
                             </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Repair Service Warranty</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Zero service cost on repair</p>
                           </div>
-                          <div className="flex gap-3">
-                            <Wallet
-                              className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                              style={{ color: "#254696" }}
-                            />
-                            <div>
-                              <p
-                                className="font-semibold text-sm sm:text-base"
-                                style={{ color: "#1F2937" }}
-                              >
-                                Best Product Upgrade Offers
-                              </p>
-                              <p
-                                className="text-xs sm:text-sm"
-                                style={{ color: "#6B7280" }}
-                              >
-                                Exclusive deals for your next device purchase
-                              </p>
+
+                          {/* Upgrade Offers */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <div className="w-10 h-10 flex-shrink-0 bg-[#EFF6FF] rounded-xl flex items-center justify-center shadow-sm">
+                               <Gift className="w-6 h-6 text-[#3B82F6]" />
                             </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Product Upgrade Offers</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Exclusive deals for your next device</p>
                           </div>
-                          <div className="flex gap-3">
-                            <Percent
-                              className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                              style={{ color: "#254696" }}
-                            />
-                            <div>
-                              <p
-                                className="font-semibold text-sm sm:text-base"
-                                style={{ color: "#1F2937" }}
-                              >
-                                20% Off on 1-Year Extended Warranty
-                              </p>
-                              <p
-                                className="text-xs sm:text-sm"
-                                style={{ color: "#6B7280" }}
-                              >
-                                Save 20% on protection of your next device
-                                purchase
-                              </p>
+
+                          {/* Extended Warranty */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <div className="w-10 h-10 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative shadow-sm">
+                               <Percent className="w-5 h-5 text-[#3B82F6] z-10" />
+                               <div className="absolute inset-0 border-[2px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
                             </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Off on Extended Warranty</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Save 20% on next device purchase</p>
                           </div>
                         </div>
-                    </div>
+                      </div>
 
-                    {/* Buy Now Button */}
-                    <div className="px-4 sm:px-5 pb-1 sm:pb-2">
+                      {/* Buttons */}
+                      <div className="px-4 sm:px-5 pb-4 space-y-2">
+                        <button
+                          onClick={() => setLaptopBBGFlipped(!laptopBBGFlipped)}
+                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
+                          style={{ color: "var(--xtra-primary)" }}
+                          data-testid="button-know-more-laptop-bbg"
+                        >
+                          Know More
+                        </button>
                         <Button
                           className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                           style={{
@@ -517,6 +478,60 @@ export default function Plans() {
                             "Buy Now"
                           )}
                         </Button>
+                      </div>
+                    </div>
+
+                    {/* Back Face */}
+                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
+                      <div
+                        className="p-4 sm:p-5 text-white text-center"
+                        style={{
+                          background: "var(--xtra-primary)",
+                        }}
+                      >
+                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                          Guaranteed Resale Value
+                        </h3>
+                        <p className="text-xs sm:text-sm mb-3 opacity-95">
+                          Lock resale value of your device
+                        </p>
+                      </div>
+                      <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-2">
+                        <ClaimValueSlabs
+                          slabs={laptopBBGPlan?.claimValueSlabs || []}
+                        />
+                        <p
+                          className="text-xs sm:text-sm text-center"
+                          style={{ color: "#666666" }}
+                        >
+                          Resale value is calculated as a percentage of your
+                          original device purchase price
+                        </p>
+                      </div>
+                      <div className="px-4 sm:px-5 pb-4 space-y-2">
+                        <button
+                          onClick={() => setLaptopBBGFlipped(false)}
+                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
+                          style={{ color: "var(--xtra-primary)" }}
+                          data-testid="button-back-laptop-bbg"
+                        >
+                          Back
+                        </button>
+                        <Button
+                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{
+                            background: "var(--xtra-primary)",
+                          }}
+                          onClick={() => handleBuyNow(laptopBBGPlan)}
+                          disabled={pricesLoading || !laptopBBGPlan}
+                        >
+                          {pricesLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            "Buy Now"
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -524,149 +539,110 @@ export default function Plans() {
 
               {showMobileBBG && (
                 <div
-                  className="w-full flex flex-col min-h-[400px]"
+                  className="w-full flex flex-col flip-card min-h-[400px]"
                   data-testid="card-mobile-bbg"
                 >
-                  <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
-                        <div
-                          className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
-                          style={{
-                            background: "var(--xtra-primary)",
-                          }}
-                         >
-                          <div className="flex justify-between items-center w-full relative z-10">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="text-2xl sm:text-3xl font-bold whitespace-nowrap">
-                                  BuyBack
-                                </h3>
-                                <Shield className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" />
-                              </div>
-                              <p className="text-xs sm:text-sm opacity-90">
-                                Guarantee your resale value
-                              </p>
+                  <div
+                    className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileBBGFlipped ? "flipped" : ""}`}
+                  >
+                    {/* Front Face */}
+                    <div className="flip-card-front rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
+                      {/* Header */}
+                      <div
+                        className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
+                        style={{
+                          background: "var(--xtra-primary)",
+                        }}
+                       >
+                        <div className="flex justify-between items-center w-full relative z-10">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="text-2xl sm:text-3xl font-bold whitespace-nowrap">
+                                BuyBack
+                              </h3>
+                              <Shield className="w-5 h-5 sm:w-6 sm:h-6 opacity-80" />
                             </div>
-                            <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
-                               <img 
-                                 src={pricingMobileHeaderBBG} 
-                                 alt="Mobile BBG" 
-                                 className="w-full h-auto object-contain"
-                               />
+                            <p className="text-xs sm:text-sm opacity-90">
+                              Guarantee your resale value
+                            </p>
+                          </div>
+                          <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
+                             <img 
+                               src={pricingMobileHeaderBBG} 
+                               alt="Mobile BBG" 
+                               className="w-full h-auto object-contain"
+                             />
+                          </div>
+                          <div className="text-right flex flex-col items-end pt-2">
+                            <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
+                              OFFER
                             </div>
-                            <div className="text-right flex flex-col items-end pt-2">
-                              <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
-                                OFFER
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
-                                  ₹999
-                                </span>
-                                <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
-                                  {pricesLoading ? (
-                                    <Loader2 className="h-6 w-6 animate-spin" />
-                                  ) : (
-                                    `₹${mobileBBGPlan?.planPrice || "--"}`
-                                  )}
-                                </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-3xl sm:text-4xl text-white/60 line-through decoration-white/40">
+                                ₹999
+                              </span>
+                              <div className="text-3xl sm:text-4xl font-bold text-[#D4AF37]">
+                                {pricesLoading ? (
+                                  <Loader2 className="h-6 w-6 animate-spin" />
+                                ) : (
+                                  `₹${mobileBBGPlan?.planPrice || "--"}`
+                                )}
                               </div>
                             </div>
                           </div>
                         </div>
+                      </div>
 
-                    {/* White Content Area */}
-                    <div className="flex-grow p-4 sm:p-5 space-y-2">
-                        <div className="space-y-2">
-                          <div className="flex gap-3">
-                            <Shield
-                              className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                              style={{ color: "#254696" }}
-                            />
-                            <div>
-                              <p
-                                className="font-semibold text-sm sm:text-base"
-                                style={{ color: "#1F2937" }}
-                              >
-                                Guaranteed resale value
-                              </p>
-                              <p
-                                className="text-xs sm:text-sm"
-                                style={{ color: "#6B7280" }}
-                              >
-                                Get back up to 70% of your device's purchase
-                                price*
-                              </p>
-                            </div>
+                      {/* 2x2 Benefits Grid from Homepage */}
+                      <div className="flex-grow p-4 sm:p-5">
+                        <div className="grid grid-cols-2 gap-4 h-full">
+                          {/* Resale Value */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <ProgressCircle percentage={70} />
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Guaranteed resale value</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Get back up to 70% of device price</p>
                           </div>
-                          <div className="flex gap-3">
-                            <Gavel
-                              className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                              style={{ color: "#254696" }}
-                            />
-                            <div>
-                              <p
-                                className="font-semibold text-sm sm:text-base"
-                                style={{ color: "#1F2937" }}
-                              >
-                                1-Year Extended Repair Service Warranty*
-                              </p>
-                              <div
-                                className="text-xs sm:text-sm space-y-1"
-                                style={{ color: "#6B7280" }}
-                              >
-                                <p>
-                                  • Protection for your existing device that
-                                  begins after your brand warranty ends
-                                </p>
-                                <p>• Zero service costs on repairs</p>
-                              </div>
+
+                          {/* Repair Service */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <div className="w-10 h-10 flex-shrink-0 bg-white rounded-full flex items-center justify-center shadow-sm">
+                              <Wrench className="w-5 h-5 text-gray-400 transform -rotate-45" />
                             </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Repair Service Warranty</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Zero service cost on repair</p>
                           </div>
-                          <div className="flex gap-3">
-                            <Wallet
-                              className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                              style={{ color: "#254696" }}
-                            />
-                            <div>
-                              <p
-                                className="font-semibold text-sm sm:text-base"
-                                style={{ color: "#1F2937" }}
-                              >
-                                Best Product Upgrade Offers
-                              </p>
-                              <p
-                                className="text-xs sm:text-sm"
-                                style={{ color: "#6B7280" }}
-                              >
-                                Exclusive deals for your next device purchase
-                              </p>
+
+                          {/* Upgrade Offers */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <div className="w-10 h-10 flex-shrink-0 bg-[#EFF6FF] rounded-xl flex items-center justify-center shadow-sm">
+                               <Gift className="w-6 h-6 text-[#3B82F6]" />
                             </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Product Upgrade Offers</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Exclusive deals for your next device</p>
                           </div>
-                          <div className="flex gap-3">
-                            <Percent
-                              className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                              style={{ color: "#254696" }}
-                            />
-                            <div>
-                              <p
-                                className="font-semibold text-sm sm:text-base"
-                                style={{ color: "#1F2937" }}
-                              >
-                                20% Off on 1-Year Extended Warranty
-                              </p>
-                              <p
-                                className="text-xs sm:text-sm"
-                                style={{ color: "#6B7280" }}
-                              >
-                                Save 20% on protection of your next device
-                                purchase
-                              </p>
+
+                          {/* Extended Warranty */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <div className="w-10 h-10 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative shadow-sm">
+                               <Percent className="w-5 h-5 text-[#3B82F6] z-10" />
+                               <div className="absolute inset-0 border-[2px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
                             </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Off on Extended Warranty</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Save 20% on next device purchase</p>
                           </div>
                         </div>
-                    </div>
+                      </div>
 
-                    {/* Buy Now Button */}
-                    <div className="px-4 sm:px-5 pb-1 sm:pb-2">
+                      {/* Buttons */}
+                      <div className="px-4 sm:px-5 pb-4 space-y-2">
+                        <button
+                          onClick={() => setMobileBBGFlipped(!mobileBBGFlipped)}
+                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
+                          style={{ color: "var(--xtra-primary)" }}
+                          data-testid="button-know-more-mobile-bbg"
+                        >
+                          Know More
+                        </button>
                         <Button
                           className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                           style={{
@@ -682,6 +658,60 @@ export default function Plans() {
                             "Buy Now"
                           )}
                         </Button>
+                      </div>
+                    </div>
+
+                    {/* Back Face */}
+                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
+                      <div
+                        className="p-4 sm:p-5 text-white text-center"
+                        style={{
+                          background: "var(--xtra-primary)",
+                        }}
+                      >
+                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                          Guaranteed Resale Value
+                        </h3>
+                        <p className="text-xs sm:text-sm mb-3 opacity-95">
+                          Lock resale value of your device
+                        </p>
+                      </div>
+                      <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-2">
+                        <ClaimValueSlabs
+                          slabs={mobileBBGPlan?.claimValueSlabs || []}
+                        />
+                        <p
+                          className="text-xs sm:text-sm text-center"
+                          style={{ color: "#666666" }}
+                        >
+                          Resale value is calculated as a percentage of your
+                          original device purchase price
+                        </p>
+                      </div>
+                      <div className="px-4 sm:px-5 pb-4 space-y-2">
+                        <button
+                          onClick={() => setMobileBBGFlipped(false)}
+                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
+                          style={{ color: "var(--xtra-primary)" }}
+                          data-testid="button-back-mobile-bbg"
+                        >
+                          Back
+                        </button>
+                        <Button
+                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{
+                            background: "var(--xtra-primary)",
+                          }}
+                          onClick={() => handleBuyNow(mobileBBGPlan)}
+                          disabled={pricesLoading || !mobileBBGPlan}
+                        >
+                          {pricesLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            "Buy Now"
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -708,7 +738,7 @@ export default function Plans() {
                                 Protection
                               </h3>
                               <p className="text-xs sm:text-sm opacity-90 mt-2">
-                                Auction your device at the best market value
+                                Best market value for your device
                               </p>
                             </div>
                             <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
@@ -738,110 +768,54 @@ export default function Plans() {
                           </div>
                         </div>
 
-                      {/* White Content Area */}
-                      <div className="flex-grow p-4 sm:p-5 flex flex-col space-y-2">
-                      {/* Benefits with Icons */}
-                      <div className="space-y-2">
-                        <div className="flex gap-3">
-                          <Gavel
-                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                            style={{ color: "#254696" }}
-                          />
-                          <div>
-                            <p
-                              className="font-semibold text-sm sm:text-base"
-                              style={{ color: "#1F2937" }}
-                            >
-                              Doorstep Device Auction
-                            </p>
-                            <div
-                              className="text-xs sm:text-sm space-y-1"
-                              style={{ color: "#6B7280" }}
-                            >
-                              <p>
-                                • Auction your device at the best market value
-                              </p>
-                              <p>
-                                • 100+ buyers compete to give you the best
-                                possible price in India
-                              </p>
+                      {/* 2x2 Benefits Grid from Homepage */}
+                      <div className="flex-grow p-4 sm:p-5">
+                        <div className="grid grid-cols-2 gap-4 h-full">
+                          {/* Device Auction */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                             <div className="w-10 h-10 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center shadow-sm">
+                               <Gavel className="w-5 h-5 text-[#254696]" />
                             </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Doorstep Device Auction</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Get 10-20% higher market value</p>
                           </div>
-                        </div>
-                        <div className="flex gap-3">
-                          <Wrench
-                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                            style={{ color: "#254696" }}
-                          />
-                          <div>
-                            <p
-                              className="font-semibold text-sm sm:text-base"
-                              style={{ color: "#1F2937" }}
-                            >
-                              1-Year Extended Repair Service Warranty*
-                            </p>
-                            <div
-                              className="text-xs sm:text-sm space-y-1"
-                              style={{ color: "#6B7280" }}
-                            >
-                              <p>
-                                • Protection for your existing device that
-                                begins after your brand warranty ends
-                              </p>
-                              <p>• Zero service costs on repairs</p>
+
+                          {/* Repair Service */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <div className="w-10 h-10 flex-shrink-0 bg-white rounded-full flex items-center justify-center shadow-sm">
+                              <Wrench className="w-5 h-5 text-gray-400 transform -rotate-45" />
                             </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Repair Service Warranty</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Zero service cost on repair</p>
+                          </div>
+
+                          {/* Upgrade Offers */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <div className="w-10 h-10 flex-shrink-0 bg-[#EFF6FF] rounded-xl flex items-center justify-center shadow-sm">
+                               <Gift className="w-6 h-6 text-[#3B82F6]" />
+                            </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Product Upgrade Offers</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Exclusive deals for your next device</p>
+                          </div>
+
+                          {/* Extended Warranty */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <div className="w-10 h-10 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative shadow-sm">
+                               <Percent className="w-5 h-5 text-[#3B82F6] z-10" />
+                               <div className="absolute inset-0 border-[2px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
+                            </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Off on Extended Warranty</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Save 20% on next device purchase</p>
                           </div>
                         </div>
-                        <div className="flex gap-3">
-                          <TrendingUp
-                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                            style={{ color: "#254696" }}
-                          />
-                          <div>
-                            <p
-                              className="font-semibold text-sm sm:text-base"
-                              style={{ color: "#1F2937" }}
-                            >
-                              Best Product Upgrade Offers
-                            </p>
-                            <p
-                              className="text-xs sm:text-sm"
-                              style={{ color: "#6B7280" }}
-                            >
-                              Exclusive deals for your next device purchase
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex gap-3">
-                          <Percent
-                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                            style={{ color: "#254696" }}
-                          />
-                          <div>
-                            <p
-                              className="font-semibold text-sm sm:text-base"
-                              style={{ color: "#1F2937" }}
-                            >
-                              20% Off on 1-Year Extended Warranty
-                            </p>
-                            <p
-                              className="text-xs sm:text-sm"
-                              style={{ color: "#6B7280" }}
-                            >
-                              Save 20% on protection of your next device
-                              purchase
-                            </p>
-                          </div>
-                        </div>
-                      </div>
                       </div>
 
                     {/* Buy Now Button */}
-                    <div className="px-4 sm:px-5 pb-1 sm:pb-2">
+                    <div className="px-4 sm:px-5 pb-4">
                       <Button
                         className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{
-                          background: "var(--xtra-primary)",
+                           background: "var(--xtra-primary)",
                         }}
                         onClick={() => handleBuyNow(laptopExtendPlan)}
                         disabled={pricesLoading || !laptopExtendPlan}
@@ -864,6 +838,7 @@ export default function Plans() {
                   data-testid="card-mobile-extend"
                 >
                   <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-white border border-gray-100 h-full">
+                    {/* Blue Header */}
                         <div
                           className="p-4 sm:p-5 text-white flex flex-col relative overflow-hidden"
                           style={{
@@ -908,110 +883,54 @@ export default function Plans() {
                           </div>
                         </div>
 
-                    {/* White Content Area */}
-                    <div className="flex-grow p-4 sm:p-5 flex flex-col space-y-2">
-                      {/* Benefits with Icons */}
-                      <div className="space-y-2">
-                        <div className="flex gap-3">
-                          <Gavel
-                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                            style={{ color: "#254696" }}
-                          />
-                          <div>
-                            <p
-                              className="font-semibold text-sm sm:text-base"
-                              style={{ color: "#1F2937" }}
-                            >
-                              Doorstep Device Auction
-                            </p>
-                            <div
-                              className="text-xs sm:text-sm space-y-1"
-                              style={{ color: "#6B7280" }}
-                            >
-                              <p>
-                                • Auction your device at the best market value
-                              </p>
-                              <p>
-                                • 100+ buyers compete to give you the best
-                                possible price in India
-                              </p>
+                      {/* 2x2 Benefits Grid from Homepage */}
+                      <div className="flex-grow p-4 sm:p-5">
+                        <div className="grid grid-cols-2 gap-4 h-full">
+                          {/* Device Auction */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                             <div className="w-10 h-10 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center shadow-sm">
+                               <Gavel className="w-5 h-5 text-[#254696]" />
                             </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Doorstep Device Auction</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Get 10-20% higher market value</p>
                           </div>
-                        </div>
-                        <div className="flex gap-3">
-                          <Wrench
-                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                            style={{ color: "#254696" }}
-                          />
-                          <div>
-                            <p
-                              className="font-semibold text-sm sm:text-base"
-                              style={{ color: "#1F2937" }}
-                            >
-                              1-Year Extended Repair Service Warranty*
-                            </p>
-                            <div
-                              className="text-xs sm:text-sm space-y-1"
-                              style={{ color: "#6B7280" }}
-                            >
-                              <p>
-                                • Protection for your existing device that
-                                begins after your brand warranty ends
-                              </p>
-                              <p>• Zero service costs on repairs</p>
+
+                          {/* Repair Service */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <div className="w-10 h-10 flex-shrink-0 bg-white rounded-full flex items-center justify-center shadow-sm">
+                              <Wrench className="w-5 h-5 text-gray-400 transform -rotate-45" />
                             </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Repair Service Warranty</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Zero service cost on repair</p>
                           </div>
-                        </div>
-                        <div className="flex gap-3">
-                          <TrendingUp
-                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                            style={{ color: "#254696" }}
-                          />
-                          <div>
-                            <p
-                              className="font-semibold text-sm sm:text-base"
-                              style={{ color: "#1F2937" }}
-                            >
-                              Best Product Upgrade Offers
-                            </p>
-                            <p
-                              className="text-xs sm:text-sm"
-                              style={{ color: "#6B7280" }}
-                            >
-                              Exclusive deals for your next device purchase
-                            </p>
+
+                          {/* Upgrade Offers */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <div className="w-10 h-10 flex-shrink-0 bg-[#EFF6FF] rounded-xl flex items-center justify-center shadow-sm">
+                               <Gift className="w-6 h-6 text-[#3B82F6]" />
+                            </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Product Upgrade Offers</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Exclusive deals for your next device</p>
                           </div>
-                        </div>
-                        <div className="flex gap-3">
-                          <Percent
-                            className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
-                            style={{ color: "#254696" }}
-                          />
-                          <div>
-                            <p
-                              className="font-semibold text-sm sm:text-base"
-                              style={{ color: "#1F2937" }}
-                            >
-                              20% Off on 1-Year Extended Warranty
-                            </p>
-                            <p
-                              className="text-xs sm:text-sm"
-                              style={{ color: "#6B7280" }}
-                            >
-                              Save 20% on protection of your next device
-                              purchase
-                            </p>
+
+                          {/* Extended Warranty */}
+                          <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
+                            <div className="w-10 h-10 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative shadow-sm">
+                               <Percent className="w-5 h-5 text-[#3B82F6] z-10" />
+                               <div className="absolute inset-0 border-[2px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
+                            </div>
+                            <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">Off on Extended Warranty</h4>
+                            <p className="text-[10px] text-gray-500 mt-1 leading-tight">Save 20% on next device purchase</p>
                           </div>
                         </div>
                       </div>
-                    </div>
 
                     {/* Buy Now Button */}
-                    <div className="px-4 sm:px-5 pb-1 sm:pb-2">
+                    <div className="px-4 sm:px-5 pb-4">
                       <Button
                         className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{
-                          background: "var(--xtra-primary)",
+                           background: "var(--xtra-primary)",
                         }}
                         onClick={() => handleBuyNow(mobileExtendPlan)}
                         disabled={pricesLoading || !mobileExtendPlan}

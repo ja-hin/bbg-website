@@ -163,8 +163,8 @@ const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
 };
 
 const ProgressCircle = ({ percentage }: { percentage: number }) => (
-  <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center flex-shrink-0">
-    <svg className="w-full h-full transform -rotate-90">
+  <div className="relative w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center flex-shrink-0">
+    <svg viewBox="0 0 64 64" className="w-full h-full transform -rotate-90">
       <circle
         cx="32"
         cy="32"
@@ -593,10 +593,10 @@ export default function Home() {
                                 Guarantee
                               </h3>
                             </div>
-                            <div className="absolute right-[-10px] sm:right-[25%] top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-0 sm:right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
                               <img 
                                 src={pricingLaptopHeaderBBG} 
-                                alt="Laptop Guarantee" 
+                                alt="Laptop BBG" 
                                 className="w-full h-auto object-contain"
                               />
                             </div>
@@ -765,7 +765,7 @@ export default function Home() {
                                 Protection
                               </h3>
                             </div>
-                            <div className="absolute right-[-10px] sm:right-[25%] top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-0 sm:right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
                               <img 
                                 src={pricingLaptopHeaderExtend} 
                                 alt="Laptop Protection" 
@@ -888,7 +888,7 @@ export default function Home() {
                                 Guarantee
                               </h3>
                             </div>
-                            <div className="absolute right-[-10px] sm:right-[25%] top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-0 sm:right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
                               <img 
                                 src={pricingMobileHeaderBBG} 
                                 alt="Mobile Guarantee" 
@@ -1060,7 +1060,7 @@ export default function Home() {
                                 Protection
                               </h3>
                             </div>
-                            <div className="absolute right-[-10px] sm:right-[25%] top-1/2 -translate-y-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-0 sm:right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
                               <img 
                                 src={pricingMobileHeaderExtend} 
                                 alt="Mobile Protection" 

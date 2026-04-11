@@ -582,7 +582,7 @@ export default function Home() {
                             backgroundColor: "#0F172A",
                           }}
                         >
-                          <div className="flex justify-between items-center w-full z-10">
+                          <div className="flex justify-between items-center w-full relative z-10">
                             <div className="flex-1">
                               <h3 className="text-2xl sm:text-3xl font-black leading-tight">
                                 BuyBack
@@ -590,7 +590,7 @@ export default function Home() {
                                 Guarantee
                               </h3>
                             </div>
-                            <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-32 sm:w-44 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 w-32 sm:w-44 opacity-90 pointer-events-none z-0">
                               <img 
                                 src={pricingLaptopHeaderBBG} 
                                 alt="Laptop Guarantee" 
@@ -755,13 +755,14 @@ export default function Home() {
                   >
                     {/* Front Face */}
                     <div className="flip-card-front rounded-[2rem] overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl">
-                      {/* Header with Background and                        <div
+                      {/* Header with Background and Asset */}
+                        <div
                           className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
                           style={{
                             backgroundColor: "#0F172A",
                           }}
                         >
-                          <div className="flex justify-between items-center w-full z-10">
+                          <div className="flex justify-between items-center w-full relative z-10">
                             <div className="flex-1">
                               <h3 className="text-2xl sm:text-3xl font-black leading-tight">
                                 Extend+
@@ -794,7 +795,7 @@ export default function Home() {
                               </div>
                             </div>
                           </div>
-                        </div>          </div>
+                        </div>
 
                       {/* 2x2 Benefits Grid */}
                       <div className="flex-grow p-4 sm:p-6">
@@ -953,7 +954,7 @@ export default function Home() {
                             backgroundColor: "#0F172A",
                           }}
                         >
-                          <div className="flex justify-between items-center w-full z-10">
+                          <div className="flex justify-between items-center w-full relative z-10">
                             <div className="flex-1">
                               <h3 className="text-2xl sm:text-3xl font-black leading-tight">
                                 BuyBack
@@ -961,7 +962,7 @@ export default function Home() {
                                 Guarantee
                               </h3>
                             </div>
-                            <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-32 sm:w-44 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 w-32 sm:w-44 opacity-90 pointer-events-none z-0">
                               <img 
                                 src={pricingMobileHeaderBBG} 
                                 alt="Mobile Guarantee" 
@@ -1133,7 +1134,7 @@ export default function Home() {
                             backgroundColor: "#0F172A",
                           }}
                         >
-                          <div className="flex justify-between items-center w-full z-10">
+                          <div className="flex justify-between items-center w-full relative z-10">
                             <div className="flex-1">
                               <h3 className="text-2xl sm:text-3xl font-black leading-tight">
                                 Extend+
@@ -1141,7 +1142,7 @@ export default function Home() {
                                 Protection
                               </h3>
                             </div>
-                            <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-32 sm:w-44 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 w-32 sm:w-44 opacity-90 pointer-events-none z-0">
                               <img 
                                 src={pricingMobileHeaderExtend} 
                                 alt="Mobile Protection" 

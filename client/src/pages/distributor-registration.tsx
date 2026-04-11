@@ -312,59 +312,88 @@ export default function DistributorRegistration() {
       </section>
 
       {/* ── STEPS SECTION ────────────────────────────────────────────────── */}
-      <section className="py-12 md:py-24 px-4 bg-[#254696] relative overflow-hidden">
-        {/* Decorative elements for the dark section */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48 -mt-48" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48 -mb-48" />
+      <section className="py-16 md:py-28 px-4 bg-[#254696] relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-[100px] -mr-64 -mt-64" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px] -ml-64 -mb-64" />
+        
+        {/* Subtle Grid Pattern */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+             style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
 
         <div className="max-w-6xl mx-auto relative z-10">
-          <h2 className="text-2xl md:text-5xl font-extrabold text-center text-white mb-10 md:mb-20 leading-tight">
-            3 Steps to Your First Payout.
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-center text-white mb-12 md:mb-24 leading-tight tracking-tight">
+            3 Steps to Your <span className="text-blue-200">First Payout.</span>
           </h2>
-          <div className="relative grid md:grid-cols-3 gap-6 md:gap-12">
-            {/* Dashed Lines (Desktop only) */}
-            <div className="hidden md:block absolute top-[28%] left-[20%] right-[20%] border-t-2 border-dashed border-white/20 -z-0" />
+          
+          <div className="relative grid md:grid-cols-3 gap-8 md:gap-12">
+            {/* Desktop Connecting Line */}
+            <div className="hidden md:block absolute top-1/2 left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-y-12" />
 
             {/* Step 1 */}
-            <Card className="relative z-10 border-none shadow-2xl p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] bg-[#1e293b]/50 backdrop-blur-sm border border-white/10 flex flex-col items-start md:items-center text-left md:text-center">
-              <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:bg-transparent">
-                <div className="w-10 h-10 md:w-16 md:h-16 bg-white text-[#254696] rounded-xl md:rounded-2xl flex items-center justify-center text-xl md:text-3xl font-black md:mb-8 shadow-xl flex-shrink-0">
+            <Card className="group relative z-10 border-none shadow-2xl p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] bg-white/5 backdrop-blur-xl border border-white/10 flex flex-col items-start md:items-center text-left md:text-center transition-all duration-500 hover:bg-white/[0.08] hover:border-white/20 hover:-translate-y-2">
+              <div className="flex flex-row md:flex-col items-center gap-5 md:gap-0">
+                <div className="w-12 h-12 md:w-20 md:h-20 bg-gradient-to-br from-white to-blue-50 text-[#254696] rounded-2xl md:rounded-[2rem] flex items-center justify-center text-xl md:text-4xl font-black md:mb-8 shadow-[0_0_30px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform duration-500">
                   1
                 </div>
-                <h3 className="text-lg md:text-xl font-bold md:mb-4 text-white">Register in 60s</h3>
+                <div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-4 text-white tracking-tight">Register in 60s</h3>
+                  <div className="flex md:hidden items-center gap-2 text-blue-200/80 text-xs font-semibold uppercase tracking-widest">
+                    <UserCheck className="w-3 h-3" /> Step One
+                  </div>
+                </div>
               </div>
-              <p className="mt-3 md:mt-0 text-blue-100/70 text-sm leading-relaxed">
+              <p className="mt-4 md:mt-0 text-blue-100/70 text-sm md:text-base leading-relaxed">
                 Quick onboarding with basic details. No complex documentation
                 needed to start.
               </p>
+              <div className="hidden md:flex mt-8 items-center gap-2 text-blue-200/40 group-hover:text-blue-200/80 transition-colors">
+                <UserCheck className="w-5 h-5" />
+              </div>
             </Card>
 
             {/* Step 2 */}
-            <Card className="relative z-10 border-none shadow-2xl p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] bg-[#1e293b]/50 backdrop-blur-sm border border-white/10 flex flex-col items-start md:items-center text-left md:text-center">
-              <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:bg-transparent">
-                <div className="w-10 h-10 md:w-16 md:h-16 bg-white text-[#254696] rounded-xl md:rounded-2xl flex items-center justify-center text-xl md:text-3xl font-black md:mb-8 shadow-xl flex-shrink-0">
+            <Card className="group relative z-10 border-none shadow-2xl p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] bg-white/5 backdrop-blur-xl border border-white/10 flex flex-col items-start md:items-center text-left md:text-center transition-all duration-500 hover:bg-white/[0.08] hover:border-white/20 hover:-translate-y-2">
+              <div className="flex flex-row md:flex-col items-center gap-5 md:gap-0">
+                <div className="w-12 h-12 md:w-20 md:h-20 bg-gradient-to-br from-white to-blue-50 text-[#254696] rounded-2xl md:rounded-[2rem] flex items-center justify-center text-xl md:text-4xl font-black md:mb-8 shadow-[0_0_30px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform duration-500">
                   2
                 </div>
-                <h3 className="text-lg md:text-xl font-bold md:mb-4 text-white">Attach & Earn</h3>
+                <div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-4 text-white tracking-tight">Attach & Earn</h3>
+                  <div className="flex md:hidden items-center gap-2 text-blue-200/80 text-xs font-semibold uppercase tracking-widest">
+                    <Link className="w-3 h-3" /> Step Two
+                  </div>
+                </div>
               </div>
-              <p className="mt-3 md:mt-0 text-blue-100/70 text-sm leading-relaxed">
+              <p className="mt-4 md:mt-0 text-blue-100/70 text-sm md:text-base leading-relaxed">
                 Link protection plans to every device purchase within your
                 customer network.
               </p>
+              <div className="hidden md:flex mt-8 items-center gap-2 text-blue-200/40 group-hover:text-blue-200/80 transition-colors">
+                <Link className="w-5 h-5" />
+              </div>
             </Card>
 
             {/* Step 3 */}
-            <Card className="relative z-10 border-none shadow-2xl p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] bg-[#1e293b]/50 backdrop-blur-sm border border-white/10 flex flex-col items-start md:items-center text-left md:text-center">
-              <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:bg-transparent">
-                <div className="w-10 h-10 md:w-16 md:h-16 bg-white text-[#254696] rounded-xl md:rounded-2xl flex items-center justify-center text-xl md:text-3xl font-black md:mb-8 shadow-xl flex-shrink-0">
+            <Card className="group relative z-10 border-none shadow-2xl p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] bg-white/5 backdrop-blur-xl border border-white/10 flex flex-col items-start md:items-center text-left md:text-center transition-all duration-500 hover:bg-white/[0.08] hover:border-white/20 hover:-translate-y-2">
+              <div className="flex flex-row md:flex-col items-center gap-5 md:gap-0">
+                <div className="w-12 h-12 md:w-20 md:h-20 bg-gradient-to-br from-white to-blue-50 text-[#254696] rounded-2xl md:rounded-[2rem] flex items-center justify-center text-xl md:text-4xl font-black md:mb-8 shadow-[0_0_30px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform duration-500">
                   3
                 </div>
-                <h3 className="text-lg md:text-xl font-bold md:mb-4 text-white">Cash Out</h3>
+                <div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-4 text-white tracking-tight">Cash Out</h3>
+                  <div className="flex md:hidden items-center gap-2 text-blue-200/80 text-xs font-semibold uppercase tracking-widest">
+                    <Wallet className="w-3 h-3" /> Step Three
+                  </div>
+                </div>
               </div>
-              <p className="mt-3 md:mt-0 text-blue-100/70 text-sm leading-relaxed">
+              <p className="mt-4 md:mt-0 text-blue-100/70 text-sm md:text-base leading-relaxed">
                 Receive direct payouts to your bank account with real-time
                 settlement tracking.
               </p>
+              <div className="hidden md:flex mt-8 items-center gap-2 text-blue-200/40 group-hover:text-blue-200/80 transition-colors">
+                <Wallet className="w-5 h-5" />
+              </div>
             </Card>
           </div>
         </div>

@@ -42,6 +42,7 @@ import {
   Infinity,
   Zap,
   Target,
+  Link,
 } from "lucide-react";
 import reffPartnerHero from "@assets/reffpartner-hero.webp";
 import reffPartnerHeroMsite from "@assets/reffpartner-hero-msite.png";

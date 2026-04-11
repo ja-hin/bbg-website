@@ -412,7 +412,6 @@ export default function Plans() {
                           </div>
                         </div>
                       </div>
-                      </div>
 
                       {/* White Content Area */}
                       <div className="p-4 sm:p-5 space-y-2">

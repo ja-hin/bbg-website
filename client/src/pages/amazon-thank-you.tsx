@@ -4,16 +4,16 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  CheckCircle, 
-  Smartphone, 
-  Laptop, 
-  ArrowRight, 
+import {
+  CheckCircle,
+  Smartphone,
+  Laptop,
+  ArrowRight,
   Download,
   Mail,
   MessageSquare,
   Phone,
-  Home
+  Home,
 } from "lucide-react";
 
 interface AmazonRegistrationData {
@@ -27,7 +27,8 @@ interface AmazonRegistrationData {
 }
 
 export default function AmazonThankYou() {
-  const [registrationData, setRegistrationData] = useState<AmazonRegistrationData | null>(null);
+  const [registrationData, setRegistrationData] =
+    useState<AmazonRegistrationData | null>(null);
 
   // Fetch dynamic BBG prices
   const { data: bbgPrices } = useQuery({
@@ -36,37 +37,38 @@ export default function AmazonThankYou() {
       const response = await fetch("/api/bbg-prices");
       if (!response.ok) throw new Error("Failed to fetch BBG prices");
       return response.json();
-    }
+    },
   });
 
   useEffect(() => {
     // Get registration data from session storage
-    const data = sessionStorage.getItem('amazonRegistrationSuccess');
+    const data = sessionStorage.getItem("amazonRegistrationSuccess");
     if (data) {
       try {
         const parsedData = JSON.parse(data);
         setRegistrationData(parsedData);
         // Clear session storage after retrieving
-        sessionStorage.removeItem('amazonRegistrationSuccess');
+        sessionStorage.removeItem("amazonRegistrationSuccess");
       } catch (error) {
-        console.error('Error parsing registration data:', error);
+        console.error("Error parsing registration data:", error);
       }
     }
   }, []);
 
   const getDeviceIcon = () => {
-    if (registrationData?.deviceType === 'mobile') {
+    if (registrationData?.deviceType === "mobile") {
       return <Smartphone className="h-12 w-12 text-xtra-primary" />;
     }
     return <Laptop className="h-12 w-12 text-xtra-primary" />;
   };
 
   const getDevicePrice = () => {
-    if (!registrationData) return '';
+    if (!registrationData) return "";
     const defaultPrices = { mobile: 99, laptop: 299 };
-    const price = registrationData.deviceType === 'mobile' 
-      ? (bbgPrices?.mobile || defaultPrices.mobile)
-      : (bbgPrices?.laptop || defaultPrices.laptop);
+    const price =
+      registrationData.deviceType === "mobile"
+        ? bbgPrices?.mobile || defaultPrices.mobile
+        : bbgPrices?.laptop || defaultPrices.laptop;
     return `₹${price}`;
   };
 
@@ -95,8 +97,12 @@ export default function AmazonThankYou() {
               <CheckCircle className="h-12 w-12 text-green-600" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">Registration Successful!</h1>
-              <p className="text-lg text-gray-600 mt-2">Your Amazon BBG registration is complete</p>
+              <h1 className="text-4xl font-bold text-gray-900">
+                Registration Successful!
+              </h1>
+              <p className="text-lg text-gray-600 mt-2">
+                Your Amazon BBG registration is complete
+              </p>
             </div>
           </div>
         </div>
@@ -113,17 +119,29 @@ export default function AmazonThankYou() {
               {/* Registration Info */}
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-xl font-semibold mb-4 text-gray-900">Registration Details</h3>
+                  <h3 className="text-xl font-semibold mb-4 text-gray-900">
+                    Registration Details
+                  </h3>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border-2 border-green-200">
-                      <span className="font-medium text-green-700">BBG Voucher Code:</span>
-                      <Badge variant="outline" className="font-mono text-sm px-3 py-1 bg-green-100 border-green-300">
-                        {registrationData.voucherCode || registrationData.registrationId}
+                      <span className="font-medium text-green-700">
+                        BBG Voucher Code:
+                      </span>
+                      <Badge
+                        variant="outline"
+                        className="font-mono text-sm px-3 py-1 bg-green-100 border-green-300"
+                      >
+                        {registrationData.voucherCode ||
+                          registrationData.registrationId}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                      <span className="font-medium text-gray-700">Customer Name:</span>
-                      <span className="font-semibold">{registrationData.name}</span>
+                      <span className="font-medium text-gray-700">
+                        Customer Name:
+                      </span>
+                      <span className="font-semibold">
+                        {registrationData.name}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                       <span className="font-medium text-gray-700">Device:</span>
@@ -138,7 +156,9 @@ export default function AmazonThankYou() {
                 </div>
 
                 <div className="border-t pt-6">
-                  <h3 className="text-lg font-semibold mb-3 text-gray-900">What's Next?</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-gray-900">
+                    What's Next?
+                  </h3>
                   <ul className="space-y-2 text-gray-600">
                     <li className="flex items-center">
                       <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
@@ -159,7 +179,9 @@ export default function AmazonThankYou() {
               {/* Contact Support */}
               <div className="space-y-6">
                 <div className="border-t pt-6">
-                  <h3 className="text-lg font-semibold mb-3 text-gray-900">Contact Support</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-gray-900">
+                    Contact Support
+                  </h3>
                   <div className="space-y-2">
                     <div className="flex items-center text-gray-600">
                       <Mail className="h-4 w-4 mr-2" />
@@ -170,9 +192,10 @@ export default function AmazonThankYou() {
                         <Phone className="h-4 w-4 mr-2" />
                         <span>886 039 6039</span>
                       </div>
-                      <span className="text-xs ml-6 mt-1">between 09:30 to 18:30 IST</span>
+                      <span className="text-xs ml-6 mt-1">
+                        between 09:30 to 18:30 IST
+                      </span>
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -201,8 +224,9 @@ export default function AmazonThankYou() {
         {/* Footer Note */}
         <div className="text-center mt-8">
           <p className="text-sm text-gray-500">
-            Thank you for choosing XtraCover BBG protection for your device purchased from Amazon. 
-            Save your BBG Voucher Code for future reference.
+            Thank you for choosing XtraCover BBG Protection for your existing
+            device purchased from Amazon. Save your BBG Voucher Code for future
+            reference.
           </p>
         </div>
       </div>

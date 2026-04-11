@@ -106,7 +106,7 @@ const PlanProductCard = ({
       </div>
 
       <div className="flex-grow p-4 sm:p-5">
-                        <div className="grid grid-cols-2 gap-3 sm:gap-4 h-full">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 h-full">
           <div className="bg-gray-50 p-3 rounded-2xl flex flex-col items-center text-center justify-center border border-gray-100">
             <div className="w-10 h-10 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative shadow-sm">
               <div className="w-10 h-10 rounded-full border-4 border-[#254696] border-t-transparent animate-spin" />
@@ -123,7 +123,7 @@ const PlanProductCard = ({
               <Wrench className="w-5 h-5 text-gray-400 transform -rotate-45" />
             </div>
             <h4 className="font-bold text-[13px] text-[#1F2937] mt-2 leading-tight">
-              Repair Service Warranty
+              Accidental Damage Repair Service
             </h4>
             <p className="text-[10px] text-gray-500 mt-1 leading-tight">
               Zero service cost on repair
@@ -572,7 +572,8 @@ export default function Plans() {
                                 Guaranteed resale value
                               </h4>
                               <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                                Get up to 70% of device price back
+                                Get back up to 70% of your device's purchase
+                                price when you sell it back
                               </p>
                             </div>
                           </div>
@@ -584,10 +585,10 @@ export default function Plans() {
                             </div>
                             <div>
                               <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">
-                                Repair Service Warranty
+                                Accidental Damage Repair Service
                               </h4>
                               <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
-                                • Protection for your device
+                                • Protection for your existing device
                               </p>
                               <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                                 ₹0 service cost on repair
@@ -605,7 +606,7 @@ export default function Plans() {
                                 Best Upgrade Offers
                               </h4>
                               <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                                Exclusive deals for next purchase
+                                Exclusive deals for your next device purchase
                               </p>
                             </div>
                           </div>
@@ -618,10 +619,11 @@ export default function Plans() {
                             </div>
                             <div>
                               <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                                20% Off Warranty
+                                20% Off on 1-Year Extended Warranty
                               </h4>
                               <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                                Save 20% on next protection
+                                Save 20% on protection of your next device
+                                purchase
                               </p>
                             </div>
                           </div>
@@ -766,7 +768,8 @@ export default function Plans() {
                                 Guaranteed resale value
                               </h4>
                               <p className="text-[10px] text-gray-500 mt-1 leading-tight">
-                                Get up to 70% of device price back
+                                Get back up to 70% of your device's purchase
+                                price when you sell it back
                               </p>
                             </div>
                           </div>
@@ -778,10 +781,10 @@ export default function Plans() {
                             </div>
                             <div>
                               <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">
-                                Repair Service Warranty
+                                Accidental Damage Repair Service
                               </h4>
                               <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
-                                • Protection for your device
+                                • Protection for your existing device
                               </p>
                               <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                                 ₹0 service cost on repair
@@ -812,10 +815,11 @@ export default function Plans() {
                             </div>
                             <div>
                               <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                                20% Off Warranty
+                                20% Off on 1-Year Extended Warranty
                               </h4>
                               <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                                Save 20% on next protection
+                                Save 20% on protection of your next device
+                                purchase
                               </p>
                             </div>
                           </div>
@@ -948,17 +952,17 @@ export default function Plans() {
                     {/* 2x2 Benefits Grid */}
                     <div className="flex-grow p-4 sm:p-6">
                       <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
-                        {/* Doorstep Auction */}
+                        {/* Doorstep Device Auction */}
                         <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                           <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
                             <Gavel className="w-7 h-7 sm:w-10 sm:h-10 text-[#254696]" />
                           </div>
                           <div>
                             <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                              Doorstep Auction
+                              Doorstep Device Auction
                             </h4>
                             <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              Get 10-20% higher market value
+                              • Auction your device at the best market value
                             </p>
                           </div>
                         </div>
@@ -970,10 +974,10 @@ export default function Plans() {
                           </div>
                           <div>
                             <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">
-                              Repair Service Warranty
+                              Accidental Damage Repair Service
                             </h4>
                             <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
-                              • Protection for your device
+                              • Protection for your existing device
                             </p>
                             <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                               ₹0 service cost on repair
@@ -991,7 +995,7 @@ export default function Plans() {
                               Best Upgrade Offers
                             </h4>
                             <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              Exclusive deals for next purchase
+                              Exclusive deals for your next device purchase
                             </p>
                           </div>
                         </div>
@@ -1004,10 +1008,11 @@ export default function Plans() {
                           </div>
                           <div>
                             <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                              20% Off Warranty
+                              20% Off on 1-Year Extended Warranty
                             </h4>
                             <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              Save 20% on next protection
+                              Save 20% on protection of your next device
+                              purchase
                             </p>
                           </div>
                         </div>
@@ -1077,17 +1082,17 @@ export default function Plans() {
                     {/* 2x2 Benefits Grid */}
                     <div className="flex-grow p-4 sm:p-6">
                       <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-4">
-                        {/* Doorstep Auction */}
+                        {/* Doorstep Device Auction */}
                         <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
                           <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
                             <Gavel className="w-7 h-7 sm:w-10 sm:h-10 text-[#254696]" />
                           </div>
                           <div>
                             <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                              Doorstep Auction
+                              Doorstep Device Auction
                             </h4>
                             <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              Get 10-20% higher market value
+                              • Auction your device at the best market value
                             </p>
                           </div>
                         </div>
@@ -1099,10 +1104,10 @@ export default function Plans() {
                           </div>
                           <div>
                             <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">
-                              Repair Service Warranty
+                              Accidental Damage Repair Service
                             </h4>
                             <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
-                              • Protection for your device
+                              • Protection for your existing device
                             </p>
                             <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                               ₹0 service cost on repair
@@ -1133,10 +1138,11 @@ export default function Plans() {
                           </div>
                           <div>
                             <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                              20% Off Warranty
+                              20% Off on 1-Year Extended Warranty
                             </h4>
                             <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              Save 20% on next protection
+                              Save 20% on protection of your next device
+                              purchase
                             </p>
                           </div>
                         </div>

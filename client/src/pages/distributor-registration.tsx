@@ -263,51 +263,48 @@ export default function DistributorRegistration() {
       </section>
 
       {/* ── NET WORTH SECTION ────────────────────────────────────────────────── */}
-      <section className="py-20 px-4 bg-[#f3f7ff]">
+      <section className="py-16 px-4 bg-[#f8faff]">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-5xl font-extrabold text-center text-gray-900 mb-16">
-            Turn Your Network Into Net Worth.
+          <h2 className="text-3xl md:text-5xl font-black text-center text-gray-900 mb-12 tracking-tight">
+            Turn Your Network Into <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#254696] to-[#4338ca]">Net Worth.</span>
           </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Zero Earning Caps */}
-            <Card className="border-gray-100 shadow-sm text-center p-8 rounded-2xl">
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+            {/* Unlimited Earnings */}
+            <Card className="border-none shadow-sm hover:shadow-md transition-shadow text-center p-6 md:p-8 rounded-3xl bg-white">
               <div className="flex justify-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-[#1e293b] flex items-center justify-center">
-                  <Infinity className="w-8 h-8 text-white" />
+                <div className="w-14 h-14 rounded-2xl bg-[#eff6ff] flex items-center justify-center">
+                  <Infinity className="w-7 h-7 text-[#254696]" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold mb-3">Zero Earning Caps</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                Get paid for 1 referral or 1,000. Flat ₹175 for laptops, ₹100
-                for mobiles. Your income scales automatically.
+              <h3 className="text-xl font-bold mb-2 text-[#1e293b]">Unlimited Earnings</h3>
+              <p className="text-gray-500 text-sm leading-relaxed max-w-[240px] mx-auto">
+                Flat ₹175 per laptop and ₹100 per mobile. No caps, no limits—just higher payouts.
               </p>
             </Card>
 
-            {/* 100% Passive Income */}
-            <Card className="border-gray-100 shadow-sm text-center p-8 rounded-2xl">
+            {/* Truly Passive */}
+            <Card className="border-none shadow-sm hover:shadow-md transition-shadow text-center p-6 md:p-8 rounded-3xl bg-white">
               <div className="flex justify-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-[#1e293b] flex items-center justify-center">
-                  <Zap className="w-8 h-8 text-white" />
+                <div className="w-14 h-14 rounded-2xl bg-[#eff6ff] flex items-center justify-center">
+                  <Zap className="w-7 h-7 text-[#254696]" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold mb-3">100% Passive Income</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                No inventory. No selling. No support tickets. Just share your
-                link once and let our system do the rest.
+              <h3 className="text-xl font-bold mb-2 text-[#1e293b]">Truly Passive</h3>
+              <p className="text-gray-500 text-sm leading-relaxed max-w-[240px] mx-auto">
+                Shift from selling to sharing. We handle inventory and support while you earn.
               </p>
             </Card>
 
-            {/* Live Tracking */}
-            <Card className="border-gray-100 shadow-sm text-center p-8 rounded-2xl">
+            {/* Real-time Tracking */}
+            <Card className="border-none shadow-sm hover:shadow-md transition-shadow text-center p-6 md:p-8 rounded-3xl bg-white">
               <div className="flex justify-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-[#1e293b] flex items-center justify-center">
-                  <Target className="w-8 h-8 text-white" />
+                <div className="w-14 h-14 rounded-2xl bg-[#eff6ff] flex items-center justify-center">
+                  <Target className="w-7 h-7 text-[#254696]" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold mb-3">Live Tracking</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                Stop guessing. Watch your commissions clear in real-time on your
-                dashboard and withdraw straight to your bank.
+              <h3 className="text-xl font-bold mb-2 text-[#1e293b]">Instant Clarity</h3>
+              <p className="text-gray-500 text-sm leading-relaxed max-w-[240px] mx-auto">
+                Track every referral live. Watch your commissions clear and withdraw to your bank.
               </p>
             </Card>
           </div>

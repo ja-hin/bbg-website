@@ -320,7 +320,10 @@ export default function Home() {
       </section>
       
       {/* Hero Below Section */}
-      <section className="w-full">
+      <section 
+        className="w-full cursor-pointer transition-opacity hover:opacity-95"
+        onClick={scrollToForm}
+      >
         <picture>
           <source media="(max-width: 639px)" srcSet={heroBelowSectionMsiteImg} />
           <img
@@ -1167,7 +1170,10 @@ export default function Home() {
         </div>
       </section>
       {/* How the plan works Section */}
-      <section className="w-full">
+      <section 
+        className="w-full cursor-pointer transition-opacity hover:opacity-95"
+        onClick={scrollToForm}
+      >
         <picture>
           <source media="(max-width: 639px)" srcSet={howPlanWorksMsiteImg} />
           <img

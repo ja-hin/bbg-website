@@ -595,7 +595,7 @@ export default function DistributorRegistration() {
               {[
                 "No upfront costs or joining fees",
                 "24/7 dedicated partner support",
-                "Marketing assets library included",
+                "Sales library included",
               ].map((benefit, idx) => (
                 <div
                   key={idx}

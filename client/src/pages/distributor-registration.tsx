@@ -315,50 +315,56 @@ export default function DistributorRegistration() {
       </section>
 
       {/* ── STEPS SECTION ────────────────────────────────────────────────── */}
-      <section className="py-24 px-4 bg-[#254696] relative overflow-hidden">
+      <section className="py-12 md:py-24 px-4 bg-[#254696] relative overflow-hidden">
         {/* Decorative elements for the dark section */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48 -mt-48" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48 -mb-48" />
 
         <div className="max-w-6xl mx-auto relative z-10">
-          <h2 className="text-3xl md:text-5xl font-extrabold text-center text-white mb-20 leading-tight">
+          <h2 className="text-2xl md:text-5xl font-extrabold text-center text-white mb-10 md:mb-20 leading-tight">
             3 Steps to Your First Payout.
           </h2>
-          <div className="relative grid md:grid-cols-3 gap-12">
+          <div className="relative grid md:grid-cols-3 gap-6 md:gap-12">
             {/* Dashed Lines (Desktop only) */}
             <div className="hidden md:block absolute top-[28%] left-[20%] right-[20%] border-t-2 border-dashed border-white/20 -z-0" />
 
             {/* Step 1 */}
-            <Card className="relative z-10 border-none shadow-2xl p-8 rounded-[2.5rem] text-center bg-[#1e293b]/50 backdrop-blur-sm border border-white/10 flex flex-col items-center">
-              <div className="w-16 h-16 bg-white text-[#254696] rounded-2xl flex items-center justify-center text-3xl font-black mb-8 shadow-xl">
-                1
+            <Card className="relative z-10 border-none shadow-2xl p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] bg-[#1e293b]/50 backdrop-blur-sm border border-white/10 flex flex-col items-start md:items-center text-left md:text-center">
+              <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:bg-transparent">
+                <div className="w-10 h-10 md:w-16 md:h-16 bg-white text-[#254696] rounded-xl md:rounded-2xl flex items-center justify-center text-xl md:text-3xl font-black md:mb-8 shadow-xl flex-shrink-0">
+                  1
+                </div>
+                <h3 className="text-lg md:text-xl font-bold md:mb-4 text-white">Register in 60s</h3>
               </div>
-              <h3 className="text-xl font-bold mb-4 text-white">Register in 60s</h3>
-              <p className="text-blue-100/70 text-sm leading-relaxed">
+              <p className="mt-3 md:mt-0 text-blue-100/70 text-sm leading-relaxed">
                 Quick onboarding with basic details. No complex documentation
                 needed to start.
               </p>
             </Card>
 
             {/* Step 2 */}
-            <Card className="relative z-10 border-none shadow-2xl p-8 rounded-[2.5rem] text-center bg-[#1e293b]/50 backdrop-blur-sm border border-white/10 flex flex-col items-center">
-              <div className="w-16 h-16 bg-white text-[#254696] rounded-2xl flex items-center justify-center text-3xl font-black mb-8 shadow-xl">
-                2
+            <Card className="relative z-10 border-none shadow-2xl p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] bg-[#1e293b]/50 backdrop-blur-sm border border-white/10 flex flex-col items-start md:items-center text-left md:text-center">
+              <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:bg-transparent">
+                <div className="w-10 h-10 md:w-16 md:h-16 bg-white text-[#254696] rounded-xl md:rounded-2xl flex items-center justify-center text-xl md:text-3xl font-black md:mb-8 shadow-xl flex-shrink-0">
+                  2
+                </div>
+                <h3 className="text-lg md:text-xl font-bold md:mb-4 text-white">Attach & Earn</h3>
               </div>
-              <h3 className="text-xl font-bold mb-4 text-white">Attach & Earn</h3>
-              <p className="text-blue-100/70 text-sm leading-relaxed">
+              <p className="mt-3 md:mt-0 text-blue-100/70 text-sm leading-relaxed">
                 Link protection plans to every device purchase within your
                 customer network.
               </p>
             </Card>
 
             {/* Step 3 */}
-            <Card className="relative z-10 border-none shadow-2xl p-8 rounded-[2.5rem] text-center bg-[#1e293b]/50 backdrop-blur-sm border border-white/10 flex flex-col items-center">
-              <div className="w-16 h-16 bg-white text-[#254696] rounded-2xl flex items-center justify-center text-3xl font-black mb-8 shadow-xl">
-                3
+            <Card className="relative z-10 border-none shadow-2xl p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] bg-[#1e293b]/50 backdrop-blur-sm border border-white/10 flex flex-col items-start md:items-center text-left md:text-center">
+              <div className="flex flex-row md:flex-col items-center gap-4 md:gap-0 md:bg-transparent">
+                <div className="w-10 h-10 md:w-16 md:h-16 bg-white text-[#254696] rounded-xl md:rounded-2xl flex items-center justify-center text-xl md:text-3xl font-black md:mb-8 shadow-xl flex-shrink-0">
+                  3
+                </div>
+                <h3 className="text-lg md:text-xl font-bold md:mb-4 text-white">Cash Out</h3>
               </div>
-              <h3 className="text-xl font-bold mb-4 text-white">Cash Out</h3>
-              <p className="text-blue-100/70 text-sm leading-relaxed">
+              <p className="mt-3 md:mt-0 text-blue-100/70 text-sm leading-relaxed">
                 Receive direct payouts to your bank account with real-time
                 settlement tracking.
               </p>

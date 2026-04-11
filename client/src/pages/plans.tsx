@@ -386,13 +386,13 @@ export default function Plans() {
                               Guarantee your resale value
                             </p>
                           </div>
-                          <div className="absolute left-[30%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
-                             <img 
-                               src={pricingLaptopHeaderBBG} 
-                               alt="Laptop BBG" 
-                               className="w-full h-auto object-contain"
-                             />
-                          </div>
+                            <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
+                               <img 
+                                 src={pricingLaptopHeaderBBG} 
+                                 alt="Laptop BBG" 
+                                 className="w-full h-auto object-contain"
+                               />
+                            </div>
                           <div className="text-right flex flex-col items-end pt-2">
                             <div className="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full mb-1 shadow-sm inline-block w-fit ml-auto">
                               OFFER
@@ -627,7 +627,7 @@ export default function Plans() {
                                 Guarantee your resale value
                               </p>
                             </div>
-                            <div className="absolute left-[30%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
                                <img 
                                  src={pricingMobileHeaderBBG} 
                                  alt="Mobile BBG" 
@@ -862,7 +862,7 @@ export default function Plans() {
                                 Auction your device at the best market value
                               </p>
                             </div>
-                            <div className="absolute left-[30%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
                                <img 
                                  src={pricingLaptopHeaderExtend} 
                                  alt="Laptop Extend" 
@@ -1033,7 +1033,7 @@ export default function Plans() {
                                 Auction your device at the best market value
                               </p>
                             </div>
-                            <div className="absolute left-[30%] top-1/2 -translate-y-1/2 -translate-x-1/2 w-24 sm:w-32 opacity-90 pointer-events-none z-0">
+                            <div className="absolute right-[25%] top-1/2 -translate-y-1/2 w-20 sm:w-32 opacity-90 pointer-events-none z-0">
                                <img 
                                  src={pricingMobileHeaderExtend} 
                                  alt="Mobile Extend" 

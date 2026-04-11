@@ -766,8 +766,7 @@ export default function DistributorRegistration() {
                       registerMutation.isPending ||
                       !form.watch("name") ||
                       !form.watch("email") ||
-                      !form.watch("contact") ||
-                      !otpVerified
+                      !form.watch("contact")
                     }
                   >
                     {registerMutation.isPending ? (

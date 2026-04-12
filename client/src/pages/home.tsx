@@ -645,7 +645,7 @@ export default function Home() {
                               <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">
                                 Accidental Damage Repair Service
                               </h4>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                                 • Protection for your existing device
                               </p>
                               <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">

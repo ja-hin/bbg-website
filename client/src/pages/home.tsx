@@ -649,6 +649,9 @@ export default function Home() {
                                 • Protection for your existing device
                               </p>
                               <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
+                                • Begins after brand warranty ends
+                              </p>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                                 • ₹0 service cost on repair
                               </p>
                             </div>
@@ -822,7 +825,8 @@ export default function Home() {
                               • Auction your device at the best market value
                             </p>
                             <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              • 100+ buyers compete to give you the best possible price in India
+                              • 100+ buyers compete to give you the best
+                              possible price in India
                             </p>
                           </div>
                         </div>
@@ -838,6 +842,9 @@ export default function Home() {
                             </h4>
                             <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
                               • Protection for your existing device
+                            </p>
+                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
+                              • Begins after brand warranty ends
                             </p>
                             <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                               • ₹0 service cost on repair
@@ -972,6 +979,9 @@ export default function Home() {
                               </h4>
                               <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
                                 • Protection for your existing device
+                              </p>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
+                                • Begins after brand warranty ends
                               </p>
                               <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                                 • ₹0 service cost on repair
@@ -1147,9 +1157,9 @@ export default function Home() {
                               • Auction your device at the best market value
                             </p>
                             <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              • 100+ buyers compete to give you the best possible price in India
+                              • 100+ buyers compete to give you the best
+                              possible price in India
                             </p>
-
                           </div>
                         </div>
 
@@ -1164,6 +1174,9 @@ export default function Home() {
                             </h4>
                             <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
                               • Protection for your existing device
+                            </p>
+                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
+                              • Begins after brand warranty ends
                             </p>
                             <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                               • ₹0 service cost on repair

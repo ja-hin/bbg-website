@@ -591,6 +591,9 @@ export default function Plans() {
                                 • Protection for your existing device
                               </p>
                               <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
+                                • Begins after brand warranty ends
+                              </p>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                                 • ₹0 service cost on repair
                               </p>
                             </div>
@@ -785,6 +788,9 @@ export default function Plans() {
                               </h4>
                               <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
                                 • Protection for your existing device
+                              </p>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
+                                • Begins after brand warranty ends
                               </p>
                               <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                                 • ₹0 service cost on repair
@@ -983,6 +989,9 @@ export default function Plans() {
                               • Protection for your existing device
                             </p>
                             <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
+                              • Begins after brand warranty ends
+                            </p>
+                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                               • ₹0 service cost on repair
                             </p>
                           </div>
@@ -1114,6 +1123,9 @@ export default function Plans() {
                             </h4>
                             <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
                               • Protection for your existing device
+                            </p>
+                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
+                              • Begins after brand warranty ends
                             </p>
                             <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                               • ₹0 service cost on repair

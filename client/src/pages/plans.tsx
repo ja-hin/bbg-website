@@ -964,6 +964,9 @@ export default function Plans() {
                             <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
                               • Auction your device at the best market value
                             </p>
+                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
+                              • 100+ buyers compete to give you the best possible price in India
+                            </p>
                           </div>
                         </div>
 
@@ -1093,6 +1096,9 @@ export default function Plans() {
                             </h4>
                             <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
                               • Auction your device at the best market value
+                            </p>
+                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
+                              • 100+ buyers compete to give you the best possible price in India
                             </p>
                           </div>
                         </div>

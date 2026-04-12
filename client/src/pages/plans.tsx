@@ -591,7 +591,7 @@ export default function Plans() {
                                 • Protection for your existing device
                               </p>
                               <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
-                                ₹0 service cost on repair
+                                • ₹0 service cost on repair
                               </p>
                             </div>
                           </div>
@@ -787,7 +787,7 @@ export default function Plans() {
                                 • Protection for your existing device
                               </p>
                               <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
-                                ₹0 service cost on repair
+                                • ₹0 service cost on repair
                               </p>
                             </div>
                           </div>
@@ -980,7 +980,7 @@ export default function Plans() {
                               • Protection for your existing device
                             </p>
                             <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
-                              ₹0 service cost on repair
+                              • ₹0 service cost on repair
                             </p>
                           </div>
                         </div>
@@ -1110,7 +1110,7 @@ export default function Plans() {
                               • Protection for your existing device
                             </p>
                             <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
-                              ₹0 service cost on repair
+                              • ₹0 service cost on repair
                             </p>
                           </div>
                         </div>

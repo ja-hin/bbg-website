@@ -39,7 +39,7 @@ export default function BuyBackSection({setShowCompareModal}) {
     examplePill: {
       display: "inline-flex", alignItems: "center", gap: 8,
       background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.18)",
-      borderRadius: 12, padding: "8px 18px", fontSize: 13, color: "rgba(255,255,255,.7)",
+      borderRadius: 12, padding: "8px 18px", fontSize: 13, color: "white",
     },
     compare: { display: "grid", gridTemplateColumns: "1fr 56px 1fr", alignItems: "stretch", marginBottom: 20 },
     card: (isHovered) => ({
@@ -59,17 +59,18 @@ export default function BuyBackSection({setShowCompareModal}) {
     }),
     overlay: {
       position: "absolute", inset: 0,
-      background: "linear-gradient(to bottom,rgba(0,0,0,.52) 0%,rgba(0,0,0,.0) 20%,rgba(0,0,0,.0) 68%,rgba(0,0,0,.6) 100%)",
+      background: "rgba(0,0,0,0.25)",
       pointerEvents: "none",
     },
     accentBad: { height: 4, position: "relative", zIndex: 3, flexShrink: 0, background: "#ef4444" },
     accentGood: { height: 4, position: "relative", zIndex: 3, flexShrink: 0, background: "#22c55e" },
     content: { position: "relative", zIndex: 2, display: "flex", flexDirection: "column", flex: 1, height: "100%" },
-    top: { padding: "16px 20px 0", display: "flex", alignItems: "center", justifyContent: "space-between" },
-    label: { display: "flex", alignItems: "start", gap: 8, fontSize: 30, fontWeight: 700, color: "#fff", textShadow: "0 1px 6px rgba(0,0,0,.7)" },
-    dotRed: { width: 8, height: 8, borderRadius: "50%", background: "#ef4444", boxShadow: "0 0 8px rgba(239,68,68,.8)", flexShrink: 0, marginTop: 18, },
-    dotGreen: { width: 8, height: 8, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 8px rgba(34,197,94,.8)", flexShrink: 0, marginTop: 18, },
-    badge: { fontSize: 15, fontWeight: 700, padding: "4px 11px", borderRadius: 999, background: "rgba(0,0,0,.35)", color: "#fff", border: "1px solid rgba(255,255,255,.25)", backdropFilter: "blur(6px)", letterSpacing: "0.04em" },
+    top: { padding: "16px 20px 0", display: "flex", alignItems: "start", justifyContent: "space-between" },
+    label: { display: "flex",flexDirection: "column", alignItems: "start", gap: 8, fontSize: 30, fontWeight: 700, color: "#fff", textShadow: "0 1px 6px rgba(0,0,0,.7)" },
+    dotRed: { width: 8, height: 8, borderRadius: "50%", background: "#ef4444", boxShadow: "0 0 8px rgba(239,68,68,.8)", flexShrink: 0, marginTop: 8, },
+    dotGreen: { width: 8, height: 8, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 8px rgba(34,197,94,.8)", flexShrink: 0, marginTop: 8, },
+    fle: { width: "36%", display: "flex", flexDirection: "column", alignItems: 'end', gap: '60px'},
+    badge: { fontSize: 15, fontWeight: 700, padding: "4px 11px", borderRadius: 999, background: "rgba(0,0,0,.35)", color: "#fff", border: "1px solid rgba(255,255,255,.25)", backdropFilter: "blur(6px)", letterSpacing: "0.04em", display:'flex', gap:5, width:"79%" },
     spacer: { flex: 1 },
     bottom: { padding: "18px 20px 22px" },
     bigNum: { fontSize: 26, fontWeight: 900, letterSpacing: "-.4px", color: "#fff", display: "flex", alignItems: "center", gap: 8, marginBottom: 6, textShadow: "0 2px 10px rgba(0,0,0,.6)" },
@@ -115,10 +116,10 @@ export default function BuyBackSection({setShowCompareModal}) {
             Lock in up to <span style={s.em}>70%</span> of your<br />device&apos;s resale value
           </h2>
           <p style={s.subline}>Upgrade anytime without worrying about market price drops.</p>
-          <div style={s.examplePill}>
+          {/* <div style={s.examplePill}>
             <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,.7)" strokeWidth="2" strokeLinecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
             <b style={{color:"#fff"}}>Example:</b>&nbsp;iPhone 17 — purchased at ₹82,900
-          </div>
+          </div> */}
         </div>
 
         <div style={s.compare}>
@@ -129,16 +130,19 @@ export default function BuyBackSection({setShowCompareModal}) {
             <div style={s.overlay} />
             <div style={s.content}>
               <div style={s.top}>
-                <div style={s.label}><div style={s.dotRed} /><span><b>Without</b> <br/> BuyBack Guarantee</span></div>
-                <div style={s.badge}>Market risk</div>
+                <div style={s.label}>
+                  <span><b>Without</b> <br/> BuyBack Guarantee</span>
+                  <span style={s.examplePill}>iPhone 17 — purchased at ₹82,900</span>
+                </div>
+                <div style={s.fle}>
+                <div style={s.badge}><div style={s.dotRed} /><span> Market risk </span></div>
+                <div style={s.bigNum}>
+                  Resale Value ₹45,000
+                </div></div>
               </div>
               <div style={s.spacer} />
               <div style={s.bottom}>
-                <div style={s.bigNum}>
-                  <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-                  Price Drop: ₹37,900
-                </div>
-                <div style={s.subText}>Normal Resale Value: <b>₹45,000</b><br/>−45.7% value lost vs purchase price</div>
+                
                 <div style={s.barTrack}><div style={s.barBad} /></div>
               </div>
             </div>
@@ -157,8 +161,17 @@ export default function BuyBackSection({setShowCompareModal}) {
             <div style={s.overlay} />
             <div style={s.content}>
               <div style={s.top}>
-                <div style={s.label}><div style={s.dotGreen} /><span><b>With</b><br/> BuyBack Guarantee</span></div>
-                <div style={s.badge}>✓ Guaranteed</div>
+                <div style={s.label}>
+                  <span><b>With</b><br/> BuyBack Guarantee</span>
+                  <span style={s.examplePill}>iPhone 17 — purchased at ₹82,900</span>
+
+                </div>
+                {/* <div style={s.badge}><div style={s.dotGreen} /><span> Guaranteed </span></div> */}
+                <div style={s.fle}>
+                <div style={s.badge}><div style={s.dotGreen} /><span> Guaranteed </span></div>
+                <div style={s.bigNum}>
+                  Resale Value ₹58,000
+                </div></div>
               </div>
               <div style={s.spacer} />
               <div style={s.bottom}>
@@ -166,7 +179,6 @@ export default function BuyBackSection({setShowCompareModal}) {
                   <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
                   Net Benefit: +₹13,000
                 </div>
-                <div style={s.subText}>Best Resale Value: <b>₹58,000</b> (70% of ₹82,900)<br/>+28.9% more than normal market rate</div>
                 <div style={s.barTrack}><div style={s.barGood} /></div>
               </div>
             </div>

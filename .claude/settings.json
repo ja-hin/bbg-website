@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(git -C /Users/dimplekumari/Documents/bbg/bbg-website remote get-url origin)"
     ]
   }
 }

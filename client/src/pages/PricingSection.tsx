@@ -244,7 +244,7 @@ function PlanCard({
       {/* Card Header */}
       <div style={{
         padding: "26px 26px 22px",
-        background: "#254696",
+        background: "linear-gradient(140deg, #486bcc 0%, #273f74 50%, #0d235f 100%)",
         position: "relative",
         overflow: "hidden",
         minHeight: 148,

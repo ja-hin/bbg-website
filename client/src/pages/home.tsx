@@ -651,6 +651,34 @@ export default function Home() {
             min-height: auto !important;
           }
         }
+        .unlock-lock-btn .lock-icon-wrap {
+          position: relative;
+          width: 1rem;
+          height: 1rem;
+          flex-shrink: 0;
+        }
+        .unlock-lock-btn .icon-locked {
+          position: absolute;
+          top: 0; left: 0;
+          opacity: 1;
+          transform: rotate(0deg) scale(1);
+          transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+        .unlock-lock-btn .icon-unlocked {
+          position: absolute;
+          top: 0; left: 0;
+          opacity: 0;
+          transform: rotate(-25deg) scale(0.7);
+          transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+        .unlock-lock-btn:hover .icon-locked {
+          opacity: 0;
+          transform: rotate(25deg) scale(0.7);
+        }
+        .unlock-lock-btn:hover .icon-unlocked {
+          opacity: 1;
+          transform: rotate(0deg) scale(1);
+        }
       `}</style>
       <section
         className="top-banner-section w-full cursor-pointer"
@@ -658,7 +686,7 @@ export default function Home() {
       >
         <div className="max-w-[1400px] mx-auto px-5 sm:px-10 lg:px-16 flex items-center relative" style={{ minHeight: "inherit" }}>
           {/* Left Content */}
-          <div className="flex-1 py-8 sm:py-10 lg:py-24 z-10">
+          <div className="flex-1 py-8 sm:py-10 lg:pt-28 lg:pb-12 z-10">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-[#1e4fc2] text-white text-[11px] sm:text-xs font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-6 border border-white/20">
               <Shield className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
@@ -703,20 +731,29 @@ export default function Home() {
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); scrollToForm(); }}
-              className="flex mb-5 sm:mb-6 items-center gap-2 font-bold rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"
+              className="unlock-lock-btn flex mb-5 sm:mb-6 items-center gap-2 font-bold rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"
               style={{
                 background: "#145eda",
                 color: "white",
-                fontSize: "clamp(12px, 1.2vw, 15px)",
-                padding: "10px 22px",
+                fontSize: "20px",
+                padding: "19px 30px",
                 letterSpacing: "0.02em",
               }}
             >
-              <svg viewBox="0 0 24 24" className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2a5 5 0 015 5v2H7V7a5 5 0 015-5z"/>
-                <rect x="3" y="9" width="18" height="13" rx="2"/>
-                <circle cx="12" cy="15.5" r="1.5" fill="currentColor" stroke="none"/>
-              </svg>
+              <span className="lock-icon-wrap">
+                {/* Locked icon — shown by default */}
+                <svg className="icon-locked" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2"/>
+                  <path d="M7 11V7a5 5 0 0110 0v4"/>
+                  <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none"/>
+                </svg>
+                {/* Unlocked icon — shown on hover */}
+                <svg className="icon-unlocked" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2"/>
+                  <path d="M7 11V7a5 5 0 019.9-1"/>
+                  <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none"/>
+                </svg>
+              </span>
               Unlock 70% Value
             </button>
 
@@ -746,7 +783,7 @@ export default function Home() {
           </div>
 
           {/* Right — trust badges (desktop only) */}
-          <div className="hidden sm:flex flex-col flex-shrink-0 items-start justify-between" style={{ width: "clamp(260px, 40%, 560px)", paddingTop: "35rem" }}>
+          <div className="hidden sm:flex flex-col flex-shrink-0 items-start justify-between" style={{ width: "clamp(260px, 40%, 560px)", paddingTop: "31rem" }}>
             <div className="flex items-center gap-10 mt-4">
               {["Hassle-free", "Transparent", "Trusted"].map((label) => (
                 <div key={label} className="flex items-center gap-1.5">
@@ -755,7 +792,7 @@ export default function Home() {
                       <path d="M1 4l3 3 5-6" stroke="#3b82f6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </div>
-                  <span className="text-white/85 text-xs sm:text-sm font-medium">{label}</span>
+                  <span className="text-white/85 text-xs sm:text-lg font-medium">{label}</span>
                 </div>
               ))}
             </div>

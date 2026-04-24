@@ -38,6 +38,7 @@ export function DevicePlanSelectorForm({
   const [deviceAgeSelection, setDeviceAgeSelection] = useState<"" | "1" | "2">(
     "",
   );
+  const [openBrandCombobox, setOpenBrandCombobox] = useState(false);
   const [openModelCombobox, setOpenModelCombobox] = useState(false);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -80,6 +81,23 @@ export function DevicePlanSelectorForm({
     enabled: !!selectedBrandId,
     staleTime: 300000,
   });
+
+  const PRIORITY_BRANDS = ["Apple", "Samsung", "Xiaomi", "Oppo", "OnePlus", "One plus", "Oneplus", "Vivo", "Nothing", "Others"];
+
+  const sortedBrands = Array.isArray(brands)
+    ? [...brands].sort((a: any, b: any) => {
+        const aIdx = PRIORITY_BRANDS.findIndex(
+          (n) => n.toLowerCase() === a.name.toLowerCase()
+        );
+        const bIdx = PRIORITY_BRANDS.findIndex(
+          (n) => n.toLowerCase() === b.name.toLowerCase()
+        );
+        if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+        if (aIdx !== -1) return -1;
+        if (bIdx !== -1) return 1;
+        return a.name.localeCompare(b.name);
+      })
+    : [];
 
   const handleDeviceTypeChange = (value: string) => {
     setSelectedDeviceType(value);
@@ -167,35 +185,87 @@ export function DevicePlanSelectorForm({
           >
             Device Type
           </label>
-          <div className="relative">
-            <select
-              className="w-full px-4 py-3 border rounded-lg text-sm sm:text-base focus:outline-none transition-all appearance-none pr-10"
-              style={{
-                borderColor: "rgba(37, 70, 150, 0.2)",
-                color: "#4b5563",
-                backgroundColor: "#ffffff",
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = "#254696";
-                e.currentTarget.style.boxShadow =
-                  "0 0 0 3px rgba(37, 70, 150, 0.1)";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "rgba(37, 70, 150, 0.2)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-              data-testid="select-device-type"
-              value={selectedDeviceType}
-              onChange={(e) => handleDeviceTypeChange(e.target.value)}
-            >
-              <option value="">Select device type</option>
-              <option value="mobile">Mobile</option>
-              <option value="laptop">Laptop</option>
-            </select>
-            <ChevronDown
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 pointer-events-none"
-              style={{ color: "#254696" }}
-            />
+          <div className="grid grid-cols-2 gap-3" data-testid="select-device-type">
+            {[
+              {
+                value: "mobile",
+                label: "Mobile",
+                sub: "iPhone, Samsung, OnePlus…",
+                icon: (
+                  <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="5" y="2" width="14" height="20" rx="3" />
+                    <circle cx="12" cy="17.5" r="0.8" fill="currentColor" stroke="none" />
+                    <line x1="9" y1="6" x2="15" y2="6" strokeWidth="1.4" strokeLinecap="round" />
+                  </svg>
+                ),
+              },
+              {
+                value: "laptop",
+                label: "Laptop",
+                sub: "MacBook, Dell, HP, Lenovo…",
+                icon: (
+                  <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="4" width="20" height="13" rx="2" />
+                    <path d="M1 19h22" />
+                    <path d="M9 17l1 2h4l1-2" strokeWidth="1.2" />
+                    <rect x="6" y="7" width="12" height="7" rx="1" strokeWidth="1.2" />
+                  </svg>
+                ),
+              },
+            ].map(({ value, label, sub, icon }) => {
+              const selected = selectedDeviceType === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  data-testid={`device-type-${value}`}
+                  onClick={() => handleDeviceTypeChange(value)}
+                  className="relative flex flex-col items-center justify-center gap-2 py-5 px-3 rounded-2xl border-2 transition-all duration-200 focus:outline-none group"
+                  style={{
+                    borderColor: selected ? "#254696" : "rgba(37,70,150,0.15)",
+                    background: selected
+                      ? "linear-gradient(135deg, #eef2ff 0%, #e8f0fe 100%)"
+                      : "#ffffff",
+                    boxShadow: selected
+                      ? "0 0 0 3px rgba(37,70,150,0.12), 0 4px 16px rgba(37,70,150,0.10)"
+                      : "0 1px 4px rgba(0,0,0,0.05)",
+                  }}
+                >
+                  {/* Selected checkmark */}
+                  {selected && (
+                    <span
+                      className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{ background: "#254696" }}
+                    >
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                        <path d="M2 5l2.5 2.5L8 3" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                  )}
+
+                  {/* Icon */}
+                  <span style={{ color: selected ? "#254696" : "#9ca3af" }}>
+                    {icon}
+                  </span>
+
+                  {/* Label */}
+                  <span
+                    className="text-sm font-bold leading-tight"
+                    style={{ color: selected ? "#254696" : "#374151" }}
+                  >
+                    {label}
+                  </span>
+
+                  {/* Sub label */}
+                  <span
+                    className="text-[10px] text-center leading-tight"
+                    style={{ color: selected ? "#6b7fff" : "#9ca3af" }}
+                  >
+                    {sub}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -206,45 +276,63 @@ export function DevicePlanSelectorForm({
           >
             Device Brand
           </label>
-          <div className="relative">
-            <select
-              className="w-full px-4 py-3 border rounded-lg text-sm sm:text-base focus:outline-none transition-all appearance-none pr-10 disabled:bg-gray-50 disabled:cursor-not-allowed"
-              style={{
-                borderColor: "rgba(37, 70, 150, 0.2)",
-                color: "#4b5563",
-                backgroundColor: "#ffffff",
-              }}
-              onFocus={(e) => {
-                if (!e.currentTarget.disabled) {
-                  e.currentTarget.style.borderColor = "#254696";
-                  e.currentTarget.style.boxShadow =
-                    "0 0 0 3px rgba(37, 70, 150, 0.1)";
-                }
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "rgba(37, 70, 150, 0.2)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-              data-testid="select-device-brand"
-              disabled={!selectedDeviceType || brandsLoading}
-              value={selectedDeviceBrand}
-              onChange={(e) => handleDeviceBrandChange(e.target.value)}
+          <Popover open={openBrandCombobox} onOpenChange={setOpenBrandCombobox}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openBrandCombobox}
+                data-testid="select-device-brand"
+                className="w-full px-4 py-3 h-auto justify-between border rounded-lg text-sm sm:text-base font-normal hover:bg-white"
+                disabled={!selectedDeviceType || brandsLoading}
+                style={{
+                  borderColor: "rgba(37, 70, 150, 0.2)",
+                  color: selectedDeviceBrand ? "#4b5563" : "#9ca3af",
+                  backgroundColor: "#ffffff",
+                }}
+              >
+                {selectedDeviceBrand
+                  ? selectedDeviceBrand
+                  : brandsLoading
+                    ? "Loading brands…"
+                    : "Search or select brand"}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="w-[--radix-popover-trigger-width] p-0"
+              align="start"
             >
-              <option value="">
-                {brandsLoading ? "Loading brands…" : "Select device brand"}
-              </option>
-              {Array.isArray(brands) &&
-                brands.map((brand: any) => (
-                  <option key={brand.id} value={brand.name}>
-                    {brand.name}
-                  </option>
-                ))}
-            </select>
-            <ChevronDown
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 pointer-events-none"
-              style={{ color: "#254696" }}
-            />
-          </div>
+              <Command>
+                <CommandInput placeholder="Search brand..." />
+                <CommandList>
+                  <CommandEmpty>No brand found.</CommandEmpty>
+                  <CommandGroup>
+                    {sortedBrands.map((brand: any) => (
+                      <CommandItem
+                        key={brand.id}
+                        value={brand.name}
+                        onSelect={(currentValue) => {
+                          handleDeviceBrandChange(
+                            currentValue === selectedDeviceBrand ? "" : currentValue
+                          );
+                          setOpenBrandCombobox(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            selectedDeviceBrand === brand.name ? "opacity-100" : "opacity-0",
+                          )}
+                        />
+                        {brand.name}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div>

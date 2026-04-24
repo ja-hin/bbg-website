@@ -57,14 +57,20 @@ import whyChooseBbgIcon from "@assets/(inclusive of GST) (3)_1759127901876.webp"
 import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.webp";
 import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_1764254452404.webp";
 import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.webp";
-import bannerImg from "@assets/Referral_website.webp";
+import bannerImg from "@assets/prtner-banner-2300x800.png";
 import buybackGuaranteeImgBelow from "@assets/Referral_mobile.webp";
-import topBannerDesktop from "@assets/holiwebsite.webp";
+import topBannerDesktop from "@assets/Banner-BG.png";
 import topBannerMobile from "@assets/holimobile.webp";
 import heroBelowSectionImg from "@assets/hero-below-section.webp";
 import heroBelowSectionMsiteImg from "@assets/hero-below-section-msite.webp";
-import howPlanWorksImg from "@assets/how-plan-works.webp";
+import howPlanWorksImg from "../../../attached_assets/1234556.png";
 import howPlanWorksMsiteImg from "@assets/how-plan-works-msite.webp";
+import bannerIcon1 from "@assets/icon1.png";
+import bannerIcon2 from "@assets/icon2.png";
+import bannerIcon3 from "@assets/icon3.png";
+import HowItWorks from "./HowItWorks";
+import BuyBackSection from "./BuyBackSection";
+import PricingSection from "./PricingSection";
 // import pricingLaptopHeaderBBG from "@assets/pricing_laptop_header_bbg.webp";
 // import pricingLaptopHeaderExtend from "@assets/pricing_laptop_header_extend.webp";
 // import pricingMobileHeaderBBG from "@assets/pricing_mobile_header_bbg.webp";
@@ -162,6 +168,330 @@ const ClaimValueSlabs = ({ slabs }: { slabs: any[] }) => {
   );
 };
 
+const BuybackCompareModal = ({
+  onClose,
+  onExplore,
+}: {
+  onClose: () => void;
+  onExplore: () => void;
+}) => {
+  const [deviceType, setDeviceType] = useState<"mobile" | "laptop">("mobile");
+  const [price, setPrice] = useState("");
+
+  const bbgPct    = 70;
+  const marketPct = deviceType === "mobile" ? 35 : 25;
+  const placeholder = deviceType === "mobile" ? "e.g. 30000" : "e.g. 80000";
+
+  const priceNum = parseFloat(price.replace(/,/g, ""));
+  const valid = !isNaN(priceNum) && priceNum > 0;
+
+  const withBBG    = valid ? Math.round(priceNum * bbgPct / 100) : null;
+  const withoutBBG = valid ? Math.round(priceNum * marketPct / 100) : null;
+  const youSave    = valid && withBBG && withoutBBG ? withBBG - withoutBBG : null;
+
+  const fmt = (n: number) => "₹" + n.toLocaleString("en-IN");
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: "rgba(0,0,0,0.55)" }}
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="px-6 pt-6 pb-5 text-white" style={{ background: "var(--xtra-primary)" }}>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-xl font-bold">With vs Without BuyBack</h3>
+              <p className="text-sm text-white/75 mt-0.5">See how much more you get back</p>
+            </div>
+            <button type="button" onClick={onClose} className="text-white/70 hover:text-white text-2xl leading-none">×</button>
+          </div>
+
+          {/* Mobile / Laptop toggle */}
+          <div className="inline-flex bg-white/15 rounded-full p-1">
+            {(["mobile", "laptop"] as const).map((type) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => { setDeviceType(type); setPrice(""); }}
+                className="flex items-center gap-1.5 px-5 py-1.5 rounded-full text-xs font-bold transition-all duration-200"
+                style={{
+                  background: deviceType === type ? "#ffffff" : "transparent",
+                  color: deviceType === type ? "#254696" : "rgba(255,255,255,0.8)",
+                  boxShadow: deviceType === type ? "0 2px 8px rgba(0,0,0,0.15)" : "none",
+                }}
+              >
+                {type === "mobile" ? (
+                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="5" y="2" width="14" height="20" rx="3"/>
+                    <circle cx="12" cy="17.5" r="0.8" fill="currentColor" stroke="none"/>
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="4" width="20" height="13" rx="2"/>
+                    <path d="M1 19h22"/>
+                  </svg>
+                )}
+                {type === "mobile" ? "Mobile" : "Laptop"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="px-6 py-6 space-y-5">
+          {/* Price input */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+              Your {deviceType === "mobile" ? "Mobile" : "Laptop"} Purchase Price
+            </label>
+            <div className="flex items-center border-2 border-[#254696]/20 rounded-xl overflow-hidden focus-within:border-[#254696] transition-colors">
+              <span className="px-3 py-3 bg-gray-50 text-gray-500 font-semibold border-r border-gray-200">₹</span>
+              <input
+                type="number"
+                placeholder={placeholder}
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="flex-1 px-3 py-3 text-sm outline-none bg-white"
+              />
+            </div>
+          </div>
+
+          {/* Comparison cards */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Without BBG */}
+            <div className="rounded-2xl border-2 border-red-100 bg-red-50 p-4 flex flex-col gap-2">
+              <div className="flex items-center gap-1.5 mb-1">
+                <div className="w-5 h-5 rounded-full bg-red-400 flex items-center justify-center flex-shrink-0">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M2.5 7.5l5-5M7.5 7.5l-5-5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                <span className="text-xs font-bold text-red-500 uppercase tracking-wide">Without BBG</span>
+              </div>
+              <p className="text-[10px] text-gray-400 leading-tight">Typical open market resale</p>
+              <div className="mt-1">
+                <p className="text-[10px] text-gray-400">You get back ~{marketPct}%</p>
+                <p className="text-2xl font-black text-red-500 mt-0.5">
+                  {withoutBBG !== null ? fmt(withoutBBG) : "—"}
+                </p>
+              </div>
+              <div className="mt-1 w-full bg-red-100 rounded-full h-2">
+                <div className="bg-red-400 h-2 rounded-full transition-all duration-500" style={{ width: valid ? `${marketPct}%` : "0%" }} />
+              </div>
+            </div>
+
+            {/* With BBG */}
+            <div className="rounded-2xl border-2 border-[#254696]/20 bg-[#f0f6ff] p-4 flex flex-col gap-2">
+              <div className="flex items-center gap-1.5 mb-1">
+                <div className="w-5 h-5 rounded-full bg-[#254696] flex items-center justify-center flex-shrink-0">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M2 5l2.5 2.5L8 3" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <span className="text-xs font-bold text-[#254696] uppercase tracking-wide">With BBG</span>
+              </div>
+              <p className="text-[10px] text-gray-400 leading-tight">Guaranteed by BuyBack plan</p>
+              <div className="mt-1">
+                <p className="text-[10px] text-gray-400">You get back up to {bbgPct}%</p>
+                <p className="text-2xl font-black text-[#254696] mt-0.5">
+                  {withBBG !== null ? fmt(withBBG) : "—"}
+                </p>
+              </div>
+              <div className="mt-1 w-full bg-[#254696]/10 rounded-full h-2">
+                <div className="bg-[#254696] h-2 rounded-full transition-all duration-500" style={{ width: valid ? `${bbgPct}%` : "0%" }} />
+              </div>
+            </div>
+          </div>
+
+          {/* You save banner */}
+          {youSave !== null && (
+            <div className="rounded-2xl bg-green-50 border-2 border-green-200 px-5 py-4 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-green-600 uppercase tracking-wide">You save extra</p>
+                <p className="text-2xl font-black text-green-600 mt-0.5">{fmt(youSave)}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-gray-400">vs open market</p>
+                <p className="text-sm font-bold text-green-500 mt-0.5">+{Math.round((youSave / (withoutBBG ?? 1)) * 100)}% more</p>
+              </div>
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={() => { onClose(); onExplore(); }}
+            className="w-full text-white font-bold py-3.5 rounded-xl text-base shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+            style={{ background: "var(--xtra-primary)" }}
+          >
+            Get BuyBack Plan Now
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const BBGModal = ({
+  slabs,
+  onClose,
+  onExplore,
+}: {
+  slabs: any[];
+  onClose: () => void;
+  onExplore: () => void;
+}) => {
+  const minMonth = slabs.length
+    ? Math.min(...slabs.map((s) => parseInt(s.minMonths || s.min_months || "1")))
+    : 1;
+  const maxMonth = slabs.length
+    ? Math.max(...slabs.map((s) => parseInt(s.maxMonths || s.max_months || "36")))
+    : 36;
+
+  const [age, setAge] = useState(minMonth);
+  const [devicePrice, setDevicePrice] = useState("");
+
+  const currentSlab = slabs.find((s) => {
+    const min = parseInt(s.minMonths || s.min_months || "0");
+    const max = parseInt(s.maxMonths || s.max_months || "0");
+    return age >= min && age <= max;
+  }) || slabs[slabs.length - 1];
+
+  const percentage = currentSlab
+    ? parseInt(currentSlab.resalePercentage || currentSlab.percentage || "0")
+    : 0;
+
+  const progressWidth = ((age - minMonth) / (maxMonth - minMonth)) * 100;
+  const priceNum = parseFloat(devicePrice.replace(/,/g, ""));
+  const rupeeValue = !isNaN(priceNum) && priceNum > 0
+    ? Math.round((percentage / 100) * priceNum)
+    : null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div
+          className="px-6 pt-6 pb-5 text-white"
+          style={{ background: "var(--xtra-primary)" }}
+        >
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="text-xl font-bold">Guaranteed Resale Value</h3>
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-white/70 hover:text-white text-2xl leading-none"
+            >
+              ×
+            </button>
+          </div>
+          <p className="text-sm text-white/80">
+            See how much you get back based on your device age
+          </p>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 py-6 space-y-5">
+          {/* Price input */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+              Device Purchase Price (optional)
+            </label>
+            <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#254696]/30">
+              <span className="px-3 py-3 bg-gray-50 text-gray-500 font-semibold border-r border-gray-200">₹</span>
+              <input
+                type="number"
+                placeholder="e.g. 50000"
+                value={devicePrice}
+                onChange={(e) => setDevicePrice(e.target.value)}
+                className="flex-1 px-3 py-3 text-sm outline-none bg-white"
+              />
+            </div>
+          </div>
+
+          {/* Age display */}
+          <div className="text-center">
+            <p className="text-sm text-gray-500 mb-1">Device Age</p>
+            <p className="text-3xl font-black" style={{ color: "#254696" }}>
+              {age} <span className="text-lg font-semibold">month{age !== 1 ? "s" : ""}</span>
+            </p>
+          </div>
+
+          {/* Slider */}
+          <div className="space-y-2">
+            <input
+              type="range"
+              aria-label="Device age in months"
+              min={minMonth}
+              max={maxMonth}
+              value={age}
+              onChange={(e) => setAge(parseInt(e.target.value))}
+              className="w-full h-2 rounded-full appearance-none cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, #254696 ${progressWidth}%, #e5e7eb ${progressWidth}%)`,
+              }}
+            />
+            <div className="flex justify-between text-xs text-gray-400">
+              <span>{minMonth}m</span>
+              <span>{maxMonth}m</span>
+            </div>
+          </div>
+
+          {/* Progress bar — resale % + optional ₹ value */}
+          <div className="bg-gray-50 rounded-2xl p-5 space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-500 font-medium">You get back</span>
+              <div className="text-right">
+                <span className="text-2xl font-black" style={{ color: "#254696" }}>
+                  {percentage}%
+                </span>
+                {rupeeValue !== null && (
+                  <p className="text-base font-bold text-green-600 leading-tight">
+                    ≈ ₹{rupeeValue.toLocaleString("en-IN")}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{
+                  width: `${percentage}%`,
+                  background: "linear-gradient(to right, #254696, #3b82f6)",
+                }}
+              />
+            </div>
+            <p className="text-xs text-gray-400 text-center">
+              {rupeeValue !== null
+                ? `Based on your ₹${priceNum.toLocaleString("en-IN")} device price`
+                : "of your device's original purchase price"}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => { onClose(); onExplore(); }}
+            className="w-full text-white font-bold py-3.5 rounded-xl text-base shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+            style={{ background: "var(--xtra-primary)" }}
+          >
+            Explore Plans
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ProgressCircle = ({ percentage }: { percentage: number }) => (
   <div className="relative w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center flex-shrink-0">
     <svg viewBox="0 0 64 64" className="w-full h-full transform -rotate-90">
@@ -203,13 +533,15 @@ export default function Home() {
     string | undefined
   >();
   const [carouselLoaded, setCarouselLoaded] = useState(false);
-  const [pricingView, setPricingView] = useState<"laptop" | "mobile">("laptop");
+  const [pricingView, setPricingView] = useState<"laptop" | "mobile">("mobile");
   const [laptopBBGFlipped, setLaptopBBGFlipped] = useState(false);
   const [mobileBBGFlipped, setMobileBBGFlipped] = useState(false);
   const [laptopExtendFlipped, setLaptopExtendFlipped] = useState(false);
   const [mobileExtendFlipped, setMobileExtendFlipped] = useState(false);
   const [laptopBundleFlipped, setLaptopBundleFlipped] = useState(false);
   const [mobileBundleFlipped, setMobileBundleFlipped] = useState(false);
+  const [bbgModal, setBbgModal] = useState<{ deviceType: "laptop" | "mobile"; slabs: any[] } | null>(null);
+  const [showCompareModal, setShowCompareModal] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
   const handleCarouselFirstImageLoaded = useCallback(() => {
@@ -306,26 +638,135 @@ export default function Home() {
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Top Banner Section */}
-      <section className="w-full">
-        <div
-          onClick={scrollToForm}
-          className="w-full cursor-pointer overflow-hidden transition-opacity hover:opacity-95"
-        >
-          <picture>
-            <source media="(max-width: 639px)" srcSet={topBannerMobile} />
-            <img
-              src={topBannerDesktop}
-              alt="Special Offer Banner"
-              className="w-full h-auto object-cover"
-            />
-          </picture>
+      <style>{`
+        .top-banner-section {
+          background-image: url(${topBannerDesktop});
+          background-size: cover;
+          background-position: center;
+          min-height: clamp(220px, 28vw, 460px);
+        }
+        @media (max-width: 639px) {
+          .top-banner-section {
+            background-image: url(${topBannerMobile}) !important;
+            min-height: auto !important;
+          }
+        }
+      `}</style>
+      <section
+        className="top-banner-section w-full cursor-pointer"
+        onClick={scrollToForm}
+      >
+        <div className="max-w-[1400px] mx-auto px-5 sm:px-10 lg:px-16 flex items-center relative" style={{ minHeight: "inherit" }}>
+          {/* Left Content */}
+          <div className="flex-1 py-8 sm:py-10 lg:py-24 z-10">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-[#1e4fc2] text-white text-[11px] sm:text-xs font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-6 border border-white/20">
+              <Shield className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              BUY BACK GUARANTEE
+            </div>
+
+            {/* Heading */}
+            <h1
+              className="text-white font-black leading-[1.15] mb-2 sm:mb-4"
+              style={{ fontSize: "48px" }}
+            >
+              Your Device loses 30% value<br className="hidden sm:block" /> the day you unbox it
+            </h1>
+
+            {/* Subtext */}
+            <p
+              className="text-white/75 mb-3 sm:mb-5 max-w-md leading-relaxed"
+              style={{ fontSize: "clamp(13px, 2vw, 1.5rem)" }}
+            >
+              Get guaranteed resale value upto 70% of your Purchase Price.
+            </p>
+
+            {/* "With BuyBack Guarantee" line */}
+            <p
+              className="font-bold leading-tight mb-3 sm:mb-5"
+              style={{ fontSize: "clamp(16px, 2.5vw, 2rem)", color: "rgba(255,255,255,0.92)" }}
+            >
+              With{" "}
+              <span
+                style={{
+                  background: "linear-gradient(90deg, #2563eb, #8eadf1)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  fontWeight: 900,
+                }}
+              >
+                BuyBack Guarantee
+              </span>
+            </p>
+
+            {/* CTA Button */}
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); scrollToForm(); }}
+              className="flex mb-5 sm:mb-6 items-center gap-2 font-bold rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95"
+              style={{
+                background: "#145eda",
+                color: "white",
+                fontSize: "clamp(12px, 1.2vw, 15px)",
+                padding: "10px 22px",
+                letterSpacing: "0.02em",
+              }}
+            >
+              <svg viewBox="0 0 24 24" className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2a5 5 0 015 5v2H7V7a5 5 0 015-5z"/>
+                <rect x="3" y="9" width="18" height="13" rx="2"/>
+                <circle cx="12" cy="15.5" r="1.5" fill="currentColor" stroke="none"/>
+              </svg>
+              Unlock 70% Value
+            </button>
+
+            {/* Features row */}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-0">
+              <div className="flex items-center gap-2 sm:pr-6 sm:border-r sm:border-white/25">
+                <img src={bannerIcon1} alt="Guaranteed Resale Value" className="w-7 h-7 sm:w-10 sm:h-10 flex-shrink-0 object-contain" />
+                <span className="text-white text-[10px] sm:text-sm font-semibold leading-tight">
+                  Guaranteed<br />Resale Value
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 sm:px-6 sm:border-r sm:border-white/25">
+                <img src={bannerIcon2} alt="Instant Quote" className="w-7 h-7 sm:w-10 sm:h-10 flex-shrink-0 object-contain" />
+                <span className="text-white text-[10px] sm:text-sm font-semibold leading-tight">
+                  Instant<br />Quote
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 sm:pl-6">
+                <img src={bannerIcon3} alt="Valid for upto 6 months" className="w-7 h-7 sm:w-10 sm:h-10 flex-shrink-0 object-contain" />
+                <span className="text-white text-[10px] sm:text-sm font-semibold leading-tight">
+                  Valid for<br />upto 6 months
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right — trust badges (desktop only) */}
+          <div className="hidden sm:flex flex-col flex-shrink-0 items-start justify-between" style={{ width: "clamp(260px, 40%, 560px)", paddingTop: "35rem" }}>
+            <div className="flex items-center gap-10 mt-4">
+              {["Hassle-free", "Transparent", "Trusted"].map((label) => (
+                <div key={label} className="flex items-center gap-1.5">
+                  <div className="w-4 h-4 rounded-full border-2 border-[#3b82f6] flex items-center justify-center flex-shrink-0">
+                    <svg viewBox="0 0 10 8" className="w-2.5 h-2.5" fill="none">
+                      <path d="M1 4l3 3 5-6" stroke="#3b82f6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <span className="text-white/85 text-xs sm:text-sm font-medium">{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </section>
 
-      {/* Hero Below Section */}
-      <section
+      {/* <section
         className="w-full cursor-pointer transition-opacity hover:opacity-95"
-        onClick={scrollToForm}
+        onClick={() => setShowCompareModal(true)}
       >
         <picture>
           <source
@@ -338,8 +779,8 @@ export default function Home() {
             className="w-full h-auto block"
           />
         </picture>
-      </section>
-
+      </section> */}
+      <BuyBackSection setShowCompareModal={setShowCompareModal} />
       {/* Smart Plans Section */}
 
       {/* Homepage Carousel - Critical path, loads first */}
@@ -347,901 +788,228 @@ export default function Home() {
         <HomepageCarousel onFirstImageLoaded={handleCarouselFirstImageLoaded} />
       </div>
       {/* Smart Plans Section with Form */}
-      <section
-        className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8"
-        style={{
-          background:
-            "linear-gradient(135deg, #f0f6fb 0%, #f5f9ff 50%, #faf8ff 100%)",
-        }}
-      >
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-16 items-center">
-            {/* Left Side - Text + Benefits - Hidden on mobile, only form shows */}
-            <div className="hidden lg:block">
-              <div className="mb-2">
-                <span
-                  className="inline-block text-xs sm:text-sm font-semibold tracking-wider uppercase rounded-full px-4 py-2"
-                  style={{
-                    background: "rgba(37, 70, 150, 0.1)",
-                    color: "#254696",
-                  }}
-                >
-                  Find Your Perfect Plan
-                </span>
-              </div>
 
-              <h2
-                className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-8 mt-4"
-                style={{ color: "#1a1a1a", fontFamily: "Poppins, sans-serif" }}
-              >
-                Smart plans for stronger resale value and repair support
-              </h2>
+<section
+  className="py-12 sm:py-16 lg:py-12 px-4 sm:px-6 lg:px-8"
+  style={{
+    background: "#f9fafb",
+    position: "relative",
+    overflow: "hidden",
+  }}
+>
+  {/* Subtle dot-grid texture */}
+  <div
+    aria-hidden="true"
+    style={{
+      position: "absolute",
+      inset: 0,
+      backgroundImage:
+        "radial-gradient(circle, rgba(37,70,150,0.06) 1px, transparent 1px)",
+      backgroundSize: "28px 28px",
+      pointerEvents: "none",
+      zIndex: 0,
+    }}
+  />
+  {/* Soft blue glow — top left */}
+  <div
+    aria-hidden="true"
+    style={{
+      position: "absolute",
+      top: -200,
+      left: -140,
+      width: 600,
+      height: 600,
+      borderRadius: "50%",
+      background:
+        "radial-gradient(ellipse, rgba(214,227,255,0.5) 0%, transparent 70%)",
+      pointerEvents: "none",
+      zIndex: 0,
+    }}
+  />
 
-              <div className="space-y-5 mt-8">
-                <div className="flex items-start gap-3">
-                  <div
-                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1"
-                    style={{ background: "rgba(37, 70, 150, 0.15)" }}
-                  >
-                    <BsCheckLg
-                      className="text-lg font-bold"
-                      style={{ color: "#254696" }}
-                    />
-                  </div>
-                  <p
-                    className="text-base sm:text-lg leading-relaxed"
-                    style={{ color: "#4b5563" }}
-                  >
-                    Guaranteed resale value
-                  </p>
-                </div>
+  <div className="max-w-7xl mx-auto" style={{ position: "relative", zIndex: 1 }}>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-16 items-center">
 
-                <div className="flex items-start gap-3">
-                  <div
-                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1"
-                    style={{ background: "rgba(37, 70, 150, 0.15)" }}
-                  >
-                    <BsCheckLg
-                      className="text-lg font-bold"
-                      style={{ color: "#254696" }}
-                    />
-                  </div>
-                  <p
-                    className="text-base sm:text-lg leading-relaxed"
-                    style={{ color: "#4b5563" }}
-                  >
-                    1-Year Extended Accidental Damage Repair Service
-                  </p>
-                </div>
+      {/* ───────────────────────────────────────
+          LEFT SIDE
+          className="hidden lg:block" UNCHANGED
+      ─────────────────────────────────────── */}
+      <div className="hidden lg:block">
 
-                <div className="flex items-start gap-3">
-                  <div
-                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1"
-                    style={{ background: "rgba(37, 70, 150, 0.15)" }}
-                  >
-                    <BsCheckLg
-                      className="text-lg font-bold"
-                      style={{ color: "#254696" }}
-                    />
-                  </div>
-                  <p
-                    className="text-base sm:text-lg leading-relaxed"
-                    style={{ color: "#4b5563" }}
-                  >
-                    Best Product Upgrade Offers
-                  </p>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div
-                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1"
-                    style={{ background: "rgba(37, 70, 150, 0.15)" }}
-                  >
-                    <BsCheckLg
-                      className="text-lg font-bold"
-                      style={{ color: "#254696" }}
-                    />
-                  </div>
-                  <p
-                    className="text-base sm:text-lg leading-relaxed"
-                    style={{ color: "#4b5563" }}
-                  >
-                    20% Off on 1-Year Extended Warranty
-                  </p>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div
-                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1"
-                    style={{ background: "rgba(37, 70, 150, 0.15)" }}
-                  >
-                    <BsCheckLg
-                      className="text-lg font-bold"
-                      style={{ color: "#254696" }}
-                    />
-                  </div>
-                  <p
-                    className="text-base sm:text-lg leading-relaxed"
-                    style={{ color: "#4b5563" }}
-                  >
-                    Supports all major mobile and laptop brands
-                  </p>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div
-                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1"
-                    style={{ background: "rgba(37, 70, 150, 0.15)" }}
-                  >
-                    <BsCheckLg
-                      className="text-lg font-bold"
-                      style={{ color: "#254696" }}
-                    />
-                  </div>
-                  <p
-                    className="text-base sm:text-lg leading-relaxed"
-                    style={{ color: "#4b5563" }}
-                  >
-                    100% authorized services
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Side - Form Card */}
-            <div ref={formRef}>
-              <DevicePlanSelectorForm
-                initialDeviceType={selectedDeviceTypeFromCard}
-                formRef={formRef}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Plan pricing and coverage Section */}
-      <section
-        className="bg-white"
-        style={{ paddingTop: "0.5rem", paddingBottom: "0.5rem" }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center gap-2 sm:gap-4 lg:gap-8">
-            <div
-              className="hidden sm:block w-16 lg:w-48"
-              style={{ height: "0.125rem", backgroundColor: "#303e58" }}
-            ></div>
-            <h2
-              className="text-center"
+        {/* Eyebrow tag */}
+        <div className="mb-2">
+          <span
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold tracking-wider uppercase px-0 py-2"
+            style={{ color: "#254696", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em" }}
+          >
+            <span
               style={{
-                fontSize: "clamp(26px, 6vw, 48px)",
-                color: "#303e58",
-                fontFamily: "Poppins, sans-serif",
-                fontWeight: "900",
-                letterSpacing: "-0.42px",
-                lineHeight: "1.22",
+                display: "inline-block", width: 24, height: 1.5,
+                background: "#254696", borderRadius: 999, opacity: 0.35,
+              }}
+            />
+            Find Your Perfect Plan
+            <span
+              style={{
+                display: "inline-block", width: 24, height: 1.5,
+                background: "#254696", borderRadius: 999, opacity: 0.35,
+              }}
+            />
+          </span>
+        </div>
+
+        {/* Headline — same text, refined styling */}
+        <h2
+          className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-8 mt-4"
+          style={{
+            color: "#0c1629",
+            fontFamily: "Poppins, sans-serif",
+            letterSpacing: "-0.5px",
+            lineHeight: 1.14,
+          }}
+        >
+          Smart plans for stronger{" "}
+          <span style={{ color: "#254696" }}>resale value</span>{" "}
+          and repair support
+        </h2>
+
+        {/* Short rule */}
+        <div
+          style={{
+            width: 36, height: 2,
+            background: "#254696", opacity: 0.2,
+            borderRadius: 999, marginBottom: 28,
+          }}
+        />
+
+        {/* Benefit rows — same 6 items, divider-row layout */}
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {[
+            {
+              label: "Guaranteed resale value",
+              sub: "Lock in up to 70% of your device's original price",
+            },
+            {
+              label: "1-Year Extended Accidental Damage Repair Service",
+              sub: "₹0 service cost on every covered repair",
+            },
+            {
+              label: "Best Product Upgrade Offers",
+              sub: "Exclusive deals when upgrading your next device",
+            },
+            {
+              label: "20% Off on 1-Year Extended Warranty",
+              sub: "Save on protection for your next device purchase",
+            },
+            {
+              label: "Supports all major mobile and laptop brands",
+              sub: "Apple, Samsung, OnePlus, Dell, HP and more",
+            },
+            {
+              label: "100% authorized services",
+              sub: "Certified technicians and partner service centers",
+            },
+          ].map(({ label, sub }, i, arr) => (
+            <div
+              key={i}
+              className="flex items-start gap-3"
+              style={{
+                padding: "15px 0",
+                borderBottom: i < arr.length - 1 ? "1px solid rgba(15,23,42,0.07)" : "none",
               }}
             >
-              Plan pricing and coverage
-            </h2>
-            <div
-              className="hidden sm:block w-16 lg:w-48"
-              style={{ height: "0.125rem", backgroundColor: "#303e58" }}
-            ></div>
-          </div>
+              {/* Clean outlined square checkmark — no fill, no circle, minimal */}
+              <div
+                className="flex-shrink-0 mt-1"
+                style={{
+                  width: 20, height: 20, borderRadius: 5,
+                  border: "1.5px solid rgba(37,70,150,0.55)",
+                  display: "flex", alignItems: "center",
+                  justifyContent: "center", flexShrink: 0,
+                }}
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path
+                    d="M1.5 5L3.8 7.5L8.5 2.5"
+                    stroke="#254696"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
 
-          {/* Plan Type Toggle */}
-          <div className="flex justify-center mt-6 mb-2">
-            <div className="inline-flex bg-gray-100 rounded-full p-1 border border-gray-200">
-              <button
-                onClick={() => setPricingView("laptop")}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                  pricingView === "laptop"
-                    ? "bg-[#254696] text-white shadow-md"
-                    : "text-gray-600 hover:text-gray-800"
-                }`}
-                data-testid="toggle-pricing-laptop"
-              >
-                <Laptop className="w-4 h-4" />
-                Laptop Plans
-              </button>
-              <button
-                onClick={() => setPricingView("mobile")}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                  pricingView === "mobile"
-                    ? "bg-[#254696] text-white shadow-md"
-                    : "text-gray-600 hover:text-gray-800"
-                }`}
-                data-testid="toggle-pricing-mobile"
-              >
-                <Smartphone className="w-4 h-4" />
-                Mobile Plans
-              </button>
+              <div>
+                <p
+                  className="text-base sm:text-lg leading-relaxed"
+                  style={{
+                    color: "#1e293b",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    marginBottom: 2,
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {label}
+                </p>
+                <p style={{ fontSize: 12.5, color: "#94a3b8", lineHeight: 1.5 }}>
+                  {sub}
+                </p>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
-      </section>
-      {/* BBG Pricing Section */}
-      <section className="py-6 sm:py-8 lg:py-10 relative overflow-hidden">
-        {/* Background Image */}
-        <img
-          src={pricingCardBackground}
-          alt="Background pattern"
-          className="absolute inset-0 w-full h-full object-fill z-0"
-        />
-        {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-6 sm:gap-8 lg:gap-10 items-stretch [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
-            {/* Laptop Plans */}
-            {pricingView === "laptop" && (
-              <>
-                {/* Laptop BBG Card */}
-                <div
-                  className="w-full flex flex-col flip-card min-h-[400px]"
-                  data-testid="card-laptop-bbg"
-                >
-                  <div
-                    className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${laptopBBGFlipped ? "flipped" : ""}`}
-                  >
-                    {/* Front Face */}
-                    <div className="flip-card-front rounded-[2rem] overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl">
-                      {/* Header with Background and Asset */}
-                      <div
-                        className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
-                        style={{
-                          backgroundColor: "var(--xtra-primary)",
-                        }}
-                      >
-                        <div className="flex items-center justify-between gap-3 sm:gap-4 w-full min-w-0 relative z-10">
-                          <div className="flex-1">
-                            <h3 className="text-xl sm:text-3xl font-black leading-tight">
-                              BuyBack
-                              <br />
-                              Guarantee
-                            </h3>
-                          </div>
-                          <div className="text-right flex flex-col items-end z-10">
-                            <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
-                              OFFER
-                            </div>
-                            <div className="flex flex-col items-end">
-                              <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
-                                ₹1299
-                              </span>
-                              <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
-                                {pricesLoading ? (
-                                  <Loader2 className="h-6 w-6 animate-spin" />
-                                ) : (
-                                  `₹${getLaptopBBGPrice()}`
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
 
-                      {/* 2x2 Benefits Grid */}
-                      <div className="flex-grow p-4 sm:p-6">
-                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
-                          {/* Resale Value */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <ProgressCircle percentage={70} />
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                                Guaranteed resale value
-                              </h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                                Get back up to 70% of your device's purchase
-                                price when you sell it back
-                              </p>
-                            </div>
-                          </div>
+      </div>
 
-                          {/* Repair Service */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
-                              <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">
-                                Accidental Damage Repair Service
-                              </h4>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
-                                • Protection for your existing device
-                              </p>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
-                                • Begins after brand warranty ends
-                              </p>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
-                                • ₹0 service cost on repair
-                              </p>
-                            </div>
-                          </div>
+      {/* ───────────────────────────────────────
+          RIGHT SIDE — form wrapped in styled card
+          ref={formRef} UNCHANGED
+          DevicePlanSelectorForm + all props UNCHANGED
+      ─────────────────────────────────────── */}
+      <div ref={formRef}>
 
-                          {/* Upgrade Offers */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                              <Gift className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                                Best Upgrade Offers
-                              </h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                                Exclusive deals for your next device purchase
-                              </p>
-                            </div>
-                          </div>
+        {/* Visual card shell */}
+        <div
+          style={{
+            background: "#ffffff",
+            borderRadius: 20,
+            border: "1px solid rgba(15,23,42,0.09)",
+            boxShadow:
+              "0 1px 3px rgba(0,0,0,0.04), 0 12px 32px rgba(37,70,150,0.08), 0 40px 80px rgba(37,70,150,0.05)",
+            overflow: "hidden",
+          }}
+        >
 
-                          {/* Extended Warranty */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
-                              <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
-                              <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                                20% Off on 1-Year Extended Warranty
-                              </h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                                Save 20% on protection of your next device
-                                purchase
-                              </p>
-                            </div>
-                          </div>
-                        </div>
 
-                        <div className="mt-4 flex flex-col items-center gap-3">
-                          <button
-                            onClick={() =>
-                              setLaptopBBGFlipped(!laptopBBGFlipped)
-                            }
-                            className="text-gray-400 hover:text-gray-600 text-xs font-medium underline transition-colors"
-                            data-testid="button-know-more-laptop-bbg"
-                          >
-                            Know More
-                          </button>
-                          <button
-                            onClick={scrollToForm}
-                            className="w-full bg-xtra-primary text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
-                            style={{ backgroundColor: "var(--xtra-primary)" }}
-                            data-testid="button-explore-laptop-bbg"
-                          >
-                            Explore Plans
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Back Face */}
-                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                      <div
-                        className="p-4 sm:p-5 text-white text-center"
-                        style={{
-                          background: "var(--xtra-primary)",
-                        }}
-                      >
-                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                          Guaranteed Resale Value
-                        </h3>
-                        <p className="text-xs sm:text-sm mb-3 opacity-95">
-                          Lock resale value of your device
-                        </p>
-                      </div>
-                      <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-4">
-                        <ClaimValueSlabs
-                          slabs={
-                            allPlans.find(
-                              (p: any) =>
-                                p.deviceType === "laptop" &&
-                                p.planType === "bbg",
-                            )?.claimValueSlabs || []
-                          }
-                        />
-                        <p
-                          className="text-xs sm:text-sm text-center"
-                          style={{ color: "#666666" }}
-                        >
-                          Resale value is calculated as a percentage of your
-                          original device purchase price
-                        </p>
-                      </div>
-                      <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
-                        <button
-                          onClick={() => setLaptopBBGFlipped(false)}
-                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
-                          style={{ color: "#254696" }}
-                          data-testid="button-back-laptop-bbg"
-                        >
-                          Back
-                        </button>
-                        <button
-                          onClick={scrollToForm}
-                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
-                          style={{
-                            background: "var(--xtra-primary)",
-                          }}
-                          data-testid="button-explore-flipped-laptop-bbg"
-                        >
-                          Explore Plans
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          {/* ✅ DevicePlanSelectorForm — 100% UNTOUCHED */}
+          <DevicePlanSelectorForm
+            initialDeviceType={selectedDeviceTypeFromCard}
+            formRef={formRef}
+          />
 
-                {/* Laptop Extend+ Card */}
-                <div
-                  className="w-full flex flex-col min-h-[400px]"
-                  data-testid="card-laptop-extend"
-                >
-                  <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl h-full">
-                    {/* Header with Background and Asset */}
-                    <div
-                      className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
-                      style={{
-                        backgroundColor: "var(--xtra-primary)",
-                      }}
-                    >
-                      <div className="flex items-center justify-between gap-3 sm:gap-4 w-full min-w-0 relative z-10">
-                        <div className="flex-1">
-                          <h3 className="text-xl sm:text-3xl font-black leading-tight">
-                            Extend+
-                            <br />
-                            Protection
-                          </h3>
-                        </div>
-                        <div className="text-right flex flex-col items-end z-10">
-                          <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
-                            OFFER
-                          </div>
-                          <div className="flex flex-col items-end">
-                            <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
-                              ₹1299
-                            </span>
-                            <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
-                              {pricesLoading ? (
-                                <Loader2 className="h-6 w-6 animate-spin" />
-                              ) : (
-                                `₹${getLaptopExtendPrice()}`
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 2x2 Benefits Grid */}
-                    <div className="flex-grow p-4 sm:p-6">
-                      <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
-                        {/* Doorstep Device Auction */}
-                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                            <Gavel className="w-7 h-7 sm:w-10 sm:h-10 text-[#254696]" />
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                              Doorstep Device Auction
-                            </h4>
-                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              • Auction your device at the best market value
-                            </p>
-                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              • 100+ buyers compete to give you the best
-                              possible price in India
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Repair Service */}
-                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
-                            <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">
-                              Accidental Damage Repair Service
-                            </h4>
-                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
-                              • Protection for your existing device
-                            </p>
-                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
-                              • Begins after brand warranty ends
-                            </p>
-                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
-                              • ₹0 service cost on repair
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Upgrade Offers */}
-                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                            <Gift className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                              Best Upgrade Offers
-                            </h4>
-                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              Exclusive deals for your next device purchase
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Extended Warranty */}
-                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
-                            <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
-                            <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                              20% Off on 1-Year Extended Warranty
-                            </h4>
-                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              Save 20% on protection of your next device
-                              purchase
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 flex flex-col items-center gap-3">
-                        <button
-                          onClick={scrollToForm}
-                          className="w-full bg-xtra-primary text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
-                          style={{ backgroundColor: "var(--xtra-primary)" }}
-                          data-testid="button-explore-laptop-extend"
-                        >
-                          Explore Plans
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Laptop Bundle Card removed */}
-              </>
-            )}
-
-            {/* Mobile Plans */}
-            {pricingView === "mobile" && (
-              <>
-                {/* Mobile BBG Card */}
-                <div
-                  className="w-full flex flex-col flip-card min-h-[400px]"
-                  data-testid="card-mobile-bbg"
-                >
-                  <div
-                    className={`rounded-3xl shadow-xl overflow-visible relative flip-card-inner ${mobileBBGFlipped ? "flipped" : ""}`}
-                  >
-                    {/* Front Face */}
-                    <div className="flip-card-front rounded-[2rem] overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl">
-                      {/* Header with Background and Asset */}
-                      <div
-                        className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
-                        style={{
-                          backgroundColor: "var(--xtra-primary)",
-                        }}
-                      >
-                        <div className="flex items-center justify-between gap-3 sm:gap-4 w-full min-w-0 relative z-10">
-                          <div className="flex-1">
-                            <h3 className="text-xl sm:text-3xl font-black leading-tight">
-                              BuyBack
-                              <br />
-                              Guarantee
-                            </h3>
-                          </div>
-                          <div className="text-right flex flex-col items-end z-10">
-                            <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
-                              OFFER
-                            </div>
-                            <div className="flex flex-col items-end">
-                              <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
-                                ₹999
-                              </span>
-                              <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
-                                {pricesLoading ? (
-                                  <Loader2 className="h-6 w-6 animate-spin" />
-                                ) : (
-                                  `₹${getMobileBBGPrice()}`
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* 2x2 Benefits Grid */}
-                      <div className="flex-grow p-4 sm:p-6">
-                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
-                          {/* Resale Value */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <ProgressCircle percentage={70} />
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                                Guaranteed resale value
-                              </h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                                Get back up to 70% of your device's purchase
-                                price when you sell it back
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Repair Service */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
-                              <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">
-                                Accidental Damage Repair Service
-                              </h4>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
-                                • Protection for your existing device
-                              </p>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
-                                • Begins after brand warranty ends
-                              </p>
-                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
-                                • ₹0 service cost on repair
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Upgrade Offers */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                              <Gift className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                                Best Upgrade Offers
-                              </h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                                Exclusive deals for your next device purchase
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Extended Warranty */}
-                          <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
-                              <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
-                              <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                                20% Off on 1-Year Extended Warranty
-                              </h4>
-                              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                                Save 20% on protection of your next device
-                                purchase
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="mt-4 flex flex-col items-center gap-3">
-                          <button
-                            onClick={() =>
-                              setMobileBBGFlipped(!mobileBBGFlipped)
-                            }
-                            className="text-gray-400 hover:text-gray-600 text-xs font-medium underline transition-colors"
-                            data-testid="button-know-more-mobile-bbg"
-                          >
-                            Know More
-                          </button>
-                          <button
-                            onClick={scrollToForm}
-                            className="w-full bg-xtra-primary text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
-                            style={{ backgroundColor: "var(--xtra-primary)" }}
-                            data-testid="button-explore-mobile-bbg"
-                          >
-                            Explore Plans
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Back Face */}
-                    <div className="flip-card-back rounded-3xl overflow-y-auto flex flex-col bg-white border border-gray-100">
-                      <div
-                        className="p-4 sm:p-5 text-white text-center"
-                        style={{
-                          background: "var(--xtra-primary)",
-                        }}
-                      >
-                        <h3 className="text-xl sm:text-2xl font-bold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                          Guaranteed Resale Value
-                        </h3>
-                        <p className="text-xs sm:text-sm mb-3 opacity-95">
-                          Lock resale value of your device
-                        </p>
-                      </div>
-                      <div className="flex-grow p-4 sm:p-5 flex flex-col justify-center space-y-4">
-                        <ClaimValueSlabs
-                          slabs={
-                            allPlans.find(
-                              (p: any) =>
-                                p.deviceType === "mobile" &&
-                                p.planType === "bbg",
-                            )?.claimValueSlabs || []
-                          }
-                        />
-                        <p
-                          className="text-xs sm:text-sm text-center"
-                          style={{ color: "#666666" }}
-                        >
-                          Resale value is calculated as a percentage of your
-                          original device purchase price
-                        </p>
-                      </div>
-                      <div className="px-6 sm:px-8 pb-2 sm:pb-3 space-y-2">
-                        <button
-                          onClick={() => setMobileBBGFlipped(false)}
-                          className="w-full text-center font-semibold py-2 rounded-full text-sm transition-all duration-300 hover:underline"
-                          style={{ color: "#254696" }}
-                          data-testid="button-back-mobile-bbg"
-                        >
-                          Back
-                        </button>
-                        <button
-                          onClick={scrollToForm}
-                          className="w-full text-white font-semibold py-3 sm:py-4 rounded-full text-base sm:text-lg transition-all duration-300 hover:shadow-lg"
-                          style={{
-                            background: "var(--xtra-primary)",
-                          }}
-                          data-testid="button-explore-flipped-mobile-bbg"
-                        >
-                          Explore Plans
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Mobile Extend+ Card */}
-                <div
-                  className="w-full flex flex-col min-h-[400px]"
-                  data-testid="card-mobile-extend"
-                >
-                  <div className="rounded-3xl shadow-xl overflow-hidden flex flex-col bg-[#F3F4F6] border border-gray-100 shadow-2xl h-full">
-                    {/* Header with Background and Asset */}
-                    <div
-                      className="p-5 sm:p-7 text-white relative min-h-[140px] sm:min-h-[160px] flex items-center"
-                      style={{
-                        backgroundColor: "var(--xtra-primary)",
-                      }}
-                    >
-                      <div className="flex items-center justify-between gap-3 sm:gap-4 w-full min-w-0 relative z-10">
-                        <div className="flex-1">
-                          <h3 className="text-xl sm:text-3xl font-black leading-tight">
-                            Extend+
-                            <br />
-                            Protection
-                          </h3>
-                        </div>
-                        <div className="text-right flex flex-col items-end z-10">
-                          <div className="bg-[#FF6B6B] text-[9px] sm:text-[11px] text-white font-bold px-2 py-0.5 rounded-md mb-1 shadow-sm inline-block">
-                            OFFER
-                          </div>
-                          <div className="flex flex-col items-end">
-                            <span className="text-lg sm:text-2xl text-white/50 line-through font-medium">
-                              ₹999
-                            </span>
-                            <div className="text-2xl sm:text-4xl font-black text-[#FFD700]">
-                              {pricesLoading ? (
-                                <Loader2 className="h-6 w-6 animate-spin" />
-                              ) : (
-                                `₹${getMobileExtendPrice()}`
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 2x2 Benefits Grid */}
-                    <div className="flex-grow p-4 sm:p-6">
-                      <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
-                        {/* Doorstep Device Auction */}
-                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                            <Gavel className="w-7 h-7 sm:w-10 sm:h-10 text-[#254696]" />
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                              Doorstep Device Auction
-                            </h4>
-                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              • Auction your device at the best market value
-                            </p>
-                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              • 100+ buyers compete to give you the best
-                              possible price in India
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Repair Service */}
-                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-full flex items-center justify-center">
-                            <Wrench className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 transform -rotate-45" />
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight md:mb-1">
-                              Accidental Damage Repair Service
-                            </h4>
-                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight mt-1 hidden sm:block">
-                              • Protection for your existing device
-                            </p>
-                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
-                              • Begins after brand warranty ends
-                            </p>
-                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
-                              • ₹0 service cost on repair
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Upgrade Offers */}
-                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-2xl flex items-center justify-center">
-                            <Gift className="w-7 h-7 sm:w-10 sm:h-10 text-[#3B82F6]" />
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                              Best Upgrade Offers
-                            </h4>
-                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              Exclusive deals for your next device purchase
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Extended Warranty */}
-                        <div className="bg-white p-2.5 sm:p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 border border-gray-50">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-[#EFF6FF] rounded-full flex items-center justify-center relative">
-                            <Percent className="w-6 h-6 sm:w-8 sm:h-8 text-[#3B82F6] z-10" />
-                            <div className="absolute inset-0 border-[3px] border-dashed border-[#3B82F6]/30 rounded-full animate-[spin_10s_linear_infinite]" />
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-[13px] sm:text-base text-[#1F2937] leading-tight">
-                              20% Off on 1-Year Extended Warranty
-                            </h4>
-                            <p className="text-[10px] sm:text-xs text-gray-500 leading-tight mt-1">
-                              Save 20% on protection of your next device
-                              purchase
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 flex flex-col items-center gap-3">
-                        <button
-                          onClick={scrollToForm}
-                          className="w-full bg-xtra-primary text-white font-bold py-3.5 sm:py-4 rounded-xl text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
-                          style={{ backgroundColor: "var(--xtra-primary)" }}
-                          data-testid="button-explore-mobile-extend"
-                        >
-                          Explore Plans
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Mobile Bundle Card removed */}
-              </>
-            )}
-          </div>
         </div>
-      </section>
-      {/* How the plan works Section */}
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+      <PricingSection/>
+      {/* How It Works Section */}
       <section
-        className="w-full cursor-pointer transition-opacity hover:opacity-95"
+        className="w-full cursor-pointer transition-opacity hover:opacity-95 relative bg-[#090929]"
         onClick={scrollToForm}
       >
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:48px_48px] pointer-events-none" />
+        <h2
+          className="text-center font-black text-white z-10 py-10"
+          style={{ fontSize: "clamp(22px, 4vw, 56px)" }}
+        >
+          How It Works
+        </h2>
+
         <picture>
           <source media="(max-width: 639px)" srcSet={howPlanWorksMsiteImg} />
           <img
@@ -1250,6 +1018,69 @@ export default function Home() {
             className="w-full h-auto block"
           />
         </picture>
+
+        {/* CTA Button */}
+        <style>{`
+          .home-gradient-btn {
+            font-size: 17px;
+            padding: 1em 1.7em;
+            font-weight: bold;
+            background: white;
+            color: black;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.6em;
+            cursor: pointer;
+            font-family: inherit;
+            transition: color 0.3s ease;
+          }
+          .home-gradient-btn:hover { color: black; }
+          .home-gradient-btn:active { transform: scale(0.97); }
+          .home-gradient-btn .home-ripple {
+            transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+            transition-duration: 500ms;
+            transition-property: width, height;
+            background-color: #f6d30e;
+            border-radius: 9999px;
+            width: 0;
+            height: 0;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            display: block;
+          }
+          .home-gradient-btn:hover .home-ripple {
+            width: 14em;
+            height: 14em;
+          }
+          .home-gradient-btn .home-gradient-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            border-radius: 0.6em;
+            margin-top: -0.25em;
+            display: block;
+          }
+          .home-gradient-btn .home-label {
+            position: relative;
+            top: -1px;
+          }
+        `}</style>
+        <div className="flex justify-center py-8 sm:py-10 bg-[#090929]">
+          <button
+            type="button"
+            className="home-gradient-btn"
+            onClick={(e) => { e.stopPropagation(); scrollToForm(); }}
+          >
+            <span className="home-ripple" />
+            <span className="home-gradient-layer" />
+            <span className="home-label">START SAVING NOW</span>
+          </button>
+        </div>
       </section>
       {/* FAQ Section */}
       <section className="py-4 sm:py-6 lg:py-8 bg-white">
@@ -1453,34 +1284,218 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* Referral Program Section: Single Distinct Images */}
-      <section className="py-8 sm:py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="w-full">
-            {/* Mobile Image */}
-            <div className="block md:hidden">
-              <Link href="/referral-partner-registration">
-                <img
-                  src={buybackGuaranteeImgBelow}
-                  alt="Referral Program Mobile"
-                  className="w-full h-auto rounded-xl shadow-lg cursor-pointer transition-transform hover:scale-[1.01]"
-                />
-              </Link>
+
+<section className="py-8 sm:py-12 bg-white">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    {/* Mobile Image — 100% UNTOUCHED */}
+    <div className="block md:hidden">
+      <Link href="/referral-partner-registration">
+        <img
+          src={buybackGuaranteeImgBelow}
+          alt="Referral Program Mobile"
+          className="w-full h-auto rounded-xl shadow-lg cursor-pointer transition-transform hover:scale-[1.01]"
+        />
+      </Link>
+    </div>
+
+    {/* Desktop HTML Banner — outer wrapper 100% UNTOUCHED */}
+    <Link href="/referral-partner-registration">
+      <div
+        className="hidden md:flex items-center justify-between rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-[1.005] shadow-xl px-12 lg:px-20"
+        style={{
+          backgroundImage: `url(${bannerImg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          height: "468px",
+        }}
+      >
+        {/* Left content — headline + commission pills + CTA */}
+        <div className="py-10 flex-shrink-0 max-w-xs lg:max-w-sm">
+
+          {/* Headline — UNTOUCHED */}
+          <h2
+            className="text-white font-black leading-tight mb-5"
+            style={{ fontSize: "clamp(28px, 3.2vw, 52px)" }}
+          >
+            Join Referral<br />Program Now
+          </h2>
+
+          {/* ── Commission pills — replaces the two <p> lines ── */}
+          <div style={{ display: "flex", gap: 10, marginBottom: 24, flexWrap: "wrap" }}>
+
+            {/* Mobile pill */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.16)",
+                borderRadius: 14,
+                padding: "10px 14px",
+                backdropFilter: "blur(8px)",
+                transition: "background 0.2s, transform 0.2s",
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.14)";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              {/* Mobile icon chip */}
+              <div
+                style={{
+                  width: 34, height: 34, borderRadius: 10, flexShrink: 0,
+                  background: "rgba(255,255,255,0.1)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}
+              >
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"
+                  stroke="rgba(255,255,255,0.9)" strokeWidth="2" strokeLinecap="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2" />
+                  <line x1="12" y1="18" x2="12" y2="18" strokeWidth="2.5" />
+                </svg>
+              </div>
+
+              {/* Text */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(255,255,255,0.45)" }}>
+                  Commission
+                </span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.9)", lineHeight: 1.2 }}>
+                  Mobile Plan
+                </span>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "#FFD700", opacity: 0.8 }}>₹</span>
+                  <span style={{ fontSize: 20, fontWeight: 900, color: "#FFD700", lineHeight: 1, letterSpacing: "-0.5px" }}>100</span>
+                </div>
+                <span style={{ fontSize: 9.5, fontWeight: 500, color: "rgba(255,255,255,0.35)" }}>per referral</span>
+              </div>
             </div>
 
-            {/* Desktop Image */}
-            <div className="hidden md:block">
-              <Link href="/referral-partner-registration">
-                <img
-                  src={bannerImg}
-                  alt="Referral Program Desktop"
-                  className="w-full h-auto rounded-xl shadow-lg cursor-pointer transition-transform hover:scale-[1.01]"
-                />
-              </Link>
+            {/* Laptop pill */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.16)",
+                borderRadius: 14,
+                padding: "10px 14px",
+                backdropFilter: "blur(8px)",
+                transition: "background 0.2s, transform 0.2s",
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.14)";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              {/* Laptop icon chip */}
+              <div
+                style={{
+                  width: 34, height: 34, borderRadius: 10, flexShrink: 0,
+                  background: "rgba(255,215,0,0.12)",
+                  border: "1px solid rgba(255,215,0,0.3)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}
+              >
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"
+                  stroke="rgba(255,215,0,0.9)" strokeWidth="2" strokeLinecap="round">
+                  <rect x="2" y="4" width="20" height="14" rx="2" />
+                  <path d="M0 20h24" />
+                </svg>
+              </div>
+
+              {/* Text */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(255,255,255,0.45)" }}>
+                  Commission
+                </span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.9)", lineHeight: 1.2 }}>
+                  Laptop Plan
+                </span>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "#FFD700", opacity: 0.8 }}>₹</span>
+                  <span style={{ fontSize: 20, fontWeight: 900, color: "#FFD700", lineHeight: 1, letterSpacing: "-0.5px" }}>175</span>
+                </div>
+                <span style={{ fontSize: 9.5, fontWeight: 500, color: "rgba(255,255,255,0.35)" }}>per referral</span>
+              </div>
             </div>
+
           </div>
+
+          {/* CTA Button */}
+          <button
+            type="button"
+            style={{
+              cursor: "pointer",
+              fontWeight: 700,
+              transition: "transform 0.2s",
+              padding: "11px 20px",
+              borderRadius: 100,
+              background: "rgb(255 217 27)",
+              border: "1px solid transparent",
+              display: "flex",
+              alignItems: "center",
+              fontSize: 15,
+              color: "black",
+              fontFamily: "inherit",
+            }}
+            onMouseEnter={e => {
+              const svg = e.currentTarget.querySelector<SVGSVGElement>("svg");
+              if (svg) svg.style.transform = "translateX(5px)";
+            }}
+            onMouseLeave={e => {
+              const svg = e.currentTarget.querySelector<SVGSVGElement>("svg");
+              if (svg) svg.style.transform = "translateX(0)";
+            }}
+            onMouseDown={e => { e.currentTarget.style.transform = "scale(0.95)"; }}
+            onMouseUp={e => { e.currentTarget.style.transform = "scale(1)"; }}
+          >
+            Start Earning Today
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 74 74"
+              style={{ width: 28, marginLeft: 10, transition: "transform 0.3s ease-in-out" }}
+            >
+              <circle strokeWidth="3" stroke="black" r="35.5" cy="37" cx="37" />
+              <path
+                fill="black"
+                d="M25 35.5C24.1716 35.5 23.5 36.1716 23.5 37C23.5 37.8284 24.1716 38.5 25 38.5V35.5ZM49.0607 38.0607C49.6464 37.4749 49.6464 36.5251 49.0607 35.9393L39.5147 26.3934C38.9289 25.8076 37.9792 25.8076 37.3934 26.3934C36.8076 26.9792 36.8076 27.9289 37.3934 28.5147L45.8787 37L37.3934 45.4853C36.8076 46.0711 36.8076 47.0208 37.3934 47.6066C37.9792 48.1924 38.9289 48.1924 39.5147 47.6066L49.0607 38.0607ZM25 38.5L48 38.5V35.5L25 35.5V38.5Z"
+              />
+            </svg>
+          </button>
+
         </div>
-      </section>
+      </div>
+    </Link>
+
+  </div>
+</section>
+      {bbgModal && (
+        <BBGModal
+          slabs={bbgModal.slabs}
+          onClose={() => setBbgModal(null)}
+          onExplore={scrollToForm}
+        />
+      )}
+      {showCompareModal && (
+        <BuybackCompareModal
+          onClose={() => setShowCompareModal(false)}
+          onExplore={scrollToForm}
+        />
+      )}
     </div>
   );
 }

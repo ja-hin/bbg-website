@@ -695,7 +695,7 @@ export default function Home() {
           {/* Left Content */}
           <div className="flex-1 pt-16 pb-8 sm:py-10 lg:pt-28 lg:pb-12 z-10">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-[#1e4fc2] text-white text-[11px] sm:text-xs font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-6 border border-white/20 hidden sm:block">
+            <div className="items-center gap-2 bg-[#1e4fc2] text-white text-[11px] sm:text-xs font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-6 border border-white/20 hidden sm:inline-flex">
               <Shield className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               BUY BACK GUARANTEE
             </div>
@@ -765,7 +765,7 @@ export default function Home() {
             </button>
 
             {/* Features row */}
-            <div className="banner-features flex flex-wrap items-center gap-3 sm:gap-0 hidden sm:block">
+            <div className="banner-features flex-wrap items-center gap-3 sm:gap-0 hidden sm:flex">
               <div className="flex items-center gap-2 sm:pr-6 sm:border-r sm:border-white/25">
                 <img src={bannerIcon1} alt="Guaranteed Resale Value" className="w-7 h-7 sm:w-10 sm:h-10 flex-shrink-0 object-contain" />
                 <span className="text-white text-[10px] sm:text-sm font-semibold leading-tight">

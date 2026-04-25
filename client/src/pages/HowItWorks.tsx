@@ -122,16 +122,14 @@ const CheckIcon = ({ color }) => (
 );
 
 const ArrowConnector = () => (
-  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", paddingTop: 60 }}>
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+  <div className="hiw-arrow-wrap" style={{ display: "flex", alignItems: "center", justifyContent: "center", paddingTop: 60 }}>
+    <div className="hiw-arrow-inner" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
       <div
-        style={{
-          width: 40,
-          height: 1.5,
-          background: "linear-gradient(90deg, #c7d2fe, #6366f1)",
-        }}
+        className="hiw-arrow-line"
+        style={{ width: 40, height: 1.5, background: "linear-gradient(90deg, #c7d2fe, #6366f1)" }}
       />
       <svg
+        className="hiw-arrow-svg"
         width="14"
         height="14"
         fill="none"
@@ -155,6 +153,7 @@ export default function HowItWorks() {
 
   return (
     <div
+      className="hiw-outer"
       style={{
         background: "#f8f9fc",
         padding: "64px 24px 72px",
@@ -184,8 +183,8 @@ export default function HowItWorks() {
           transition-property: width, height;
           background-color: #f6d30e;
           border-radius: 9999px;
-          width: 0;
-          height: 0;
+          width: 0em;
+          height: 0em;
           position: absolute;
           left: 50%;
           top: 50%;
@@ -210,11 +209,48 @@ export default function HowItWorks() {
           position: relative;
           top: -1px;
         }
+
+        /* ── Mobile responsive ── */
+        @media (max-width: 639px) {
+          .hiw-outer        { padding: 32px 14px 48px !important; }
+          .hiw-header       { margin-bottom: 28px !important; }
+          .hiw-h2           { font-size: 24px !important; letter-spacing: -0.3px !important; }
+          .hiw-subtext      { font-size: 14px !important; }
+
+          /* Cards stack to single column */
+          .hiw-cards-grid {
+            grid-template-columns: 1fr !important;
+            margin-bottom: 24px !important;
+          }
+
+          /* Arrow: rotate horizontal → vertical (pointing down) */
+          .hiw-arrow-wrap {
+            flex-direction: column !important;
+            padding-top: 0 !important;
+            padding: 6px 0 !important;
+            height: 40px !important;
+          }
+          .hiw-arrow-inner  { flex-direction: column !important; align-items: center !important; }
+          .hiw-arrow-line   { width: 1.5px !important; height: 28px !important; background: linear-gradient(180deg, #c7d2fe, #6366f1) !important; }
+          .hiw-arrow-svg    { transform: rotate(90deg) !important; margin-left: 0 !important; margin-top: -8px !important; }
+
+          /* Bottom CTA bar: single column */
+          .hiw-cta-bar {
+            grid-template-columns: 1fr !important;
+            padding: 22px 18px !important;
+            gap: 18px !important;
+          }
+          .hiw-cta-title    { font-size: 17px !important; }
+          .hiw-cta-sub      { font-size: 13px !important; margin-bottom: 14px !important; }
+          .hiw-cta-btns     { min-width: unset !important; flex-direction: row !important; flex-wrap: wrap !important; }
+          .hiw-gradient-btn { font-size: 14px !important; padding: 0.75em 1.8em !important; }
+          .hiw-view-plans   { font-size: 12px !important; padding: 8px 20px !important; }
+        }
       `}</style>
       <div style={{ maxWidth: 900, margin: "0 auto" }}>
 
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 56 }}>
+        <div className="hiw-header" style={{ textAlign: "center", marginBottom: 56 }}>
           <div
             style={{
               display: "inline-flex",
@@ -238,6 +274,7 @@ export default function HowItWorks() {
             How it works
           </div>
           <h2
+            className="hiw-h2"
             style={{
               fontSize: 40,
               fontWeight: 700,
@@ -252,6 +289,7 @@ export default function HowItWorks() {
             <span style={{ color: "#2563eb" }}>three simple steps</span>
           </h2>
           <p
+            className="hiw-subtext"
             style={{
               fontSize: 16,
               color: "#64748b",
@@ -267,6 +305,7 @@ export default function HowItWorks() {
 
         {/* Step Cards */}
         <div
+          className="hiw-cards-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 48px 1fr 48px 1fr",
@@ -403,6 +442,7 @@ export default function HowItWorks() {
 
         {/* Bottom CTA Bar */}
         <div
+          className="hiw-cta-bar"
           style={{
             background: "#fff",
             border: "1px solid #e2e8f0",
@@ -416,6 +456,7 @@ export default function HowItWorks() {
         >
           <div>
             <div
+              className="hiw-cta-title"
               style={{
                 fontSize: 20,
                 fontWeight: 700,
@@ -426,6 +467,7 @@ export default function HowItWorks() {
               Ready to protect your device?
             </div>
             <div
+              className="hiw-cta-sub"
               style={{ fontSize: 14, color: "#64748b", marginBottom: 20, lineHeight: 1.6 }}
             >
               Join 10,000+ customers who've already saved on repairs and replacements.
@@ -500,13 +542,14 @@ export default function HowItWorks() {
             </div>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, minWidth: 180 }}>
+          <div className="hiw-cta-btns" style={{ display: "flex", flexDirection: "column", gap: 10, minWidth: 180 }}>
             <button type="button" className="hiw-gradient-btn">
               <span className="hiw-ripple" />
               <span className="hiw-gradient-layer" />
               <span className="hiw-label">Start saving now</span>
             </button>
             <button
+              className="hiw-view-plans"
               style={{
                 background: "transparent",
                 color: "#475569",

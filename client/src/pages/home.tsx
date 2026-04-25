@@ -58,13 +58,13 @@ import pricingCardBackground from "@assets/(inclusive of GST) (4)_1759147213189.
 import planWorksBackgroundImg from "@assets/Untitled design (15) (1)_1764254452404.webp";
 import learnMoreBtn from "@assets/Untitled design (1) (1)_1764258271086.webp";
 import bannerImg from "@assets/prtner-banner-2300x800.png";
-import buybackGuaranteeImgBelow from "@assets/Referral_mobile.webp";
+import buybackGuaranteeImgBelow from "../../../attached_assets/partner.jpeg";
 import topBannerDesktop from "@assets/Banner-BG.png";
-import topBannerMobile from "@assets/holimobile.webp";
+import topBannerMobile from "@assets/Banner-BG1.png";
 import heroBelowSectionImg from "@assets/hero-below-section.webp";
 import heroBelowSectionMsiteImg from "@assets/hero-below-section-msite.webp";
 import howPlanWorksImg from "../../../attached_assets/1234556.png";
-import howPlanWorksMsiteImg from "@assets/how-plan-works-msite.webp";
+import howPlanWorksMsiteImg from "../../../attached_assets/verti.png";
 import bannerIcon1 from "@assets/icon1.png";
 import bannerIcon2 from "@assets/icon2.png";
 import bannerIcon3 from "@assets/icon3.png";
@@ -649,7 +649,14 @@ export default function Home() {
           .top-banner-section {
             background-image: url(${topBannerMobile}) !important;
             min-height: auto !important;
+            background-position: top center !important;
           }
+          .banner-h1       { font-size: 17px !important; line-height: 1.2 !important; }
+          .banner-subtext  { font-size: 10px !important; }
+          .banner-with     { font-size: 15px !important; }
+          .unlock-lock-btn { font-size: 13px !important; padding: 10px 18px !important; }
+          .banner-features { gap: 10px !important; }
+          .banner-feat-label { font-size: 10px !important; }
         }
         .unlock-lock-btn .lock-icon-wrap {
           position: relative;
@@ -686,33 +693,33 @@ export default function Home() {
       >
         <div className="max-w-[1400px] mx-auto px-5 sm:px-10 lg:px-16 flex items-center relative" style={{ minHeight: "inherit" }}>
           {/* Left Content */}
-          <div className="flex-1 py-8 sm:py-10 lg:pt-28 lg:pb-12 z-10">
+          <div className="flex-1 pt-16 pb-8 sm:py-10 lg:pt-28 lg:pb-12 z-10">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-[#1e4fc2] text-white text-[11px] sm:text-xs font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-6 border border-white/20">
+            <div className="inline-flex items-center gap-2 bg-[#1e4fc2] text-white text-[11px] sm:text-xs font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-6 border border-white/20 hidden sm:block">
               <Shield className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               BUY BACK GUARANTEE
             </div>
 
             {/* Heading */}
             <h1
-              className="text-white font-black leading-[1.15] mb-2 sm:mb-4"
-              style={{ fontSize: "48px" }}
+              className="banner-h1 text-white font-black leading-[1.15] mb-3 sm:mb-4"
+              style={{ fontSize: "clamp(26px, 4vw, 48px)" }}
             >
-              Your Device loses 30% value<br className="hidden sm:block" /> the day you unbox it
+              Your Device loses 30% value<br/> the day you unbox it
             </h1>
 
             {/* Subtext */}
             <p
-              className="text-white/75 mb-3 sm:mb-5 max-w-md leading-relaxed"
-              style={{ fontSize: "clamp(13px, 2vw, 1.5rem)" }}
+              className="banner-subtext text-white/75 mb-3 sm:mb-5 max-w-md leading-relaxed"
+              style={{ fontSize: "clamp(13px, 1.8vw, 1.25rem)" }}
             >
-              Get guaranteed resale value upto 70% of your Purchase Price.
+              Get guaranteed resale value upto<br class="block sm:hidden"/> 70% of your Purchase Price.
             </p>
 
             {/* "With BuyBack Guarantee" line */}
             <p
-              className="font-bold leading-tight mb-3 sm:mb-5"
-              style={{ fontSize: "clamp(16px, 2.5vw, 2rem)", color: "rgba(255,255,255,0.92)" }}
+              className="banner-with font-bold leading-tight mb-4 sm:mb-5"
+              style={{ fontSize: "clamp(15px, 2vw, 1.75rem)", color: "rgba(255,255,255,0.92)" }}
             >
               With{" "}
               <span
@@ -735,8 +742,8 @@ export default function Home() {
               style={{
                 background: "#145eda",
                 color: "white",
-                fontSize: "20px",
-                padding: "19px 30px",
+                fontSize: "clamp(13px, 1.5vw, 18px)",
+                padding: "clamp(10px, 1.2vw, 16px) clamp(18px, 2vw, 28px)",
                 letterSpacing: "0.02em",
               }}
             >
@@ -758,7 +765,7 @@ export default function Home() {
             </button>
 
             {/* Features row */}
-            <div className="flex flex-wrap items-center gap-3 sm:gap-0">
+            <div className="banner-features flex flex-wrap items-center gap-3 sm:gap-0 hidden sm:block">
               <div className="flex items-center gap-2 sm:pr-6 sm:border-r sm:border-white/25">
                 <img src={bannerIcon1} alt="Guaranteed Resale Value" className="w-7 h-7 sm:w-10 sm:h-10 flex-shrink-0 object-contain" />
                 <span className="text-white text-[10px] sm:text-sm font-semibold leading-tight">
@@ -1041,8 +1048,8 @@ export default function Home() {
       >
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:48px_48px] pointer-events-none" />
         <h2
-          className="text-center font-black text-white z-10 py-10"
-          style={{ fontSize: "clamp(22px, 4vw, 56px)" }}
+          className="text-center font-black text-white z-10 pt-6 pb-4 sm:pt-10 sm:pb-8 px-4"
+          style={{ fontSize: "clamp(30px, 5vw, 56px)" }}
         >
           How It Works
         </h2>
@@ -1325,14 +1332,78 @@ export default function Home() {
 <section className="py-8 sm:py-12 bg-white">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    {/* Mobile Image — 100% UNTOUCHED */}
+    {/* Mobile Referral Banner */}
     <div className="block md:hidden">
       <Link href="/referral-partner-registration">
-        <img
-          src={buybackGuaranteeImgBelow}
-          alt="Referral Program Mobile"
-          className="w-full h-auto rounded-xl shadow-lg cursor-pointer transition-transform hover:scale-[1.01]"
-        />
+        <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", cursor: "pointer" }}>
+          {/* Full image at natural height */}
+          <img
+            src={buybackGuaranteeImgBelow}
+            alt="Referral Program"
+            style={{ width: "100%", height: "auto", display: "block" }}
+          />
+
+          {/* Dark gradient overlay so text is readable */}
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.35) 55%, transparent 100%)" }} />
+
+          {/* Content pinned to bottom */}
+          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "start", padding: "25px 18px 22px" }}>
+
+            {/* Headline */}
+            <h2 style={{ color: "#fff", fontWeight: 900, fontSize: 24, lineHeight: 1.2, marginBottom: 25 }}>
+              Join Referral<br />Program Now
+            </h2>
+
+            {/* Commission pills — side by side */}
+            <div style={{ display: "flex", gap: 8, marginBottom: 25 }}>
+              {/* Mobile pill */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 12, padding: "8px 12px", backdropFilter: "blur(8px)", flex: 1 }}>
+                <div style={{ width: 30, height: 30, borderRadius: 8, flexShrink: 0, background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.9)" strokeWidth="2" strokeLinecap="round">
+                    <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18" strokeWidth="2.5"/>
+                  </svg>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  <span style={{ fontSize: 9, fontWeight: 600, textTransform: "uppercase", color: "rgba(255,255,255,0.5)", letterSpacing: "0.06em" }}>Mobile</span>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: "#FFD700" }}>₹</span>
+                    <span style={{ fontSize: 20, fontWeight: 900, color: "#FFD700", lineHeight: 1 }}>100</span>
+                  </div>
+                  <span style={{ fontSize: 8.5, color: "rgba(255,255,255,0.4)" }}>per referral</span>
+                </div>
+              </div>
+
+              {/* Laptop pill */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(255,215,0,0.1)", border: "1px solid rgba(255,215,0,0.3)", borderRadius: 12, padding: "8px 12px", backdropFilter: "blur(8px)", flex: 1 }}>
+                <div style={{ width: 30, height: 30, borderRadius: 8, flexShrink: 0, background: "rgba(255,215,0,0.1)", border: "1px solid rgba(255,215,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="rgba(255,215,0,0.9)" strokeWidth="2" strokeLinecap="round">
+                    <rect x="2" y="4" width="20" height="14" rx="2"/><path d="M0 20h24"/>
+                  </svg>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  <span style={{ fontSize: 9, fontWeight: 600, textTransform: "uppercase", color: "rgba(255,255,255,0.5)", letterSpacing: "0.06em" }}>Laptop</span>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: "#FFD700" }}>₹</span>
+                    <span style={{ fontSize: 20, fontWeight: 900, color: "#FFD700", lineHeight: 1 }}>175</span>
+                  </div>
+                  <span style={{ fontSize: 8.5, color: "rgba(255,255,255,0.4)" }}>per referral</span>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA button */}
+            <button
+              type="button"
+              style={{ fontWeight: 700, fontSize: 14, padding: "10px 20px", borderRadius: 100, background: "rgb(255,217,27)", border: "none", display: "inline-flex", alignItems: "center", gap: 8, color: "black", fontFamily: "inherit", cursor: "pointer", alignSelf: "flex-start" }}
+            >
+              Start Earning Today
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 74 74" style={{ width: 22 }}>
+                <circle strokeWidth="3" stroke="black" r="35.5" cy="37" cx="37"/>
+                <path fill="black" d="M25 35.5C24.1716 35.5 23.5 36.1716 23.5 37C23.5 37.8284 24.1716 38.5 25 38.5V35.5ZM49.0607 38.0607C49.6464 37.4749 49.6464 36.5251 49.0607 35.9393L39.5147 26.3934C38.9289 25.8076 37.9792 25.8076 37.3934 26.3934C36.8076 26.9792 36.8076 27.9289 37.3934 28.5147L45.8787 37L37.3934 45.4853C36.8076 46.0711 36.8076 47.0208 37.3934 47.6066C37.9792 48.1924 38.9289 48.1924 39.5147 47.6066L49.0607 38.0607ZM25 38.5L48 38.5V35.5L25 35.5V38.5Z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
       </Link>
     </div>
 

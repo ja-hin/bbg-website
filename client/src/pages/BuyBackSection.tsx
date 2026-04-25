@@ -4,7 +4,7 @@ import IMG2 from "../../../attached_assets/222.png"
 
 
 export default function BuyBackSection({setShowCompareModal}) {
-  const [hovered, setHovered] = useState(null); // "bad" | "good" | null
+  const [hovered, setHovered] = useState<string | null>(null);
 
   const s = {
     section: {
@@ -30,7 +30,7 @@ export default function BuyBackSection({setShowCompareModal}) {
     eDot: { width: 9, height: 9, borderRadius: "50%", background: "#FFD700", boxShadow: "0 0 8px #FFD700" },
     eText: { fontSize: 13, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: "#FFD700" },
     headline: {
-      fontSize: "clamp(32px,5vw,58px)", fontWeight: 900, color: "#fff", lineHeight: 1.1,
+      fontSize: "clamp(22px,5vw,58px)", fontWeight: 900, color: "#fff", lineHeight: 1.15,
       letterSpacing: "-.8px", margin: "0 0 16px",
       textShadow: "0 0 40px rgba(255,215,0,.25), 0 2px 20px rgba(0,0,0,.4)",
     },
@@ -39,16 +39,16 @@ export default function BuyBackSection({setShowCompareModal}) {
     examplePill: {
       display: "inline-flex", alignItems: "center", gap: 8,
       background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.18)",
-      borderRadius: 12, padding: "8px 18px", fontSize: 13, color: "white",
+      borderRadius: 12, padding: "8px 18px", fontSize: 13, color: "white",width:"87%",
     },
-    compare: { display: "grid", gridTemplateColumns: "1fr 56px 1fr", alignItems: "stretch", marginBottom: 20 },
-    card: (isHovered) => ({
-      borderRadius: 24, overflow: "hidden", position: "relative",
+    compare: { display: "grid", gridTemplateColumns: "1fr 56px 1fr", alignItems: "stretch", marginBottom: 20, gap:'10px' },
+    card: (isHovered: boolean) => ({
+      borderRadius: 24, overflow: "hidden" as const, position: "relative" as const,
       minHeight: 420, border: "1.5px solid rgba(255,255,255,.18)",
       transform: isHovered ? "translateY(-6px)" : "translateY(0)",
       boxShadow: isHovered ? "0 24px 60px rgba(0,0,0,.3)" : "none",
       transition: "transform .3s ease,box-shadow .3s ease",
-      cursor: "pointer",
+      cursor: "pointer" as const,
     }),
     cardBg: (src, isHovered) => ({
       position: "absolute", inset: 0,
@@ -65,12 +65,12 @@ export default function BuyBackSection({setShowCompareModal}) {
     accentBad: { height: 4, position: "relative", zIndex: 3, flexShrink: 0, background: "#ef4444" },
     accentGood: { height: 4, position: "relative", zIndex: 3, flexShrink: 0, background: "#22c55e" },
     content: { position: "relative", zIndex: 2, display: "flex", flexDirection: "column", flex: 1, height: "100%" },
-    top: { padding: "16px 20px 0", display: "flex", alignItems: "start", justifyContent: "space-between" },
-    label: { display: "flex",flexDirection: "column", alignItems: "start", gap: 8, fontSize: 30, fontWeight: 700, color: "#fff", textShadow: "0 1px 6px rgba(0,0,0,.7)" },
+    top: { padding: "16px 20px 0", display: "flex", alignItems: "start", justifyContent: "space-between",flexDirection: "column", gap:"10px" },
+    label: { display: "flex",flexDirection: "row", alignItems: "start",justifyContent: "space-between",width:"100%", gap: 8, fontSize: 30, fontWeight: 700, color: "#fff", textShadow: "0 1px 6px rgba(0,0,0,.7)" },
     dotRed: { width: 8, height: 8, borderRadius: "50%", background: "#ef4444", boxShadow: "0 0 8px rgba(239,68,68,.8)", flexShrink: 0, marginTop: 8, },
     dotGreen: { width: 8, height: 8, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 8px rgba(34,197,94,.8)", flexShrink: 0, marginTop: 8, },
-    fle: { width: "36%", display: "flex", flexDirection: "column", alignItems: 'end', gap: '60px'},
-    badge: { fontSize: 15, fontWeight: 700, padding: "4px 11px", borderRadius: 999, background: "rgba(0,0,0,.35)", color: "#fff", border: "1px solid rgba(255,255,255,.25)", backdropFilter: "blur(6px)", letterSpacing: "0.04em", display:'flex', gap:5, width:"79%" },
+    fle: { width: "100%", display: "flex", flexDirection: "row", alignItems: 'start', gap: '60px'},
+    badge: { fontSize: 15, fontWeight: 700, padding: "4px 11px", borderRadius: 999, background: "rgba(0,0,0,.35)", color: "#fff", border: "1px solid rgba(255,255,255,.25)", backdropFilter: "blur(6px)", letterSpacing: "0.04em", display:'flex', gap:5 },
     spacer: { flex: 1 },
     bottom: { padding: "18px 20px 22px" },
     bigNum: { fontSize: 26, fontWeight: 900, letterSpacing: "-.4px", color: "#fff", display: "flex", alignItems: "center", gap: 8, marginBottom: 6, textShadow: "0 2px 10px rgba(0,0,0,.6)" },
@@ -103,7 +103,7 @@ export default function BuyBackSection({setShowCompareModal}) {
   };
 
   return (
-    <section style={s.section}>
+    <section style={s.section} className="bbg-section">
       <style>{`
         /* Spinning gradient border wrapper */
         .bbg-btn-outer {
@@ -176,56 +176,104 @@ export default function BuyBackSection({setShowCompareModal}) {
           transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .bbg-cta-btn:hover .bbg-arrow { transform: translateX(9px); }
+
+        /* ── Mobile responsive ── */
+        @media (max-width: 639px) {
+          .bbg-section { padding: 28px 14px 48px !important; }
+
+          /* Stack cards vertically */
+          .bbg-compare-grid { grid-template-columns: 1fr !important; }
+
+
+          /* VS divider → horizontal */
+          .bbg-vs-col {
+            flex-direction: row !important;
+            height: 40px !important;
+            padding: 0 12px !important;
+          }
+          .bbg-vs-line-el {
+            flex: 1 !important;
+            width: auto !important;
+            height: 1px !important;
+          }
+
+          /* Card text */
+          .bbg-label { font-size: 17px !important; }
+          .bbg-bignum { font-size: 14px !important; }
+
+          /* Tighten pill gap — was 60px */
+          .bbg-fle { gap: 10px !important; }
+
+          .bbg-example-pill {
+            font-size: 11px !important;
+            padding: 5px 10px !important;
+            width: auto !important;
+          }
+
+          /* Header */
+          .bbg-head { margin-bottom: 22px !important; }
+          .bbg-headline { font-size: 22px !important; letter-spacing: -0.3px !important; }
+          .bbg-br { display: none; }
+          .bbg-subline { font-size: 14px !important; }
+
+          /* CTA button */
+          .bbg-cta-btn {
+            font-size: 14px !important;
+            padding: 13px 28px !important;
+          }
+        }
       `}</style>
       <div style={s.gridBg} />
       <div style={s.inner}>
 
-        <div style={s.head}>
+        <div style={s.head} className="bbg-head">
           <div style={s.eyebrow}>
             <div style={s.eDot} />
             <span style={s.eText}>BuyBack Guarantee</span>
           </div>
-          <h2 style={s.headline}>
-            Lock in up to <span style={s.em}>70%</span> of your<br />device&apos;s resale value
+          <h2 style={s.headline} className="bbg-headline">
+            Lock in up to <span style={s.em}>70%</span> of your<br className="bbg-br" />device&apos;s resale value
           </h2>
-          <p style={s.subline}>Upgrade anytime without worrying about market price drops.</p>
+          <p style={s.subline} className="bbg-subline">Upgrade anytime without worrying about market price drops.</p>
           {/* <div style={s.examplePill}>
             <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,.7)" strokeWidth="2" strokeLinecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
             <b style={{color:"#fff"}}>Example:</b>&nbsp;iPhone 17 — purchased at ₹82,900
           </div> */}
         </div>
 
-        <div style={s.compare}>
+        <div style={s.compare} className="bbg-compare-grid">
 
           {/* WITHOUT */}
-          <div style={s.card(hovered === "bad")} onMouseEnter={()=>setHovered("bad")} onMouseLeave={()=>setHovered(null)}>
+          <div className="bbg-card" style={s.card(hovered === "bad")} onMouseEnter={()=>setHovered("bad")} onMouseLeave={()=>setHovered(null)}>
             <div style={s.cardBg(IMG1, hovered === "bad")} />
             <div style={s.overlay} />
             <div style={s.content}>
-              <div style={s.top}>
-                <div style={s.label}>
+              <div style={s.top} className="bbg-card-top">
+                <div style={s.label} className="bbg-label">
                   <span><b>Without</b> <br/> BuyBack Guarantee</span>
-                  <span style={s.examplePill}>iPhone 17 — purchased at ₹82,900</span>
+                  <div style={s.badge}><div style={s.dotRed} /><span> Market risk </span></div>
+
                 </div>
-                <div style={s.fle}>
-                <div style={s.badge}><div style={s.dotRed} /><span> Market risk </span></div>
-                <div style={s.bigNum}>
+                <div style={s.fle} className="bbg-fle">
+                <span style={s.examplePill} className="bbg-example-pill">iPhone 17 — purchased at ₹82,900</span>
+
+                <div style={s.bigNum} className="bbg-bignum">
                   Resale Value ₹45,000
                 </div></div>
               </div>
               <div style={s.spacer} />
               <div style={s.bottom}>
-                
+
                 <div style={s.barTrack}><div style={s.barBad} /></div>
               </div>
             </div>
           </div>
 
           {/* VS */}
-          <div style={s.vsCol}>
-            <div style={s.vsLine} />
+          <div style={s.vsCol} className="bbg-vs-col">
+            <div style={s.vsLine} className="bbg-vs-line-el" />
             <div style={s.vsCircle}>VS</div>
-            <div style={s.vsLine} />
+            <div style={s.vsLine} className="bbg-vs-line-el" />
           </div>
 
           {/* WITH */}
@@ -233,22 +281,24 @@ export default function BuyBackSection({setShowCompareModal}) {
             <div style={s.cardBg(IMG2, hovered === "good")} />
             <div style={s.overlay} />
             <div style={s.content}>
-              <div style={s.top}>
-                <div style={s.label}>
+              <div style={s.top} className="bbg-card-top">
+                <div style={s.label} className="bbg-label">
                   <span><b>With</b><br/> BuyBack Guarantee</span>
-                  <span style={s.examplePill}>iPhone 17 — purchased at ₹82,900</span>
+                                  <div style={s.badge}><div style={s.dotGreen} /><span> Guaranteed </span></div>
+
 
                 </div>
                 {/* <div style={s.badge}><div style={s.dotGreen} /><span> Guaranteed </span></div> */}
-                <div style={s.fle}>
-                <div style={s.badge}><div style={s.dotGreen} /><span> Guaranteed </span></div>
-                <div style={s.bigNum}>
+                <div style={s.fle} className="bbg-fle">
+                                    <span style={s.examplePill} className="bbg-example-pill">iPhone 17 — purchased at ₹82,900</span>
+
+                <div style={s.bigNum} className="bbg-bignum">
                   Resale Value ₹58,000
                 </div></div>
               </div>
               <div style={s.spacer} />
               <div style={s.bottom}>
-                <div style={s.bigNum}>
+                <div style={s.bigNum} className="bbg-bignum">
                   <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
                   Net Benefit: +₹13,000
                 </div>

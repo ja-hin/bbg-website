@@ -242,7 +242,7 @@ function PlanCard({
       }}
     >
       {/* Card Header */}
-      <div style={{
+      <div className="ps-card-header" style={{
         padding: "26px 26px 22px",
         background: "linear-gradient(140deg, #486bcc 0%, #273f74 50%, #0d235f 100%)",
         position: "relative",
@@ -271,7 +271,7 @@ function PlanCard({
             <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: "rgba(255,255,255,.4)", marginBottom: 7 }}>
               Protection Plan
             </div>
-            <div style={{ fontFamily: "'Poppins',sans-serif", fontSize: "40px", fontWeight: 900, color: "#fff", lineHeight: 1.2 }}>
+            <div className="ps-plan-name" style={{ fontFamily: "'Poppins',sans-serif", fontSize: "40px", fontWeight: 900, color: "#fff", lineHeight: 1.2 }}>
               {nameLines.map((line: string, i: number) => (
                 <span key={i}>{line}{i < nameLines.length - 1 && <br />}</span>
               ))}
@@ -280,14 +280,14 @@ function PlanCard({
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2 }}>
             <span style={{ background: "#ef4444", color: "#fff", fontSize: 10, fontWeight: 800, padding: "3px 9px", borderRadius: 999, letterSpacing: ".06em", marginBottom: 4 }}>OFFER</span>
             <span style={{ fontSize: 15, color: "rgba(255,255,255,.35)", textDecoration: "line-through", fontWeight: 500 }}>{plan.orig}</span>
-            <span style={{ fontSize: 38, fontWeight: 900, color: "#FFD700", lineHeight: 1, letterSpacing: -1 }}>{plan.price}</span>
+            <span className="ps-plan-price" style={{ fontSize: 38, fontWeight: 900, color: "#FFD700", lineHeight: 1, letterSpacing: -1 }}>{plan.price}</span>
           </div>
         </div>
       </div>
 
       {/* Card Body */}
-      <div style={{ padding: "18px 18px 20px", background: "#f8fafd", flex: 1, display: "flex", flexDirection: "column", gap: 14 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+      <div className="ps-card-body" style={{ padding: "18px 18px 20px", background: "#f8fafd", flex: 1, display: "flex", flexDirection: "column", gap: 14 }}>
+        <div className="ps-benefits-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {plan.benefits.map((b: any, i: number) => <BenefitTile key={i} benefit={b} />)}
         </div>
 
@@ -511,6 +511,7 @@ function BBGModal({
 
 // ─── Main Export ──────────────────────────────────────────────────────────────
 export default function PricingSection({ onExplorePlans }: { onExplorePlans?: () => void }) {
+  // mobile responsive styles injected via style tag below
   const [view, setView] = useState<"mobile" | "laptop">("mobile");
   const [bbgModal, setBbgModal] = useState<{ deviceType: string; slabs: any[] } | null>(null);
 
@@ -542,9 +543,22 @@ export default function PricingSection({ onExplorePlans }: { onExplorePlans?: ()
       )}
 
       <div style={{ fontFamily: "'Inter',sans-serif", background: "#eef2f8" }}>
+        <style>{`
+          @media (max-width: 639px) {
+            .ps-header        { padding: 20px 14px 16px !important; }
+            .ps-cards-section { padding: 20px 10px 32px !important; }
+            .ps-cards-grid    { grid-template-columns: 1fr !important; gap: 16px !important; }
+            .ps-plan-name     { font-size: 30px !important; }
+            .ps-plan-price    { font-size: 28px !important; }
+            .ps-card-header   { padding: 18px 16px 16px !important; min-height: auto !important; }
+            .ps-card-body     { padding: 14px 12px 16px !important; }
+            .ps-benefits-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+            .ps-toggle-btn    { padding: 8px 14px !important; font-size: 12px !important; }
+          }
+        `}</style>
 
         {/* Section Header */}
-        <div style={{ background: "#fff", padding: "28px 32px 20px", borderBottom: "1px solid #f1f5f9" }}>
+        <div className="ps-header" style={{ background: "#fff", padding: "28px 32px 20px", borderBottom: "1px solid #f1f5f9" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, marginBottom: 20 }}>
             <div style={{ flex: 1, maxWidth: 160, height: 2, background: "#303e58", opacity: 0.2, borderRadius: 999 }} />
             <h2 style={{ fontFamily: "'Poppins',sans-serif", fontSize: "clamp(20px,3.5vw,34px)", fontWeight: 900, color: "#303e58", letterSpacing: "-.5px", margin: 0 }}>
@@ -566,9 +580,10 @@ export default function PricingSection({ onExplorePlans }: { onExplorePlans?: ()
                     key={key}
                     type="button"
                     onClick={() => setView(key)}
+                    className="ps-toggle-btn"
                     style={{
                       display: "flex", alignItems: "center", gap: 7,
-                      padding: "10px 24px", borderRadius: 999, border: "none",
+                      padding: "10px 22px", borderRadius: 999, border: "none",
                       fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
                       background: active ? "#254696" : "transparent",
                       color: active ? "#fff" : "#64748b",
@@ -586,8 +601,8 @@ export default function PricingSection({ onExplorePlans }: { onExplorePlans?: ()
         </div>
 
         {/* Cards Section */}
-        <div style={{
-          padding: "40px 32px 52px",
+        <div className="ps-cards-section" style={{
+          padding: "40px 12px 52px",
           background: "linear-gradient(145deg,#e8f0fb 0%,#edf3ff 40%,#ede8ff 100%)",
           position: "relative",
           overflow: "hidden",
@@ -595,9 +610,9 @@ export default function PricingSection({ onExplorePlans }: { onExplorePlans?: ()
           <div style={{ position: "absolute", top: -100, right: -100, width: 400, height: 400, borderRadius: "50%", background: "rgba(37,70,150,.05)", pointerEvents: "none" }} />
           <div style={{ position: "absolute", bottom: -80, left: -60, width: 320, height: 320, borderRadius: "50%", background: "rgba(99,102,241,.04)", pointerEvents: "none" }} />
 
-          <div style={{
+          <div className="ps-cards-grid" style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(340px,1fr))",
+            gridTemplateColumns: "repeat(auto-fit,minmax(min(340px,100%),1fr))",
             gap: 28,
             maxWidth: 1100,
             margin: "0 auto",

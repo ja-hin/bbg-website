@@ -217,7 +217,7 @@ const BuybackCompareModal = ({
               <button
                 key={type}
                 type="button"
-                onClick={() => { setDeviceType(type); setPrice(type === "mobile" ? "30000" : "80000"); }}
+                onClick={() => { setDeviceType(type); setPrice(type === "mobile" ? "82900" : "80000"); }}
                 className="flex items-center gap-1.5 px-5 py-1.5 rounded-full text-xs font-bold transition-all duration-200"
                 style={{
                   background: deviceType === type ? "#ffffff" : "transparent",

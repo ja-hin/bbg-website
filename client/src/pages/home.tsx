@@ -180,7 +180,7 @@ const BuybackCompareModal = ({
 
   const bbgPct    = 70;
   const marketPct = deviceType === "mobile" ? 35 : 25;
-  const placeholder = deviceType === "mobile" ? "e.g. 30000" : "e.g. 80000";
+  const placeholder = deviceType === "mobile" ? "e.g. 82900" : "e.g. 80000";
 
   const priceNum = parseFloat(price.replace(/,/g, ""));
   const valid = !isNaN(priceNum) && priceNum > 0;

@@ -199,15 +199,15 @@ export default function BuyBackSection({setShowCompareModal}) {
 
           /* Card text */
           .bbg-label { font-size: 17px !important; }
-          .bbg-bignum { font-size: 14px !important; }
+          .bbg-bignum { font-size: 20px !important; }
 
           /* Tighten pill gap — was 60px */
-          .bbg-fle { gap: 10px !important; }
+          .bbg-fle { gap: 18px !important; }
 
           .bbg-example-pill {
             font-size: 11px !important;
             padding: 5px 10px !important;
-            width: auto !important;
+            width: 88% !important;
           }
 
           /* Header */

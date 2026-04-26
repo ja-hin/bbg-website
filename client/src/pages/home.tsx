@@ -176,7 +176,7 @@ const BuybackCompareModal = ({
   onExplore: () => void;
 }) => {
   const [deviceType, setDeviceType] = useState<"mobile" | "laptop">("mobile");
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState("82900");
 
   const bbgPct    = 70;
   const marketPct = deviceType === "mobile" ? 35 : 25;
@@ -217,7 +217,7 @@ const BuybackCompareModal = ({
               <button
                 key={type}
                 type="button"
-                onClick={() => { setDeviceType(type); setPrice(""); }}
+                onClick={() => { setDeviceType(type); setPrice(type === "mobile" ? "30000" : "80000"); }}
                 className="flex items-center gap-1.5 px-5 py-1.5 rounded-full text-xs font-bold transition-all duration-200"
                 style={{
                   background: deviceType === type ? "#ffffff" : "transparent",
@@ -270,9 +270,8 @@ const BuybackCompareModal = ({
                     <path d="M2.5 7.5l5-5M7.5 7.5l-5-5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round"/>
                   </svg>
                 </div>
-                <span className="text-xs font-bold text-red-500 uppercase tracking-wide">Without BBG</span>
+                <span className="text-xs font-bold text-red-500 uppercase tracking-wide">Without <br/>BuyBack Guarantee</span>
               </div>
-              <p className="text-[10px] text-gray-400 leading-tight">Typical open market resale</p>
               <div className="mt-1">
                 <p className="text-[10px] text-gray-400">You get back ~{marketPct}%</p>
                 <p className="text-2xl font-black text-red-500 mt-0.5">
@@ -292,11 +291,10 @@ const BuybackCompareModal = ({
                     <path d="M2 5l2.5 2.5L8 3" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
-                <span className="text-xs font-bold text-[#254696] uppercase tracking-wide">With BBG</span>
+                <span className="text-xs font-bold text-[#254696] uppercase tracking-wide">With <br/>BuyBack Guarantee</span>
               </div>
-              <p className="text-[10px] text-gray-400 leading-tight">Guaranteed by BuyBack plan</p>
               <div className="mt-1">
-                <p className="text-[10px] text-gray-400">You get back up to {bbgPct}%</p>
+                <p className="text-[10px] text-gray-400">You get back ~{bbgPct}%</p>
                 <p className="text-2xl font-black text-[#254696] mt-0.5">
                   {withBBG !== null ? fmt(withBBG) : "—"}
                 </p>
@@ -309,15 +307,17 @@ const BuybackCompareModal = ({
 
           {/* You save banner */}
           {youSave !== null && (
-            <div className="rounded-2xl bg-green-50 border-2 border-green-200 px-5 py-4 flex items-center justify-between">
+            <div className="rounded-2xl bg-green-50 border-2 border-green-200 px-5 py-4 flex items-center justify-center">
               <div>
                 <p className="text-xs font-semibold text-green-600 uppercase tracking-wide">You save extra</p>
                 <p className="text-2xl font-black text-green-600 mt-0.5">{fmt(youSave)}</p>
+                <p className="text-xs text-gray-400">vs open market</p>
+
               </div>
-              <div className="text-right">
+              {/* <div className="text-right">
                 <p className="text-xs text-gray-400">vs open market</p>
                 <p className="text-sm font-bold text-green-500 mt-0.5">+{Math.round((youSave / (withoutBBG ?? 1)) * 100)}% more</p>
-              </div>
+              </div> */}
             </div>
           )}
 

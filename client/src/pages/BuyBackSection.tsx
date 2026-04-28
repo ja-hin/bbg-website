@@ -323,10 +323,10 @@ export default function BuyBackSection({setShowCompareModal}) {
               </svg>
             </button>
           </div>
-          <div style={s.ctaNote}>
+          {/* <div style={s.ctaNote}>
             <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,.4)" strokeWidth="2" strokeLinecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Enjoy additional benefits worth ₹2,000
-          </div>
+          </div> */}
         </div>
 
       </div>

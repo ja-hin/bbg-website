@@ -39,7 +39,7 @@ export default function BuyBackSection({setShowCompareModal}) {
     examplePill: {
       display: "inline-flex", alignItems: "center", gap: 8,
       background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.18)",
-      borderRadius: 12, padding: "8px 18px", fontSize: 13, color: "white",width:"87%",
+      borderRadius: 12, padding: "8px 18px", fontSize: 13, color: "white",width:"54%",
     },
     compare: { display: "grid", gridTemplateColumns: "1fr 56px 1fr", alignItems: "stretch", marginBottom: 20, gap:'10px' },
     card: (isHovered: boolean) => ({
@@ -56,6 +56,7 @@ export default function BuyBackSection({setShowCompareModal}) {
       backgroundSize: "cover", backgroundPosition: "center",
       transition: "transform .4s ease",
       transform: isHovered ? "scale(1.05)" : "scale(1)",
+      opacity:'0.7'
     }),
     overlay: {
       position: "absolute", inset: 0,
@@ -69,11 +70,11 @@ export default function BuyBackSection({setShowCompareModal}) {
     label: { display: "flex",flexDirection: "row", alignItems: "start",justifyContent: "space-between",width:"100%", gap: 8, fontSize: 30, fontWeight: 700, color: "#fff", textShadow: "0 1px 6px rgba(0,0,0,.7)" },
     dotRed: { width: 8, height: 8, borderRadius: "50%", background: "#ef4444", boxShadow: "0 0 8px rgba(239,68,68,.8)", flexShrink: 0, marginTop: 8, },
     dotGreen: { width: 8, height: 8, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 8px rgba(34,197,94,.8)", flexShrink: 0, marginTop: 8, },
-    fle: { width: "100%", display: "flex", flexDirection: "row", alignItems: 'start', gap: '60px'},
+    fle: { width: "100%", display: "flex", flexDirection: "row", alignItems: 'start', gap: '55px'},
     badge: { fontSize: 15, fontWeight: 700, padding: "4px 11px", borderRadius: 999, background: "rgba(0,0,0,.35)", color: "#fff", border: "1px solid rgba(255,255,255,.25)", backdropFilter: "blur(6px)", letterSpacing: "0.04em", display:'flex', gap:5 },
     spacer: { flex: 1 },
     bottom: { padding: "18px 20px 22px" },
-    bigNum: { fontSize: 26, fontWeight: 900, letterSpacing: "-.4px", color: "#fff", display: "flex", alignItems: "center", gap: 8, marginBottom: 6, textShadow: "0 2px 10px rgba(0,0,0,.6)" },
+    bigNum: { fontSize: 26, fontWeight: 900, letterSpacing: "-.4px", color: "#fff", display: "flex",flexDirection: "column", alignItems: "start", marginBottom: 6, textShadow: "0 2px 10px rgba(0,0,0,.6)" },
     subText: { fontSize: 12, color: "rgba(255,255,255,.75)", lineHeight: 1.65, textShadow: "0 1px 6px rgba(0,0,0,.6)" },
     barTrack: { height: 3, borderRadius: 999, background: "rgba(255,255,255,.2)", marginTop: 10, overflow: "hidden" },
     barBad: { height: "100%", width: "45%", background: "#ef4444", borderRadius: 999 },
@@ -200,20 +201,19 @@ export default function BuyBackSection({setShowCompareModal}) {
           /* Card text */
           .bbg-label { font-size: 17px !important; }
           .bbg-bignum { font-size: 20px !important; }
-
+          .bbg-mob{font-size:30px}
           /* Tighten pill gap — was 60px */
           .bbg-fle { gap: 18px !important; }
 
           .bbg-example-pill {
             font-size: 11px !important;
             padding: 5px 10px !important;
-            width: 88% !important;
+            width: 50% !important;
           }
 
           /* Header */
           .bbg-head { margin-bottom: 22px !important; }
           .bbg-headline { font-size: 22px !important; letter-spacing: -0.3px !important; }
-          .bbg-br { display: none; }
           .bbg-subline { font-size: 14px !important; }
 
           /* CTA button */
@@ -232,7 +232,7 @@ export default function BuyBackSection({setShowCompareModal}) {
             <span style={s.eText}>BuyBack Guarantee</span>
           </div>
           <h2 style={s.headline} className="bbg-headline">
-            Lock in up to <span style={s.em}>70%</span> of your<br className="bbg-br" />device&apos;s resale value
+            Lock in up to <span style={s.em}>70%</span> of your <br className="bbg-br"/>device&apos;s resale value
           </h2>
           <p style={s.subline} className="bbg-subline">Upgrade anytime without worrying about market price drops.</p>
           {/* <div style={s.examplePill}>
@@ -258,7 +258,7 @@ export default function BuyBackSection({setShowCompareModal}) {
                 <span style={s.examplePill} className="bbg-example-pill">iPhone 17 — purchased at ₹82,900</span>
 
                 <div style={s.bigNum} className="bbg-bignum">
-                  Resale Value ₹45,000
+                  Resale Value<span className="bbg-mob">₹45,000 </span>
                 </div></div>
               </div>
               <div style={s.spacer} />
@@ -293,7 +293,7 @@ export default function BuyBackSection({setShowCompareModal}) {
                                     <span style={s.examplePill} className="bbg-example-pill">iPhone 17 — purchased at ₹82,900</span>
 
                 <div style={s.bigNum} className="bbg-bignum">
-                  Resale Value ₹58,000
+                  Resale Value <span className="bbg-mob">₹58,000 </span>
                 </div></div>
               </div>
               <div style={s.spacer} />

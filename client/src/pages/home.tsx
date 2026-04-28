@@ -217,7 +217,7 @@ const BuybackCompareModal = ({
               <button
                 key={type}
                 type="button"
-                onClick={() => { setDeviceType(type); setPrice(type === "mobile" ? "82900" : "80000"); }}
+                onClick={(i) => { setDeviceType(type); setPrice(type === "mobile" ? "82900" : "80000"); }}
                 className="flex items-center gap-1.5 px-5 py-1.5 rounded-full text-xs font-bold transition-all duration-200"
                 style={{
                   background: deviceType === type ? "#ffffff" : "transparent",
@@ -651,9 +651,9 @@ export default function Home() {
             min-height: auto !important;
             background-position: top center !important;
           }
-          .banner-h1       { font-size: 17px !important; line-height: 1.2 !important; }
-          .banner-subtext  { font-size: 10px !important; }
-          .banner-with     { font-size: 15px !important; }
+          .banner-h1       { font-size: 21px !important; line-height: 1.2 !important; }
+          .banner-subtext  { font-size: 13px !important; }
+          .banner-with     { font-size: 17px !important; }
           .unlock-lock-btn { font-size: 13px !important; padding: 10px 18px !important; }
           .banner-features { gap: 10px !important; }
           .banner-feat-label { font-size: 10px !important; }
@@ -721,7 +721,7 @@ export default function Home() {
               className="banner-with font-bold leading-tight mb-4 sm:mb-5"
               style={{ fontSize: "clamp(15px, 2vw, 1.75rem)", color: "rgba(255,255,255,0.92)" }}
             >
-              With{" "}
+              With <br className="block sm:hidden"></br>
               <span
                 style={{
                   background: "linear-gradient(90deg, #2563eb, #8eadf1)",
@@ -761,7 +761,7 @@ export default function Home() {
                   <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none"/>
                 </svg>
               </span>
-              Unlock 70% Value
+              Lock Resale Value
             </button>
 
             {/* Features row */}
@@ -1344,14 +1344,14 @@ export default function Home() {
           />
 
           {/* Dark gradient overlay so text is readable */}
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.35) 55%, transparent 100%)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.05) 55%, transparent 100%)" }} />
 
           {/* Content pinned to bottom */}
-          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "start", padding: "25px 18px 22px" }}>
+          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "start", padding: "25px 18px 22px",alignItems:'center' }}>
 
             {/* Headline */}
-            <h2 style={{ color: "#fff", fontWeight: 900, fontSize: 24, lineHeight: 1.2, marginBottom: 25 }}>
-              Join Referral<br />Program Now
+            <h2 style={{ color: "#fff", fontWeight: 900, fontSize: 24, lineHeight: 1.2, marginBottom: 25,textAlign:'center' }}>
+              Join Referral Program Now
             </h2>
 
             {/* Commission pills — side by side */}
@@ -1394,7 +1394,7 @@ export default function Home() {
             {/* CTA button */}
             <button
               type="button"
-              style={{ fontWeight: 700, fontSize: 14, padding: "10px 20px", borderRadius: 100, background: "rgb(255,217,27)", border: "none", display: "inline-flex", alignItems: "center", gap: 8, color: "black", fontFamily: "inherit", cursor: "pointer", alignSelf: "flex-start" }}
+              style={{ fontWeight: 700, fontSize: 14, padding: "10px 20px", borderRadius: 100, background: "rgb(255,217,27)", border: "none", display: "inline-flex", alignItems: "center", gap: 8, color: "black", fontFamily: "inherit", cursor: "pointer", }}
             >
               Start Earning Today
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 74 74" style={{ width: 22 }}>

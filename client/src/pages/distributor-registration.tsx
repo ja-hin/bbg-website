@@ -44,9 +44,9 @@ import {
   Target,
   Link,
 } from "lucide-react";
-import reffPartnerHero from "@assets/reffpartner-hero.webp";
+import reffPartnerHero from "@assets/prtner-banner-2300x800.png";
 import reffPartnerHeroMsite from "@assets/reffpartner-hero-msite.webp";
-
+import buybackGuaranteeImgBelow from "../../../attached_assets/partner.jpeg";
 const distributorSchema = z.object({
   name: z.string().min(2, "Full name is required"),
   contact: z
@@ -249,181 +249,271 @@ export default function DistributorRegistration() {
   return (
     <div className="min-h-screen bg-white">
       {/* ── TOP BANNER ─────────────────────────────────────────────────── */}
-      <section 
-        className="w-full overflow-hidden cursor-pointer transition-opacity hover:opacity-95"
-        onClick={scrollToForm}
-      >
+      <section className="w-full overflow-hidden cursor-pointer relative" onClick={scrollToForm}>
         {/* Desktop Banner */}
-        <img
-          src={reffPartnerHero}
-          alt="Referral Partner Banner Desktop"
-          className="hidden md:block w-full h-auto object-cover"
-        />
+        <div className="hidden md:block relative">
+          <img src={reffPartnerHero} alt="Referral Partner Banner Desktop" className="w-full h-auto object-cover block" />
+          {/* Text overlay */}
+          <div className="absolute inset-0 flex items-center" style={{ padding: "0 5%" }}>
+            <div style={{ maxWidth: 500 }}>
+              <p className="text-white font-bold mb-1" style={{ fontSize: "clamp(16px, 2vw, 32px)", lineHeight: 1.2 }}>Refer &amp; Earn</p>
+              {/* Unlimited Earnings — green with text-stroke glow */}
+              <p className="font-black mb-4" style={{
+                fontSize: "clamp(28px, 4.2vw, 72px)",
+                lineHeight: 1,
+                color: "#4ade80",
+                textShadow: "0 0 30px rgba(74,222,128,0.45), 0 0 60px rgba(74,222,128,0.2)",
+                WebkitTextStroke: "0.5px rgba(74,222,128,0.6)",
+              }}>Unlimited<br />Earnings</p>
+              <p style={{ fontSize: "clamp(11px, 1.05vw, 16px)", lineHeight: 1.6, color: "rgba(255,255,255,0.65)", maxWidth: 360, marginBottom: 18 }}>
+                Every time someone buys through your code,<br />you get paid. Simple. Trackable. Guaranteed.
+              </p>
+              <p className="font-black text-white mb-5" style={{ fontSize: "clamp(13px, 1.25vw, 19px)", lineHeight: 1.6 }}>
+                Earn up to{" "}
+                <span style={{ color: "#FFD91B", textShadow: "0 0 12px rgba(255,217,27,0.5)" }}>₹175</span>
+                {" "}per sale<br />No limits. No cap.
+              </p>
+              {/* Yellow CTA button — same as home.tsx referral section */}
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); scrollToForm(); }}
+                style={{
+                  cursor: "pointer", fontWeight: 700,
+                  padding: "11px 22px", borderRadius: 100,
+                  background: "rgb(255,217,27)", border: "none",
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  fontSize: "clamp(12px, 1.05vw, 15px)", color: "black",
+                  fontFamily: "inherit", transition: "transform 0.2s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.04)"; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+              >
+                Start Earning Today
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 74 74" style={{ width: 22 }}>
+                  <circle strokeWidth="3" stroke="black" r="35.5" cy="37" cx="37"/>
+                  <path fill="black" d="M25 35.5C24.1716 35.5 23.5 36.1716 23.5 37C23.5 37.8284 24.1716 38.5 25 38.5V35.5ZM49.0607 38.0607C49.6464 37.4749 49.6464 36.5251 49.0607 35.9393L39.5147 26.3934C38.9289 25.8076 37.9792 25.8076 37.3934 26.3934C36.8076 26.9792 36.8076 27.9289 37.3934 28.5147L45.8787 37L37.3934 45.4853C36.8076 46.0711 36.8076 47.0208 37.3934 47.6066C37.9792 48.1924 38.9289 48.1924 39.5147 47.6066L49.0607 38.0607ZM25 38.5L48 38.5V35.5L25 35.5V38.5Z"/>
+                </svg>
+              </button>
+              <p style={{ fontSize: "clamp(9px, 0.8vw, 12px)", color: "rgba(255,255,255,0.35)", marginTop: 10 }}>Zero investment. Instant activation.</p>
+            </div>
+          </div>
+        </div>
+
         {/* Mobile Banner */}
-        <img
-          src={reffPartnerHeroMsite}
-          alt="Referral Partner Banner Mobile"
-          className="block md:hidden w-full h-auto object-cover"
-        />
+        <div className="block md:hidden relative">
+          <img src={buybackGuaranteeImgBelow} alt="Referral Partner Banner Mobile" className="w-full h-[88vh] object-cover block" />
+          {/* Dark gradient so text stays readable over image */}
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(4,11,35,0.82) 0%, rgba(4,11,35,0.45) 55%, transparent 100%)" }} />
+          <div className="absolute inset-0 flex items-start" style={{ padding: "60px 20px 28px" }}>
+            <div style={{ width: "100%" }}>
+              <p style={{ fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>Refer &amp; Earn</p>
+              <p style={{ fontSize: 35, fontWeight: 900, lineHeight: 1.05, color: "#4ade80", textShadow: "0 0 20px rgba(74,222,128,0.4)", marginBottom: 18 }}>
+                Unlimited<br />Earnings
+              </p>
+              <p style={{ fontSize: "clamp(11px, 1.05vw, 16px)", lineHeight: 1.6, color: "rgba(255,255,255,0.65)", maxWidth: 360, marginBottom: 18 }}>
+                Every time someone buys through your code,<br />you get paid. Simple. Trackable. Guaranteed.
+              </p>
+              <p style={{ fontSize: 13, fontWeight: 700, color: "#fff", lineHeight: 1.5, marginBottom: 20 }}>
+                Earn up to <span style={{ color: "#FFD91B" }}>₹175</span> per sale · No limits. No cap.
+              </p>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); scrollToForm(); }}
+                style={{ background: "rgb(255,217,27)", padding: "10px 20px", fontSize: 13, border: "none", cursor: "pointer", borderRadius: 100, fontWeight: 700, color: "black", display: "inline-flex", alignItems: "center", gap: 7, fontFamily: "inherit" }}
+              >
+                Start Earning Today
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 74 74" style={{ width: 17 }}>
+                  <circle strokeWidth="3" stroke="black" r="35.5" cy="37" cx="37"/>
+                  <path fill="black" d="M25 35.5C24.1716 35.5 23.5 36.1716 23.5 37C23.5 37.8284 24.1716 38.5 25 38.5V35.5ZM49.0607 38.0607C49.6464 37.4749 49.6464 36.5251 49.0607 35.9393L39.5147 26.3934C38.9289 25.8076 37.9792 25.8076 37.3934 26.3934C36.8076 26.9792 36.8076 27.9289 37.3934 28.5147L45.8787 37L37.3934 45.4853C36.8076 46.0711 36.8076 47.0208 37.3934 47.6066C37.9792 48.1924 38.9289 48.1924 39.5147 47.6066L49.0607 38.0607ZM25 38.5L48 38.5V35.5L25 35.5V38.5Z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ── NET WORTH SECTION ────────────────────────────────────────────────── */}
-      <section className="py-16 px-4 bg-[#f8faff]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-5xl font-black text-center text-gray-900 mb-12 tracking-tight">
-            Turn Your Network Into{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#254696] to-[#4338ca]">
-              Net Worth.
-            </span>
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-            {/* Unlimited Earnings */}
-            <Card className="border-none shadow-sm hover:shadow-md transition-shadow text-center p-6 md:p-8 rounded-3xl bg-white">
-              <div className="flex justify-center mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-[#eff6ff] flex items-center justify-center">
-                  <Infinity className="w-7 h-7 text-[#254696]" />
-                </div>
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-[#1e293b]">
-                Unlimited Earnings
-              </h3>
-              <p className="text-gray-500 text-sm leading-relaxed max-w-[240px] mx-auto">
-                Flat ₹175 per laptop and ₹100 per mobile. No caps, no
-                limits—just higher payouts.
-              </p>
-            </Card>
+      <section className="py-16 md:py-24 px-4" style={{ background: "#0f1f4a" }}>
+        <div className="max-w-5xl mx-auto">
+          {/* Heading */}
+          <div className="text-center mb-12">
+            <p className="text-xs font-bold uppercase tracking-widest text-white/40 mb-3">Why Partner With Us</p>
+            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
+              Turn Your Network Into{" "}
+              <span style={{ color: "#7ba8ff" }}>Net Worth.</span>
+            </h2>
+            <p className="text-white/50 text-sm mt-4 max-w-md mx-auto leading-relaxed">
+              No selling, no cold calls. Just share, refer, and earn — on autopilot.
+            </p>
+          </div>
 
-            {/* Truly Passive */}
-            <Card className="border-none shadow-sm hover:shadow-md transition-shadow text-center p-6 md:p-8 rounded-3xl bg-white">
-              <div className="flex justify-center mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-[#eff6ff] flex items-center justify-center">
-                  <Zap className="w-7 h-7 text-[#254696]" />
-                </div>
+          {/* Cards */}
+          <div className="grid md:grid-cols-3 gap-5">
+            {/* Unlimited Earnings */}
+            <div
+              className="group"
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "28px 24px", transition: "all 0.2s", cursor: "default" }}
+              onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.09)")}
+              onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+            >
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(123,168,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
+                <Infinity style={{ width: 22, height: 22, color: "#7ba8ff" }} />
               </div>
-              <h3 className="text-xl font-bold mb-2 text-[#1e293b]">
-                Truly Passive
-              </h3>
-              <p className="text-gray-500 text-sm leading-relaxed max-w-[240px] mx-auto">
-                Shift from selling to sharing. We handle inventory and support
-                while you earn.
+              <div style={{ fontSize: 36, fontWeight: 900, color: "#fff", lineHeight: 1, marginBottom: 4 }}>₹175
+                <span style={{ fontSize: 14, fontWeight: 600, color: "#7ba8ff", marginLeft: 6 }}>/ laptop</span>
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>₹100 per mobile</div>
+              <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 14 }} />
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Unlimited Earnings</h3>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>
+                No caps, no limits. Every referral puts money in your pocket, permanently.
               </p>
-            </Card>
+            </div>
+
+            {/* Truly Passive — highlighted center card */}
+            <div
+              style={{ background: "#254696", border: "1px solid rgba(123,168,255,0.3)", borderRadius: 20, padding: "28px 24px", position: "relative", overflow: "hidden", transition: "all 0.2s", cursor: "default" }}
+              onMouseEnter={e => (e.currentTarget.style.background = "#2d55b0")}
+              onMouseLeave={e => (e.currentTarget.style.background = "#254696")}
+            >
+              <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20, position: "relative" }}>
+                <Zap style={{ width: 22, height: 22, color: "#fff" }} />
+              </div>
+              <div style={{ fontSize: 36, fontWeight: 900, color: "#fff", lineHeight: 1, marginBottom: 4 }}>100%
+                <span style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.6)", marginLeft: 6 }}>passive</span>
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 14 }}>zero inventory needed</div>
+              <div style={{ height: 1, background: "rgba(255,255,255,0.15)", marginBottom: 14 }} />
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Truly Passive Income</h3>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>
+                We handle everything — inventory, support, logistics. You just share.
+              </p>
+            </div>
 
             {/* Real-time Tracking */}
-            <Card className="border-none shadow-sm hover:shadow-md transition-shadow text-center p-6 md:p-8 rounded-3xl bg-white">
-              <div className="flex justify-center mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-[#eff6ff] flex items-center justify-center">
-                  <Target className="w-7 h-7 text-[#254696]" />
-                </div>
+            <div
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "28px 24px", transition: "all 0.2s", cursor: "default" }}
+              onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.09)")}
+              onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+            >
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(123,168,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
+                <Target style={{ width: 22, height: 22, color: "#7ba8ff" }} />
               </div>
-              <h3 className="text-xl font-bold mb-2 text-[#1e293b]">
-                Real Time
-              </h3>
-              <p className="text-gray-500 text-sm leading-relaxed max-w-[240px] mx-auto">
-                Track every referral live. Watch your commissions grow and
-                withdraw to your bank.
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#4ade80", boxShadow: "0 0 8px #4ade80" }} />
+                <span style={{ fontSize: 36, fontWeight: 900, color: "#fff", lineHeight: 1 }}>Live</span>
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>real-time dashboard</div>
+              <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 14 }} />
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Real-Time Tracking</h3>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>
+                Watch every referral and commission in real time. Withdraw instantly to your bank.
               </p>
-            </Card>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── STEPS SECTION ────────────────────────────────────────────────── */}
-      <section className="py-16 md:py-28 px-4 bg-[#254696] relative overflow-hidden">
-        {/* Decorative background elements */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-[100px] -mr-64 -mt-64" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px] -ml-64 -mb-64" />
+      <section className="py-12 md:py-12 px-4" style={{ background: "#f4f7ff" }}>
+        <style>{`
+          .step-card { background: #fff; border-radius: 20px; padding: 32px 28px; border: 1px solid #e8eef8; transition: box-shadow 0.2s, transform 0.2s; }
+          .step-card:hover { box-shadow: 0 12px 40px rgba(37,70,150,0.10); transform: translateY(-3px); }
+          .step-num { width: 52px; height: 52px; border-radius: 16px; background: #254696; color: #fff; font-size: 22px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+          .step-icon-wrap { width: 44px; height: 44px; border-radius: 12px; background: #eef3ff; display: flex; align-items: center; justify-content: center; }
+          @media (max-width: 767px) { .step-arrow { display: none !important; } }
+        `}</style>
 
-        {/* Subtle Grid Pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, white 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
-        />
+        <div className="max-w-5xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <span className="inline-block text-[11px] font-bold uppercase tracking-widest text-[#254696] bg-[#eef3ff] px-4 py-1.5 rounded-full mb-4">How It Works</span>
+            <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight leading-tight">
+              3 Steps to Your <span className="text-[#254696]">First Payout.</span>
+            </h2>
+            <p className="text-gray-400 text-sm mt-3 max-w-xs mx-auto leading-relaxed">
+              Sign up once, earn forever. No inventory, no hassle.
+            </p>
+          </div>
 
-        <div className="max-w-6xl mx-auto relative z-10">
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-center text-white mb-12 md:mb-24 leading-tight tracking-tight">
-            3 Steps to Your <span className="text-blue-200">First Payout.</span>
-          </h2>
-
-          <div className="relative grid md:grid-cols-3 gap-8 md:gap-12">
-            {/* Desktop Connecting Line */}
-            <div className="hidden md:block absolute top-1/2 left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-y-12" />
+          {/* Steps row */}
+          <div className="flex flex-col md:flex-row gap-5 md:gap-4 items-stretch">
 
             {/* Step 1 */}
-            <Card className="group relative z-10 border-none shadow-2xl p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] bg-white/5 backdrop-blur-xl border border-white/10 flex flex-col items-start md:items-center text-left md:text-center transition-all duration-500 hover:bg-white/[0.08] hover:border-white/20 hover:-translate-y-2">
-              <div className="flex flex-row md:flex-col items-center gap-5 md:gap-0">
-                <div className="w-12 h-12 md:w-20 md:h-20 bg-gradient-to-br from-white to-blue-50 text-[#254696] rounded-2xl md:rounded-[2rem] flex items-center justify-center text-xl md:text-4xl font-black md:mb-8 shadow-[0_0_30px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform duration-500">
-                  1
-                </div>
+            <div className="step-card flex-1">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="step-num">1</div>
                 <div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-4 text-white tracking-tight">
-                    Register in 60s
-                  </h3>
-                  <div className="flex md:hidden items-center gap-2 text-blue-200/80 text-xs font-semibold uppercase tracking-widest">
-                    <UserCheck className="w-3 h-3" /> Step One
-                  </div>
+                  <p className="text-[10px] font-bold text-[#254696]/50 uppercase tracking-widest">Step One</p>
+                  <p className="text-[11px] font-semibold text-gray-400">Takes ~60 seconds</p>
                 </div>
               </div>
-              <p className="mt-4 md:mt-0 text-blue-100/70 text-sm md:text-base leading-relaxed">
-                Quick onboarding with basic details. No complex documentation
-                needed to start.
-              </p>
-              <div className="hidden md:flex mt-8 items-center gap-2 text-blue-200/40 group-hover:text-blue-200/80 transition-colors">
-                <UserCheck className="w-5 h-5" />
+              <div className="flex flex-row items-center gap-3">
+              <div className="step-icon-wrap mb-4">
+                <UserCheck className="w-5 h-5 text-[#254696]" />
               </div>
-            </Card>
+              <h3 className="text-lg font-black text-gray-900 mb-4 tracking-tight">Register</h3>
+              </div>
+              <p className="text-sm text-gray-400 leading-relaxed">
+                Fill your basic details. No documents, no waiting. You're live the moment you submit.
+              </p>
+            </div>
 
-            {/* Step 2 */}
-            <Card className="group relative z-10 border-none shadow-2xl p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] bg-white/5 backdrop-blur-xl border border-white/10 flex flex-col items-start md:items-center text-left md:text-center transition-all duration-500 hover:bg-white/[0.08] hover:border-white/20 hover:-translate-y-2">
-              <div className="flex flex-row md:flex-col items-center gap-5 md:gap-0">
-                <div className="w-12 h-12 md:w-20 md:h-20 bg-gradient-to-br from-white to-blue-50 text-[#254696] rounded-2xl md:rounded-[2rem] flex items-center justify-center text-xl md:text-4xl font-black md:mb-8 shadow-[0_0_30px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform duration-500">
-                  2
-                </div>
+            {/* Arrow */}
+            <div className="step-arrow hidden md:flex items-center justify-center px-1 flex-shrink-0" style={{ paddingTop: 20 }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#254696" strokeOpacity="0.25" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </div>
+
+            {/* Step 2 — highlighted */}
+            <div className="flex-1 rounded-[20px] p-7 md:p-8" style={{ background: "#254696" }}>
+              <div className="flex items-center gap-3 mb-6">
+                <div style={{ width: 52, height: 52, borderRadius: 16, background: "rgba(255,255,255,0.15)", color: "#fff", fontSize: 22, fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>2</div>
                 <div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-4 text-white tracking-tight">
-                    Attach & Earn
-                  </h3>
-                  <div className="flex md:hidden items-center gap-2 text-blue-200/80 text-xs font-semibold uppercase tracking-widest">
-                    <Link className="w-3 h-3" /> Step Two
-                  </div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>Step Two</p>
+                  <p className="text-[11px] font-semibold" style={{ color: "rgba(255,255,255,0.5)" }}>Per device sold</p>
                 </div>
               </div>
-              <p className="mt-4 md:mt-0 text-blue-100/70 text-sm md:text-base leading-relaxed">
-                Link protection plans to every device purchase within your
-                customer network.
-              </p>
-              <div className="hidden md:flex mt-8 items-center gap-2 text-blue-200/40 group-hover:text-blue-200/80 transition-colors">
-                <Link className="w-5 h-5" />
+              <div className="flex flex-row items-center gap-3">
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,0.12)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+                <Link className="w-5 h-5 text-white" />
               </div>
-            </Card>
+              <h3 className="text-lg font-black text-white mb-2 tracking-tight">Attach & Earn</h3>
+              </div>
+              <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>
+                Every device your customer buys — attach a BBG plan. Flat ₹175 per laptop, ₹100 per mobile credited instantly.
+              </p>
+            </div>
+
+            {/* Arrow */}
+            <div className="step-arrow hidden md:flex items-center justify-center px-1 flex-shrink-0" style={{ paddingTop: 20 }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#254696" strokeOpacity="0.25" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </div>
 
             {/* Step 3 */}
-            <Card className="group relative z-10 border-none shadow-2xl p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] bg-white/5 backdrop-blur-xl border border-white/10 flex flex-col items-start md:items-center text-left md:text-center transition-all duration-500 hover:bg-white/[0.08] hover:border-white/20 hover:-translate-y-2">
-              <div className="flex flex-row md:flex-col items-center gap-5 md:gap-0">
-                <div className="w-12 h-12 md:w-20 md:h-20 bg-gradient-to-br from-white to-blue-50 text-[#254696] rounded-2xl md:rounded-[2rem] flex items-center justify-center text-xl md:text-4xl font-black md:mb-8 shadow-[0_0_30px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform duration-500">
-                  3
-                </div>
+            <div className="step-card flex-1">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="step-num">3</div>
                 <div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-4 text-white tracking-tight">
-                    Cash Out
-                  </h3>
-                  <div className="flex md:hidden items-center gap-2 text-blue-200/80 text-xs font-semibold uppercase tracking-widest">
-                    <Wallet className="w-3 h-3" /> Step Three
-                  </div>
+                  <p className="text-[10px] font-bold text-[#254696]/50 uppercase tracking-widest">Step Three</p>
+                  <p className="text-[11px] font-semibold text-gray-400">Monthly payouts</p>
                 </div>
               </div>
-              <p className="mt-4 md:mt-0 text-blue-100/70 text-sm md:text-base leading-relaxed">
-                Receive monthly payouts to your bank account with real-time
-                settlement tracking.
-              </p>
-              <div className="hidden md:flex mt-8 items-center gap-2 text-blue-200/40 group-hover:text-blue-200/80 transition-colors">
-                <Wallet className="w-5 h-5" />
+              <div className="flex flex-row items-center gap-3">
+              <div className="step-icon-wrap mb-4">
+                <Wallet className="w-5 h-5 text-[#254696]" />
               </div>
-            </Card>
+              <h3 className="text-lg font-black text-gray-900 mb-2 tracking-tight">Cash Out</h3>
+             </div> 
+              <p className="text-sm text-gray-400 leading-relaxed">
+                Watch your dashboard fill up. Withdraw directly to your bank account every month.
+              </p>
+            </div>
+
           </div>
         </div>
       </section>

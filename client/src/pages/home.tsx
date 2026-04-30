@@ -191,63 +191,52 @@ const BuybackCompareModal = ({
 
   const fmt = (n: number) => "₹" + n.toLocaleString("en-IN");
 
-  const extraPct = withBBG && withoutBBG ? Math.round(((withBBG - withoutBBG) / withoutBBG) * 100) : null;
-  const extraMult = withBBG && withoutBBG ? (withBBG / withoutBBG).toFixed(1) : null;
-
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3"
-      style={{ backgroundColor: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: "rgba(0,0,0,0.5)", backdropFilter: "blur(3px)" }}
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
+        className="bg-white w-full max-w-sm overflow-hidden"
+        style={{ borderRadius: 20, boxShadow: "0 20px 60px rgba(0,0,0,0.18)" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="relative px-6 pt-5 pb-5 text-white overflow-hidden" style={{ background: "linear-gradient(135deg, #1a3a7a 0%, #254696 60%, #2e5acd 100%)" }}>
-          {/* Decorative circles */}
-          <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
-          <div style={{ position: "absolute", bottom: -20, left: 60, width: 80, height: 80, borderRadius: "50%", background: "rgba(255,255,255,0.05)" }} />
-
-          <div className="relative flex items-start justify-between mb-4">
+        <div className="px-5 pt-5 pb-4" style={{ background: "#254696" }}>
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <div style={{ background: "rgba(255,255,255,0.2)", borderRadius: 8, padding: "3px 8px" }}>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-white/90">Calculator</span>
-                </div>
-              </div>
-              <h3 className="text-lg font-black leading-tight">With vs Without BuyBack</h3>
-              <p className="text-xs text-white/70 mt-0.5">See how much more you recover</p>
+              <p className="text-[10px] font-semibold text-white/50 uppercase tracking-widest mb-0.5">BuyBack Calculator</p>
+              <h3 className="text-base font-bold text-white leading-snug">With vs Without BuyBack</h3>
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-all duration-150 rounded-xl"
-              style={{ width: 32, height: 32, fontSize: 18, flexShrink: 0 }}
+              style={{ width: 28, height: 28, borderRadius: 8, background: "rgba(255,255,255,0.12)", border: "none", color: "#fff", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
             >×</button>
           </div>
-
           {/* Toggle */}
-          <div className="relative inline-flex bg-white/10 rounded-full p-1 border border-white/20">
+          <div style={{ display: "inline-flex", background: "rgba(255,255,255,0.1)", borderRadius: 99, padding: 3 }}>
             {(["mobile", "laptop"] as const).map((type) => (
               <button
                 key={type}
                 type="button"
                 onClick={() => { setDeviceType(type); setPrice(type === "mobile" ? "82900" : "80000"); }}
-                className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200"
                 style={{
-                  background: deviceType === type ? "#ffffff" : "transparent",
-                  color: deviceType === type ? "#254696" : "rgba(255,255,255,0.75)",
-                  boxShadow: deviceType === type ? "0 2px 10px rgba(0,0,0,0.2)" : "none",
+                  display: "flex", alignItems: "center", gap: 5,
+                  padding: "5px 14px", borderRadius: 99, border: "none", cursor: "pointer",
+                  fontSize: 11, fontWeight: 700,
+                  background: deviceType === type ? "#fff" : "transparent",
+                  color: deviceType === type ? "#254696" : "rgba(255,255,255,0.7)",
+                  transition: "all 0.18s",
                 }}
               >
                 {type === "mobile" ? (
-                  <svg viewBox="0 0 24 24" className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="5" y="2" width="14" height="20" rx="3"/><circle cx="12" cy="17.5" r="0.8" fill="currentColor" stroke="none"/>
                   </svg>
                 ) : (
-                  <svg viewBox="0 0 24 24" className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="2" y="4" width="20" height="13" rx="2"/><path d="M1 19h22"/>
                   </svg>
                 )}
@@ -257,115 +246,77 @@ const BuybackCompareModal = ({
           </div>
         </div>
 
-        <div className="px-5 pt-5 pb-5 space-y-4">
+        <div style={{ padding: "18px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
           {/* Price input */}
           <div>
-            <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+            <p style={{ fontSize: 10, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>
               {deviceType === "mobile" ? "Mobile" : "Laptop"} Purchase Price
-            </label>
-            <div className="flex items-center rounded-2xl overflow-hidden transition-all duration-200" style={{ border: "2px solid #e8edf8", background: "#f7f9ff" }}>
-              <span className="px-4 py-3.5 text-[#254696] font-black text-lg border-r border-[#e0e8f5]">₹</span>
+            </p>
+            <div style={{ display: "flex", alignItems: "center", border: "1.5px solid #e5e7eb", borderRadius: 10, overflow: "hidden", background: "#fafafa" }}>
+              <span style={{ padding: "10px 12px", fontSize: 15, fontWeight: 700, color: "#254696", borderRight: "1.5px solid #e5e7eb", background: "#f3f6ff" }}>₹</span>
               <input
                 type="number"
                 placeholder={placeholder}
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="flex-1 px-3 py-3.5 text-base font-bold outline-none bg-transparent text-gray-800"
-                style={{ minWidth: 0 }}
+                style={{ flex: 1, padding: "10px 12px", fontSize: 15, fontWeight: 600, border: "none", outline: "none", background: "transparent", color: "#111827" }}
               />
-              {valid && <span className="px-3 text-[11px] text-gray-400 font-medium">{deviceType === "mobile" ? "Mobile" : "Laptop"}</span>}
             </div>
           </div>
 
-          {/* Comparison bars — visual stacked layout */}
-          <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid #eef1f8" }}>
-            {/* Without BBG row */}
-            <div className="px-4 py-3.5 bg-red-50 border-b border-red-100">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                      <path d="M2.5 7.5l5-5M7.5 7.5l-5-5" stroke="#ef4444" strokeWidth="1.8" strokeLinecap="round"/>
-                    </svg>
-                  </div>
-                  <span className="text-xs font-bold text-gray-500">Without BuyBack</span>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs font-bold text-red-400 bg-red-100 px-2 py-0.5 rounded-full">~{marketPct}% back</span>
-                </div>
+          {/* Comparison rows */}
+          <div style={{ border: "1.5px solid #e5e7eb", borderRadius: 12, overflow: "hidden" }}>
+            {/* Without BBG */}
+            <div style={{ padding: "12px 14px", borderBottom: "1px solid #f3f4f6", background: "#fff" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: "#6b7280" }}>Without BuyBack</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af", background: "#f3f4f6", padding: "2px 8px", borderRadius: 99 }}>~{marketPct}% back</span>
               </div>
-              <div className="flex items-end justify-between">
-                <p className="text-2xl font-black text-red-500 leading-none">
-                  {withoutBBG !== null ? fmt(withoutBBG) : <span className="text-red-300">₹—</span>}
-                </p>
-              </div>
-              <div className="mt-2.5 w-full bg-red-100 rounded-full h-2.5">
-                <div className="bg-red-400 h-2.5 rounded-full transition-all duration-700 ease-out" style={{ width: valid ? `${marketPct}%` : "0%" }} />
+              <p style={{ fontSize: 22, fontWeight: 800, color: "#374151", lineHeight: 1, marginBottom: 8 }}>
+                {withoutBBG !== null ? fmt(withoutBBG) : <span style={{ color: "#d1d5db" }}>₹ —</span>}
+              </p>
+              <div style={{ height: 4, background: "#f3f4f6", borderRadius: 99 }}>
+                <div style={{ height: 4, background: "#9ca3af", borderRadius: 99, width: valid ? `${marketPct}%` : "0%", transition: "width 0.6s ease" }} />
               </div>
             </div>
 
-            {/* With BBG row */}
-            <div className="px-4 py-3.5 bg-[#f0f6ff]">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-[#254696]/15 flex items-center justify-center flex-shrink-0">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                      <path d="M2 5l2.5 2.5L8 3" stroke="#254696" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <span className="text-xs font-bold text-gray-600">With BuyBack Guarantee</span>
-                </div>
-                <span className="text-xs font-bold text-[#254696] bg-[#254696]/10 px-2 py-0.5 rounded-full">~{bbgPct}% back</span>
+            {/* With BBG */}
+            <div style={{ padding: "12px 14px", background: "#f8faff" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: "#254696" }}>With BuyBack Guarantee</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: "#254696", background: "#e8eeff", padding: "2px 8px", borderRadius: 99 }}>~{bbgPct}% back</span>
               </div>
-              <div className="flex items-end justify-between">
-                <p className="text-2xl font-black text-[#254696] leading-none">
-                  {withBBG !== null ? fmt(withBBG) : <span className="text-[#254696]/30">₹—</span>}
-                </p>
-                {extraPct !== null && (
-                  <span className="text-[10px] font-bold text-[#254696] bg-[#254696]/10 px-2 py-1 rounded-lg">{extraPct}% more</span>
-                )}
-              </div>
-              <div className="mt-2.5 w-full bg-[#254696]/10 rounded-full h-2.5">
-                <div className="bg-[#254696] h-2.5 rounded-full transition-all duration-700 ease-out" style={{ width: valid ? `${bbgPct}%` : "0%" }} />
+              <p style={{ fontSize: 22, fontWeight: 800, color: "#254696", lineHeight: 1, marginBottom: 8 }}>
+                {withBBG !== null ? fmt(withBBG) : <span style={{ color: "#c7d2ef" }}>₹ —</span>}
+              </p>
+              <div style={{ height: 4, background: "#dce6fb", borderRadius: 99 }}>
+                <div style={{ height: 4, background: "#254696", borderRadius: 99, width: valid ? `${bbgPct}%` : "0%", transition: "width 0.6s ease" }} />
               </div>
             </div>
           </div>
 
-          {/* You save banner */}
+          {/* You save */}
           {youSave !== null && (
-            <div
-              className="rounded-2xl px-4 py-3.5 flex items-center gap-4"
-              style={{ background: "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)", border: "1.5px solid #bbf7d0" }}
-            >
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)" }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", background: "#f0fdf4", border: "1.5px solid #bbf7d0", borderRadius: 12 }}>
+              <div>
+                <p style={{ fontSize: 10, fontWeight: 600, color: "#16a34a", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 2 }}>You recover extra</p>
+                <p style={{ fontSize: 20, fontWeight: 800, color: "#15803d", lineHeight: 1 }}>{fmt(youSave)}</p>
+                <p style={{ fontSize: 10, color: "#86efac", marginTop: 2 }}>vs open market resale</p>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
                 </svg>
               </div>
-              <div className="flex-1">
-                <p className="text-[10px] font-bold text-green-600 uppercase tracking-widest">You recover extra</p>
-                <p className="text-2xl font-black text-green-700 leading-tight">{fmt(youSave)}</p>
-                <p className="text-[11px] text-green-600/70">more than open market resale</p>
-              </div>
-              {extraMult !== null && (
-                <div className="text-center">
-                  <p className="text-2xl font-black text-green-600">{extraMult}x</p>
-                  <p className="text-[9px] font-bold text-green-500 uppercase tracking-wide">better</p>
-                </div>
-              )}
             </div>
           )}
 
           <button
             type="button"
             onClick={() => { onClose(); onExplore(); }}
-            className="w-full text-white font-bold py-3.5 rounded-2xl text-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
-            style={{ background: "linear-gradient(135deg, #1a3a7a 0%, #254696 100%)" }}
+            style={{ width: "100%", background: "#254696", color: "#fff", border: "none", borderRadius: 10, padding: "13px 0", fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: "0.02em" }}
           >
-            Get BuyBack Plan Now
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
+            Get BuyBack Plan Now →
           </button>
         </div>
       </div>

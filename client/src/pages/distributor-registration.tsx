@@ -47,6 +47,8 @@ import {
 import reffPartnerHero from "@assets/prtner-banner-2300x800.png";
 import reffPartnerHeroMsite from "@assets/reffpartner-hero-msite.webp";
 import buybackGuaranteeImgBelow from "../../../attached_assets/partner.jpeg";
+import laptop from "../../../attached_assets/laptop.png";
+
 const distributorSchema = z.object({
   name: z.string().min(2, "Full name is required"),
   contact: z
@@ -352,29 +354,144 @@ export default function DistributorRegistration() {
             {/* Unlimited Earnings */}
             <div
               className="group"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "28px 24px", transition: "all 0.2s", cursor: "default" }}
-              onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.09)")}
-              onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "28px 24px", transition: "all 0.25s ease", cursor: "default" }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+                e.currentTarget.style.transform = "scale(1.03) translateY(-4px)";
+                e.currentTarget.style.boxShadow = "0 16px 40px rgba(0,0,0,0.25)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.22)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                e.currentTarget.style.transform = "scale(1) translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+              }}
             >
               <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(123,168,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
                 <Infinity style={{ width: 22, height: 22, color: "#7ba8ff" }} />
               </div>
-              <div style={{ fontSize: 36, fontWeight: 900, color: "#fff", lineHeight: 1, marginBottom: 4 }}>₹175
-                <span style={{ fontSize: 14, fontWeight: 600, color: "#7ba8ff", marginLeft: 6 }}>/ laptop</span>
+              <div className="flex flex-row gap-3" style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>
+              <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.16)",
+                borderRadius: 14,
+                padding: "10px 14px",
+                backdropFilter: "blur(8px)",
+                transition: "background 0.2s, transform 0.2s",
+                width:'48%'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.14)";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              {/* Laptop icon chip */}
+              <div
+                style={{
+                  width: 34, height: 34, borderRadius: 10, flexShrink: 0,
+                  background: "rgba(255,215,0,0.12)",
+                  border: "1px solid rgba(255,215,0,0.3)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}
+              >
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"
+                  stroke="rgba(255,215,0,0.9)" strokeWidth="2" strokeLinecap="round">
+                  <rect x="2" y="4" width="20" height="14" rx="2" />
+                  <path d="M0 20h24" />
+                </svg>
               </div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>₹100 per mobile</div>
+
+              {/* Text */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "#FFD700", opacity: 0.8 }}>₹</span>
+                  <span style={{ fontSize: 20, fontWeight: 900, color: "#FFD700", lineHeight: 1, letterSpacing: "-0.5px" }}>100</span>
+                </div>
+                <span style={{ fontSize: 9.5, fontWeight: 500, color: "rgba(255,255,255,0.35)" }}>per mobile</span>
+              </div>
+            
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.16)",
+                borderRadius: 14,
+                padding: "10px 14px",
+                backdropFilter: "blur(8px)",
+                transition: "background 0.2s, transform 0.2s",
+                width:'48%'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.14)";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              {/* Laptop icon chip */}
+              <div
+                style={{
+                  width: 34, height: 34, borderRadius: 10, flexShrink: 0,
+                  background: "rgba(255,215,0,0.12)",
+                  border: "1px solid rgba(255,215,0,0.3)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}
+              >
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24"
+                  stroke="rgba(255,215,0,0.9)" strokeWidth="2" strokeLinecap="round">
+                  <rect x="2" y="4" width="20" height="14" rx="2" />
+                  <path d="M0 20h24" />
+                </svg>
+              </div>
+
+              {/* Text */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "#FFD700", opacity: 0.8 }}>₹</span>
+                  <span style={{ fontSize: 20, fontWeight: 900, color: "#FFD700", lineHeight: 1, letterSpacing: "-0.5px" }}>175</span>
+                </div>
+                <span style={{ fontSize: 9.5, fontWeight: 500, color: "rgba(255,255,255,0.35)" }}>per laptop</span>
+              </div>
+            
+            </div>
+            </div>
+              {/* <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>₹100 per mobile</div> */}
               <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 14 }} />
               <h3 style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Unlimited Earnings</h3>
               <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>
-                No caps, no limits. Every referral puts money in your pocket, permanently.
+               Flat ₹175 per laptop and ₹100 per mobile. No caps, no limits—just higher payouts.
               </p>
             </div>
 
             {/* Truly Passive — highlighted center card */}
             <div
-              style={{ background: "#254696", border: "1px solid rgba(123,168,255,0.3)", borderRadius: 20, padding: "28px 24px", position: "relative", overflow: "hidden", transition: "all 0.2s", cursor: "default" }}
-              onMouseEnter={e => (e.currentTarget.style.background = "#2d55b0")}
-              onMouseLeave={e => (e.currentTarget.style.background = "#254696")}
+              style={{ background: "#254696", border: "1px solid rgba(123,168,255,0.3)", borderRadius: 20, padding: "28px 24px", position: "relative", overflow: "hidden", transition: "all 0.25s ease", cursor: "default" }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = "#1a3580";
+                e.currentTarget.style.transform = "scale(1.03) translateY(-4px)";
+                e.currentTarget.style.boxShadow = "0 16px 40px rgba(0,0,0,0.35)";
+                e.currentTarget.style.borderColor = "rgba(123,168,255,0.55)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "#254696";
+                e.currentTarget.style.transform = "scale(1) translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.borderColor = "rgba(123,168,255,0.3)";
+              }}
             >
               <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
               <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20, position: "relative" }}>
@@ -383,19 +500,29 @@ export default function DistributorRegistration() {
               <div style={{ fontSize: 36, fontWeight: 900, color: "#fff", lineHeight: 1, marginBottom: 4 }}>100%
                 <span style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.6)", marginLeft: 6 }}>passive</span>
               </div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 14 }}>zero inventory needed</div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 14 }}>zero investment needed</div>
               <div style={{ height: 1, background: "rgba(255,255,255,0.15)", marginBottom: 14 }} />
               <h3 style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Truly Passive Income</h3>
               <p style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>
-                We handle everything — inventory, support, logistics. You just share.
+                Shift from selling to sharing. We handle inventory and support while you earn.
               </p>
             </div>
 
             {/* Real-time Tracking */}
             <div
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "28px 24px", transition: "all 0.2s", cursor: "default" }}
-              onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.09)")}
-              onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "28px 24px", transition: "all 0.25s ease", cursor: "default" }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+                e.currentTarget.style.transform = "scale(1.03) translateY(-4px)";
+                e.currentTarget.style.boxShadow = "0 16px 40px rgba(0,0,0,0.25)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.22)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                e.currentTarget.style.transform = "scale(1) translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+              }}
             >
               <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(123,168,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
                 <Target style={{ width: 22, height: 22, color: "#7ba8ff" }} />
@@ -408,7 +535,7 @@ export default function DistributorRegistration() {
               <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 14 }} />
               <h3 style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Real-Time Tracking</h3>
               <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>
-                Watch every referral and commission in real time. Withdraw instantly to your bank.
+                Track every referral live. Watch your commissions grow and withdraw to your bank.
               </p>
             </div>
           </div>
@@ -442,12 +569,8 @@ export default function DistributorRegistration() {
 
             {/* Step 1 */}
             <div className="step-card flex-1">
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center justify-center gap-3 mb-6">
                 <div className="step-num">1</div>
-                <div>
-                  <p className="text-[10px] font-bold text-[#254696]/50 uppercase tracking-widest">Step One</p>
-                  <p className="text-[11px] font-semibold text-gray-400">Takes ~60 seconds</p>
-                </div>
               </div>
               <div className="flex flex-row items-center gap-3">
               <div className="step-icon-wrap mb-4">
@@ -469,12 +592,8 @@ export default function DistributorRegistration() {
 
             {/* Step 2 — highlighted */}
             <div className="flex-1 rounded-[20px] p-7 md:p-8" style={{ background: "#254696" }}>
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center justify-center gap-3 mb-6">
                 <div style={{ width: 52, height: 52, borderRadius: 16, background: "rgba(255,255,255,0.15)", color: "#fff", fontSize: 22, fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>2</div>
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>Step Two</p>
-                  <p className="text-[11px] font-semibold" style={{ color: "rgba(255,255,255,0.5)" }}>Per device sold</p>
-                </div>
               </div>
               <div className="flex flex-row items-center gap-3">
               <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,0.12)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
@@ -496,12 +615,8 @@ export default function DistributorRegistration() {
 
             {/* Step 3 */}
             <div className="step-card flex-1">
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center justify-center gap-3 mb-6">
                 <div className="step-num">3</div>
-                <div>
-                  <p className="text-[10px] font-bold text-[#254696]/50 uppercase tracking-widest">Step Three</p>
-                  <p className="text-[11px] font-semibold text-gray-400">Monthly payouts</p>
-                </div>
               </div>
               <div className="flex flex-row items-center gap-3">
               <div className="step-icon-wrap mb-4">
@@ -517,7 +632,7 @@ export default function DistributorRegistration() {
           </div>
         </div>
       </section>
-
+        
       {/* ── DASHBOARD PREVIEW SECTION ────────────────────────────────────────────── */}
       <section className="py-10 md:py-16 px-4 bg-white relative">
         <div className="max-w-4xl mx-auto">
@@ -530,187 +645,68 @@ export default function DistributorRegistration() {
               place.
             </p>
           </div>
-
-          <Card className="border border-gray-100 shadow-lg rounded-2xl overflow-hidden">
-            {/* Dashboard Header */}
-            <div className="bg-[#eef2ff] px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-[#254696] rounded flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-white" />
-                </div>
-                <span className="font-bold text-base text-[#1e293b]">
-                  Partner Dashboard
-                </span>
-              </div>
-              <div className="flex gap-2">
-                <Badge
-                  variant="secondary"
-                  className="bg-[#ecfdf5] text-[#059669] border-none px-2.5 py-1 text-[10px] font-bold tracking-wider"
-                >
-                  PAYOUT READY
-                </Badge>
-                <Badge
-                  variant="secondary"
-                  className="bg-[#ecfdf5] text-[#059669] border-none px-2.5 py-1 text-[10px] font-bold tracking-wider"
-                >
-                  UNLIMITED EARNINGS
-                </Badge>
-              </div>
-            </div>
-
-            <CardContent className="p-4 md:p-8">
-              {/* Stats Grid */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8 border-b border-gray-100 pb-6 md:pb-8">
-                <div>
-                  <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
-                    Total Referrals
-                  </p>
-                  <p className="text-xl md:text-2xl font-bold text-gray-900">
-                    502
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
-                    Total Earnings
-                  </p>
-                  <p className="text-xl md:text-2xl font-bold text-[#065f46]">
-                    ₹87,850
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
-                    Pending Payouts
-                  </p>
-                  <p className="text-xl md:text-2xl font-bold text-[#991b1b]">
-                    ₹3,200
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
-                    Payouts Done
-                  </p>
-                  <p className="text-xl md:text-2xl font-bold text-[#1e293b]">
-                    ₹84,650
-                  </p>
-                </div>
-              </div>
-
-              {/* Recent Registrations List */}
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-1">
-                  Recent Registrations
-                </h3>
-                <p className="text-xs text-gray-400 mb-5">
-                  Customers who registered using your referral code:{" "}
-                  <span className="font-bold text-gray-600">JD123</span>
-                </p>
-
-                <div className="space-y-2.5 md:space-y-3">
-                  {[
-                    {
-                      device: "Apple iPhone 15",
-                      status: "APPROVED",
-                      commission: "₹100",
-                      type: "mobile",
-                    },
-                    {
-                      device: "Dell XPS 15 Plus",
-                      status: "APPROVED",
-                      commission: "₹175",
-                      type: "laptop",
-                    },
-                    {
-                      device: "Samsung S23",
-                      status: "PROCESSING",
-                      commission: "₹100",
-                      type: "mobile",
-                    },
-                  ].map((reg, idx) => (
-                    <div
-                      key={idx}
-                      className="flex flex-row items-center justify-between p-2.5 md:p-3.5 bg-white border border-gray-100 rounded-xl shadow-sm gap-2 transition-all"
-                    >
-                      <div className="flex items-center gap-2.5 overflow-hidden">
-                        <div className="flex-shrink-0 w-8 h-8 md:w-10 md:h-10 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100">
-                          {reg.type === "mobile" ? (
-                            <Smartphone className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
-                          ) : (
-                            <Laptop className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
-                          )}
-                        </div>
-                        <span className="font-bold text-sm md:text-base text-gray-800 truncate">
-                          {reg.device}
-                        </span>
-                      </div>
-                      <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                        <Badge
-                          variant="secondary"
-                          className={`${reg.status === "APPROVED" ? "bg-[#ecfdf5] text-[#059669]" : "bg-[#fff7ed] text-[#9a3412]"} border-none px-2 py-0.5 font-bold text-[9px] md:text-[10px] rounded-full`}
-                        >
-                          {reg.status}
-                        </Badge>
-                        <span className="text-[10px] font-semibold text-gray-400">
-                          Earn:{" "}
-                          <span className="text-gray-900 font-bold">
-                            {reg.commission}
-                          </span>
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+<div className="hidden md:flex justify-center relative">
+          <img src={laptop} alt="Referral Partner Banner Desktop" className="w-full h-auto object-cover block" />
+        </div>
         </div>
       </section>
 
       {/* ── FINAL CTAs & REGISTRATION ────────────────────────────────────────────── */}
       <section
         id="registration-form"
-        className="py-6 md:py-24 px-4 bg-gradient-to-br from-[#1e293b] via-[#254696] to-[#4338ca] relative overflow-hidden"
+        className="py-10 md:py-12 px-4 relative overflow-hidden bg-gradient-to-br from-[#1e293b] via-[#254696] to-[#1e176b]"
       >
-        {/* Decorative background elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48 -mt-48" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48 -mb-48" />
+        {/* Subtle dot pattern */}
+        <div className="absolute inset-0 opacity-[0.035] pointer-events-none" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+        {/* Glow blobs */}
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -mr-48 -mt-48" style={{ background: "rgba(37,70,150,0.35)" }} />
+        <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl -ml-48 -mb-48" style={{ background: "rgba(67,56,202,0.2)" }} />
 
-        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-6 md:gap-16 items-center">
-          {/* Left Column: Text & Benefits */}
-          <div className="text-white text-left">
-            <h2 className="text-[24px] md:text-5xl lg:text-6xl font-extrabold mb-2 md:mb-8 leading-tight text-left">
-              Start Earning in Minutes
+        <div className="max-w-5xl mx-auto relative z-10 grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
+          {/* Left Column */}
+          <div className="text-white">
+            <span className="inline-block text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-5" style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.12)" }}>Become a Partner</span>
+            <h2 className="text-3xl md:text-5xl font-black leading-tight mb-4 tracking-tight">
+              Start Earning<br />in Minutes
             </h2>
-            <p className="text-sm md:text-xl text-blue-100 mb-4 md:mb-14 max-w-lg">
-              Earn ₹100–₹175 for every successful referral sale.
+            <p className="text-sm md:text-base mb-8" style={{ color: "rgba(255,255,255,0.5)", lineHeight: 1.7 }}>
+              Join 500+ active partners already earning with BBG. Zero investment. Instant activation.
             </p>
 
-            <div className="space-y-2 md:space-y-6 mb-6 md:mb-10 lg:mb-0">
+            {/* Commission pills */}
+            <div className="flex gap-3 mb-8">
+              
+              <div style={{ background: "rgba(255,215,0,0.08)", border: "1px solid rgba(255,215,0,0.25)", borderRadius: 14, padding: "12px 18px" }}>
+               
+                <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,215,0,0.6)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>Per Laptop</p>
+                <p style={{ fontSize: 26, fontWeight: 900, color: "#FFD700", lineHeight: 1 }}>₹175</p>
+              </div>
+              <div style={{ background: "rgba(255,215,0,0.08)", border: "1px solid rgba(255,215,0,0.25)", borderRadius: 14, padding: "12px 18px" }}>
+                <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,215,0,0.6)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>Per Mobile</p>
+                <p style={{ fontSize: 26, fontWeight: 900, color: "#FFD700", lineHeight: 1 }}>₹100</p>
+              </div>
+            </div>
+
+            {/* Benefits */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {[
-                "No upfront costs or joining fees",
-                "24/7 dedicated partner support",
-                "Sales library included",
-              ].map((benefit, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-start gap-2.5 md:gap-4"
-                >
-                  <div className="flex-shrink-0 w-4 h-4 md:w-6 md:h-6 rounded-full bg-white flex items-center justify-center">
-                    <CheckCircle2 className="w-2.5 md:w-4 h-2.5 md:h-4 text-[#254696]" />
+                { icon: "✓", text: "No upfront costs or joining fees" },
+                { icon: "✓", text: "24/7 dedicated partner support" },
+                { icon: "✓", text: "Sales library & resources included" },
+              ].map((item, idx) => (
+                <div key={idx} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(74,222,128,0.15)", border: "1px solid rgba(74,222,128,0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <span style={{ fontSize: 11, fontWeight: 900, color: "#4ade80" }}>{item.icon}</span>
                   </div>
-                  <span className="text-xs md:text-lg font-bold text-white/90">
-                    {benefit}
-                  </span>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.75)" }}>{item.text}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Right Column: Registration Card */}
-          <Card className="border border-gray-100 shadow-xl rounded-[1.5rem] md:rounded-[2rem] bg-white overflow-hidden p-0 md:p-1">
-            <CardContent className="p-4 md:p-8">
-              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-5 uppercase tracking-wider">
-                Basic Details
-              </h3>
+          <div style={{ background: "#fff", borderRadius: 24, overflow: "hidden", boxShadow: "0 24px 60px rgba(0,0,0,0.3)" }}>
+            <div style={{ padding: "24px 28px 28px" }}>
 
               <Form {...form}>
                 <form
@@ -824,9 +820,6 @@ export default function DistributorRegistration() {
                   </div>
 
                   <div className="pt-0 md:pt-1 space-y-1.5 md:space-y-3">
-                    <h3 className="hidden md:block text-xs font-bold text-gray-800 uppercase tracking-widest border-l-4 border-[#254696] pl-3">
-                      Declaration
-                    </h3>
 
                     <FormField
                       control={form.control}
@@ -917,8 +910,8 @@ export default function DistributorRegistration() {
                   </p>
                 </form>
               </Form>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Transition gradient image effect at bottom to blend with blue footer */}

@@ -305,18 +305,18 @@ export default function DistributorRegistration() {
         <div className="block md:hidden relative">
           <img src={buybackGuaranteeImgBelow} alt="Referral Partner Banner Mobile" className="w-full h-[88vh] object-cover block" />
           {/* Dark gradient so text stays readable over image */}
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(4,11,35,0.82) 0%, rgba(4,11,35,0.45) 55%, transparent 100%)" }} />
-          <div className="absolute inset-0 flex items-start" style={{ padding: "60px 20px 28px" }}>
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.05) 55%, transparent 100%)" }} />
+          <div className="absolute inset-0 flex items-start" style={{ padding: "40px 20px 28px" }}>
             <div style={{ width: "100%" }}>
               <p style={{ fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>Refer &amp; Earn</p>
               <p style={{ fontSize: 35, fontWeight: 900, lineHeight: 1.05, color: "#4ade80", textShadow: "0 0 20px rgba(74,222,128,0.4)", marginBottom: 18 }}>
                 Unlimited<br />Earnings
               </p>
-              <p style={{ fontSize: "clamp(11px, 1.05vw, 16px)", lineHeight: 1.6, color: "rgba(255,255,255,0.65)", maxWidth: 360, marginBottom: 18 }}>
+              <p style={{ fontSize: "16px", lineHeight: 1.6, color: "rgba(255,255,255,0.65)", maxWidth: 360, marginBottom: 8 }}>
                 Every time someone buys through your code,<br />you get paid. Simple. Trackable. Guaranteed.
               </p>
-              <p style={{ fontSize: 13, fontWeight: 700, color: "#fff", lineHeight: 1.5, marginBottom: 20 }}>
-                Earn up to <span style={{ color: "#FFD91B" }}>₹175</span> per sale · No limits. No cap.
+              <p style={{ fontSize: 18, fontWeight: 700, color: "#fff", lineHeight: 1.5, marginBottom: 9 }}>
+                Earn up to <span style={{ color: "#FFD91B" }}>₹175</span> per sale. <br></br> No limits. No cap.
               </p>
               <button
                 type="button"
@@ -341,11 +341,11 @@ export default function DistributorRegistration() {
           <div className="text-center mb-12">
             <p className="text-xs font-bold uppercase tracking-widest text-white/40 mb-3">Why Partner With Us</p>
             <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
-              Turn Your Network Into{" "}
+              Turn Your Network<br className="sm:hidden block"/> Into{" "}
               <span style={{ color: "#7ba8ff" }}>Net Worth.</span>
             </h2>
-            <p className="text-white/50 text-sm mt-4 max-w-md mx-auto leading-relaxed">
-              No selling, no cold calls. Just share, refer, and earn — on autopilot.
+            <p className="text-white/50 text-[1.2rem] mt-4 max-w-md mx-auto leading-relaxed">
+              No selling, no cold calls.<br/> Just share, refer, and earn on autopilot.
             </p>
           </div>
 
@@ -368,8 +368,12 @@ export default function DistributorRegistration() {
                 e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
               }}
             >
+              <div className="flex flex-row items-center gap-3">
               <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(123,168,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
                 <Infinity style={{ width: 22, height: 22, color: "#7ba8ff" }} />
+
+              </div>
+              <h3 style={{ fontSize: 23, fontWeight: 700, color: "#fff", marginBottom: 20 }}>Unlimited Earnings</h3>
               </div>
               <div className="flex flex-row gap-3" style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>
               <div
@@ -471,7 +475,6 @@ export default function DistributorRegistration() {
             </div>
               {/* <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>₹100 per mobile</div> */}
               <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 14 }} />
-              <h3 style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Unlimited Earnings</h3>
               <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>
                Flat ₹175 per laptop and ₹100 per mobile. No caps, no limits—just higher payouts.
               </p>
@@ -494,15 +497,18 @@ export default function DistributorRegistration() {
               }}
             >
               <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
+              <div className="flex flex-row items-center gap-3">
+
               <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20, position: "relative" }}>
                 <Zap style={{ width: 22, height: 22, color: "#fff" }} />
               </div>
-              <div style={{ fontSize: 36, fontWeight: 900, color: "#fff", lineHeight: 1, marginBottom: 4 }}>100%
+              <h3 style={{ fontSize: 23, fontWeight: 700, color: "#fff", marginBottom: 20 }}>Truly Passive Income</h3>
+              </div>
+              <div style={{ fontSize: 27, fontWeight: 900, color: "#fff", lineHeight: 1, marginBottom: 4 }}>100%
                 <span style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.6)", marginLeft: 6 }}>passive</span>
               </div>
               <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 14 }}>zero investment needed</div>
               <div style={{ height: 1, background: "rgba(255,255,255,0.15)", marginBottom: 14 }} />
-              <h3 style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Truly Passive Income</h3>
               <p style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>
                 Shift from selling to sharing. We handle inventory and support while you earn.
               </p>
@@ -524,16 +530,18 @@ export default function DistributorRegistration() {
                 e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
               }}
             >
+              <div className="flex flex-row items-center gap-3">
               <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(123,168,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
                 <Target style={{ width: 22, height: 22, color: "#7ba8ff" }} />
               </div>
+              <h3 style={{ fontSize: 23, fontWeight: 700, color: "#fff", marginBottom: 20 }}>Real-Time Tracking</h3>
+              </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                 <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#4ade80", boxShadow: "0 0 8px #4ade80" }} />
-                <span style={{ fontSize: 36, fontWeight: 900, color: "#fff", lineHeight: 1 }}>Live</span>
+                <span style={{ fontSize: 27, fontWeight: 900, color: "#fff", lineHeight: 1 }}>Live</span>
               </div>
               <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>real-time dashboard</div>
               <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 14 }} />
-              <h3 style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Real-Time Tracking</h3>
               <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>
                 Track every referral live. Watch your commissions grow and withdraw to your bank.
               </p>
@@ -547,29 +555,29 @@ export default function DistributorRegistration() {
         <style>{`
           .step-card { background: #fff; border-radius: 20px; padding: 32px 28px; border: 1px solid #e8eef8; transition: box-shadow 0.2s, transform 0.2s; }
           .step-card:hover { box-shadow: 0 12px 40px rgba(37,70,150,0.10); transform: translateY(-3px); }
-          .step-num { width: 52px; height: 52px; border-radius: 16px; background: #254696; color: #fff; font-size: 22px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+          .step-num { width: 40px; height: 40px; border-radius: 16px; background: #254696; color: #fff; font-size: 22px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
           .step-icon-wrap { width: 44px; height: 44px; border-radius: 12px; background: #eef3ff; display: flex; align-items: center; justify-content: center; }
           @media (max-width: 767px) { .step-arrow { display: none !important; } }
         `}</style>
 
         <div className="max-w-5xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-8">
             <span className="inline-block text-[11px] font-bold uppercase tracking-widest text-[#254696] bg-[#eef3ff] px-4 py-1.5 rounded-full mb-4">How It Works</span>
             <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight leading-tight">
               3 Steps to Your <span className="text-[#254696]">First Payout.</span>
             </h2>
-            <p className="text-gray-400 text-sm mt-3 max-w-xs mx-auto leading-relaxed">
+            <p className="text-gray-400 text-[16px] mt-3 max-w-xs mx-auto leading-relaxed">
               Sign up once, earn forever. No inventory, no hassle.
             </p>
           </div>
 
           {/* Steps row */}
-          <div className="flex flex-col md:flex-row gap-5 md:gap-4 items-stretch">
+          <div className="flex flex-col md:flex-row gap-10 md:gap-4 items-stretch">
 
             {/* Step 1 */}
-            <div className="step-card flex-1">
-              <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="step-card flex-1 relative">
+              <div className="flex items-center justify-center gap-3 mb-6 absolute -top-5 right-[45%]">
                 <div className="step-num">1</div>
               </div>
               <div className="flex flex-row items-center gap-3">
@@ -591,9 +599,9 @@ export default function DistributorRegistration() {
             </div>
 
             {/* Step 2 — highlighted */}
-            <div className="flex-1 rounded-[20px] p-7 md:p-8" style={{ background: "#254696" }}>
-              <div className="flex items-center justify-center gap-3 mb-6">
-                <div style={{ width: 52, height: 52, borderRadius: 16, background: "rgba(255,255,255,0.15)", color: "#fff", fontSize: 22, fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>2</div>
+            <div className="flex-1 rounded-[20px] p-7 md:p-8 relative" style={{ background: "#254696" }}>
+              <div className="flex items-center justify-center gap-3 mb-6 absolute -top-5 right-[45%]">
+                <div style={{ width: 40, height: 40, borderRadius: 16, background: "rgb(183 183 183 / 67%)", color: "#fff", fontSize: 22, fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>2</div>
               </div>
               <div className="flex flex-row items-center gap-3">
               <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,0.12)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
@@ -614,8 +622,8 @@ export default function DistributorRegistration() {
             </div>
 
             {/* Step 3 */}
-            <div className="step-card flex-1">
-              <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="step-card flex-1 relative">
+              <div className="flex items-center justify-center gap-3 mb-6 absolute -top-5 right-[45%]">
                 <div className="step-num">3</div>
               </div>
               <div className="flex flex-row items-center gap-3">
@@ -645,7 +653,138 @@ export default function DistributorRegistration() {
               place.
             </p>
           </div>
-<div className="hidden md:flex justify-center relative">
+          <Card className="border border-gray-100 shadow-lg rounded-2xl overflow-hidden md:hidden block">
+            {/* Dashboard Header */}
+            <div className="bg-[#eef2ff] px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-[#254696] rounded flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-white" />
+                </div>
+                <span className="font-bold text-base text-[#1e293b]">
+                  Partner Dashboard
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <Badge
+                  variant="secondary"
+                  className="bg-[#ecfdf5] text-[#059669] border-none px-2.5 py-1 text-[10px] font-bold tracking-wider"
+                >
+                  PAYOUT READY
+                </Badge>
+                <Badge
+                  variant="secondary"
+                  className="bg-[#ecfdf5] text-[#059669] border-none px-2.5 py-1 text-[10px] font-bold tracking-wider"
+                >
+                  UNLIMITED EARNINGS
+                </Badge>
+              </div>
+            </div>
+
+            <CardContent className="p-4 md:p-8">
+              {/* Stats Grid */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8 border-b border-gray-100 pb-6 md:pb-8">
+                <div>
+                  <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
+                    Total Referrals
+                  </p>
+                  <p className="text-xl md:text-2xl font-bold text-gray-900">
+                    502
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
+                    Total Earnings
+                  </p>
+                  <p className="text-xl md:text-2xl font-bold text-[#065f46]">
+                    ₹87,850
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
+                    Pending Payouts
+                  </p>
+                  <p className="text-xl md:text-2xl font-bold text-[#991b1b]">
+                    ₹3,200
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-[10px] md:text-[11px] mb-0.5 md:mb-1 font-semibold uppercase tracking-wider">
+                    Payouts Done
+                  </p>
+                  <p className="text-xl md:text-2xl font-bold text-[#1e293b]">
+                    ₹84,650
+                  </p>
+                </div>
+              </div>
+
+              {/* Recent Registrations List */}
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-1">
+                  Recent Registrations
+                </h3>
+                <p className="text-xs text-gray-400 mb-5">
+                  Customers who registered using your referral code:{" "}
+                  <span className="font-bold text-gray-600">JD123</span>
+                </p>
+
+                <div className="space-y-2.5 md:space-y-3">
+                  {[
+                    {
+                      device: "Apple iPhone 15",
+                      status: "APPROVED",
+                      commission: "₹100",
+                      type: "mobile",
+                    },
+                    {
+                      device: "Dell XPS 15 Plus",
+                      status: "APPROVED",
+                      commission: "₹175",
+                      type: "laptop",
+                    },
+                    {
+                      device: "Samsung S23",
+                      status: "PROCESSING",
+                      commission: "₹100",
+                      type: "mobile",
+                    },
+                  ].map((reg, idx) => (
+                    <div
+                      key={idx}
+                      className="flex flex-row items-center justify-between p-2.5 md:p-3.5 bg-white border border-gray-100 rounded-xl shadow-sm gap-2 transition-all"
+                    >
+                      <div className="flex items-center gap-2.5 overflow-hidden">
+                        <div className="flex-shrink-0 w-8 h-8 md:w-10 md:h-10 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100">
+                          {reg.type === "mobile" ? (
+                            <Smartphone className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                          ) : (
+                            <Laptop className="w-4 h-4 md:w-5 md:h-5 text-gray-400" />
+                          )}
+                        </div>
+                        <span className="font-bold text-sm md:text-base text-gray-800 truncate">
+                          {reg.device}
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                        <Badge
+                          variant="secondary"
+                          className={`${reg.status === "APPROVED" ? "bg-[#ecfdf5] text-[#059669]" : "bg-[#fff7ed] text-[#9a3412]"} border-none px-2 py-0.5 font-bold text-[9px] md:text-[10px] rounded-full`}
+                        >
+                          {reg.status}
+                        </Badge>
+                        <span className="text-[10px] font-semibold text-gray-400">
+                          Earn:{" "}
+                          <span className="text-gray-900 font-bold">
+                            {reg.commission}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        <div className="hidden md:flex justify-center relative">
           <img src={laptop} alt="Referral Partner Banner Desktop" className="w-full h-auto object-cover block" />
         </div>
         </div>
@@ -664,12 +803,12 @@ export default function DistributorRegistration() {
 
         <div className="max-w-5xl mx-auto relative z-10 grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
           {/* Left Column */}
-          <div className="text-white">
+          <div className="text-white flex sm:block flex-col items-center">
             <span className="inline-block text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-5" style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.12)" }}>Become a Partner</span>
-            <h2 className="text-3xl md:text-5xl font-black leading-tight mb-4 tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-black leading-tight mb-4 tracking-tight text-center sm:text-left">
               Start Earning<br />in Minutes
             </h2>
-            <p className="text-sm md:text-base mb-8" style={{ color: "rgba(255,255,255,0.5)", lineHeight: 1.7 }}>
+            <p className="text-sm md:text-base mb-8 text-center md:text-left" style={{ color: "rgba(255,255,255,0.5)", lineHeight: 1.7 }}>
               Join 500+ active partners already earning with BBG. Zero investment. Instant activation.
             </p>
 

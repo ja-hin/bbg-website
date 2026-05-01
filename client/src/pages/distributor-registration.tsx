@@ -354,7 +354,7 @@ export default function DistributorRegistration() {
             {/* Unlimited Earnings */}
             <div
               className="group"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "28px 24px", transition: "all 0.25s ease", cursor: "default" }}
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "28px 20px", transition: "all 0.25s ease", cursor: "default" }}
               onMouseEnter={e => {
                 e.currentTarget.style.background = "rgba(255,255,255,0.12)";
                 e.currentTarget.style.transform = "scale(1.03) translateY(-4px)";
@@ -482,7 +482,7 @@ export default function DistributorRegistration() {
 
             {/* Truly Passive — highlighted center card */}
             <div
-              style={{ background: "#254696", border: "1px solid rgba(123,168,255,0.3)", borderRadius: 20, padding: "28px 24px", position: "relative", overflow: "hidden", transition: "all 0.25s ease", cursor: "default" }}
+              style={{ background: "#254696", border: "1px solid rgba(123,168,255,0.3)", borderRadius: 20, padding: "28px 20px", position: "relative", overflow: "hidden", transition: "all 0.25s ease", cursor: "default" }}
               onMouseEnter={e => {
                 e.currentTarget.style.background = "#1a3580";
                 e.currentTarget.style.transform = "scale(1.03) translateY(-4px)";
@@ -516,7 +516,7 @@ export default function DistributorRegistration() {
 
             {/* Real-time Tracking */}
             <div
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "28px 24px", transition: "all 0.25s ease", cursor: "default" }}
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "28px 20px", transition: "all 0.25s ease", cursor: "default" }}
               onMouseEnter={e => {
                 e.currentTarget.style.background = "rgba(255,255,255,0.12)";
                 e.currentTarget.style.transform = "scale(1.03) translateY(-4px)";

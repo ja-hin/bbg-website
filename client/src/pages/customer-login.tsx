@@ -153,7 +153,7 @@ export default function CustomerLogin() {
         {/* Right Side - Login Form */}
         <div className="w-full md:w-1/2 p-8 md:p-12">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2 text-center">
               {redirectPath.includes('/checkout') ? 'Get Started' : 'Login'}
             </h1>
           </div>

@@ -554,15 +554,12 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col w-full">
+    <div className="min-h-screen bg-white flex flex-col w-full overflow-hidden">
       {/* Header Section */}
-      <div className="w-full bg-gradient-to-br from-[#1b3476] to-[#254696] pt-6 pb-8 md:pt-10 md:pb-12 px-4 md:px-8 text-white relative flex-shrink-0">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
-        <div className="max-w-4xl mx-auto w-full relative z-10 flex flex-col">
-          <div className="mb-6 md:mb-8 -ml-2">
+       <div className="md:mb-8 -ml-2">
             <Button
               variant="ghost"
-              className="text-white/80 hover:text-white hover:bg-white/10 p-2 h-auto"
+              className="text-black hover:text-white hover:bg-white/10 py-4 px-8 h-auto"
               data-testid="button-back"
               onClick={() => setLocation(getPlansUrl())}
             >
@@ -570,6 +567,10 @@ export default function Checkout() {
               Back
             </Button>
           </div>
+      <div className="w-full bg-gradient-to-br from-[#1b3476] to-[#254696] py-4 md:pt-10 md:pb-12 px-4 md:px-8 text-white relative flex-shrink-0">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+        <div className="max-w-4xl mx-auto w-full relative z-10 flex flex-col">
+         
           
           <div className="flex items-start justify-between w-full gap-4">
             <div className="flex items-center gap-3 md:gap-4">
@@ -849,7 +850,7 @@ export default function Checkout() {
                             data-testid="checkbox-terms"
                           />
                         </FormControl>
-                        <div className="leading-none text-[13px] text-gray-500 font-medium">
+                        <div className="leading-1 text-[13px] text-gray-500 font-medium">
                           By continuing, you agree to these{" "}
                           <a href="/terms-and-conditions" target="_blank" className="font-bold text-[#1b3476] hover:underline">Terms & Conditions</a>
                           {" "}and{" "}

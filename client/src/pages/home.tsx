@@ -995,11 +995,6 @@ export default function Home() {
 
       </div>
 
-      {/* ───────────────────────────────────────
-          RIGHT SIDE — form wrapped in styled card
-          ref={formRef} UNCHANGED
-          DevicePlanSelectorForm + all props UNCHANGED
-      ─────────────────────────────────────── */}
       <div ref={formRef}>
 
         {/* Visual card shell */}
